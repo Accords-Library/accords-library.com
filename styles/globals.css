@@ -1,35 +1,57 @@
+@import url('https://fonts.googleapis.com/css2?family=Vollkorn:wght@400;500;600;700;800;900&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@300;400;500;700;900&display=swap');
+
+
 :root {
   --color-main-light: #ffedd8;
   --color-main-base: #e6ccb2;
   --color-main-dark: #9c6644;
   --color-main-black: #1B1811;
+  --filter-color-main-dark: invert(44%) sepia(29%) saturate(806%) hue-rotate(340deg) brightness(91%) contrast(85%);
 }
 
 html,
 body {
   padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
   background-color: var(--color-main-light);
+  color: var(--color-main-black);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Vollkorn";
+  font-weight: 700;
 }
 
 a {
   color: inherit;
-  text-decoration: none;
+  text-decoration: underline dotted var(--color-main-dark);
+  transition: .1s color;
+  text-underline-offset: 0.15em;
+}
+
+a:hover {
+  color: var(--color-main-dark);
 }
 
 * {
   box-sizing: border-box;
+  font-family: "Zen Maru Gothic";
+  font-weight: 500;
 }
 
 button {
+  display: grid;
+  place-content: center;
+  place-items: center;
   border: .1rem solid var(--color-main-dark);
   color: var(--color-main-dark);
   background: var(--color-main-light);
   border-radius: 100vmax;
   padding: 0.4em 1em;
   cursor: pointer;
+  transition: .1s color, .1s background-color;
 }
 
 button:hover {

@@ -1,75 +1,67 @@
 import Link from 'next/link'
-import styles from './mainmenu.module.css'
+import styles from '../styles/mainmenu.module.css'
+import { useRouter } from 'next/router'
 
 export default function MainMenu() {
+
+  const router = useRouter();
+
+  function generateMenuOption(url: string, icon: string, title: string, subtitle?: string) {
+    const classActive = router.asPath === url ? styles.active : null;
+    return (
+      <Link href={url} passHref>
+          <div className={styles.menuOption + " " + classActive}>
+            <img src={icon} alt="" />
+            <h3>{title}</h3>
+            <p>{subtitle}</p>
+          </div>
+      </Link>
+    )
+  }
+
   return (
+
     <div className={styles.menu}>
 
       <Link href="/" passHref>
         <div className={styles.menuLogo}>
-          <img src="/icons/accords.png" alt="" />
+          <img src="/icons/accords.svg" alt="" />
           <h2>Accord&apos;s Library</h2>
         </div>
       </Link>
       
       <button>Change language</button>
 
-      <hr></hr>
+      <hr />
 
-      <Link href="/library" passHref>
-        <div className={styles.menuOption}>
-          <img src="/icons/books.png" alt="" />
-          <h3>Library</h3>
-          <p>Browse all physical and digital media</p>
+      {generateMenuOption("/library", "/icons/book-solid.svg", "Library", "Browse all physical and digital media")}
+      {generateMenuOption("/hubs", "/icons/hubs.svg", "Hubs", "Explore all content of a specific game/series")}
+      {generateMenuOption("/chronology", "/icons/timeline-solid.svg", "Chronology", "Follow all events in chronological order")}
+
+      <hr />
+
+      {generateMenuOption("/archive", "/icons/box-archive-solid.svg", "Archive")}
+      {generateMenuOption("/news", "/icons/newspaper-solid.svg", "News")}
+      {generateMenuOption("/gallery", "/icons/images-solid.svg", "Gallery")}
+      {generateMenuOption("/about-us", "/icons/circle-info-solid.svg", "About us")}
+
+      <hr />
+
+      <div className={styles.menuFooter}>
+        <p>This website&rsquo;s content is made available under <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA</a> unless otherwise noted.</p>
+        <a href="https://creativecommons.org/licenses/by-sa/4.0/">
+          <div className={styles.menuFooterCC}>
+            <img src="/icons/creative-commons-brands.svg" alt="" />
+            <img src="/icons/creative-commons-by-brands.svg" alt="" />
+            <img src="/icons/creative-commons-sa-brands.svg" alt="" />
+          </div>
+        </a>
+        <p>Accord&rsquo;s Library is not affiliated with or endorsed by SQUARE ENIX CO. LTD. All game assets and promotional materials belongs to © SQUARE ENIX CO. LTD.</p>
+        <div className={styles.menuFooterSocials}>
+          <a href="https://github.com/Accords-Library"><img src="/icons/github-brands.svg" alt="" /></a>
+          <a href="https://accords-library.com/discord"><img src="/icons/discord-brands.svg" alt="" /></a>
         </div>
-      </Link>
-
-      <Link href="/hubs" passHref>
-        <div className={styles.menuOption}>
-          <img src="/icons/hubs.png" alt="" />
-          <h3>Hubs</h3>
-          <p>Explore all content of a specific game/series</p>
-        </div>
-      </Link>
-
-      <Link href="/chronology" passHref>
-        <div className={styles.menuOption}>
-          <img src="/icons/chronology.png" alt="" />
-          <h3>Chronology</h3>
-          <p>Follow all events in chronological order</p>
-        </div>
-      </Link>
-
-      <hr></hr>
-
-      <Link href="/archive" passHref>
-        <div className={styles.menuOption}>
-          <img src="/icons/archive.png" alt="" />
-          <h3>Archive</h3>
-        </div>
-      </Link>
-
-      <Link href="/news" passHref>
-        <div className={styles.menuOption}>
-          <img src="/icons/news.png" alt="" />
-          <h3>News</h3>
-        </div>
-      </Link>
-
-      <Link href="/gallery" passHref>
-        <div className={styles.menuOption}>
-          <img src="/icons/gallery.png" alt="" />
-          <h3>Gallery</h3>
-        </div>
-      </Link>
-
-      <Link href="/about-us" passHref>
-        <div className={styles.menuOption}>
-          <img src="/icons/info.png" alt="" />
-          <h3>About us</h3>
-        </div>
-      </Link>
-
+      </div>
     </div>
   )
 }

@@ -1,6 +1,6 @@
 .container {
   display: grid;
-  grid-template-columns: 20rem 1fr 5fr;
+  grid-template-columns: 20rem 20rem 1fr;
   min-height: 100vh;
 }
 

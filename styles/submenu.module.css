@@ -1,0 +1,13 @@
+.menu {
+    border-right: 1px solid black;
+    height: 100%;
+    width: 100%;
+    display: grid;
+    justify-items: center;
+    padding: 2rem;
+    overflow-y: auto;
+    max-height: 100vh;
+    grid-row-gap: 0.5em;
+    place-content: start;
+    scrollbar-width: none;
+  }

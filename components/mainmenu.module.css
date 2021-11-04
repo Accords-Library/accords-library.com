@@ -1,0 +1,73 @@
+.menu {
+  border: 1px solid black;
+  height: 100%;
+  width: 100%;
+  display: grid;
+  justify-items: center;
+  padding: 2rem;
+  overflow-y: auto;
+  max-height: 100vh;
+  scrollbar-width: none;
+  grid-row-gap: 0.5em;
+}
+
+.menuLogo {
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.menuLogo > h2 {
+  margin-top: 0;
+}
+
+.menuLogo > img {
+  width: 50%;
+  height: auto;
+  place-self: start center;
+}
+
+.menu > hr {
+  height: 0;
+  width: 100%;
+  border: none;
+  border-top: 0.3rem dotted black;
+  margin: 2rem;
+}
+
+.menuOption {
+  justify-self: start;
+  display: grid;
+  grid-template-areas: 'img title' '. subtitle';
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  grid-column-gap: 1em;
+  cursor: pointer;
+  padding: 0.4em 1em;
+  width: 100%;
+}
+
+.menuOption:hover {
+  background-color: var(--color-main-base);
+  border-radius: 1em;
+}
+
+.menuOption > * {
+  margin: 0;
+}
+
+.menuOption > img {
+  width: 1.2em;
+  height: auto;
+  grid-area: img;
+}
+
+.menuOption > h3 {
+  grid-area: title;
+  font-size: 150%;
+  font-weight: 600;
+}
+
+.menuOption > p {
+  grid-area: subtitle;
+}

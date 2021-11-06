@@ -1,7 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Vollkorn:wght@400;500;600;700;800;900&display=swap');
-
 @import url('https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@300;400;500;700;900&display=swap');
-
 
 :root {
   --color-main-light: #ffedd8;
@@ -17,6 +15,25 @@ body {
   margin: 0;
   background-color: var(--color-main-light);
   color: var(--color-main-black);
+}
+
+.appContainer {
+  display: grid;
+  min-height: 100vh;
+  grid-auto-flow: column;
+  grid-template-columns: 20rem;
+}
+
+.appContainer.withSubPanel {
+  grid-template-columns: 20rem 20rem;
+}
+
+.appContainer.withContentPanel {
+  grid-template-columns: 20rem 1fr;
+}
+
+.appContainer.withSubPanel.withContentPanel {
+  grid-template-columns: 20rem 20rem 1fr;
 }
 
 h1, h2, h3, h4, h5, h6 {

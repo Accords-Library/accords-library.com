@@ -1,0 +1,9 @@
+.panel {
+    padding-top: 5rem;
+}
+
+.panelInside {
+    max-width: 50rem;
+    text-align: justify;
+    text-justify: inter-word;
+}

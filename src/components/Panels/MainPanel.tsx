@@ -1,16 +1,18 @@
 import Link from 'next/link'
-import styles from '../styles/mainmenu.module.css'
 import { useRouter } from 'next/router'
+import styles from 'styles/Panels/MainPanel.module.css'
+import panelStyles from 'styles/Panels/Panels.module.css'
 
-export default function MainMenu() {
+export default function MainPanel() {
 
   const router = useRouter();
 
   function generateMenuOption(url: string, icon: string, title: string, subtitle?: string) {
-    const classActive = router.asPath === url ? styles.active : null;
+    console.log(router.asPath, url)
+    const classActive = router.asPath.startsWith(url) ? panelStyles.active : null;
     return (
       <Link href={url} passHref>
-          <div className={styles.menuOption + " " + classActive}>
+          <div className={[panelStyles.menuOption, classActive].join(' ')}>
             <img src={icon} alt="" />
             <h3>{title}</h3>
             <p>{subtitle}</p>
@@ -21,10 +23,10 @@ export default function MainMenu() {
 
   return (
 
-    <div className={styles.menu}>
+    <div className={[panelStyles.panel, styles.panel].join(' ')}>
 
       <Link href="/" passHref>
-        <div className={styles.menuLogo}>
+        <div className={styles.topLogo}>
           <img src="/icons/accords.svg" alt="" />
           <h2>Accord&apos;s Library</h2>
         </div>

@@ -1,25 +1,9 @@
 import Link from 'next/link'
-import { useRouter } from 'next/router'
 import styles from 'styles/Panels/MainPanel.module.css'
 import panelStyles from 'styles/Panels/Panels.module.css'
+import NavOption from 'components/Panels/NavOption'
 
 export default function MainPanel() {
-
-  const router = useRouter();
-
-  function generateMenuOption(url: string, icon: string, title: string, subtitle?: string) {
-    console.log(router.asPath, url)
-    const classActive = router.asPath.startsWith(url) ? panelStyles.active : null;
-    return (
-      <Link href={url} passHref>
-          <div className={[panelStyles.menuOption, classActive].join(' ')}>
-            <img src={icon} alt="" />
-            <h3>{title}</h3>
-            <p>{subtitle}</p>
-          </div>
-      </Link>
-    )
-  }
 
   return (
 
@@ -36,16 +20,52 @@ export default function MainPanel() {
 
       <hr />
 
-      {generateMenuOption("/library", "/icons/book-solid.svg", "Library", "Browse all physical and digital media")}
-      {generateMenuOption("/hubs", "/icons/hubs.svg", "Hubs", "Explore all content of a specific game/series")}
-      {generateMenuOption("/chronology", "/icons/timeline-solid.svg", "Chronology", "Follow all events in chronological order")}
+      <NavOption 
+        url="/library" 
+        icon="/icons/book-solid.svg" 
+        title="Library" 
+        subtitle="Browse all physical and digital media"
+      />
+      
+      <NavOption 
+        url="/hubs" 
+        icon="/icons/hubs.svg" 
+        title="Hubs" 
+        subtitle="Explore all content of a specific game/series"
+      />
+      
+      <NavOption 
+        url="/chronology"
+        icon="/icons/timeline-solid.svg"
+        title="Chronology"
+        subtitle="Follow all events in chronological order"
+      />
 
       <hr />
 
-      {generateMenuOption("/archive", "/icons/box-archive-solid.svg", "Archive")}
-      {generateMenuOption("/news", "/icons/newspaper-solid.svg", "News")}
-      {generateMenuOption("/gallery", "/icons/images-solid.svg", "Gallery")}
-      {generateMenuOption("/about-us", "/icons/circle-info-solid.svg", "About us")}
+      <NavOption
+        url="/archive"
+        icon="/icons/box-archive-solid.svg"
+        title="Archive"
+      />
+
+      <NavOption
+        url="/news"
+        icon="/icons/newspaper-solid.svg"
+        title="News"
+      />
+
+      <NavOption
+        url="/gallery"
+        icon="/icons/images-solid.svg"
+        title="Gallery"
+      />
+
+      <NavOption
+        url="/about-us"
+        icon="/icons/circle-info-solid.svg"
+        title="About us"
+      />
 
       <hr />
 

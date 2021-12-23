@@ -1,49 +1,49 @@
-import type { NextPage } from "next";
 import { GetStaticProps } from "next";
 import ContentPanel from "components/Panels/ContentPanel";
 import SubPanel from "components/Panels/SubPanel";
 import ReturnButton from "components/Panels/ReturnButton";
 import NavOption from "components/Panels/NavOption";
-import { getChronologyEras, getChronologyItems } from "queries/queries";
+import {
+  getChronologyItems,
+  getChronologyEras,
+  ChronologyItem,
+  ChronologyEra,
+} from "queries/chronology/overview";
 
-const ChronologyOverview: NextPage = (props) => {
+type Props = {
+  chronologyItems: ChronologyItem[];
+  chronologyEras: ChronologyEra[];
+};
 
+export default function ChronologyOverview(props: Props): JSX.Element {
   return (
     <>
-
       <SubPanel>
         <ReturnButton url="/chronology" title="Chronology" />
         <hr />
-        
-        {props.chronologyEras.map((era: any) => (
+
+        {console.log(props.chronologyEras)}
+
+        {props.chronologyEras.map((era: ChronologyEra) => (
           <NavOption
             key={era.id}
-            url={"#" + era.slug}
-            title={era.translations[0].title}
-            subtitle={era.starting_year + " → " + era.ending_year}
+            url={"#" + era.attributes.slug}
+            title={era.attributes.title[0].title ? era.attributes.title[0].title : ''}
+            subtitle={era.attributes.starting_year + " → " + era.attributes.ending_year}
             border={true}
           />
         ))}
       </SubPanel>
-    
 
-      <ContentPanel>
-        {props.chronologyItems.map((item: any) => (
-          <div key={item.id}>
-            {item.year} - {" "}
-            {item.translations[0].title}
-          </div>
-        ))}
-      </ContentPanel>
+
     </>
   );
-};
-export default ChronologyOverview;
+}
 
 export const getStaticProps: GetStaticProps = async (context) => {
   return {
     props: {
-      chronologyItems: await getChronologyItems(context.locale),
+      /*chronologyItems: await getChronologyItems(context.locale),*/
       chronologyEras: await getChronologyEras(context.locale),
     },
   };

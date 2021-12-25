@@ -75,3 +75,12 @@ button:hover {
   background: var(--color-main-dark);
   color: var(--color-main-light);
 }
+
+*::selection {
+  background-color: var(--color-main-dark);
+  color: var(--color-main-light)
+}
+
+*:target {
+  scroll-margin-top: 1em;
+}

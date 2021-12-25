@@ -9,6 +9,7 @@
   grid-row-gap: 0.5em;
   place-content: start center;
   scrollbar-width: none;
+  scroll-behavior: smooth;
 }
 
 .panel::-webkit-scrollbar {

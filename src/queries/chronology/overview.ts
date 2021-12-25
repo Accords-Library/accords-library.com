@@ -2,36 +2,76 @@ import { queryGraphQL } from "queries/helpers";
 
 export type ChronologyItem = {
   id: string;
+  attributes: ChronologyItemAttributes;
+};
+
+export type ChronologyItemAttributes = {
   year: number;
   month: number;
   day: number;
-  translations: ChronologyItemsTranslation[];
+  displayed_date: string;
+  events: ChronologyItemsEvent[];
+}
+
+export type ChronologyItemsEvent = {
+  id: string;
+  source: Source
+  translations: ChronologyItemsEventTranslation[];
 };
 
-export type ChronologyItemsTranslation = {
+export type ChronologyItemsEventTranslation = {
   title: string;
-};
+  description: string;
+  note: string;
+  status: string;
+}
+
+export type Source = {
+  data: {
+    attributes: {
+      name: string;
+    }
+  }
+}
 
 export async function getChronologyItems(
-  languages_code: String | undefined
+  language_code: String | undefined
 ): Promise<ChronologyItem[]> {
   return (
     await queryGraphQL(
       `
-          {
-              chronology_items {
-                  id
-                  year
-                  month
-                  day
-                  translations(filter: { languages_code: { code: { _eq: "` + languages_code + `" } } }) {
-                      title
+      {
+        chronologyItems (pagination: {limit: -1}, sort: ["year:asc", "month:asc", "day:asc"]) {
+          data {
+            id
+            attributes {
+              year
+              month
+              day
+              displayed_date
+              events {
+                id
+                source {
+                  data {
+                    attributes {
+                      name
+                    }
                   }
+                }
+                translations(filters: { language: { code: { eq: "` + language_code + `" } } }) {
+                  title
+                  description
+                  note
+                  status
+                }
               }
+            }
           }
-          `
+        }
+      }
+      `
     )
-  ).chronology_items;
+  ).chronologyItems.data;
 }
 
 export type ChronologyEra = {
@@ -40,9 +80,9 @@ export type ChronologyEra = {
 };
 
 export type ChronologyEraAttributes = {
+  slug: string;
   starting_year: number;
   ending_year: number;
-  slug: string;
   title: ChronologyEraTranslation[];
 }
 
@@ -59,7 +99,9 @@ export async function getChronologyEras(
       {
         chronologyEras {
           data {
+            id
             attributes {
+              slug
               starting_year
               ending_year
               title (filters: {language: {code: {eq: "` + language_code + `"}}}){

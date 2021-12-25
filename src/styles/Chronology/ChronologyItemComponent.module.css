@@ -1,0 +1,62 @@
+.chronologyItem {
+    display: grid;
+    grid-template-areas:
+        "year events"
+        "date events"
+        ;
+    grid-column-gap: 1em;
+    place-content: start;
+    grid-template-rows: auto 1fr;
+    grid-template-columns: 4em;
+    margin-bottom: 1.5em;
+}
+
+.chronologyItem:target {
+    background-color: var(--color-main-base);
+    border-radius: 1em;
+    padding: 1em 2em 1em 1.5em;
+}
+
+.chronologyItem > .year {
+    grid-area: year;
+    margin: 0;
+    font-weight: bold;
+}
+
+.chronologyItem > .date {
+    grid-area: date;
+    margin: 0;
+}
+
+.chronologyItem > .events {
+    grid-area: events;
+}
+
+.event {
+    margin-bottom: 1em;
+}
+
+.event > h3 {
+    margin: 0;
+}
+
+.event > p {
+    margin: 0;
+}
+
+.event > .bulletItem::before {
+    content: "⁃";
+    color: var(--color-main-dark);
+    display: inline-block;
+    width: 1em;
+    margin-left: -1em
+}
+
+.event > .bulletItem {
+    margin-top: .5em;
+}
+
+.source {
+    color: var(--color-main-dark);
+    font-size: 80%;
+}

@@ -76,11 +76,33 @@ button:hover {
   color: var(--color-main-light);
 }
 
+
+/* SCROLLBARS STYLING */
+
+* {
+  scrollbar-color: var(--color-main-dark) transparent;
+}
+
 *::selection {
   background-color: var(--color-main-dark);
-  color: var(--color-main-light)
+  color: var(--color-main-light);
+  border-radius: 1em;
 }
 
 *:target {
   scroll-margin-top: 1em;
+}
+
+*::-webkit-scrollbar {
+  width: 12px;               /* width of the entire scrollbar */
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;        /* color of the tracking area */
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--color-main-dark);    /* color of the scroll thumb */
+  border-radius: 100vmax;       /* roundness of the scroll thumb */
+  border: 3px solid var(--color-main-light);  /* creates padding around scroll thumb */
 }

@@ -5,7 +5,14 @@ import {
   ChronologyItemsEventTranslation,
 } from "queries/chronology/overview";
 
-export default function ChronologyItemComponent(pageProps: ChronologyItem) {
+export type ChronologyItemComponentProps = {
+  item: ChronologyItem;
+  displayYear: boolean;
+};
+
+export default function ChronologyItemComponent(
+  props: ChronologyItemComponentProps
+) {
   function generateAnchor(
     year: number,
     month: number,
@@ -14,8 +21,8 @@ export default function ChronologyItemComponent(pageProps: ChronologyItem) {
   ): string {
     let result: string = "";
     result += year;
-    if (month) result += "-" + month;
-    if (day) result += "-" + day;
+    if (month) result += "-" + month.toString().padStart(2, "0");
+    if (day) result += "-" + day.toString().padStart(2, "0");
     return result;
   }
 
@@ -28,9 +35,29 @@ export default function ChronologyItemComponent(pageProps: ChronologyItem) {
   }
 
   function generateDate(month: number, day: number): string {
+    let lut = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+
     let result: string = "";
-    if (month) result += month.toString().padStart(2, "0");
-    if (day) result += "/" + day.toString().padStart(2, "0");
+    if (month) {
+      result += lut[month - 1];
+      if (day) {
+        result += " " + day.toString().padStart(2, "0");
+      }
+    }
+
     return result;
   }
 
@@ -38,33 +65,47 @@ export default function ChronologyItemComponent(pageProps: ChronologyItem) {
     <div
       className={styles.chronologyItem}
       id={generateAnchor(
-        pageProps.attributes.year,
-        pageProps.attributes.month,
-        pageProps.attributes.day
+        props.item.attributes.year,
+        props.item.attributes.month,
+        props.item.attributes.day
       )}
     >
-      <p className={styles.year}>
-        {generateYear(
-          pageProps.attributes.displayed_date,
-          pageProps.attributes.year
-        )}
-      </p>
+      {props.displayYear ? (
+        <p className={styles.year}>
+          {generateYear(
+            props.item.attributes.displayed_date,
+            props.item.attributes.year
+          )}
+        </p>
+      ) : (
+        ""
+      )}
 
       <p className={styles.date}>
-        {generateDate(pageProps.attributes.month, pageProps.attributes.day)}
+        {generateDate(props.item.attributes.month, props.item.attributes.day)}
       </p>
 
       <div className={styles.events}>
-        {pageProps.attributes.events.map((event: ChronologyItemsEvent) => (
+        {props.item.attributes.events.map((event: ChronologyItemsEvent) => (
           <div className={styles.event} key={event.id}>
             {event.translations.map(
               (translation: ChronologyItemsEventTranslation) => (
                 <>
-                  <h3>{translation.title}</h3>
-                  <p className={event.translations.length > 1 ? styles.bulletItem : ""}>
-                    {translation.description}
-                    <em> {translation.note}</em>
-                  </p>
+                  {translation.title ? <h3>{translation.title}</h3> : ""}
+
+                  {translation.description ? (
+                    <p
+                      className={
+                        event.translations.length > 1 ? styles.bulletItem : ""
+                      }
+                    >
+                      {translation.description}
+                      
+                    </p>
+                  ) : (
+                    ""
+                  )}
+                  {translation.note ? <em>{"Notes: " + translation.note}</em> : ""}
                 </>
               )
             )}

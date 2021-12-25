@@ -1,0 +1,5 @@
+.chronologyYear:target {
+    background-color: var(--color-main-base);
+    border-radius: 1em;
+    padding: 1em 2em 1em 1.5em;
+}

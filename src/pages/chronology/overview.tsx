@@ -32,11 +32,7 @@ export default function ChronologyOverview(props: Props): JSX.Element {
     } else {
       chronologyItemYearGroups[item.attributes.year].push(item);
     }
-  });
-
-  console.log(chronologyItemYearGroups);
-
-  
+  });  
 
   return (
     <>
@@ -77,9 +73,9 @@ export default function ChronologyOverview(props: Props): JSX.Element {
                   ")"
               );
             }
-            if (event.translations.length !== 1) {
+            if (event.translations.length < 1) {
               console.warn(
-                "Wrong number of Translation(s) on ChronologyItem (" +
+                "Missing Translation on ChronologyItem (" +
                   item.id +
                   "), Event (" +
                   event.id +

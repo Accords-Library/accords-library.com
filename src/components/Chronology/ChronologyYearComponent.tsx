@@ -10,12 +10,12 @@ type ChronologyYearComponentProps = {
 
 export default function ChronologyYearComponent(props: ChronologyYearComponentProps) {
   return (
-    <div>
+    <div className={styles.chronologyYear} id={props.items.length > 1 ? props.items[0].attributes.year.toString() : undefined}>
       {props.items.map((item: ChronologyItem, index: number) => (
         <ChronologyItemComponent
-          key={item.id}
-          id={item.id}
-          attributes={item.attributes}
+          key={index}
+          item={item}
+          displayYear={index===0}
         />
       ))}
     </div>

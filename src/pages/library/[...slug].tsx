@@ -63,7 +63,6 @@ export default function Library(props: Props): JSX.Element {
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  console.log(context.params);
   if (context.params && Array.isArray(context.params.slug) && context.locale) {
     return {
       props: {
@@ -76,11 +75,6 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
 export async function getStaticPaths() {
   const paths = (await getAllSlugs());
-
-  paths.map((item) => {
-    console.log(item.params.slug);
-  });
-
   return {
     paths,
     fallback: false,

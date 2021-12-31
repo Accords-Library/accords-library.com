@@ -1,41 +1,30 @@
 import { queryGraphQL } from "queries/helpers";
+import { Source } from "queries/helpers";
 
 export type ChronologyItem = {
   id: string;
-  attributes: ChronologyItemAttributes;
+  attributes: {
+    year: number;
+    month: number;
+    day: number;
+    displayed_date: string;
+    events: ChronologyItemsEvent[];
+  };
 };
-
-export type ChronologyItemAttributes = {
-  year: number;
-  month: number;
-  day: number;
-  displayed_date: string;
-  events: ChronologyItemsEvent[];
-}
 
 export type ChronologyItemsEvent = {
   id: string;
-  source: Source
-  translations: ChronologyItemsEventTranslation[];
+  source: Source;
+  translations: {
+    title: string;
+    description: string;
+    note: string;
+    status: string;
+  }[];
 };
 
-export type ChronologyItemsEventTranslation = {
-  title: string;
-  description: string;
-  note: string;
-  status: string;
-}
-
-export type Source = {
-  data: {
-    attributes: {
-      name: string;
-    }
-  }
-}
-
 export async function getChronologyItems(
-  language_code: String | undefined
+  language_code: string | undefined
 ): Promise<ChronologyItem[]> {
   return (
     await queryGraphQL(
@@ -58,7 +47,7 @@ export async function getChronologyItems(
                     }
                   }
                 }
-                translations(filters: { language: { code: { eq: "` + language_code + `" } } }) {
+                translations(filters: { language: { code: { eq: "${language_code}" } } }) {
                   title
                   description
                   note
@@ -84,14 +73,14 @@ export type ChronologyEraAttributes = {
   starting_year: number;
   ending_year: number;
   title: ChronologyEraTranslation[];
-}
+};
 
 export type ChronologyEraTranslation = {
   title: string;
 };
 
 export async function getChronologyEras(
-  language_code: String | undefined
+  language_code: string | undefined
 ): Promise<ChronologyEra[]> {
   return (
     await queryGraphQL(
@@ -104,7 +93,7 @@ export async function getChronologyEras(
               slug
               starting_year
               ending_year
-              title (filters: {language: {code: {eq: "` + language_code + `"}}}){
+              title (filters: {language: {code: {eq: "${language_code}"}}}){
                 title
               }
             }

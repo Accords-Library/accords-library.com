@@ -3,7 +3,6 @@ import ContentPanel from "components/Panels/ContentPanel";
 import SubPanel from "components/Panels/SubPanel";
 import ReturnButton from "components/Panels/ReturnButton";
 import NavOption from "components/Panels/NavOption";
-import ChronologyItemComponent from "components/Chronology/ChronologyItemComponent";
 import ChronologyYearComponent from "components/Chronology/ChronologyYearComponent";
 import {
   getChronologyItems,
@@ -20,12 +19,8 @@ type Props = {
 
 export default function ChronologyOverview(props: Props): JSX.Element {
 
-  let previousYear = -1;
-
-  let chronologyItemYearGroups: ChronologyItem[][] = [];
-
-
   // Group by year the Chronology items
+  let chronologyItemYearGroups: ChronologyItem[][] = [];
   props.chronologyItems.map((item: ChronologyItem) => {
     if (!chronologyItemYearGroups.hasOwnProperty(item.attributes.year)) {
       chronologyItemYearGroups[item.attributes.year] = [item];

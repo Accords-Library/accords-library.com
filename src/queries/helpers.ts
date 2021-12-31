@@ -1,16 +1,3 @@
-/*
-export const queryGraphQL = async (query: string) => {
-  const res = await fetch(
-    process.env.URL_GRAPHQL +
-      "?access_token=" +
-      process.env.ACCESS_TOKEN +
-      "&query=" +
-      query
-  );
-  return (await res.json()).data;
-};
-*/
-
 export const queryGraphQL = async (query: String) => {
   const res = await fetch(process.env.URL_GRAPHQL, {
     method: "POST",
@@ -25,7 +12,6 @@ export const queryGraphQL = async (query: String) => {
   return (await res.json()).data;
 };
 
-
 export const queryGraphQLSystem = async (query: string) => {
   const res = await fetch(
     process.env.URL_GRAPHQL_SYSTEM +
@@ -37,13 +23,53 @@ export const queryGraphQLSystem = async (query: string) => {
   return (await res.json()).data;
 };
 
-export type AssetImage = {
-  id: string;
-  title: string;
-  width: number;
-  height: number;
+export function getAssetURL(url: string): string {
+  return process.env.NEXT_PUBLIC_URL_CMS + url;
+}
+
+export type Source = {
+  data: {
+    attributes: {
+      name: string;
+    };
+  };
 };
 
-export function getAssetURL(id: string): string {
-  return "https://cms.accords-library.com/assets/" + id;
-}
+export type UploadImage = {
+  data: {
+    attributes: {
+      name: string;
+      alternativeText: string;
+      caption: string;
+      width: number;
+      height: number;
+      url: string;
+    };
+  };
+};
+
+export type BasicPrice = {
+  amount: number;
+  currency: BasicCurrency;
+};
+
+export type BasicCurrency = {
+  data: {
+    attributes: {
+      symbol: string;
+      code: string;
+    };
+  };
+};
+
+export type BasicSize = {
+  width: number;
+  height: number;
+  thickness: number;
+};
+
+export type BasicDate = {
+  year: number;
+  month: number;
+  day: number;
+};

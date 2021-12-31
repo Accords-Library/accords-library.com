@@ -1,51 +1,45 @@
-import { queryGraphQL, AssetImage } from "queries/helpers";
+import { BasicDate, BasicPrice, BasicSize, queryGraphQL, UploadImage } from "queries/helpers";
 
-export type LibraryItem = {
-  title: string;
-  subtitle: string;
-  slug: string;
-  thumbnail: AssetImage;
-  subitems: Subitem[];
+export type LibraryItemSkeleton = {
+  attributes: {
+    slug: string;
+    subitems: { 
+      data: LibraryItemSkeleton[];
+    };
+  };
 };
 
-export type Subitem = {
-  subitem_id: LibrarySubitem;
-};
-
-export type LibrarySubitem = {
-  id: string;
-  title: string;
-  subtitle: string;
-  slug: string;
-  thumbnail: AssetImage;
-};
-
-export async function getLibraryItem(slug: string[]) {
+export async function getLibraryItemsSkeleton(): Promise<
+  LibraryItemSkeleton[]
+> {
   return (
     await queryGraphQL(
       `
       {
-        compendium_items(filter: {_and: [` + getFilterForItem(slug) + `]}) {
-          title
-          subtitle
-          slug
-          thumbnail {
-            id
-            title
-            width
-            height
-          }
-          subitems {
-            subitem_id {
-              id
-              title
-              subtitle
+        libraryItems(filters: { root_item: { eq: true } }) {
+          data {
+            attributes {
               slug
-              thumbnail {
-                id
-                title
-                width
-                height
+              subitems {
+                data {
+                  attributes {
+                    slug
+                    subitems {
+                      data {
+                        attributes {
+                          slug
+                          subitems {
+                            data {
+                              attributes {
+                                slug
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
               }
             }
           }
@@ -53,118 +47,133 @@ export async function getLibraryItem(slug: string[]) {
       }
       `
     )
-  ).compendium_items[0];
+  ).libraryItems.data;
 }
 
-export async function getRecursiveSlugs() {
-  const yetToExploreSlugs = level0Filtering(
-    (
-      await queryGraphQL(
-        `
-    {
-      compendium_items(
-        filter: { _and: [{ not_sold_separately: { _eq: false } }] }
-      ) {
-        subitem_of {
-          item_id {
-            virtual_set
-          }
-        }
-        slug
-      }
-    }    
-    `
-      )
-    ).compendium_items
-  );
-
+export function getBreadcrumbs(
+  parentBreadcrumb: string[],
+  data: LibraryItemSkeleton
+) {
   const result: string[][] = [];
-  while (yetToExploreSlugs.length > 0) {
-    const slug = yetToExploreSlugs.pop();
-    if (slug !== undefined) {
-      const subitems = levelnFiltering((await queryGraphQL(
-          `
-          {
-            compendium_items(filter: {_and: [` + getFilterForSubitemsOf(slug) + `]}) {
+  const itemBreadcrumb = [...parentBreadcrumb, data.attributes.slug];
+  result.push(itemBreadcrumb);
+  data.attributes.subitems.data.map((subitem) => {
+    result.push(...getBreadcrumbs(itemBreadcrumb, subitem));
+  });
+  return result;
+}
+
+
+export type LibraryItem = {
+  id: string;
+  attributes: {
+    title: string;
+    subtitle: string;
+    slug: string;
+    thumbnail: UploadImage;
+    release_date: BasicDate;
+    price: BasicPrice;
+    size: BasicSize;
+    description: {
+      description: string;
+    };
+    subitems: {
+      data: LibrarySubItem[];
+    };
+  };
+};
+
+export type LibrarySubItem = {
+  id: string;
+  attributes: {
+    title: string;
+    subtitle: string;
+    slug: string;
+    thumbnail: UploadImage;
+  }
+}
+
+export async function getLibraryItem(
+  slug: string[],
+  language_code: string | undefined
+): Promise<LibraryItem> {
+ 
+  return (
+    await queryGraphQL(
+      `
+      {
+        libraryItems(
+          filters: {slug: {eq: "${slug.pop()}"}}
+        ) {
+          data {
+            id
+            attributes {
+              title
+              subtitle
               slug
+              thumbnail {
+                data {
+                  attributes {
+                    name
+                    alternativeText
+                    caption
+                    width
+                    height
+                    url
+                  }
+                }
+              }
+              release_date {
+                year
+                month
+                day
+              }
+              price {
+                amount
+                currency {
+                  data {
+                    attributes {
+                      symbol
+                      code
+                    }
+                  }
+                }
+              }
+              size {
+                width
+                height
+                thickness
+              }
+              descriptions(filters: { language: { code: { eq: "${language_code}" } } }) {
+                description
+              }
+              subitems {
+                data {
+                  id
+                  attributes {
+                    slug
+                    title
+                    subtitle
+                    thumbnail {
+                      data {
+                        attributes {
+                          name
+                          alternativeText
+                          caption
+                          width
+                          height
+                          url
+                        }
+                      }
+                    }
+                  }
+                }
+              }
             }
           }
-          `
-          )
-        ).compendium_items
-      );
-      result.push(slug);
-      subitems.map((subitemSlug) => {
-        const newSlug = [...slug];
-        newSlug.push(subitemSlug);
-        yetToExploreSlugs.push(newSlug);
-      });
-    }
-  }
-  return result;
-}
-
-export function getFilterForSubitemsOf(slug: string[]) {
-  let filter = "";
-  slug.map((segment, index) => {
-    const depth = slug.length - index;
-    filter += "{ subitem_of: { item_id: ".repeat(depth);
-    filter += '{ slug: { _eq: "' + segment + '" } } ';
-    filter += "} } ".repeat(depth);
-    filter += ",";
-  });
-  return filter;
-}
-
-export function getFilterForItem(slug: string[]) {
-  let filter = "";
-  slug.map((segment, index) => {
-    const depth = slug.length - index - 1;
-    filter += "{ subitem_of: { item_id: ".repeat(depth);
-    filter += '{ slug: { _eq: "' + segment + '" } } ';
-    filter += "} } ".repeat(depth);
-    filter += ",";
-  });
-  return filter;
-}
-
-
-function level0Filtering(data: SlugLvl0[]): string[][] {
-  // Remove element if their parent item is a virtual_set
-  let result: string[][] = [];
-  data.map((item: SlugLvl0) => {
-    if (item.subitem_of.length > 0) {
-      if (item.subitem_of[0].item_id.virtual_set === false) {
-        result.push([item.slug]);
+        }
       }
-    } else {
-      result.push([item.slug]);
-    }
-  });
-  return result;
+      `
+    )
+  ).libraryItems.data[0];
 }
-
-function levelnFiltering(data: SlugLvln[]): string[] {
-  let result: string[] = [];
-  data.map((item: SlugLvln) => {
-    result.push(item.slug);
-  });
-  return result;
-}
-
-type SlugLvl0 = {
-  subitem_of: SlugLvl0Subitem_of[];
-  slug: string;
-};
-
-type SlugLvl0Subitem_of = {
-  item_id: SlugLvl0Subitem;
-};
-
-type SlugLvl0Subitem = {
-  virtual_set: boolean;
-};
-
-type SlugLvln = {
-  slug: string;
-};

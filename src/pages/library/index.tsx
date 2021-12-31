@@ -2,7 +2,7 @@ import { GetStaticProps } from "next";
 import SubPanel from "components/Panels/SubPanel";
 import ContentPanel from "components/Panels/ContentPanel";
 import { LibraryItem, getLibraryItems } from "queries/library/index";
-import { getAssetURL } from "queries/helpers";
+import { BasicDate, getAssetURL } from "queries/helpers";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -26,25 +26,19 @@ export default function Library(props: Props): JSX.Element {
 
       <ContentPanel>
         {props.libraryItems.map((item: LibraryItem) => (
-          <Link href={"/library/" + item.slug} key={item.id} passHref>
+          <Link href={"/library/" + item.attributes.slug} key={item.id} passHref>
             <div>
               <p>
-                {item.subitem_of.length > 0
-                  ? prettyTitleSubtitle(
-                      item.subitem_of[0].item_id.title,
-                      item.subitem_of[0].item_id.subtitle
-                    ) + " • "
-                  : ""}
-                {prettyTitleSubtitle(item.title, item.subtitle)}
+                {prettyTitleSubtitle(item.attributes.title, item.attributes.subtitle)}
               </p>
-              <p>{item.release_date}</p>
+              <p>{prettyDate(item.attributes.release_date)}</p>
 
-              {item.thumbnail ? (
+              {item.attributes.thumbnail.data ? (
                 <Image
-                  src={getAssetURL(item.thumbnail.id)}
-                  alt={item.thumbnail.title}
-                  width={item.thumbnail.width}
-                  height={item.thumbnail.height}
+                  src={getAssetURL(item.attributes.thumbnail.data.attributes.url)}
+                  alt={item.attributes.thumbnail.data.attributes.alternativeText}
+                  width={item.attributes.thumbnail.data.attributes.width}
+                  height={item.attributes.thumbnail.data.attributes.height}
                 />
               ) : (
                 ""
@@ -60,7 +54,7 @@ export default function Library(props: Props): JSX.Element {
 export const getStaticProps: GetStaticProps = async (context) => {
   return {
     props: {
-      libraryItems: await getLibraryItems(),
+      libraryItems: await getLibraryItems(context.locale),
     },
   };
 };
@@ -69,4 +63,8 @@ function prettyTitleSubtitle(title: string, subtitle: string): string {
   let result = title;
   if (subtitle !== null) result += " - " + subtitle;
   return result;
+}
+
+function prettyDate(date: BasicDate): string {
+  return date.year + "/" + date.month + "/" + date.day;
 }

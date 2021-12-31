@@ -1,15 +1,16 @@
 import { useRouter } from "next/router";
-import SubPanel from "components/Panels/SubPanel";
 import ContentPanel from "components/Panels/ContentPanel";
 import { getAssetURL } from "queries/helpers";
 import {
   getLibraryItem,
-  getRecursiveSlugs,
+  getBreadcrumbs,
+  getLibraryItemsSkeleton,
   LibraryItem,
-  Subitem,
+  LibrarySubItem
 } from "queries/library/[...slug]";
 import Image from "next/image";
 import Link from "next/link";
+import { GetStaticProps } from "next";
 
 type Props = {
   libraryItem: LibraryItem;
@@ -20,28 +21,33 @@ export default function Library(props: Props): JSX.Element {
   return (
     <>
       <ContentPanel>
-        <h1>{props.libraryItem.title}</h1>
-        <h2>{props.libraryItem.subtitle}</h2>
+        <h1>{props.libraryItem.attributes.title}</h1>
+        <h2>{props.libraryItem.attributes.subtitle}</h2>
         <Image
-          src={getAssetURL(props.libraryItem.thumbnail.id)}
-          alt={props.libraryItem.thumbnail.title}
-          width={props.libraryItem.thumbnail.width}
-          height={props.libraryItem.thumbnail.height}
+          src={getAssetURL(
+            props.libraryItem.attributes.thumbnail.data.attributes.url
+          )}
+          alt={
+            props.libraryItem.attributes.thumbnail.data.attributes
+              .alternativeText
+          }
+          width={props.libraryItem.attributes.thumbnail.data.attributes.width}
+          height={props.libraryItem.attributes.thumbnail.data.attributes.height}
         />
 
-        {props.libraryItem.subitems.map((subitem: Subitem) => (
+        {props.libraryItem.attributes.subitems.data.map((subitem: LibrarySubItem) => (
           <Link
-            href={router.asPath + "/" + subitem.subitem_id.slug}
-            key={subitem.subitem_id.id}
+            href={router.asPath + "/" + subitem.attributes.slug}
+            key={subitem.id}
             passHref
           >
             <div>
-              {subitem.subitem_id.thumbnail ? (
+              {subitem.attributes.thumbnail.data ? (
                 <Image
-                  src={getAssetURL(subitem.subitem_id.thumbnail.id)}
-                  alt={subitem.subitem_id.thumbnail.title}
-                  width={subitem.subitem_id.thumbnail.width}
-                  height={subitem.subitem_id.thumbnail.height}
+                  src={getAssetURL(subitem.attributes.thumbnail.data.attributes.url)}
+                  alt={subitem.attributes.thumbnail.data.attributes.alternativeText}
+                  width={subitem.attributes.thumbnail.data.attributes.width}
+                  height={subitem.attributes.thumbnail.data.attributes.height}
                 />
               ) : (
                 ""
@@ -49,27 +55,31 @@ export default function Library(props: Props): JSX.Element {
             </div>
           </Link>
         ))}
+
+        
       </ContentPanel>
     </>
   );
 }
 
-export async function getStaticProps({ params }) {
-  return {
-    props: {
-      libraryItem: await getLibraryItem(params.slug),
-    },
-  };
+export const getStaticProps: GetStaticProps = async (context) => {
+  console.log(context.params);
+  if (context.params && Array.isArray(context.params.slug) && context.locale) {
+    return {
+      props: {
+        libraryItem: (await getLibraryItem(context.params.slug, context.locale)),
+      },
+    };
+  }
+  return {props: {}};
 }
 
 export async function getStaticPaths() {
-  const paths = await getAllSlugs();
+  const paths = (await getAllSlugs());
 
-  /*
   paths.map((item) => {
     console.log(item.params.slug);
   });
-  */
 
   return {
     paths,
@@ -78,11 +88,19 @@ export async function getStaticPaths() {
 }
 
 async function getAllSlugs() {
-  return (await getRecursiveSlugs()).map((item) => {
-    return {
-      params: {
-        slug: item,
-      },
-    };
-  });
+  type Path = {
+    params: {
+      slug: string[];
+    }
+  }
+  
+  const data = (await getLibraryItemsSkeleton());
+  const paths:Path[] = [];
+  data.map((item) => {
+    const breadcrumbs = getBreadcrumbs([], item);
+    breadcrumbs.map((breadcrumb) => {
+      paths.push({params: {slug: breadcrumb}})
+    })
+  })
+ return paths;
 }

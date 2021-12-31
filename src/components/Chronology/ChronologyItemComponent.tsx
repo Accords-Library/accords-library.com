@@ -2,7 +2,6 @@ import styles from "styles/Chronology/ChronologyItemComponent.module.css";
 import {
   ChronologyItem,
   ChronologyItemsEvent,
-  ChronologyItemsEventTranslation,
 } from "queries/chronology/overview";
 
 export type ChronologyItemComponentProps = {
@@ -54,7 +53,7 @@ export default function ChronologyItemComponent(
     if (month) {
       result += lut[month - 1];
       if (day) {
-        result += " " + day.toString().padStart(2, "0");
+        result += " " + day;
       }
     }
 
@@ -89,7 +88,7 @@ export default function ChronologyItemComponent(
         {props.item.attributes.events.map((event: ChronologyItemsEvent) => (
           <div className={styles.event} key={event.id}>
             {event.translations.map(
-              (translation: ChronologyItemsEventTranslation) => (
+              (translation) => (
                 <>
                   {translation.title ? <h3>{translation.title}</h3> : ""}
 
@@ -100,12 +99,15 @@ export default function ChronologyItemComponent(
                       }
                     >
                       {translation.description}
-                      
                     </p>
                   ) : (
                     ""
                   )}
-                  {translation.note ? <em>{"Notes: " + translation.note}</em> : ""}
+                  {translation.note ? (
+                    <em>{"Notes: " + translation.note}</em>
+                  ) : (
+                    ""
+                  )}
                 </>
               )
             )}
@@ -113,7 +115,7 @@ export default function ChronologyItemComponent(
             <p className={styles.source}>
               {event.source.data
                 ? "(" + event.source.data.attributes.name + ")"
-                : ""}
+                : "(WARNING: NO SOURCE!)"}
             </p>
           </div>
         ))}

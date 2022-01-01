@@ -1,4 +1,5 @@
 import ContentPanel from "components/Panels/ContentPanel";
+import Head from "next/head";
 import { applyCustomAppProps } from "./_app";
 
 applyCustomAppProps(Home, {
@@ -9,25 +10,28 @@ applyCustomAppProps(Home, {
 export default function Home(): JSX.Element {
   return (
     <>
+      <Head>
+        <title>Accord&rsquo;s Library - Home</title>
+      </Head>
       <ContentPanel>
         <h2>Discover • Analyse • Translate • Archive</h2>
         <h2>What is this?</h2>
         <p>
           Accord&rsquo;s Library aims at gathering and archiving all of Yoko
-          Taro’s work. Yoko Taro is a Japanese video game director and scenario
-          writer. He is best-known for his work on the NieR and Drakengard
-          (Drag-on Dragoon) franchises. To complement his games, Yoko Taro likes
-          to publish side materials in the form of books, novellas, artbooks,
-          stage plays, manga, drama CDs, and comics. Those side materials can be
-          very difficult to find. His work goes all the way back to 2003, and
-          most of them are out of print after having been released solely in
-          Japan, sometimes in limited quantities. Their prices on the second
-          hand market have skyrocketed, ranging all the way to hundreds if not
-          thousand of dollars for the rarest items.&nbsp;
+          Taro&rsquo;s work. Yoko Taro is a Japanese video game director and
+          scenario writer. He is best-known for his work on the NieR and
+          Drakengard (Drag-on Dragoon) franchises. To complement his games, Yoko
+          Taro likes to publish side materials in the form of books, novellas,
+          artbooks, stage plays, manga, drama CDs, and comics. Those side
+          materials can be very difficult to find. His work goes all the way
+          back to 2003, and most of them are out of print after having been
+          released solely in Japan, sometimes in limited quantities. Their
+          prices on the second hand market have skyrocketed, ranging all the way
+          to hundreds if not thousand of dollars for the rarest items.&nbsp;
         </p>
         <p>
           This is where this library takes its meaning, in trying to help the
-          community grow by providing translators, writers, and wiki’s
+          community grow by providing translators, writers, and wiki&rsquo;s
           contributors a simple way to access these records filled with stories,
           artworks, and knowledge.
         </p>
@@ -124,12 +128,12 @@ export default function Home(): JSX.Element {
               9S -Pods
             </a>
           </kbd>
-          . Anyway, there is a lot more to it, you can click on "Syntax help"
-          next to the Search button for even neater functions. Btw, you can
-          create an account to favorite, upvote/downvote posts, or if you want
-          to help tagging them. There isn&rsquo;t currently a way for new users
-          to upload images, you&rsquo;ll have to contact us first and we can
-          decide to enable this function on your account.
+          . Anyway, there is a lot more to it, you can click on &quot;Syntax
+          help&quot; next to the Search button for even neater functions. Btw,
+          you can create an account to favorite, upvote/downvote posts, or if
+          you want to help tagging them. There isn&rsquo;t currently a way for
+          new users to upload images, you&rsquo;ll have to contact us first and
+          we can decide to enable this function on your account.
         </p>
       </ContentPanel>
     </>

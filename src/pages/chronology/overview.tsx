@@ -8,14 +8,14 @@ import {
   getChronologyItems,
   getChronologyEras,
   ChronologyItem,
-  ChronologyEra,
   ChronologyItemsEvent,
 } from "queries/chronology/overview";
 import { applyCustomAppProps } from "pages/_app";
+import { ChronologyEraEntityResponseCollection } from "queries/types";
 
 type Props = {
   chronologyItems: ChronologyItem[];
-  chronologyEras: ChronologyEra[];
+  chronologyEras: ChronologyEraEntityResponseCollection;
 };
 
 applyCustomAppProps(ChronologyOverview, {
@@ -37,14 +37,11 @@ export default function ChronologyOverview(props: Props): JSX.Element {
   return (
     <>
       <SubPanel>
-        {props.chronologyEras.map((era: ChronologyEra) => {
-          if (era.id == undefined) console.warn(era);
-        })}
 
         <ReturnButton url="/chronology" title="Chronology" />
         <hr />
 
-        {props.chronologyEras.map((era: ChronologyEra) => (
+        {props.chronologyEras.data.map((era) => (
           <NavOption
             key={era.id}
             url={"#" + era.attributes.slug}

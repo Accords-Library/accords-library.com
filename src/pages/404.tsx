@@ -1,6 +1,7 @@
 import Link from "next/link";
 import ContentPanel from "components/Panels/ContentPanel";
 import { applyCustomAppProps } from "./_app";
+import Head from "next/head";
 
 applyCustomAppProps(FourOhFour, {
   useSubPanel: false,
@@ -9,11 +10,16 @@ applyCustomAppProps(FourOhFour, {
 
 export default function FourOhFour(): JSX.Element {
   return (
-    <ContentPanel>
-      <h1>404 - Page Not Found</h1>
-      <Link href="/">
-        <a>Go back home</a>
-      </Link>
-    </ContentPanel>
+    <>
+      <Head>
+        <title>Accord&rsquo;s Library - 404</title>
+      </Head>
+      <ContentPanel>
+        <h1>404 - Page Not Found</h1>
+        <Link href="/">
+          <a>Go back home</a>
+        </Link>
+      </ContentPanel>
+    </>
   );
 }

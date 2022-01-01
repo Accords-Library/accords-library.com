@@ -1,5 +1,6 @@
 import { queryGraphQL } from "queries/helpers";
 import { Source } from "queries/helpers";
+import { ChronologyEraEntityResponseCollection } from "queries/types";
 
 export type ChronologyItem = {
   id: string;
@@ -63,6 +64,7 @@ export async function getChronologyItems(
   ).chronologyItems.data;
 }
 
+/*
 export type ChronologyEra = {
   id: string;
   attributes: ChronologyEraAttributes;
@@ -78,10 +80,11 @@ export type ChronologyEraAttributes = {
 export type ChronologyEraTranslation = {
   title: string;
 };
+*/
 
 export async function getChronologyEras(
   language_code: string | undefined
-): Promise<ChronologyEra[]> {
+): Promise<ChronologyEraEntityResponseCollection> {
   return (
     await queryGraphQL(
       `
@@ -102,5 +105,5 @@ export async function getChronologyEras(
       }
       `
     )
-  ).chronologyEras.data;
+  );
 }

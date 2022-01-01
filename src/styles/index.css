@@ -1,0 +1,94 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html,
+  body {
+    padding: 0;
+    margin: 0;
+    background-color: var(--color-main-light);
+    color: var(--color-main-black);
+  }
+
+  /* BUTTONS */
+
+  button {
+    display: grid;
+    place-content: center;
+    place-items: center;
+    border: 0.1rem solid theme("colors.dark");
+    color: theme("colors.dark");
+    background: theme("colors.light");
+    border-radius: 100vmax;
+    padding: 0.4em 1em;
+    cursor: pointer;
+    transition: 0.1s color, 0.1s background-color;
+  }
+
+  button:hover {
+    background: theme("colors.dark");
+    color: theme("colors.light");
+  }
+
+  /* FONT SETTING */
+
+  * {
+    box-sizing: border-box;
+    font-family: "Zen Maru Gothic";
+    font-weight: 500;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: "Vollkorn";
+    font-weight: 900;
+  }
+
+  /* LINKS */
+  a {
+    color: inherit;
+    text-decoration: underline dotted theme("colors.dark");
+    transition: 0.1s color;
+    text-underline-offset: 0.15em;
+  }
+
+  a:hover {
+    color: theme("colors.dark");
+  }
+
+  /* SCROLLBARS STYLING */
+
+  * {
+    scrollbar-color: theme("colors.dark") transparent;
+    scrollbar-width: thin;
+  }
+
+  *::selection {
+    background-color: theme("colors.dark");
+    color: theme("colors.light");
+    border-radius: 1em;
+  }
+
+  *:target {
+    scroll-margin-top: 1em;
+  }
+
+  *::-webkit-scrollbar {
+    width: 12px; /* width of the entire scrollbar */
+  }
+
+  *::-webkit-scrollbar-track {
+    background: transparent; /* color of the tracking area */
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background-color: theme("colors.dark"); /* color of the scroll thumb */
+    border-radius: 100vmax; /* roundness of the scroll thumb */
+    border: 3px solid theme("colors.light"); /* creates padding around scroll thumb */
+  }
+}

@@ -5,7 +5,7 @@ import NavOption from "components/Panels/NavOption";
 
 export default function MainPanel(): JSX.Element {
   return (
-    <div className={[panelStyles.panel, styles.panel].join(" ")}>
+    <div className={`${panelStyles.panel} ${styles.panel}`}>
       <Link href="/" passHref>
         <div className={styles.topLogo}>
           <img src="/icons/accords.svg" alt="" />
@@ -62,17 +62,17 @@ export default function MainPanel(): JSX.Element {
 
       <hr />
 
-      <div className={styles.menuFooter}>
+      <div className="text-center">
         <p>
           This website&rsquo;s content is made available under{" "}
           <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA</a>{" "}
           unless otherwise noted.
         </p>
         <a href="https://creativecommons.org/licenses/by-sa/4.0/">
-          <div className={styles.menuFooterCC}>
-            <img src="/icons/creative-commons-brands.svg" alt="" />
-            <img src="/icons/creative-commons-by-brands.svg" alt="" />
-            <img src="/icons/creative-commons-sa-brands.svg" alt="" />
+          <div className="mt-4 mb-8 grid h-4 grid-flow-col place-content-center gap-1">
+            <img className="h-6" src="/icons/creative-commons-brands.svg" alt="" />
+            <img className="h-6" src="/icons/creative-commons-by-brands.svg" alt="" />
+            <img className="h-6" src="/icons/creative-commons-sa-brands.svg" alt="" />
           </div>
         </a>
         <p>

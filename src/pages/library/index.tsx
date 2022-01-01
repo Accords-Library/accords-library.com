@@ -20,7 +20,7 @@ export default function Library(props: Props): JSX.Element {
       <SubPanel>
         <h2>Library</h2>
         <p>
-          A comprehensive list of all Yokoverse’s side materials (books,
+          A comprehensive list of all Yokoverse&rsquo;s side materials (books,
           novellas, artbooks, stage plays, manga, drama CDs, and comics). For
           each, we provide photos and/or scans of the content, information about
           what it is, when and how it was released, size, initial price…

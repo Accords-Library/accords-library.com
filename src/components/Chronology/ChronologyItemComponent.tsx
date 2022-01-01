@@ -11,7 +11,7 @@ export type ChronologyItemComponentProps = {
 
 export default function ChronologyItemComponent(
   props: ChronologyItemComponentProps
-) {
+): JSX.Element {
   function generateAnchor(
     year: number,
     month: number,
@@ -87,30 +87,28 @@ export default function ChronologyItemComponent(
       <div className={styles.events}>
         {props.item.attributes.events.map((event: ChronologyItemsEvent) => (
           <div className={styles.event} key={event.id}>
-            {event.translations.map(
-              (translation) => (
-                <>
-                  {translation.title ? <h3>{translation.title}</h3> : ""}
+            {event.translations.map((translation) => (
+              <>
+                {translation.title ? <h3>{translation.title}</h3> : ""}
 
-                  {translation.description ? (
-                    <p
-                      className={
-                        event.translations.length > 1 ? styles.bulletItem : ""
-                      }
-                    >
-                      {translation.description}
-                    </p>
-                  ) : (
-                    ""
-                  )}
-                  {translation.note ? (
-                    <em>{"Notes: " + translation.note}</em>
-                  ) : (
-                    ""
-                  )}
-                </>
-              )
-            )}
+                {translation.description ? (
+                  <p
+                    className={
+                      event.translations.length > 1 ? styles.bulletItem : ""
+                    }
+                  >
+                    {translation.description}
+                  </p>
+                ) : (
+                  ""
+                )}
+                {translation.note ? (
+                  <em>{"Notes: " + translation.note}</em>
+                ) : (
+                  ""
+                )}
+              </>
+            ))}
 
             <p className={styles.source}>
               {event.source.data

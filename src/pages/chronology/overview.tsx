@@ -11,14 +11,19 @@ import {
   ChronologyEra,
   ChronologyItemsEvent,
 } from "queries/chronology/overview";
+import { applyCustomAppProps } from "pages/_app";
 
 type Props = {
   chronologyItems: ChronologyItem[];
   chronologyEras: ChronologyEra[];
 };
 
-export default function ChronologyOverview(props: Props): JSX.Element {
+applyCustomAppProps(ChronologyOverview, {
+  useSubPanel: true,
+  useContentPanel: true,
+});
 
+export default function ChronologyOverview(props: Props): JSX.Element {
   // Group by year the Chronology items
   let chronologyItemYearGroups: ChronologyItem[][] = [];
   props.chronologyItems.map((item: ChronologyItem) => {
@@ -27,7 +32,7 @@ export default function ChronologyOverview(props: Props): JSX.Element {
     } else {
       chronologyItemYearGroups[item.attributes.year].push(item);
     }
-  });  
+  });
 
   return (
     <>
@@ -80,15 +85,11 @@ export default function ChronologyOverview(props: Props): JSX.Element {
           });
         })}
 
-        {chronologyItemYearGroups.map((items: ChronologyItem[], index: number) => {
-          return (
-            <ChronologyYearComponent
-              key={index}
-              items={items}
-            />
-          )
-
-        })}
+        {chronologyItemYearGroups.map(
+          (items: ChronologyItem[], index: number) => {
+            return <ChronologyYearComponent key={index} items={items} />;
+          }
+        )}
       </ContentPanel>
     </>
   );

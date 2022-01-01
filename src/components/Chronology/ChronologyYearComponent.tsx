@@ -8,7 +8,7 @@ type ChronologyYearComponentProps = {
 
 export default function ChronologyYearComponent(
   props: ChronologyYearComponentProps
-) {
+): JSX.Element {
   return (
     <div
       className={styles.chronologyYear}

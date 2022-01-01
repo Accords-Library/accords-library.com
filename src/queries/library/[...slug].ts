@@ -1,9 +1,15 @@
-import { BasicDate, BasicPrice, BasicSize, queryGraphQL, UploadImage } from "queries/helpers";
+import {
+  BasicDate,
+  BasicPrice,
+  BasicSize,
+  queryGraphQL,
+  UploadImage,
+} from "queries/helpers";
 
 export type LibraryItemSkeleton = {
   attributes: {
     slug: string;
-    subitems: { 
+    subitems: {
       data: LibraryItemSkeleton[];
     };
   };
@@ -63,7 +69,6 @@ export function getBreadcrumbs(
   return result;
 }
 
-
 export type LibraryItem = {
   id: string;
   attributes: {
@@ -90,14 +95,13 @@ export type LibrarySubItem = {
     subtitle: string;
     slug: string;
     thumbnail: UploadImage;
-  }
-}
+  };
+};
 
 export async function getLibraryItem(
   slug: string[],
   language_code: string | undefined
 ): Promise<LibraryItem> {
- 
   return (
     await queryGraphQL(
       `

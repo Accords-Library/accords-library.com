@@ -1,8 +1,13 @@
-import type { NextPage } from "next";
 import SubPanel from "components/Panels/SubPanel";
 import NavOption from "components/Panels/NavOption";
+import { applyCustomAppProps } from "pages/_app";
 
-const Chronology: NextPage = () => {
+applyCustomAppProps(Chronology, {
+  useSubPanel: true,
+  useContentPanel: false,
+});
+
+export default function Chronology(): JSX.Element {
   return (
     <>
       <SubPanel>
@@ -37,5 +42,4 @@ const Chronology: NextPage = () => {
       </SubPanel>
     </>
   );
-};
-export default Chronology;
+}

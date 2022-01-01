@@ -1,17 +1,15 @@
-import styles from 'styles/Panels/ReturnButton.module.css'
-import Link from 'next/link'
+import styles from "styles/Panels/ReturnButton.module.css";
+import Link from "next/link";
 
 type ReturnButtonProps = {
-  url: string,
-  title: string
-}
+  url: string;
+  title: string;
+};
 
-export default function ReturnButton(pageProps: ReturnButtonProps) {
+export default function ReturnButton(props: ReturnButtonProps): JSX.Element {
   return (
-    <Link href={pageProps.url} passHref>
-        <button>
-            ❮&emsp;Return to {pageProps.title}
-        </button>
+    <Link href={props.url} passHref>
+      <button>❮&emsp;Return to {props.title}</button>
     </Link>
-  )
+  );
 }

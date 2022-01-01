@@ -2,13 +2,17 @@ import { GetStaticProps } from "next";
 import SubPanel from "components/Panels/SubPanel";
 import ContentPanel from "components/Panels/ContentPanel";
 import { LibraryItem, getLibraryItems } from "queries/library/index";
-import { BasicDate, getAssetURL } from "queries/helpers";
-import Image from "next/image";
-import Link from "next/link";
+import LibraryItemComponent from "components/Library/LibraryItemComponent";
+import { applyCustomAppProps } from "pages/_app";
 
 type Props = {
   libraryItems: LibraryItem[];
 };
+
+applyCustomAppProps(Library, {
+  useSubPanel: true,
+  useContentPanel: true,
+});
 
 export default function Library(props: Props): JSX.Element {
   return (
@@ -26,25 +30,7 @@ export default function Library(props: Props): JSX.Element {
 
       <ContentPanel>
         {props.libraryItems.map((item: LibraryItem) => (
-          <Link href={"/library/" + item.attributes.slug} key={item.id} passHref>
-            <div>
-              <p>
-                {prettyTitleSubtitle(item.attributes.title, item.attributes.subtitle)}
-              </p>
-              <p>{prettyDate(item.attributes.release_date)}</p>
-
-              {item.attributes.thumbnail.data ? (
-                <Image
-                  src={getAssetURL(item.attributes.thumbnail.data.attributes.url)}
-                  alt={item.attributes.thumbnail.data.attributes.alternativeText}
-                  width={item.attributes.thumbnail.data.attributes.width}
-                  height={item.attributes.thumbnail.data.attributes.height}
-                />
-              ) : (
-                ""
-              )}
-            </div>
-          </Link>
+          <LibraryItemComponent key={item.id} item={item} />
         ))}
       </ContentPanel>
     </>
@@ -58,13 +44,3 @@ export const getStaticProps: GetStaticProps = async (context) => {
     },
   };
 };
-
-function prettyTitleSubtitle(title: string, subtitle: string): string {
-  let result = title;
-  if (subtitle !== null) result += " - " + subtitle;
-  return result;
-}
-
-function prettyDate(date: BasicDate): string {
-  return date.year + "/" + date.month + "/" + date.day;
-}

@@ -1,7 +1,13 @@
 import Link from "next/link";
 import ContentPanel from "components/Panels/ContentPanel";
+import { applyCustomAppProps } from "./_app";
 
-export default function FourOhFour() {
+applyCustomAppProps(FourOhFour, {
+  useSubPanel: false,
+  useContentPanel: true,
+});
+
+export default function FourOhFour(): JSX.Element {
   return (
     <ContentPanel>
       <h1>404 - Page Not Found</h1>

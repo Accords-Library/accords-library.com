@@ -3,46 +3,24 @@ import Head from "next/head";
 import MainPanel from "components/Panels/MainPanel";
 import "styles/globals.css";
 
-function AccordsLibraryApp({ Component, pageProps }: AppProps) {
-  /* [BIG HACK]
-      Yes this is probably terrible, I'm trying to apply a different style to my appContainer div
-      depending on if the page uses a subpanel or contentpanel, or both, or neither. This is because
-      I want the first column to be always 20rem, the second one to be 20rem when it's the subbar, but
-      1fr if it's the content...
-      
-      Anyway, there is probably a much better way to do this, it it might backfire in my face in the future
-      Much love,
+export type CustomAppProps = {
+  useSubPanel: boolean;
+  useContentPanel: boolean;
+};
 
-      Mint  
-  */
+export function applyCustomAppProps(
+  page: Function,
+  customAppProps: CustomAppProps
+) {
+  page.customAppProps = customAppProps;
+}
 
-  const componentProcessed = Component(pageProps);
-  let useSubPanel = false;
-  let useContentPanel = false;
-
-  const children = componentProcessed.props.children;
-
-  if (Array.isArray(children)) {
-    children.forEach((child) => {
-      if (child.type.name === "SubPanel") {
-        useSubPanel = true;
-      } else if (child.type.name === "ContentPanel") {
-        useContentPanel = true;
-      }
-    });
-  } else {
-    if (children.type.name === "SubPanel") {
-      useSubPanel = true;
-    } else if (children.type.name === "ContentPanel") {
-      useContentPanel = true;
-    }
-  }
-
+export default function AccordsLibraryApp(appProps: AppProps) {
   let additionalClasses = "";
-  if (useSubPanel) additionalClasses += " withSubPanel";
-  if (useContentPanel) additionalClasses += " withContentPanel";
-
-  /* [End of BIG HACK] */
+  if (appProps.Component.customAppProps.useSubPanel)
+    additionalClasses += " withSubPanel";
+  if (appProps.Component.customAppProps.useContentPanel)
+    additionalClasses += " withContentPanel";
 
   const siteTitle =
     "Accord's Library - Discover • Analyse • Translate • Archive";
@@ -71,9 +49,7 @@ function AccordsLibraryApp({ Component, pageProps }: AppProps) {
 
       <MainPanel />
 
-      {componentProcessed}
+      <appProps.Component {...appProps.pageProps} />
     </div>
   );
 }
-
-export default AccordsLibraryApp;

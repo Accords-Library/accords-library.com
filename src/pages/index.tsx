@@ -1,7 +1,12 @@
-import type { NextPage } from "next";
 import ContentPanel from "components/Panels/ContentPanel";
+import { applyCustomAppProps } from "./_app";
 
-const Home: NextPage = () => {
+applyCustomAppProps(Home, {
+  useSubPanel: false,
+  useContentPanel: true,
+});
+
+export default function Home(): JSX.Element {
   return (
     <>
       <ContentPanel>
@@ -129,6 +134,4 @@ const Home: NextPage = () => {
       </ContentPanel>
     </>
   );
-};
-
-export default Home;
+}

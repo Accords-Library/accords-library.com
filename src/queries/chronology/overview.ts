@@ -105,5 +105,5 @@ export async function getChronologyEras(
       }
       `
     )
-  );
+  ).chronologyEras;
 }

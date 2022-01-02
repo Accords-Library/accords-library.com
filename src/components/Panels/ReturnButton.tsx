@@ -1,4 +1,3 @@
-import styles from "styles/Panels/ReturnButton.module.css";
 import Link from "next/link";
 
 type ReturnButtonProps = {

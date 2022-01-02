@@ -1,4 +1,3 @@
-import styles from "styles/Chronology/ChronologyYearComponent.module.css";
 import ChronologyItemComponent from "components/Chronology/ChronologyItemComponent";
 import { GetChronologyItemsQuery } from "graphql/operations-types";
 
@@ -12,7 +11,7 @@ export default function ChronologyYearComponent(
 ): JSX.Element {
   return (
     <div
-      className={styles.chronologyYear}
+      className="target:bg-mid rounded-2xl target:py-4 target:my-4"
       id={props.items.length > 1 ? props.year.toString() : undefined}
     >
       {props.items.map((item, index) => (

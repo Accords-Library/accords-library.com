@@ -1,20 +1,14 @@
 import { GetChronologyItemsQuery } from "graphql/operations-types";
-import styles from "styles/Chronology/ChronologyItemComponent.module.css";
 
 export type ChronologyItemComponentProps = {
-  item: GetChronologyItemsQuery['chronologyItems']['data'][number];
+  item: GetChronologyItemsQuery["chronologyItems"]["data"][number];
   displayYear: boolean;
 };
 
 export default function ChronologyItemComponent(
   props: ChronologyItemComponentProps
 ): JSX.Element {
-  function generateAnchor(
-    year: number,
-    month: number,
-    day: number,
-    event?: number
-  ): string {
+  function generateAnchor(year: number, month: number, day: number): string {
     let result: string = "";
     result += year;
     if (month) result += "-" + month.toString().padStart(2, "0");
@@ -59,7 +53,7 @@ export default function ChronologyItemComponent(
 
   return (
     <div
-      className={styles.chronologyItem}
+      className="grid place-content-start grid-rows-[auto_1fr] grid-cols-[4em] py-4 px-8 rounded-2xl target:bg-mid"
       id={generateAnchor(
         props.item.attributes.year,
         props.item.attributes.month,
@@ -67,7 +61,7 @@ export default function ChronologyItemComponent(
       )}
     >
       {props.displayYear ? (
-        <p className={styles.year}>
+        <p className="text-lg font-bold">
           {generateYear(
             props.item.attributes.displayed_date,
             props.item.attributes.year
@@ -77,13 +71,13 @@ export default function ChronologyItemComponent(
         ""
       )}
 
-      <p className={styles.date}>
+      <p className="col-start-1 text-dark text-sm">
         {generateDate(props.item.attributes.month, props.item.attributes.day)}
       </p>
 
-      <div className={styles.events}>
+      <div className="col-start-2 row-start-1 row-span-2">
         {props.item.attributes.events.map((event) => (
-          <div className={styles.event} key={event.id}>
+          <div className="m-0" key={event.id}>
             {event.translations.map((translation) => (
               <>
                 {translation.title ? <h3>{translation.title}</h3> : ""}
@@ -91,7 +85,9 @@ export default function ChronologyItemComponent(
                 {translation.description ? (
                   <p
                     className={
-                      event.translations.length > 1 ? styles.bulletItem : ""
+                      event.translations.length > 1
+                        ? "before:content-['-'] before:text-dark before:inline-block before:w-4 before:ml-[-1em] mt-2 whitespace-pre-line"
+                        : "whitespace-pre-line"
                     }
                   >
                     {translation.description}
@@ -107,7 +103,7 @@ export default function ChronologyItemComponent(
               </>
             ))}
 
-            <p className={styles.source}>
+            <p className="text-dark text-xs">
               {event.source.data
                 ? "(" + event.source.data.attributes.name + ")"
                 : "(WARNING: NO SOURCE!)"}

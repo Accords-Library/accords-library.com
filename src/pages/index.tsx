@@ -13,7 +13,7 @@ export default function Home(): JSX.Element {
       <Head>
         <title>Accord&rsquo;s Library - Home</title>
       </Head>
-      <ContentPanel>
+      <ContentPanel autoformat={true}>
         <h2>Discover • Analyse • Translate • Archive</h2>
         <h2>What is this?</h2>
         <p>

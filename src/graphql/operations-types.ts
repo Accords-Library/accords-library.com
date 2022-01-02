@@ -1,6 +1,40 @@
-export type GetErasQueryVariables = {
-  language_code: string;
+export type Exact<T> = T;
+export type InputMaybe<T> = T;
+export type Scalars = {
+  ID: string;
+  String: string;
+  Boolean: boolean;
+  Int: number;
+  Float: number;
+  JSON: any;
+  DateTime: any;
+  Time: any;
+  Upload: any;
+  LibraryContentRangeDynamicZoneInput: any;
+  LibraryItemMetadataDynamicZoneInput: any;
+  SourceSourceDynamicZoneInput: any;
 };
+
+/*
+  The following is generated using https://www.graphql-code-generator.com/
+  With the following codegen.yml:
+
+  generates:
+  operations-types.ts:
+    plugins:
+      - typescript-operations
+
+  And the schema.graphql and operation.graphql files from this folder.
+  
+  But to make the type easier to work with, it went through the following transformation:
+    - Removed ?
+    - Removed | null
+    - Removed | undefined
+*/
+
+export type GetErasQueryVariables = Exact<{
+  language_code: InputMaybe<Scalars["String"]>;
+}>;
 
 export type GetErasQuery = {
   __typename: "Query";
@@ -23,9 +57,9 @@ export type GetErasQuery = {
   };
 };
 
-export type GetChronologyItemsQueryVariables = {
-  language_code: string;
-};
+export type GetChronologyItemsQueryVariables = Exact<{
+  language_code: InputMaybe<Scalars["String"]>;
+}>;
 
 export type GetChronologyItemsQuery = {
   __typename: "Query";
@@ -66,9 +100,9 @@ export type GetChronologyItemsQuery = {
   };
 };
 
-export type GetLibraryItemsPreviewQueryVariables = {
-  language_code: string;
-};
+export type GetLibraryItemsPreviewQueryVariables = Exact<{
+  language_code: InputMaybe<Scalars["String"]>;
+}>;
 
 export type GetLibraryItemsPreviewQuery = {
   __typename: "Query";
@@ -133,9 +167,9 @@ export type GetLibraryItemsPreviewQuery = {
   };
 };
 
-export type GetLibraryItemsSkeletonQueryVariables = {
+export type GetLibraryItemsSkeletonQueryVariables = Exact<{
   [key: string]: never;
-};
+}>;
 
 export type GetLibraryItemsSkeletonQuery = {
   __typename: "Query";
@@ -181,10 +215,10 @@ export type GetLibraryItemsSkeletonQuery = {
   };
 };
 
-export type GetLibraryItemQueryVariables = {
-  slug: string;
-  language_code: string;
-};
+export type GetLibraryItemQueryVariables = Exact<{
+  slug: InputMaybe<Scalars["String"]>;
+  language_code: InputMaybe<Scalars["String"]>;
+}>;
 
 export type GetLibraryItemQuery = {
   __typename: "Query";
@@ -213,14 +247,12 @@ export type GetLibraryItemQuery = {
             };
           };
         };
-
         release_date: {
           __typename: "ComponentBasicsDatepicker";
           year: number;
           month: number;
           day: number;
         };
-
         price: {
           __typename: "ComponentBasicsPrice";
           amount: number;
@@ -236,22 +268,16 @@ export type GetLibraryItemQuery = {
             };
           };
         };
-
         size: {
           __typename: "ComponentBasicsSize";
           width: number;
           height: number;
           thickness: number;
         };
-
-        descriptions: Array<
-          | {
-              __typename: "ComponentTranslationsLibraryItems";
-              description: string;
-            }
-          | undefined
-        >;
-
+        descriptions: Array<{
+          __typename: "ComponentTranslationsLibraryItems";
+          description: string;
+        }>;
         subitems: {
           __typename: "LibraryItemRelationResponseCollection";
           data: Array<{
@@ -270,13 +296,9 @@ export type GetLibraryItemQuery = {
                     __typename: "UploadFile";
                     name: string;
                     alternativeText: string;
-
                     caption: string;
-
                     width: number;
-
                     height: number;
-
                     url: string;
                   };
                 };

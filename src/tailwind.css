@@ -11,6 +11,16 @@
     color: var(--color-main-black);
   }
 
+  /* HORIZONTAL LINE */
+  
+  hr {
+    height: 0;
+    width: 100%;
+    border: none;
+    border-top: 0.3rem dotted black;
+    margin: 2rem;
+  }
+
   /* BUTTONS */
 
   button {
@@ -66,6 +76,7 @@
   * {
     scrollbar-color: theme("colors.dark") transparent;
     scrollbar-width: thin;
+    scroll-behavior: smooth;
   }
 
   *::selection {
@@ -91,4 +102,6 @@
     border-radius: 100vmax; /* roundness of the scroll thumb */
     border: 3px solid theme("colors.light"); /* creates padding around scroll thumb */
   }
+
+
 }

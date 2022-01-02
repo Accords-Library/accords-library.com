@@ -1,15 +1,17 @@
 import Link from "next/link";
-import styles from "styles/Panels/MainPanel.module.css";
-import panelStyles from "styles/Panels/Panels.module.css";
 import NavOption from "components/Panels/NavOption";
 
 export default function MainPanel(): JSX.Element {
   return (
-    <div className={`${panelStyles.panel} ${styles.panel}`}>
+    <div className="grid webkit-scrollbar:w-0 [scrollbar-width:none] overflow-y-scroll border-r-[1px] border-black w-80 h-full max-h-screen justify-center content-start p-8 gap-y-2 justify-items-center text-center">
       <Link href="/" passHref>
-        <div className={styles.topLogo}>
-          <img src="/icons/accords.svg" alt="" />
-          <h2>Accord&apos;s Library</h2>
+        <div className="grid place-items-center cursor-pointer">
+          <img
+            className="w-1/2 self-start justify-center"
+            src="/icons/accords.svg"
+            alt=""
+          />
+          <h2 className="mt-4">Accord&apos;s Library</h2>
         </div>
       </Link>
 
@@ -70,9 +72,21 @@ export default function MainPanel(): JSX.Element {
         </p>
         <a href="https://creativecommons.org/licenses/by-sa/4.0/">
           <div className="mt-4 mb-8 grid h-4 grid-flow-col place-content-center gap-1">
-            <img className="h-6" src="/icons/creative-commons-brands.svg" alt="" />
-            <img className="h-6" src="/icons/creative-commons-by-brands.svg" alt="" />
-            <img className="h-6" src="/icons/creative-commons-sa-brands.svg" alt="" />
+            <img
+              className="h-6"
+              src="/icons/creative-commons-brands.svg"
+              alt=""
+            />
+            <img
+              className="h-6"
+              src="/icons/creative-commons-by-brands.svg"
+              alt=""
+            />
+            <img
+              className="h-6"
+              src="/icons/creative-commons-sa-brands.svg"
+              alt=""
+            />
           </div>
         </a>
         <p>
@@ -80,12 +94,12 @@ export default function MainPanel(): JSX.Element {
           ENIX CO. LTD. All game assets and promotional materials belongs to ©
           SQUARE ENIX CO. LTD.
         </p>
-        <div className={styles.menuFooterSocials}>
+        <div className="mt-12 mb-4 grid h-4 grid-flow-col place-content-center gap-8">
           <a href="https://github.com/Accords-Library">
-            <img src="/icons/github-brands.svg" alt="" />
+            <img className="h-8" src="/icons/github-brands.svg" alt="" />
           </a>
           <a href="https://accords-library.com/discord">
-            <img src="/icons/discord-brands.svg" alt="" />
+            <img className="h-8" src="/icons/discord-brands.svg" alt="" />
           </a>
         </div>
       </div>

@@ -1,9 +1,10 @@
 import styles from "styles/Chronology/ChronologyYearComponent.module.css";
-import { ChronologyItem } from "queries/chronology/overview";
 import ChronologyItemComponent from "components/Chronology/ChronologyItemComponent";
+import { ChronologyItemEntity } from "graphql/operations-types";
 
 type ChronologyYearComponentProps = {
-  items: ChronologyItem[];
+  year: number;
+  items: ChronologyItemEntity[];
 };
 
 export default function ChronologyYearComponent(
@@ -12,13 +13,9 @@ export default function ChronologyYearComponent(
   return (
     <div
       className={styles.chronologyYear}
-      id={
-        props.items.length > 1
-          ? props.items[0].attributes.year.toString()
-          : undefined
-      }
+      id={props.items.length > 1 ? props.year.toString() : undefined}
     >
-      {props.items.map((item: ChronologyItem, index: number) => (
+      {props.items.map((item: ChronologyItemEntity, index: number) => (
         <ChronologyItemComponent
           key={index}
           item={item}

@@ -1,25 +1,15 @@
-export const queryGraphQL = async (query: String) => {
+export const queryGraphQL = async (query: string, variables?: string) => {
   const res = await fetch(process.env.URL_GRAPHQL, {
     method: "POST",
     body: JSON.stringify({
       query: query,
+      variables: variables
     }),
     headers: {
       "content-type": "application/json",
       Authorization: "Bearer " + process.env.ACCESS_TOKEN,
     },
   });
-  return (await res.json()).data;
-};
-
-export const queryGraphQLSystem = async (query: string) => {
-  const res = await fetch(
-    process.env.URL_GRAPHQL_SYSTEM +
-      "?access_token=" +
-      process.env.ACCESS_TOKEN +
-      "&query=" +
-      query
-  );
   return (await res.json()).data;
 };
 

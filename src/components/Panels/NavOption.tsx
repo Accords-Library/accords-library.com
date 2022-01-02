@@ -5,7 +5,7 @@ import Link from "next/link";
 type NavOptionProps = {
   url: string;
   icon?: string;
-  title: string;
+  title: string | null | undefined;
   subtitle?: string;
   border?: boolean;
 };

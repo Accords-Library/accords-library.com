@@ -1,12 +1,13 @@
 import { GetStaticProps } from "next";
 import SubPanel from "components/Panels/SubPanel";
 import ContentPanel from "components/Panels/ContentPanel";
-import { LibraryItem, getLibraryItems } from "queries/library/index";
 import LibraryItemComponent from "components/Library/LibraryItemComponent";
 import { applyCustomAppProps } from "pages/_app";
+import { GetLibraryItemsPreviewQuery } from "graphql/operations-types";
+import { getLibraryItemsPreview } from "graphql/operations";
 
 type Props = {
-  libraryItems: LibraryItem[];
+  libraryItems: GetLibraryItemsPreviewQuery;
 };
 
 applyCustomAppProps(Library, {
@@ -15,6 +16,8 @@ applyCustomAppProps(Library, {
 });
 
 export default function Library(props: Props): JSX.Element {
+
+  console.log(props);
   return (
     <>
       <SubPanel>
@@ -29,7 +32,7 @@ export default function Library(props: Props): JSX.Element {
       </SubPanel>
 
       <ContentPanel>
-        {props.libraryItems.map((item: LibraryItem) => (
+        {props.libraryItems.libraryItems?.data.map((item) => (
           <LibraryItemComponent key={item.id} item={item} />
         ))}
       </ContentPanel>
@@ -40,7 +43,7 @@ export default function Library(props: Props): JSX.Element {
 export const getStaticProps: GetStaticProps = async (context) => {
   return {
     props: {
-      libraryItems: await getLibraryItems(context.locale),
+      libraryItems: await getLibraryItemsPreview({language_code: context.locale}),
     },
   };
 };

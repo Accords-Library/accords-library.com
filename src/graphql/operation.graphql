@@ -1,0 +1,103 @@
+query getEras($language_code: String) {
+  chronologyEras {
+    data {
+      id
+      attributes {
+        slug
+        starting_year
+        ending_year
+        title(filters: { language: { code: { eq: $language_code } } }) {
+          title
+        }
+      }
+    }
+  }
+}
+
+query getChronologyItems($language_code: String) {
+  chronologyItems(
+    pagination: { limit: -1 }
+    sort: ["year:asc", "month:asc", "day:asc"]
+  ) {
+    data {
+      id
+      attributes {
+        year
+        month
+        day
+        displayed_date
+        events {
+          id
+          source {
+            data {
+              attributes {
+                name
+              }
+            }
+          }
+          translations(
+            filters: { language: { code: { eq: $language_code } } }
+          ) {
+            title
+            description
+            note
+            status
+          }
+        }
+      }
+    }
+  }
+}
+
+query getLibraryItemsPreview($language_code: String) {
+  libraryItems(
+    filters: { root_item: { eq: true } }
+    pagination: { limit: -1 }
+    sort: ["slug:asc"]
+  ) {
+    data {
+      id
+      attributes {
+        title
+        subtitle
+        slug
+        thumbnail {
+          data {
+            attributes {
+              name
+              alternativeText
+              caption
+              width
+              height
+              url
+            }
+          }
+        }
+        release_date {
+          year
+          month
+          day
+        }
+        price {
+          amount
+          currency {
+            data {
+              attributes {
+                symbol
+                code
+              }
+            }
+          }
+        }
+        size {
+          width
+          height
+          thickness
+        }
+        descriptions(filters: { language: { code: { eq: $language_code } } }) {
+          description
+        }
+      }
+    }
+  }
+}

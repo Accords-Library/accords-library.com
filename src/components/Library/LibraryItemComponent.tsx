@@ -1,11 +1,11 @@
 import styles from "styles/Library/LibraryItemComponent.module.css";
-import { LibraryItem } from "queries/library";
 import Link from "next/link";
 import Image from "next/image";
 import { BasicDate, getAssetURL } from "queries/helpers";
+import { LibraryItemEntity } from "graphql/operations-types";
 
 export type LibraryItemComponentProps = {
-  item: LibraryItem;
+  item: LibraryItemEntity;
 };
 
 export default function LibraryItemComponent(

@@ -1,4 +1,3 @@
-import styles from "styles/Library/LibraryItemComponent.module.css";
 import Link from "next/link";
 import Image from "next/image";
 import { GetLibraryItemsPreviewQuery } from "graphql/operations-types";
@@ -31,7 +30,7 @@ export default function LibraryItemComponent(
 
   return (
     <Link href={"/library/" + props.item.attributes.slug} passHref>
-      <div className={styles.libraryItem}>
+      <div className="">
         <h2>
           {prettyTitleSubtitle(
             props.item.attributes.title,

@@ -1,6 +1,6 @@
 import { GetStaticProps } from "next";
 import SubPanel from "components/Panels/SubPanel";
-import ContentPanel from "components/Panels/ContentPanel";
+import ContentPanel, { ContentPanelWidthSizes } from "components/Panels/ContentPanel";
 import LibraryItemComponent from "components/Library/LibraryItemComponent";
 import { applyCustomAppProps } from "pages/_app";
 import { GetLibraryItemsPreviewQuery } from "graphql/operations-types";
@@ -30,7 +30,7 @@ export default function Library(props: Props): JSX.Element {
         <hr />
       </SubPanel>
 
-      <ContentPanel>
+      <ContentPanel width={ContentPanelWidthSizes.large}>
         {props.libraryItems.libraryItems.data.map((item) => (
           <LibraryItemComponent key={item.id} item={item} />
         ))}

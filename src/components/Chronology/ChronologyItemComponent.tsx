@@ -53,7 +53,7 @@ export default function ChronologyItemComponent(
 
   return (
     <div
-      className="grid place-content-start grid-rows-[auto_1fr] grid-cols-[4em] py-4 px-8 rounded-2xl target:bg-mid"
+      className="grid place-content-start grid-rows-[auto_1fr] grid-cols-[4em] py-4 px-8 rounded-2xl target:bg-mid target:py-8 target:my-4"
       id={generateAnchor(
         props.item.attributes.year,
         props.item.attributes.month,
@@ -61,7 +61,7 @@ export default function ChronologyItemComponent(
       )}
     >
       {props.displayYear ? (
-        <p className="text-lg font-bold">
+        <p className="text-lg mt-[-.2em] font-bold">
           {generateYear(
             props.item.attributes.displayed_date,
             props.item.attributes.year
@@ -75,7 +75,7 @@ export default function ChronologyItemComponent(
         {generateDate(props.item.attributes.month, props.item.attributes.day)}
       </p>
 
-      <div className="col-start-2 row-start-1 row-span-2">
+      <div className="col-start-2 row-start-1 row-span-2 grid gap-4">
         {props.item.attributes.events.map((event) => (
           <div className="m-0" key={event.id}>
             {event.translations.map((translation) => (

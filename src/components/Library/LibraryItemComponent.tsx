@@ -1,11 +1,11 @@
 import styles from "styles/Library/LibraryItemComponent.module.css";
 import Link from "next/link";
 import Image from "next/image";
-import { BasicDate, getAssetURL } from "queries/helpers";
-import { LibraryItemEntity } from "graphql/operations-types";
+import { GetLibraryItemsPreviewQuery } from "graphql/operations-types";
+import { getAssetURL } from "queries/helpers";
 
 export type LibraryItemComponentProps = {
-  item: LibraryItemEntity;
+  item: GetLibraryItemsPreviewQuery["libraryItems"]["data"][number];
 };
 
 export default function LibraryItemComponent(
@@ -17,7 +17,9 @@ export default function LibraryItemComponent(
     return result;
   }
 
-  function prettyDate(date: BasicDate): string {
+  function prettyDate(
+    date: GetLibraryItemsPreviewQuery["libraryItems"]["data"][number]["attributes"]["release_date"]
+  ): string {
     return (
       date.year +
       "/" +

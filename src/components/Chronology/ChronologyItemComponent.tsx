@@ -1,8 +1,8 @@
-import { ChronologyItemEntity, Maybe } from "graphql/operations-types";
+import { GetChronologyItemsQuery } from "graphql/operations-types";
 import styles from "styles/Chronology/ChronologyItemComponent.module.css";
 
 export type ChronologyItemComponentProps = {
-  item: ChronologyItemEntity;
+  item: GetChronologyItemsQuery['chronologyItems']['data'][number];
   displayYear: boolean;
 };
 
@@ -11,8 +11,9 @@ export default function ChronologyItemComponent(
 ): JSX.Element {
   function generateAnchor(
     year: number,
-    month: Maybe<number> | undefined,
-    day: Maybe<number> | undefined
+    month: number,
+    day: number,
+    event?: number
   ): string {
     let result: string = "";
     result += year;
@@ -21,10 +22,7 @@ export default function ChronologyItemComponent(
     return result;
   }
 
-  function generateYear(
-    displayed_date: Maybe<string> | undefined,
-    year: number
-  ): string {
+  function generateYear(displayed_date: string, year: number): string {
     if (displayed_date) {
       return displayed_date;
     } else {
@@ -32,10 +30,7 @@ export default function ChronologyItemComponent(
     }
   }
 
-  function generateDate(
-    month: Maybe<number> | undefined,
-    day: Maybe<number> | undefined
-  ): string {
+  function generateDate(month: number, day: number): string {
     let lut = [
       "Jan",
       "Feb",
@@ -62,84 +57,64 @@ export default function ChronologyItemComponent(
     return result;
   }
 
-  if (props.item && props.item.attributes) {
-    return (
-      <div
-        className={styles.chronologyItem}
-        id={generateAnchor(
-          props.item.attributes.year,
-          props.item.attributes.month,
-          props.item.attributes.day
-        )}
-      >
-        {props.displayYear ? (
-          <p className={styles.year}>
-            {generateYear(
-              props.item.attributes.displayed_date,
-              props.item.attributes.year
-            )}
-          </p>
-        ) : (
-          ""
-        )}
-
-        <p className={styles.date}>
-          {generateDate(props.item.attributes.month, props.item.attributes.day)}
+  return (
+    <div
+      className={styles.chronologyItem}
+      id={generateAnchor(
+        props.item.attributes.year,
+        props.item.attributes.month,
+        props.item.attributes.day
+      )}
+    >
+      {props.displayYear ? (
+        <p className={styles.year}>
+          {generateYear(
+            props.item.attributes.displayed_date,
+            props.item.attributes.year
+          )}
         </p>
+      ) : (
+        ""
+      )}
 
-        <div className={styles.events}>
-          {props.item.attributes.events?.map((event) => {
-            if (event) {
-              return (
-                <div className={styles.event} key={event.id}>
-                  {event.translations?.map((translation) => {
-                    if (translation)
-                      return (
-                        <>
-                          {translation.title ? (
-                            <h3>{translation.title}</h3>
-                          ) : (
-                            ""
-                          )}
+      <p className={styles.date}>
+        {generateDate(props.item.attributes.month, props.item.attributes.day)}
+      </p>
 
-                          {translation.description ? (
-                            <p
-                              className={
-                                event.translations &&
-                                event.translations.length > 1
-                                  ? styles.bulletItem
-                                  : ""
-                              }
-                            >
-                              {translation.description}
-                            </p>
-                          ) : (
-                            ""
-                          )}
-                          {translation.note ? (
-                            <em>{"Notes: " + translation.note}</em>
-                          ) : (
-                            ""
-                          )}
-                        </>
-                      );
-                  })}
+      <div className={styles.events}>
+        {props.item.attributes.events.map((event) => (
+          <div className={styles.event} key={event.id}>
+            {event.translations.map((translation) => (
+              <>
+                {translation.title ? <h3>{translation.title}</h3> : ""}
 
-                  <p className={styles.source}>
-                    {event.source &&
-                    event.source.data &&
-                    event.source.data.attributes
-                      ? "(" + event.source.data.attributes.name + ")"
-                      : "(WARNING: NO SOURCE!)"}
+                {translation.description ? (
+                  <p
+                    className={
+                      event.translations.length > 1 ? styles.bulletItem : ""
+                    }
+                  >
+                    {translation.description}
                   </p>
-                </div>
-              );
-            }
-          })}
-        </div>
+                ) : (
+                  ""
+                )}
+                {translation.note ? (
+                  <em>{"Notes: " + translation.note}</em>
+                ) : (
+                  ""
+                )}
+              </>
+            ))}
+
+            <p className={styles.source}>
+              {event.source.data
+                ? "(" + event.source.data.attributes.name + ")"
+                : "(WARNING: NO SOURCE!)"}
+            </p>
+          </div>
+        ))}
       </div>
-    );
-  } else {
-    return <></>;
-  }
+    </div>
+  );
 }

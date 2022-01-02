@@ -3,12 +3,16 @@ import {
   GetChronologyItemsQueryVariables,
   GetErasQuery,
   GetErasQueryVariables,
+  GetLibraryItemQuery,
+  GetLibraryItemQueryVariables,
   GetLibraryItemsPreviewQuery,
   GetLibraryItemsPreviewQueryVariables,
+  GetLibraryItemsSkeletonQuery,
+  GetLibraryItemsSkeletonQueryVariables,
 } from "graphql/operations-types";
 
 const graphQL = async (query: string, variables?: string) => {
-  const res = await fetch(process.env.URL_GRAPHQL, {
+  const res = await fetch(`${process.env.URL_GRAPHQL}`, {
     method: "POST",
     body: JSON.stringify({
       query: query,
@@ -33,7 +37,8 @@ function getQueryFromOperations(queryName: string): string {
   const lines = operations.split("\n");
   lines.map((line, index) => {
     if (startingIndex === -1) {
-      if (line.startsWith(`query ${queryName}`)) startingIndex = index;
+      if (line.startsWith(`query ${queryName}(`)) startingIndex = index;
+      if (line.startsWith(`query ${queryName} {`)) startingIndex = index;
     } else if (endingIndex === -1) {
       if (line.startsWith("query")) endingIndex = index;
     }
@@ -61,3 +66,18 @@ export async function getLibraryItemsPreview(
   const query = getQueryFromOperations("getLibraryItemsPreview");
   return await graphQL(query, JSON.stringify(variables));
 }
+
+export async function getLibraryItemsSkeleton(
+  variables: GetLibraryItemsSkeletonQueryVariables
+): Promise<GetLibraryItemsSkeletonQuery> {
+  const query = getQueryFromOperations("getLibraryItemsSkeleton");
+  return await graphQL(query, JSON.stringify(variables));
+}
+
+export async function getLibraryItem(
+  variables: GetLibraryItemQueryVariables
+): Promise<GetLibraryItemQuery> {
+  const query = getQueryFromOperations("getLibraryItem");
+  return await graphQL(query, JSON.stringify(variables));
+}
+

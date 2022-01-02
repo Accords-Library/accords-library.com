@@ -16,7 +16,6 @@ applyCustomAppProps(Library, {
 });
 
 export default function Library(props: Props): JSX.Element {
-
   console.log(props);
   return (
     <>
@@ -32,7 +31,7 @@ export default function Library(props: Props): JSX.Element {
       </SubPanel>
 
       <ContentPanel>
-        {props.libraryItems.libraryItems?.data.map((item) => (
+        {props.libraryItems.libraryItems.data.map((item) => (
           <LibraryItemComponent key={item.id} item={item} />
         ))}
       </ContentPanel>
@@ -41,9 +40,15 @@ export default function Library(props: Props): JSX.Element {
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  return {
-    props: {
-      libraryItems: await getLibraryItemsPreview({language_code: context.locale}),
-    },
-  };
+  if (context.locale)
+    return {
+      props: {
+        libraryItems: await getLibraryItemsPreview({
+          language_code: context.locale,
+        }),
+      },
+    };
+  else {
+    return { props: {} };
+  }
 };

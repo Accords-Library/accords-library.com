@@ -6,7 +6,6 @@ import NavOption from "components/Panels/NavOption";
 import ChronologyYearComponent from "components/Chronology/ChronologyYearComponent";
 import { applyCustomAppProps } from "pages/_app";
 import {
-  ChronologyItemEntity,
   GetChronologyItemsQuery,
   GetErasQuery,
 } from "graphql/operations-types";
@@ -25,16 +24,15 @@ applyCustomAppProps(ChronologyOverview, {
 export default function ChronologyOverview(props: Props): JSX.Element {
   // Group by year the Chronology items
 
-  let chronologyItemYearGroups: ChronologyItemEntity[][] = [];
+  let chronologyItemYearGroups: GetChronologyItemsQuery["chronologyItems"]["data"][number][][] =
+    [];
 
   if (props.chronologyItems.chronologyItems) {
     props.chronologyItems.chronologyItems.data.map((item) => {
-      if (item && item.attributes) {
-        if (!chronologyItemYearGroups.hasOwnProperty(item.attributes.year)) {
-          chronologyItemYearGroups[item.attributes.year] = [item];
-        } else {
-          chronologyItemYearGroups[item.attributes.year].push(item);
-        }
+      if (!chronologyItemYearGroups.hasOwnProperty(item.attributes.year)) {
+        chronologyItemYearGroups[item.attributes.year] = [item];
+      } else {
+        chronologyItemYearGroups[item.attributes.year].push(item);
       }
     });
   }
@@ -45,40 +43,26 @@ export default function ChronologyOverview(props: Props): JSX.Element {
         <ReturnButton url="/chronology" title="Chronology" />
         <hr />
 
-        {props.chronologyEras.chronologyEras
-          ? props.chronologyEras.chronologyEras.data.map((era) => (
-              <>
-                {era.attributes && era.attributes.title ? (
-                  <NavOption
-                    key={era.id}
-                    url={"#" + era.attributes.slug}
-                    title={
-                      era.attributes.title[0]
-                        ? era.attributes.title[0].title
-                        : ""
-                    }
-                    subtitle={
-                      era.attributes.starting_year +
-                      " → " +
-                      era.attributes.ending_year
-                    }
-                    border={true}
-                  />
-                ) : (
-                  ""
-                )}
-              </>
-            ))
-          : ""}
+        {props.chronologyEras.chronologyEras.data.map((era) => (
+          <NavOption
+            key={era.id}
+            url={"#" + era.attributes.slug}
+            title={era.attributes.title[0] ? era.attributes.title[0].title : ""}
+            subtitle={
+              era.attributes.starting_year + " → " + era.attributes.ending_year
+            }
+            border={true}
+          />
+        ))}
       </SubPanel>
 
       <ContentPanel>
         {chronologyItemYearGroups.map((items, index: number) => {
-          if (items && items[0].attributes?.year) {
+          if (items && items[0].attributes.year) {
             return (
               <ChronologyYearComponent
                 key={index}
-                year={items[0].attributes?.year}
+                year={items[0].attributes.year}
                 items={items}
               />
             );
@@ -90,12 +74,16 @@ export default function ChronologyOverview(props: Props): JSX.Element {
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  return {
-    props: {
-      chronologyItems: await getChronologyItems({
-        language_code: context.locale,
-      }),
-      chronologyEras: await getEras({ language_code: context.locale }),
-    },
-  };
+  if (context.locale)
+    return {
+      props: {
+        chronologyItems: await getChronologyItems({
+          language_code: context.locale,
+        }),
+        chronologyEras: await getEras({ language_code: context.locale }),
+      },
+    };
+  else {
+    return { props: {} };
+  }
 };

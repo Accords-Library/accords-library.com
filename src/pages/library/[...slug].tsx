@@ -4,10 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { applyCustomAppProps } from "pages/_app";
-import {
-  getLibraryItem,
-  getLibraryItemsSkeleton,
-} from "graphql/operations";
+import { getLibraryItem, getLibraryItemsSkeleton } from "graphql/operations";
 import { GetLibraryItemQuery } from "graphql/operations-types";
 import { getAssetURL } from "queries/helpers";
 
@@ -28,14 +25,20 @@ export default function Library(props: Props): JSX.Element {
       <ContentPanel>
         <h1>{libraryItem.attributes.title}</h1>
         <h2>{libraryItem.attributes.subtitle}</h2>
-        <Image
-          src={getAssetURL(
-            libraryItem.attributes.thumbnail.data.attributes.url
-          )}
-          alt={libraryItem.attributes.thumbnail.data.attributes.alternativeText}
-          width={libraryItem.attributes.thumbnail.data.attributes.width}
-          height={libraryItem.attributes.thumbnail.data.attributes.height}
-        />
+        {libraryItem.attributes.thumbnail.data ? (
+          <Image
+            src={getAssetURL(
+              libraryItem.attributes.thumbnail.data.attributes.url
+            )}
+            alt={
+              libraryItem.attributes.thumbnail.data.attributes.alternativeText
+            }
+            width={libraryItem.attributes.thumbnail.data.attributes.width}
+            height={libraryItem.attributes.thumbnail.data.attributes.height}
+          />
+        ) : (
+          ""
+        )}
 
         {libraryItem.attributes.subitems.data.map((subitem) => (
           <Link
@@ -90,7 +93,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
     paths,
     fallback: false,
   };
-}
+};
 
 async function getAllSlugs() {
   type Path = {

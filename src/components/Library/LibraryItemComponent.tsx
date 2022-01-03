@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import { GetLibraryItemsPreviewQuery } from "graphql/operations-types";
 import { getAssetURL } from "queries/helpers";
 
@@ -10,12 +9,6 @@ export type LibraryItemComponentProps = {
 export default function LibraryItemComponent(
   props: LibraryItemComponentProps
 ): JSX.Element {
-  function prettyTitleSubtitle(title: string, subtitle: string): string {
-    let result = title;
-    if (subtitle !== null) result += " - " + subtitle;
-    return result;
-  }
-
   function prettyDate(
     date: GetLibraryItemsPreviewQuery["libraryItems"]["data"][number]["attributes"]["release_date"]
   ): string {
@@ -30,29 +23,43 @@ export default function LibraryItemComponent(
 
   return (
     <Link href={"/library/" + props.item.attributes.slug} passHref>
-      <div className="">
-        <h2>
-          {prettyTitleSubtitle(
-            props.item.attributes.title,
-            props.item.attributes.subtitle
-          )}
-        </h2>
-        <p>{prettyDate(props.item.attributes.release_date)}</p>
-
+      <div className="cursor-pointer grid items-end relative hover:rounded-3xl [--cover-opacity:0] hover:[--cover-opacity:1] hover:scale-[1.02] transition-transform">
+        <div className="bg-light absolute inset-1 rounded-lg shadow-dark shadow-xl"></div>
         {props.item.attributes.thumbnail.data ? (
-          <Image
+          <img
+            className="z-10"
             src={getAssetURL(
               props.item.attributes.thumbnail.data.attributes.url
             )}
-            alt={
-              props.item.attributes.thumbnail.data.attributes.alternativeText
-            }
-            width={props.item.attributes.thumbnail.data.attributes.width}
-            height={props.item.attributes.thumbnail.data.attributes.height}
           />
         ) : (
-          ""
+          <div className="w-full aspect-[21/29.7]"></div>
         )}
+        <div className="[background:linear-gradient(to_right,_#f0d1b3,_#ffedd8_3%,_#ffedd8_97%,_#f0d1b3)] shadow-[0_0_1em_rgb(0,0,0,0.2)] absolute bottom-0 left-0 right-0 h-auto opacity-[var(--cover-opacity)] transition-opacity z-20 grid p-4 gap-4 text-left">
+          <div>
+            <h2 className="text-lg leading-7">{props.item.attributes.title}</h2>
+            <h3 className="leading-3">{props.item.attributes.subtitle}</h3>
+          </div>
+          <div className="grid grid-flow-col">
+            <p className="text-sm">
+              <span className="material-icons !text-base translate-y-[.15em] mr-1">
+                event
+              </span>
+              {prettyDate(props.item.attributes.release_date)}
+            </p>
+            {props.item.attributes.price ? (
+              <p className="text-sm justify-self-end">
+                <span className="material-icons !text-base translate-y-[.15em] mr-1">
+                  shopping_cart
+                </span>
+                {props.item.attributes.price.currency.data.attributes.symbol}
+                {props.item.attributes.price.amount}
+              </p>
+            ) : (
+              ""
+            )}
+          </div>
+        </div>
       </div>
     </Link>
   );

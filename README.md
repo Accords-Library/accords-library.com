@@ -17,5 +17,6 @@
   - Markdown automatic formatting using [Tailwind/Typography](https://tailwindcss.com/docs/typography-plugin)
   - Beside the theme declaration no CSS outside of Tailwind CSS
   - Manually added support for scrollbar styling
+  - Support for [Material Icons](https://fonts.google.com/icons) 
 - Framework: [Next.js](https://nextjs.org/) (React)
   - Multilanguage support

@@ -15,7 +15,7 @@ export default function ContentPanel(props: ContentPanelProps): JSX.Element {
   const prose = props.autoformat ? "prose" : "";
 
   return (
-    <div className={`grid overflow-y-scroll max-h-screen py-20 px-10`}>
+    <div className={`grid overflow-y-scroll max-h-screen h-screen py-20 px-10`}>
       <main className={`${prose} ${widthCSS} place-self-center text-justify`}>
         {props.children}
       </main>

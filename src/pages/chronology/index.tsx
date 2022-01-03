@@ -1,6 +1,7 @@
 import SubPanel from "components/Panels/SubPanel";
-import NavOption from "components/Panels/NavOption";
+import NavOption from "components/PanelComponents/NavOption";
 import { applyCustomAppProps } from "pages/_app";
+import PanelHeader from "components/PanelComponents/PanelHeader";
 
 applyCustomAppProps(Chronology, {
   useSubPanel: true,
@@ -11,13 +12,11 @@ export default function Chronology(): JSX.Element {
   return (
     <>
       <SubPanel>
-        <h2>Chronology</h2>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut vulputate
-          facilisis blandit. Aliquam blandit neque sem, ac pulvinar leo
-          ultricies sit amet.
-        </p>
-        <hr />
+        <PanelHeader
+          icon="watch_later"
+          title="Chronology"
+          description="Follow all events in chronological order. Here we can write more about this section of the website, whatever we like in fact."
+        />
 
         <NavOption
           url="/chronology/timelines"

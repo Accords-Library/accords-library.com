@@ -1,8 +1,6 @@
 import { GetStaticProps } from "next";
 import ContentPanel from "components/Panels/ContentPanel";
 import SubPanel from "components/Panels/SubPanel";
-import ReturnButton from "components/Panels/ReturnButton";
-import NavOption from "components/Panels/NavOption";
 import ChronologyYearComponent from "components/Chronology/ChronologyYearComponent";
 import { applyCustomAppProps } from "pages/_app";
 import {
@@ -10,6 +8,8 @@ import {
   GetErasQuery,
 } from "graphql/operations-types";
 import { getEras, getChronologyItems } from "graphql/operations";
+import NavOption from "components/PanelComponents/NavOption";
+import ReturnButton from "components/PanelComponents/ReturnButton";
 
 interface Props {
   chronologyItems: GetChronologyItemsQuery;

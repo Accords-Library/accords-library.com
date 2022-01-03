@@ -3,6 +3,7 @@ import MainPanel from "components/Panels/MainPanel";
 import "tailwind.css";
 import "@fontsource/zen-maru-gothic/500.css";
 import "@fontsource/vollkorn/700.css";
+import "@fontsource/material-icons";
 
 export type CustomAppProps = {
   useSubPanel: boolean;

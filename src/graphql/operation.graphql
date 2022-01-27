@@ -135,6 +135,19 @@ query getLibraryItem($slug: String, $language_code: String) {
             }
           }
         }
+        gallery {
+          data {
+            id
+            attributes {
+              name
+              alternativeText
+              caption
+              width
+              height
+              url
+            }
+          }
+        }
         release_date {
           year
           month

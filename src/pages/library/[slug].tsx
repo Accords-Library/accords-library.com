@@ -8,10 +8,16 @@ import { GetStaticPaths, GetStaticProps } from "next";
 import { applyCustomAppProps } from "pages/_app";
 import { getLibraryItem, getLibraryItemsSlugs } from "graphql/operations";
 import { GetLibraryItemQuery } from "graphql/operations-types";
-import { getAssetURL } from "queries/helpers";
+import {
+  convertMmToInch,
+  getAssetURL,
+  prettyDate,
+  prettyPrice,
+} from "queries/helpers";
 import SubPanel from "components/Panels/SubPanel";
 import ReturnButton from "components/PanelComponents/ReturnButton";
 import NavOption from "components/PanelComponents/NavOption";
+import LibraryItemComponent from "components/Library/LibraryItemComponent";
 
 type Props = {
   libraryItem: GetLibraryItemQuery;
@@ -63,13 +69,29 @@ export default function Library(props: Props): JSX.Element {
         <hr />
 
         <NavOption title="Summary" url="#summary" border={true} />
-        <NavOption title="Gallery" url="#gallery" border={true} />
+
+        {libraryItem.attributes.gallery.data.length > 0 ? (
+          <NavOption title="Gallery" url="#gallery" border={true} />
+        ) : (
+          ""
+        )}
+
         <NavOption title="Details" url="#details" border={true} />
-        <NavOption title="Subitems" url="#subitems" border={true} />
-        <NavOption title="Content" url="#content" border={true} />
+
+        {libraryItem.attributes.subitems.data.length > 0 ? (
+          <NavOption title="Subitems" url="#subitems" border={true} />
+        ) : (
+          ""
+        )}
+
+        {libraryItem.attributes.contents.data.length > 0 ? (
+          <NavOption title="Content" url="#content" border={true} />
+        ) : (
+          ""
+        )}
       </SubPanel>
       <ContentPanel width={ContentPanelWidthSizes.large}>
-        <div className="grid place-items-center gap-8">
+        <div className="grid place-items-center gap-12">
           <div className="cursor-pointer grid items-end relative hover:rounded-3xl w-96 max-w-full mb-16">
             <div className="bg-light absolute inset-1 rounded-lg shadow-dark shadow-xl"></div>
             {libraryItem.attributes.thumbnail.data ? (
@@ -134,7 +156,25 @@ export default function Library(props: Props): JSX.Element {
             </div>
           </div>
 
-          <div id="gallery"></div>
+          {libraryItem.attributes.gallery.data.length > 0 ? (
+            <div id="gallery" className="grid place-items-center gap-8">
+              <h2 className="text-2xl">Gallery</h2>
+              <div className="grid grid-flow-col place-items-center gap-4">
+                {libraryItem.attributes.gallery.data.map((galleryItem) => (
+                  <Image
+                    key={galleryItem.id}
+                    className="rounded-lg"
+                    src={getAssetURL(galleryItem.attributes.url)}
+                    alt={galleryItem.attributes.alternativeText}
+                    width={galleryItem.attributes.width}
+                    height={galleryItem.attributes.height}
+                  />
+                ))}
+              </div>
+            </div>
+          ) : (
+            ""
+          )}
 
           <div
             id="details"
@@ -142,61 +182,95 @@ export default function Library(props: Props): JSX.Element {
           >
             <div className="max-w-2xl grid place-items-center gap-8">
               <h2 className="text-2xl">Details</h2>
-              <div className="grid grid-cols-3 place-items-center">
-                <p>Type</p>
-                <p>Release date</p>
-                <p>Price</p>
+              <div className="grid grid-flow-col place-items-center gap-8">
+                <div className="grid place-items-center">
+                  <h3>Type</h3>
+                </div>
+
+                {libraryItem.attributes.release_date ? (
+                  <div className="grid place-items-center">
+                    <h3>Release date</h3>
+                    <p>{prettyDate(libraryItem.attributes.release_date)}</p>
+                  </div>
+                ) : (
+                  ""
+                )}
+
+                {libraryItem.attributes.release_date ? (
+                  <div className="grid place-items-center">
+                    <h3>Price</h3>
+                    <p>{prettyPrice(libraryItem.attributes.price)}</p>
+                  </div>
+                ) : (
+                  ""
+                )}
+              </div>
+              <h3>Physical size</h3>
+              <div className="grid grid-flow-col place-items-center gap-8">
+                <div className="grid place-items-center">
+                  <p className="font-bold">Width</p>
+                  <p>{libraryItem.attributes.size.width} mm</p>
+                  <p>{convertMmToInch(libraryItem.attributes.size.width)} in</p>
+                </div>
+                <div className="grid place-items-center">
+                  <p className="font-bold">Height</p>
+                  <p>{libraryItem.attributes.size.height} mm</p>
+                  <p>
+                    {convertMmToInch(libraryItem.attributes.size.height)} in
+                  </p>
+                </div>
+                <div className="grid place-items-center">
+                  <p className="font-bold">Thickness</p>
+                  <p>{libraryItem.attributes.size.thickness} mm</p>
+                  <p>
+                    {convertMmToInch(libraryItem.attributes.size.thickness)} in
+                  </p>
+                </div>
               </div>
             </div>
           </div>
 
-          <div id="subitems">
-            {libraryItem.attributes.subitems.data.map((subitem) => (
-              <Link
-                href={`/library/${subitem.attributes.slug}`}
-                key={subitem.id}
-                passHref
-              >
-                <div>
-                  {subitem.attributes.thumbnail.data ? (
-                    <Image
-                      src={getAssetURL(
-                        subitem.attributes.thumbnail.data.attributes.url
-                      )}
-                      alt={
-                        subitem.attributes.thumbnail.data.attributes
-                          .alternativeText
-                      }
-                      width={subitem.attributes.thumbnail.data.attributes.width}
-                      height={
-                        subitem.attributes.thumbnail.data.attributes.height
-                      }
-                    />
-                  ) : (
-                    ""
-                  )}
-                </div>
-              </Link>
-            ))}
-
-            <div id="content">
-              {libraryItem.attributes.contents.data.map((content) => (
-                <div
-                  key={content.id}
-                  className="grid grid-flow-col gap-4 w-full"
-                >
-                  <h3>{content.attributes.title[0].title}</h3>
-                  <p>
-                    {content.attributes.range[0].__typename ===
-                    "ComponentRangePageRange"
-                      ? content.attributes.range[0].starting_page
-                      : ""}
-                  </p>
-                  <p>{content.attributes.type.data.attributes.slug}</p>
-                </div>
-              ))}
+          {libraryItem.attributes.subitems.data.length > 0 ? (
+            <div id="subitems" className="grid place-items-center gap-8">
+              <h2 className="text-2xl">Subitems</h2>
+              <div className="grid gap-8 items-end grid-cols-[repeat(auto-fit,_minmax(15rem,1fr))]">
+                {libraryItem.attributes.subitems.data.map((subitem) => (
+                  <LibraryItemComponent key={subitem.id} item={subitem} />
+                ))}
+              </div>
             </div>
-          </div>
+          ) : (
+            ""
+          )}
+
+          {libraryItem.attributes.contents.data.length > 0 ? (
+            <div id="content" className="w-full grid place-items-center">
+              <h2 className="text-2xl">Content</h2>
+              <div className="grid gap-4 w-full">
+                {libraryItem.attributes.contents.data.map((content) => (
+                  <div
+                    key={content.id}
+                    className="grid grid-flow-col gap-4 place-items-center grid-cols-[auto_auto_1fr_auto_auto]"
+                  >
+                    <h3>{content.attributes.title[0].title}</h3>
+                    <p></p>
+                    <p className="border-b-2 h-4 w-full border-dark border-dotted"></p>
+                    <p>
+                      {content.attributes.range[0].__typename ===
+                      "ComponentRangePageRange"
+                        ? content.attributes.range[0].starting_page
+                        : ""}
+                    </p>
+                    <button className="text-xs">
+                      <p>{content.attributes.type.data.attributes.slug}</p>
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : (
+            ""
+          )}
         </div>
       </ContentPanel>
     </>

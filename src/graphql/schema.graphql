@@ -1762,6 +1762,7 @@ input LibraryItemInput {
   contents: [ID]
   release_date: ComponentBasicsDatepickerInput
   descriptions: [ComponentTranslationsLibraryItemsInput]
+  gallery: [ID]
 }
 
 type LibraryItem {
@@ -1795,6 +1796,11 @@ type LibraryItem {
     pagination: PaginationArg = {}
     sort: [String] = []
   ): [ComponentTranslationsLibraryItems]
+  gallery(
+    filters: UploadFileFiltersInput
+    pagination: PaginationArg = {}
+    sort: [String] = []
+  ): UploadFileRelationResponseCollection
   createdAt: DateTime
   updatedAt: DateTime
 }

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { GetLibraryItemsPreviewQuery } from "graphql/operations-types";
-import { getAssetURL } from "queries/helpers";
+import { getAssetURL, prettyDate, prettyPrice } from "queries/helpers";
 import Image from "next/image";
 
 export type LibraryItemComponentProps = {
@@ -10,17 +10,6 @@ export type LibraryItemComponentProps = {
 export default function LibraryItemComponent(
   props: LibraryItemComponentProps
 ): JSX.Element {
-  function prettyDate(
-    date: GetLibraryItemsPreviewQuery["libraryItems"]["data"][number]["attributes"]["release_date"]
-  ): string {
-    return (
-      date.year +
-      "/" +
-      date.month.toString().padStart(2, "0") +
-      "/" +
-      date.day.toString().padStart(2, "0")
-    );
-  }
 
   return (
     <Link href={"/library/" + props.item.attributes.slug} passHref>
@@ -31,7 +20,9 @@ export default function LibraryItemComponent(
             src={getAssetURL(
               props.item.attributes.thumbnail.data.attributes.url
             )}
-            alt={props.item.attributes.thumbnail.data.attributes.alternativeText}
+            alt={
+              props.item.attributes.thumbnail.data.attributes.alternativeText
+            }
             height={props.item.attributes.thumbnail.data.attributes.height}
             width={props.item.attributes.thumbnail.data.attributes.width}
           />
@@ -44,19 +35,22 @@ export default function LibraryItemComponent(
             <h3 className="leading-3">{props.item.attributes.subtitle}</h3>
           </div>
           <div className="grid grid-flow-col">
-            <p className="text-sm">
-              <span className="material-icons !text-base translate-y-[.15em] mr-1">
-                event
-              </span>
-              {prettyDate(props.item.attributes.release_date)}
-            </p>
+            {props.item.attributes.price ? (
+              <p className="text-sm">
+                <span className="material-icons !text-base translate-y-[.15em] mr-1">
+                  event
+                </span>
+                {prettyDate(props.item.attributes.release_date)}
+              </p>
+            ) : (
+              ""
+            )}
             {props.item.attributes.price ? (
               <p className="text-sm justify-self-end">
                 <span className="material-icons !text-base translate-y-[.15em] mr-1">
                   shopping_cart
                 </span>
-                {props.item.attributes.price.currency.data.attributes.symbol}
-                {props.item.attributes.price.amount}
+                {prettyPrice(props.item.attributes.price)}
               </p>
             ) : (
               ""

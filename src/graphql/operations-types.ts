@@ -231,6 +231,22 @@ export type GetLibraryItemQuery = {
             };
           };
         };
+        gallery: {
+          __typename: "UploadFileRelationResponseCollection";
+          data: Array<{
+            __typename: "UploadFileEntity";
+            id: string;
+            attributes: {
+              __typename: "UploadFile";
+              name: string;
+              alternativeText: string;
+              caption: string;
+              width: number;
+              height: number;
+              url: string;
+            };
+          }>;
+        };
         release_date: {
           __typename: "ComponentBasicsDatepicker";
           year: number;

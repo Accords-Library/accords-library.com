@@ -102,36 +102,18 @@ query getLibraryItemsPreview($language_code: String) {
   }
 }
 
-query getLibraryItemsSkeleton {
-  libraryItems(filters: { root_item: { eq: true } }) {
+query getLibraryItemsSlugs {
+  libraryItems(
+    pagination: { limit: -1 }
+  ) {
     data {
       attributes {
         slug
-        subitems {
-          data {
-            attributes {
-              slug
-              subitems {
-                data {
-                  attributes {
-                    slug
-                    subitems {
-                      data {
-                        attributes {
-                          slug
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
       }
     }
   }
 }
+
 
 query getLibraryItem($slug: String, $language_code: String) {
   libraryItems(filters: { slug: { eq: $slug } }) {
@@ -177,6 +159,100 @@ query getLibraryItem($slug: String, $language_code: String) {
         descriptions(filters: { language: { code: { eq: $language_code } } }) {
           description
         }
+        metadata {
+          __typename
+          ... on ComponentMetadataBooks {
+            subtype {
+              data {
+                attributes {
+                  slug
+                }
+              }
+            }
+            binding_type
+            page_count
+            page_order
+            languages {
+              data {
+                attributes {
+                  code
+                  name
+                }
+              }
+            }
+          }
+          ... on ComponentMetadataVideo {
+            resolution
+            audio_languages {
+              data {
+                attributes {
+                  code
+                  name
+                }
+              }
+            }
+          }
+          ... on ComponentMetadataGame {
+            platform {
+              data {
+                attributes {
+                  short
+                }
+              }
+            }
+            audio_languages {
+              data {
+                attributes {
+                  code
+                  name
+                }
+              }
+            }
+            sub_languages {
+              data {
+                attributes {
+                  code
+                  name
+                }
+              }
+            }
+            interface_languages {
+              data {
+                attributes {
+                  code
+                  name
+                }
+              }
+            }
+          }
+          ... on ComponentMetadataAudio {
+            subtype {
+              data {
+                attributes {
+                  slug
+                }
+              }
+            }
+            languages {
+              data {
+                attributes {
+                  code
+                  name
+                }
+              }
+            }
+          }
+        }
+        subitem_of {
+          data {
+            id
+            attributes {
+              title
+              subtitle
+              slug
+            }
+          }
+        }
         subitems {
           data {
             id
@@ -194,6 +270,43 @@ query getLibraryItem($slug: String, $language_code: String) {
                     height
                     url
                   }
+                }
+              }
+            }
+          }
+        }
+        contents {
+          data {
+            id
+            attributes {
+              slug
+              title(filters: { language: { code: { eq: $language_code } } }) {
+                title
+              }
+              type {
+                data {
+                  attributes {
+                    slug
+                  }
+                }
+              }
+              categories {
+                data {
+                  attributes {
+                    name
+                    short
+                  }
+                }
+              }
+              range {
+                __typename
+                ... on ComponentRangePageRange {
+                  starting_page
+                  ending_page
+                }
+                ... on ComponentRangeTimeRange {
+                  starting_time
+                  ending_time
                 }
               }
             }

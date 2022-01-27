@@ -44,5 +44,15 @@ module.exports = {
         },
       });
     }),
+
+    plugin(function ({ addUtilities }) {
+      addUtilities({
+        ".linearbg-1": {
+          background:
+            "linear-gradient(to right, theme('colors.mid'), theme('colors.light') 3%, theme('colors.light') 97%, theme('colors.mid'))",
+        },
+      });
+    }),
+
   ],
 };

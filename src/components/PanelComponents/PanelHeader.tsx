@@ -4,7 +4,7 @@ type NavOptionProps = {
   description?: string;
 };
 
-export default function NavOption(props: NavOptionProps): JSX.Element {
+export default function PanelHeader(props: NavOptionProps): JSX.Element {
   return (
     <div className="w-full grid place-items-center">
       {props.icon ? (

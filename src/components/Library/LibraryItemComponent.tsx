@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { GetLibraryItemsPreviewQuery } from "graphql/operations-types";
 import { getAssetURL } from "queries/helpers";
+import Image from "next/image";
 
 export type LibraryItemComponentProps = {
   item: GetLibraryItemsPreviewQuery["libraryItems"]["data"][number];
@@ -26,16 +27,18 @@ export default function LibraryItemComponent(
       <div className="cursor-pointer grid items-end relative hover:rounded-3xl [--cover-opacity:0] hover:[--cover-opacity:1] hover:scale-[1.02] transition-transform">
         <div className="bg-light absolute inset-1 rounded-lg shadow-dark shadow-xl"></div>
         {props.item.attributes.thumbnail.data ? (
-          <img
-            className="z-10"
+          <Image
             src={getAssetURL(
               props.item.attributes.thumbnail.data.attributes.url
             )}
+            alt={props.item.attributes.thumbnail.data.attributes.alternativeText}
+            height={props.item.attributes.thumbnail.data.attributes.height}
+            width={props.item.attributes.thumbnail.data.attributes.width}
           />
         ) : (
           <div className="w-full aspect-[21/29.7]"></div>
         )}
-        <div className="[background:linear-gradient(to_right,_#f0d1b3,_#ffedd8_3%,_#ffedd8_97%,_#f0d1b3)] shadow-[0_0_1em_rgb(0,0,0,0.2)] absolute bottom-0 left-0 right-0 h-auto opacity-[var(--cover-opacity)] transition-opacity z-20 grid p-4 gap-4 text-left">
+        <div className="linearbg-1 shadow-[0_0_1em_rgb(0,0,0,0.2)] absolute bottom-0 left-0 right-0 h-auto opacity-[var(--cover-opacity)] transition-opacity z-20 grid p-4 gap-4 text-left">
           <div>
             <h2 className="text-lg leading-7">{props.item.attributes.title}</h2>
             <h3 className="leading-3">{props.item.attributes.subtitle}</h3>

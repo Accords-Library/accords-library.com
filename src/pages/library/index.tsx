@@ -19,7 +19,6 @@ applyCustomAppProps(Library, {
 });
 
 export default function Library(props: Props): JSX.Element {
-  console.log(props);
   return (
     <>
       <SubPanel>

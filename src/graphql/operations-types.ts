@@ -32,6 +32,23 @@ export type Scalars = {
     - Removed | undefined
 */
 
+export enum Enum_Componentmetadatabooks_Binding_Type {
+  Paperback = "Paperback",
+  Hardcover = "Hardcover",
+}
+
+export enum Enum_Componentmetadatabooks_Page_Order {
+  LeftToRight = "Left_to_Right",
+  RightToLeft = "Right_to_Left",
+}
+
+export enum Enum_Componentmetadatavideo_Resolution {
+  Sd_480p = "SD_480p",
+  Hd_720p = "HD_720p",
+  FullHd_1080p = "FullHD_1080p",
+  QuadHd_2160p = "QuadHD_2160p",
+}
+
 export type GetErasQueryVariables = Exact<{
   language_code: InputMaybe<Scalars["String"]>;
 }>;
@@ -167,50 +184,17 @@ export type GetLibraryItemsPreviewQuery = {
   };
 };
 
-export type GetLibraryItemsSkeletonQueryVariables = Exact<{
+export type GetLibraryItemsSlugsQueryVariables = Exact<{
   [key: string]: never;
 }>;
 
-export type GetLibraryItemsSkeletonQuery = {
+export type GetLibraryItemsSlugsQuery = {
   __typename: "Query";
   libraryItems: {
     __typename: "LibraryItemEntityResponseCollection";
     data: Array<{
       __typename: "LibraryItemEntity";
-      attributes: {
-        __typename: "LibraryItem";
-        slug: string;
-        subitems: {
-          __typename: "LibraryItemRelationResponseCollection";
-          data: Array<{
-            __typename: "LibraryItemEntity";
-            attributes: {
-              __typename: "LibraryItem";
-              slug: string;
-              subitems: {
-                __typename: "LibraryItemRelationResponseCollection";
-                data: Array<{
-                  __typename: "LibraryItemEntity";
-                  attributes: {
-                    __typename: "LibraryItem";
-                    slug: string;
-                    subitems: {
-                      __typename: "LibraryItemRelationResponseCollection";
-                      data: Array<{
-                        __typename: "LibraryItemEntity";
-                        attributes: {
-                          __typename: "LibraryItem";
-                          slug: string;
-                        };
-                      }>;
-                    };
-                  };
-                }>;
-              };
-            };
-          }>;
-        };
-      };
+      attributes: { __typename: "LibraryItem"; slug: string };
     }>;
   };
 };
@@ -278,6 +262,134 @@ export type GetLibraryItemQuery = {
           __typename: "ComponentTranslationsLibraryItems";
           description: string;
         }>;
+        metadata: Array<
+          | {
+              __typename: "ComponentMetadataBooks";
+              binding_type: Enum_Componentmetadatabooks_Binding_Type;
+              page_count: number;
+              page_order: Enum_Componentmetadatabooks_Page_Order;
+              subtype: {
+                __typename: "TextualSubtypeEntityResponse";
+                data: {
+                  __typename: "TextualSubtypeEntity";
+                  attributes: {
+                    __typename: "TextualSubtype";
+                    slug: string;
+                  };
+                };
+              };
+              languages: {
+                __typename: "LanguageRelationResponseCollection";
+                data: Array<{
+                  __typename: "LanguageEntity";
+                  attributes: {
+                    __typename: "Language";
+                    code: string;
+                    name: string;
+                  };
+                }>;
+              };
+            }
+          | {
+              __typename: "ComponentMetadataVideo";
+              resolution: Enum_Componentmetadatavideo_Resolution;
+              audio_languages: {
+                __typename: "LanguageRelationResponseCollection";
+                data: Array<{
+                  __typename: "LanguageEntity";
+                  attributes: {
+                    __typename: "Language";
+                    code: string;
+                    name: string;
+                  };
+                }>;
+              };
+            }
+          | {
+              __typename: "ComponentMetadataGame";
+              platform: {
+                __typename: "GamePlatformEntityResponse";
+                data: {
+                  __typename: "GamePlatformEntity";
+                  attributes: {
+                    __typename: "GamePlatform";
+                    short: string;
+                  };
+                };
+              };
+              audio_languages: {
+                __typename: "LanguageRelationResponseCollection";
+                data: Array<{
+                  __typename: "LanguageEntity";
+                  attributes: {
+                    __typename: "Language";
+                    code: string;
+                    name: string;
+                  };
+                }>;
+              };
+              sub_languages: {
+                __typename: "LanguageRelationResponseCollection";
+                data: Array<{
+                  __typename: "LanguageEntity";
+                  attributes: {
+                    __typename: "Language";
+                    code: string;
+                    name: string;
+                  };
+                }>;
+              };
+              interface_languages: {
+                __typename: "LanguageRelationResponseCollection";
+                data: Array<{
+                  __typename: "LanguageEntity";
+                  attributes: {
+                    __typename: "Language";
+                    code: string;
+                    name: string;
+                  };
+                }>;
+              };
+            }
+          | {
+              __typename: "ComponentMetadataAudio";
+              subtype: {
+                __typename: "AudioSubtypeEntityResponse";
+                data: {
+                  __typename: "AudioSubtypeEntity";
+                  attributes: {
+                    __typename: "AudioSubtype";
+                    slug: string;
+                  };
+                };
+              };
+              languages: {
+                __typename: "LanguageRelationResponseCollection";
+                data: Array<{
+                  __typename: "LanguageEntity";
+                  attributes: {
+                    __typename: "Language";
+                    code: string;
+                    name: string;
+                  };
+                }>;
+              };
+            }
+          | { __typename: "Error" }
+        >;
+        subitem_of: {
+          __typename: "LibraryItemRelationResponseCollection";
+          data: Array<{
+            __typename: "LibraryItemEntity";
+            id: string;
+            attributes: {
+              __typename: "LibraryItem";
+              title: string;
+              subtitle: string;
+              slug: string;
+            };
+          }>;
+        };
         subitems: {
           __typename: "LibraryItemRelationResponseCollection";
           data: Array<{
@@ -303,6 +415,57 @@ export type GetLibraryItemQuery = {
                   };
                 };
               };
+            };
+          }>;
+        };
+        contents: {
+          __typename: "LibraryContentRelationResponseCollection";
+          data: Array<{
+            __typename: "LibraryContentEntity";
+            id: string;
+            attributes: {
+              __typename: "LibraryContent";
+              slug: string;
+              title: Array<{
+                __typename: "ComponentTranslationsLibraryContent";
+                title: string;
+              }>;
+              type: {
+                __typename: "ContentTypeEntityResponse";
+                data: {
+                  __typename: "ContentTypeEntity";
+                  attributes: {
+                    __typename: "ContentType";
+                    slug: string;
+                  };
+                };
+              };
+              categories: {
+                __typename: "CategoryRelationResponseCollection";
+                data: Array<{
+                  __typename: "CategoryEntity";
+                  attributes: {
+                    __typename: "Category";
+                    name: string;
+                    short: string;
+                  };
+                }>;
+              };
+              range: Array<
+                | {
+                    __typename: "ComponentRangePageRange";
+                    starting_page: number;
+                    ending_page: number;
+                  }
+                | {
+                    __typename: "ComponentRangeTimeRange";
+                    starting_time: any;
+                    ending_time: any;
+                  }
+                | { __typename: "ComponentRangeGameAspect" }
+                | { __typename: "ComponentRangeOther" }
+                | { __typename: "Error" }
+              >;
             };
           }>;
         };

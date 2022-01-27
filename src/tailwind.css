@@ -7,8 +7,8 @@
   body {
     padding: 0;
     margin: 0;
-    background-color: var(--color-main-light);
-    color: var(--color-main-black);
+    background-color: theme("colors.light");
+    color: theme("colors.black");
   }
 
   /* HORIZONTAL LINE */
@@ -31,7 +31,7 @@
     place-items: center;
     border: 0.1rem solid theme("colors.dark");
     color: theme("colors.dark");
-    background: theme("colors.light");
+    background: inherit;
     border-radius: 100vmax;
     padding: 0.4em 1em;
     cursor: pointer;

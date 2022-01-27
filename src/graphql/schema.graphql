@@ -379,16 +379,26 @@ type ComponentMetadataAudio {
   subtype: AudioSubtypeEntityResponse
 }
 
+enum ENUM_COMPONENTMETADATABOOKS_BINDING_TYPE {
+  Paperback
+  Hardcover
+}
+
+enum ENUM_COMPONENTMETADATABOOKS_PAGE_ORDER {
+  Left_to_Right
+  Right_to_Left
+}
+
 type ComponentMetadataBooks {
   id: ID!
-  binding_type: String
+  binding_type: ENUM_COMPONENTMETADATABOOKS_BINDING_TYPE
   page_count: Int
   languages(
     filters: LanguageFiltersInput
     pagination: PaginationArg = {}
     sort: [String] = []
   ): LanguageRelationResponseCollection
-  page_order: String!
+  page_order: ENUM_COMPONENTMETADATABOOKS_PAGE_ORDER!
   subtype: TextualSubtypeEntityResponse
 }
 
@@ -413,9 +423,16 @@ type ComponentMetadataGame {
   ): LanguageRelationResponseCollection
 }
 
+enum ENUM_COMPONENTMETADATAVIDEO_RESOLUTION {
+  SD_480p
+  HD_720p
+  FullHD_1080p
+  QuadHD_2160p
+}
+
 type ComponentMetadataVideo {
   id: ID!
-  resolution: String
+  resolution: ENUM_COMPONENTMETADATAVIDEO_RESOLUTION
   audio_languages(
     filters: LanguageFiltersInput
     pagination: PaginationArg = {}
@@ -516,6 +533,13 @@ type ComponentSourceUrlSource {
   credits: ComponentBasicsCredits!
 }
 
+enum ENUM_COMPONENTTRANSLATIONSAUDIOSETS_STATUS {
+  Incomplete
+  Draft
+  Review
+  Done
+}
+
 input ComponentTranslationsAudioSetsFiltersInput {
   language: LanguageFiltersInput
   status: StringFilterInput
@@ -528,7 +552,7 @@ input ComponentTranslationsAudioSetsInput {
   id: ID
   language: ID
   audiofile: ID
-  status: String
+  status: ENUM_COMPONENTTRANSLATIONSAUDIOSETS_STATUS
   credits: ComponentBasicsCreditsInput
 }
 
@@ -536,7 +560,7 @@ type ComponentTranslationsAudioSets {
   id: ID!
   language: LanguageEntityResponse
   audiofile: UploadFileEntityResponse!
-  status: String!
+  status: ENUM_COMPONENTTRANSLATIONSAUDIOSETS_STATUS!
   credits: ComponentBasicsCredits!
 }
 
@@ -560,6 +584,13 @@ type ComponentTranslationsChronologyEra {
   language: LanguageEntityResponse
 }
 
+enum ENUM_COMPONENTTRANSLATIONSCHRONOLOGYITEM_STATUS {
+  Incomplete
+  Draft
+  Review
+  Done
+}
+
 input ComponentTranslationsChronologyItemFiltersInput {
   language: LanguageFiltersInput
   title: StringFilterInput
@@ -577,7 +608,7 @@ input ComponentTranslationsChronologyItemInput {
   title: String
   description: String
   note: String
-  status: String
+  status: ENUM_COMPONENTTRANSLATIONSCHRONOLOGYITEM_STATUS
 }
 
 type ComponentTranslationsChronologyItem {
@@ -586,7 +617,14 @@ type ComponentTranslationsChronologyItem {
   title: String
   description: String
   note: String
-  status: String!
+  status: ENUM_COMPONENTTRANSLATIONSCHRONOLOGYITEM_STATUS!
+}
+
+enum ENUM_COMPONENTTRANSLATIONSGLOSSARYDEFINITION_STATUS {
+  Incomplete
+  Draft
+  Review
+  Done
 }
 
 input ComponentTranslationsGlossaryDefinitionFiltersInput {
@@ -602,14 +640,14 @@ input ComponentTranslationsGlossaryDefinitionInput {
   id: ID
   definition: String
   language: ID
-  status: String
+  status: ENUM_COMPONENTTRANSLATIONSGLOSSARYDEFINITION_STATUS
 }
 
 type ComponentTranslationsGlossaryDefinition {
   id: ID!
   definition: String
   language: LanguageEntityResponse
-  status: String!
+  status: ENUM_COMPONENTTRANSLATIONSGLOSSARYDEFINITION_STATUS!
 }
 
 input ComponentTranslationsGlossaryItemFiltersInput {
@@ -672,6 +710,13 @@ type ComponentTranslationsLibraryItems {
   language: LanguageEntityResponse
 }
 
+enum ENUM_COMPONENTTRANSLATIONSPOSTS_STATUS {
+  Incomplete
+  Draft
+  Review
+  Done
+}
+
 input ComponentTranslationsPostsFiltersInput {
   Status: StringFilterInput
   title: StringFilterInput
@@ -683,7 +728,7 @@ input ComponentTranslationsPostsFiltersInput {
 
 input ComponentTranslationsPostsInput {
   id: ID
-  Status: String
+  Status: ENUM_COMPONENTTRANSLATIONSPOSTS_STATUS
   title: String
   excerpt: String
   thumbnail: ID
@@ -691,10 +736,17 @@ input ComponentTranslationsPostsInput {
 
 type ComponentTranslationsPosts {
   id: ID!
-  Status: String!
+  Status: ENUM_COMPONENTTRANSLATIONSPOSTS_STATUS!
   title: String!
   excerpt: String
   thumbnail: UploadFileEntityResponse
+}
+
+enum ENUM_COMPONENTTRANSLATIONSSCANSET_STATUS {
+  Incomplete
+  Draft
+  Review
+  Done
 }
 
 input ComponentTranslationsScanSetFiltersInput {
@@ -709,7 +761,7 @@ input ComponentTranslationsScanSetInput {
   id: ID
   language: ID
   pages: [ID]
-  status: String
+  status: ENUM_COMPONENTTRANSLATIONSSCANSET_STATUS
   credits: ComponentBasicsCreditsInput
 }
 
@@ -721,8 +773,15 @@ type ComponentTranslationsScanSet {
     pagination: PaginationArg = {}
     sort: [String] = []
   ): UploadFileRelationResponseCollection!
-  status: String!
+  status: ENUM_COMPONENTTRANSLATIONSSCANSET_STATUS!
   credits: ComponentBasicsCredits!
+}
+
+enum ENUM_COMPONENTTRANSLATIONSTEXTSET_STATUS {
+  Incomplete
+  Draft
+  Review
+  Done
 }
 
 input ComponentTranslationsTextSetFiltersInput {
@@ -738,7 +797,7 @@ input ComponentTranslationsTextSetInput {
   id: ID
   text: String
   language: ID
-  status: String
+  status: ENUM_COMPONENTTRANSLATIONSTEXTSET_STATUS
   credits: ComponentBasicsCreditsInput
 }
 
@@ -746,8 +805,15 @@ type ComponentTranslationsTextSet {
   id: ID!
   text: String
   language: LanguageEntityResponse
-  status: String!
+  status: ENUM_COMPONENTTRANSLATIONSTEXTSET_STATUS!
   credits: ComponentBasicsCredits!
+}
+
+enum ENUM_COMPONENTTRANSLATIONSVIDEOSETS_STATUS {
+  Incomplete
+  Draft
+  Review
+  Done
 }
 
 input ComponentTranslationsVideoSetsFiltersInput {
@@ -766,7 +832,7 @@ input ComponentTranslationsVideoSetsInput {
   video_url: String
   video_embed: String
   subfile: ID
-  status: String
+  status: ENUM_COMPONENTTRANSLATIONSVIDEOSETS_STATUS
   credits: ComponentBasicsCreditsInput
 }
 
@@ -776,8 +842,15 @@ type ComponentTranslationsVideoSets {
   video_url: String!
   video_embed: String
   subfile: UploadFileEntityResponse
-  status: String!
+  status: ENUM_COMPONENTTRANSLATIONSVIDEOSETS_STATUS!
   credits: ComponentBasicsCredits!
+}
+
+enum ENUM_COMPONENTTRANSLATIONSWEAPONSTORYSTORY_STATUS {
+  Incomplete
+  Draft
+  Review
+  Done
 }
 
 input ComponentTranslationsWeaponStoryStoryFiltersInput {
@@ -801,7 +874,7 @@ input ComponentTranslationsWeaponStoryStoryInput {
   level_3: String
   level_4: String
   language: ID
-  status: String
+  status: ENUM_COMPONENTTRANSLATIONSWEAPONSTORYSTORY_STATUS
 }
 
 type ComponentTranslationsWeaponStoryStory {
@@ -812,7 +885,7 @@ type ComponentTranslationsWeaponStoryStory {
   level_3: String
   level_4: String
   language: LanguageEntityResponse
-  status: String!
+  status: ENUM_COMPONENTTRANSLATIONSWEAPONSTORYSTORY_STATUS!
 }
 
 input ComponentTranslationsWeaponStoryTypeFiltersInput {
@@ -1186,6 +1259,12 @@ type AudioSubtypeEntityResponseCollection {
   meta: ResponseCollectionMeta!
 }
 
+enum ENUM_CATEGORY_SERIES {
+  Drakengard
+  NieR
+  YoRHa
+}
+
 input CategoryFiltersInput {
   id: IDFilterInput
   name: StringFilterInput
@@ -1201,13 +1280,13 @@ input CategoryFiltersInput {
 input CategoryInput {
   name: String
   short: String
-  series: String
+  series: ENUM_CATEGORY_SERIES
 }
 
 type Category {
   name: String!
   short: String!
-  series: String
+  series: ENUM_CATEGORY_SERIES
   createdAt: DateTime
   updatedAt: DateTime
 }
@@ -1580,6 +1659,7 @@ input LibraryContentFiltersInput {
   audio_set: AudioSetFiltersInput
   video_set: VideoSetFiltersInput
   type: ContentTypeFiltersInput
+  categories: CategoryFiltersInput
   createdAt: DateTimeFilterInput
   updatedAt: DateTimeFilterInput
   and: [LibraryContentFiltersInput]
@@ -1597,6 +1677,7 @@ input LibraryContentInput {
   audio_set: ID
   video_set: ID
   type: ID
+  categories: [ID]
 }
 
 type LibraryContent {
@@ -1613,6 +1694,11 @@ type LibraryContent {
   audio_set: AudioSetEntityResponse
   video_set: VideoSetEntityResponse
   type: ContentTypeEntityResponse
+  categories(
+    filters: CategoryFiltersInput
+    pagination: PaginationArg = {}
+    sort: [String] = []
+  ): CategoryRelationResponseCollection
   createdAt: DateTime
   updatedAt: DateTime
 }

@@ -1,3 +1,5 @@
+import { readFileSync } from "fs";
+
 import {
   GetChronologyItemsQuery,
   GetChronologyItemsQueryVariables,
@@ -7,8 +9,8 @@ import {
   GetLibraryItemQueryVariables,
   GetLibraryItemsPreviewQuery,
   GetLibraryItemsPreviewQueryVariables,
-  GetLibraryItemsSkeletonQuery,
-  GetLibraryItemsSkeletonQueryVariables,
+  GetLibraryItemsSlugsQuery,
+  GetLibraryItemsSlugsQueryVariables,
 } from "graphql/operations-types";
 
 const graphQL = async (query: string, variables?: string) => {
@@ -27,11 +29,7 @@ const graphQL = async (query: string, variables?: string) => {
 };
 
 function getQueryFromOperations(queryName: string): string {
-  const fs = require("fs");
-  const operations: string = fs.readFileSync(
-    "./src/graphql/operation.graphql",
-    "utf8"
-  );
+  const operations = readFileSync("./src/graphql/operation.graphql", "utf8");
   let startingIndex = -1;
   let endingIndex = -1;
   const lines = operations.split("\n");
@@ -67,10 +65,10 @@ export async function getLibraryItemsPreview(
   return await graphQL(query, JSON.stringify(variables));
 }
 
-export async function getLibraryItemsSkeleton(
-  variables: GetLibraryItemsSkeletonQueryVariables
-): Promise<GetLibraryItemsSkeletonQuery> {
-  const query = getQueryFromOperations("getLibraryItemsSkeleton");
+export async function getLibraryItemsSlugs(
+  variables: GetLibraryItemsSlugsQueryVariables
+): Promise<GetLibraryItemsSlugsQuery> {
+  const query = getQueryFromOperations("getLibraryItemsSlugs");
   return await graphQL(query, JSON.stringify(variables));
 }
 
@@ -80,4 +78,3 @@ export async function getLibraryItem(
   const query = getQueryFromOperations("getLibraryItem");
   return await graphQL(query, JSON.stringify(variables));
 }
-

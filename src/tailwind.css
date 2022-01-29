@@ -5,50 +5,19 @@
 @layer base {
   html,
   body {
-    padding: 0;
-    margin: 0;
-    background-color: theme("colors.light");
-    color: theme("colors.black");
+    @apply p-0 m-0 bg-light text-black;
   }
-
-  /* HORIZONTAL LINE */
 
   hr {
-    height: 0;
-    width: 100%;
-    border: none;
-    border-top: 0.3rem dotted theme("colors.black");;
-    margin: 2rem;
+    @apply h-0 w-full my-8 border-t-[3px] border-dotted border-black;
   }
-
-  /* MATERIAL ICONS */
-
-  /* BUTTONS */
 
   button {
-    display: grid;
-    place-content: center;
-    place-items: center;
-    border: 0.1rem solid theme("colors.dark");
-    color: theme("colors.dark");
-    background: inherit;
-    border-radius: 100vmax;
-    padding: 0.4em 1em;
-    cursor: pointer;
-    transition: 0.1s color, 0.1s background-color;
+    @apply grid place-content-center place-items-center border-[1px] border-dark text-dark rounded-full cursor-pointer px-4 py-2 transition-colors hover:text-light hover:bg-dark;
   }
-
-  button:hover {
-    background: theme("colors.dark");
-    color: theme("colors.light");
-  }
-
-  /* FONT SETTING */
 
   * {
-    box-sizing: border-box;
-    font-family: "Zen Maru Gothic";
-    font-weight: 500;
+    @apply box-border font-body font-medium scroll-smooth;
   }
 
   h1,
@@ -57,20 +26,19 @@
   h4,
   h5,
   h6 {
-    font-family: "Vollkorn";
-    font-weight: 900;
+    @apply font-headers font-black;
   }
 
-  /* LINKS */
   a {
-    color: inherit;
-    text-decoration: underline dotted theme("colors.dark");
-    transition: 0.1s color;
-    text-underline-offset: 0.15em;
+    @apply transition-colors underline-offset-2 decoration-dotted underline decoration-dark hover:text-dark;
   }
 
-  a:hover {
-    color: theme("colors.dark");
+  *:target {
+    @apply scroll-mt-4;
+  }
+
+  *::selection {
+    @apply bg-dark text-light;
   }
 
   /* SCROLLBARS STYLING */
@@ -78,29 +46,17 @@
   * {
     scrollbar-color: theme("colors.dark") transparent;
     scrollbar-width: thin;
-    scroll-behavior: smooth;
-  }
-
-  *::selection {
-    background-color: theme("colors.dark");
-    color: theme("colors.light");
-  }
-
-  *:target {
-    scroll-margin-top: 1em;
   }
 
   *::-webkit-scrollbar {
-    width: 12px; /* width of the entire scrollbar */
+    @apply w-3;
   }
 
   *::-webkit-scrollbar-track {
-    background: transparent; /* color of the tracking area */
+    @apply bg-[transparent];
   }
 
   *::-webkit-scrollbar-thumb {
-    background-color: theme("colors.dark"); /* color of the scroll thumb */
-    border-radius: 100vmax; /* roundness of the scroll thumb */
-    border: 3px solid theme("colors.light"); /* creates padding around scroll thumb */
+    @apply bg-dark rounded-full border-[3px] border-solid border-light;
   }
 }

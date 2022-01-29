@@ -29,43 +29,12 @@ applyCustomAppProps(Library, {
 });
 
 export default function Library(props: Props): JSX.Element {
-  const router = useRouter();
   const libraryItem = props.libraryItem.libraryItems.data[0];
 
   return (
     <>
       <SubPanel>
         <ReturnButton title="Library" url="/library" />
-        <hr />
-
-        <div className="grid place-items-center">
-          <div className="cursor-pointer grid items-end relative hover:rounded-3xl w-[80%] max-w-full mb-8">
-            <div className="bg-light absolute inset-1 rounded-lg shadow-dark shadow-lg"></div>
-            {libraryItem.attributes.thumbnail.data ? (
-              <Image
-                src={getAssetURL(
-                  libraryItem.attributes.thumbnail.data.attributes.url
-                )}
-                alt={
-                  libraryItem.attributes.thumbnail.data.attributes
-                    .alternativeText
-                }
-                width={libraryItem.attributes.thumbnail.data.attributes.width}
-                height={libraryItem.attributes.thumbnail.data.attributes.height}
-              />
-            ) : (
-              <div className="w-full aspect-[21/29.7]"></div>
-            )}
-          </div>
-
-          <h1 className="text-2xl">{libraryItem.attributes.title}</h1>
-          {libraryItem.attributes.subtitle ? (
-            <h2 className="text-1xl">{libraryItem.attributes.subtitle}</h2>
-          ) : (
-            ""
-          )}
-        </div>
-
         <hr />
 
         <NavOption title="Summary" url="#summary" border={true} />
@@ -157,18 +126,25 @@ export default function Library(props: Props): JSX.Element {
           </div>
 
           {libraryItem.attributes.gallery.data.length > 0 ? (
-            <div id="gallery" className="grid place-items-center gap-8">
+            <div id="gallery" className="grid place-items-center gap-8  w-full">
               <h2 className="text-2xl">Gallery</h2>
-              <div className="grid grid-flow-col place-items-center gap-4">
+              <div className="grid w-full gap-8 items-end grid-cols-[repeat(auto-fit,_minmax(15rem,1fr))]">
                 {libraryItem.attributes.gallery.data.map((galleryItem) => (
-                  <Image
+                  <div
                     key={galleryItem.id}
-                    className="rounded-lg"
-                    src={getAssetURL(galleryItem.attributes.url)}
-                    alt={galleryItem.attributes.alternativeText}
-                    width={galleryItem.attributes.width}
-                    height={galleryItem.attributes.height}
-                  />
+                    className="relative aspect-square hover:scale-[1.02] transition-transform cursor-pointer"
+                  >
+                    <div className="bg-light absolute inset-0 rounded-lg shadow-md"></div>
+                    <Image
+                      className="rounded-lg"
+                      src={getAssetURL(galleryItem.attributes.url)}
+                      alt={galleryItem.attributes.alternativeText}
+                      width={galleryItem.attributes.width}
+                      height={galleryItem.attributes.height}
+                      layout="fill"
+                      objectFit="cover"
+                    />
+                  </div>
                 ))}
               </div>
             </div>

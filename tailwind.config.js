@@ -9,6 +9,10 @@ module.exports = {
       dark: "#9c6644",
       black: "#1B1811",
     },
+    fontFamily: {
+      body: ["Zen Maru Gothic"],
+      headers: ["Vollkorn"],
+    },
   },
   plugins: [
     require("@tailwindcss/typography"),
@@ -53,6 +57,5 @@ module.exports = {
         },
       });
     }),
-
   ],
 };

@@ -10,6 +10,7 @@ import {
 import { getEras, getChronologyItems } from "graphql/operations";
 import NavOption from "components/PanelComponents/NavOption";
 import ReturnButton from "components/PanelComponents/ReturnButton";
+import HorizontalLine from "components/HorizontalLine";
 
 interface Props {
   chronologyItems: GetChronologyItemsQuery;
@@ -41,7 +42,7 @@ export default function ChronologyOverview(props: Props): JSX.Element {
     <>
       <SubPanel>
         <ReturnButton url="/chronology" title="Chronology" />
-        <hr />
+        <HorizontalLine />
 
         {props.chronologyEras.chronologyEras.data.map((era) => (
           <NavOption

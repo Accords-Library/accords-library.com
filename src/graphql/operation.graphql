@@ -103,9 +103,7 @@ query getLibraryItemsPreview($language_code: String) {
 }
 
 query getLibraryItemsSlugs {
-  libraryItems(
-    pagination: { limit: -1 }
-  ) {
+  libraryItems(pagination: { limit: -1 }) {
     data {
       attributes {
         slug
@@ -113,7 +111,6 @@ query getLibraryItemsSlugs {
     }
   }
 }
-
 
 query getLibraryItem($slug: String, $language_code: String) {
   libraryItems(filters: { slug: { eq: $slug } }) {
@@ -305,9 +302,42 @@ query getLibraryItem($slug: String, $language_code: String) {
               }
               categories {
                 data {
+                  id
                   attributes {
                     name
                     short
+                  }
+                }
+              }
+              scan_set {
+                data {
+                  id
+                  attributes {
+                    slug
+                  }
+                }
+              }
+              text_set {
+                data {
+                  id
+                  attributes {
+                    slug
+                  }
+                }
+              }
+              audio_set {
+                data {
+                  id
+                  attributes {
+                    slug
+                  }
+                }
+              }
+              video_set {
+                data {
+                  id
+                  attributes {
+                    slug
                   }
                 }
               }

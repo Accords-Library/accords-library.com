@@ -2,31 +2,37 @@ import Link from "next/link";
 import NavOption from "components/PanelComponents/NavOption";
 import SVG from "components/SVG";
 import { useRouter } from "next/router";
+import Button from "components/Button";
+import HorizontalLine from "components/HorizontalLine";
 
 export default function MainPanel(): JSX.Element {
   const router = useRouter();
   return (
-    <div className="grid webkit-scrollbar:w-0 [scrollbar-width:none] overflow-y-scroll border-r-[1px] border-black w-80 max-h-screen h-screen justify-center content-start p-8 gap-y-2 justify-items-center text-center">
+    <div className="grid webkit-scrollbar:w-0 [scrollbar-width:none] overflow-y-scroll border-r-[1px] border-black max-h-screen h-screen justify-center content-start p-8 gap-y-2 justify-items-center text-center">
       <div className="">
         <div className="grid place-items-center">
-          <div className="w-1/2 cursor-pointer transition-[filter] hover:colorize-dark">
-            <Link href="/" passHref>
+          <Link href="/" passHref>
+            <div className="w-1/2 cursor-pointer transition-[filter] hover:colorize-dark">
               <SVG
                 src={"/icons/accords.svg"}
                 alt={"Logo of Accord's Library"}
               />
-            </Link>
-          </div>
+            </div>
+          </Link>
           <div className="relative mt-5">
-            <button className="absolute right-0 top-[-1em] text-xs py-0">
-              {router.locale?.toUpperCase()}
-            </button>
+            {router.locale ? (
+              <Button className="absolute right-0 top-[-1.3em] text-xs py-0.5 px-2.5">
+                {router.locale.toUpperCase()}
+              </Button>
+            ) : (
+              ""
+            )}
             <h2 className="text-3xl">Accord&rsquo;s Library</h2>
           </div>
         </div>
       </div>
 
-      <hr />
+      <HorizontalLine />
 
       <NavOption
         url="/library"
@@ -49,7 +55,7 @@ export default function MainPanel(): JSX.Element {
         subtitle="Follow all events in chronological order"
       />
 
-      <hr />
+      <HorizontalLine />
 
       <NavOption url="/news" icon="feed" title="News" />
       <NavOption url="/data" icon="travel_explore" title="Data" />
@@ -57,7 +63,7 @@ export default function MainPanel(): JSX.Element {
       <NavOption url="/archive" icon="inventory" title="Archive" />
       <NavOption url="/about-us" icon="info" title="About us" />
 
-      <hr />
+      <HorizontalLine />
 
       <div className="text-center">
         <p>

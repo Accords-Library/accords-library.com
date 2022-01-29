@@ -8,14 +8,6 @@
     @apply p-0 m-0 bg-light text-black;
   }
 
-  hr {
-    @apply h-0 w-full my-8 border-t-[3px] border-dotted border-black;
-  }
-
-  button {
-    @apply grid place-content-center place-items-center border-[1px] border-dark text-dark rounded-full cursor-pointer px-4 py-2 transition-colors hover:text-light hover:bg-dark;
-  }
-
   * {
     @apply box-border font-body font-medium scroll-smooth;
   }

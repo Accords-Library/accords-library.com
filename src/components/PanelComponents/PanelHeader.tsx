@@ -1,3 +1,5 @@
+import HorizontalLine from "components/HorizontalLine";
+
 type NavOptionProps = {
   icon?: string;
   title: string;
@@ -14,7 +16,7 @@ export default function PanelHeader(props: NavOptionProps): JSX.Element {
       )}
       <h2 className="text-2xl">{props.title}</h2>
       {props.description ? <p>{props.description}</p> : ""}
-      <hr />
+      <HorizontalLine />
     </div>
   );
 }

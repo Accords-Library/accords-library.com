@@ -460,12 +460,45 @@ export type GetLibraryItemQuery = {
                 __typename: "CategoryRelationResponseCollection";
                 data: Array<{
                   __typename: "CategoryEntity";
+                  id: string;
                   attributes: {
                     __typename: "Category";
                     name: string;
                     short: string;
                   };
                 }>;
+              };
+              scan_set: {
+                __typename: "ScanSetEntityResponse";
+                data: {
+                  __typename: "ScanSetEntity";
+                  id: string;
+                  attributes: { __typename: "ScanSet"; slug: string };
+                };
+              };
+              text_set: {
+                __typename: "TextSetEntityResponse";
+                data: {
+                  __typename: "TextSetEntity";
+                  id: string;
+                  attributes: { __typename: "TextSet"; slug: string };
+                };
+              };
+              audio_set: {
+                __typename: "AudioSetEntityResponse";
+                data: {
+                  __typename: "AudioSetEntity";
+                  id: string;
+                  attributes: { __typename: "AudioSet"; slug: string };
+                };
+              };
+              video_set: {
+                __typename: "VideoSetEntityResponse";
+                data: {
+                  __typename: "VideoSetEntity";
+                  id: string;
+                  attributes: { __typename: "VideoSet"; slug: string };
+                };
               };
               range: Array<
                 | {

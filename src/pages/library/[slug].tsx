@@ -1,4 +1,3 @@
-import { useRouter } from "next/router";
 import ContentPanel, {
   ContentPanelWidthSizes,
 } from "components/Panels/ContentPanel";
@@ -18,6 +17,9 @@ import SubPanel from "components/Panels/SubPanel";
 import ReturnButton from "components/PanelComponents/ReturnButton";
 import NavOption from "components/PanelComponents/NavOption";
 import LibraryItemComponent from "components/Library/LibraryItemComponent";
+import Chip from "components/Chip";
+import Button from "components/Button";
+import HorizontalLine from "components/HorizontalLine";
 
 type Props = {
   libraryItem: GetLibraryItemQuery;
@@ -31,11 +33,24 @@ applyCustomAppProps(Library, {
 export default function Library(props: Props): JSX.Element {
   const libraryItem = props.libraryItem.libraryItems.data[0];
 
+  libraryItem.attributes.contents.data.sort((a, b) => {
+    if (
+      a.attributes.range[0].__typename === "ComponentRangePageRange" &&
+      b.attributes.range[0].__typename === "ComponentRangePageRange"
+    ) {
+      return (
+        a.attributes.range[0].starting_page -
+        b.attributes.range[0].starting_page
+      );
+    }
+    return 0;
+  });
+
   return (
     <>
       <SubPanel>
         <ReturnButton title="Library" url="/library" />
-        <hr />
+        <HorizontalLine />
 
         <NavOption title="Summary" url="#summary" border={true} />
 
@@ -92,7 +107,7 @@ export default function Library(props: Props): JSX.Element {
                     href={`/library/${libraryItem.attributes.subitem_of.data[0].attributes.slug}`}
                     passHref
                   >
-                    <button>
+                    <Button>
                       {
                         libraryItem.attributes.subitem_of.data[0].attributes
                           .title
@@ -101,13 +116,13 @@ export default function Library(props: Props): JSX.Element {
                         .subtitle
                         ? ` - ${libraryItem.attributes.subitem_of.data[0].attributes.subtitle}`
                         : ""}
-                    </button>
+                    </Button>
                   </Link>
                 </div>
               ) : (
                 ""
               )}
-              <div>
+              <div className="grid place-items-center">
                 <h1 className="text-3xl">{libraryItem.attributes.title}</h1>
                 {libraryItem.attributes.subtitle ? (
                   <h2 className="text-2xl">
@@ -225,21 +240,42 @@ export default function Library(props: Props): JSX.Element {
               <div className="grid gap-4 w-full">
                 {libraryItem.attributes.contents.data.map((content) => (
                   <div
+                    id={content.attributes.slug}
                     key={content.id}
-                    className="grid grid-flow-col gap-4 place-items-center grid-cols-[auto_auto_1fr_auto_auto]"
+                    className=" grid gap-2 h-6 overflow-hidden px-4 rounded-lg target:bg-mid target:h-auto target:py-3 target:my-2"
                   >
-                    <h3>{content.attributes.title[0].title}</h3>
-                    <p></p>
-                    <p className="border-b-2 h-4 w-full border-dark border-dotted"></p>
-                    <p>
-                      {content.attributes.range[0].__typename ===
-                      "ComponentRangePageRange"
-                        ? content.attributes.range[0].starting_page
-                        : ""}
-                    </p>
-                    <button className="text-xs">
-                      <p>{content.attributes.type.data.attributes.slug}</p>
-                    </button>
+                    <div className="grid gap-4 place-items-center grid-cols-[auto_auto_1fr_auto_9em] ">
+                      <a href={`#${content.attributes.slug}`}>
+                        <h3>{content.attributes.title[0].title}</h3>
+                      </a>
+                      <div className="grid grid-flow-col gap-1">
+                        {content.attributes.categories.data.map((category) => (
+                          <Chip key={category.id}>
+                            {category.attributes.short}
+                          </Chip>
+                        ))}
+                      </div>
+                      <p className="border-b-2 h-4 w-full border-black border-dotted opacity-30"></p>
+                      <p>
+                        {content.attributes.range[0].__typename ===
+                        "ComponentRangePageRange"
+                          ? content.attributes.range[0].starting_page
+                          : ""}
+                      </p>
+                      <Chip className="place-self-end">
+                        {content.attributes.type.data.attributes.slug}
+                      </Chip>
+                    </div>
+                    <div className="grid grid-flow-col place-content-start place-items-center gap-2">
+                      <span className="material-icons text-dark">
+                        subdirectory_arrow_right
+                      </span>
+
+                      <Button>View scan</Button>
+                      <Button>Read content</Button>
+                      <Button>Listen content</Button>
+                      <Button>View content</Button>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -279,7 +315,6 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const data = await getLibraryItemsSlugs({});
   const paths: Path[] = [];
   data.libraryItems.data.map((item) => {
-    console.log(item.attributes.slug);
     paths.push({ params: { slug: item.attributes.slug } });
   });
   return {

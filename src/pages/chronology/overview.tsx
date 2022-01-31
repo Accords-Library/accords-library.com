@@ -41,7 +41,7 @@ export default function ChronologyOverview(props: Props): JSX.Element {
   return (
     <>
       <SubPanel>
-        <ReturnButton url="/chronology" title="Chronology" />
+        <ReturnButton href="/chronology" title="Chronology" />
         <HorizontalLine />
 
         {props.chronologyEras.chronologyEras.data.map((era) => (

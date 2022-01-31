@@ -49,7 +49,7 @@ export default function Library(props: Props): JSX.Element {
   return (
     <>
       <SubPanel>
-        <ReturnButton title="Library" url="/library" />
+        <ReturnButton title="Library" href="/library" />
         <HorizontalLine />
 
         <NavOption title="Summary" url="#summary" border={true} />
@@ -103,21 +103,15 @@ export default function Library(props: Props): JSX.Element {
               {libraryItem.attributes.subitem_of.data.length > 0 ? (
                 <div className="grid place-items-center">
                   <p>Subitem of</p>
-                  <Link
+                  <Button
                     href={`/library/${libraryItem.attributes.subitem_of.data[0].attributes.slug}`}
-                    passHref
                   >
-                    <Button>
-                      {
-                        libraryItem.attributes.subitem_of.data[0].attributes
-                          .title
-                      }
-                      {libraryItem.attributes.subitem_of.data[0].attributes
-                        .subtitle
-                        ? ` - ${libraryItem.attributes.subitem_of.data[0].attributes.subtitle}`
-                        : ""}
-                    </Button>
-                  </Link>
+                    {libraryItem.attributes.subitem_of.data[0].attributes.title}
+                    {libraryItem.attributes.subitem_of.data[0].attributes
+                      .subtitle
+                      ? ` - ${libraryItem.attributes.subitem_of.data[0].attributes.subtitle}`
+                      : ""}
+                  </Button>
                 </div>
               ) : (
                 ""
@@ -271,10 +265,52 @@ export default function Library(props: Props): JSX.Element {
                         subdirectory_arrow_right
                       </span>
 
-                      <Button>View scan</Button>
-                      <Button>Read content</Button>
-                      <Button>Listen content</Button>
-                      <Button>View content</Button>
+                      {content.attributes.scan_set.data ? (
+                        <Button
+                          href={`/scans/${content.attributes.scan_set.data.attributes.slug}`}
+                        >
+                          View scan
+                        </Button>
+                      ) : (
+                        ""
+                      )}
+
+                      {content.attributes.text_set.data ? (
+                        <Button
+                          href={`/read/${content.attributes.text_set.data.attributes.slug}`}
+                        >
+                          Read content
+                        </Button>
+                      ) : (
+                        ""
+                      )}
+
+                      {content.attributes.audio_set.data ? (
+                        <Button
+                          href={`/listen/${content.attributes.audio_set.data.attributes.slug}`}
+                        >
+                          Listen content
+                        </Button>
+                      ) : (
+                        ""
+                      )}
+
+                      {content.attributes.video_set.data ? (
+                        <Button
+                          href={`/watch/${content.attributes.video_set.data.attributes.slug}`}
+                        >
+                          View content
+                        </Button>
+                      ) : (
+                        ""
+                      )}
+
+                      {!content.attributes.scan_set.data &&
+                      !content.attributes.text_set.data &&
+                      !content.attributes.audio_set.data &&
+                      !content.attributes.video_set.data
+                        ? "The content is not available"
+                        : ""}
                     </div>
                   </div>
                 ))}

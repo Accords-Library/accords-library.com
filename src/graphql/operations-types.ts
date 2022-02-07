@@ -49,6 +49,15 @@ export enum Enum_Componentmetadatavideo_Resolution {
   QuadHd_2160p = "QuadHD_2160p",
 }
 
+export enum Enum_Componenttranslationschronologyitem_Status {
+  Incomplete = 'Incomplete',
+  Draft = 'Draft',
+  Review = 'Review',
+  Done = 'Done'
+}
+
+// __________________________________________________________________
+
 export type GetErasQueryVariables = Exact<{
   language_code: InputMaybe<Scalars["String"]>;
 }>;
@@ -98,10 +107,7 @@ export type GetChronologyItemsQuery = {
             __typename: "SourceEntityResponse";
             data: {
               __typename: "SourceEntity";
-              attributes: {
-                __typename: "Source";
-                name: string;
-              };
+              attributes: { __typename: "Source"; name: string };
             };
           };
           translations: Array<{
@@ -109,7 +115,7 @@ export type GetChronologyItemsQuery = {
             title: string;
             description: string;
             note: string;
-            status: string;
+            status: Enum_Componenttranslationschronologyitem_Status;
           }>;
         }>;
       };
@@ -435,71 +441,13 @@ export type GetLibraryItemQuery = {
           }>;
         };
         contents: {
-          __typename: "LibraryContentRelationResponseCollection";
+          __typename: "RangedContentRelationResponseCollection";
           data: Array<{
-            __typename: "LibraryContentEntity";
+            __typename: "RangedContentEntity";
             id: string;
             attributes: {
-              __typename: "LibraryContent";
+              __typename: "RangedContent";
               slug: string;
-              title: Array<{
-                __typename: "ComponentTranslationsLibraryContent";
-                title: string;
-              }>;
-              type: {
-                __typename: "ContentTypeEntityResponse";
-                data: {
-                  __typename: "ContentTypeEntity";
-                  attributes: {
-                    __typename: "ContentType";
-                    slug: string;
-                  };
-                };
-              };
-              categories: {
-                __typename: "CategoryRelationResponseCollection";
-                data: Array<{
-                  __typename: "CategoryEntity";
-                  id: string;
-                  attributes: {
-                    __typename: "Category";
-                    name: string;
-                    short: string;
-                  };
-                }>;
-              };
-              scan_set: {
-                __typename: "ScanSetEntityResponse";
-                data: {
-                  __typename: "ScanSetEntity";
-                  id: string;
-                  attributes: { __typename: "ScanSet"; slug: string };
-                };
-              };
-              text_set: {
-                __typename: "TextSetEntityResponse";
-                data: {
-                  __typename: "TextSetEntity";
-                  id: string;
-                  attributes: { __typename: "TextSet"; slug: string };
-                };
-              };
-              audio_set: {
-                __typename: "AudioSetEntityResponse";
-                data: {
-                  __typename: "AudioSetEntity";
-                  id: string;
-                  attributes: { __typename: "AudioSet"; slug: string };
-                };
-              };
-              video_set: {
-                __typename: "VideoSetEntityResponse";
-                data: {
-                  __typename: "VideoSetEntity";
-                  id: string;
-                  attributes: { __typename: "VideoSet"; slug: string };
-                };
-              };
               range: Array<
                 | {
                     __typename: "ComponentRangePageRange";
@@ -511,10 +459,60 @@ export type GetLibraryItemQuery = {
                     starting_time: any;
                     ending_time: any;
                   }
-                | { __typename: "ComponentRangeGameAspect" }
                 | { __typename: "ComponentRangeOther" }
                 | { __typename: "Error" }
               >;
+              scan_set: Array<{
+                __typename: "ComponentSetsScanSet";
+                id: string;
+              }>;
+              content: {
+                __typename: "ContentEntityResponse";
+                data: {
+                  __typename: "ContentEntity";
+                  attributes: {
+                    __typename: "Content";
+                    slug: string;
+                    categories: {
+                      __typename: "CategoryRelationResponseCollection";
+                      data: Array<{
+                        __typename: "CategoryEntity";
+                        id: string;
+                        attributes: {
+                          __typename: "Category";
+                          short: string;
+                        };
+                      }>;
+                    };
+                    type: {
+                      __typename: "ContentTypeEntityResponse";
+                      data: {
+                        __typename: "ContentTypeEntity";
+                        attributes: {
+                          __typename: "ContentType";
+                          slug: string;
+                        };
+                      };
+                    };
+                    titles: Array<{
+                      __typename: "ComponentTranslationsTitle";
+                      title: string;
+                    }>;
+                    text_set: Array<{
+                      __typename: "ComponentSetsTextSet";
+                      id: string;
+                    }>;
+                    video_set: Array<{
+                      __typename: "ComponentSetsVideoSet";
+                      id: string;
+                    }>;
+                    audio_set: Array<{
+                      __typename: "ComponentSetsAudioSet";
+                      id: string;
+                    }>;
+                  };
+                };
+              };
             };
           }>;
         };

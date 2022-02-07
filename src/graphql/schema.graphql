@@ -192,19 +192,6 @@ input JSONFilterInput {
   between: [JSON]
 }
 
-input ComponentBasicsCreditsInput {
-  id: ID
-  source_language: ID
-  transcribers: [ID]
-  translators: [ID]
-  proofreaders: [ID]
-  scanners: [ID]
-  cleaners: [ID]
-  typesetters: [ID]
-  subbers: [ID]
-  footnotes: String
-}
-
 type ComponentBasicsCredits {
   id: ID!
   source_language: LanguageEntityResponse
@@ -337,6 +324,78 @@ type ComponentCollectionsComponentGlossaryDefinition {
     pagination: PaginationArg = {}
     sort: [String] = []
   ): CategoryRelationResponseCollection
+}
+
+input ComponentCollectionsComponentLibraryCoverInput {
+  id: ID
+  front: ID
+  spine: ID
+  back: ID
+  full: ID
+  inside_full: ID
+}
+
+type ComponentCollectionsComponentLibraryCover {
+  id: ID!
+  front: UploadFileEntityResponse
+  spine: UploadFileEntityResponse
+  back: UploadFileEntityResponse
+  full: UploadFileEntityResponse
+  inside_full: UploadFileEntityResponse
+}
+
+input ComponentCollectionsComponentLibraryDustJacketInput {
+  id: ID
+  front: ID
+  spine: ID
+  back: ID
+  full: ID
+  flap_front: ID
+  flap_back: ID
+  inside_full: ID
+}
+
+type ComponentCollectionsComponentLibraryDustJacket {
+  id: ID!
+  front: UploadFileEntityResponse
+  spine: UploadFileEntityResponse
+  back: UploadFileEntityResponse
+  full: UploadFileEntityResponse
+  flap_front: UploadFileEntityResponse
+  flap_back: UploadFileEntityResponse
+  inside_full: UploadFileEntityResponse
+}
+
+input ComponentCollectionsComponentLibraryImagesInput {
+  id: ID
+  cover: ComponentCollectionsComponentLibraryCoverInput
+  dust_jacket: ComponentCollectionsComponentLibraryDustJacketInput
+  obi_belt: ComponentCollectionsComponentLibraryObiBeltInput
+}
+
+type ComponentCollectionsComponentLibraryImages {
+  id: ID!
+  cover: ComponentCollectionsComponentLibraryCover
+  dust_jacket: ComponentCollectionsComponentLibraryDustJacket
+  obi_belt: ComponentCollectionsComponentLibraryObiBelt
+}
+
+input ComponentCollectionsComponentLibraryObiBeltInput {
+  id: ID
+  front: ID
+  spine: ID
+  back: ID
+  full: ID
+  inside_full: ID
+}
+
+type ComponentCollectionsComponentLibraryObiBelt {
+  id: ID!
+  front: UploadFileEntityResponse
+  spine: UploadFileEntityResponse
+  back: UploadFileEntityResponse
+  full: UploadFileEntityResponse
+  inside_full: UploadFileEntityResponse
 }
 
 input ComponentCollectionsComponentWeaponStoryFiltersInput {
@@ -520,9 +579,204 @@ type ComponentRangeTimeRange {
   ending_time: Time
 }
 
-type ComponentSourceLibraryText {
+enum ENUM_COMPONENTSETSAUDIOSET_STATUS {
+  Incomplete
+  Draft
+  Review
+  Done
+}
+
+input ComponentSetsAudioSetFiltersInput {
+  language: LanguageFiltersInput
+  status: StringFilterInput
+  source_language: LanguageFiltersInput
+  dubbers: RecorderFiltersInput
+  notes: StringFilterInput
+  and: [ComponentSetsAudioSetFiltersInput]
+  or: [ComponentSetsAudioSetFiltersInput]
+  not: ComponentSetsAudioSetFiltersInput
+}
+
+input ComponentSetsAudioSetInput {
+  id: ID
+  language: ID
+  status: ENUM_COMPONENTSETSAUDIOSET_STATUS
+  audiofile: [ID]
+  source_language: ID
+  dubbers: ID
+  notes: String
+}
+
+type ComponentSetsAudioSet {
   id: ID!
-  text_set: TextSetEntityResponse
+  language: LanguageEntityResponse
+  status: ENUM_COMPONENTSETSAUDIOSET_STATUS
+  audiofile(
+    filters: UploadFileFiltersInput
+    pagination: PaginationArg = {}
+    sort: [String] = []
+  ): UploadFileRelationResponseCollection
+  source_language: LanguageEntityResponse
+  dubbers: RecorderEntityResponse
+  notes: String
+}
+
+enum ENUM_COMPONENTSETSSCANSET_STATUS {
+  Incomplete
+  Draft
+  Review
+  Done
+}
+
+input ComponentSetsScanSetFiltersInput {
+  language: LanguageFiltersInput
+  status: StringFilterInput
+  source_language: LanguageFiltersInput
+  scanners: RecorderFiltersInput
+  cleaners: RecorderFiltersInput
+  typesetters: RecorderFiltersInput
+  notes: StringFilterInput
+  and: [ComponentSetsScanSetFiltersInput]
+  or: [ComponentSetsScanSetFiltersInput]
+  not: ComponentSetsScanSetFiltersInput
+}
+
+input ComponentSetsScanSetInput {
+  id: ID
+  language: ID
+  status: ENUM_COMPONENTSETSSCANSET_STATUS
+  pages: [ID]
+  source_language: ID
+  scanners: [ID]
+  cleaners: [ID]
+  typesetters: [ID]
+  notes: String
+}
+
+type ComponentSetsScanSet {
+  id: ID!
+  language: LanguageEntityResponse
+  status: ENUM_COMPONENTSETSSCANSET_STATUS!
+  pages(
+    filters: UploadFileFiltersInput
+    pagination: PaginationArg = {}
+    sort: [String] = []
+  ): UploadFileRelationResponseCollection
+  source_language: LanguageEntityResponse
+  scanners(
+    filters: RecorderFiltersInput
+    pagination: PaginationArg = {}
+    sort: [String] = []
+  ): RecorderRelationResponseCollection
+  cleaners(
+    filters: RecorderFiltersInput
+    pagination: PaginationArg = {}
+    sort: [String] = []
+  ): RecorderRelationResponseCollection
+  typesetters(
+    filters: RecorderFiltersInput
+    pagination: PaginationArg = {}
+    sort: [String] = []
+  ): RecorderRelationResponseCollection
+  notes: String
+}
+
+enum ENUM_COMPONENTSETSTEXTSET_STATUS {
+  Incomplete
+  Draft
+  Review
+  Done
+}
+
+input ComponentSetsTextSetFiltersInput {
+  language: LanguageFiltersInput
+  status: StringFilterInput
+  source_language: LanguageFiltersInput
+  transcribers: RecorderFiltersInput
+  translators: RecorderFiltersInput
+  proofreaders: RecorderFiltersInput
+  notes: StringFilterInput
+  text: StringFilterInput
+  and: [ComponentSetsTextSetFiltersInput]
+  or: [ComponentSetsTextSetFiltersInput]
+  not: ComponentSetsTextSetFiltersInput
+}
+
+input ComponentSetsTextSetInput {
+  id: ID
+  language: ID
+  status: ENUM_COMPONENTSETSTEXTSET_STATUS
+  source_language: ID
+  transcribers: [ID]
+  translators: [ID]
+  proofreaders: [ID]
+  notes: String
+  text: String
+}
+
+type ComponentSetsTextSet {
+  id: ID!
+  language: LanguageEntityResponse
+  status: ENUM_COMPONENTSETSTEXTSET_STATUS!
+  source_language: LanguageEntityResponse
+  transcribers(
+    filters: RecorderFiltersInput
+    pagination: PaginationArg = {}
+    sort: [String] = []
+  ): RecorderRelationResponseCollection
+  translators(
+    filters: RecorderFiltersInput
+    pagination: PaginationArg = {}
+    sort: [String] = []
+  ): RecorderRelationResponseCollection
+  proofreaders(
+    filters: RecorderFiltersInput
+    pagination: PaginationArg = {}
+    sort: [String] = []
+  ): RecorderRelationResponseCollection
+  notes: String
+  text: String
+}
+
+enum ENUM_COMPONENTSETSVIDEOSET_STATUS {
+  Incomplete
+  Draft
+  Review
+  Done
+}
+
+input ComponentSetsVideoSetFiltersInput {
+  language: LanguageFiltersInput
+  status: StringFilterInput
+  source_language: LanguageFiltersInput
+  video_url: StringFilterInput
+  subbers: RecorderFiltersInput
+  notes: StringFilterInput
+  and: [ComponentSetsVideoSetFiltersInput]
+  or: [ComponentSetsVideoSetFiltersInput]
+  not: ComponentSetsVideoSetFiltersInput
+}
+
+input ComponentSetsVideoSetInput {
+  id: ID
+  language: ID
+  status: ENUM_COMPONENTSETSVIDEOSET_STATUS
+  source_language: ID
+  video_url: String
+  subfile: ID
+  subbers: ID
+  notes: String
+}
+
+type ComponentSetsVideoSet {
+  id: ID!
+  language: LanguageEntityResponse
+  status: ENUM_COMPONENTSETSVIDEOSET_STATUS!
+  source_language: LanguageEntityResponse
+  video_url: String
+  subfile: UploadFileEntityResponse
+  subbers: RecorderEntityResponse
+  notes: String
 }
 
 type ComponentSourceUrlSource {
@@ -538,22 +792,6 @@ enum ENUM_COMPONENTTRANSLATIONSAUDIOSETS_STATUS {
   Draft
   Review
   Done
-}
-
-input ComponentTranslationsAudioSetsFiltersInput {
-  language: LanguageFiltersInput
-  status: StringFilterInput
-  and: [ComponentTranslationsAudioSetsFiltersInput]
-  or: [ComponentTranslationsAudioSetsFiltersInput]
-  not: ComponentTranslationsAudioSetsFiltersInput
-}
-
-input ComponentTranslationsAudioSetsInput {
-  id: ID
-  language: ID
-  audiofile: ID
-  status: ENUM_COMPONENTTRANSLATIONSAUDIOSETS_STATUS
-  credits: ComponentBasicsCreditsInput
 }
 
 type ComponentTranslationsAudioSets {
@@ -670,20 +908,6 @@ type ComponentTranslationsGlossaryItem {
   language: LanguageEntityResponse
 }
 
-input ComponentTranslationsLibraryContentFiltersInput {
-  title: StringFilterInput
-  language: LanguageFiltersInput
-  and: [ComponentTranslationsLibraryContentFiltersInput]
-  or: [ComponentTranslationsLibraryContentFiltersInput]
-  not: ComponentTranslationsLibraryContentFiltersInput
-}
-
-input ComponentTranslationsLibraryContentInput {
-  id: ID
-  title: String
-  language: ID
-}
-
 type ComponentTranslationsLibraryContent {
   id: ID!
   title: String
@@ -749,22 +973,6 @@ enum ENUM_COMPONENTTRANSLATIONSSCANSET_STATUS {
   Done
 }
 
-input ComponentTranslationsScanSetFiltersInput {
-  language: LanguageFiltersInput
-  status: StringFilterInput
-  and: [ComponentTranslationsScanSetFiltersInput]
-  or: [ComponentTranslationsScanSetFiltersInput]
-  not: ComponentTranslationsScanSetFiltersInput
-}
-
-input ComponentTranslationsScanSetInput {
-  id: ID
-  language: ID
-  pages: [ID]
-  status: ENUM_COMPONENTTRANSLATIONSSCANSET_STATUS
-  credits: ComponentBasicsCreditsInput
-}
-
 type ComponentTranslationsScanSet {
   id: ID!
   language: LanguageEntityResponse
@@ -784,23 +992,6 @@ enum ENUM_COMPONENTTRANSLATIONSTEXTSET_STATUS {
   Done
 }
 
-input ComponentTranslationsTextSetFiltersInput {
-  text: StringFilterInput
-  language: LanguageFiltersInput
-  status: StringFilterInput
-  and: [ComponentTranslationsTextSetFiltersInput]
-  or: [ComponentTranslationsTextSetFiltersInput]
-  not: ComponentTranslationsTextSetFiltersInput
-}
-
-input ComponentTranslationsTextSetInput {
-  id: ID
-  text: String
-  language: ID
-  status: ENUM_COMPONENTTRANSLATIONSTEXTSET_STATUS
-  credits: ComponentBasicsCreditsInput
-}
-
 type ComponentTranslationsTextSet {
   id: ID!
   text: String
@@ -809,31 +1000,31 @@ type ComponentTranslationsTextSet {
   credits: ComponentBasicsCredits!
 }
 
+input ComponentTranslationsTitleFiltersInput {
+  language: LanguageFiltersInput
+  title: StringFilterInput
+  and: [ComponentTranslationsTitleFiltersInput]
+  or: [ComponentTranslationsTitleFiltersInput]
+  not: ComponentTranslationsTitleFiltersInput
+}
+
+input ComponentTranslationsTitleInput {
+  id: ID
+  language: ID
+  title: String
+}
+
+type ComponentTranslationsTitle {
+  id: ID!
+  language: LanguageEntityResponse
+  title: String!
+}
+
 enum ENUM_COMPONENTTRANSLATIONSVIDEOSETS_STATUS {
   Incomplete
   Draft
   Review
   Done
-}
-
-input ComponentTranslationsVideoSetsFiltersInput {
-  language: LanguageFiltersInput
-  video_url: StringFilterInput
-  video_embed: StringFilterInput
-  status: StringFilterInput
-  and: [ComponentTranslationsVideoSetsFiltersInput]
-  or: [ComponentTranslationsVideoSetsFiltersInput]
-  not: ComponentTranslationsVideoSetsFiltersInput
-}
-
-input ComponentTranslationsVideoSetsInput {
-  id: ID
-  language: ID
-  video_url: String
-  video_embed: String
-  subfile: ID
-  status: ENUM_COMPONENTTRANSLATIONSVIDEOSETS_STATUS
-  credits: ComponentBasicsCreditsInput
 }
 
 type ComponentTranslationsVideoSets {
@@ -1004,225 +1195,6 @@ type UploadFileEntityResponseCollection {
 
 type UploadFileRelationResponseCollection {
   data: [UploadFileEntity!]!
-}
-
-input I18NLocaleFiltersInput {
-  id: IDFilterInput
-  name: StringFilterInput
-  code: StringFilterInput
-  createdAt: DateTimeFilterInput
-  updatedAt: DateTimeFilterInput
-  and: [I18NLocaleFiltersInput]
-  or: [I18NLocaleFiltersInput]
-  not: I18NLocaleFiltersInput
-}
-
-type I18NLocale {
-  name: String
-  code: String
-  createdAt: DateTime
-  updatedAt: DateTime
-}
-
-type I18NLocaleEntity {
-  id: ID
-  attributes: I18NLocale
-}
-
-type I18NLocaleEntityResponse {
-  data: I18NLocaleEntity
-}
-
-type I18NLocaleEntityResponseCollection {
-  data: [I18NLocaleEntity!]!
-  meta: ResponseCollectionMeta!
-}
-
-input UsersPermissionsPermissionFiltersInput {
-  id: IDFilterInput
-  action: StringFilterInput
-  role: UsersPermissionsRoleFiltersInput
-  createdAt: DateTimeFilterInput
-  updatedAt: DateTimeFilterInput
-  and: [UsersPermissionsPermissionFiltersInput]
-  or: [UsersPermissionsPermissionFiltersInput]
-  not: UsersPermissionsPermissionFiltersInput
-}
-
-type UsersPermissionsPermission {
-  action: String!
-  role: UsersPermissionsRoleEntityResponse
-  createdAt: DateTime
-  updatedAt: DateTime
-}
-
-type UsersPermissionsPermissionEntity {
-  id: ID
-  attributes: UsersPermissionsPermission
-}
-
-type UsersPermissionsPermissionRelationResponseCollection {
-  data: [UsersPermissionsPermissionEntity!]!
-}
-
-input UsersPermissionsRoleFiltersInput {
-  id: IDFilterInput
-  name: StringFilterInput
-  description: StringFilterInput
-  type: StringFilterInput
-  permissions: UsersPermissionsPermissionFiltersInput
-  users: UsersPermissionsUserFiltersInput
-  createdAt: DateTimeFilterInput
-  updatedAt: DateTimeFilterInput
-  and: [UsersPermissionsRoleFiltersInput]
-  or: [UsersPermissionsRoleFiltersInput]
-  not: UsersPermissionsRoleFiltersInput
-}
-
-input UsersPermissionsRoleInput {
-  name: String
-  description: String
-  type: String
-  permissions: [ID]
-  users: [ID]
-}
-
-type UsersPermissionsRole {
-  name: String!
-  description: String
-  type: String
-  permissions(
-    filters: UsersPermissionsPermissionFiltersInput
-    pagination: PaginationArg = {}
-    sort: [String] = []
-  ): UsersPermissionsPermissionRelationResponseCollection
-  users(
-    filters: UsersPermissionsUserFiltersInput
-    pagination: PaginationArg = {}
-    sort: [String] = []
-  ): UsersPermissionsUserRelationResponseCollection
-  createdAt: DateTime
-  updatedAt: DateTime
-}
-
-type UsersPermissionsRoleEntity {
-  id: ID
-  attributes: UsersPermissionsRole
-}
-
-type UsersPermissionsRoleEntityResponse {
-  data: UsersPermissionsRoleEntity
-}
-
-type UsersPermissionsRoleEntityResponseCollection {
-  data: [UsersPermissionsRoleEntity!]!
-  meta: ResponseCollectionMeta!
-}
-
-input UsersPermissionsUserFiltersInput {
-  id: IDFilterInput
-  username: StringFilterInput
-  email: StringFilterInput
-  provider: StringFilterInput
-  password: StringFilterInput
-  resetPasswordToken: StringFilterInput
-  confirmationToken: StringFilterInput
-  confirmed: BooleanFilterInput
-  blocked: BooleanFilterInput
-  role: UsersPermissionsRoleFiltersInput
-  createdAt: DateTimeFilterInput
-  updatedAt: DateTimeFilterInput
-  and: [UsersPermissionsUserFiltersInput]
-  or: [UsersPermissionsUserFiltersInput]
-  not: UsersPermissionsUserFiltersInput
-}
-
-input UsersPermissionsUserInput {
-  username: String
-  email: String
-  provider: String
-  password: String
-  resetPasswordToken: String
-  confirmationToken: String
-  confirmed: Boolean
-  blocked: Boolean
-  role: ID
-}
-
-type UsersPermissionsUser {
-  username: String!
-  email: String!
-  provider: String
-  confirmed: Boolean
-  blocked: Boolean
-  role: UsersPermissionsRoleEntityResponse
-  createdAt: DateTime
-  updatedAt: DateTime
-}
-
-type UsersPermissionsUserEntity {
-  id: ID
-  attributes: UsersPermissionsUser
-}
-
-type UsersPermissionsUserEntityResponse {
-  data: UsersPermissionsUserEntity
-}
-
-type UsersPermissionsUserEntityResponseCollection {
-  data: [UsersPermissionsUserEntity!]!
-  meta: ResponseCollectionMeta!
-}
-
-type UsersPermissionsUserRelationResponseCollection {
-  data: [UsersPermissionsUserEntity!]!
-}
-
-input AudioSetFiltersInput {
-  id: IDFilterInput
-  slug: StringFilterInput
-  library_contents: LibraryContentFiltersInput
-  createdAt: DateTimeFilterInput
-  updatedAt: DateTimeFilterInput
-  and: [AudioSetFiltersInput]
-  or: [AudioSetFiltersInput]
-  not: AudioSetFiltersInput
-}
-
-input AudioSetInput {
-  slug: String
-  translations: [ComponentTranslationsAudioSetsInput]
-  library_contents: [ID]
-}
-
-type AudioSet {
-  slug: String!
-  translations(
-    filters: ComponentTranslationsAudioSetsFiltersInput
-    pagination: PaginationArg = {}
-    sort: [String] = []
-  ): [ComponentTranslationsAudioSets]
-  library_contents(
-    filters: LibraryContentFiltersInput
-    pagination: PaginationArg = {}
-    sort: [String] = []
-  ): LibraryContentRelationResponseCollection
-  createdAt: DateTime
-  updatedAt: DateTime
-}
-
-type AudioSetEntity {
-  id: ID
-  attributes: AudioSet
-}
-
-type AudioSetEntityResponse {
-  data: AudioSetEntity
-}
-
-type AudioSetEntityResponseCollection {
-  data: [AudioSetEntity!]!
-  meta: ResponseCollectionMeta!
 }
 
 input AudioSubtypeFiltersInput {
@@ -1401,6 +1373,81 @@ type ChronologyItemEntityResponse {
 
 type ChronologyItemEntityResponseCollection {
   data: [ChronologyItemEntity!]!
+  meta: ResponseCollectionMeta!
+}
+
+input ContentFiltersInput {
+  id: IDFilterInput
+  slug: StringFilterInput
+  categories: CategoryFiltersInput
+  type: ContentTypeFiltersInput
+  ranged_contents: RangedContentFiltersInput
+  createdAt: DateTimeFilterInput
+  updatedAt: DateTimeFilterInput
+  and: [ContentFiltersInput]
+  or: [ContentFiltersInput]
+  not: ContentFiltersInput
+}
+
+input ContentInput {
+  slug: String
+  categories: [ID]
+  type: ID
+  titles: [ComponentTranslationsTitleInput]
+  ranged_contents: [ID]
+  text_set: [ComponentSetsTextSetInput]
+  video_set: [ComponentSetsVideoSetInput]
+  audio_set: [ComponentSetsAudioSetInput]
+}
+
+type Content {
+  slug: String!
+  categories(
+    filters: CategoryFiltersInput
+    pagination: PaginationArg = {}
+    sort: [String] = []
+  ): CategoryRelationResponseCollection
+  type: ContentTypeEntityResponse
+  titles(
+    filters: ComponentTranslationsTitleFiltersInput
+    pagination: PaginationArg = {}
+    sort: [String] = []
+  ): [ComponentTranslationsTitle]
+  ranged_contents(
+    filters: RangedContentFiltersInput
+    pagination: PaginationArg = {}
+    sort: [String] = []
+  ): RangedContentRelationResponseCollection
+  text_set(
+    filters: ComponentSetsTextSetFiltersInput
+    pagination: PaginationArg = {}
+    sort: [String] = []
+  ): [ComponentSetsTextSet]
+  video_set(
+    filters: ComponentSetsVideoSetFiltersInput
+    pagination: PaginationArg = {}
+    sort: [String] = []
+  ): [ComponentSetsVideoSet]
+  audio_set(
+    filters: ComponentSetsAudioSetFiltersInput
+    pagination: PaginationArg = {}
+    sort: [String] = []
+  ): [ComponentSetsAudioSet]
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+type ContentEntity {
+  id: ID
+  attributes: Content
+}
+
+type ContentEntityResponse {
+  data: ContentEntity
+}
+
+type ContentEntityResponseCollection {
+  data: [ContentEntity!]!
   meta: ResponseCollectionMeta!
 }
 
@@ -1641,86 +1688,6 @@ type LanguageRelationResponseCollection {
   data: [LanguageEntity!]!
 }
 
-union LibraryContentRangeDynamicZone =
-    ComponentRangePageRange
-  | ComponentRangeTimeRange
-  | ComponentRangeGameAspect
-  | ComponentRangeOther
-  | Error
-
-scalar LibraryContentRangeDynamicZoneInput
-
-input LibraryContentFiltersInput {
-  id: IDFilterInput
-  slug: StringFilterInput
-  library_item: LibraryItemFiltersInput
-  scan_set: ScanSetFiltersInput
-  text_set: TextSetFiltersInput
-  audio_set: AudioSetFiltersInput
-  video_set: VideoSetFiltersInput
-  type: ContentTypeFiltersInput
-  categories: CategoryFiltersInput
-  createdAt: DateTimeFilterInput
-  updatedAt: DateTimeFilterInput
-  and: [LibraryContentFiltersInput]
-  or: [LibraryContentFiltersInput]
-  not: LibraryContentFiltersInput
-}
-
-input LibraryContentInput {
-  slug: String
-  title: [ComponentTranslationsLibraryContentInput]
-  library_item: ID
-  scan_set: ID
-  text_set: ID
-  range: [LibraryContentRangeDynamicZoneInput!]
-  audio_set: ID
-  video_set: ID
-  type: ID
-  categories: [ID]
-}
-
-type LibraryContent {
-  slug: String!
-  title(
-    filters: ComponentTranslationsLibraryContentFiltersInput
-    pagination: PaginationArg = {}
-    sort: [String] = []
-  ): [ComponentTranslationsLibraryContent]
-  library_item: LibraryItemEntityResponse
-  scan_set: ScanSetEntityResponse
-  text_set: TextSetEntityResponse
-  range: [LibraryContentRangeDynamicZone]!
-  audio_set: AudioSetEntityResponse
-  video_set: VideoSetEntityResponse
-  type: ContentTypeEntityResponse
-  categories(
-    filters: CategoryFiltersInput
-    pagination: PaginationArg = {}
-    sort: [String] = []
-  ): CategoryRelationResponseCollection
-  createdAt: DateTime
-  updatedAt: DateTime
-}
-
-type LibraryContentEntity {
-  id: ID
-  attributes: LibraryContent
-}
-
-type LibraryContentEntityResponse {
-  data: LibraryContentEntity
-}
-
-type LibraryContentEntityResponseCollection {
-  data: [LibraryContentEntity!]!
-  meta: ResponseCollectionMeta!
-}
-
-type LibraryContentRelationResponseCollection {
-  data: [LibraryContentEntity!]!
-}
-
 union LibraryItemMetadataDynamicZone =
     ComponentMetadataBooks
   | ComponentMetadataVideo
@@ -1739,7 +1706,7 @@ input LibraryItemFiltersInput {
   subitem_of: LibraryItemFiltersInput
   root_item: BooleanFilterInput
   variants: LibraryVariantFiltersInput
-  contents: LibraryContentFiltersInput
+  contents: RangedContentFiltersInput
   createdAt: DateTimeFilterInput
   updatedAt: DateTimeFilterInput
   and: [LibraryItemFiltersInput]
@@ -1759,10 +1726,11 @@ input LibraryItemInput {
   variants: ID
   metadata: [LibraryItemMetadataDynamicZoneInput!]
   size: ComponentBasicsSizeInput
-  contents: [ID]
   release_date: ComponentBasicsDatepickerInput
   descriptions: [ComponentTranslationsLibraryItemsInput]
   gallery: [ID]
+  contents: [ID]
+  images: ComponentCollectionsComponentLibraryImagesInput
 }
 
 type LibraryItem {
@@ -1785,11 +1753,6 @@ type LibraryItem {
   variants: LibraryVariantEntityResponse
   metadata: [LibraryItemMetadataDynamicZone]
   size: ComponentBasicsSize
-  contents(
-    filters: LibraryContentFiltersInput
-    pagination: PaginationArg = {}
-    sort: [String] = []
-  ): LibraryContentRelationResponseCollection
   release_date: ComponentBasicsDatepicker
   descriptions(
     filters: ComponentTranslationsLibraryItemsFiltersInput
@@ -1801,6 +1764,12 @@ type LibraryItem {
     pagination: PaginationArg = {}
     sort: [String] = []
   ): UploadFileRelationResponseCollection
+  contents(
+    filters: RangedContentFiltersInput
+    pagination: PaginationArg = {}
+    sort: [String] = []
+  ): RangedContentRelationResponseCollection
+  images: ComponentCollectionsComponentLibraryImages
   createdAt: DateTime
   updatedAt: DateTime
 }
@@ -1918,6 +1887,66 @@ type PostEntityResponseCollection {
   meta: ResponseCollectionMeta!
 }
 
+union RangedContentRangeDynamicZone =
+    ComponentRangePageRange
+  | ComponentRangeTimeRange
+  | ComponentRangeOther
+  | Error
+
+scalar RangedContentRangeDynamicZoneInput
+
+input RangedContentFiltersInput {
+  id: IDFilterInput
+  slug: StringFilterInput
+  library_item: LibraryItemFiltersInput
+  content: ContentFiltersInput
+  createdAt: DateTimeFilterInput
+  updatedAt: DateTimeFilterInput
+  and: [RangedContentFiltersInput]
+  or: [RangedContentFiltersInput]
+  not: RangedContentFiltersInput
+}
+
+input RangedContentInput {
+  slug: String
+  range: [RangedContentRangeDynamicZoneInput!]
+  scan_set: [ComponentSetsScanSetInput]
+  library_item: ID
+  content: ID
+}
+
+type RangedContent {
+  slug: String!
+  range: [RangedContentRangeDynamicZone]
+  scan_set(
+    filters: ComponentSetsScanSetFiltersInput
+    pagination: PaginationArg = {}
+    sort: [String] = []
+  ): [ComponentSetsScanSet]
+  library_item: LibraryItemEntityResponse
+  content: ContentEntityResponse
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+type RangedContentEntity {
+  id: ID
+  attributes: RangedContent
+}
+
+type RangedContentEntityResponse {
+  data: RangedContentEntity
+}
+
+type RangedContentEntityResponseCollection {
+  data: [RangedContentEntity!]!
+  meta: ResponseCollectionMeta!
+}
+
+type RangedContentRelationResponseCollection {
+  data: [RangedContentEntity!]!
+}
+
 input RecorderFiltersInput {
   id: IDFilterInput
   username: StringFilterInput
@@ -1971,59 +2000,10 @@ type RecorderRelationResponseCollection {
   data: [RecorderEntity!]!
 }
 
-input ScanSetFiltersInput {
-  id: IDFilterInput
-  slug: StringFilterInput
-  library_content: LibraryContentFiltersInput
-  createdAt: DateTimeFilterInput
-  updatedAt: DateTimeFilterInput
-  and: [ScanSetFiltersInput]
-  or: [ScanSetFiltersInput]
-  not: ScanSetFiltersInput
-}
-
-input ScanSetInput {
-  slug: String
-  translations: [ComponentTranslationsScanSetInput]
-  library_content: ID
-}
-
-type ScanSet {
-  slug: String!
-  translations(
-    filters: ComponentTranslationsScanSetFiltersInput
-    pagination: PaginationArg = {}
-    sort: [String] = []
-  ): [ComponentTranslationsScanSet]
-  library_content: LibraryContentEntityResponse
-  createdAt: DateTime
-  updatedAt: DateTime
-}
-
-type ScanSetEntity {
-  id: ID
-  attributes: ScanSet
-}
-
-type ScanSetEntityResponse {
-  data: ScanSetEntity
-}
-
-type ScanSetEntityResponseCollection {
-  data: [ScanSetEntity!]!
-  meta: ResponseCollectionMeta!
-}
-
-union SourceSourceDynamicZone =
-    ComponentSourceUrlSource
-  | ComponentSourceLibraryText
-  | Error
-
-scalar SourceSourceDynamicZoneInput
-
 input SourceFiltersInput {
   id: IDFilterInput
   name: StringFilterInput
+  content: ContentFiltersInput
   createdAt: DateTimeFilterInput
   updatedAt: DateTimeFilterInput
   and: [SourceFiltersInput]
@@ -2032,13 +2012,13 @@ input SourceFiltersInput {
 }
 
 input SourceInput {
-  source: [SourceSourceDynamicZoneInput!]
   name: String
+  content: ID
 }
 
 type Source {
-  source: [SourceSourceDynamicZone]!
   name: String!
+  content: ContentEntityResponse
   createdAt: DateTime
   updatedAt: DateTime
 }
@@ -2054,53 +2034,6 @@ type SourceEntityResponse {
 
 type SourceEntityResponseCollection {
   data: [SourceEntity!]!
-  meta: ResponseCollectionMeta!
-}
-
-input TextSetFiltersInput {
-  id: IDFilterInput
-  slug: StringFilterInput
-  library_contents: LibraryContentFiltersInput
-  createdAt: DateTimeFilterInput
-  updatedAt: DateTimeFilterInput
-  and: [TextSetFiltersInput]
-  or: [TextSetFiltersInput]
-  not: TextSetFiltersInput
-}
-
-input TextSetInput {
-  slug: String
-  translations: [ComponentTranslationsTextSetInput]
-  library_contents: [ID]
-}
-
-type TextSet {
-  slug: String!
-  translations(
-    filters: ComponentTranslationsTextSetFiltersInput
-    pagination: PaginationArg = {}
-    sort: [String] = []
-  ): [ComponentTranslationsTextSet]
-  library_contents(
-    filters: LibraryContentFiltersInput
-    pagination: PaginationArg = {}
-    sort: [String] = []
-  ): LibraryContentRelationResponseCollection
-  createdAt: DateTime
-  updatedAt: DateTime
-}
-
-type TextSetEntity {
-  id: ID
-  attributes: TextSet
-}
-
-type TextSetEntityResponse {
-  data: TextSetEntity
-}
-
-type TextSetEntityResponseCollection {
-  data: [TextSetEntity!]!
   meta: ResponseCollectionMeta!
 }
 
@@ -2135,53 +2068,6 @@ type TextualSubtypeEntityResponse {
 
 type TextualSubtypeEntityResponseCollection {
   data: [TextualSubtypeEntity!]!
-  meta: ResponseCollectionMeta!
-}
-
-input VideoSetFiltersInput {
-  id: IDFilterInput
-  slug: StringFilterInput
-  library_contents: LibraryContentFiltersInput
-  createdAt: DateTimeFilterInput
-  updatedAt: DateTimeFilterInput
-  and: [VideoSetFiltersInput]
-  or: [VideoSetFiltersInput]
-  not: VideoSetFiltersInput
-}
-
-input VideoSetInput {
-  slug: String
-  translations: [ComponentTranslationsVideoSetsInput]
-  library_contents: [ID]
-}
-
-type VideoSet {
-  slug: String!
-  translations(
-    filters: ComponentTranslationsVideoSetsFiltersInput
-    pagination: PaginationArg = {}
-    sort: [String] = []
-  ): [ComponentTranslationsVideoSets]
-  library_contents(
-    filters: LibraryContentFiltersInput
-    pagination: PaginationArg = {}
-    sort: [String] = []
-  ): LibraryContentRelationResponseCollection
-  createdAt: DateTime
-  updatedAt: DateTime
-}
-
-type VideoSetEntity {
-  id: ID
-  attributes: VideoSet
-}
-
-type VideoSetEntityResponse {
-  data: VideoSetEntity
-}
-
-type VideoSetEntityResponseCollection {
-  data: [VideoSetEntity!]!
   meta: ResponseCollectionMeta!
 }
 
@@ -2331,6 +2217,10 @@ union GenericMorph =
   | ComponentBasicsSize
   | ComponentCollectionsComponentEvent
   | ComponentCollectionsComponentGlossaryDefinition
+  | ComponentCollectionsComponentLibraryCover
+  | ComponentCollectionsComponentLibraryDustJacket
+  | ComponentCollectionsComponentLibraryImages
+  | ComponentCollectionsComponentLibraryObiBelt
   | ComponentCollectionsComponentWeaponStory
   | ComponentMetadataAudio
   | ComponentMetadataBooks
@@ -2346,7 +2236,10 @@ union GenericMorph =
   | ComponentRangeOther
   | ComponentRangePageRange
   | ComponentRangeTimeRange
-  | ComponentSourceLibraryText
+  | ComponentSetsAudioSet
+  | ComponentSetsScanSet
+  | ComponentSetsTextSet
+  | ComponentSetsVideoSet
   | ComponentSourceUrlSource
   | ComponentTranslationsAudioSets
   | ComponentTranslationsChronologyEra
@@ -2358,36 +2251,30 @@ union GenericMorph =
   | ComponentTranslationsPosts
   | ComponentTranslationsScanSet
   | ComponentTranslationsTextSet
+  | ComponentTranslationsTitle
   | ComponentTranslationsVideoSets
   | ComponentTranslationsWeaponStoryStory
   | ComponentTranslationsWeaponStoryType
   | ComponentTranslationsWeaponStory
   | UploadFile
-  | I18NLocale
-  | UsersPermissionsPermission
-  | UsersPermissionsRole
-  | UsersPermissionsUser
-  | AudioSet
   | AudioSubtype
   | Category
   | ChronologyEra
   | ChronologyItem
+  | Content
   | ContentType
   | Currency
   | GamePlatform
   | GlossaryItem
   | GlossaryItemType
   | Language
-  | LibraryContent
   | LibraryItem
   | LibraryVariant
   | Post
+  | RangedContent
   | Recorder
-  | ScanSet
   | Source
-  | TextSet
   | TextualSubtype
-  | VideoSet
   | WeaponStory
   | WeaponStoryGroup
   | WeaponStoryType
@@ -2396,55 +2283,6 @@ input FileInfoInput {
   name: String
   alternativeText: String
   caption: String
-}
-
-type UsersPermissionsMe {
-  id: ID!
-  username: String!
-  email: String
-  confirmed: Boolean
-  blocked: Boolean
-  role: UsersPermissionsMeRole
-}
-
-type UsersPermissionsMeRole {
-  id: ID!
-  name: String!
-  description: String
-  type: String
-}
-
-input UsersPermissionsRegisterInput {
-  username: String!
-  email: String!
-  password: String!
-}
-
-input UsersPermissionsLoginInput {
-  identifier: String!
-  password: String!
-  provider: String! = "local"
-}
-
-type UsersPermissionsPasswordPayload {
-  ok: Boolean!
-}
-
-type UsersPermissionsLoginPayload {
-  jwt: String
-  user: UsersPermissionsMe!
-}
-
-type UsersPermissionsCreateRolePayload {
-  ok: Boolean!
-}
-
-type UsersPermissionsUpdateRolePayload {
-  ok: Boolean!
-}
-
-type UsersPermissionsDeleteRolePayload {
-  ok: Boolean!
 }
 
 input PaginationArg {
@@ -2461,30 +2299,6 @@ type Query {
     pagination: PaginationArg = {}
     sort: [String] = []
   ): UploadFileEntityResponseCollection
-  i18NLocale(id: ID): I18NLocaleEntityResponse
-  i18NLocales(
-    filters: I18NLocaleFiltersInput
-    pagination: PaginationArg = {}
-    sort: [String] = []
-  ): I18NLocaleEntityResponseCollection
-  usersPermissionsRole(id: ID): UsersPermissionsRoleEntityResponse
-  usersPermissionsRoles(
-    filters: UsersPermissionsRoleFiltersInput
-    pagination: PaginationArg = {}
-    sort: [String] = []
-  ): UsersPermissionsRoleEntityResponseCollection
-  usersPermissionsUser(id: ID): UsersPermissionsUserEntityResponse
-  usersPermissionsUsers(
-    filters: UsersPermissionsUserFiltersInput
-    pagination: PaginationArg = {}
-    sort: [String] = []
-  ): UsersPermissionsUserEntityResponseCollection
-  audioSet(id: ID): AudioSetEntityResponse
-  audioSets(
-    filters: AudioSetFiltersInput
-    pagination: PaginationArg = {}
-    sort: [String] = []
-  ): AudioSetEntityResponseCollection
   audioSubtype(id: ID): AudioSubtypeEntityResponse
   audioSubtypes(
     filters: AudioSubtypeFiltersInput
@@ -2509,6 +2323,12 @@ type Query {
     pagination: PaginationArg = {}
     sort: [String] = []
   ): ChronologyItemEntityResponseCollection
+  content(id: ID): ContentEntityResponse
+  contents(
+    filters: ContentFiltersInput
+    pagination: PaginationArg = {}
+    sort: [String] = []
+  ): ContentEntityResponseCollection
   contentType(id: ID): ContentTypeEntityResponse
   contentTypes(
     filters: ContentTypeFiltersInput
@@ -2545,12 +2365,6 @@ type Query {
     pagination: PaginationArg = {}
     sort: [String] = []
   ): LanguageEntityResponseCollection
-  libraryContent(id: ID): LibraryContentEntityResponse
-  libraryContents(
-    filters: LibraryContentFiltersInput
-    pagination: PaginationArg = {}
-    sort: [String] = []
-  ): LibraryContentEntityResponseCollection
   libraryItem(id: ID): LibraryItemEntityResponse
   libraryItems(
     filters: LibraryItemFiltersInput
@@ -2570,42 +2384,30 @@ type Query {
     sort: [String] = []
     publicationState: PublicationState = LIVE
   ): PostEntityResponseCollection
+  rangedContent(id: ID): RangedContentEntityResponse
+  rangedContents(
+    filters: RangedContentFiltersInput
+    pagination: PaginationArg = {}
+    sort: [String] = []
+  ): RangedContentEntityResponseCollection
   recorder(id: ID): RecorderEntityResponse
   recorders(
     filters: RecorderFiltersInput
     pagination: PaginationArg = {}
     sort: [String] = []
   ): RecorderEntityResponseCollection
-  scanSet(id: ID): ScanSetEntityResponse
-  scanSets(
-    filters: ScanSetFiltersInput
-    pagination: PaginationArg = {}
-    sort: [String] = []
-  ): ScanSetEntityResponseCollection
   source(id: ID): SourceEntityResponse
   sources(
     filters: SourceFiltersInput
     pagination: PaginationArg = {}
     sort: [String] = []
   ): SourceEntityResponseCollection
-  textSet(id: ID): TextSetEntityResponse
-  textSets(
-    filters: TextSetFiltersInput
-    pagination: PaginationArg = {}
-    sort: [String] = []
-  ): TextSetEntityResponseCollection
   textualSubtype(id: ID): TextualSubtypeEntityResponse
   textualSubtypes(
     filters: TextualSubtypeFiltersInput
     pagination: PaginationArg = {}
     sort: [String] = []
   ): TextualSubtypeEntityResponseCollection
-  videoSet(id: ID): VideoSetEntityResponse
-  videoSets(
-    filters: VideoSetFiltersInput
-    pagination: PaginationArg = {}
-    sort: [String] = []
-  ): VideoSetEntityResponseCollection
   weaponStory(id: ID): WeaponStoryEntityResponse
   weaponStories(
     filters: WeaponStoryFiltersInput
@@ -2624,16 +2426,12 @@ type Query {
     pagination: PaginationArg = {}
     sort: [String] = []
   ): WeaponStoryTypeEntityResponseCollection
-  me: UsersPermissionsMe
 }
 
 type Mutation {
   createUploadFile(data: UploadFileInput!): UploadFileEntityResponse
   updateUploadFile(id: ID!, data: UploadFileInput!): UploadFileEntityResponse
   deleteUploadFile(id: ID!): UploadFileEntityResponse
-  createAudioSet(data: AudioSetInput!): AudioSetEntityResponse
-  updateAudioSet(id: ID!, data: AudioSetInput!): AudioSetEntityResponse
-  deleteAudioSet(id: ID!): AudioSetEntityResponse
   createAudioSubtype(data: AudioSubtypeInput!): AudioSubtypeEntityResponse
   updateAudioSubtype(
     id: ID!
@@ -2655,6 +2453,9 @@ type Mutation {
     data: ChronologyItemInput!
   ): ChronologyItemEntityResponse
   deleteChronologyItem(id: ID!): ChronologyItemEntityResponse
+  createContent(data: ContentInput!): ContentEntityResponse
+  updateContent(id: ID!, data: ContentInput!): ContentEntityResponse
+  deleteContent(id: ID!): ContentEntityResponse
   createContentType(data: ContentTypeInput!): ContentTypeEntityResponse
   updateContentType(id: ID!, data: ContentTypeInput!): ContentTypeEntityResponse
   deleteContentType(id: ID!): ContentTypeEntityResponse
@@ -2684,12 +2485,6 @@ type Mutation {
   createLanguage(data: LanguageInput!): LanguageEntityResponse
   updateLanguage(id: ID!, data: LanguageInput!): LanguageEntityResponse
   deleteLanguage(id: ID!): LanguageEntityResponse
-  createLibraryContent(data: LibraryContentInput!): LibraryContentEntityResponse
-  updateLibraryContent(
-    id: ID!
-    data: LibraryContentInput!
-  ): LibraryContentEntityResponse
-  deleteLibraryContent(id: ID!): LibraryContentEntityResponse
   createLibraryItem(data: LibraryItemInput!): LibraryItemEntityResponse
   updateLibraryItem(id: ID!, data: LibraryItemInput!): LibraryItemEntityResponse
   deleteLibraryItem(id: ID!): LibraryItemEntityResponse
@@ -2702,27 +2497,24 @@ type Mutation {
   createPost(data: PostInput!): PostEntityResponse
   updatePost(id: ID!, data: PostInput!): PostEntityResponse
   deletePost(id: ID!): PostEntityResponse
+  createRangedContent(data: RangedContentInput!): RangedContentEntityResponse
+  updateRangedContent(
+    id: ID!
+    data: RangedContentInput!
+  ): RangedContentEntityResponse
+  deleteRangedContent(id: ID!): RangedContentEntityResponse
   createRecorder(data: RecorderInput!): RecorderEntityResponse
   updateRecorder(id: ID!, data: RecorderInput!): RecorderEntityResponse
   deleteRecorder(id: ID!): RecorderEntityResponse
-  createScanSet(data: ScanSetInput!): ScanSetEntityResponse
-  updateScanSet(id: ID!, data: ScanSetInput!): ScanSetEntityResponse
-  deleteScanSet(id: ID!): ScanSetEntityResponse
   createSource(data: SourceInput!): SourceEntityResponse
   updateSource(id: ID!, data: SourceInput!): SourceEntityResponse
   deleteSource(id: ID!): SourceEntityResponse
-  createTextSet(data: TextSetInput!): TextSetEntityResponse
-  updateTextSet(id: ID!, data: TextSetInput!): TextSetEntityResponse
-  deleteTextSet(id: ID!): TextSetEntityResponse
   createTextualSubtype(data: TextualSubtypeInput!): TextualSubtypeEntityResponse
   updateTextualSubtype(
     id: ID!
     data: TextualSubtypeInput!
   ): TextualSubtypeEntityResponse
   deleteTextualSubtype(id: ID!): TextualSubtypeEntityResponse
-  createVideoSet(data: VideoSetInput!): VideoSetEntityResponse
-  updateVideoSet(id: ID!, data: VideoSetInput!): VideoSetEntityResponse
-  deleteVideoSet(id: ID!): VideoSetEntityResponse
   createWeaponStory(data: WeaponStoryInput!): WeaponStoryEntityResponse
   updateWeaponStory(id: ID!, data: WeaponStoryInput!): WeaponStoryEntityResponse
   deleteWeaponStory(id: ID!): WeaponStoryEntityResponse
@@ -2757,49 +2549,4 @@ type Mutation {
   ): [UploadFileEntityResponse]!
   updateFileInfo(id: ID!, info: FileInfoInput): UploadFileEntityResponse!
   removeFile(id: ID!): UploadFileEntityResponse
-
-  # Create a new role
-  createUsersPermissionsRole(
-    data: UsersPermissionsRoleInput!
-  ): UsersPermissionsCreateRolePayload
-
-  # Update an existing role
-  updateUsersPermissionsRole(
-    id: ID!
-    data: UsersPermissionsRoleInput!
-  ): UsersPermissionsUpdateRolePayload
-
-  # Delete an existing role
-  deleteUsersPermissionsRole(id: ID!): UsersPermissionsDeleteRolePayload
-
-  # Create a new user
-  createUsersPermissionsUser(
-    data: UsersPermissionsUserInput!
-  ): UsersPermissionsUserEntityResponse!
-
-  # Update an existing user
-  updateUsersPermissionsUser(
-    id: ID!
-    data: UsersPermissionsUserInput!
-  ): UsersPermissionsUserEntityResponse!
-
-  # Update an existing user
-  deleteUsersPermissionsUser(id: ID!): UsersPermissionsUserEntityResponse!
-  login(input: UsersPermissionsLoginInput!): UsersPermissionsLoginPayload!
-
-  # Register a user
-  register(input: UsersPermissionsRegisterInput!): UsersPermissionsLoginPayload!
-
-  # Request a reset password token
-  forgotPassword(email: String!): UsersPermissionsPasswordPayload
-
-  # Reset user password. Confirm with a code (resetToken from forgotPassword)
-  resetPassword(
-    password: String!
-    passwordConfirmation: String!
-    code: String!
-  ): UsersPermissionsLoginPayload
-
-  # Confirm an email users email address
-  emailConfirmation(confirmation: String!): UsersPermissionsLoginPayload
 }

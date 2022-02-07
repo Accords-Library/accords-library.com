@@ -20,8 +20,19 @@ export function prettyPrice(
   pricePicker: GetLibraryItemsPreviewQuery["libraryItems"]["data"][number]["attributes"]["price"]
 ): string {
   return (
-    pricePicker.currency.data.attributes.symbol + pricePicker.amount.toLocaleString()
+    pricePicker.currency.data.attributes.symbol +
+    pricePicker.amount.toLocaleString()
   );
+}
+
+export function prettySlug(slug: string, parentSlug?: string): string {
+  if (parentSlug && slug.startsWith(parentSlug))
+    slug = slug.substring(parentSlug.length + 1);
+  let words = slug.split("-");
+  words = words.map(
+    (word) => (word = word.charAt(0).toUpperCase() + word.substring(1))
+  );
+  return words.join(" ");
 }
 
 export function convertMmToInch(mm: number): string {

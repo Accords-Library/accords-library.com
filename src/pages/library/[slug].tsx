@@ -12,6 +12,7 @@ import {
   getAssetURL,
   prettyDate,
   prettyPrice,
+  prettySlug,
 } from "queries/helpers";
 import SubPanel from "components/Panels/SubPanel";
 import ReturnButton from "components/PanelComponents/ReturnButton";
@@ -240,14 +241,24 @@ export default function Library(props: Props): JSX.Element {
                   >
                     <div className="grid gap-4 place-items-center grid-cols-[auto_auto_1fr_auto_9em] ">
                       <a href={`#${content.attributes.slug}`}>
-                        <h3>{content.attributes.title[0].title}</h3>
+                        <h3>
+                          {content.attributes.content.data
+                            ? content.attributes.content.data.attributes
+                                .titles[0].title
+                            : prettySlug(
+                                content.attributes.slug,
+                                libraryItem.attributes.slug
+                              )}
+                        </h3>
                       </a>
                       <div className="grid grid-flow-col gap-1">
-                        {content.attributes.categories.data.map((category) => (
-                          <Chip key={category.id}>
-                            {category.attributes.short}
-                          </Chip>
-                        ))}
+                        {content.attributes.content.data?.attributes.categories.data.map(
+                          (category) => (
+                            <Chip key={category.id}>
+                              {category.attributes.short}
+                            </Chip>
+                          )
+                        )}
                       </div>
                       <p className="border-b-2 h-4 w-full border-black border-dotted opacity-30"></p>
                       <p>
@@ -256,18 +267,25 @@ export default function Library(props: Props): JSX.Element {
                           ? content.attributes.range[0].starting_page
                           : ""}
                       </p>
-                      <Chip className="place-self-end">
-                        {content.attributes.type.data.attributes.slug}
-                      </Chip>
+                      {content.attributes.content.data ? (
+                        <Chip className="place-self-end">
+                          {
+                            content.attributes.content.data.attributes.type.data
+                              .attributes.slug
+                          }
+                        </Chip>
+                      ) : (
+                        ""
+                      )}
                     </div>
                     <div className="grid grid-flow-col place-content-start place-items-center gap-2">
                       <span className="material-icons text-dark">
                         subdirectory_arrow_right
                       </span>
 
-                      {content.attributes.scan_set.data ? (
+                      {content.attributes.scan_set.length > 0 ? (
                         <Button
-                          href={`/scans/${content.attributes.scan_set.data.attributes.slug}`}
+                          href={`content/${content.attributes.content.data.attributes.slug}/scans/`}
                         >
                           View scan
                         </Button>
@@ -275,9 +293,10 @@ export default function Library(props: Props): JSX.Element {
                         ""
                       )}
 
-                      {content.attributes.text_set.data ? (
+                      {content.attributes.content.data?.attributes.text_set
+                        .length > 0 ? (
                         <Button
-                          href={`/read/${content.attributes.text_set.data.attributes.slug}`}
+                          href={`content/${content.attributes.content.data.attributes.slug}/read/`}
                         >
                           Read content
                         </Button>
@@ -285,9 +304,10 @@ export default function Library(props: Props): JSX.Element {
                         ""
                       )}
 
-                      {content.attributes.audio_set.data ? (
+                      {content.attributes.content.data?.attributes.audio_set
+                        .length > 0 ? (
                         <Button
-                          href={`/listen/${content.attributes.audio_set.data.attributes.slug}`}
+                          href={`content/${content.attributes.content.data.attributes.slug}/listen/`}
                         >
                           Listen content
                         </Button>
@@ -295,9 +315,10 @@ export default function Library(props: Props): JSX.Element {
                         ""
                       )}
 
-                      {content.attributes.video_set.data ? (
+                      {content.attributes.content.data?.attributes.video_set
+                        .length > 0 ? (
                         <Button
-                          href={`/watch/${content.attributes.video_set.data.attributes.slug}`}
+                          href={`content/${content.attributes.content.data.attributes.slug}/watch/`}
                         >
                           View content
                         </Button>
@@ -305,10 +326,14 @@ export default function Library(props: Props): JSX.Element {
                         ""
                       )}
 
-                      {!content.attributes.scan_set.data &&
-                      !content.attributes.text_set.data &&
-                      !content.attributes.audio_set.data &&
-                      !content.attributes.video_set.data
+                      {content.attributes.scan_set.length === 0 &&
+                      (!content.attributes.content.data ||
+                        (content.attributes.content.data.attributes.text_set
+                          .length === 0 &&
+                          content.attributes.content.data.attributes.audio_set
+                            .length === 0 &&
+                          content.attributes.content.data.attributes.video_set
+                            .length === 0))
                         ? "The content is not available"
                         : ""}
                     </div>

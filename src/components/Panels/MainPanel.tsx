@@ -21,7 +21,7 @@ export default function MainPanel(): JSX.Element {
           </Link>
           <div className="relative mt-5">
             {router.locale ? (
-              <Button className="absolute right-0 top-[-1.3em] text-xs py-0.5 px-2.5">
+              <Button className="absolute right-0 top-[-1.3em] text-xs !py-0.5 !px-2.5">
                 {router.locale.toUpperCase()}
               </Button>
             ) : (

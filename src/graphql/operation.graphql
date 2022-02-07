@@ -285,62 +285,11 @@ query getLibraryItem($slug: String, $language_code: String) {
             }
           }
         }
-        contents {
+        contents(pagination: { limit: -1 }) {
           data {
             id
             attributes {
               slug
-              title(filters: { language: { code: { eq: $language_code } } }) {
-                title
-              }
-              type {
-                data {
-                  attributes {
-                    slug
-                  }
-                }
-              }
-              categories {
-                data {
-                  id
-                  attributes {
-                    name
-                    short
-                  }
-                }
-              }
-              scan_set {
-                data {
-                  id
-                  attributes {
-                    slug
-                  }
-                }
-              }
-              text_set {
-                data {
-                  id
-                  attributes {
-                    slug
-                  }
-                }
-              }
-              audio_set {
-                data {
-                  id
-                  attributes {
-                    slug
-                  }
-                }
-              }
-              video_set {
-                data {
-                  id
-                  attributes {
-                    slug
-                  }
-                }
-              }
               range {
                 __typename
                 ... on ComponentRangePageRange {
@@ -350,6 +299,45 @@ query getLibraryItem($slug: String, $language_code: String) {
                 ... on ComponentRangeTimeRange {
                   starting_time
                   ending_time
+                }
+              }
+              scan_set {
+                id
+              }
+              content {
+                data {
+                  attributes {
+                    slug
+                    categories {
+                      data {
+                        id
+                        attributes {
+                          short
+                        }
+                      }
+                    }
+                    type {
+                      data {
+                        attributes {
+                          slug
+                        }
+                      }
+                    }
+                    titles(
+                      filters: { language: { code: { eq: $language_code } } }
+                    ) {
+                      title
+                    }
+                    text_set {
+                      id
+                    }
+                    video_set {
+                      id
+                    }
+                    audio_set {
+                      id
+                    }
+                  }
                 }
               }
             }

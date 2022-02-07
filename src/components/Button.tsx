@@ -10,7 +10,7 @@ export default function Button(props: ButtonProps): JSX.Element {
   const button = (
     <div
       className={
-        "grid place-content-center place-items-center border-[1px] border-dark text-dark rounded-full cursor-pointer px-4 py-2 transition-colors hover:text-light hover:bg-dark" +
+        "grid place-content-center place-items-center border-[1px] border-dark text-dark rounded-full cursor-pointer px-4 pt-[0.4rem] pb-[0.5rem] transition-colors hover:text-light hover:bg-dark" +
         " " +
         props.className
       }

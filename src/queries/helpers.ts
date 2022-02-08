@@ -31,9 +31,19 @@ export function prettyPrice(
 export function prettySlug(slug: string, parentSlug?: string): string {
   if (parentSlug && slug.startsWith(parentSlug))
   slug = slug.substring(parentSlug.length + 1);
-  return capitalizeString(slug.replace(new RegExp("-", 'g'), " "))
-  return slug;
+  slug = slug.replace(new RegExp("-", 'g'), " ");
+  slug = slug.replace(new RegExp("_", 'g'), " ");
+  return capitalizeString(slug)
 }
+
+export function prettyinlineTitle(pretitle:string, title: string, subtitle:string): string {
+  let result = "";
+  if (pretitle) result += pretitle + ": "
+  result += title;
+  if (subtitle) result += " - " + subtitle;
+  return result;
+}
+
 
 export function capitalizeString(string:string):string {
   function capitalizeWord(word: string): string {

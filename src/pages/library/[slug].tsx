@@ -11,6 +11,7 @@ import {
   convertMmToInch,
   getAssetURL,
   prettyDate,
+  prettyinlineTitle,
   prettyPrice,
   prettySlug,
 } from "queries/helpers";
@@ -102,10 +103,11 @@ export default function Library(props: Props): JSX.Element {
                   <Button
                     href={`/library/${item.subitem_of.data[0].attributes.slug}`}
                   >
-                    {item.subitem_of.data[0].attributes.title}
-                    {item.subitem_of.data[0].attributes.subtitle
-                      ? ` - ${item.subitem_of.data[0].attributes.subtitle}`
-                      : ""}
+                    {prettyinlineTitle(
+                      "",
+                      item.subitem_of.data[0].attributes.title,
+                      item.subitem_of.data[0].attributes.subtitle
+                    )}
                   </Button>
                 </div>
               ) : (
@@ -237,7 +239,7 @@ export default function Library(props: Props): JSX.Element {
                         <div className="grid place-content-start grid-flow-col gap-4">
                           <p className="font-bold">Type:</p>
                           <Chip>
-                            {capitalizeString(
+                            {prettySlug(
                               item.metadata[0].subtype.data.attributes.slug
                             )}
                           </Chip>
@@ -255,7 +257,7 @@ export default function Library(props: Props): JSX.Element {
 
                         <div className="grid place-content-start grid-flow-col gap-4">
                           <p className="font-bold">Page order:</p>
-                          <p>{item.metadata[0].page_order}</p>
+                          <p>{prettySlug(item.metadata[0].page_order)}</p>
                         </div>
 
                         <div className="grid place-content-start grid-flow-col gap-4">
@@ -265,6 +267,30 @@ export default function Library(props: Props): JSX.Element {
                               {lang.attributes.name}
                             </p>
                           ))}
+                        </div>
+                      </>
+                    ) : item.metadata[0].__typename ===
+                      "ComponentMetadataAudio" ? (
+                      <></>
+                    ) : item.metadata[0].__typename ===
+                      "ComponentMetadataVideo" ? (
+                      <></>
+                    ) : item.metadata[0].__typename ===
+                      "ComponentMetadataGame" ? (
+                      <></>
+                    ) : item.metadata[0].__typename ===
+                      "ComponentMetadataMerch" ? (
+                      <></>
+                    ) : item.metadata[0].__typename ===
+                      "ComponentMetadataOther" ? (
+                      <>
+                        <div className="grid place-content-start grid-flow-col gap-4">
+                          <p className="font-bold">Type:</p>
+                          <Chip>
+                            {prettySlug(
+                              item.metadata[0].subtype.data.attributes.slug
+                            )}
+                          </Chip>
                         </div>
                       </>
                     ) : (
@@ -279,9 +305,9 @@ export default function Library(props: Props): JSX.Element {
           </div>
 
           {item.subitems.data.length > 0 ? (
-            <div id="subitems" className="grid place-items-center gap-8">
+            <div id="subitems" className="grid place-items-center gap-8 w-full">
               <h2 className="text-2xl">Subitems</h2>
-              <div className="grid gap-8 items-end grid-cols-[repeat(auto-fill,minmax(15rem,1fr))]">
+              <div className="grid gap-8 items-end grid-cols-[repeat(auto-fill,minmax(15rem,1fr))] w-full">
                 {item.subitems.data.map((subitem) => (
                   <LibraryItemComponent key={subitem.id} item={subitem} />
                 ))}
@@ -304,9 +330,17 @@ export default function Library(props: Props): JSX.Element {
                     <div className="grid gap-4 place-items-center grid-cols-[auto_auto_1fr_auto_9em] ">
                       <a href={`#${content.attributes.slug}`}>
                         <h3>
-                          {content.attributes.content.data
-                            ? content.attributes.content.data.attributes
-                                .titles[0].title
+                          {content.attributes.content.data &&
+                          content.attributes.content.data.attributes.titles
+                            .length > 0
+                            ? prettyinlineTitle(
+                                content.attributes.content.data.attributes
+                                  .titles[0].pre_title,
+                                content.attributes.content.data.attributes
+                                  .titles[0].title,
+                                content.attributes.content.data.attributes
+                                  .titles[0].subtitle
+                              )
                             : prettySlug(content.attributes.slug, item.slug)}
                         </h3>
                       </a>
@@ -328,10 +362,10 @@ export default function Library(props: Props): JSX.Element {
                       </p>
                       {content.attributes.content.data ? (
                         <Chip className="place-self-end">
-                          {
+                          {prettySlug(
                             content.attributes.content.data.attributes.type.data
                               .attributes.slug
-                          }
+                          )}
                         </Chip>
                       ) : (
                         ""

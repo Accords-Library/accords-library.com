@@ -252,6 +252,24 @@ query getLibraryItem($slug: String, $language_code: String) {
               }
             }
           }
+          ... on ComponentMetadataMerch {
+            merch_item {
+              data {
+                attributes {
+                  slug
+                }
+              }
+            }
+          }
+          ... on ComponentMetadataOther {
+            subtype {
+              data {
+                attributes {
+                  slug
+                }
+              }
+            }
+          }
         }
         subitem_of {
           data {
@@ -326,7 +344,9 @@ query getLibraryItem($slug: String, $language_code: String) {
                     titles(
                       filters: { language: { code: { eq: $language_code } } }
                     ) {
+                      pre_title
                       title
+                      subtitle
                     }
                     text_set {
                       id

@@ -50,10 +50,10 @@ export enum Enum_Componentmetadatavideo_Resolution {
 }
 
 export enum Enum_Componenttranslationschronologyitem_Status {
-  Incomplete = 'Incomplete',
-  Draft = 'Draft',
-  Review = 'Review',
-  Done = 'Done'
+  Incomplete = "Incomplete",
+  Draft = "Draft",
+  Review = "Review",
+  Done = "Done",
 }
 
 // __________________________________________________________________
@@ -397,6 +397,32 @@ export type GetLibraryItemQuery = {
                 }>;
               };
             }
+          | {
+              __typename: "ComponentMetadataMerch";
+              merch_item: {
+                __typename: "MerchItemEntityResponse";
+                data: {
+                  __typename: "MerchItemEntity";
+                  attributes: {
+                    __typename: "MerchItem";
+                    slug: string;
+                  };
+                };
+              };
+            }
+          | {
+              __typename: "ComponentMetadataOther";
+              subtype: {
+                __typename: "OtherSubtypeEntityResponse";
+                data: {
+                  __typename: "OtherSubtypeEntity";
+                  attributes: {
+                    __typename: "OtherSubtype";
+                    slug: string;
+                  };
+                };
+              };
+            }
           | { __typename: "Error" }
         >;
         subitem_of: {
@@ -496,7 +522,9 @@ export type GetLibraryItemQuery = {
                     };
                     titles: Array<{
                       __typename: "ComponentTranslationsTitle";
+                      pre_title: string;
                       title: string;
+                      subtitle: string;
                     }>;
                     text_set: Array<{
                       __typename: "ComponentSetsTextSet";

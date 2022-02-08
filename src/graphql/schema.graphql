@@ -482,6 +482,16 @@ type ComponentMetadataGame {
   ): LanguageRelationResponseCollection
 }
 
+type ComponentMetadataMerch {
+  id: ID!
+  merch_item: MerchItemEntityResponse
+}
+
+type ComponentMetadataOther {
+  id: ID!
+  subtype: OtherSubtypeEntityResponse
+}
+
 enum ENUM_COMPONENTMETADATAVIDEO_RESOLUTION {
   SD_480p
   HD_720p
@@ -1398,6 +1408,7 @@ input ContentInput {
   text_set: [ComponentSetsTextSetInput]
   video_set: [ComponentSetsVideoSetInput]
   audio_set: [ComponentSetsAudioSetInput]
+  thumbnail: ID
 }
 
 type Content {
@@ -1433,6 +1444,7 @@ type Content {
     pagination: PaginationArg = {}
     sort: [String] = []
   ): [ComponentSetsAudioSet]
+  thumbnail: UploadFileEntityResponse
   createdAt: DateTime
   updatedAt: DateTime
 }
@@ -1693,6 +1705,8 @@ union LibraryItemMetadataDynamicZone =
   | ComponentMetadataVideo
   | ComponentMetadataGame
   | ComponentMetadataAudio
+  | ComponentMetadataMerch
+  | ComponentMetadataOther
   | Error
 
 scalar LibraryItemMetadataDynamicZoneInput
@@ -1827,6 +1841,74 @@ type LibraryVariantEntityResponse {
 
 type LibraryVariantEntityResponseCollection {
   data: [LibraryVariantEntity!]!
+  meta: ResponseCollectionMeta!
+}
+
+input MerchItemFiltersInput {
+  id: IDFilterInput
+  slug: StringFilterInput
+  createdAt: DateTimeFilterInput
+  updatedAt: DateTimeFilterInput
+  and: [MerchItemFiltersInput]
+  or: [MerchItemFiltersInput]
+  not: MerchItemFiltersInput
+}
+
+input MerchItemInput {
+  slug: String
+}
+
+type MerchItem {
+  slug: String!
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+type MerchItemEntity {
+  id: ID
+  attributes: MerchItem
+}
+
+type MerchItemEntityResponse {
+  data: MerchItemEntity
+}
+
+type MerchItemEntityResponseCollection {
+  data: [MerchItemEntity!]!
+  meta: ResponseCollectionMeta!
+}
+
+input OtherSubtypeFiltersInput {
+  id: IDFilterInput
+  slug: StringFilterInput
+  createdAt: DateTimeFilterInput
+  updatedAt: DateTimeFilterInput
+  and: [OtherSubtypeFiltersInput]
+  or: [OtherSubtypeFiltersInput]
+  not: OtherSubtypeFiltersInput
+}
+
+input OtherSubtypeInput {
+  slug: String
+}
+
+type OtherSubtype {
+  slug: String!
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+type OtherSubtypeEntity {
+  id: ID
+  attributes: OtherSubtype
+}
+
+type OtherSubtypeEntityResponse {
+  data: OtherSubtypeEntity
+}
+
+type OtherSubtypeEntityResponseCollection {
+  data: [OtherSubtypeEntity!]!
   meta: ResponseCollectionMeta!
 }
 
@@ -2225,6 +2307,8 @@ union GenericMorph =
   | ComponentMetadataAudio
   | ComponentMetadataBooks
   | ComponentMetadataGame
+  | ComponentMetadataMerch
+  | ComponentMetadataOther
   | ComponentMetadataVideo
   | ComponentPageBuilderComponentPane
   | ComponentPageBuilderComponentTab
@@ -2270,6 +2354,8 @@ union GenericMorph =
   | Language
   | LibraryItem
   | LibraryVariant
+  | MerchItem
+  | OtherSubtype
   | Post
   | RangedContent
   | Recorder
@@ -2377,6 +2463,18 @@ type Query {
     pagination: PaginationArg = {}
     sort: [String] = []
   ): LibraryVariantEntityResponseCollection
+  merchItem(id: ID): MerchItemEntityResponse
+  merchItems(
+    filters: MerchItemFiltersInput
+    pagination: PaginationArg = {}
+    sort: [String] = []
+  ): MerchItemEntityResponseCollection
+  otherSubtype(id: ID): OtherSubtypeEntityResponse
+  otherSubtypes(
+    filters: OtherSubtypeFiltersInput
+    pagination: PaginationArg = {}
+    sort: [String] = []
+  ): OtherSubtypeEntityResponseCollection
   post(id: ID): PostEntityResponse
   posts(
     filters: PostFiltersInput
@@ -2494,6 +2592,15 @@ type Mutation {
     data: LibraryVariantInput!
   ): LibraryVariantEntityResponse
   deleteLibraryVariant(id: ID!): LibraryVariantEntityResponse
+  createMerchItem(data: MerchItemInput!): MerchItemEntityResponse
+  updateMerchItem(id: ID!, data: MerchItemInput!): MerchItemEntityResponse
+  deleteMerchItem(id: ID!): MerchItemEntityResponse
+  createOtherSubtype(data: OtherSubtypeInput!): OtherSubtypeEntityResponse
+  updateOtherSubtype(
+    id: ID!
+    data: OtherSubtypeInput!
+  ): OtherSubtypeEntityResponse
+  deleteOtherSubtype(id: ID!): OtherSubtypeEntityResponse
   createPost(data: PostInput!): PostEntityResponse
   updatePost(id: ID!, data: PostInput!): PostEntityResponse
   deletePost(id: ID!): PostEntityResponse

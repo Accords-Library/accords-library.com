@@ -7,6 +7,8 @@ import Image from "next/image";
 import { getAssetURL, prettySlug } from "queries/helpers";
 import Button from "components/Button";
 import HorizontalLine from "components/HorizontalLine";
+import SubPanel from "components/Panels/SubPanel";
+import ReturnButton from "components/PanelComponents/ReturnButton";
 
 type Props = {
   content: GetContentQuery;
@@ -24,7 +26,7 @@ export default function Library(props: Props): JSX.Element {
     <>
       <ContentPanel>
         <div className="grid place-items-center">
-          <div className="grid place-items-center gap-12">
+          <div className="grid place-items-center gap-12  mb-12">
             <div>
               <Image
                 className="rounded-lg"

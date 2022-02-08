@@ -7,13 +7,16 @@ import Image from "next/image";
 import { getAssetURL, prettySlug } from "queries/helpers";
 import Button from "components/Button";
 import HorizontalLine from "components/HorizontalLine";
+import Markdown from "markdown-to-jsx";
+import SubPanel from "components/Panels/SubPanel";
+import ReturnButton from "components/PanelComponents/ReturnButton";
 
 type Props = {
   content: GetContentTextQuery;
 };
 
 applyCustomAppProps(Library, {
-  useSubPanel: false,
+  useSubPanel: true,
   useContentPanel: true,
 });
 
@@ -22,9 +25,12 @@ export default function Library(props: Props): JSX.Element {
 
   return (
     <>
+      <SubPanel>
+        <ReturnButton href={`/content/${content.slug}`} title="Content" />
+      </SubPanel>
       <ContentPanel>
         <div className="grid place-items-center">
-          <div className="grid place-items-center gap-12">
+          <div className="grid place-items-center gap-12 mb-12">
             <div>
               <Image
                 className="rounded-lg"
@@ -66,8 +72,8 @@ export default function Library(props: Props): JSX.Element {
           <HorizontalLine />
 
           {content.text_set.length > 0 ? (
-            <div className="prose">
-                {content.text_set[0].text}
+            <div className="prose prose-lg text-black">
+              <Markdown>{content.text_set[0].text}</Markdown>
             </div>
           ) : (
             ""

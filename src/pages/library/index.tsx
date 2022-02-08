@@ -30,7 +30,7 @@ export default function Library(props: Props): JSX.Element {
       </SubPanel>
 
       <ContentPanel width={ContentPanelWidthSizes.large}>
-        <div className="grid gap-8 items-end grid-cols-[repeat(auto-fit,_minmax(15rem,1fr))]">
+        <div className="grid gap-8 items-end grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))]">
           {props.libraryItems.libraryItems.data.map((item) => (
             <LibraryItemComponent key={item.id} item={item} />
           ))}

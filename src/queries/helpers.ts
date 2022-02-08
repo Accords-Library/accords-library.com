@@ -1,4 +1,7 @@
-import { GetLibraryItemsPreviewQuery } from "graphql/operations-types";
+import {
+  GetLibraryItemQuery,
+  GetLibraryItemsPreviewQuery,
+} from "graphql/operations-types";
 
 export function getAssetURL(url: string): string {
   return process.env.NEXT_PUBLIC_URL_CMS + url;
@@ -27,10 +30,19 @@ export function prettyPrice(
 
 export function prettySlug(slug: string, parentSlug?: string): string {
   if (parentSlug && slug.startsWith(parentSlug))
-    slug = slug.substring(parentSlug.length + 1);
-  let words = slug.split("-");
+  slug = slug.substring(parentSlug.length + 1);
+  return capitalizeString(slug.replace(new RegExp("-", 'g'), " "))
+  return slug;
+}
+
+export function capitalizeString(string:string):string {
+  function capitalizeWord(word: string): string {
+    return word.charAt(0).toUpperCase() + word.substring(1);
+  }
+
+  let words = string.split(" ");
   words = words.map(
-    (word) => (word = word.charAt(0).toUpperCase() + word.substring(1))
+    (word) => (word = capitalizeWord(word))
   );
   return words.join(" ");
 }

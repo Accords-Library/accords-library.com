@@ -56,6 +56,13 @@ export enum Enum_Componenttranslationschronologyitem_Status {
   Done = "Done",
 }
 
+export enum Enum_Componentsetstextset_Status {
+  Incomplete = "Incomplete",
+  Draft = "Draft",
+  Review = "Review",
+  Done = "Done",
+}
+
 // __________________________________________________________________
 
 export type GetErasQueryVariables = Exact<{
@@ -547,4 +554,325 @@ export type GetLibraryItemQuery = {
       };
     }>;
   };
+};
+
+export type GetContentsSlugsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetContentsSlugsQuery = {
+  __typename: "Query";
+  contents: {
+    __typename: "ContentEntityResponseCollection";
+    data: Array<{
+      __typename: "ContentEntity";
+      attributes: { __typename: "Content"; slug: string };
+    }>;
+  };
+};
+
+export type GetContentQueryVariables = Exact<{
+  slug: InputMaybe<Scalars["String"]>;
+  language_code: InputMaybe<Scalars["String"]>;
+}>;
+
+export type GetContentQuery = {
+  __typename: "Query";
+  contents: {
+    __typename: "ContentEntityResponseCollection";
+    data: Array<{
+      __typename: "ContentEntity";
+      attributes: {
+        __typename: "Content";
+        slug: string;
+        titles: Array<{
+          __typename: "ComponentTranslationsTitle";
+          pre_title: string;
+          title: string;
+          subtitle: string;
+        }>;
+        categories: {
+          __typename: "CategoryRelationResponseCollection";
+          data: Array<{
+            __typename: "CategoryEntity";
+            id: string;
+            attributes: {
+              __typename: "Category";
+              name: string;
+              short: string;
+            };
+          }>;
+        };
+        type: {
+          __typename: "ContentTypeEntityResponse";
+          data: {
+            __typename: "ContentTypeEntity";
+            attributes: { __typename: "ContentType"; slug: string };
+          };
+        };
+        ranged_contents: {
+          __typename: "RangedContentRelationResponseCollection";
+          data: Array<{
+            __typename: "RangedContentEntity";
+            id: string;
+            attributes: {
+              __typename: "RangedContent";
+              slug: string;
+              scan_set: Array<{
+                __typename: "ComponentSetsScanSet";
+                id: string;
+              }>;
+              library_item: {
+                __typename: "LibraryItemEntityResponse";
+                data: {
+                  __typename: "LibraryItemEntity";
+                  attributes: {
+                    __typename: "LibraryItem";
+                    slug: string;
+                    title: string;
+                    subtitle: string;
+                    thumbnail: {
+                      __typename: "UploadFileEntityResponse";
+                      data: {
+                        __typename: "UploadFileEntity";
+                        attributes: {
+                          __typename: "UploadFile";
+                          name: string;
+                          alternativeText: string;
+                          caption: string;
+                          width: number;
+                          height: number;
+                          url: string;
+                        };
+                      };
+                    };
+                  };
+                };
+              };
+            };
+          }>;
+        };
+        text_set: Array<{
+          __typename: "ComponentSetsTextSet";
+          id: string;
+        }>;
+        video_set: Array<{
+          __typename: "ComponentSetsVideoSet";
+          id: string;
+        }>;
+        audio_set: Array<{
+          __typename: "ComponentSetsAudioSet";
+          id: string;
+        }>;
+        thumbnail: {
+          __typename: "UploadFileEntityResponse";
+          data: {
+            __typename: "UploadFileEntity";
+            attributes: {
+              __typename: "UploadFile";
+              name: string;
+              alternativeText: string;
+              caption: string;
+              width: number;
+              height: number;
+              url: string;
+            };
+          };
+        };
+      };
+    }>;
+  };
+};
+
+export type GetContentTextQueryVariables = Exact<{
+  slug: InputMaybe<Scalars["String"]>;
+  language_code: InputMaybe<Scalars["String"]>;
+}>;
+
+export type GetContentTextQuery = {
+  __typename: "Query";
+  contents: {
+    __typename: "ContentEntityResponseCollection";
+    data: Array<{
+      __typename: "ContentEntity";
+      attributes: {
+        __typename: "Content";
+        slug: string;
+        titles: Array<{
+          __typename: "ComponentTranslationsTitle";
+          pre_title: string ;
+          title: string;
+          subtitle: string ;
+        } > ;
+        categories: {
+          __typename: "CategoryRelationResponseCollection";
+          data: Array<{
+            __typename: "CategoryEntity";
+            id: string ;
+            attributes: {
+              __typename: "Category";
+              name: string;
+              short: string;
+            } ;
+          }>;
+        } ;
+        type: {
+          __typename: "ContentTypeEntityResponse";
+          data: {
+            __typename: "ContentTypeEntity";
+            attributes: { __typename: "ContentType"; slug: string } ;
+          } ;
+        } ;
+        ranged_contents: {
+          __typename: "RangedContentRelationResponseCollection";
+          data: Array<{
+            __typename: "RangedContentEntity";
+            id: string ;
+            attributes: {
+              __typename: "RangedContent";
+              slug: string;
+              scan_set: Array<{
+                __typename: "ComponentSetsScanSet";
+                id: string;
+              } > ;
+              library_item: {
+                __typename: "LibraryItemEntityResponse";
+                data: {
+                  __typename: "LibraryItemEntity";
+                  attributes: {
+                    __typename: "LibraryItem";
+                    slug: string;
+                    title: string;
+                    subtitle: string ;
+                    thumbnail: {
+                      __typename: "UploadFileEntityResponse";
+                      data: {
+                        __typename: "UploadFileEntity";
+                        attributes: {
+                          __typename: "UploadFile";
+                          name: string;
+                          alternativeText: string ;
+                          caption: string ;
+                          width: number ;
+                          height: number ;
+                          url: string;
+                        } ;
+                      } ;
+                    } ;
+                  } ;
+                } ;
+              } ;
+            } ;
+          }>;
+        } ;
+        text_set: Array<{
+          __typename: "ComponentSetsTextSet";
+          status: Enum_Componentsetstextset_Status;
+          text: string ;
+          notes: string ;
+          source_language: {
+            __typename: "LanguageEntityResponse";
+            data: {
+              __typename: "LanguageEntity";
+              attributes: { __typename: "Language"; name: string } ;
+            } ;
+          } ;
+          transcribers: {
+            __typename: "RecorderRelationResponseCollection";
+            data: Array<{
+              __typename: "RecorderEntity";
+              attributes: {
+                __typename: "Recorder";
+                username: string;
+                anonymize: boolean;
+                anonymous_code: string;
+                avatar: {
+                  __typename: "UploadFileEntityResponse";
+                  data: {
+                    __typename: "UploadFileEntity";
+                    attributes: {
+                      __typename: "UploadFile";
+                      name: string;
+                      alternativeText: string ;
+                      caption: string ;
+                      width: number ;
+                      height: number ;
+                      url: string;
+                    } ;
+                  } ;
+                } ;
+              } ;
+            }>;
+          } ;
+          translators: {
+            __typename: "RecorderRelationResponseCollection";
+            data: Array<{
+              __typename: "RecorderEntity";
+              attributes: {
+                __typename: "Recorder";
+                username: string;
+                anonymize: boolean;
+                anonymous_code: string;
+                avatar: {
+                  __typename: "UploadFileEntityResponse";
+                  data: {
+                    __typename: "UploadFileEntity";
+                    attributes: {
+                      __typename: "UploadFile";
+                      name: string;
+                      alternativeText: string ;
+                      caption: string ;
+                      width: number ;
+                      height: number ;
+                      url: string;
+                    } ;
+                  } ;
+                } ;
+              } ;
+            }>;
+          } ;
+          proofreaders: {
+            __typename: "RecorderRelationResponseCollection";
+            data: Array<{
+              __typename: "RecorderEntity";
+              attributes: {
+                __typename: "Recorder";
+                username: string;
+                anonymize: boolean;
+                anonymous_code: string;
+                avatar: {
+                  __typename: "UploadFileEntityResponse";
+                  data: {
+                    __typename: "UploadFileEntity";
+                    attributes: {
+                      __typename: "UploadFile";
+                      name: string;
+                      alternativeText: string ;
+                      caption: string ;
+                      width: number ;
+                      height: number ;
+                      url: string;
+                    } ;
+                  } ;
+                } ;
+              } ;
+            }>;
+          } ;
+        } > ;
+        thumbnail: {
+          __typename: "UploadFileEntityResponse";
+          data: {
+            __typename: "UploadFileEntity";
+            attributes: {
+              __typename: "UploadFile";
+              name: string;
+              alternativeText: string ;
+              caption: string ;
+              width: number ;
+              height: number ;
+              url: string;
+            } ;
+          } ;
+        } ;
+      } ;
+    }>;
+  } ;
 };

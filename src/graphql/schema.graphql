@@ -1013,6 +1013,8 @@ type ComponentTranslationsTextSet {
 input ComponentTranslationsTitleFiltersInput {
   language: LanguageFiltersInput
   title: StringFilterInput
+  subtitle: StringFilterInput
+  pre_title: StringFilterInput
   and: [ComponentTranslationsTitleFiltersInput]
   or: [ComponentTranslationsTitleFiltersInput]
   not: ComponentTranslationsTitleFiltersInput
@@ -1022,12 +1024,16 @@ input ComponentTranslationsTitleInput {
   id: ID
   language: ID
   title: String
+  subtitle: String
+  pre_title: String
 }
 
 type ComponentTranslationsTitle {
   id: ID!
   language: LanguageEntityResponse
   title: String!
+  subtitle: String
+  pre_title: String
 }
 
 enum ENUM_COMPONENTTRANSLATIONSVIDEOSETS_STATUS {

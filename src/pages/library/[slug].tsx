@@ -7,7 +7,6 @@ import { applyCustomAppProps } from "pages/_app";
 import { getLibraryItem, getLibraryItemsSlugs } from "graphql/operations";
 import { GetLibraryItemQuery } from "graphql/operations-types";
 import {
-  capitalizeString,
   convertMmToInch,
   getAssetURL,
   prettyDate,
@@ -78,7 +77,7 @@ export default function Library(props: Props): JSX.Element {
       </SubPanel>
       <ContentPanel width={ContentPanelWidthSizes.large}>
         <div className="grid place-items-center gap-12">
-          <div className="cursor-pointer grid items-end relative hover:rounded-3xl w-96 max-w-full mb-16">
+          <div className="cursor-pointer grid items-end relative w-96 max-w-full mb-16">
             <div className="bg-light absolute inset-1 rounded-lg shadow-dark shadow-xl"></div>
             {item.thumbnail.data ? (
               <Image
@@ -378,55 +377,26 @@ export default function Library(props: Props): JSX.Element {
 
                       {content.attributes.scan_set.length > 0 ? (
                         <Button
-                          href={`content/${content.attributes.content.data.attributes.slug}/scans/`}
+                          href={`/content/${content.attributes.content.data.attributes.slug}/scans/`}
                         >
-                          View scan
+                          View scans
                         </Button>
                       ) : (
                         ""
                       )}
 
-                      {content.attributes.content.data?.attributes.text_set
-                        .length > 0 ? (
+                      {content.attributes.content.data ? (
                         <Button
-                          href={`content/${content.attributes.content.data.attributes.slug}/read/`}
+                          href={`/content/${content.attributes.content.data.attributes.slug}`}
                         >
-                          Read content
-                        </Button>
-                      ) : (
-                        ""
-                      )}
-
-                      {content.attributes.content.data?.attributes.audio_set
-                        .length > 0 ? (
-                        <Button
-                          href={`content/${content.attributes.content.data.attributes.slug}/listen/`}
-                        >
-                          Listen content
-                        </Button>
-                      ) : (
-                        ""
-                      )}
-
-                      {content.attributes.content.data?.attributes.video_set
-                        .length > 0 ? (
-                        <Button
-                          href={`content/${content.attributes.content.data.attributes.slug}/watch/`}
-                        >
-                          View content
+                          Open content
                         </Button>
                       ) : (
                         ""
                       )}
 
                       {content.attributes.scan_set.length === 0 &&
-                      (!content.attributes.content.data ||
-                        (content.attributes.content.data.attributes.text_set
-                          .length === 0 &&
-                          content.attributes.content.data.attributes.audio_set
-                            .length === 0 &&
-                          content.attributes.content.data.attributes.video_set
-                            .length === 0))
+                      !content.attributes.content.data
                         ? "The content is not available"
                         : ""}
                     </div>

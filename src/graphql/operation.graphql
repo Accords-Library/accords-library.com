@@ -53,7 +53,7 @@ query getLibraryItemsPreview($language_code: String) {
   libraryItems(
     filters: { root_item: { eq: true } }
     pagination: { limit: -1 }
-    sort: ["title:asc","subtitle:asc"]
+    sort: ["title:asc", "subtitle:asc"]
   ) {
     data {
       id
@@ -360,6 +360,251 @@ query getLibraryItem($slug: String, $language_code: String) {
                   }
                 }
               }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+query getContentsSlugs {
+  contents(pagination: { limit: -1 }) {
+    data {
+      attributes {
+        slug
+      }
+    }
+  }
+}
+
+query getContent($slug: String, $language_code: String) {
+  contents(filters: { slug: { eq: $slug } }) {
+    data {
+      attributes {
+        slug
+        titles(filters: { language: { code: { eq: $language_code } } }) {
+          pre_title
+          title
+          subtitle
+        }
+        categories {
+          data {
+            id
+            attributes {
+              name
+              short
+            }
+          }
+        }
+        type {
+          data {
+            attributes {
+              slug
+            }
+          }
+        }
+        ranged_contents {
+          data {
+            id
+            attributes {
+              slug
+              scan_set {
+                id
+              }
+              library_item {
+                data {
+                  attributes {
+                    slug
+                    title
+                    subtitle
+                    thumbnail {
+                      data {
+                        attributes {
+                          name
+                          alternativeText
+                          caption
+                          width
+                          height
+                          url
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+        text_set {
+          id
+        }
+        video_set {
+          id
+        }
+        audio_set {
+          id
+        }
+        thumbnail {
+          data {
+            attributes {
+              name
+              alternativeText
+              caption
+              width
+              height
+              url
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+query getContentText($slug: String, $language_code: String) {
+  contents(filters: { slug: { eq: $slug } }) {
+    data {
+      attributes {
+        slug
+        titles(filters: { language: { code: { eq: $language_code } } }) {
+          pre_title
+          title
+          subtitle
+        }
+        categories {
+          data {
+            id
+            attributes {
+              name
+              short
+            }
+          }
+        }
+        type {
+          data {
+            attributes {
+              slug
+            }
+          }
+        }
+        ranged_contents {
+          data {
+            id
+            attributes {
+              slug
+              scan_set {
+                id
+              }
+              library_item {
+                data {
+                  attributes {
+                    slug
+                    title
+                    subtitle
+                    thumbnail {
+                      data {
+                        attributes {
+                          name
+                          alternativeText
+                          caption
+                          width
+                          height
+                          url
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+        text_set(filters: { language: { code: { eq: $language_code } } }) {
+          status
+          text
+          source_language {
+            data {
+              attributes {
+                name
+              }
+            }
+          }
+          transcribers {
+            data {
+              attributes {
+                username
+                anonymize
+                anonymous_code
+                avatar {
+                  data {
+                    attributes {
+                      name
+                      alternativeText
+                      caption
+                      width
+                      height
+                      url
+                    }
+                  }
+                }
+              }
+            }
+          }
+          translators {
+            data {
+              attributes {
+                username
+                anonymize
+                anonymous_code
+                avatar {
+                  data {
+                    attributes {
+                      name
+                      alternativeText
+                      caption
+                      width
+                      height
+                      url
+                    }
+                  }
+                }
+              }
+            }
+          }
+          proofreaders {
+            data {
+              attributes {
+                username
+                anonymize
+                anonymous_code
+                avatar {
+                  data {
+                    attributes {
+                      name
+                      alternativeText
+                      caption
+                      width
+                      height
+                      url
+                    }
+                  }
+                }
+              }
+            }
+          }
+          notes
+        }
+
+        thumbnail {
+          data {
+            attributes {
+              name
+              alternativeText
+              caption
+              width
+              height
+              url
             }
           }
         }

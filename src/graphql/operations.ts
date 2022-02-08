@@ -3,6 +3,12 @@ import { readFileSync } from "fs";
 import {
   GetChronologyItemsQuery,
   GetChronologyItemsQueryVariables,
+  GetContentQuery,
+  GetContentQueryVariables,
+  GetContentsSlugsQuery,
+  GetContentsSlugsQueryVariables,
+  GetContentTextQuery,
+  GetContentTextQueryVariables,
   GetErasQuery,
   GetErasQueryVariables,
   GetLibraryItemQuery,
@@ -76,5 +82,26 @@ export async function getLibraryItem(
   variables: GetLibraryItemQueryVariables
 ): Promise<GetLibraryItemQuery> {
   const query = getQueryFromOperations("getLibraryItem");
+  return await graphQL(query, JSON.stringify(variables));
+}
+
+export async function getContentsSlugs(
+  variables: GetContentsSlugsQueryVariables
+): Promise<GetContentsSlugsQuery> {
+  const query = getQueryFromOperations("getContentsSlugs");
+  return await graphQL(query, JSON.stringify(variables));
+}
+
+export async function getContent(
+  variables: GetContentQueryVariables
+): Promise<GetContentQuery> {
+  const query = getQueryFromOperations("getContent");
+  return await graphQL(query, JSON.stringify(variables));
+}
+
+export async function getContentText(
+  variables: GetContentTextQueryVariables
+): Promise<GetContentTextQuery> {
+  const query = getQueryFromOperations("getContentText");
   return await graphQL(query, JSON.stringify(variables));
 }

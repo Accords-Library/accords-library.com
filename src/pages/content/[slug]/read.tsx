@@ -10,6 +10,8 @@ import HorizontalLine from "components/HorizontalLine";
 import Markdown from "markdown-to-jsx";
 import SubPanel from "components/Panels/SubPanel";
 import ReturnButton from "components/PanelComponents/ReturnButton";
+import SceneBreak from "components/Markdown/SceneBreak";
+import ThumbnailHeader from "components/Content/ThumbnailHeader";
 
 type Props = {
   content: GetContentTextQuery;
@@ -30,51 +32,17 @@ export default function Library(props: Props): JSX.Element {
       </SubPanel>
       <ContentPanel>
         <div className="grid place-items-center">
-          <div className="grid place-items-center gap-12 mb-12">
-            <div>
-              <Image
-                className="rounded-lg"
-                src={getAssetURL(content.thumbnail.data.attributes.url)}
-                alt={content.thumbnail.data.attributes.alternativeText}
-                width={content.thumbnail.data.attributes.width}
-                height={content.thumbnail.data.attributes.height}
-              />
-            </div>
-            <div className="grid place-items-center">
-              <p className="text-2xl">{content.titles[0].pre_title}</p>
-              <h1 className="text-3xl">{content.titles[0].title}</h1>
-              <h2 className="text-2xl">{content.titles[0].subtitle}</h2>
-            </div>
-          </div>
-
-          <div className="grid grid-flow-col gap-8">
-            {content.type ? (
-              <div className="grid place-items-center">
-                <h3 className="text-xl">Type</h3>
-                <Button>{prettySlug(content.type.data.attributes.slug)}</Button>
-              </div>
-            ) : (
-              ""
-            )}
-
-            {content.categories.data.length > 0 ? (
-              <div className="grid place-items-center">
-                <h3 className="text-xl">Categories</h3>
-                {content.categories.data.map((category) => (
-                  <Button key={category.id}>{category.attributes.name}</Button>
-                ))}
-              </div>
-            ) : (
-              ""
-            )}
-          </div>
+          <ThumbnailHeader content={content} />
 
           <HorizontalLine />
 
           {content.text_set.length > 0 ? (
-            <div className="prose prose-lg text-black">
-              <Markdown>{content.text_set[0].text}</Markdown>
-            </div>
+            <Markdown
+              className="prose prose-lg text-black pt-12"
+              options={{ overrides: { hr: { component: SceneBreak } } }}
+            >
+              {content.text_set[0].text}
+            </Markdown>
           ) : (
             ""
           )}
@@ -86,6 +54,8 @@ export default function Library(props: Props): JSX.Element {
 
 export const getStaticProps: GetStaticProps = async (context) => {
   if (context.params) {
+    if (context.params.slug instanceof Array)
+      context.params.slug = context.params.slug.join("");
     if (context.params.slug && context.locale) {
       return {
         props: {

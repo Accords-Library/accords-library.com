@@ -4,18 +4,24 @@ import { getAssetURL, prettyDate, prettyPrice } from "queries/helpers";
 import Image from "next/image";
 
 export type LibraryItemComponentProps = {
-  item: GetLibraryItemsPreviewQuery["libraryItems"]["data"][number];
+  item: {
+    slug: GetLibraryItemsPreviewQuery["libraryItems"]["data"][number]["attributes"]["slug"];
+    thumbnail: GetLibraryItemsPreviewQuery["libraryItems"]["data"][number]["attributes"]["thumbnail"];
+    title: GetLibraryItemsPreviewQuery["libraryItems"]["data"][number]["attributes"]["title"];
+    subtitle: GetLibraryItemsPreviewQuery["libraryItems"]["data"][number]["attributes"]["subtitle"];
+    price?: GetLibraryItemsPreviewQuery["libraryItems"]["data"][number]["attributes"]["price"];
+    release_date?: GetLibraryItemsPreviewQuery["libraryItems"]["data"][number]["attributes"]["release_date"];
+  };
 };
 
 export default function LibraryItemComponent(
   props: LibraryItemComponentProps
 ): JSX.Element {
-  const item = props.item.attributes;
+  const item = props.item;
 
   return (
     <Link href={"/library/" + item.slug} passHref>
-      <div className="cursor-pointer grid items-end relative hover:rounded-3xl [--cover-opacity:0] hover:[--cover-opacity:1] hover:scale-[1.02] transition-transform">
-        <div className="bg-light absolute inset-1 rounded-lg shadow-dark shadow-xl"></div>
+      <div className="drop-shadow-dark-xl cursor-pointer grid items-end hover:rounded-3xl [--cover-opacity:0] hover:[--cover-opacity:1] hover:scale-[1.02] transition-transform">
         {item.thumbnail.data ? (
           <Image
             src={getAssetURL(item.thumbnail.data.attributes.url)}
@@ -24,7 +30,7 @@ export default function LibraryItemComponent(
             width={item.thumbnail.data.attributes.width}
           />
         ) : (
-          <div className="w-full aspect-[21/29.7]"></div>
+          <div className="w-full aspect-[21/29.7] bg-light rounded-lg"></div>
         )}
         <div className="linearbg-1 shadow-[0_0_1em_rgb(0,0,0,0.2)] absolute bottom-0 left-0 right-0 h-auto opacity-[var(--cover-opacity)] transition-opacity z-20 grid p-4 gap-4 text-left">
           <div>
@@ -37,7 +43,7 @@ export default function LibraryItemComponent(
                 <span className="material-icons !text-base translate-y-[.15em] mr-1">
                   event
                 </span>
-                {prettyDate(item.release_date)}
+                {item.release_date ? prettyDate(item.release_date) : ""}
               </p>
             ) : (
               ""

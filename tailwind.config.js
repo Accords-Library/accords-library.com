@@ -4,10 +4,10 @@ module.exports = {
   content: ["./src/**/*.{tsx,ts}"],
   theme: {
     colors: {
-      light: "#ffedd8",
-      mid: "#f0d1b3",
-      dark: "#9c6644",
-      black: "#1B1811",
+      light: "rgb(255, 237, 216)",
+      mid: "rgb(240, 209, 179)",
+      dark: "rgb(156, 102, 68)",
+      black: "rgb(27, 24, 17)",
     },
     fontFamily: {
       body: ["Zen Maru Gothic"],
@@ -45,6 +45,23 @@ module.exports = {
         ".colorize-black": {
           filter:
             "brightness(0) saturate(100%) invert(7%) sepia(13%) saturate(1156%) hue-rotate(4deg) brightness(103%) contrast(95%)",
+        },
+      });
+    }),
+
+    // Colored Dropshadow
+    plugin(function ({ addUtilities }) {
+      addUtilities({
+        ".drop-shadow-dark-lg": {
+          filter:
+            "drop-shadow(0 10px 8px rgb(156 102 68 / 0.2)) drop-shadow(0 4px 3px rgb(156 102 68 / 0.8))",
+        },
+        ".drop-shadow-dark-xl": {
+          filter:
+            "drop-shadow(0 20px 13px rgb(156 102 68 / 0.25)) drop-shadow(0 8px 5px rgb(156 102 68 / 0.7))",
+        },
+        ".drop-shadow-dark-2xl": {
+          filter: "drop-shadow(0 25px 25px rgb(156 102 68 / 0.8))",
         },
       });
     }),

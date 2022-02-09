@@ -77,8 +77,7 @@ export default function Library(props: Props): JSX.Element {
       </SubPanel>
       <ContentPanel width={ContentPanelWidthSizes.large}>
         <div className="grid place-items-center gap-12">
-          <div className="cursor-pointer grid items-end relative w-96 max-w-full mb-16">
-            <div className="bg-light absolute inset-1 rounded-lg shadow-dark shadow-xl"></div>
+          <div className="drop-shadow-dark-xl w-96 max-w-full mb-16">
             {item.thumbnail.data ? (
               <Image
                 src={getAssetURL(item.thumbnail.data.attributes.url)}
@@ -308,7 +307,10 @@ export default function Library(props: Props): JSX.Element {
               <h2 className="text-2xl">Subitems</h2>
               <div className="grid gap-8 items-end grid-cols-[repeat(auto-fill,minmax(15rem,1fr))] w-full">
                 {item.subitems.data.map((subitem) => (
-                  <LibraryItemComponent key={subitem.id} item={subitem} />
+                  <LibraryItemComponent
+                    key={subitem.id}
+                    item={subitem.attributes}
+                  />
                 ))}
               </div>
             </div>
@@ -416,6 +418,8 @@ export default function Library(props: Props): JSX.Element {
 export const getStaticProps: GetStaticProps = async (context) => {
   if (context.params) {
     if (context.params.slug && context.locale) {
+      if (context.params.slug instanceof Array)
+        context.params.slug = context.params.slug.join("");
       return {
         props: {
           libraryItem: await getLibraryItem({
@@ -439,6 +443,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const data = await getLibraryItemsSlugs({});
   const paths: Path[] = [];
   data.libraryItems.data.map((item) => {
+    console.log(item.attributes.slug);
     paths.push({ params: { slug: item.attributes.slug } });
   });
   return {

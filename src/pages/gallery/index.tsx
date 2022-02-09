@@ -8,7 +8,10 @@ applyCustomAppProps(Chronology, {
 export default function Chronology(): JSX.Element {
   return (
     <>
-    <iframe className="w-full h-screen" src="https://gallery.accords-library.com/posts"></iframe>
+      <iframe
+        className="w-full h-screen"
+        src="https://gallery.accords-library.com/posts"
+      ></iframe>
     </>
   );
 }

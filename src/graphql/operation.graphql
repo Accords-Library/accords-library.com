@@ -1,3 +1,56 @@
+query getWebsiteInterface($language_code: String) {
+  websiteInterfaces(filters: { language: { code: { eq: $language_code } } }) {
+    data {
+      attributes {
+        main_library
+        main_library_description
+        main_hub
+        main_hub_description
+        main_chronology
+        main_chronology_description
+        main_news
+        main_data
+        main_merch
+        main_gallery
+        main_archives
+        main_about_us
+        main_licensing
+        main_copyright
+        library_description
+        library_item_summary
+        library_item_gallery
+        library_item_details
+        library_item_subitems
+        library_item_variants
+        library_item_content
+        global_return_label
+        global_subitem_of
+        global_type
+        global_width
+        global_height
+        global_thickness
+        global_binding
+        global_language
+        global_languages
+        global_page
+        global_pages
+        global_page_order
+        global_release_date
+        global_price
+        library_item_physical_size
+        library_item_type_information
+        chronology_description
+        chronology_timelines
+        chronology_timelines_description
+        chronology_overview
+        chronology_overview_description
+        chronology_walkthrough
+        chronology_walkthrough_description
+      }
+    }
+  }
+}
+
 query getEras($language_code: String) {
   chronologyEras {
     data {
@@ -176,6 +229,11 @@ query getLibraryItem($slug: String, $language_code: String) {
               data {
                 attributes {
                   slug
+                  titles(
+                    filters: { language: { code: { eq: $language_code } } }
+                  ) {
+                    title
+                  }
                 }
               }
             }
@@ -240,6 +298,11 @@ query getLibraryItem($slug: String, $language_code: String) {
               data {
                 attributes {
                   slug
+                  titles(
+                    filters: { language: { code: { eq: $language_code } } }
+                  ) {
+                    title
+                  }
                 }
               }
             }
@@ -252,20 +315,16 @@ query getLibraryItem($slug: String, $language_code: String) {
               }
             }
           }
-          ... on ComponentMetadataMerch {
-            merch_item {
-              data {
-                attributes {
-                  slug
-                }
-              }
-            }
-          }
           ... on ComponentMetadataOther {
             subtype {
               data {
                 attributes {
                   slug
+                  titles(
+                    filters: { language: { code: { eq: $language_code } } }
+                  ) {
+                    title
+                  }
                 }
               }
             }
@@ -282,6 +341,28 @@ query getLibraryItem($slug: String, $language_code: String) {
           }
         }
         subitems {
+          data {
+            id
+            attributes {
+              slug
+              title
+              subtitle
+              thumbnail {
+                data {
+                  attributes {
+                    name
+                    alternativeText
+                    caption
+                    width
+                    height
+                    url
+                  }
+                }
+              }
+            }
+          }
+        }
+        submerchs {
           data {
             id
             attributes {
@@ -338,6 +419,13 @@ query getLibraryItem($slug: String, $language_code: String) {
                       data {
                         attributes {
                           slug
+                          titles(
+                            filters: {
+                              language: { code: { eq: $language_code } }
+                            }
+                          ) {
+                            title
+                          }
                         }
                       }
                     }
@@ -401,6 +489,9 @@ query getContent($slug: String, $language_code: String) {
           data {
             attributes {
               slug
+              titles(filters: { language: { code: { eq: $language_code } } }) {
+                title
+              }
             }
           }
         }
@@ -485,6 +576,9 @@ query getContentText($slug: String, $language_code: String) {
           data {
             attributes {
               slug
+              titles(filters: { language: { code: { eq: $language_code } } }) {
+                title
+              }
             }
           }
         }
@@ -595,7 +689,6 @@ query getContentText($slug: String, $language_code: String) {
           }
           notes
         }
-
         thumbnail {
           data {
             attributes {

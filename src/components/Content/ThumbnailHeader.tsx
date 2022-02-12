@@ -21,13 +21,17 @@ export default function ThumbnailHeader(
     <>
       <div className="grid place-items-center gap-12  mb-12">
         <div className="drop-shadow-dark-lg">
-          <Image
-            className=" rounded-xl"
-            src={getAssetURL(content.thumbnail.data.attributes.url)}
-            alt={content.thumbnail.data.attributes.alternativeText}
-            width={content.thumbnail.data.attributes.width}
-            height={content.thumbnail.data.attributes.height}
-          />
+          {content.thumbnail.data ? (
+            <Image
+              className=" rounded-xl"
+              src={getAssetURL(content.thumbnail.data.attributes.url)}
+              alt={content.thumbnail.data.attributes.alternativeText}
+              width={content.thumbnail.data.attributes.width}
+              height={content.thumbnail.data.attributes.height}
+            />
+          ) : (
+            <div className="w-full aspect-[4/3] bg-light rounded-xl"></div>
+          )}
         </div>
         <div className="grid place-items-center">
           <p className="text-2xl">{content.titles[0].pre_title}</p>
@@ -40,7 +44,7 @@ export default function ThumbnailHeader(
         {content.type ? (
           <div className="grid place-items-center place-content-start gap-2">
             <h3 className="text-xl">Type</h3>
-            <Button>{prettySlug(content.type.data.attributes.slug)}</Button>
+            <Button>{content.type.data.attributes.titles[0].title}</Button>
           </div>
         ) : (
           ""

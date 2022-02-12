@@ -31,7 +31,6 @@ export default function AccordsLibraryApp(appProps: AppProps) {
           : "grid grid-cols-[20rem]"
       }
     >
-      <MainPanel />
       <appProps.Component {...appProps.pageProps} />
     </div>
   );

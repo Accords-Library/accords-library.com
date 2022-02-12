@@ -32,7 +32,7 @@ export default function LibraryItemComponent(
         ) : (
           <div className="w-full aspect-[21/29.7] bg-light rounded-lg"></div>
         )}
-        <div className="linearbg-1 shadow-[0_0_1em_rgb(0,0,0,0.2)] absolute bottom-0 left-0 right-0 h-auto opacity-[var(--cover-opacity)] transition-opacity z-20 grid p-4 gap-4 text-left">
+        <div className="linearbg-1 drop-shadow-dark-lg absolute bottom-2 inset-x-[-0.15rem] opacity-[var(--cover-opacity)] transition-opacity z-20 grid p-4 gap-4 text-left">
           <div>
             <h2 className="text-lg leading-7">{item.title}</h2>
             <h3 className="leading-3">{item.subtitle}</h3>

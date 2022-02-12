@@ -5,12 +5,21 @@ import ContentPanel, {
 } from "components/Panels/ContentPanel";
 import LibraryItemComponent from "components/Library/LibraryItemComponent";
 import { applyCustomAppProps } from "pages/_app";
-import { GetLibraryItemsPreviewQuery } from "graphql/operations-types";
-import { getLibraryItemsPreview } from "graphql/operations";
+import {
+  GetLibraryItemsPreviewQuery,
+  GetWebsiteInterfaceQuery,
+} from "graphql/operations-types";
+import {
+  getLibraryItemsPreview,
+  getWebsiteInterface,
+} from "graphql/operations";
 import PanelHeader from "components/PanelComponents/PanelHeader";
+import MainPanel from "components/Panels/MainPanel";
+import Head from "next/head";
 
 type Props = {
   libraryItems: GetLibraryItemsPreviewQuery;
+  langui: GetWebsiteInterfaceQuery;
 };
 
 applyCustomAppProps(Library, {
@@ -19,13 +28,18 @@ applyCustomAppProps(Library, {
 });
 
 export default function Library(props: Props): JSX.Element {
+  const langui = props.langui.websiteInterfaces.data[0].attributes;
   return (
     <>
+      <Head>
+        <title>Accord&rsquo;s Library - Library</title>
+      </Head>
+      <MainPanel langui={langui} />
       <SubPanel>
         <PanelHeader
           icon="library_books"
-          title="Library"
-          description="A comprehensive list of all Yokoverse&rsquo;s side materials (books, novellas, artbooks, stage plays, manga, drama CDs, and comics). For each, we provide photos and/or scans of the content, information about what it is, when and how it was released, size, initial price…"
+          title={langui.main_library}
+          description={langui.library_description}
         />
       </SubPanel>
 
@@ -41,15 +55,19 @@ export default function Library(props: Props): JSX.Element {
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  if (context.locale)
-    return {
-      props: {
-        libraryItems: await getLibraryItemsPreview({
-          language_code: context.locale,
-        }),
-      },
+  if (context.locale) {
+    const props: Props = {
+      libraryItems: await getLibraryItemsPreview({
+        language_code: context.locale,
+      }),
+      langui: await getWebsiteInterface({
+        language_code: context.locale,
+      }),
     };
-  else {
+    return {
+      props: props,
+    };
+  } else {
     return { props: {} };
   }
 };

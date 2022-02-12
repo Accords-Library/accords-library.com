@@ -4,8 +4,15 @@ import ContentPanel, {
 import Image from "next/image";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { applyCustomAppProps } from "pages/_app";
-import { getLibraryItem, getLibraryItemsSlugs } from "graphql/operations";
-import { GetLibraryItemQuery } from "graphql/operations-types";
+import {
+  getLibraryItem,
+  getLibraryItemsSlugs,
+  getWebsiteInterface,
+} from "graphql/operations";
+import {
+  GetLibraryItemQuery,
+  GetWebsiteInterfaceQuery,
+} from "graphql/operations-types";
 import {
   convertMmToInch,
   getAssetURL,
@@ -21,9 +28,11 @@ import LibraryItemComponent from "components/Library/LibraryItemComponent";
 import Chip from "components/Chip";
 import Button from "components/Button";
 import HorizontalLine from "components/HorizontalLine";
+import MainPanel from "components/Panels/MainPanel";
 
 type Props = {
   libraryItem: GetLibraryItemQuery;
+  langui: GetWebsiteInterfaceQuery;
 };
 
 applyCustomAppProps(Library, {
@@ -33,6 +42,7 @@ applyCustomAppProps(Library, {
 
 export default function Library(props: Props): JSX.Element {
   const item = props.libraryItem.libraryItems.data[0].attributes;
+  const langui = props.langui.websiteInterfaces.data[0].attributes;
 
   item.contents.data.sort((a, b) => {
     if (
@@ -49,28 +59,62 @@ export default function Library(props: Props): JSX.Element {
 
   return (
     <>
+      <MainPanel langui={langui} />
       <SubPanel>
-        <ReturnButton title="Library" href="/library" />
+        <ReturnButton
+          title={langui.main_library}
+          href="/library"
+          langui={langui}
+        />
         <HorizontalLine />
 
-        <NavOption title="Summary" url="#summary" border={true} />
+        <NavOption
+          title={langui.library_item_summary}
+          url="#summary"
+          border={true}
+        />
 
         {item.gallery.data.length > 0 ? (
-          <NavOption title="Gallery" url="#gallery" border={true} />
+          <NavOption
+            title={langui.library_item_gallery}
+            url="#gallery"
+            border={true}
+          />
         ) : (
           ""
         )}
 
-        <NavOption title="Details" url="#details" border={true} />
+        <NavOption
+          title={langui.library_item_details}
+          url="#details"
+          border={true}
+        />
 
         {item.subitems.data.length > 0 ? (
-          <NavOption title="Subitems" url="#subitems" border={true} />
+          item.metadata[0].__typename === "ComponentMetadataOther" &&
+          item.metadata[0].subtype.data.attributes.slug === "variant-set" ? (
+            <NavOption
+              title={langui.library_item_variants}
+              url="#variants"
+              border={true}
+            />
+          ) : (
+            <NavOption
+              title={langui.library_item_subitems}
+              url="#subitems"
+              border={true}
+            />
+          )
         ) : (
           ""
         )}
 
         {item.contents.data.length > 0 ? (
-          <NavOption title="Content" url="#content" border={true} />
+          <NavOption
+            title={langui.library_item_content}
+            url="#content"
+            border={true}
+          />
         ) : (
           ""
         )}
@@ -86,7 +130,7 @@ export default function Library(props: Props): JSX.Element {
                 height={item.thumbnail.data.attributes.height}
               />
             ) : (
-              <div className="w-full aspect-[21/29.7]"></div>
+              <div className="w-full aspect-[21/29.7] bg-light rounded-xl"></div>
             )}
           </div>
 
@@ -97,7 +141,7 @@ export default function Library(props: Props): JSX.Element {
             <div className="w-[clamp(0px,100%,42rem)] grid place-items-center gap-8">
               {item.subitem_of.data.length > 0 ? (
                 <div className="grid place-items-center">
-                  <p>Subitem of</p>
+                  <p>{langui.global_subitem_of}</p>
                   <Button
                     href={`/library/${item.subitem_of.data[0].attributes.slug}`}
                   >
@@ -129,8 +173,8 @@ export default function Library(props: Props): JSX.Element {
 
           {item.gallery.data.length > 0 ? (
             <div id="gallery" className="grid place-items-center gap-8  w-full">
-              <h2 className="text-2xl">Gallery</h2>
-              <div className="grid w-full gap-8 items-end grid-cols-[repeat(auto-fit,_minmax(15rem,1fr))]">
+              <h2 className="text-2xl">{langui.library_item_gallery}</h2>
+              <div className="grid w-full gap-8 items-end grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))]">
                 {item.gallery.data.map((galleryItem) => (
                   <div
                     key={galleryItem.id}
@@ -159,11 +203,13 @@ export default function Library(props: Props): JSX.Element {
             className="bg-mid w-full grid place-items-center p-8 rounded-2xl"
           >
             <div className="w-[clamp(0px,100%,42rem)] grid place-items gap-8">
-              <h2 className="text-2xl text-center">Details</h2>
+              <h2 className="text-2xl text-center">
+                {langui.library_item_details}
+              </h2>
               <div className="grid grid-flow-col w-full place-content-between">
                 {item.metadata.length > 0 ? (
                   <div className="grid place-items-center">
-                    <h3 className="text-xl">Type</h3>
+                    <h3 className="text-xl">{langui.global_type}</h3>
                     <Button>
                       {item.metadata[0].__typename.substring(
                         "ComponentMetadata".length
@@ -176,7 +222,7 @@ export default function Library(props: Props): JSX.Element {
 
                 {item.release_date ? (
                   <div className="grid place-items-center">
-                    <h3 className="text-xl">Release date</h3>
+                    <h3 className="text-xl">{langui.global_release_date}</h3>
                     <p>{prettyDate(item.release_date)}</p>
                   </div>
                 ) : (
@@ -185,7 +231,7 @@ export default function Library(props: Props): JSX.Element {
 
                 {item.release_date ? (
                   <div className="grid place-items-center">
-                    <h3 className="text-xl">Price</h3>
+                    <h3 className="text-xl">{langui.global_price}</h3>
                     <p>{prettyPrice(item.price)}</p>
                   </div>
                 ) : (
@@ -194,17 +240,19 @@ export default function Library(props: Props): JSX.Element {
               </div>
               {item.size ? (
                 <>
-                  <h3 className="text-xl">Physical Size</h3>
+                  <h3 className="text-xl">
+                    {langui.library_item_physical_size}
+                  </h3>
                   <div className="grid grid-flow-col w-full place-content-between">
                     <div className="grid place-items-start grid-flow-col gap-4">
-                      <p className="font-bold">Width:</p>
+                      <p className="font-bold">{langui.global_width}:</p>
                       <div>
                         <p>{item.size.width} mm</p>
                         <p>{convertMmToInch(item.size.width)} in</p>
                       </div>
                     </div>
                     <div className="grid place-items-start grid-flow-col gap-4">
-                      <p className="font-bold">Height:</p>
+                      <p className="font-bold">{langui.global_height}:</p>
                       <div>
                         <p>{item.size.height} mm</p>
                         <p>{convertMmToInch(item.size.height)} in</p>
@@ -212,7 +260,7 @@ export default function Library(props: Props): JSX.Element {
                     </div>
                     {item.size.thickness ? (
                       <div className="grid place-items-start grid-flow-col gap-4">
-                        <p className="font-bold">Thickness:</p>
+                        <p className="font-bold">{langui.global_thickness}:</p>
                         <div>
                           <p>{item.size.thickness} mm</p>
                           <p>{convertMmToInch(item.size.thickness)} in</p>
@@ -229,37 +277,47 @@ export default function Library(props: Props): JSX.Element {
 
               {item.metadata.length > 0 ? (
                 <>
-                  <h3 className="text-xl">Type Information</h3>
+                  <h3 className="text-xl">
+                    {langui.library_item_type_information}
+                  </h3>
                   <div className="grid grid-cols-2 w-full place-content-between">
                     {item.metadata[0].__typename ===
                     "ComponentMetadataBooks" ? (
                       <>
                         <div className="grid place-content-start grid-flow-col gap-4">
-                          <p className="font-bold">Type:</p>
+                          <p className="font-bold">{langui.global_type}:</p>
                           <Chip>
-                            {prettySlug(
-                              item.metadata[0].subtype.data.attributes.slug
-                            )}
+                            {item.metadata[0].subtype.data.attributes.titles
+                              .length > 0
+                              ? item.metadata[0].subtype.data.attributes
+                                  .titles[0].title
+                              : prettySlug(
+                                  item.metadata[0].subtype.data.attributes.slug
+                                )}
                           </Chip>
                         </div>
 
                         <div className="grid place-content-start grid-flow-col gap-4">
-                          <p className="font-bold">Pages:</p>
+                          <p className="font-bold">{langui.global_pages}:</p>
                           <p>{item.metadata[0].page_count}</p>
                         </div>
 
                         <div className="grid place-content-start grid-flow-col gap-4">
-                          <p className="font-bold">Binding:</p>
+                          <p className="font-bold">{langui.global_binding}:</p>
                           <p>{item.metadata[0].binding_type}</p>
                         </div>
 
                         <div className="grid place-content-start grid-flow-col gap-4">
-                          <p className="font-bold">Page order:</p>
+                          <p className="font-bold">
+                            {langui.global_page_order}:
+                          </p>
                           <p>{prettySlug(item.metadata[0].page_order)}</p>
                         </div>
 
                         <div className="grid place-content-start grid-flow-col gap-4">
-                          <p className="font-bold">Languages:</p>
+                          <p className="font-bold">
+                            {langui.global_languages}:
+                          </p>
                           {item.metadata[0].languages.data.map((lang) => (
                             <p key={lang.attributes.code}>
                               {lang.attributes.name}
@@ -277,17 +335,18 @@ export default function Library(props: Props): JSX.Element {
                       "ComponentMetadataGame" ? (
                       <></>
                     ) : item.metadata[0].__typename ===
-                      "ComponentMetadataMerch" ? (
-                      <></>
-                    ) : item.metadata[0].__typename ===
                       "ComponentMetadataOther" ? (
                       <>
                         <div className="grid place-content-start grid-flow-col gap-4">
-                          <p className="font-bold">Type:</p>
+                          <p className="font-bold">{langui.global_type}:</p>
                           <Chip>
-                            {prettySlug(
-                              item.metadata[0].subtype.data.attributes.slug
-                            )}
+                            {item.metadata[0].subtype.data.attributes.titles
+                              .length > 0
+                              ? item.metadata[0].subtype.data.attributes
+                                  .titles[0].title
+                              : prettySlug(
+                                  item.metadata[0].subtype.data.attributes.slug
+                                )}
                           </Chip>
                         </div>
                       </>
@@ -303,24 +362,45 @@ export default function Library(props: Props): JSX.Element {
           </div>
 
           {item.subitems.data.length > 0 ? (
-            <div id="subitems" className="grid place-items-center gap-8 w-full">
-              <h2 className="text-2xl">Subitems</h2>
-              <div className="grid gap-8 items-end grid-cols-[repeat(auto-fill,minmax(15rem,1fr))] w-full">
-                {item.subitems.data.map((subitem) => (
-                  <LibraryItemComponent
-                    key={subitem.id}
-                    item={subitem.attributes}
-                  />
-                ))}
+            item.metadata[0].__typename === "ComponentMetadataOther" &&
+            item.metadata[0].subtype.data.attributes.slug === "variant-set" ? (
+              <div
+                id="variants"
+                className="grid place-items-center gap-8 w-full"
+              >
+                <h2 className="text-2xl">{langui.library_item_variants}</h2>
+                <div className="grid gap-8 items-end grid-cols-[repeat(auto-fill,minmax(15rem,1fr))] w-full">
+                  {item.subitems.data.map((variant) => (
+                    <LibraryItemComponent
+                      key={variant.id}
+                      item={variant.attributes}
+                    />
+                  ))}
+                </div>
               </div>
-            </div>
+            ) : (
+              <div
+                id="subitems"
+                className="grid place-items-center gap-8 w-full"
+              >
+                <h2 className="text-2xl">{langui.library_item_subitems}</h2>
+                <div className="grid gap-8 items-end grid-cols-[repeat(auto-fill,minmax(15rem,1fr))] w-full">
+                  {item.subitems.data.map((subitem) => (
+                    <LibraryItemComponent
+                      key={subitem.id}
+                      item={subitem.attributes}
+                    />
+                  ))}
+                </div>
+              </div>
+            )
           ) : (
             ""
           )}
 
           {item.contents.data.length > 0 ? (
             <div id="content" className="w-full grid place-items-center gap-8">
-              <h2 className="text-2xl">Content</h2>
+              <h2 className="text-2xl">{langui.library_item_content}</h2>
               <div className="grid gap-4 w-full">
                 {item.contents.data.map((content) => (
                   <div
@@ -363,10 +443,14 @@ export default function Library(props: Props): JSX.Element {
                       </p>
                       {content.attributes.content.data ? (
                         <Chip className="place-self-end">
-                          {prettySlug(
-                            content.attributes.content.data.attributes.type.data
-                              .attributes.slug
-                          )}
+                          {content.attributes.content.data.attributes.type.data
+                            .attributes.titles.length > 0
+                            ? content.attributes.content.data.attributes.type
+                                .data.attributes.titles[0].title
+                            : prettySlug(
+                                content.attributes.content.data.attributes.type
+                                  .data.attributes.slug
+                              )}
                         </Chip>
                       ) : (
                         ""
@@ -420,31 +504,38 @@ export const getStaticProps: GetStaticProps = async (context) => {
     if (context.params.slug && context.locale) {
       if (context.params.slug instanceof Array)
         context.params.slug = context.params.slug.join("");
+
+      const props: Props = {
+        libraryItem: await getLibraryItem({
+          slug: context.params.slug,
+          language_code: context.locale,
+        }),
+        langui: await getWebsiteInterface({
+          language_code: context.locale,
+        }),
+      };
       return {
-        props: {
-          libraryItem: await getLibraryItem({
-            slug: context.params.slug,
-            language_code: context.locale,
-          }),
-        },
+        props: props,
       };
     }
   }
   return { props: {} };
 };
 
-export const getStaticPaths: GetStaticPaths = async () => {
+export const getStaticPaths: GetStaticPaths = async (context) => {
   type Path = {
     params: {
       slug: string;
     };
+    locale: string;
   };
 
   const data = await getLibraryItemsSlugs({});
   const paths: Path[] = [];
   data.libraryItems.data.map((item) => {
-    console.log(item.attributes.slug);
-    paths.push({ params: { slug: item.attributes.slug } });
+    context.locales?.map((local) => {
+      paths.push({ params: { slug: item.attributes.slug }, locale: local });
+    });
   });
   return {
     paths,

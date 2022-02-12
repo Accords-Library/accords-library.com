@@ -4,8 +4,15 @@ import SVG from "components/SVG";
 import { useRouter } from "next/router";
 import Button from "components/Button";
 import HorizontalLine from "components/HorizontalLine";
+import { GetWebsiteInterfaceQuery } from "graphql/operations-types";
+import Markdown from "markdown-to-jsx";
 
-export default function MainPanel(): JSX.Element {
+type Props = {
+  langui: GetWebsiteInterfaceQuery["websiteInterfaces"]["data"][number]["attributes"];
+};
+
+export default function MainPanel(props: Props): JSX.Element {
+  const langui = props.langui;
   const router = useRouter();
   return (
     <div className="grid webkit-scrollbar:w-0 [scrollbar-width:none] overflow-y-scroll border-r-[1px] border-black max-h-screen h-screen justify-center content-start p-8 gap-y-2 justify-items-center text-center">
@@ -37,39 +44,50 @@ export default function MainPanel(): JSX.Element {
       <NavOption
         url="/library"
         icon="library_books"
-        title="Library"
-        subtitle="Browse all physical and digital media"
+        title={langui.main_library}
+        subtitle={langui.main_library_description}
       />
 
       <NavOption
         url="/hubs"
         icon="workspaces"
-        title="Hubs"
-        subtitle="Explore all content of a specific game/series"
+        title={langui.main_hub}
+        subtitle={langui.main_hub_description}
       />
 
       <NavOption
         url="/chronology"
         icon="watch_later"
-        title="Chronology"
-        subtitle="Follow all events in chronological order"
+        title={langui.main_chronology}
+        subtitle={langui.main_chronology_description}
       />
 
       <HorizontalLine />
 
-      <NavOption url="/news" icon="feed" title="News" />
-      <NavOption url="/data" icon="travel_explore" title="Data" />
-      <NavOption url="/gallery" icon="collections" title="Gallery" />
-      <NavOption url="/archive" icon="inventory" title="Archive" />
-      <NavOption url="/about-us" icon="info" title="About us" />
+      <NavOption url="/news" icon="feed" title={langui.main_news} />
+      <NavOption url="/data" icon="travel_explore" title={langui.main_data} />
+      <NavOption url="/merch" icon="store" title={langui.main_merch} />
+      <NavOption
+        url="/gallery"
+        icon="collections"
+        title={langui.main_gallery}
+      />
+      <NavOption
+        url="/archives"
+        icon="inventory"
+        title={langui.main_archives}
+      />
+      <NavOption url="/about-us" icon="info" title={langui.main_about_us} />
 
       <HorizontalLine />
 
       <div className="text-center">
         <p>
-          This website&rsquo;s content is made available under{" "}
-          <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA</a>{" "}
-          unless otherwise noted.
+          {langui.main_licensing ? (
+            <Markdown>{langui.main_licensing}</Markdown>
+          ) : (
+            ""
+          )}
         </p>
         <a
           className="transition-[filter] hover:colorize-dark"
@@ -94,9 +112,11 @@ export default function MainPanel(): JSX.Element {
           </div>
         </a>
         <p>
-          Accord&rsquo;s Library is not affiliated with or endorsed by SQUARE
-          ENIX CO. LTD. All game assets and promotional materials belongs to
-          ©&nbsp;SQUARE ENIX CO. LTD.
+          {langui.main_copyright ? (
+            <Markdown>{langui.main_copyright}</Markdown>
+          ) : (
+            ""
+          )}
         </p>
         <div className="mt-12 mb-4 grid h-4 grid-flow-col place-content-center gap-8">
           <a

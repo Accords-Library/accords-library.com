@@ -995,6 +995,26 @@ type ComponentTranslationsScanSet {
   credits: ComponentBasicsCredits!
 }
 
+input ComponentTranslationsSimpleTitleFiltersInput {
+  language: LanguageFiltersInput
+  title: StringFilterInput
+  and: [ComponentTranslationsSimpleTitleFiltersInput]
+  or: [ComponentTranslationsSimpleTitleFiltersInput]
+  not: ComponentTranslationsSimpleTitleFiltersInput
+}
+
+input ComponentTranslationsSimpleTitleInput {
+  id: ID
+  language: ID
+  title: String
+}
+
+type ComponentTranslationsSimpleTitle {
+  id: ID!
+  language: LanguageEntityResponse
+  title: String!
+}
+
 enum ENUM_COMPONENTTRANSLATIONSTEXTSET_STATUS {
   Incomplete
   Draft
@@ -1225,10 +1245,16 @@ input AudioSubtypeFiltersInput {
 
 input AudioSubtypeInput {
   slug: String
+  titles: [ComponentTranslationsSimpleTitleInput]
 }
 
 type AudioSubtype {
   slug: String!
+  titles(
+    filters: ComponentTranslationsSimpleTitleFiltersInput
+    pagination: PaginationArg = {}
+    sort: [String] = []
+  ): [ComponentTranslationsSimpleTitle]
   createdAt: DateTime
   updatedAt: DateTime
 }
@@ -1481,10 +1507,16 @@ input ContentTypeFiltersInput {
 
 input ContentTypeInput {
   slug: String
+  titles: [ComponentTranslationsSimpleTitleInput]
 }
 
 type ContentType {
   slug: String!
+  titles(
+    filters: ComponentTranslationsSimpleTitleFiltersInput
+    pagination: PaginationArg = {}
+    sort: [String] = []
+  ): [ComponentTranslationsSimpleTitle]
   createdAt: DateTime
   updatedAt: DateTime
 }
@@ -1711,7 +1743,6 @@ union LibraryItemMetadataDynamicZone =
   | ComponentMetadataVideo
   | ComponentMetadataGame
   | ComponentMetadataAudio
-  | ComponentMetadataMerch
   | ComponentMetadataOther
   | Error
 
@@ -1725,8 +1756,10 @@ input LibraryItemFiltersInput {
   subitems: LibraryItemFiltersInput
   subitem_of: LibraryItemFiltersInput
   root_item: BooleanFilterInput
-  variants: LibraryVariantFiltersInput
   contents: RangedContentFiltersInput
+  digital: BooleanFilterInput
+  primary: BooleanFilterInput
+  submerchs: MerchItemFiltersInput
   createdAt: DateTimeFilterInput
   updatedAt: DateTimeFilterInput
   and: [LibraryItemFiltersInput]
@@ -1743,7 +1776,6 @@ input LibraryItemInput {
   subitem_of: [ID]
   root_item: Boolean
   price: ComponentBasicsPriceInput
-  variants: ID
   metadata: [LibraryItemMetadataDynamicZoneInput!]
   size: ComponentBasicsSizeInput
   release_date: ComponentBasicsDatepickerInput
@@ -1751,6 +1783,9 @@ input LibraryItemInput {
   gallery: [ID]
   contents: [ID]
   images: ComponentCollectionsComponentLibraryImagesInput
+  digital: Boolean
+  primary: Boolean
+  submerchs: [ID]
 }
 
 type LibraryItem {
@@ -1770,7 +1805,6 @@ type LibraryItem {
   ): LibraryItemRelationResponseCollection
   root_item: Boolean!
   price: ComponentBasicsPrice
-  variants: LibraryVariantEntityResponse
   metadata: [LibraryItemMetadataDynamicZone]
   size: ComponentBasicsSize
   release_date: ComponentBasicsDatepicker
@@ -1790,6 +1824,13 @@ type LibraryItem {
     sort: [String] = []
   ): RangedContentRelationResponseCollection
   images: ComponentCollectionsComponentLibraryImages
+  digital: Boolean!
+  primary: Boolean!
+  submerchs(
+    filters: MerchItemFiltersInput
+    pagination: PaginationArg = {}
+    sort: [String] = []
+  ): MerchItemRelationResponseCollection
   createdAt: DateTime
   updatedAt: DateTime
 }
@@ -1812,47 +1853,12 @@ type LibraryItemRelationResponseCollection {
   data: [LibraryItemEntity!]!
 }
 
-input LibraryVariantFiltersInput {
-  id: IDFilterInput
-  items: LibraryItemFiltersInput
-  createdAt: DateTimeFilterInput
-  updatedAt: DateTimeFilterInput
-  and: [LibraryVariantFiltersInput]
-  or: [LibraryVariantFiltersInput]
-  not: LibraryVariantFiltersInput
-}
-
-input LibraryVariantInput {
-  items: [ID]
-}
-
-type LibraryVariant {
-  items(
-    filters: LibraryItemFiltersInput
-    pagination: PaginationArg = {}
-    sort: [String] = []
-  ): LibraryItemRelationResponseCollection
-  createdAt: DateTime
-  updatedAt: DateTime
-}
-
-type LibraryVariantEntity {
-  id: ID
-  attributes: LibraryVariant
-}
-
-type LibraryVariantEntityResponse {
-  data: LibraryVariantEntity
-}
-
-type LibraryVariantEntityResponseCollection {
-  data: [LibraryVariantEntity!]!
-  meta: ResponseCollectionMeta!
-}
-
 input MerchItemFiltersInput {
   id: IDFilterInput
   slug: StringFilterInput
+  library_items: LibraryItemFiltersInput
+  title: StringFilterInput
+  subtitle: StringFilterInput
   createdAt: DateTimeFilterInput
   updatedAt: DateTimeFilterInput
   and: [MerchItemFiltersInput]
@@ -1862,10 +1868,22 @@ input MerchItemFiltersInput {
 
 input MerchItemInput {
   slug: String
+  library_items: [ID]
+  title: String
+  subtitle: String
+  thumbnail: ID
 }
 
 type MerchItem {
   slug: String!
+  library_items(
+    filters: LibraryItemFiltersInput
+    pagination: PaginationArg = {}
+    sort: [String] = []
+  ): LibraryItemRelationResponseCollection
+  title: String!
+  subtitle: String
+  thumbnail: UploadFileEntityResponse
   createdAt: DateTime
   updatedAt: DateTime
 }
@@ -1884,6 +1902,10 @@ type MerchItemEntityResponseCollection {
   meta: ResponseCollectionMeta!
 }
 
+type MerchItemRelationResponseCollection {
+  data: [MerchItemEntity!]!
+}
+
 input OtherSubtypeFiltersInput {
   id: IDFilterInput
   slug: StringFilterInput
@@ -1896,10 +1918,16 @@ input OtherSubtypeFiltersInput {
 
 input OtherSubtypeInput {
   slug: String
+  titles: [ComponentTranslationsSimpleTitleInput]
 }
 
 type OtherSubtype {
   slug: String!
+  titles(
+    filters: ComponentTranslationsSimpleTitleFiltersInput
+    pagination: PaginationArg = {}
+    sort: [String] = []
+  ): [ComponentTranslationsSimpleTitle]
   createdAt: DateTime
   updatedAt: DateTime
 }
@@ -2137,10 +2165,16 @@ input TextualSubtypeFiltersInput {
 
 input TextualSubtypeInput {
   slug: String
+  titles: [ComponentTranslationsSimpleTitleInput]
 }
 
 type TextualSubtype {
   slug: String!
+  titles(
+    filters: ComponentTranslationsSimpleTitleFiltersInput
+    pagination: PaginationArg = {}
+    sort: [String] = []
+  ): [ComponentTranslationsSimpleTitle]
   createdAt: DateTime
   updatedAt: DateTime
 }
@@ -2298,6 +2332,172 @@ type WeaponStoryTypeEntityResponseCollection {
   meta: ResponseCollectionMeta!
 }
 
+input WebsiteInterfaceFiltersInput {
+  id: IDFilterInput
+  language: LanguageFiltersInput
+  main_library: StringFilterInput
+  main_library_description: StringFilterInput
+  main_hub: StringFilterInput
+  main_hub_description: StringFilterInput
+  main_chronology: StringFilterInput
+  main_chronology_description: StringFilterInput
+  main_news: StringFilterInput
+  main_data: StringFilterInput
+  main_merch: StringFilterInput
+  main_gallery: StringFilterInput
+  main_archives: StringFilterInput
+  main_about_us: StringFilterInput
+  main_licensing: StringFilterInput
+  main_copyright: StringFilterInput
+  library_description: StringFilterInput
+  library_item_summary: StringFilterInput
+  library_item_gallery: StringFilterInput
+  library_item_details: StringFilterInput
+  library_item_subitems: StringFilterInput
+  library_item_variants: StringFilterInput
+  library_item_content: StringFilterInput
+  global_return_label: StringFilterInput
+  global_subitem_of: StringFilterInput
+  global_type: StringFilterInput
+  global_width: StringFilterInput
+  global_height: StringFilterInput
+  global_thickness: StringFilterInput
+  global_binding: StringFilterInput
+  global_language: StringFilterInput
+  global_languages: StringFilterInput
+  global_page: StringFilterInput
+  global_pages: StringFilterInput
+  global_page_order: StringFilterInput
+  global_release_date: StringFilterInput
+  global_price: StringFilterInput
+  library_item_physical_size: StringFilterInput
+  library_item_type_information: StringFilterInput
+  chronology_description: StringFilterInput
+  chronology_timelines: StringFilterInput
+  chronology_timelines_description: StringFilterInput
+  chronology_overview: StringFilterInput
+  chronology_overview_description: StringFilterInput
+  chronology_walkthrough: StringFilterInput
+  chronology_walkthrough_description: StringFilterInput
+  createdAt: DateTimeFilterInput
+  updatedAt: DateTimeFilterInput
+  and: [WebsiteInterfaceFiltersInput]
+  or: [WebsiteInterfaceFiltersInput]
+  not: WebsiteInterfaceFiltersInput
+}
+
+input WebsiteInterfaceInput {
+  language: ID
+  main_library: String
+  main_library_description: String
+  main_hub: String
+  main_hub_description: String
+  main_chronology: String
+  main_chronology_description: String
+  main_news: String
+  main_data: String
+  main_merch: String
+  main_gallery: String
+  main_archives: String
+  main_about_us: String
+  main_licensing: String
+  main_copyright: String
+  library_description: String
+  library_item_summary: String
+  library_item_gallery: String
+  library_item_details: String
+  library_item_subitems: String
+  library_item_variants: String
+  library_item_content: String
+  global_return_label: String
+  global_subitem_of: String
+  global_type: String
+  global_width: String
+  global_height: String
+  global_thickness: String
+  global_binding: String
+  global_language: String
+  global_languages: String
+  global_page: String
+  global_pages: String
+  global_page_order: String
+  global_release_date: String
+  global_price: String
+  library_item_physical_size: String
+  library_item_type_information: String
+  chronology_description: String
+  chronology_timelines: String
+  chronology_timelines_description: String
+  chronology_overview: String
+  chronology_overview_description: String
+  chronology_walkthrough: String
+  chronology_walkthrough_description: String
+}
+
+type WebsiteInterface {
+  language: LanguageEntityResponse
+  main_library: String
+  main_library_description: String
+  main_hub: String
+  main_hub_description: String
+  main_chronology: String
+  main_chronology_description: String
+  main_news: String
+  main_data: String
+  main_merch: String
+  main_gallery: String
+  main_archives: String
+  main_about_us: String
+  main_licensing: String
+  main_copyright: String
+  library_description: String
+  library_item_summary: String
+  library_item_gallery: String
+  library_item_details: String
+  library_item_subitems: String
+  library_item_variants: String
+  library_item_content: String
+  global_return_label: String
+  global_subitem_of: String
+  global_type: String
+  global_width: String
+  global_height: String
+  global_thickness: String
+  global_binding: String
+  global_language: String
+  global_languages: String
+  global_page: String
+  global_pages: String
+  global_page_order: String
+  global_release_date: String
+  global_price: String
+  library_item_physical_size: String
+  library_item_type_information: String
+  chronology_description: String
+  chronology_timelines: String
+  chronology_timelines_description: String
+  chronology_overview: String
+  chronology_overview_description: String
+  chronology_walkthrough: String
+  chronology_walkthrough_description: String
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+type WebsiteInterfaceEntity {
+  id: ID
+  attributes: WebsiteInterface
+}
+
+type WebsiteInterfaceEntityResponse {
+  data: WebsiteInterfaceEntity
+}
+
+type WebsiteInterfaceEntityResponseCollection {
+  data: [WebsiteInterfaceEntity!]!
+  meta: ResponseCollectionMeta!
+}
+
 union GenericMorph =
     ComponentBasicsCredits
   | ComponentBasicsDatepicker
@@ -2340,6 +2540,7 @@ union GenericMorph =
   | ComponentTranslationsLibraryItems
   | ComponentTranslationsPosts
   | ComponentTranslationsScanSet
+  | ComponentTranslationsSimpleTitle
   | ComponentTranslationsTextSet
   | ComponentTranslationsTitle
   | ComponentTranslationsVideoSets
@@ -2359,7 +2560,6 @@ union GenericMorph =
   | GlossaryItemType
   | Language
   | LibraryItem
-  | LibraryVariant
   | MerchItem
   | OtherSubtype
   | Post
@@ -2370,6 +2570,7 @@ union GenericMorph =
   | WeaponStory
   | WeaponStoryGroup
   | WeaponStoryType
+  | WebsiteInterface
 
 input FileInfoInput {
   name: String
@@ -2463,12 +2664,6 @@ type Query {
     pagination: PaginationArg = {}
     sort: [String] = []
   ): LibraryItemEntityResponseCollection
-  libraryVariant(id: ID): LibraryVariantEntityResponse
-  libraryVariants(
-    filters: LibraryVariantFiltersInput
-    pagination: PaginationArg = {}
-    sort: [String] = []
-  ): LibraryVariantEntityResponseCollection
   merchItem(id: ID): MerchItemEntityResponse
   merchItems(
     filters: MerchItemFiltersInput
@@ -2530,6 +2725,12 @@ type Query {
     pagination: PaginationArg = {}
     sort: [String] = []
   ): WeaponStoryTypeEntityResponseCollection
+  websiteInterface(id: ID): WebsiteInterfaceEntityResponse
+  websiteInterfaces(
+    filters: WebsiteInterfaceFiltersInput
+    pagination: PaginationArg = {}
+    sort: [String] = []
+  ): WebsiteInterfaceEntityResponseCollection
 }
 
 type Mutation {
@@ -2592,12 +2793,6 @@ type Mutation {
   createLibraryItem(data: LibraryItemInput!): LibraryItemEntityResponse
   updateLibraryItem(id: ID!, data: LibraryItemInput!): LibraryItemEntityResponse
   deleteLibraryItem(id: ID!): LibraryItemEntityResponse
-  createLibraryVariant(data: LibraryVariantInput!): LibraryVariantEntityResponse
-  updateLibraryVariant(
-    id: ID!
-    data: LibraryVariantInput!
-  ): LibraryVariantEntityResponse
-  deleteLibraryVariant(id: ID!): LibraryVariantEntityResponse
   createMerchItem(data: MerchItemInput!): MerchItemEntityResponse
   updateMerchItem(id: ID!, data: MerchItemInput!): MerchItemEntityResponse
   deleteMerchItem(id: ID!): MerchItemEntityResponse
@@ -2647,6 +2842,14 @@ type Mutation {
     data: WeaponStoryTypeInput!
   ): WeaponStoryTypeEntityResponse
   deleteWeaponStoryType(id: ID!): WeaponStoryTypeEntityResponse
+  createWebsiteInterface(
+    data: WebsiteInterfaceInput!
+  ): WebsiteInterfaceEntityResponse
+  updateWebsiteInterface(
+    id: ID!
+    data: WebsiteInterfaceInput!
+  ): WebsiteInterfaceEntityResponse
+  deleteWebsiteInterface(id: ID!): WebsiteInterfaceEntityResponse
   upload(
     refId: ID
     ref: String

@@ -1,7 +1,4 @@
-import {
-  GetLibraryItemQuery,
-  GetLibraryItemsPreviewQuery,
-} from "graphql/operations-types";
+import { GetLibraryItemsPreviewQuery } from "graphql/operations-types";
 
 export function getAssetURL(url: string): string {
   return process.env.NEXT_PUBLIC_URL_CMS + url;

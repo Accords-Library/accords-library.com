@@ -6,15 +6,22 @@ import { applyCustomAppProps } from "pages/_app";
 import {
   GetChronologyItemsQuery,
   GetErasQuery,
+  GetWebsiteInterfaceQuery,
 } from "graphql/operations-types";
-import { getEras, getChronologyItems } from "graphql/operations";
+import {
+  getEras,
+  getChronologyItems,
+  getWebsiteInterface,
+} from "graphql/operations";
 import NavOption from "components/PanelComponents/NavOption";
 import ReturnButton from "components/PanelComponents/ReturnButton";
 import HorizontalLine from "components/HorizontalLine";
+import MainPanel from "components/Panels/MainPanel";
 
 interface Props {
   chronologyItems: GetChronologyItemsQuery;
   chronologyEras: GetErasQuery;
+  langui: GetWebsiteInterfaceQuery;
 }
 
 applyCustomAppProps(ChronologyOverview, {
@@ -24,7 +31,7 @@ applyCustomAppProps(ChronologyOverview, {
 
 export default function ChronologyOverview(props: Props): JSX.Element {
   // Group by year the Chronology items
-
+  const langui = props.langui.websiteInterfaces.data[0].attributes;
   let chronologyItemYearGroups: GetChronologyItemsQuery["chronologyItems"]["data"][number][][] =
     [];
 
@@ -40,8 +47,9 @@ export default function ChronologyOverview(props: Props): JSX.Element {
 
   return (
     <>
+      <MainPanel langui={langui} />
       <SubPanel>
-        <ReturnButton href="/chronology" title="Chronology" />
+        <ReturnButton href="/chronology" title="Chronology" langui={langui} />
         <HorizontalLine />
 
         {props.chronologyEras.chronologyEras.data.map((era) => (
@@ -75,16 +83,19 @@ export default function ChronologyOverview(props: Props): JSX.Element {
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  if (context.locale)
-    return {
-      props: {
-        chronologyItems: await getChronologyItems({
-          language_code: context.locale,
-        }),
-        chronologyEras: await getEras({ language_code: context.locale }),
-      },
+  if (context.locale) {
+    const props: Props = {
+      chronologyItems: await getChronologyItems({
+        language_code: context.locale,
+      }),
+      chronologyEras: await getEras({ language_code: context.locale }),
+      langui: await getWebsiteInterface({
+        language_code: context.locale,
+      }),
     };
-  else {
-    return { props: {} };
+    return {
+      props: props,
+    };
   }
+  return { props: {} };
 };

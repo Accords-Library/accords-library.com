@@ -17,6 +17,8 @@ import {
   GetLibraryItemsPreviewQueryVariables,
   GetLibraryItemsSlugsQuery,
   GetLibraryItemsSlugsQueryVariables,
+  GetWebsiteInterfaceQuery,
+  GetWebsiteInterfaceQueryVariables,
 } from "graphql/operations-types";
 
 const graphQL = async (query: string, variables?: string) => {
@@ -48,6 +50,13 @@ function getQueryFromOperations(queryName: string): string {
     }
   });
   return lines.slice(startingIndex, endingIndex).join("\n");
+}
+
+export async function getWebsiteInterface(
+  variables: GetWebsiteInterfaceQueryVariables
+): Promise<GetWebsiteInterfaceQuery> {
+  const query = getQueryFromOperations("getWebsiteInterface");
+  return await graphQL(query, JSON.stringify(variables));
 }
 
 export async function getEras(

@@ -1,4 +1,8 @@
 import ContentPanel from "components/Panels/ContentPanel";
+import MainPanel from "components/Panels/MainPanel";
+import { getWebsiteInterface } from "graphql/operations";
+import { GetWebsiteInterfaceQuery } from "graphql/operations-types";
+import { GetStaticProps } from "next";
 import Head from "next/head";
 import { applyCustomAppProps } from "./_app";
 
@@ -7,12 +11,20 @@ applyCustomAppProps(Home, {
   useContentPanel: true,
 });
 
-export default function Home(): JSX.Element {
+type Props = {
+  langui: GetWebsiteInterfaceQuery;
+};
+
+export default function Home(props: Props): JSX.Element {
+  const langui = props.langui.websiteInterfaces.data[0].attributes;
   return (
     <>
       <Head>
         <title>Accord&rsquo;s Library - Home</title>
       </Head>
+
+      <MainPanel langui={langui} />
+
       <ContentPanel autoformat={true}>
         <h2>Discover • Analyse • Translate • Archive</h2>
         <h2>What is this?</h2>
@@ -139,3 +151,18 @@ export default function Home(): JSX.Element {
     </>
   );
 }
+
+export const getStaticProps: GetStaticProps = async (context) => {
+  if (context.locale) {
+    const props: Props = {
+      langui: await getWebsiteInterface({
+        language_code: context.locale,
+      }),
+    };
+    return {
+      props: props,
+    };
+  } else {
+    return { props: {} };
+  }
+};

@@ -10,6 +10,8 @@ import {
   getWebsiteInterface,
 } from "graphql/operations";
 import {
+  Enum_Componentmetadatabooks_Binding_Type,
+  Enum_Componentmetadatabooks_Page_Order,
   GetLibraryItemQuery,
   GetWebsiteInterfaceQuery,
 } from "graphql/operations-types";
@@ -91,6 +93,7 @@ export default function Library(props: Props): JSX.Element {
         />
 
         {item.subitems.data.length > 0 ? (
+          item.metadata.length > 0 &&
           item.metadata[0].__typename === "ComponentMetadataOther" &&
           item.metadata[0].subtype.data.attributes.slug === "variant-set" ? (
             <NavOption
@@ -211,9 +214,21 @@ export default function Library(props: Props): JSX.Element {
                   <div className="grid place-items-center">
                     <h3 className="text-xl">{langui.global_type}</h3>
                     <Button>
-                      {item.metadata[0].__typename.substring(
-                        "ComponentMetadata".length
-                      )}
+                      {item.metadata[0].__typename === "ComponentMetadataAudio"
+                        ? langui.library_item_type_audio
+                        : item.metadata[0].__typename ===
+                          "ComponentMetadataBooks"
+                        ? langui.library_item_type_textual
+                        : item.metadata[0].__typename ===
+                          "ComponentMetadataGame"
+                        ? langui.library_item_type_game
+                        : item.metadata[0].__typename ===
+                          "ComponentMetadataOther"
+                        ? langui.library_item_type_game
+                        : item.metadata[0].__typename ===
+                          "ComponentMetadataVideo"
+                        ? langui.library_item_type_video
+                        : ""}
                     </Button>
                   </div>
                 ) : (
@@ -304,14 +319,30 @@ export default function Library(props: Props): JSX.Element {
 
                         <div className="grid place-content-start grid-flow-col gap-4">
                           <p className="font-bold">{langui.global_binding}:</p>
-                          <p>{item.metadata[0].binding_type}</p>
+                          <p>
+                            {item.metadata[0].binding_type ===
+                            Enum_Componentmetadatabooks_Binding_Type.Paperback
+                              ? langui.global_paperback
+                              : item.metadata[0].binding_type ===
+                                Enum_Componentmetadatabooks_Binding_Type.Hardcover
+                              ? langui.global_hardcover
+                              : ""}
+                          </p>
                         </div>
 
                         <div className="grid place-content-start grid-flow-col gap-4">
                           <p className="font-bold">
                             {langui.global_page_order}:
                           </p>
-                          <p>{prettySlug(item.metadata[0].page_order)}</p>
+                          <p>
+                            {item.metadata[0].page_order ===
+                            Enum_Componentmetadatabooks_Page_Order.LeftToRight
+                              ? langui.global_left_to_right
+                              : item.metadata[0].page_order ===
+                                Enum_Componentmetadatabooks_Page_Order.RightToLeft
+                              ? langui.global_right_to_left
+                              : ""}
+                          </p>
                         </div>
 
                         <div className="grid place-content-start grid-flow-col gap-4">
@@ -362,6 +393,7 @@ export default function Library(props: Props): JSX.Element {
           </div>
 
           {item.subitems.data.length > 0 ? (
+            item.metadata.length > 0 &&
             item.metadata[0].__typename === "ComponentMetadataOther" &&
             item.metadata[0].subtype.data.attributes.slug === "variant-set" ? (
               <div
@@ -465,7 +497,7 @@ export default function Library(props: Props): JSX.Element {
                         <Button
                           href={`/content/${content.attributes.content.data.attributes.slug}/scans/`}
                         >
-                          View scans
+                          {langui.library_item_view_scans}
                         </Button>
                       ) : (
                         ""
@@ -475,7 +507,7 @@ export default function Library(props: Props): JSX.Element {
                         <Button
                           href={`/content/${content.attributes.content.data.attributes.slug}`}
                         >
-                          Open content
+                          {langui.library_item_open_content}
                         </Button>
                       ) : (
                         ""

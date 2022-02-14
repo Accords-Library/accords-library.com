@@ -56,10 +56,10 @@ export default function MainPanel(props: Props): JSX.Element {
       />
 
       <NavOption
-        url="/chronology"
+        url="/chronicles"
         icon="watch_later"
-        title={langui.main_chronology}
-        subtitle={langui.main_chronology_description}
+        title="Chronicles"
+        subtitle="Experience all events in chronological order"
       />
 
       <HorizontalLine />
@@ -129,7 +129,7 @@ export default function MainPanel(props: Props): JSX.Element {
           </a>
           <a
             className="transition-[filter] hover:colorize-dark"
-            href="https://accords-library.com/discord"
+            href="/discord"
             target="_blank"
             rel="noopener noreferrer"
           >

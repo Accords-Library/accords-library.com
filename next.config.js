@@ -8,4 +8,13 @@ module.exports = {
   images: {
     domains: ['strapi.accords-library.com'],
   },
+  async redirects() {
+    return [
+      {
+        source: '/discord',
+        destination: 'https://discord.com/invite/5mcXcRAczj',
+        permanent: false,
+      },
+    ]
+  },
 }

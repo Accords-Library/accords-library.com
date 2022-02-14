@@ -39,11 +39,15 @@ export default function Library(props: Props): JSX.Element {
     <>
       <MainPanel langui={langui} />
       <SubPanel>
-        <ReturnButton href={`/content/${content.slug}`} title={"Content"} langui={langui} />
+        <ReturnButton
+          href={`/content/${content.slug}`}
+          title={"Content"}
+          langui={langui}
+        />
       </SubPanel>
       <ContentPanel>
         <div className="grid place-items-center">
-          <ThumbnailHeader content={content} />
+          <ThumbnailHeader content={content} langui={langui} />
 
           <HorizontalLine />
 

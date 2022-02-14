@@ -46,6 +46,24 @@ query getWebsiteInterface($language_code: String) {
         chronology_overview_description
         chronology_walkthrough
         chronology_walkthrough_description
+        library_item_front_matter
+        library_item_back_matter
+        library_item_type_textual
+        library_item_type_audio
+        library_item_type_game
+        library_item_type_video
+        library_item_type_other
+        library_item_open_content
+        library_item_view_scans
+        content_read_content
+        content_watch_content
+        content_listen_content
+        global_category
+        global_categories
+        global_paperback
+        global_hardcover
+        global_left_to_right
+        global_right_to_left
       }
     }
   }

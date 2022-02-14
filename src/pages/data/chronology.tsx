@@ -49,7 +49,7 @@ export default function ChronologyOverview(props: Props): JSX.Element {
     <>
       <MainPanel langui={langui} />
       <SubPanel>
-        <ReturnButton href="/chronology" title="Chronology" langui={langui} />
+        <ReturnButton href="/data" title="Data" langui={langui} />
         <HorizontalLine />
 
         {props.chronologyEras.chronologyEras.data.map((era) => (

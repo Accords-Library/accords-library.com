@@ -36,13 +36,13 @@ export default function Library(props: Props): JSX.Element {
       <MainPanel langui={langui} />
       <ContentPanel>
         <div className="grid place-items-center">
-          <ThumbnailHeader content={content} />
+          <ThumbnailHeader content={content} langui={langui} />
 
           <HorizontalLine />
 
           {content.text_set.length > 0 ? (
             <Button href={`/content/${content.slug}/read/`}>
-              Read content
+              {langui.content_read_content}
             </Button>
           ) : (
             ""
@@ -50,7 +50,7 @@ export default function Library(props: Props): JSX.Element {
 
           {content.audio_set.length > 0 ? (
             <Button href={`/content/${content.slug}/listen/`}>
-              Listen content
+              {langui.content_listen_content}
             </Button>
           ) : (
             ""
@@ -58,7 +58,7 @@ export default function Library(props: Props): JSX.Element {
 
           {content.video_set.length > 0 ? (
             <Button href={`/content/${content.slug}/watch/`}>
-              View content
+              {langui.content_watch_content}
             </Button>
           ) : (
             ""

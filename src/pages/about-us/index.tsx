@@ -7,7 +7,7 @@ import { GetStaticProps } from "next";
 import { getWebsiteInterface } from "graphql/operations";
 import ContentPanel from "components/Panels/ContentPanel";
 
-applyCustomAppProps(Hubs, {
+applyCustomAppProps(AboutUs, {
   useSubPanel: true,
   useContentPanel: true,
 });
@@ -16,15 +16,15 @@ type Props = {
   langui: GetWebsiteInterfaceQuery;
 };
 
-export default function Hubs(props: Props): JSX.Element {
+export default function AboutUs(props: Props): JSX.Element {
   const langui = props.langui.websiteInterfaces.data[0].attributes;
   return (
     <>
       <MainPanel langui={langui} />
       <SubPanel>
         <PanelHeader
-          icon="workspaces"
-          title={langui.main_hub}
+          icon="info"
+          title={langui.main_about_us}
           description="Reiciendis id reiciendis at ullam. Corrupti voluptatibus quo magnam enim voluptas eaque. Quia id consequatur fuga magni. Voluptate eaque pariatur porro voluptate rerum. Harum velit in laborum eligendi. Nihil eius dolor et omnis."
         />
       </SubPanel>

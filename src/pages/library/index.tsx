@@ -4,7 +4,6 @@ import ContentPanel, {
   ContentPanelWidthSizes,
 } from "components/Panels/ContentPanel";
 import LibraryItemComponent from "components/Library/LibraryItemComponent";
-import { applyCustomAppProps } from "pages/_app";
 import {
   GetLibraryItemsPreviewQuery,
   GetWebsiteInterfaceQuery,
@@ -14,49 +13,46 @@ import {
   getWebsiteInterface,
 } from "graphql/operations";
 import PanelHeader from "components/PanelComponents/PanelHeader";
-import MainPanel from "components/Panels/MainPanel";
-import Head from "next/head";
+import AppLayout from "components/AppLayout";
 
-type Props = {
+type LibraryProps = {
   libraryItems: GetLibraryItemsPreviewQuery;
   langui: GetWebsiteInterfaceQuery;
 };
 
-applyCustomAppProps(Library, {
-  useSubPanel: true,
-  useContentPanel: true,
-});
-
-export default function Library(props: Props): JSX.Element {
+export default function Library(props: LibraryProps): JSX.Element {
   const langui = props.langui.websiteInterfaces.data[0].attributes;
+  const subPanel = (
+    <SubPanel>
+      <PanelHeader
+        icon="library_books"
+        title={langui.main_library}
+        description={langui.library_description}
+      />
+    </SubPanel>
+  );
+  const contentPanel = (
+    <ContentPanel width={ContentPanelWidthSizes.large}>
+      <div className="grid gap-8 items-end grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))]">
+        {props.libraryItems.libraryItems.data.map((item) => (
+          <LibraryItemComponent key={item.id} item={item.attributes} />
+        ))}
+      </div>
+    </ContentPanel>
+  );
   return (
-    <>
-      <Head>
-        <title>Accord&rsquo;s Library - Library</title>
-      </Head>
-      <MainPanel langui={langui} />
-      <SubPanel>
-        <PanelHeader
-          icon="library_books"
-          title={langui.main_library}
-          description={langui.library_description}
-        />
-      </SubPanel>
-
-      <ContentPanel width={ContentPanelWidthSizes.large}>
-        <div className="grid gap-8 items-end grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))]">
-          {props.libraryItems.libraryItems.data.map((item) => (
-            <LibraryItemComponent key={item.id} item={item.attributes} />
-          ))}
-        </div>
-      </ContentPanel>
-    </>
+    <AppLayout
+      title="Library"
+      langui={langui}
+      subPanel={subPanel}
+      contentPanel={contentPanel}
+    />
   );
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
   if (context.locale) {
-    const props: Props = {
+    const props: LibraryProps = {
       libraryItems: await getLibraryItemsPreview({
         language_code: context.locale,
       }),

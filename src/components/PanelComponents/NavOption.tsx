@@ -12,9 +12,11 @@ type NavOptionProps = {
 export default function NavOption(props: NavOptionProps): JSX.Element {
   const router = useRouter();
   const isActive = router.asPath.startsWith(props.url);
-  const divActive = "bg-mid"
+  const divActive = "bg-mid";
   const border = "border-2 border-mid";
-  const divCommon = `gap-x-5 w-full rounded-2xl cursor-pointer p-4 hover:bg-mid transition-colors ${props.border ? border: ""} ${isActive ? divActive : ""}`;
+  const divCommon = `gap-x-5 w-full rounded-2xl cursor-pointer p-4 hover:bg-mid transition-colors ${
+    props.border ? border : ""
+  } ${isActive ? divActive : ""}`;
 
   if (props.icon) {
     return (

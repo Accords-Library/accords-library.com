@@ -403,17 +403,18 @@ export type GetLibraryItemQuery = {
             }
           | {
               __typename: "ComponentMetadataVideo";
-              resolution: Enum_Componentmetadatavideo_Resolution;
-              audio_languages: {
-                __typename: "LanguageRelationResponseCollection";
-                data: Array<{
-                  __typename: "LanguageEntity";
+              subtype: {
+                __typename: "VideoSubtypeEntityResponse";
+                data: {
+                  __typename: "VideoSubtypeEntity";
                   attributes: {
-                    __typename: "Language";
-                    code: string;
-                    name: string;
+                    __typename: "VideoSubtype";
+                    titles: Array<{
+                      __typename: "ComponentTranslationsSimpleTitle";
+                      title: string;
+                    }>;
                   };
-                }>;
+                };
               };
             }
           | {
@@ -477,17 +478,6 @@ export type GetLibraryItemQuery = {
                     }>;
                   };
                 };
-              };
-              languages: {
-                __typename: "LanguageRelationResponseCollection";
-                data: Array<{
-                  __typename: "LanguageEntity";
-                  attributes: {
-                    __typename: "Language";
-                    code: string;
-                    name: string;
-                  };
-                }>;
               };
             }
           | {

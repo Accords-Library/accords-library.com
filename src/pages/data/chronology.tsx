@@ -2,7 +2,6 @@ import { GetStaticProps } from "next";
 import ContentPanel from "components/Panels/ContentPanel";
 import SubPanel from "components/Panels/SubPanel";
 import ChronologyYearComponent from "components/Chronology/ChronologyYearComponent";
-import { applyCustomAppProps } from "pages/_app";
 import {
   GetChronologyItemsQuery,
   GetErasQuery,
@@ -16,22 +15,20 @@ import {
 import NavOption from "components/PanelComponents/NavOption";
 import ReturnButton from "components/PanelComponents/ReturnButton";
 import HorizontalLine from "components/HorizontalLine";
-import MainPanel from "components/Panels/MainPanel";
+import AppLayout from "components/AppLayout";
 
-interface Props {
+interface DataChronologyProps {
   chronologyItems: GetChronologyItemsQuery;
   chronologyEras: GetErasQuery;
   langui: GetWebsiteInterfaceQuery;
 }
 
-applyCustomAppProps(ChronologyOverview, {
-  useSubPanel: true,
-  useContentPanel: true,
-});
-
-export default function ChronologyOverview(props: Props): JSX.Element {
-  // Group by year the Chronology items
+export default function DataChronology(
+  props: DataChronologyProps
+): JSX.Element {
   const langui = props.langui.websiteInterfaces.data[0].attributes;
+
+  // Group by year the Chronology items
   let chronologyItemYearGroups: GetChronologyItemsQuery["chronologyItems"]["data"][number][][] =
     [];
 
@@ -45,46 +42,54 @@ export default function ChronologyOverview(props: Props): JSX.Element {
     });
   }
 
-  return (
-    <>
-      <MainPanel langui={langui} />
-      <SubPanel>
-        <ReturnButton href="/data" title="Data" langui={langui} />
-        <HorizontalLine />
+  const subPanel = (
+    <SubPanel>
+      <ReturnButton href="/data" title="Data" langui={langui} />
+      <HorizontalLine />
 
-        {props.chronologyEras.chronologyEras.data.map((era) => (
-          <NavOption
-            key={era.id}
-            url={"#" + era.attributes.slug}
-            title={era.attributes.title[0] ? era.attributes.title[0].title : ""}
-            subtitle={
-              era.attributes.starting_year + " → " + era.attributes.ending_year
-            }
-            border={true}
-          />
-        ))}
-      </SubPanel>
-
-      <ContentPanel>
-        {chronologyItemYearGroups.map((items, index: number) => {
-          if (items && items[0].attributes.year) {
-            return (
-              <ChronologyYearComponent
-                key={index}
-                year={items[0].attributes.year}
-                items={items}
-              />
-            );
+      {props.chronologyEras.chronologyEras.data.map((era) => (
+        <NavOption
+          key={era.id}
+          url={"#" + era.attributes.slug}
+          title={era.attributes.title[0] ? era.attributes.title[0].title : ""}
+          subtitle={
+            era.attributes.starting_year + " → " + era.attributes.ending_year
           }
-        })}
-      </ContentPanel>
-    </>
+          border={true}
+        />
+      ))}
+    </SubPanel>
+  );
+
+  const contentPanel = (
+    <ContentPanel>
+      {chronologyItemYearGroups.map((items, index: number) => {
+        if (items && items[0].attributes.year) {
+          return (
+            <ChronologyYearComponent
+              key={index}
+              year={items[0].attributes.year}
+              items={items}
+            />
+          );
+        }
+      })}
+    </ContentPanel>
+  );
+
+  return (
+    <AppLayout
+      title="Chronology"
+      langui={langui}
+      contentPanel={contentPanel}
+      subPanel={subPanel}
+    />
   );
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
   if (context.locale) {
-    const props: Props = {
+    const props: DataChronologyProps = {
       chronologyItems: await getChronologyItems({
         language_code: context.locale,
       }),

@@ -1,5 +1,4 @@
 import { GetStaticPaths, GetStaticProps } from "next";
-import { applyCustomAppProps } from "pages/_app";
 import {
   getContentsSlugs,
   getContentText,
@@ -10,60 +9,59 @@ import {
   GetWebsiteInterfaceQuery,
 } from "graphql/operations-types";
 import ContentPanel from "components/Panels/ContentPanel";
-import Image from "next/image";
-import { getAssetURL, prettySlug } from "queries/helpers";
-import Button from "components/Button";
 import HorizontalLine from "components/HorizontalLine";
 import Markdown from "markdown-to-jsx";
 import SubPanel from "components/Panels/SubPanel";
 import ReturnButton from "components/PanelComponents/ReturnButton";
 import SceneBreak from "components/Markdown/SceneBreak";
 import ThumbnailHeader from "components/Content/ThumbnailHeader";
-import MainPanel from "components/Panels/MainPanel";
+import AppLayout from "components/AppLayout";
 
-type Props = {
+type ContentReadProps = {
   content: GetContentTextQuery;
   langui: GetWebsiteInterfaceQuery;
 };
 
-applyCustomAppProps(Library, {
-  useSubPanel: true,
-  useContentPanel: true,
-});
-
-export default function Library(props: Props): JSX.Element {
+export default function ContentRead(props: ContentReadProps): JSX.Element {
   const content = props.content.contents.data[0].attributes;
   const langui = props.langui.websiteInterfaces.data[0].attributes;
+  const subPanel = (
+    <SubPanel>
+      <ReturnButton
+        href={`/content/${content.slug}`}
+        title={"Content"}
+        langui={langui}
+      />
+    </SubPanel>
+  );
+  const contentPanel = (
+    <ContentPanel>
+      <div className="grid place-items-center">
+        <ThumbnailHeader content={content} langui={langui} />
+
+        <HorizontalLine />
+
+        {content.text_set.length > 0 ? (
+          <Markdown
+            className="prose prose-lg text-black pt-12"
+            options={{ overrides: { hr: { component: SceneBreak } } }}
+          >
+            {content.text_set[0].text}
+          </Markdown>
+        ) : (
+          ""
+        )}
+      </div>
+    </ContentPanel>
+  );
 
   return (
-    <>
-      <MainPanel langui={langui} />
-      <SubPanel>
-        <ReturnButton
-          href={`/content/${content.slug}`}
-          title={"Content"}
-          langui={langui}
-        />
-      </SubPanel>
-      <ContentPanel>
-        <div className="grid place-items-center">
-          <ThumbnailHeader content={content} langui={langui} />
-
-          <HorizontalLine />
-
-          {content.text_set.length > 0 ? (
-            <Markdown
-              className="prose prose-lg text-black pt-12"
-              options={{ overrides: { hr: { component: SceneBreak } } }}
-            >
-              {content.text_set[0].text}
-            </Markdown>
-          ) : (
-            ""
-          )}
-        </div>
-      </ContentPanel>
-    </>
+    <AppLayout
+      title="Read"
+      langui={langui}
+      contentPanel={contentPanel}
+      subPanel={subPanel}
+    />
   );
 }
 
@@ -73,7 +71,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
       if (context.params.slug instanceof Array)
         context.params.slug = context.params.slug.join("");
 
-      const props: Props = {
+      const props: ContentReadProps = {
         content: await getContentText({
           slug: context.params.slug,
           language_code: context.locale,

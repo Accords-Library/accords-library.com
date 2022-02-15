@@ -268,12 +268,14 @@ query getLibraryItem($slug: String, $language_code: String) {
             }
           }
           ... on ComponentMetadataVideo {
-            resolution
-            audio_languages {
+            subtype {
               data {
                 attributes {
-                  code
-                  name
+                  titles(
+                    filters: { language: { code: { eq: $language_code } } }
+                  ) {
+                    title
+                  }
                 }
               }
             }
@@ -321,14 +323,6 @@ query getLibraryItem($slug: String, $language_code: String) {
                   ) {
                     title
                   }
-                }
-              }
-            }
-            languages {
-              data {
-                attributes {
-                  code
-                  name
                 }
               }
             }

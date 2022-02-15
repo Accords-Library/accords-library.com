@@ -13,6 +13,10 @@ module.exports = {
       body: ["Zen Maru Gothic"],
       headers: ["Vollkorn"],
     },
+    screens: {
+      desktop: {'min': '70rem'},
+      mobile: {'max': '70rem'},
+    }
   },
   plugins: [
     require("@tailwindcss/typography"),

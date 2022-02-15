@@ -11,11 +11,12 @@ export enum ContentPanelWidthSizes {
 
 export default function ContentPanel(props: ContentPanelProps): JSX.Element {
   const width = props.width ? props.width : ContentPanelWidthSizes.default;
-  const widthCSS = width === ContentPanelWidthSizes.default ? "w-[45rem]" : "w-full";
+  const widthCSS =
+    width === ContentPanelWidthSizes.default ? "max-w-[45rem]" : "w-full";
   const prose = props.autoformat ? "prose" : "";
 
   return (
-    <div className={`grid overflow-y-scroll max-h-screen h-screen py-20 px-10`}>
+    <div className={`grid pt-10 pb-20 px-6 desktop:py-20 desktop:px-10`}>
       <main className={`${prose} ${widthCSS} place-self-center text-justify`}>
         {props.children}
       </main>

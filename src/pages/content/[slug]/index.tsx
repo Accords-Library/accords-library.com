@@ -1,5 +1,4 @@
 import { GetStaticPaths, GetStaticProps } from "next";
-import { applyCustomAppProps } from "pages/_app";
 import {
   getContent,
   getContentsSlugs,
@@ -10,62 +9,55 @@ import {
   GetWebsiteInterfaceQuery,
 } from "graphql/operations-types";
 import ContentPanel from "components/Panels/ContentPanel";
-import Image from "next/image";
-import { getAssetURL, prettySlug } from "queries/helpers";
 import Button from "components/Button";
 import HorizontalLine from "components/HorizontalLine";
 import ThumbnailHeader from "components/Content/ThumbnailHeader";
-import MainPanel from "components/Panels/MainPanel";
+import AppLayout from "components/AppLayout";
 
-type Props = {
+type ContentIndexProps = {
   content: GetContentQuery;
   langui: GetWebsiteInterfaceQuery;
 };
 
-applyCustomAppProps(Library, {
-  useSubPanel: false,
-  useContentPanel: true,
-});
-
-export default function Library(props: Props): JSX.Element {
+export default function ContentIndex(props: ContentIndexProps): JSX.Element {
   const content = props.content.contents.data[0].attributes;
   const langui = props.langui.websiteInterfaces.data[0].attributes;
+  const contentPanel = (
+    <ContentPanel>
+      <div className="grid place-items-center">
+        <ThumbnailHeader content={content} langui={langui} />
+
+        <HorizontalLine />
+
+        {content.text_set.length > 0 ? (
+          <Button href={`/content/${content.slug}/read/`}>
+            {langui.content_read_content}
+          </Button>
+        ) : (
+          ""
+        )}
+
+        {content.audio_set.length > 0 ? (
+          <Button href={`/content/${content.slug}/listen/`}>
+            {langui.content_listen_content}
+          </Button>
+        ) : (
+          ""
+        )}
+
+        {content.video_set.length > 0 ? (
+          <Button href={`/content/${content.slug}/watch/`}>
+            {langui.content_watch_content}
+          </Button>
+        ) : (
+          ""
+        )}
+      </div>
+    </ContentPanel>
+  );
 
   return (
-    <>
-      <MainPanel langui={langui} />
-      <ContentPanel>
-        <div className="grid place-items-center">
-          <ThumbnailHeader content={content} langui={langui} />
-
-          <HorizontalLine />
-
-          {content.text_set.length > 0 ? (
-            <Button href={`/content/${content.slug}/read/`}>
-              {langui.content_read_content}
-            </Button>
-          ) : (
-            ""
-          )}
-
-          {content.audio_set.length > 0 ? (
-            <Button href={`/content/${content.slug}/listen/`}>
-              {langui.content_listen_content}
-            </Button>
-          ) : (
-            ""
-          )}
-
-          {content.video_set.length > 0 ? (
-            <Button href={`/content/${content.slug}/watch/`}>
-              {langui.content_watch_content}
-            </Button>
-          ) : (
-            ""
-          )}
-        </div>
-      </ContentPanel>
-    </>
+    <AppLayout title="Content" langui={langui} contentPanel={contentPanel} />
   );
 }
 
@@ -75,7 +67,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
       if (context.params.slug instanceof Array)
         context.params.slug = context.params.slug.join("");
 
-      const props: Props = {
+      const props: ContentIndexProps = {
         content: await getContent({
           slug: context.params.slug,
           language_code: context.locale,

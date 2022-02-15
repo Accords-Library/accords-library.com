@@ -7,15 +7,15 @@ import HorizontalLine from "components/HorizontalLine";
 import { GetWebsiteInterfaceQuery } from "graphql/operations-types";
 import Markdown from "markdown-to-jsx";
 
-type Props = {
+type MainPanelProps = {
   langui: GetWebsiteInterfaceQuery["websiteInterfaces"]["data"][number]["attributes"];
 };
 
-export default function MainPanel(props: Props): JSX.Element {
+export default function MainPanel(props: MainPanelProps): JSX.Element {
   const langui = props.langui;
   const router = useRouter();
   return (
-    <div className="grid webkit-scrollbar:w-0 [scrollbar-width:none] overflow-y-scroll border-r-[1px] border-black max-h-screen h-screen justify-center content-start p-8 gap-y-2 justify-items-center text-center">
+    <div className="grid justify-center content-start p-8 gap-y-2 justify-items-center text-center">
       <div className="">
         <div className="grid place-items-center">
           <Link href="/" passHref>

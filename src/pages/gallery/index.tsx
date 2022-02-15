@@ -1,34 +1,29 @@
-import MainPanel from "components/Panels/MainPanel";
+import AppLayout from "components/AppLayout";
 import { getWebsiteInterface } from "graphql/operations";
 import { GetWebsiteInterfaceQuery } from "graphql/operations-types";
 import { GetStaticProps } from "next";
-import { applyCustomAppProps } from "pages/_app";
 
-applyCustomAppProps(Gallery, {
-  useSubPanel: false,
-  useContentPanel: true,
-});
-
-type Props = {
+type GalleryProps = {
   langui: GetWebsiteInterfaceQuery;
 };
 
-export default function Gallery(props: Props): JSX.Element {
+export default function Gallery(props: GalleryProps): JSX.Element {
   const langui = props.langui.websiteInterfaces.data[0].attributes;
+  const contentPanel = (
+    <iframe
+      className="w-full h-screen"
+      src="https://gallery.accords-library.com/posts"
+    ></iframe>
+  );
+
   return (
-    <>
-      <MainPanel langui={langui} />
-      <iframe
-        className="w-full h-screen"
-        src="https://gallery.accords-library.com/posts"
-      ></iframe>
-    </>
+    <AppLayout title="Content" langui={langui} contentPanel={contentPanel} />
   );
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
   if (context.locale) {
-    const props: Props = {
+    const props: GalleryProps = {
       langui: await getWebsiteInterface({
         language_code: context.locale,
       }),

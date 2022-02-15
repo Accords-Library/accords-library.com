@@ -430,11 +430,6 @@ type ComponentCollectionsComponentWeaponStory {
 
 type ComponentMetadataAudio {
   id: ID!
-  languages(
-    filters: LanguageFiltersInput
-    pagination: PaginationArg = {}
-    sort: [String] = []
-  ): LanguageRelationResponseCollection
   subtype: AudioSubtypeEntityResponse
 }
 
@@ -492,22 +487,9 @@ type ComponentMetadataOther {
   subtype: OtherSubtypeEntityResponse
 }
 
-enum ENUM_COMPONENTMETADATAVIDEO_RESOLUTION {
-  SD_480p
-  HD_720p
-  FullHD_1080p
-  QuadHD_2160p
-}
-
 type ComponentMetadataVideo {
   id: ID!
-  resolution: ENUM_COMPONENTMETADATAVIDEO_RESOLUTION
-  audio_languages(
-    filters: LanguageFiltersInput
-    pagination: PaginationArg = {}
-    sort: [String] = []
-  ): LanguageRelationResponseCollection
-  sub_languages: LanguageEntityResponse
+  subtype: VideoSubtypeEntityResponse
 }
 
 input ComponentPageBuilderComponentPaneFiltersInput {
@@ -2193,6 +2175,46 @@ type TextualSubtypeEntityResponseCollection {
   meta: ResponseCollectionMeta!
 }
 
+input VideoSubtypeFiltersInput {
+  id: IDFilterInput
+  slug: StringFilterInput
+  createdAt: DateTimeFilterInput
+  updatedAt: DateTimeFilterInput
+  and: [VideoSubtypeFiltersInput]
+  or: [VideoSubtypeFiltersInput]
+  not: VideoSubtypeFiltersInput
+}
+
+input VideoSubtypeInput {
+  slug: String
+  titles: [ComponentTranslationsSimpleTitleInput]
+}
+
+type VideoSubtype {
+  slug: String!
+  titles(
+    filters: ComponentTranslationsSimpleTitleFiltersInput
+    pagination: PaginationArg = {}
+    sort: [String] = []
+  ): [ComponentTranslationsSimpleTitle]
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+type VideoSubtypeEntity {
+  id: ID
+  attributes: VideoSubtype
+}
+
+type VideoSubtypeEntityResponse {
+  data: VideoSubtypeEntity
+}
+
+type VideoSubtypeEntityResponseCollection {
+  data: [VideoSubtypeEntity!]!
+  meta: ResponseCollectionMeta!
+}
+
 input WeaponStoryFiltersInput {
   id: IDFilterInput
   slug: StringFilterInput
@@ -2379,6 +2401,24 @@ input WebsiteInterfaceFiltersInput {
   chronology_overview_description: StringFilterInput
   chronology_walkthrough: StringFilterInput
   chronology_walkthrough_description: StringFilterInput
+  library_item_front_matter: StringFilterInput
+  library_item_back_matter: StringFilterInput
+  library_item_type_textual: StringFilterInput
+  library_item_type_audio: StringFilterInput
+  library_item_type_game: StringFilterInput
+  library_item_type_video: StringFilterInput
+  library_item_type_other: StringFilterInput
+  library_item_open_content: StringFilterInput
+  library_item_view_scans: StringFilterInput
+  content_read_content: StringFilterInput
+  content_watch_content: StringFilterInput
+  content_listen_content: StringFilterInput
+  global_category: StringFilterInput
+  global_categories: StringFilterInput
+  global_paperback: StringFilterInput
+  global_hardcover: StringFilterInput
+  global_left_to_right: StringFilterInput
+  global_right_to_left: StringFilterInput
   createdAt: DateTimeFilterInput
   updatedAt: DateTimeFilterInput
   and: [WebsiteInterfaceFiltersInput]
@@ -2432,6 +2472,24 @@ input WebsiteInterfaceInput {
   chronology_overview_description: String
   chronology_walkthrough: String
   chronology_walkthrough_description: String
+  library_item_front_matter: String
+  library_item_back_matter: String
+  library_item_type_textual: String
+  library_item_type_audio: String
+  library_item_type_game: String
+  library_item_type_video: String
+  library_item_type_other: String
+  library_item_open_content: String
+  library_item_view_scans: String
+  content_read_content: String
+  content_watch_content: String
+  content_listen_content: String
+  global_category: String
+  global_categories: String
+  global_paperback: String
+  global_hardcover: String
+  global_left_to_right: String
+  global_right_to_left: String
 }
 
 type WebsiteInterface {
@@ -2480,6 +2538,24 @@ type WebsiteInterface {
   chronology_overview_description: String
   chronology_walkthrough: String
   chronology_walkthrough_description: String
+  library_item_front_matter: String
+  library_item_back_matter: String
+  library_item_type_textual: String
+  library_item_type_audio: String
+  library_item_type_game: String
+  library_item_type_video: String
+  library_item_type_other: String
+  library_item_open_content: String
+  library_item_view_scans: String
+  content_read_content: String
+  content_watch_content: String
+  content_listen_content: String
+  global_category: String
+  global_categories: String
+  global_paperback: String
+  global_hardcover: String
+  global_left_to_right: String
+  global_right_to_left: String
   createdAt: DateTime
   updatedAt: DateTime
 }
@@ -2567,6 +2643,7 @@ union GenericMorph =
   | Recorder
   | Source
   | TextualSubtype
+  | VideoSubtype
   | WeaponStory
   | WeaponStoryGroup
   | WeaponStoryType
@@ -2707,6 +2784,12 @@ type Query {
     pagination: PaginationArg = {}
     sort: [String] = []
   ): TextualSubtypeEntityResponseCollection
+  videoSubtype(id: ID): VideoSubtypeEntityResponse
+  videoSubtypes(
+    filters: VideoSubtypeFiltersInput
+    pagination: PaginationArg = {}
+    sort: [String] = []
+  ): VideoSubtypeEntityResponseCollection
   weaponStory(id: ID): WeaponStoryEntityResponse
   weaponStories(
     filters: WeaponStoryFiltersInput
@@ -2823,6 +2906,12 @@ type Mutation {
     data: TextualSubtypeInput!
   ): TextualSubtypeEntityResponse
   deleteTextualSubtype(id: ID!): TextualSubtypeEntityResponse
+  createVideoSubtype(data: VideoSubtypeInput!): VideoSubtypeEntityResponse
+  updateVideoSubtype(
+    id: ID!
+    data: VideoSubtypeInput!
+  ): VideoSubtypeEntityResponse
+  deleteVideoSubtype(id: ID!): VideoSubtypeEntityResponse
   createWeaponStory(data: WeaponStoryInput!): WeaponStoryEntityResponse
   updateWeaponStory(id: ID!, data: WeaponStoryInput!): WeaponStoryEntityResponse
   deleteWeaponStory(id: ID!): WeaponStoryEntityResponse

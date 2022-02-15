@@ -6,7 +6,7 @@ import { getAssetURL, prettySlug } from "queries/helpers";
 import Image from "next/image";
 import Button from "components/Button";
 
-export type Props = {
+export type ThumbnailHeaderProps = {
   content: {
     slug: GetContentQuery["contents"]["data"][number]["attributes"]["slug"];
     thumbnail: GetContentQuery["contents"]["data"][number]["attributes"]["thumbnail"];
@@ -17,7 +17,9 @@ export type Props = {
   langui: GetWebsiteInterfaceQuery["websiteInterfaces"]["data"][number]["attributes"];
 };
 
-export default function ThumbnailHeader(props: Props): JSX.Element {
+export default function ThumbnailHeader(
+  props: ThumbnailHeaderProps
+): JSX.Element {
   const content = props.content;
   const langui = props.langui;
 

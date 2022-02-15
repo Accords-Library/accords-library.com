@@ -104,9 +104,14 @@ export default function ChronologyItemComponent(
             ))}
 
             <p className="text-dark text-xs inline-grid place-items-center grid-flow-col gap-1">
-              {event.source.data
-                ? "(" + event.source.data.attributes.name + ")"
-                : <><span className="material-icons !text-sm">warning</span>No sources!</>}
+              {event.source.data ? (
+                "(" + event.source.data.attributes.name + ")"
+              ) : (
+                <>
+                  <span className="material-icons !text-sm">warning</span>No
+                  sources!
+                </>
+              )}
             </p>
           </div>
         ))}

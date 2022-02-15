@@ -1,12 +1,12 @@
 import HorizontalLine from "components/HorizontalLine";
 
-type NavOptionProps = {
+type PanelHeaderProps = {
   icon?: string;
   title: string;
   description?: string;
 };
 
-export default function PanelHeader(props: NavOptionProps): JSX.Element {
+export default function PanelHeader(props: PanelHeaderProps): JSX.Element {
   return (
     <div className="w-full grid place-items-center">
       {props.icon ? (

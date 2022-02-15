@@ -8,5 +8,9 @@ type ReturnButtonProps = {
 };
 
 export default function ReturnButton(props: ReturnButtonProps): JSX.Element {
-  return <Button href={props.href}>❮&emsp;{props.langui.global_return_label} {props.title}</Button>;
+  return (
+    <Button href={props.href}>
+      ❮&emsp;{props.langui.global_return_label} {props.title}
+    </Button>
+  );
 }

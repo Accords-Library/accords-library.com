@@ -673,6 +673,122 @@ export type GetContentQueryVariables = Exact<{
   language_code: InputMaybe<Scalars["String"]>;
 }>;
 
+export type GetContentsQueryVariables = Exact<{
+  language_code: InputMaybe<Scalars["String"]>;
+}>;
+
+export type GetContentsQuery = {
+  __typename: "Query";
+  contents: {
+    __typename: "ContentEntityResponseCollection";
+    data: Array<{
+      __typename: "ContentEntity";
+      id: string;
+      attributes: {
+        __typename: "Content";
+        slug: string;
+        titles: Array<{
+          __typename: "ComponentTranslationsTitle";
+          pre_title: string ;
+          title: string;
+          subtitle: string ;
+        } > ;
+        categories: {
+          __typename: "CategoryRelationResponseCollection";
+          data: Array<{
+            __typename: "CategoryEntity";
+            id: string ;
+            attributes: { __typename: "Category"; short: string } ;
+          }>;
+        } ;
+        type: {
+          __typename: "ContentTypeEntityResponse";
+          data: {
+            __typename: "ContentTypeEntity";
+            attributes: {
+              __typename: "ContentType";
+              slug: string;
+              titles: Array<{
+                __typename: "ComponentTranslationsSimpleTitle";
+                title: string;
+              } > ;
+            } ;
+          } ;
+        } ;
+        ranged_contents: {
+          __typename: "RangedContentRelationResponseCollection";
+          data: Array<{
+            __typename: "RangedContentEntity";
+            id: string ;
+            attributes: {
+              __typename: "RangedContent";
+              slug: string;
+              scan_set: Array<{
+                __typename: "ComponentSetsScanSet";
+                id: string;
+              } > ;
+              library_item: {
+                __typename: "LibraryItemEntityResponse";
+                data: {
+                  __typename: "LibraryItemEntity";
+                  attributes: {
+                    __typename: "LibraryItem";
+                    slug: string;
+                    title: string;
+                    subtitle: string ;
+                    thumbnail: {
+                      __typename: "UploadFileEntityResponse";
+                      data: {
+                        __typename: "UploadFileEntity";
+                        attributes: {
+                          __typename: "UploadFile";
+                          name: string;
+                          alternativeText: string ;
+                          caption: string ;
+                          width: number ;
+                          height: number ;
+                          url: string;
+                        } ;
+                      } ;
+                    } ;
+                  } ;
+                } ;
+              } ;
+            } ;
+          }>;
+        } ;
+        text_set: Array<{
+          __typename: "ComponentSetsTextSet";
+          id: string;
+        } > ;
+        video_set: Array<{
+          __typename: "ComponentSetsVideoSet";
+          id: string;
+        } > ;
+        audio_set: Array<{
+          __typename: "ComponentSetsAudioSet";
+          id: string;
+        } > ;
+        thumbnail: {
+          __typename: "UploadFileEntityResponse";
+          data: {
+            __typename: "UploadFileEntity";
+            attributes: {
+              __typename: "UploadFile";
+              name: string;
+              alternativeText: string ;
+              caption: string ;
+              width: number ;
+              height: number ;
+              url: string;
+            } ;
+          } ;
+        } ;
+      } ;
+    }>;
+  } ;
+};
+
 export type GetContentQuery = {
   __typename: "Query";
   contents: {

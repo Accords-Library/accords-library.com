@@ -25,11 +25,11 @@ import {
 import SubPanel from "components/Panels/SubPanel";
 import ReturnButton from "components/PanelComponents/ReturnButton";
 import NavOption from "components/PanelComponents/NavOption";
-import LibraryItemComponent from "components/Library/LibraryItemComponent";
 import Chip from "components/Chip";
 import Button from "components/Button";
 import HorizontalLine from "components/HorizontalLine";
 import AppLayout from "components/AppLayout";
+import LibraryMediaPreview from "components/Library/LibraryItemsPreview";
 
 type LibrarySlugProps = {
   libraryItem: GetLibraryItemQuery;
@@ -42,8 +42,8 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
   const subPanel = (
     <SubPanel>
       <ReturnButton
-        title={langui.main_library}
-        href="/library"
+        href="/library/items"
+        title="Media"
         langui={langui}
       />
       <HorizontalLine />
@@ -370,7 +370,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
               <h2 className="text-2xl">{langui.library_item_variants}</h2>
               <div className="grid gap-8 items-end grid-cols-[repeat(auto-fill,minmax(15rem,1fr))] w-full">
                 {item.subitems.data.map((variant) => (
-                  <LibraryItemComponent
+                  <LibraryMediaPreview
                     key={variant.id}
                     item={variant.attributes}
                   />
@@ -382,7 +382,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
               <h2 className="text-2xl">{langui.library_item_subitems}</h2>
               <div className="grid gap-8 items-end grid-cols-[repeat(auto-fill,minmax(15rem,1fr))] w-full">
                 {item.subitems.data.map((subitem) => (
-                  <LibraryItemComponent
+                  <LibraryMediaPreview
                     key={subitem.id}
                     item={subitem.attributes}
                   />

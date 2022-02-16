@@ -3,7 +3,7 @@ import { GetLibraryItemsPreviewQuery } from "graphql/operations-types";
 import { getAssetURL, prettyDate, prettyPrice } from "queries/helpers";
 import Image from "next/image";
 
-export type LibraryItemComponentProps = {
+export type LibraryItemsPreviewProps = {
   item: {
     slug: GetLibraryItemsPreviewQuery["libraryItems"]["data"][number]["attributes"]["slug"];
     thumbnail: GetLibraryItemsPreviewQuery["libraryItems"]["data"][number]["attributes"]["thumbnail"];
@@ -14,13 +14,13 @@ export type LibraryItemComponentProps = {
   };
 };
 
-export default function LibraryItemComponent(
-  props: LibraryItemComponentProps
+export default function LibraryItemsPreview(
+  props: LibraryItemsPreviewProps
 ): JSX.Element {
   const item = props.item;
 
   return (
-    <Link href={"/library/" + item.slug} passHref>
+    <Link href={"/library/items/" + item.slug} passHref>
       <div className="drop-shadow-dark-xl cursor-pointer grid items-end hover:rounded-3xl [--cover-opacity:0] hover:[--cover-opacity:1] hover:scale-[1.02] transition-transform">
         {item.thumbnail.data ? (
           <Image
@@ -38,12 +38,12 @@ export default function LibraryItemComponent(
             <h3 className="leading-3">{item.subtitle}</h3>
           </div>
           <div className="grid grid-flow-col">
-            {item.price ? (
+            {item.release_date ? (
               <p className="text-sm">
                 <span className="material-icons !text-base translate-y-[.15em] mr-1">
                   event
                 </span>
-                {item.release_date ? prettyDate(item.release_date) : ""}
+                {prettyDate(item.release_date)}
               </p>
             ) : (
               ""
@@ -64,3 +64,4 @@ export default function LibraryItemComponent(
     </Link>
   );
 }
+

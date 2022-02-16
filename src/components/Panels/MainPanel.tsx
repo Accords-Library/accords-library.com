@@ -49,10 +49,10 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
       />
 
       <NavOption
-        url="/hubs"
-        icon="workspaces"
-        title={langui.main_hub}
-        subtitle={langui.main_hub_description}
+        url="/wiki"
+        icon="travel_explore"
+        title="Wiki"
+        subtitle="Explore all content of a specific game/series"
       />
 
       <NavOption
@@ -65,7 +65,6 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
       <HorizontalLine />
 
       <NavOption url="/news" icon="feed" title={langui.main_news} />
-      <NavOption url="/data" icon="travel_explore" title={langui.main_data} />
       <NavOption url="/merch" icon="store" title={langui.main_merch} />
       <NavOption
         url="/gallery"

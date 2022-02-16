@@ -1,22 +1,16 @@
 import { GetStaticProps } from "next";
 import SubPanel from "components/Panels/SubPanel";
-import ContentPanel, {
-  ContentPanelWidthSizes,
-} from "components/Panels/ContentPanel";
-import LibraryItemComponent from "components/Library/LibraryItemComponent";
 import {
-  GetLibraryItemsPreviewQuery,
   GetWebsiteInterfaceQuery,
 } from "graphql/operations-types";
 import {
-  getLibraryItemsPreview,
   getWebsiteInterface,
 } from "graphql/operations";
 import PanelHeader from "components/PanelComponents/PanelHeader";
 import AppLayout from "components/AppLayout";
+import NavOption from "components/PanelComponents/NavOption";
 
 type LibraryProps = {
-  libraryItems: GetLibraryItemsPreviewQuery;
   langui: GetWebsiteInterfaceQuery;
 };
 
@@ -27,35 +21,29 @@ export default function Library(props: LibraryProps): JSX.Element {
       <PanelHeader
         icon="library_books"
         title={langui.main_library}
-        description={langui.library_description}
+        description="Reiciendis id reiciendis at ullam. Corrupti voluptatibus quo magnam enim voluptas eaque. Quia id consequatur fuga magni. Voluptate eaque pariatur porro voluptate rerum. Harum velit in laborum eligendi. Nihil eius dolor et omnis."
+      />
+      <NavOption
+        url="/library/items"
+        title="Items"
+        subtitle="A comprehensive list of all Yokoverse’s physical or digital items"
+        border={true}
+      />
+      <NavOption
+        url="/library/content"
+        title="Content"
+        subtitle="Search for a specific content depending on its type or category"
+        border={true}
       />
     </SubPanel>
   );
-  const contentPanel = (
-    <ContentPanel width={ContentPanelWidthSizes.large}>
-      <div className="grid gap-8 items-end grid-cols-2 desktop:grid-cols-[repeat(auto-fill,_minmax(14rem,1fr))]">
-        {props.libraryItems.libraryItems.data.map((item) => (
-          <LibraryItemComponent key={item.id} item={item.attributes} />
-        ))}
-      </div>
-    </ContentPanel>
-  );
-  return (
-    <AppLayout
-      title="Library"
-      langui={langui}
-      subPanel={subPanel}
-      contentPanel={contentPanel}
-    />
-  );
+
+  return <AppLayout title="Library" langui={langui} subPanel={subPanel} />;
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
   if (context.locale) {
     const props: LibraryProps = {
-      libraryItems: await getLibraryItemsPreview({
-        language_code: context.locale,
-      }),
       langui: await getWebsiteInterface({
         language_code: context.locale,
       }),

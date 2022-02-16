@@ -5,6 +5,8 @@ import {
   GetChronologyItemsQueryVariables,
   GetContentQuery,
   GetContentQueryVariables,
+  GetContentsQuery,
+  GetContentsQueryVariables,
   GetContentsSlugsQuery,
   GetContentsSlugsQueryVariables,
   GetContentTextQuery,
@@ -98,6 +100,14 @@ export async function getContentsSlugs(
   variables: GetContentsSlugsQueryVariables
 ): Promise<GetContentsSlugsQuery> {
   const query = getQueryFromOperations("getContentsSlugs");
+  return await graphQL(query, JSON.stringify(variables));
+}
+
+
+export async function getContents(
+  variables: GetContentsQueryVariables
+): Promise<GetContentsQuery> {
+  const query = getQueryFromOperations("getContents");
   return await graphQL(query, JSON.stringify(variables));
 }
 

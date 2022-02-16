@@ -78,12 +78,7 @@ export type GetWebsiteInterfaceQuery = {
         __typename: "WebsiteInterface";
         main_library: string;
         main_library_description: string;
-        main_hub: string;
-        main_hub_description: string;
-        main_chronology: string;
-        main_chronology_description: string;
         main_news: string;
-        main_data: string;
         main_merch: string;
         main_gallery: string;
         main_archives: string;
@@ -113,13 +108,6 @@ export type GetWebsiteInterfaceQuery = {
         global_price: string;
         library_item_physical_size: string;
         library_item_type_information: string;
-        chronology_description: string;
-        chronology_timelines: string;
-        chronology_timelines_description: string;
-        chronology_overview: string;
-        chronology_overview_description: string;
-        chronology_walkthrough: string;
-        chronology_walkthrough_description: string;
         library_item_front_matter: string;
         library_item_back_matter: string;
         library_item_type_textual: string;
@@ -138,6 +126,21 @@ export type GetWebsiteInterfaceQuery = {
         global_hardcover: string;
         global_left_to_right: string;
         global_right_to_left: string;
+        main_wiki: string;
+        main_wiki_description: string;
+        main_chronicles: string;
+        main_chronicles_description: string;
+        library_items: string;
+        library_items_description: string;
+        library_content: string;
+        library_content_description: string;
+        wiki_description: string;
+        news_description: string;
+        chronicles_description: string;
+        gallery_description: string;
+        archives_description: string;
+        about_us_description: string;
+        merch_description: string;
       };
     }>;
   };
@@ -689,18 +692,18 @@ export type GetContentsQuery = {
         slug: string;
         titles: Array<{
           __typename: "ComponentTranslationsTitle";
-          pre_title: string ;
+          pre_title: string;
           title: string;
-          subtitle: string ;
-        } > ;
+          subtitle: string;
+        }>;
         categories: {
           __typename: "CategoryRelationResponseCollection";
           data: Array<{
             __typename: "CategoryEntity";
-            id: string ;
-            attributes: { __typename: "Category"; short: string } ;
+            id: string;
+            attributes: { __typename: "Category"; short: string };
           }>;
-        } ;
+        };
         type: {
           __typename: "ContentTypeEntityResponse";
           data: {
@@ -711,22 +714,22 @@ export type GetContentsQuery = {
               titles: Array<{
                 __typename: "ComponentTranslationsSimpleTitle";
                 title: string;
-              } > ;
-            } ;
-          } ;
-        } ;
+              }>;
+            };
+          };
+        };
         ranged_contents: {
           __typename: "RangedContentRelationResponseCollection";
           data: Array<{
             __typename: "RangedContentEntity";
-            id: string ;
+            id: string;
             attributes: {
               __typename: "RangedContent";
               slug: string;
               scan_set: Array<{
                 __typename: "ComponentSetsScanSet";
                 id: string;
-              } > ;
+              }>;
               library_item: {
                 __typename: "LibraryItemEntityResponse";
                 data: {
@@ -735,7 +738,7 @@ export type GetContentsQuery = {
                     __typename: "LibraryItem";
                     slug: string;
                     title: string;
-                    subtitle: string ;
+                    subtitle: string;
                     thumbnail: {
                       __typename: "UploadFileEntityResponse";
                       data: {
@@ -743,32 +746,32 @@ export type GetContentsQuery = {
                         attributes: {
                           __typename: "UploadFile";
                           name: string;
-                          alternativeText: string ;
-                          caption: string ;
-                          width: number ;
-                          height: number ;
+                          alternativeText: string;
+                          caption: string;
+                          width: number;
+                          height: number;
                           url: string;
-                        } ;
-                      } ;
-                    } ;
-                  } ;
-                } ;
-              } ;
-            } ;
+                        };
+                      };
+                    };
+                  };
+                };
+              };
+            };
           }>;
-        } ;
+        };
         text_set: Array<{
           __typename: "ComponentSetsTextSet";
           id: string;
-        } > ;
+        }>;
         video_set: Array<{
           __typename: "ComponentSetsVideoSet";
           id: string;
-        } > ;
+        }>;
         audio_set: Array<{
           __typename: "ComponentSetsAudioSet";
           id: string;
-        } > ;
+        }>;
         thumbnail: {
           __typename: "UploadFileEntityResponse";
           data: {
@@ -776,17 +779,17 @@ export type GetContentsQuery = {
             attributes: {
               __typename: "UploadFile";
               name: string;
-              alternativeText: string ;
-              caption: string ;
-              width: number ;
-              height: number ;
+              alternativeText: string;
+              caption: string;
+              width: number;
+              height: number;
               url: string;
-            } ;
-          } ;
-        } ;
-      } ;
+            };
+          };
+        };
+      };
     }>;
-  } ;
+  };
 };
 
 export type GetContentQuery = {

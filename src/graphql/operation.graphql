@@ -4,12 +4,7 @@ query getWebsiteInterface($language_code: String) {
       attributes {
         main_library
         main_library_description
-        main_hub
-        main_hub_description
-        main_chronology
-        main_chronology_description
         main_news
-        main_data
         main_merch
         main_gallery
         main_archives
@@ -39,13 +34,6 @@ query getWebsiteInterface($language_code: String) {
         global_price
         library_item_physical_size
         library_item_type_information
-        chronology_description
-        chronology_timelines
-        chronology_timelines_description
-        chronology_overview
-        chronology_overview_description
-        chronology_walkthrough
-        chronology_walkthrough_description
         library_item_front_matter
         library_item_back_matter
         library_item_type_textual
@@ -64,6 +52,21 @@ query getWebsiteInterface($language_code: String) {
         global_hardcover
         global_left_to_right
         global_right_to_left
+        main_wiki
+        main_wiki_description
+        main_chronicles
+        main_chronicles_description
+        library_items
+        library_items_description
+        library_content
+        library_content_description
+        wiki_description
+        news_description
+        chronicles_description
+        gallery_description
+        archives_description
+        about_us_description
+        merch_description
       }
     }
   }
@@ -479,92 +482,91 @@ query getContentsSlugs {
 }
 
 query getContents($language_code: String) {
-	contents(pagination: { limit: -1 }) {
-		data {
+  contents(pagination: { limit: -1 }) {
+    data {
       id
-			attributes {
-				slug
-				titles(filters: { language: { code: { eq: $language_code } } }) {
-					pre_title
-					title
-					subtitle
-				}
-				categories {
-					data {
-						id
-						attributes {
-							short
-						}
-					}
-				}
-				type {
-					data {
-						attributes {
-							slug
-							titles(filters: { language: { code: { eq: $language_code } } }) {
-								title
-							}
-						}
-					}
-				}
-				ranged_contents {
-					data {
-						id
-						attributes {
-							slug
-							scan_set {
-								id
-							}
-							library_item {
-								data {
-									attributes {
-										slug
-										title
-										subtitle
-										thumbnail {
-											data {
-												attributes {
-													name
-													alternativeText
-													caption
-													width
-													height
-													url
-												}
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-				text_set {
-					id
-				}
-				video_set {
-					id
-				}
-				audio_set {
-					id
-				}
-				thumbnail {
-					data {
-						attributes {
-							name
-							alternativeText
-							caption
-							width
-							height
-							url
-						}
-					}
-				}
-			}
-		}
-	}
+      attributes {
+        slug
+        titles(filters: { language: { code: { eq: $language_code } } }) {
+          pre_title
+          title
+          subtitle
+        }
+        categories {
+          data {
+            id
+            attributes {
+              short
+            }
+          }
+        }
+        type {
+          data {
+            attributes {
+              slug
+              titles(filters: { language: { code: { eq: $language_code } } }) {
+                title
+              }
+            }
+          }
+        }
+        ranged_contents {
+          data {
+            id
+            attributes {
+              slug
+              scan_set {
+                id
+              }
+              library_item {
+                data {
+                  attributes {
+                    slug
+                    title
+                    subtitle
+                    thumbnail {
+                      data {
+                        attributes {
+                          name
+                          alternativeText
+                          caption
+                          width
+                          height
+                          url
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+        text_set {
+          id
+        }
+        video_set {
+          id
+        }
+        audio_set {
+          id
+        }
+        thumbnail {
+          data {
+            attributes {
+              name
+              alternativeText
+              caption
+              width
+              height
+              url
+            }
+          }
+        }
+      }
+    }
+  }
 }
-
 
 query getContent($slug: String, $language_code: String) {
   contents(filters: { slug: { eq: $slug } }) {

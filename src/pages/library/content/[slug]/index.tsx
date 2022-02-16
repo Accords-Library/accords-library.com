@@ -13,6 +13,8 @@ import Button from "components/Button";
 import HorizontalLine from "components/HorizontalLine";
 import ThumbnailHeader from "components/Content/ThumbnailHeader";
 import AppLayout from "components/AppLayout";
+import SubPanel from "components/Panels/SubPanel";
+import ReturnButton from "components/PanelComponents/ReturnButton";
 
 type ContentIndexProps = {
   content: GetContentQuery;
@@ -22,6 +24,16 @@ type ContentIndexProps = {
 export default function ContentIndex(props: ContentIndexProps): JSX.Element {
   const content = props.content.contents.data[0].attributes;
   const langui = props.langui.websiteInterfaces.data[0].attributes;
+  const subPanel = (
+    <SubPanel>
+      <ReturnButton
+        href="/library/content"
+        title={langui.library_content}
+        langui={langui}
+      />
+      <HorizontalLine />
+    </SubPanel>
+  );
   const contentPanel = (
     <ContentPanel>
       <div className="grid place-items-center">
@@ -57,7 +69,12 @@ export default function ContentIndex(props: ContentIndexProps): JSX.Element {
   );
 
   return (
-    <AppLayout title="Content" langui={langui} contentPanel={contentPanel} />
+    <AppLayout
+      title={langui.library_content}
+      langui={langui}
+      contentPanel={contentPanel}
+      subPanel={subPanel}
+    />
   );
 }
 

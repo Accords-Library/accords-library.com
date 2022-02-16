@@ -15,12 +15,12 @@ export default function Chronicles(props: ChroniclesProps): JSX.Element {
     <SubPanel>
       <PanelHeader
         icon="watch_later"
-        title="Chronicles"
-        description="Reiciendis id reiciendis at ullam. Corrupti voluptatibus quo magnam enim voluptas eaque. Quia id consequatur fuga magni. Voluptate eaque pariatur porro voluptate rerum. Harum velit in laborum eligendi. Nihil eius dolor et omnis."
+        title={langui.main_chronicles}
+        description={langui.chronicles_description}
       />
     </SubPanel>
   );
-  return <AppLayout title="Chronicles" langui={langui} subPanel={subPanel} />;
+  return <AppLayout title={langui.main_chronicles} langui={langui} subPanel={subPanel} />;
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {

@@ -16,12 +16,12 @@ export default function Merch(props: MerchProps): JSX.Element {
       <PanelHeader
         icon="store"
         title={langui.main_merch}
-        description="Reiciendis id reiciendis at ullam. Corrupti voluptatibus quo magnam enim voluptas eaque. Quia id consequatur fuga magni. Voluptate eaque pariatur porro voluptate rerum. Harum velit in laborum eligendi. Nihil eius dolor et omnis."
+        description={langui.merch_description}
       />
     </SubPanel>
   );
 
-  return <AppLayout title="Merch" langui={langui} subPanel={subPanel} />;
+  return <AppLayout title={langui.main_merch} langui={langui} subPanel={subPanel} />;
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {

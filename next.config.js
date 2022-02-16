@@ -2,19 +2,19 @@
 module.exports = {
   reactStrictMode: true,
   i18n: {
-    locales: ['en', 'fr', 'ja', 'es'],
-    defaultLocale: 'en',
+    locales: ["en", "fr", "ja", "es", "xx"],
+    defaultLocale: "en",
   },
   images: {
-    domains: ['strapi.accords-library.com'],
+    domains: ["strapi.accords-library.com"],
   },
   async redirects() {
     return [
       {
-        source: '/discord',
-        destination: 'https://discord.com/invite/5mcXcRAczj',
+        source: "/discord",
+        destination: "https://discord.com/invite/5mcXcRAczj",
         permanent: false,
       },
-    ]
+    ];
   },
-}
+};

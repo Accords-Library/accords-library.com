@@ -43,7 +43,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
     <SubPanel>
       <ReturnButton
         href="/library/items"
-        title="Media"
+        title={langui.library_items}
         langui={langui}
       />
       <HorizontalLine />
@@ -493,6 +493,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
     </ContentPanel>
   );
 
+  // Sort content by range
   item.contents.data.sort((a, b) => {
     if (
       a.attributes.range[0].__typename === "ComponentRangePageRange" &&
@@ -508,7 +509,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
 
   return (
     <AppLayout
-      title="Library"
+      title={langui.library_items}
       langui={langui}
       contentPanel={contentPanel}
       subPanel={subPanel}

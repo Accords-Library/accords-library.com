@@ -16,12 +16,12 @@ export default function News(props: NewsProps): JSX.Element {
       <PanelHeader
         icon="feed"
         title={langui.main_news}
-        description="Reiciendis id reiciendis at ullam. Corrupti voluptatibus quo magnam enim voluptas eaque. Quia id consequatur fuga magni. Voluptate eaque pariatur porro voluptate rerum. Harum velit in laborum eligendi. Nihil eius dolor et omnis."
+        description={langui.news_description}
       />
     </SubPanel>
   );
 
-  return <AppLayout title="Merch" langui={langui} subPanel={subPanel} />;
+  return <AppLayout title={langui.main_news} langui={langui} subPanel={subPanel} />;
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {

@@ -21,24 +21,24 @@ export default function Library(props: LibraryProps): JSX.Element {
       <PanelHeader
         icon="library_books"
         title={langui.main_library}
-        description="Reiciendis id reiciendis at ullam. Corrupti voluptatibus quo magnam enim voluptas eaque. Quia id consequatur fuga magni. Voluptate eaque pariatur porro voluptate rerum. Harum velit in laborum eligendi. Nihil eius dolor et omnis."
+        description={langui.library_description}
       />
       <NavOption
         url="/library/items"
-        title="Items"
-        subtitle="A comprehensive list of all Yokoverse’s physical or digital items"
+        title={langui.library_items}
+        subtitle={langui.library_items_description}
         border={true}
       />
       <NavOption
         url="/library/content"
-        title="Content"
-        subtitle="Search for a specific content depending on its type or category"
+        title={langui.library_content}
+        subtitle={langui.library_content_description}
         border={true}
       />
     </SubPanel>
   );
 
-  return <AppLayout title="Library" langui={langui} subPanel={subPanel} />;
+  return <AppLayout title={langui.main_library} langui={langui} subPanel={subPanel} />;
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {

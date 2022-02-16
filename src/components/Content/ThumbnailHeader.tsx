@@ -56,7 +56,11 @@ export default function ThumbnailHeader(
         {content.type ? (
           <div className="grid place-items-center place-content-start gap-2">
             <h3 className="text-xl">{langui.global_type}</h3>
-            <Button>{content.type.data.attributes.titles[0].title}</Button>
+            <Button>
+              {content.type.data.attributes.titles.length > 0
+                ? content.type.data.attributes.titles[0].title
+                : prettySlug(content.type.data.attributes.slug)}
+            </Button>
           </div>
         ) : (
           ""

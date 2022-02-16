@@ -3,7 +3,6 @@ import ContentPanel from "components/Panels/ContentPanel";
 import { getWebsiteInterface } from "graphql/operations";
 import { GetWebsiteInterfaceQuery } from "graphql/operations-types";
 import { GetStaticProps } from "next";
-import Head from "next/head";
 type HomeProps = {
   langui: GetWebsiteInterfaceQuery;
 };
@@ -137,7 +136,7 @@ export default function Home(props: HomeProps): JSX.Element {
 
   return (
     <>
-      <AppLayout title="Home" langui={langui} contentPanel={contentPanel} />
+      <AppLayout title={"Accord’s Library"} langui={langui} contentPanel={contentPanel} />
     </>
   );
 }

@@ -16,11 +16,11 @@ export default function Archives(props: ArchivesProps): JSX.Element {
       <PanelHeader
         icon="inventory"
         title={langui.main_archives}
-        description="Reiciendis id reiciendis at ullam. Corrupti voluptatibus quo magnam enim voluptas eaque. Quia id consequatur fuga magni. Voluptate eaque pariatur porro voluptate rerum. Harum velit in laborum eligendi. Nihil eius dolor et omnis."
+        description={langui.archives_description}
       />
     </SubPanel>
   );
-  return <AppLayout title="Archives" langui={langui} subPanel={subPanel} />;
+  return <AppLayout title={langui.main_archives} langui={langui} subPanel={subPanel} />;
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {

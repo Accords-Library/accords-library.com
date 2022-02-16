@@ -16,8 +16,8 @@ export default function Hubs(props: WikiProps): JSX.Element {
     <SubPanel>
       <PanelHeader
         icon="travel_explore"
-        title="Wiki"
-        description="Reiciendis id reiciendis at ullam. Corrupti voluptatibus quo magnam enim voluptas eaque. Quia id consequatur fuga magni. Voluptate eaque pariatur porro voluptate rerum. Harum velit in laborum eligendi. Nihil eius dolor et omnis."
+        title={langui.main_wiki}
+        description={langui.wiki_description}
       />
     </SubPanel>
   );
@@ -25,7 +25,7 @@ export default function Hubs(props: WikiProps): JSX.Element {
 
   return (
     <AppLayout
-      title="Wiki"
+      title={langui.main_wiki}
       langui={langui}
       contentPanel={contentPanel}
       subPanel={subPanel}

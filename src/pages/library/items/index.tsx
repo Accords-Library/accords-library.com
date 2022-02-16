@@ -34,8 +34,8 @@ export default function Library(props: LibraryProps): JSX.Element {
       <HorizontalLine />
       <PanelHeader
         icon="library_books"
-        title="Media"
-        description="A comprehensive list of all Yokoverse’s side materials (books, novellas, artbooks, stage plays, manga, drama CDs, and comics). For each, we provide photos and/or scans of the content, information about what it is, when and how it was released, size, initial price…"
+        title={langui.library_items}
+        description={langui.library_items_description}
       />
     </SubPanel>
   );
@@ -50,7 +50,7 @@ export default function Library(props: LibraryProps): JSX.Element {
   );
   return (
     <AppLayout
-      title="Library"
+      title={langui.library_items}
       langui={langui}
       subPanel={subPanel}
       contentPanel={contentPanel}

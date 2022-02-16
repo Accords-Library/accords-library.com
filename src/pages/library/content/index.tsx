@@ -13,6 +13,7 @@ import AppLayout from "components/AppLayout";
 import ReturnButton from "components/PanelComponents/ReturnButton";
 import HorizontalLine from "components/HorizontalLine";
 import LibraryContentPreview from "components/Library/LibraryContentPreview";
+import { prettyinlineTitle } from "queries/helpers";
 
 type LibraryProps = {
   contents: GetContentsQuery;
@@ -21,6 +22,13 @@ type LibraryProps = {
 
 export default function Library(props: LibraryProps): JSX.Element {
   const langui = props.langui.websiteInterfaces.data[0].attributes;
+
+  props.contents.contents.data.sort((a, b) => {
+    const titleA = a.attributes.titles.length > 0 ? prettyinlineTitle(a.attributes.titles[0].pre_title, a.attributes.titles[0].title, a.attributes.titles[0].subtitle) : a.attributes.slug
+    const titleB = b.attributes.titles.length > 0 ? prettyinlineTitle(b.attributes.titles[0].pre_title, b.attributes.titles[0].title, b.attributes.titles[0].subtitle) : b.attributes.slug
+    return titleA.localeCompare(titleB);
+  });
+
   const subPanel = (
     <SubPanel>
       <ReturnButton
@@ -31,8 +39,8 @@ export default function Library(props: LibraryProps): JSX.Element {
       <HorizontalLine />
       <PanelHeader
         icon="library_books"
-        title="Content"
-        description="Reiciendis id reiciendis at ullam. Corrupti voluptatibus quo magnam enim voluptas eaque. Quia id consequatur fuga magni. Voluptate eaque pariatur porro voluptate rerum. Harum velit in laborum eligendi. Nihil eius dolor et omnis."
+        title={langui.library_content}
+        description={langui.library_content_description}
       />
     </SubPanel>
   );
@@ -47,7 +55,7 @@ export default function Library(props: LibraryProps): JSX.Element {
   );
   return (
     <AppLayout
-      title="Library"
+      title={langui.library_content}
       langui={langui}
       subPanel={subPanel}
       contentPanel={contentPanel}

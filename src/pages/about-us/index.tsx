@@ -16,11 +16,11 @@ export default function AboutUs(props: AboutUsProps): JSX.Element {
       <PanelHeader
         icon="info"
         title={langui.main_about_us}
-        description="Reiciendis id reiciendis at ullam. Corrupti voluptatibus quo magnam enim voluptas eaque. Quia id consequatur fuga magni. Voluptate eaque pariatur porro voluptate rerum. Harum velit in laborum eligendi. Nihil eius dolor et omnis."
+        description={langui.about_us_description}
       />
     </SubPanel>
   );
-  return <AppLayout title="404" langui={langui} subPanel={subPanel} />;
+  return <AppLayout title={langui.main_about_us} langui={langui} subPanel={subPanel} />;
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {

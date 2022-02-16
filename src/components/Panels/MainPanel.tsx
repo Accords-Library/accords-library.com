@@ -51,15 +51,15 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
       <NavOption
         url="/wiki"
         icon="travel_explore"
-        title="Wiki"
-        subtitle="Explore all content of a specific game/series"
+        title={langui.main_wiki}
+        subtitle={langui.main_wiki_description}
       />
 
       <NavOption
         url="/chronicles"
         icon="watch_later"
-        title="Chronicles"
-        subtitle="Experience all events in chronological order"
+        title={langui.main_chronicles}
+        subtitle={langui.main_chronicles_description}
       />
 
       <HorizontalLine />

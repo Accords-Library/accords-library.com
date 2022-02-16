@@ -57,7 +57,7 @@ export default function ContentRead(props: ContentReadProps): JSX.Element {
 
   return (
     <AppLayout
-      title="Read"
+      title={langui.library_content}
       langui={langui}
       contentPanel={contentPanel}
       subPanel={subPanel}

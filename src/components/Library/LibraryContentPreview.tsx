@@ -17,7 +17,7 @@ export default function LibraryContentPreview(
   const item = props.item;
 
   return (
-    <Link href={"/library/media/" + item.slug} passHref>
+    <Link href={"/library/content/" + item.slug} passHref>
       <div className="drop-shadow-dark-xl cursor-pointer grid items-end hover:rounded-3xl [--cover-opacity:0] hover:[--cover-opacity:1] hover:scale-[1.02] transition-transform">
         {item.thumbnail.data ? (
           <Image

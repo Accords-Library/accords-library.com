@@ -30,7 +30,7 @@ export default function ContentIndex(props: ContentIndexProps): JSX.Element {
         <HorizontalLine />
 
         {content.text_set.length > 0 ? (
-          <Button href={`/content/${content.slug}/read/`}>
+          <Button href={`/library/content/${content.slug}/read/`}>
             {langui.content_read_content}
           </Button>
         ) : (
@@ -38,7 +38,7 @@ export default function ContentIndex(props: ContentIndexProps): JSX.Element {
         )}
 
         {content.audio_set.length > 0 ? (
-          <Button href={`/content/${content.slug}/listen/`}>
+          <Button href={`/library/content/${content.slug}/listen/`}>
             {langui.content_listen_content}
           </Button>
         ) : (
@@ -46,7 +46,7 @@ export default function ContentIndex(props: ContentIndexProps): JSX.Element {
         )}
 
         {content.video_set.length > 0 ? (
-          <Button href={`/content/${content.slug}/watch/`}>
+          <Button href={`/library/content/${content.slug}/watch/`}>
             {langui.content_watch_content}
           </Button>
         ) : (

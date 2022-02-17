@@ -6,6 +6,7 @@ import Button from "components/Button";
 import HorizontalLine from "components/HorizontalLine";
 import { GetWebsiteInterfaceQuery } from "graphql/operations-types";
 import Markdown from "markdown-to-jsx";
+import Script from "next/script";
 
 type MainPanelProps = {
   langui: GetWebsiteInterfaceQuery["websiteInterfaces"]["data"][number]["attributes"];
@@ -15,18 +16,21 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
   const langui = props.langui;
   const router = useRouter();
   return (
-    <div className="grid justify-center content-start p-8 gap-y-2 justify-items-center text-center">
+    <div
+      id="mainPanel"
+      className="flex flex-col justify-center content-start p-8 gap-y-2 justify-items-center text-center"
+    >
       <div className="">
-        <div className="grid place-items-center">
+        <div className="grid place-items-center mobile:grid-flow-col">
           <Link href="/" passHref>
-            <div className="w-1/2 cursor-pointer transition-[filter] hover:colorize-dark">
+            <div className="mobile:w-10 mobile:self-end w-1/2 cursor-pointer transition-[filter] hover:colorize-dark">
               <SVG
                 src={"/icons/accords.svg"}
                 alt={"Logo of Accord's Library"}
               />
             </div>
           </Link>
-          <div className="relative mt-5">
+          <div className="relative mt-5 mobile:self-start">
             {router.locale ? (
               <Button className="absolute right-0 top-[-1.3em] text-xs !py-0.5 !px-2.5">
                 {router.locale.toUpperCase()}

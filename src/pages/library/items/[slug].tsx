@@ -50,6 +50,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
       />
       <HorizontalLine />
 
+      <div className="grid gap-4">
       <NavOption
         title={langui.library_item_summary}
         url="#summary"
@@ -101,6 +102,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
       ) : (
         ""
       )}
+      </div>
     </SubPanel>
   );
 

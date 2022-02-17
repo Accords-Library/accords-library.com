@@ -4,7 +4,6 @@ import SVG from "components/SVG";
 import { getWebsiteInterface } from "graphql/operations";
 import { GetWebsiteInterfaceQuery } from "graphql/operations-types";
 import { GetStaticProps } from "next";
-import Script from "next/script";
 type HomeProps = {
   langui: GetWebsiteInterfaceQuery;
 };
@@ -23,19 +22,6 @@ export default function Home(props: HomeProps): JSX.Element {
         <h1 className="text-5xl mb-0">Accord&rsquo;s Library</h1>
         <h2 className="mt-0">Discover • Analyse • Translate • Archive</h2>
       </div>
-
-      <button id="goFS">Go fullscreen</button>
-      <Script
-        id="myScript"
-        strategy="afterInteractive"
-        dangerouslySetInnerHTML={{
-          __html: `
-        var goFS = document.getElementById("goFS");
-  goFS.addEventListener("click", function() {
-      document.body.requestFullscreen();
-  }, false);`,
-        }}
-      ></Script>
 
       <h2>What is this?</h2>
       <p>

@@ -2,6 +2,7 @@ import { GetWebsiteInterfaceQuery } from "graphql/operations-types";
 import MainPanel from "./Panels/MainPanel";
 import { useState } from "react";
 import Head from "next/head";
+import { useSwipeable } from "react-swipeable";
 
 type AppLayoutProps = {
   subPanel?: React.ReactNode;
@@ -16,6 +17,14 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
 
   const [mainPanelOpen, setMainPanelOpen] = useState(false);
   const [subPanelOpen, setsubPanelOpen] = useState(false);
+
+  const handlers = useSwipeable({
+    onSwipedLeft: () =>
+      mainPanelOpen ? setMainPanelOpen(false) : props.subPanel && props.contentPanel ? setsubPanelOpen(true) : "",
+    onSwipedRight: () =>
+      subPanelOpen ? setsubPanelOpen(false) : setMainPanelOpen(true),
+    preventDefaultTouchmoveEvent: true,
+  });
 
   const mainPanelClass =
     "fixed desktop:left-0 desktop:top-0 desktop:bottom-0 desktop:w-[20rem]";
@@ -34,7 +43,7 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
   }
 
   return (
-    <>
+    <div {...handlers}>
       <Head>
         <title>
           {props.title ? `${titlePrefix} - ${props.title}` : titlePrefix}
@@ -75,7 +84,9 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
           <div className="grid place-content-center h-full">
             <div className="text-dark border-dark border-2 border-dotted rounded-2xl p-8 grid grid-flow-col place-items-center gap-9">
               <p className="text-4xl">❮</p>
-              <p className="text-2xl w-64">Select one of the options in the sidebar</p>
+              <p className="text-2xl w-64">
+                Select one of the options in the sidebar
+              </p>
             </div>
           </div>
         </div>
@@ -99,7 +110,7 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
       {/* Sub panel */}
       {props.subPanel ? (
         <div
-          className={`${subPanelClass} border-r-[1px] mobile:border-r-0 mobile:border-l-[1px] border-black top-0 bottom-0 right-0 left-12 bg-light overflow-y-scroll webkit-scrollbar:w-0 [scrollbar-width:none] transition-transform duration-500
+          className={`${subPanelClass} border-r-[1px] mobile:border-r-0 mobile:border-l-[1px] border-black top-0 bottom-0 right-0 left-12 bg-light overflow-y-scroll webkit-scrollbar:w-0 [scrollbar-width:none] transition-transform duration-300
           ${
             turnSubIntoContent
               ? "mobile:mobile:translate-x-0 mobile:bottom-20 mobile:left-0 mobile:border-l-0"
@@ -115,11 +126,11 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
 
       {/* Main panel */}
       <div
-        className={`${mainPanelClass} border-r-[1px] border-black top-0 bottom-0 left-0 right-12 bg-light overflow-y-scroll webkit-scrollbar:w-0 [scrollbar-width:none] transition-transform duration-500 z-20
+        className={`${mainPanelClass} border-r-[1px] border-black top-0 bottom-0 left-0 right-12 bg-light overflow-y-scroll webkit-scrollbar:w-0 [scrollbar-width:none] transition-transform duration-300 z-20
         ${mainPanelOpen ? "" : "mobile:-translate-x-full"}`}
       >
         <MainPanel langui={props.langui} />
       </div>
-    </>
+    </div>
   );
 }

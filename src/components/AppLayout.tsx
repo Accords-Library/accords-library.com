@@ -17,13 +17,25 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
 
   const [mainPanelOpen, setMainPanelOpen] = useState(false);
   const [subPanelOpen, setsubPanelOpen] = useState(false);
+  const sensibilitySwipe = 1.1;
 
   const handlers = useSwipeable({
-    onSwipedLeft: () =>
-      mainPanelOpen ? setMainPanelOpen(false) : props.subPanel && props.contentPanel ? setsubPanelOpen(true) : "",
-    onSwipedRight: () =>
-      subPanelOpen ? setsubPanelOpen(false) : setMainPanelOpen(true),
-    preventDefaultTouchmoveEvent: true,
+    onSwipedLeft: (SwipeEventData) => {
+      if (SwipeEventData.velocity < sensibilitySwipe) return;
+      if (mainPanelOpen) {
+        setMainPanelOpen(false);
+      } else if (props.subPanel && props.contentPanel) {
+        setsubPanelOpen(true);
+      }
+    },
+    onSwipedRight: (SwipeEventData) => {
+      if (SwipeEventData.velocity < sensibilitySwipe) return;
+      if (subPanelOpen) {
+        setsubPanelOpen(false);
+      } else {
+        setMainPanelOpen(true);
+      }
+    },
   });
 
   const mainPanelClass =
@@ -43,7 +55,7 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
   }
 
   return (
-    <div {...handlers}>
+    <div {...handlers} className="touch-pan-y">
       <Head>
         <title>
           {props.title ? `${titlePrefix} - ${props.title}` : titlePrefix}
@@ -113,7 +125,7 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
           className={`${subPanelClass} border-r-[1px] mobile:border-r-0 mobile:border-l-[1px] border-black top-0 bottom-0 right-0 left-12 bg-light overflow-y-scroll webkit-scrollbar:w-0 [scrollbar-width:none] transition-transform duration-300
           ${
             turnSubIntoContent
-              ? "mobile:mobile:translate-x-0 mobile:bottom-20 mobile:left-0 mobile:border-l-0"
+              ? "mobile:translate-x-0 mobile:bottom-20 mobile:left-0 mobile:border-l-0"
               : ""
           }
           ${subPanelOpen ? "" : "mobile:translate-x-full"}`}

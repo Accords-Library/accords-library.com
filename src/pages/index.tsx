@@ -1,8 +1,10 @@
 import AppLayout from "components/AppLayout";
 import ContentPanel from "components/Panels/ContentPanel";
+import SVG from "components/SVG";
 import { getWebsiteInterface } from "graphql/operations";
 import { GetWebsiteInterfaceQuery } from "graphql/operations-types";
 import { GetStaticProps } from "next";
+import Script from "next/script";
 type HomeProps = {
   langui: GetWebsiteInterfaceQuery;
 };
@@ -12,7 +14,29 @@ export default function Home(props: HomeProps): JSX.Element {
 
   const contentPanel = (
     <ContentPanel autoformat={true}>
-      <h2>Discover • Analyse • Translate • Archive</h2>
+      <div className="grid place-items-center place-content-center w-full gap-5">
+        <SVG
+          className="w-32 mobile:w-1/2"
+          src={"/icons/accords.svg"}
+          alt={"Logo of Accord's Library"}
+        />
+        <h1 className="text-5xl mb-0">Accord&rsquo;s Library</h1>
+        <h2 className="mt-0">Discover • Analyse • Translate • Archive</h2>
+      </div>
+
+      <button id="goFS">Go fullscreen</button>
+      <Script
+        id="myScript"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: `
+        var goFS = document.getElementById("goFS");
+  goFS.addEventListener("click", function() {
+      document.body.requestFullscreen();
+  }, false);`,
+        }}
+      ></Script>
+
       <h2>What is this?</h2>
       <p>
         Accord&rsquo;s Library aims at gathering and archiving all of Yoko
@@ -136,7 +160,11 @@ export default function Home(props: HomeProps): JSX.Element {
 
   return (
     <>
-      <AppLayout title={"Accord’s Library"} langui={langui} contentPanel={contentPanel} />
+      <AppLayout
+        title={"Accord’s Library"}
+        langui={langui}
+        contentPanel={contentPanel}
+      />
     </>
   );
 }

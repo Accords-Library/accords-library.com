@@ -1,0 +1,15 @@
+{
+    "name": "Accord’s Library",
+    "short_name": "Accord’s Library",
+    "start_url": ".",
+    "display": "standalone",
+    "background_color": "#FFEDD8",
+    "theme_color": "#FFEDD8",
+    "description": "Accord's Library aims at gathering and archiving all of Yoko Taro’s work. Yoko Taro is a Japanese video game director and scenario writer.",
+    "icons": [{
+      "src": "favicon.png",
+      "sizes": "551x551",
+      "type": "image/png"
+    }]
+  }
+  

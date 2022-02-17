@@ -126,9 +126,10 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
           ${
             turnSubIntoContent
               ? "mobile:translate-x-0 mobile:bottom-20 mobile:left-0 mobile:border-l-0"
+              : !subPanelOpen
+              ? "mobile:translate-x-full"
               : ""
-          }
-          ${subPanelOpen ? "" : "mobile:translate-x-full"}`}
+          }`}
         >
           {props.subPanel}
         </div>

@@ -37,25 +37,39 @@ export default function Editor(props: EditorProps): JSX.Element {
         }}
       />
 
-      <div className="grid grid-cols-2 gap-4 h-96">
+      <div className="grid grid-cols-2 gap-8">
         <div>
           <h2>Editor</h2>
           <textarea
             id="editorTextArea"
             onInput={handleInput}
-            onPaste={(event) => {
-              event.preventDefault();
-              let paste = event.clipboardData.getData("text/html");
-              paste = paste.replaceAll("<html>", "");
-              paste = paste.replaceAll("<body>", "");
-              paste = paste.replaceAll("</body>", "");
-              paste = paste.replaceAll("</html>", "");
-              paste = paste.replaceAll("<!--StartFragment-->", "");
-              paste = paste.replaceAll("<!--EndFragment-->", "");
-              event.target.value = paste;
-            }}
-            className="bg-mid rounded-xl p-8 w-full "
+            className="bg-mid rounded-xl p-8 w-full font-monospace"
             value={markdown}
+          />
+
+          <h2 className="mt-4">Convert text to markdown</h2>
+          <textarea
+            readOnly
+            id="htmlMdTextArea"
+            onPaste={(event) => {
+              const TurndownService = require("turndown").default;
+              const turndownService = new TurndownService({
+                headingStyle: "atx",
+                codeBlockStyle: "fenced",
+                bulletListMarker: "-",
+                emDelimiter: "*",
+                strongDelimiter: "**"
+              });
+
+              let paste = event.clipboardData.getData("text/html");
+              paste = paste.replace(/<\!--.*?-->/g, "");
+              paste = turndownService.turndown(paste);
+              paste = paste.replace(/<\!--.*?-->/g, "");
+              event.target.value = paste;
+              event.target.select();
+              event.preventDefault();
+            }}
+            className="bg-mid rounded-xl p-8 w-full font-monospace"
           />
         </div>
         <div>
@@ -67,7 +81,13 @@ export default function Editor(props: EditorProps): JSX.Element {
       </div>
     </ContentPanel>
   );
-  return <AppLayout title="404" langui={langui} contentPanel={contentPanel} />;
+  return (
+    <AppLayout
+      title="Markdawn Editor"
+      langui={langui}
+      contentPanel={contentPanel}
+    />
+  );
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {

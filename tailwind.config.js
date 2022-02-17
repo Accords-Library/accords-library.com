@@ -12,6 +12,7 @@ module.exports = {
     fontFamily: {
       body: ["Zen Maru Gothic"],
       headers: ["Vollkorn"],
+      monospace: ["monospace"],
     },
     screens: {
       desktop: { min: "70rem" },

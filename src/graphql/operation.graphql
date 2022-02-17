@@ -335,6 +335,7 @@ query getLibraryItem($slug: String, $language_code: String) {
             subtype {
               data {
                 attributes {
+                  slug
                   titles(
                     filters: { language: { code: { eq: $language_code } } }
                   ) {

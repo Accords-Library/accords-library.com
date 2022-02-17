@@ -1,4 +1,5 @@
 import {
+  GetLibraryItemQuery,
   GetLibraryItemsPreviewQuery,
   GetWebsiteInterfaceQuery,
 } from "graphql/operations-types";
@@ -49,7 +50,9 @@ export function prettyinlineTitle(
 }
 
 export function prettyItemType(
-  metadata: GetLibraryItemsPreviewQuery["libraryItems"]["data"][number]["attributes"]["metadata"][number],
+  metadata: {
+    __typename: GetLibraryItemsPreviewQuery["libraryItems"]["data"][number]["attributes"]["metadata"][number]["__typename"]
+  },
   langui: GetWebsiteInterfaceQuery["websiteInterfaces"]["data"][number]["attributes"]
 ): string {
   const type = metadata.__typename;

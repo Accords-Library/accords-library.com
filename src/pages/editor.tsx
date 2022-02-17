@@ -65,8 +65,10 @@ export default function Editor(props: EditorProps): JSX.Element {
               paste = paste.replace(/<\!--.*?-->/g, "");
               paste = turndownService.turndown(paste);
               paste = paste.replace(/<\!--.*?-->/g, "");
-              event.target.value = paste;
-              event.target.select();
+
+              const target = event.target as HTMLTextAreaElement;
+              target.value = paste;
+              target.select();
               event.preventDefault();
             }}
             className="bg-mid rounded-xl p-8 w-full font-monospace"

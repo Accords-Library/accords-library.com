@@ -486,6 +486,7 @@ export type GetLibraryItemQuery = {
                   __typename: "VideoSubtypeEntity";
                   attributes: {
                     __typename: "VideoSubtype";
+                    slug: string;
                     titles: Array<{
                       __typename: "ComponentTranslationsSimpleTitle";
                       title: string;

@@ -16,6 +16,7 @@ import ReturnButton from "components/PanelComponents/ReturnButton";
 import SceneBreak from "components/Markdown/SceneBreak";
 import ThumbnailHeader from "components/Content/ThumbnailHeader";
 import AppLayout from "components/AppLayout";
+import Markdawn from "components/Markdown/Markdawn";
 
 type ContentReadProps = {
   content: GetContentTextQuery;
@@ -42,12 +43,7 @@ export default function ContentRead(props: ContentReadProps): JSX.Element {
         <HorizontalLine />
 
         {content.text_set.length > 0 ? (
-          <Markdown
-            className="prose prose-lg text-black pt-12"
-            options={{ overrides: { hr: { component: SceneBreak } } }}
-          >
-            {content.text_set[0].text}
-          </Markdown>
+          <Markdawn text={content.text_set[0].text} />
         ) : (
           ""
         )}

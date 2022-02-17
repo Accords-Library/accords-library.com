@@ -51,4 +51,15 @@
   *::-webkit-scrollbar-thumb {
     @apply bg-dark rounded-full border-[3px] border-solid border-light;
   }
+
+  /* CHANGE PROSE DEFAULTS */
+
+  .prose a {
+    @apply transition-colors underline-offset-2 decoration-dotted underline decoration-dark hover:text-dark;
+  }
+
+  .prose {
+    --tw-prose-bullets: theme("colors.dark") !important;
+  }
+
 }

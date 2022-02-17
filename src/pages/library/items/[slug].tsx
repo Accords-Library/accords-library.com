@@ -444,7 +444,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
 
                     {content.attributes.scan_set.length > 0 ? (
                       <Button
-                        href={`/content/${content.attributes.content.data.attributes.slug}/scans/`}
+                        href={`/library/content/${content.attributes.content.data.attributes.slug}/scans/`}
                       >
                         {langui.library_item_view_scans}
                       </Button>
@@ -454,7 +454,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
 
                     {content.attributes.content.data ? (
                       <Button
-                        href={`/content/${content.attributes.content.data.attributes.slug}`}
+                        href={`/library/content/${content.attributes.content.data.attributes.slug}`}
                       >
                         {langui.library_item_open_content}
                       </Button>

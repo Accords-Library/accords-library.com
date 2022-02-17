@@ -19,6 +19,8 @@ import {
   getAssetURL,
   prettyDate,
   prettyinlineTitle,
+  prettyItemType,
+  prettyItemSubType,
   prettyPrice,
   prettySlug,
 } from "queries/helpers";
@@ -29,7 +31,7 @@ import Chip from "components/Chip";
 import Button from "components/Button";
 import HorizontalLine from "components/HorizontalLine";
 import AppLayout from "components/AppLayout";
-import LibraryMediaPreview from "components/Library/LibraryItemsPreview";
+import LibraryItemsPreview from "components/Library/LibraryItemsPreview";
 
 type LibrarySlugProps = {
   libraryItem: GetLibraryItemQuery;
@@ -194,19 +196,11 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
               {item.metadata.length > 0 ? (
                 <div className="grid place-items-center">
                   <h3 className="text-xl">{langui.global_type}</h3>
-                  <Button>
-                    {item.metadata[0].__typename === "ComponentMetadataAudio"
-                      ? langui.library_item_type_audio
-                      : item.metadata[0].__typename === "ComponentMetadataBooks"
-                      ? langui.library_item_type_textual
-                      : item.metadata[0].__typename === "ComponentMetadataGame"
-                      ? langui.library_item_type_game
-                      : item.metadata[0].__typename === "ComponentMetadataOther"
-                      ? langui.library_item_type_game
-                      : item.metadata[0].__typename === "ComponentMetadataVideo"
-                      ? langui.library_item_type_video
-                      : ""}
-                  </Button>
+                  <div className="grid grid-flow-col gap-1">
+                    <Chip>{prettyItemType(item.metadata[0], langui)}</Chip>
+                    {"›"}
+                    <Chip>{prettyItemSubType(item.metadata[0])}</Chip>
+                  </div>
                 </div>
               ) : (
                 ""
@@ -273,19 +267,6 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
                 <div className="grid grid-cols-2 w-full place-content-between">
                   {item.metadata[0].__typename === "ComponentMetadataBooks" ? (
                     <>
-                      <div className="grid place-content-start grid-flow-col gap-4">
-                        <p className="font-bold">{langui.global_type}:</p>
-                        <Chip>
-                          {item.metadata[0].subtype.data.attributes.titles
-                            .length > 0
-                            ? item.metadata[0].subtype.data.attributes.titles[0]
-                                .title
-                            : prettySlug(
-                                item.metadata[0].subtype.data.attributes.slug
-                              )}
-                        </Chip>
-                      </div>
-
                       <div className="grid place-content-start grid-flow-col gap-4">
                         <p className="font-bold">{langui.global_pages}:</p>
                         <p>{item.metadata[0].page_count}</p>
@@ -368,11 +349,12 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
           item.metadata[0].subtype.data.attributes.slug === "variant-set" ? (
             <div id="variants" className="grid place-items-center gap-8 w-full">
               <h2 className="text-2xl">{langui.library_item_variants}</h2>
-              <div className="grid gap-8 items-end grid-cols-[repeat(auto-fill,minmax(15rem,1fr))] w-full">
+              <div className="grid gap-8 items-end mobile:grid-cols-2 grid-cols-[repeat(auto-fill,minmax(15rem,1fr))] w-full">
                 {item.subitems.data.map((variant) => (
-                  <LibraryMediaPreview
+                  <LibraryItemsPreview
                     key={variant.id}
                     item={variant.attributes}
+                    langui={langui}
                   />
                 ))}
               </div>
@@ -380,11 +362,12 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
           ) : (
             <div id="subitems" className="grid place-items-center gap-8 w-full">
               <h2 className="text-2xl">{langui.library_item_subitems}</h2>
-              <div className="grid gap-8 items-end grid-cols-[repeat(auto-fill,minmax(15rem,1fr))] w-full">
+              <div className="grid gap-8 items-end mobile:grid-cols-2 grid-cols-[repeat(auto-fill,minmax(15rem,1fr))] w-full">
                 {item.subitems.data.map((subitem) => (
-                  <LibraryMediaPreview
+                  <LibraryItemsPreview
                     key={subitem.id}
                     item={subitem.attributes}
+                    langui={langui}
                   />
                 ))}
               </div>

@@ -263,16 +263,90 @@ export type GetLibraryItemsPreviewQuery = {
             };
           };
         };
-        size: {
-          __typename: "ComponentBasicsSize";
-          width: number;
-          height: number;
-          thickness: number;
-        };
-        descriptions: Array<{
-          __typename: "ComponentTranslationsLibraryItems";
-          description: string;
-        }>;
+        metadata: Array<
+          | {
+              __typename: "ComponentMetadataBooks";
+              subtype: {
+                __typename: "TextualSubtypeEntityResponse";
+                data: {
+                  __typename: "TextualSubtypeEntity";
+                  attributes: {
+                    __typename: "TextualSubtype";
+                    slug: string;
+                    titles: Array<{
+                      __typename: "ComponentTranslationsSimpleTitle";
+                      title: string;
+                    }>;
+                  };
+                };
+              };
+            }
+          | {
+              __typename: "ComponentMetadataVideo";
+              subtype: {
+                __typename: "VideoSubtypeEntityResponse";
+                data: {
+                  __typename: "VideoSubtypeEntity";
+                  attributes: {
+                    __typename: "VideoSubtype";
+                    slug: string;
+                    titles: Array<{
+                      __typename: "ComponentTranslationsSimpleTitle";
+                      title: string;
+                    }>;
+                  };
+                };
+              };
+            }
+          | {
+              __typename: "ComponentMetadataGame";
+              platform: {
+                __typename: "GamePlatformEntityResponse";
+                data: {
+                  __typename: "GamePlatformEntity";
+                  attributes: {
+                    __typename: "GamePlatform";
+                    short: string;
+                  };
+                };
+              };
+            }
+          | {
+              __typename: "ComponentMetadataAudio";
+              subtype: {
+                __typename: "AudioSubtypeEntityResponse";
+                data: {
+                  __typename: "AudioSubtypeEntity";
+                  attributes: {
+                    __typename: "AudioSubtype";
+                    slug: string;
+                    titles: Array<{
+                      __typename: "ComponentTranslationsSimpleTitle";
+                      title: string;
+                    }>;
+                  };
+                };
+              };
+            }
+          | {
+              __typename: "ComponentMetadataOther";
+              subtype: {
+                __typename: "OtherSubtypeEntityResponse";
+                data: {
+                  __typename: "OtherSubtypeEntity";
+                  attributes: {
+                    __typename: "OtherSubtype";
+                    slug: string;
+                    titles: Array<{
+                      __typename: "ComponentTranslationsSimpleTitle";
+                      title: string;
+                    }>;
+                  };
+                };
+              };
+            }
+          | { __typename: "Error" }
+        >;
       };
     }>;
   };

@@ -1,4 +1,7 @@
-import { GetLibraryItemsPreviewQuery } from "graphql/operations-types";
+import {
+  GetLibraryItemsPreviewQuery,
+  GetWebsiteInterfaceQuery,
+} from "graphql/operations-types";
 
 export function getAssetURL(url: string): string {
   return process.env.NEXT_PUBLIC_URL_CMS + url;
@@ -43,6 +46,47 @@ export function prettyinlineTitle(
   result += title;
   if (subtitle) result += " - " + subtitle;
   return result;
+}
+
+export function prettyItemType(
+  metadata: GetLibraryItemsPreviewQuery["libraryItems"]["data"][number]["attributes"]["metadata"][number],
+  langui: GetWebsiteInterfaceQuery["websiteInterfaces"]["data"][number]["attributes"]
+): string {
+  const type = metadata.__typename;
+  switch (metadata.__typename) {
+    case "ComponentMetadataAudio":
+      return langui.library_item_type_audio;
+    case "ComponentMetadataBooks":
+      return langui.library_item_type_textual;
+    case "ComponentMetadataGame":
+      return langui.library_item_type_game;
+    case "ComponentMetadataVideo":
+      return langui.library_item_type_video;
+    case "ComponentMetadataOther":
+      return langui.library_item_type_other;
+    default:
+      return "";
+  }
+}
+
+export function prettyItemSubType(
+  metadata: GetLibraryItemsPreviewQuery["libraryItems"]["data"][number]["attributes"]["metadata"][number],
+): string {
+  switch (metadata.__typename) {
+    case "ComponentMetadataAudio":
+    case "ComponentMetadataBooks":
+    case "ComponentMetadataVideo":
+    case "ComponentMetadataOther": {
+      return metadata.subtype.data.attributes.titles.length > 0
+        ? metadata.subtype.data.attributes.titles[0].title
+        : prettySlug(metadata.subtype.data.attributes.slug);
+    }
+    case "ComponentMetadataGame":
+      return metadata.platform.data.attributes.short;
+
+    default:
+      return "";
+  }
 }
 
 export function capitalizeString(string: string): string {

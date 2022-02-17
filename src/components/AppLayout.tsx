@@ -22,12 +22,15 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
   const subPanelClass =
     "fixed desktop:left-[20rem] desktop:top-0 desktop:bottom-0 desktop:w-[20rem]";
   let contentPanelClass = "";
+  let turnSubIntoContent = false;
   if (props.subPanel && props.contentPanel) {
     contentPanelClass =
       "fixed desktop:left-[40rem] desktop:top-0 desktop:bottom-0 desktop:right-0";
   } else if (props.contentPanel) {
     contentPanelClass =
       "fixed desktop:left-[20rem] desktop:top-0 desktop:bottom-0 desktop:right-0";
+  } else if (props.subPanel) {
+    turnSubIntoContent = true;
   }
 
   return (
@@ -52,7 +55,7 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
           className="material-icons mt-[.1em] cursor-pointer"
           onClick={() => setsubPanelOpen(true)}
         >
-          {props.subPanel
+          {props.subPanel && !turnSubIntoContent
             ? props.subPanelIcon
               ? props.subPanelIcon
               : "tune"
@@ -68,12 +71,21 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
           {props.contentPanel}
         </div>
       ) : (
-        ""
+        <div className="top-0 left-0 right-0 bottom-20 overflow-y-scroll fixed desktop:left-[40rem] desktop:top-0 desktop:bottom-0 desktop:right-0 opacity-40">
+          <div className="grid place-content-center h-full">
+            <div className="text-dark border-dark border-2 border-dotted rounded-2xl p-8 grid grid-flow-col place-items-center gap-9">
+              <p className="text-4xl">❮</p>
+              <p className="text-2xl w-64">Select one of the options in the sidebar</p>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Background when navbar is opened */}
       <div
-        className={`fixed bg-dark inset-0 transition-opacity duration-500 ${
+        className={`fixed bg-dark inset-0 transition-opacity duration-500 
+        ${turnSubIntoContent ? "z-10" : ""}
+        ${
           mainPanelOpen || subPanelOpen
             ? " opacity-50"
             : "opacity-0 translate-x-full"
@@ -84,25 +96,30 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
         }}
       ></div>
 
-      {/* Main panel */}
-      <div
-        className={`${mainPanelClass} border-r-[1px] border-black top-0 bottom-0 left-0 right-12 bg-light overflow-y-scroll webkit-scrollbar:w-0 [scrollbar-width:none] transition-transform duration-500
-        ${mainPanelOpen ? "" : "mobile:-translate-x-full"}`}
-      >
-        <MainPanel langui={props.langui} />
-      </div>
-
       {/* Sub panel */}
       {props.subPanel ? (
         <div
           className={`${subPanelClass} border-r-[1px] mobile:border-r-0 mobile:border-l-[1px] border-black top-0 bottom-0 right-0 left-12 bg-light overflow-y-scroll webkit-scrollbar:w-0 [scrollbar-width:none] transition-transform duration-500
-        ${subPanelOpen ? "" : "mobile:translate-x-full"}`}
+          ${
+            turnSubIntoContent
+              ? "mobile:mobile:translate-x-0 mobile:bottom-20 mobile:left-0 mobile:border-l-0"
+              : ""
+          }
+          ${subPanelOpen ? "" : "mobile:translate-x-full"}`}
         >
           {props.subPanel}
         </div>
       ) : (
         ""
       )}
+
+      {/* Main panel */}
+      <div
+        className={`${mainPanelClass} border-r-[1px] border-black top-0 bottom-0 left-0 right-12 bg-light overflow-y-scroll webkit-scrollbar:w-0 [scrollbar-width:none] transition-transform duration-500 z-20
+        ${mainPanelOpen ? "" : "mobile:-translate-x-full"}`}
+      >
+        <MainPanel langui={props.langui} />
+      </div>
     </>
   );
 }

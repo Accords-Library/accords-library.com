@@ -5,7 +5,7 @@
 @layer base {
   html,
   body {
-    @apply p-0 m-0 bg-light text-black;
+    @apply p-0 m-0 bg-light text-black mobile:text-[90%];
   }
 
   * {
@@ -41,7 +41,7 @@
   }
 
   *::-webkit-scrollbar {
-    @apply w-3;
+    @apply w-3 mobile:w-0;
   }
 
   *::-webkit-scrollbar-track {

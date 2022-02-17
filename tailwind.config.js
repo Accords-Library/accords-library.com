@@ -14,9 +14,11 @@ module.exports = {
       headers: ["Vollkorn"],
     },
     screens: {
-      desktop: {'min': '70rem'},
-      mobile: {'max': '70rem'},
-    }
+      desktop: { min: "70rem" },
+      mobile: { max: "70rem" },
+      coarse: { raw: "(pointer: coarse)" },
+      fine: { raw: "(pointer: fine)" },
+    },
   },
   plugins: [
     require("@tailwindcss/typography"),

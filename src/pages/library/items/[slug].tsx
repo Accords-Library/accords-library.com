@@ -51,57 +51,57 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
       <HorizontalLine />
 
       <div className="grid gap-4">
-      <NavOption
-        title={langui.library_item_summary}
-        url="#summary"
-        border={true}
-      />
-
-      {item.gallery.data.length > 0 ? (
         <NavOption
-          title={langui.library_item_gallery}
-          url="#gallery"
+          title={langui.library_item_summary}
+          url="#summary"
           border={true}
         />
-      ) : (
-        ""
-      )}
 
-      <NavOption
-        title={langui.library_item_details}
-        url="#details"
-        border={true}
-      />
-
-      {item.subitems.data.length > 0 ? (
-        item.metadata.length > 0 &&
-        item.metadata[0].__typename === "ComponentMetadataOther" &&
-        item.metadata[0].subtype.data.attributes.slug === "variant-set" ? (
+        {item.gallery.data.length > 0 ? (
           <NavOption
-            title={langui.library_item_variants}
-            url="#variants"
+            title={langui.library_item_gallery}
+            url="#gallery"
             border={true}
           />
         ) : (
-          <NavOption
-            title={langui.library_item_subitems}
-            url="#subitems"
-            border={true}
-          />
-        )
-      ) : (
-        ""
-      )}
+          ""
+        )}
 
-      {item.contents.data.length > 0 ? (
         <NavOption
-          title={langui.library_item_content}
-          url="#content"
+          title={langui.library_item_details}
+          url="#details"
           border={true}
         />
-      ) : (
-        ""
-      )}
+
+        {item.subitems.data.length > 0 ? (
+          item.metadata.length > 0 &&
+          item.metadata[0].__typename === "ComponentMetadataOther" &&
+          item.metadata[0].subtype.data.attributes.slug === "variant-set" ? (
+            <NavOption
+              title={langui.library_item_variants}
+              url="#variants"
+              border={true}
+            />
+          ) : (
+            <NavOption
+              title={langui.library_item_subitems}
+              url="#subitems"
+              border={true}
+            />
+          )
+        ) : (
+          ""
+        )}
+
+        {item.contents.data.length > 0 ? (
+          <NavOption
+            title={langui.library_item_content}
+            url="#content"
+            border={true}
+          />
+        ) : (
+          ""
+        )}
       </div>
     </SubPanel>
   );
@@ -109,13 +109,15 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
   const contentPanel = (
     <ContentPanel width={ContentPanelWidthSizes.large}>
       <div className="grid place-items-center gap-12">
-        <div className="drop-shadow-dark-xl w-96 max-w-full mb-16">
+        <div className="drop-shadow-dark-xl w-full h-[50vh] mobile:h-[80vh] mb-16 ">
           {item.thumbnail.data ? (
             <Image
               src={getAssetURL(item.thumbnail.data.attributes.url)}
               alt={item.thumbnail.data.attributes.alternativeText}
               width={item.thumbnail.data.attributes.width}
               height={item.thumbnail.data.attributes.height}
+              layout="fill"
+              objectFit="contain"
             />
           ) : (
             <div className="w-full aspect-[21/29.7] bg-light rounded-xl"></div>
@@ -131,7 +133,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
               <div className="grid place-items-center">
                 <p>{langui.global_subitem_of}</p>
                 <Button
-                  href={`/library/${item.subitem_of.data[0].attributes.slug}`}
+                  href={`/library/items/${item.subitem_of.data[0].attributes.slug}`}
                 >
                   {prettyinlineTitle(
                     "",
@@ -217,7 +219,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
                 ""
               )}
 
-              {item.release_date ? (
+              {item.price ? (
                 <div className="grid place-items-center">
                   <h3 className="text-xl">{langui.global_price}</h3>
                   <p>{prettyPrice(item.price)}</p>
@@ -230,14 +232,14 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
               <>
                 <h3 className="text-xl">{langui.library_item_physical_size}</h3>
                 <div className="grid grid-flow-col w-full place-content-between">
-                  <div className="grid place-items-start grid-flow-col gap-4">
+                  <div className="flex flex-row flex-wrap place-items-start gap-4">
                     <p className="font-bold">{langui.global_width}:</p>
                     <div>
                       <p>{item.size.width} mm</p>
                       <p>{convertMmToInch(item.size.width)} in</p>
                     </div>
                   </div>
-                  <div className="grid place-items-start grid-flow-col gap-4">
+                  <div className="flex flex-row flex-wrap place-items-start gap-4">
                     <p className="font-bold">{langui.global_height}:</p>
                     <div>
                       <p>{item.size.height} mm</p>
@@ -245,7 +247,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
                     </div>
                   </div>
                   {item.size.thickness ? (
-                    <div className="grid place-items-start grid-flow-col gap-4">
+                    <div className="flex flex-row flex-wrap place-items-start gap-4">
                       <p className="font-bold">{langui.global_thickness}:</p>
                       <div>
                         <p>{item.size.thickness} mm</p>
@@ -387,11 +389,11 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
                 <div
                   id={content.attributes.slug}
                   key={content.id}
-                  className=" grid gap-2 h-6 overflow-hidden px-4 rounded-lg target:bg-mid target:h-auto target:py-3 target:my-2"
+                  className="grid gap-2 px-4 rounded-lg target:bg-mid target:h-auto target:py-3 target:my-2"
                 >
-                  <div className="grid gap-4 place-items-center grid-cols-[auto_auto_1fr_auto_9em] ">
+                  <div className="grid gap-4 place-items-center grid-cols-[auto_auto_1fr_auto_12ch] thin:grid-cols-[auto_auto_1fr_auto]">
                     <a href={`#${content.attributes.slug}`}>
-                      <h3>
+                      <h3 className="text-left">
                         {content.attributes.content.data &&
                         content.attributes.content.data.attributes.titles
                           .length > 0
@@ -406,7 +408,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
                           : prettySlug(content.attributes.slug, item.slug)}
                       </h3>
                     </a>
-                    <div className="grid grid-flow-col gap-1">
+                    <div className="flex flex-row flex-wrap gap-1">
                       {content.attributes.content.data?.attributes.categories.data.map(
                         (category) => (
                           <Chip key={category.id}>
@@ -423,7 +425,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
                         : ""}
                     </p>
                     {content.attributes.content.data ? (
-                      <Chip className="place-self-end">
+                      <Chip className="justify-self-end thin:hidden">
                         {content.attributes.content.data.attributes.type.data
                           .attributes.titles.length > 0
                           ? content.attributes.content.data.attributes.type.data
@@ -436,36 +438,6 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
                     ) : (
                       ""
                     )}
-                  </div>
-                  <div className="grid grid-flow-col place-content-start place-items-center gap-2">
-                    <span className="material-icons text-dark">
-                      subdirectory_arrow_right
-                    </span>
-
-                    {content.attributes.scan_set.length > 0 ? (
-                      <Button
-                        href={`/library/content/${content.attributes.content.data.attributes.slug}/scans/`}
-                      >
-                        {langui.library_item_view_scans}
-                      </Button>
-                    ) : (
-                      ""
-                    )}
-
-                    {content.attributes.content.data ? (
-                      <Button
-                        href={`/library/content/${content.attributes.content.data.attributes.slug}`}
-                      >
-                        {langui.library_item_open_content}
-                      </Button>
-                    ) : (
-                      ""
-                    )}
-
-                    {content.attributes.scan_set.length === 0 &&
-                    !content.attributes.content.data
-                      ? "The content is not available"
-                      : ""}
                   </div>
                 </div>
               ))}

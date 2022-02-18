@@ -63,7 +63,7 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
       </Head>
 
       {/* Navbar */}
-      <div className="fixed bottom-0 left-0 right-0 h-20 bg-light border-t-[1px] border-dark grid grid-cols-[5rem_1fr_5rem] place-items-center desktop:hidden">
+      <div className="fixed bottom-0 left-0 right-0 h-20 border-t-[1px] border-black border-dotted grid grid-cols-[5rem_1fr_5rem] place-items-center desktop:hidden bg-light bg-paper bg-blend-multiply bg-local bg-[length:10cm]">
         <span
           id="navbar-main-button"
           className="material-icons mt-[.1em] cursor-pointer"
@@ -87,14 +87,14 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
       {/* Content panel */}
       {props.contentPanel ? (
         <div
-          className={`top-0 left-0 right-0 bottom-20 overflow-y-scroll ${contentPanelClass}`}
+          className={`top-0 left-0 right-0 bottom-20 overflow-y-scroll bg-light bg-paper bg-blend-multiply bg-local bg-[length:10cm] ${contentPanelClass}`}
         >
           {props.contentPanel}
         </div>
       ) : (
-        <div className="top-0 left-0 right-0 bottom-20 overflow-y-scroll fixed desktop:left-[40rem] desktop:top-0 desktop:bottom-0 desktop:right-0 opacity-40">
+        <div className="top-0 left-0 right-0 bottom-20 overflow-y-scroll fixed desktop:left-[40rem] desktop:top-0 desktop:bottom-0 desktop:right-0 bg-light bg-paper bg-blend-multiply bg-local bg-[length:10cm]">
           <div className="grid place-content-center h-full">
-            <div className="text-dark border-dark border-2 border-dotted rounded-2xl p-8 grid grid-flow-col place-items-center gap-9">
+            <div className="text-dark border-dark border-2 border-dotted rounded-2xl p-8 grid grid-flow-col place-items-center gap-9 opacity-40">
               <p className="text-4xl">❮</p>
               <p className="text-2xl w-64">
                 Select one of the options in the sidebar
@@ -122,7 +122,7 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
       {/* Sub panel */}
       {props.subPanel ? (
         <div
-          className={`${subPanelClass} border-r-[1px] mobile:border-r-0 mobile:border-l-[1px] border-black top-0 bottom-0 right-0 left-12 bg-light overflow-y-scroll webkit-scrollbar:w-0 [scrollbar-width:none] transition-transform duration-300
+          className={`${subPanelClass} border-r-[1px] mobile:border-r-0 mobile:border-l-[1px] border-black border-dotted top-0 bottom-0 right-0 left-12 overflow-y-scroll webkit-scrollbar:w-0 [scrollbar-width:none] transition-transform duration-300 bg-light bg-paper bg-blend-multiply bg-local bg-[length:10cm]
           ${
             turnSubIntoContent
               ? "mobile:translate-x-0 mobile:bottom-20 mobile:left-0 mobile:border-l-0"
@@ -139,7 +139,7 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
 
       {/* Main panel */}
       <div
-        className={`${mainPanelClass} border-r-[1px] border-black top-0 bottom-0 left-0 right-12 bg-light overflow-y-scroll webkit-scrollbar:w-0 [scrollbar-width:none] transition-transform duration-300 z-20
+        className={`${mainPanelClass} border-r-[1px] border-black border-dotted top-0 bottom-0 left-0 right-12 overflow-y-scroll webkit-scrollbar:w-0 [scrollbar-width:none] transition-transform duration-300 z-20 bg-light bg-paper bg-blend-multiply bg-local bg-[length:10cm]
         ${mainPanelOpen ? "" : "mobile:-translate-x-full"}`}
       >
         <MainPanel langui={props.langui} />

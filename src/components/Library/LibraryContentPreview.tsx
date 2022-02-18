@@ -33,7 +33,7 @@ export default function LibraryContentPreview(
         ) : (
           <div className="w-full aspect-[3/2] bg-light rounded-lg"></div>
         )}
-        <div className="linearbg-1 fine:drop-shadow-dark-lg fine:absolute coarse:rounded-b-md bottom-2 -inset-x-0.5 opacity-[var(--cover-opacity)] transition-opacity z-20 grid p-4 gap-2 text-left">
+        <div className="linearbg-1 fine:drop-shadow-dark-lg fine:absolute coarse:rounded-b-md bottom-2 -inset-x-0.5 opacity-[var(--cover-opacity)] transition-opacity z-20 grid p-4 gap-2">
           <div className="grid grid-flow-col gap-1 overflow-hidden place-content-start">
             {item.type ? (
               <Chip>

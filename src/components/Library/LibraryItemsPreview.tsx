@@ -48,7 +48,7 @@ export default function LibraryItemsPreview(
           <div className="w-full aspect-[21/29.7] bg-light rounded-lg"></div>
         )}
 
-        <div className="linearbg-1 fine:drop-shadow-dark-lg fine:absolute place-items-start bottom-2 -inset-x-0.5 opacity-[var(--cover-opacity)] transition-opacity z-20 grid p-4 gap-2 text-left">
+        <div className="linearbg-1 fine:drop-shadow-dark-lg fine:absolute place-items-start bottom-2 -inset-x-0.5 opacity-[var(--cover-opacity)] transition-opacity z-20 grid p-4 gap-2">
           {item.metadata && item.metadata.length > 0 ? (
             <div className="flex flex-row gap-1">
               <Chip>{prettyItemSubType(item.metadata[0])}</Chip>

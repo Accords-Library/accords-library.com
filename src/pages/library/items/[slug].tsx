@@ -154,7 +154,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
               )}
             </div>
             {item.descriptions.length > 0 ? (
-              <p>{item.descriptions[0].description}</p>
+              <p className="text-justify">{item.descriptions[0].description}</p>
             ) : (
               ""
             )}
@@ -190,7 +190,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
 
         <div
           id="details"
-          className="bg-mid w-full grid place-items-center p-8 rounded-2xl"
+          className="bg-mid w-full grid place-items-center p-8 rounded-2xl text-left"
         >
           <div className="w-[clamp(0px,100%,42rem)] grid place-items gap-8">
             <h2 className="text-2xl text-center">
@@ -271,12 +271,12 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
                 <div className="grid grid-cols-2 w-full place-content-between">
                   {item.metadata[0].__typename === "ComponentMetadataBooks" ? (
                     <>
-                      <div className="grid place-content-start grid-flow-col gap-4">
+                      <div className="flex flex-row place-content-start gap-4">
                         <p className="font-bold">{langui.global_pages}:</p>
                         <p>{item.metadata[0].page_count}</p>
                       </div>
 
-                      <div className="grid place-content-start grid-flow-col gap-4">
+                      <div className="flex flex-row place-content-start gap-4">
                         <p className="font-bold">{langui.global_binding}:</p>
                         <p>
                           {item.metadata[0].binding_type ===
@@ -289,7 +289,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
                         </p>
                       </div>
 
-                      <div className="grid place-content-start grid-flow-col gap-4">
+                      <div className="flex flex-row place-content-start gap-4">
                         <p className="font-bold">{langui.global_page_order}:</p>
                         <p>
                           {item.metadata[0].page_order ===
@@ -302,7 +302,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
                         </p>
                       </div>
 
-                      <div className="grid place-content-start grid-flow-col gap-4">
+                      <div className="flex flex-row place-content-start gap-4">
                         <p className="font-bold">{langui.global_languages}:</p>
                         {item.metadata[0].languages.data.map((lang) => (
                           <p key={lang.attributes.code}>
@@ -323,7 +323,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
                   ) : item.metadata[0].__typename ===
                     "ComponentMetadataOther" ? (
                     <>
-                      <div className="grid place-content-start grid-flow-col gap-4">
+                      <div className="flex flex-row place-content-start gap-4">
                         <p className="font-bold">{langui.global_type}:</p>
                         <Chip>
                           {item.metadata[0].subtype.data.attributes.titles
@@ -389,11 +389,11 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
                 <div
                   id={content.attributes.slug}
                   key={content.id}
-                  className="grid gap-2 px-4 rounded-lg target:bg-mid target:h-auto target:py-3 target:my-2"
+                  className="grid gap-2 px-4 rounded-lg target:bg-mid target:h-auto target:py-3 target:my-2 target:[--displaySubContentMenu:grid] [--displaySubContentMenu:none]"
                 >
                   <div className="grid gap-4 place-items-center grid-cols-[auto_auto_1fr_auto_12ch] thin:grid-cols-[auto_auto_1fr_auto]">
                     <a href={`#${content.attributes.slug}`}>
-                      <h3 className="text-left">
+                      <h3>
                         {content.attributes.content.data &&
                         content.attributes.content.data.attributes.titles
                           .length > 0
@@ -438,6 +438,36 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
                     ) : (
                       ""
                     )}
+                  </div>
+                  <div className="grid-flow-col place-content-start place-items-center gap-2 [display:var(--displaySubContentMenu)]">
+                    <span className="material-icons text-dark">
+                      subdirectory_arrow_right
+                    </span>
+
+                    {content.attributes.scan_set.length > 0 ? (
+                      <Button
+                        href={`/library/content/${content.attributes.content.data.attributes.slug}/scans/`}
+                      >
+                        {langui.library_item_view_scans}
+                      </Button>
+                    ) : (
+                      ""
+                    )}
+
+                    {content.attributes.content.data ? (
+                      <Button
+                        href={`/library/content/${content.attributes.content.data.attributes.slug}`}
+                      >
+                        {langui.library_item_open_content}
+                      </Button>
+                    ) : (
+                      ""
+                    )}
+
+                    {content.attributes.scan_set.length === 0 &&
+                    !content.attributes.content.data
+                      ? "The content is not available"
+                      : ""}
                   </div>
                 </div>
               ))}

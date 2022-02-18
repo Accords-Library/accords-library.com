@@ -21,6 +21,9 @@ module.exports = {
       coarse: { raw: "(pointer: coarse)" },
       fine: { raw: "(pointer: fine)" },
     },
+    backgroundImage: {
+      paper: "url('/paper_white.webp')",
+    }
   },
   plugins: [
     require("@tailwindcss/typography"),

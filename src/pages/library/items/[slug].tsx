@@ -126,7 +126,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
 
         <div
           id="summary"
-          className="bg-mid w-full grid place-items-center p-8 rounded-2xl"
+          className="bg-mid w-full grid place-items-center p-8 rounded-2xl shadow-inner-sm shadow-dark"
         >
           <div className="w-[clamp(0px,100%,42rem)] grid place-items-center gap-8">
             {item.subitem_of.data.length > 0 ? (
@@ -190,7 +190,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
 
         <div
           id="details"
-          className="bg-mid w-full grid place-items-center p-8 rounded-2xl text-left"
+          className="bg-mid w-full grid place-items-center p-8 rounded-2xl text-left shadow-inner-sm shadow-dark"
         >
           <div className="w-[clamp(0px,100%,42rem)] grid place-items gap-8">
             <h2 className="text-2xl text-center">
@@ -389,7 +389,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
                 <div
                   id={content.attributes.slug}
                   key={content.id}
-                  className="grid gap-2 px-4 rounded-lg target:bg-mid target:h-auto target:py-3 target:my-2 target:[--displaySubContentMenu:grid] [--displaySubContentMenu:none]"
+                  className="grid gap-2 px-4 rounded-lg target:bg-mid target:shadow-inner-sm target:shadow-dark target:h-auto target:py-3 target:my-2 target:[--displaySubContentMenu:grid] [--displaySubContentMenu:none]"
                 >
                   <div className="grid gap-4 place-items-center grid-cols-[auto_auto_1fr_auto_12ch] thin:grid-cols-[auto_auto_1fr_auto]">
                     <a href={`#${content.attributes.slug}`}>

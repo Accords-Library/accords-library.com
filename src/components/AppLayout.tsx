@@ -3,6 +3,9 @@ import MainPanel from "./Panels/MainPanel";
 import { useState } from "react";
 import Head from "next/head";
 import { useSwipeable } from "react-swipeable";
+import { useRouter } from "next/router";
+import Button from "components/Button";
+import { prettyLanguage } from "queries/helpers";
 
 type AppLayoutProps = {
   subPanel?: React.ReactNode;
@@ -14,9 +17,11 @@ type AppLayoutProps = {
 
 export default function AppLayout(props: AppLayoutProps): JSX.Element {
   const titlePrefix = "Accord’s Library";
+  const router = useRouter();
 
   const [mainPanelOpen, setMainPanelOpen] = useState(false);
-  const [subPanelOpen, setsubPanelOpen] = useState(false);
+  const [subPanelOpen, setSubPanelOpen] = useState(false);
+  const [languagePanelOpen, setLanguagePanelOpen] = useState(false);
   const sensibilitySwipe = 1.1;
 
   const handlers = useSwipeable({
@@ -25,13 +30,13 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
       if (mainPanelOpen) {
         setMainPanelOpen(false);
       } else if (props.subPanel && props.contentPanel) {
-        setsubPanelOpen(true);
+        setSubPanelOpen(true);
       }
     },
     onSwipedRight: (SwipeEventData) => {
       if (SwipeEventData.velocity < sensibilitySwipe) return;
       if (subPanelOpen) {
-        setsubPanelOpen(false);
+        setSubPanelOpen(false);
       } else {
         setMainPanelOpen(true);
       }
@@ -74,7 +79,7 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
         <p className="text-2xl font-black font-headers">{props.title}</p>
         <span
           className="material-icons mt-[.1em] cursor-pointer"
-          onClick={() => setsubPanelOpen(true)}
+          onClick={() => setSubPanelOpen(true)}
         >
           {props.subPanel && !turnSubIntoContent
             ? props.subPanelIcon
@@ -110,12 +115,12 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
         ${turnSubIntoContent ? "z-10" : ""}
         ${
           mainPanelOpen || subPanelOpen
-            ? " opacity-50"
-            : "opacity-0 translate-x-full"
+            ? "opacity-50"
+            : "opacity-0 pointer-events-none touch-none"
         }`}
         onClick={() => {
           setMainPanelOpen(false);
-          setsubPanelOpen(false);
+          setSubPanelOpen(false);
         }}
       ></div>
 
@@ -142,7 +147,48 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
         className={`${mainPanelClass} border-r-[1px] border-black border-dotted top-0 bottom-0 left-0 right-12 overflow-y-scroll webkit-scrollbar:w-0 [scrollbar-width:none] transition-transform duration-300 z-20 bg-light bg-paper bg-blend-multiply bg-local bg-[length:10cm]
         ${mainPanelOpen ? "" : "mobile:-translate-x-full"}`}
       >
-        <MainPanel langui={props.langui} />
+        <MainPanel
+          langui={props.langui}
+          setLanguagePanelOpen={setLanguagePanelOpen}
+        />
+      </div>
+
+      {/* Language selection background */}
+      <div
+        className={`fixed bg-dark inset-0 transition-all duration-500 z-20 grid place-content-center ${
+          languagePanelOpen
+            ? "bg-opacity-50"
+            : "bg-opacity-0 pointer-events-none touch-none"
+        }`}
+        onClick={() => {
+          setLanguagePanelOpen(false);
+        }}
+      >
+        <div
+          className={`p-10 bg-light rounded-lg shadow-2xl shadow-dark grid gap-4 place-items-center transition-transform ${
+            languagePanelOpen ? "scale-100" : "scale-0"
+          }`}
+        >
+          <h2 className="text-2xl">Select a language</h2>
+          <div className="flex flex-wrap flex-row gap-2">
+            {router.locales?.sort().map((locale) => (
+              <>
+                {locale !== "xx" ? (
+                  <Button
+                    key={locale}
+                    active={locale === router.locale}
+                    href={router.asPath}
+                    locale={locale}
+                  >
+                    {prettyLanguage(locale)}
+                  </Button>
+                ) : (
+                  ""
+                )}
+              </>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );

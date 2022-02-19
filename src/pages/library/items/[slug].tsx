@@ -32,6 +32,7 @@ import Button from "components/Button";
 import HorizontalLine from "components/HorizontalLine";
 import AppLayout from "components/AppLayout";
 import LibraryItemsPreview from "components/Library/LibraryItemsPreview";
+import InsetBox from "components/InsetBox";
 
 type LibrarySlugProps = {
   libraryItem: GetLibraryItemQuery;
@@ -124,10 +125,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
           )}
         </div>
 
-        <div
-          id="summary"
-          className="bg-mid w-full grid place-items-center p-8 rounded-2xl shadow-inner-sm shadow-dark"
-        >
+        <InsetBox id="summary" className="grid place-items-center">
           <div className="w-[clamp(0px,100%,42rem)] grid place-items-center gap-8">
             {item.subitem_of.data.length > 0 ? (
               <div className="grid place-items-center">
@@ -159,7 +157,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
               ""
             )}
           </div>
-        </div>
+        </InsetBox>
 
         {item.gallery.data.length > 0 ? (
           <div id="gallery" className="grid place-items-center gap-8  w-full">
@@ -188,9 +186,9 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
           ""
         )}
 
-        <div
+        <InsetBox
           id="details"
-          className="bg-mid w-full grid place-items-center p-8 rounded-2xl text-left shadow-inner-sm shadow-dark"
+          className="grid place-items-center"
         >
           <div className="w-[clamp(0px,100%,42rem)] grid place-items gap-8">
             <h2 className="text-2xl text-center">
@@ -345,7 +343,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
               ""
             )}
           </div>
-        </div>
+        </InsetBox>
 
         {item.subitems.data.length > 0 ? (
           item.metadata.length > 0 &&

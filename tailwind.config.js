@@ -79,7 +79,7 @@ module.exports = {
         ".drop-shadow-dark-2xl": {
           filter: "drop-shadow(0 25px 25px rgb(156 102 68 / 0.8))",
         },
-        
+
         ".drop-shadow-black-lg": {
           filter:
             "drop-shadow(0 10px 8px rgb(27 24 17 / 0.2)) drop-shadow(0 4px 3px rgb(27 24 17 / 0.4))",

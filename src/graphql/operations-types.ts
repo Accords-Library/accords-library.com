@@ -165,6 +165,7 @@ export type GetErasQuery = {
         title: Array<{
           __typename: "ComponentTranslationsChronologyEra";
           title: string;
+          description: string;
         }>;
       };
     }>;

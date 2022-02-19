@@ -9,7 +9,7 @@
   }
 
   * {
-    @apply box-border font-body font-medium scroll-smooth;
+    @apply box-border font-body font-medium scroll-smooth scroll-m-8;
   }
 
   h1,
@@ -23,10 +23,6 @@
 
   a {
     @apply transition-colors underline-offset-2 decoration-dotted underline decoration-dark hover:text-dark;
-  }
-
-  *:target {
-    @apply scroll-mt-4;
   }
 
   *::selection {

@@ -9,6 +9,7 @@ import Markdown from "markdown-to-jsx";
 
 type MainPanelProps = {
   langui: GetWebsiteInterfaceQuery["websiteInterfaces"]["data"][number]["attributes"];
+  setLanguagePanelOpen: Function;
 };
 
 export default function MainPanel(props: MainPanelProps): JSX.Element {
@@ -29,7 +30,7 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
               />
             </div>
           </Link>
-          <div className="relative mt-5">
+          <div className="relative mt-5" onClick={() => props.setLanguagePanelOpen(true)}>
             {router.locale ? (
               <Button className="absolute right-0 top-[-1.3em] text-xs !py-0.5 !px-2.5">
                 {router.locale.toUpperCase()}

@@ -51,7 +51,7 @@ export function prettyinlineTitle(
 
 export function prettyItemType(
   metadata: {
-    __typename: GetLibraryItemsPreviewQuery["libraryItems"]["data"][number]["attributes"]["metadata"][number]["__typename"]
+    __typename: GetLibraryItemsPreviewQuery["libraryItems"]["data"][number]["attributes"]["metadata"][number]["__typename"];
   },
   langui: GetWebsiteInterfaceQuery["websiteInterfaces"]["data"][number]["attributes"]
 ): string {
@@ -73,7 +73,7 @@ export function prettyItemType(
 }
 
 export function prettyItemSubType(
-  metadata: GetLibraryItemsPreviewQuery["libraryItems"]["data"][number]["attributes"]["metadata"][number],
+  metadata: GetLibraryItemsPreviewQuery["libraryItems"]["data"][number]["attributes"]["metadata"][number]
 ): string {
   switch (metadata.__typename) {
     case "ComponentMetadataAudio":
@@ -89,6 +89,25 @@ export function prettyItemSubType(
 
     default:
       return "";
+  }
+}
+
+export function prettyLanguage(code: string): string {
+  switch (code) {
+    case "en":
+      return "English";
+    case "es":
+      return "Español";
+    case "fr":
+      return "Français";
+    case "ja":
+      return "日本語";
+    case "en":
+      return "English";
+    case "xx":
+      return "██";
+    default:
+      return code;
   }
 }
 

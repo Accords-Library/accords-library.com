@@ -1,11 +1,20 @@
 import {
-  GetLibraryItemQuery,
   GetLibraryItemsPreviewQuery,
   GetWebsiteInterfaceQuery,
 } from "graphql/operations-types";
 
-export function getAssetURL(url: string): string {
-  return process.env.NEXT_PUBLIC_URL_CMS + url;
+export enum ImageQuality {
+  Small = "small",
+  Medium = "medium",
+  Large = "large"
+}
+
+export function getAssetURL(url: string, quality?: ImageQuality): string {
+  if (!quality) quality = ImageQuality.Small;
+  url = url.replace(/^\/uploads/, "/" + quality);
+  url = url.replace(/.jpg$/, ".webp");
+  url = url.replace(/.png$/, ".webp");
+  return process.env.NEXT_PUBLIC_URL_IMG + url;
 }
 
 export function prettyDate(

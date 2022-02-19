@@ -7,7 +7,7 @@ module.exports = {
     defaultLocale: "en",
   },
   images: {
-    domains: ["strapi.accords-library.com"],
+    domains: ["img.accords-library.com"],
   },
   async redirects() {
     return [

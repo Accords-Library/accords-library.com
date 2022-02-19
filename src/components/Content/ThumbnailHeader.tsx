@@ -2,7 +2,7 @@ import {
   GetContentQuery,
   GetWebsiteInterfaceQuery,
 } from "graphql/operations-types";
-import { getAssetURL, prettySlug } from "queries/helpers";
+import { getAssetURL, ImageQuality, prettySlug } from "queries/helpers";
 import Image from "next/image";
 import Button from "components/Button";
 
@@ -30,7 +30,7 @@ export default function ThumbnailHeader(
           {content.thumbnail.data ? (
             <Image
               className=" rounded-xl"
-              src={getAssetURL(content.thumbnail.data.attributes.url)}
+              src={getAssetURL(content.thumbnail.data.attributes.url, ImageQuality.Medium)}
               alt={content.thumbnail.data.attributes.alternativeText}
               width={content.thumbnail.data.attributes.width}
               height={content.thumbnail.data.attributes.height}
@@ -39,7 +39,7 @@ export default function ThumbnailHeader(
             <div className="w-full aspect-[4/3] bg-light rounded-xl"></div>
           )}
         </div>
-        <div className="grid place-items-center">
+        <div className="grid place-items-center text-center">
           {content.titles.length > 0 ? (
             <>
               <p className="text-2xl">{content.titles[0].pre_title}</p>

@@ -23,6 +23,7 @@ import {
   prettyItemSubType,
   prettyPrice,
   prettySlug,
+  ImageQuality,
 } from "queries/helpers";
 import SubPanel from "components/Panels/SubPanel";
 import ReturnButton from "components/PanelComponents/ReturnButton";
@@ -113,7 +114,10 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
         <div className="drop-shadow-dark-xl w-full h-[50vh] mobile:h-[80vh] mb-16 ">
           {item.thumbnail.data ? (
             <Image
-              src={getAssetURL(item.thumbnail.data.attributes.url)}
+              src={getAssetURL(
+                item.thumbnail.data.attributes.url,
+                ImageQuality.Medium
+              )}
               alt={item.thumbnail.data.attributes.alternativeText}
               width={item.thumbnail.data.attributes.width}
               height={item.thumbnail.data.attributes.height}
@@ -186,10 +190,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
           ""
         )}
 
-        <InsetBox
-          id="details"
-          className="grid place-items-center"
-        >
+        <InsetBox id="details" className="grid place-items-center">
           <div className="w-[clamp(0px,100%,42rem)] grid place-items gap-8">
             <h2 className="text-2xl text-center">
               {langui.library_item_details}

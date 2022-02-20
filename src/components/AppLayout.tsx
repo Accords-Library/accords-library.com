@@ -67,19 +67,19 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
   });
 
   const mainPanelClass = `fixed desktop:left-0 desktop:top-0 desktop:bottom-0 ${
-    mainPanelReduced ? "desktop:w-[8rem]" : "desktop:w-[20rem]"
+    mainPanelReduced ? "desktop:w-[6rem]" : "desktop:w-[20rem]"
   }`;
   const subPanelClass = `fixed desktop:top-0 desktop:bottom-0 desktop:w-[20rem] ${
-    mainPanelReduced ? " desktop:left-[8rem]" : "desktop:left-[20rem]"
+    mainPanelReduced ? " desktop:left-[6rem]" : "desktop:left-[20rem]"
   }`;
   let contentPanelClass = "";
   if (props.subPanel) {
     contentPanelClass = `fixed desktop:top-0 desktop:bottom-0 desktop:right-0 ${
-      mainPanelReduced ? "desktop:left-[28rem]" : "desktop:left-[40rem]"
+      mainPanelReduced ? "desktop:left-[26rem]" : "desktop:left-[40rem]"
     }`;
   } else if (props.contentPanel) {
     contentPanelClass = `fixed desktop:top-0 desktop:bottom-0 desktop:right-0 ${
-      mainPanelReduced ? "desktop:left-[8rem]" : "desktop:left-[20rem]"
+      mainPanelReduced ? "desktop:left-[6rem]" : "desktop:left-[20rem]"
     }`;
   }
 
@@ -177,7 +177,7 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
       {/* Main panel minimize button*/}
       <div
         className={`mobile:hidden translate-x-0 fixed top-1/2 z-20 ${
-          mainPanelReduced ? "left-[6.65rem]" : "left-[18.65rem]"
+          mainPanelReduced ? "left-[4.65rem]" : "left-[18.65rem]"
         }`}
         onClick={() => dispatch(setMainPanelReduced(!mainPanelReduced))}
       >
@@ -232,7 +232,7 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
         delayShow={300}
         delayHide={100}
         disable={!mainPanelReduced || isMobile}
-        className="drop-shadow-dark-xl !opacity-100 !bg-light !rounded-lg after:!border-r-light text-left !transition-[top,left,width]"
+        className="drop-shadow-dark-xl !opacity-100 !bg-light !rounded-lg after:!border-r-light text-left"
       />
     </div>
   );

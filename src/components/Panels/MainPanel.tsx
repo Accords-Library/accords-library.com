@@ -29,12 +29,12 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
   return (
     <div
       id="mainPanel"
-      className="flex flex-col justify-center content-start p-8 gap-y-2 justify-items-center text-center"
+      className={`flex flex-col justify-center content-start gap-y-2 justify-items-center text-center p-8 ${mainPanelReduced && "px-4"}`}
     >
       {mainPanelReduced && isDesktop ? (
         <div className="grid place-items-center gap-4">
           <Link href="/" passHref>
-            <div className="w-8 cursor-pointer transition-[filter] hover:colorize-dark">
+            <div className="w-12 cursor-pointer transition-[filter] hover:colorize-dark">
               <SVG
                 src={"/icons/accords.svg"}
                 alt={"Logo of Accord's Library"}

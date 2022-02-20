@@ -1,12 +1,20 @@
 import { GetWebsiteInterfaceQuery } from "graphql/operations-types";
 import MainPanel from "./Panels/MainPanel";
-import { useState } from "react";
 import Head from "next/head";
 import { useSwipeable } from "react-swipeable";
 import { useRouter } from "next/router";
 import Button from "components/Button";
 import { prettyLanguage } from "queries/helpers";
-import { useMediaDesktop, useMediaMobile } from "hooks/useMediaQuery";
+import { useMediaMobile } from "hooks/useMediaQuery";
+
+import { useSelector, useDispatch } from "react-redux";
+import {
+  setMainPanelOpen,
+  setLanguagePanelOpen,
+  setSubPanelOpen,
+  setMainPanelReduced,
+} from "redux/AppLayoutSlice";
+import { RootState } from "redux/store";
 
 type AppLayoutProps = {
   subPanel?: React.ReactNode;
@@ -20,52 +28,61 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
   const titlePrefix = "Accord’s Library";
   const router = useRouter();
 
-  const [mainPanelOpen, setMainPanelOpen] = useState(false);
-  const [subPanelOpen, setSubPanelOpen] = useState(false);
-  const [languagePanelOpen, setLanguagePanelOpen] = useState(false);
-  const [mainPanelReduced, setMainPanelReduced] = useState(false);
+  const languagePanelOpen = useSelector(
+    (state: RootState) => state.appLayout.languagePanelOpen
+  );
+  const mainPanelOpen = useSelector(
+    (state: RootState) => state.appLayout.mainPanelOpen
+  );
+  const mainPanelReduced = useSelector(
+    (state: RootState) => state.appLayout.mainPanelReduced
+  );
+  const subPanelOpen = useSelector(
+    (state: RootState) => state.appLayout.subPanelOpen
+  );
+
+  const dispatch = useDispatch();
+
   const isMobile = useMediaMobile();
-  const isDesktop = useMediaDesktop();
   const sensibilitySwipe = 1.1;
 
   const handlers = useSwipeable({
     onSwipedLeft: (SwipeEventData) => {
       if (SwipeEventData.velocity < sensibilitySwipe) return;
       if (mainPanelOpen) {
-        setMainPanelOpen(false);
+        dispatch(setMainPanelOpen(false));
       } else if (props.subPanel && props.contentPanel) {
-        setSubPanelOpen(true);
+        dispatch(setSubPanelOpen(true));
       }
     },
     onSwipedRight: (SwipeEventData) => {
       if (SwipeEventData.velocity < sensibilitySwipe) return;
       if (subPanelOpen) {
-        setSubPanelOpen(false);
+        dispatch(setSubPanelOpen(false));
       } else {
-        setMainPanelOpen(true);
+        dispatch(setMainPanelOpen(true));
       }
     },
   });
 
-  const mainPanelClass = `fixed desktop:left-0 desktop:top-0 desktop:bottom-0 transition-all ${
+  const mainPanelClass = `fixed desktop:left-0 desktop:top-0 desktop:bottom-0 ${
     mainPanelReduced ? "desktop:w-[8rem]" : "desktop:w-[20rem]"
   }`;
-  const subPanelClass = `fixed desktop:top-0 desktop:bottom-0 desktop:w-[20rem] transition-all ${
+  const subPanelClass = `fixed desktop:top-0 desktop:bottom-0 desktop:w-[20rem] ${
     mainPanelReduced ? " desktop:left-[8rem]" : "desktop:left-[20rem]"
   }`;
   let contentPanelClass = "";
-  let turnSubIntoContent = false;
-  if (props.subPanel && props.contentPanel) {
-    contentPanelClass = `fixed desktop:top-0 desktop:bottom-0 desktop:right-0 transition-all ${
+  if (props.subPanel) {
+    contentPanelClass = `fixed desktop:top-0 desktop:bottom-0 desktop:right-0 ${
       mainPanelReduced ? "desktop:left-[28rem]" : "desktop:left-[40rem]"
     }`;
   } else if (props.contentPanel) {
-    contentPanelClass = `fixed desktop:top-0 desktop:bottom-0 desktop:right-0 transition-all ${
+    contentPanelClass = `fixed desktop:top-0 desktop:bottom-0 desktop:right-0 ${
       mainPanelReduced ? "desktop:left-[8rem]" : "desktop:left-[20rem]"
     }`;
-  } else if (props.subPanel) {
-    turnSubIntoContent = true;
   }
+
+  const turnSubIntoContent = props.subPanel && !props.contentPanel;
 
   return (
     <div {...handlers} className="touch-pan-y">
@@ -80,14 +97,14 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
         <span
           id="navbar-main-button"
           className="material-icons mt-[.1em] cursor-pointer"
-          onClick={() => setMainPanelOpen(true)}
+          onClick={() => dispatch(setMainPanelOpen(true))}
         >
           menu
         </span>
         <p className="text-2xl font-black font-headers">{props.title}</p>
         <span
           className="material-icons mt-[.1em] cursor-pointer"
-          onClick={() => setSubPanelOpen(true)}
+          onClick={() => dispatch(setSubPanelOpen(true))}
         >
           {props.subPanel && !turnSubIntoContent
             ? props.subPanelIcon
@@ -98,14 +115,12 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
       </div>
 
       {/* Content panel */}
-      {props.contentPanel ? (
-        <div
-          className={`top-0 left-0 right-0 bottom-20 overflow-y-scroll bg-light bg-paper bg-blend-multiply bg-local bg-[length:10cm] ${contentPanelClass}`}
-        >
-          {props.contentPanel}
-        </div>
-      ) : (
-        <div className="top-0 left-0 right-0 bottom-20 overflow-y-scroll fixed desktop:left-[40rem] desktop:top-0 desktop:bottom-0 desktop:right-0 bg-light bg-paper bg-blend-multiply bg-local bg-[length:10cm]">
+      <div
+        className={`top-0 left-0 right-0 bottom-20 overflow-y-scroll bg-light bg-paper bg-blend-multiply bg-local bg-[length:10cm] ${contentPanelClass}`}
+      >
+        {props.contentPanel ? (
+          props.contentPanel
+        ) : (
           <div className="grid place-content-center h-full">
             <div className="text-dark border-dark border-2 border-dotted rounded-2xl p-8 grid grid-flow-col place-items-center gap-9 opacity-40">
               <p className="text-4xl">❮</p>
@@ -114,8 +129,8 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
               </p>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
       {/* Background when navbar is opened */}
       <div
@@ -127,8 +142,8 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
             : "opacity-0 pointer-events-none touch-none"
         }`}
         onClick={() => {
-          setMainPanelOpen(false);
-          setSubPanelOpen(false);
+          dispatch(setMainPanelOpen(false));
+          dispatch(setSubPanelOpen(false));
         }}
       ></div>
 
@@ -155,11 +170,7 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
         className={`${mainPanelClass} border-r-[1px] border-black border-dotted top-0 bottom-0 left-0 right-12 overflow-y-scroll webkit-scrollbar:w-0 [scrollbar-width:none] transition-transform duration-300 z-20 bg-light bg-paper bg-blend-multiply bg-local bg-[length:10cm]
         ${mainPanelOpen ? "" : "mobile:-translate-x-full"}`}
       >
-        <MainPanel
-          langui={props.langui}
-          setLanguagePanelOpen={setLanguagePanelOpen}
-          reduced={mainPanelReduced && isDesktop}
-        />
+        <MainPanel langui={props.langui} />
       </div>
 
       {/* Main panel minimize button*/}
@@ -167,7 +178,7 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
         className={`mobile:hidden translate-x-0 fixed top-1/2 z-20 ${
           mainPanelReduced ? "left-[6.65rem]" : "left-[18.65rem]"
         }`}
-        onClick={() => setMainPanelReduced(!mainPanelReduced)}
+        onClick={() => dispatch(setMainPanelReduced(!mainPanelReduced))}
       >
         <Button className="material-icons bg-light !px-2">
           {mainPanelReduced ? "chevron_right" : "chevron_left"}
@@ -182,7 +193,7 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
             : "bg-opacity-0 pointer-events-none touch-none"
         }`}
         onClick={() => {
-          setLanguagePanelOpen(false);
+          dispatch(setLanguagePanelOpen(false));
         }}
       >
         <div

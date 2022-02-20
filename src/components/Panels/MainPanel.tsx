@@ -6,24 +6,32 @@ import Button from "components/Button";
 import HorizontalLine from "components/HorizontalLine";
 import { GetWebsiteInterfaceQuery } from "graphql/operations-types";
 import Markdown from "markdown-to-jsx";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "redux/store";
+import { setLanguagePanelOpen, setMainPanelOpen } from "redux/AppLayoutSlice";
+import { useMediaDesktop } from "hooks/useMediaQuery";
 
 type MainPanelProps = {
   langui: GetWebsiteInterfaceQuery["websiteInterfaces"]["data"][number]["attributes"];
-  setLanguagePanelOpen: Function;
-  reduced: boolean;
 };
 
 export default function MainPanel(props: MainPanelProps): JSX.Element {
   const langui = props.langui;
   const router = useRouter();
-  const reduced = props.reduced;
+  const isDesktop = useMediaDesktop();
+
+  const mainPanelReduced = useSelector(
+    (state: RootState) => state.appLayout.mainPanelReduced
+  );
+
+  const dispatch = useDispatch();
 
   return (
     <div
       id="mainPanel"
       className="flex flex-col justify-center content-start p-8 gap-y-2 justify-items-center text-center"
     >
-      {reduced ? (
+      {mainPanelReduced && isDesktop ? (
         <div className="grid place-items-center gap-4">
           <Link href="/" passHref>
             <div className="w-8 cursor-pointer transition-[filter] hover:colorize-dark">
@@ -34,7 +42,7 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
             </div>
           </Link>
           {router.locale ? (
-            <div onClick={() => props.setLanguagePanelOpen(true)}>
+            <div onClick={() => dispatch(setLanguagePanelOpen(true))}>
               <Button className="text-xs">{router.locale.toUpperCase()}</Button>
             </div>
           ) : (
@@ -54,7 +62,7 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
             </Link>
             <div
               className="relative mt-5"
-              onClick={() => props.setLanguagePanelOpen(true)}
+              onClick={() => dispatch(setLanguagePanelOpen(true))}
             >
               {router.locale ? (
                 <Button className="absolute right-0 top-[-1.3em] text-xs !py-0.5 !px-2.5">
@@ -76,7 +84,8 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
         icon="library_books"
         title={langui.main_library}
         subtitle={langui.main_library_description}
-        reduced={reduced}
+        reduced={mainPanelReduced && isDesktop}
+        onClick={() => dispatch(setMainPanelOpen(false))}
       />
 
       <NavOption
@@ -84,7 +93,8 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
         icon="travel_explore"
         title={langui.main_wiki}
         subtitle={langui.main_wiki_description}
-        reduced={reduced}
+        reduced={mainPanelReduced && isDesktop}
+        onClick={() => dispatch(setMainPanelOpen(false))}
       />
 
       <NavOption
@@ -92,7 +102,8 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
         icon="watch_later"
         title={langui.main_chronicles}
         subtitle={langui.main_chronicles_description}
-        reduced={reduced}
+        reduced={mainPanelReduced && isDesktop}
+        onClick={() => dispatch(setMainPanelOpen(false))}
       />
 
       <HorizontalLine />
@@ -101,40 +112,49 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
         url="/news"
         icon="feed"
         title={langui.main_news}
-        reduced={reduced}
+        reduced={mainPanelReduced && isDesktop}
+        onClick={() => dispatch(setMainPanelOpen(false))}
       />
 
       <NavOption
         url="/merch"
         icon="store"
         title={langui.main_merch}
-        reduced={reduced}
+        reduced={mainPanelReduced && isDesktop}
+        onClick={() => dispatch(setMainPanelOpen(false))}
       />
 
       <NavOption
         url="/gallery"
         icon="collections"
         title={langui.main_gallery}
-        reduced={reduced}
+        reduced={mainPanelReduced && isDesktop}
+        onClick={() => dispatch(setMainPanelOpen(false))}
       />
 
       <NavOption
         url="/archives"
         icon="inventory"
         title={langui.main_archives}
-        reduced={reduced}
+        reduced={mainPanelReduced && isDesktop}
+        onClick={() => dispatch(setMainPanelOpen(false))}
       />
 
       <NavOption
         url="/about-us"
         icon="info"
         title={langui.main_about_us}
-        reduced={reduced}
+        reduced={mainPanelReduced && isDesktop}
+        onClick={() => dispatch(setMainPanelOpen(false))}
       />
 
-      {reduced ? "" : <HorizontalLine />}
+      {mainPanelReduced && isDesktop ? "" : <HorizontalLine />}
 
-      <div className={`text-center ${reduced ? "hidden" : ""}`}>
+      <div
+        className={`text-center ${
+          mainPanelReduced && isDesktop ? "hidden" : ""
+        }`}
+      >
         <p>
           {langui.main_licensing ? (
             <Markdown>{langui.main_licensing}</Markdown>

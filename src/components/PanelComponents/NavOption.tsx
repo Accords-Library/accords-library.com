@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { MouseEventHandler } from "react";
 
 type NavOptionProps = {
   url: string;
@@ -8,6 +9,7 @@ type NavOptionProps = {
   subtitle?: string;
   border?: boolean;
   reduced?: boolean;
+  onClick?: MouseEventHandler<HTMLDivElement>;
 };
 
 export default function NavOption(props: NavOptionProps): JSX.Element {
@@ -24,15 +26,20 @@ export default function NavOption(props: NavOptionProps): JSX.Element {
     if (props.reduced) {
       return (
         <Link href={props.url} passHref>
-          <div className={`grid ${divCommon}`}>
-            <span className="place-self-center material-icons mt-[.1em]">{props.icon}</span>
+          <div onClick={props.onClick} className={`grid ${divCommon}`}>
+            <span className="place-self-center material-icons mt-[.1em]">
+              {props.icon}
+            </span>
           </div>
         </Link>
       );
     } else {
       return (
         <Link href={props.url} passHref>
-          <div className={`grid grid-cols-[auto_1fr] text-left ${divCommon}`}>
+          <div
+            onClick={props.onClick}
+            className={`grid grid-cols-[auto_1fr] text-left ${divCommon}`}
+          >
             <span className="material-icons mt-[.1em]">{props.icon}</span>
             <h3 className="text-2xl">{props.title}</h3>
             {props.subtitle && <p className="col-start-2">{props.subtitle}</p>}
@@ -43,7 +50,10 @@ export default function NavOption(props: NavOptionProps): JSX.Element {
   } else {
     return (
       <Link href={props.url} passHref>
-        <div className={`grid text-center ${divCommon}`}>
+        <div
+          onClick={props.onClick}
+          className={`grid text-center ${divCommon}`}
+        >
           <h3 className="text-2xl">{props.title}</h3>
           {props.subtitle && <p>{props.subtitle}</p>}
         </div>

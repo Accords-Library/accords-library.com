@@ -34,6 +34,8 @@ import HorizontalLine from "components/HorizontalLine";
 import AppLayout from "components/AppLayout";
 import LibraryItemsPreview from "components/Library/LibraryItemsPreview";
 import InsetBox from "components/InsetBox";
+import { setSubPanelOpen } from "redux/AppLayoutSlice";
+import { useDispatch } from "react-redux";
 
 type LibrarySlugProps = {
   libraryItem: GetLibraryItemQuery;
@@ -43,6 +45,8 @@ type LibrarySlugProps = {
 export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
   const item = props.libraryItem.libraryItems.data[0].attributes;
   const langui = props.langui.websiteInterfaces.data[0].attributes;
+  const dispatch = useDispatch();
+  
   const subPanel = (
     <SubPanel>
       <ReturnButton
@@ -57,6 +61,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
           title={langui.library_item_summary}
           url="#summary"
           border={true}
+          onClick={() => dispatch(setSubPanelOpen(false))}
         />
 
         {item.gallery.data.length > 0 ? (
@@ -64,6 +69,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
             title={langui.library_item_gallery}
             url="#gallery"
             border={true}
+            onClick={() => dispatch(setSubPanelOpen(false))}
           />
         ) : (
           ""
@@ -73,6 +79,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
           title={langui.library_item_details}
           url="#details"
           border={true}
+          onClick={() => dispatch(setSubPanelOpen(false))}
         />
 
         {item.subitems.data.length > 0 ? (
@@ -83,12 +90,14 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
               title={langui.library_item_variants}
               url="#variants"
               border={true}
+              onClick={() => dispatch(setSubPanelOpen(false))}
             />
           ) : (
             <NavOption
               title={langui.library_item_subitems}
               url="#subitems"
               border={true}
+              onClick={() => dispatch(setSubPanelOpen(false))}
             />
           )
         ) : (

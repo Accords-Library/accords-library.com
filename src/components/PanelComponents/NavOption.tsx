@@ -7,6 +7,7 @@ type NavOptionProps = {
   icon?: string;
   title: string;
   subtitle?: string;
+  tooltipId?: string;
   border?: boolean;
   reduced?: boolean;
   onClick?: MouseEventHandler<HTMLDivElement>;
@@ -26,6 +27,15 @@ export default function NavOption(props: NavOptionProps): JSX.Element {
     <Link href={props.url} passHref>
       <div
         onClick={props.onClick}
+        data-html={true}
+        data-tip={`
+          <div class="px-4 py-3">
+          <h3 class="text-2xl">${props.title}</h3>
+          ${props.subtitle ? `<p class="max-w-[10rem]">${props.subtitle}</p>` : ""}
+          </div>
+        `}
+        data-for={props.tooltipId}
+        data-multiline={true}
         className={`grid grid-flow-col grid-cols-[auto] auto-cols-fr justify-center ${
           props.icon ? "text-left" : "text-center"
         } ${divCommon}`}

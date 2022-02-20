@@ -15,6 +15,7 @@ import {
   setMainPanelReduced,
 } from "redux/AppLayoutSlice";
 import { RootState } from "redux/store";
+import ReactTooltip from "react-tooltip";
 
 type AppLayoutProps = {
   subPanel?: React.ReactNode;
@@ -222,6 +223,17 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
           </div>
         </div>
       </div>
+
+      <ReactTooltip
+        id="MainPanelTooltip"
+        place="right"
+        type="light"
+        effect="solid"
+        delayShow={300}
+        delayHide={100}
+        disable={!mainPanelReduced || isMobile}
+        className="drop-shadow-dark-xl !opacity-100 !bg-light !rounded-lg after:!border-r-light text-left !transition-[top,left,width]"
+      />
     </div>
   );
 }

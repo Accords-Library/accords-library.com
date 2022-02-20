@@ -22,42 +22,25 @@ export default function NavOption(props: NavOptionProps): JSX.Element {
     props.border ? border : ""
   } ${isActive ? divActive : ""}`;
 
-  if (props.icon) {
-    if (props.reduced) {
-      return (
-        <Link href={props.url} passHref>
-          <div onClick={props.onClick} className={`grid ${divCommon}`}>
-            <span className="place-self-center material-icons mt-[.1em]">
-              {props.icon}
-            </span>
-          </div>
-        </Link>
-      );
-    } else {
-      return (
-        <Link href={props.url} passHref>
-          <div
-            onClick={props.onClick}
-            className={`grid grid-cols-[auto_1fr] text-left ${divCommon}`}
-          >
-            <span className="material-icons mt-[.1em]">{props.icon}</span>
+  return (
+    <Link href={props.url} passHref>
+      <div
+        onClick={props.onClick}
+        className={`grid grid-flow-col grid-cols-[auto] auto-cols-fr justify-center ${
+          props.icon ? "text-left" : "text-center"
+        } ${divCommon}`}
+      >
+        {props.icon && (
+          <span className="material-icons mt-[.1em]">{props.icon}</span>
+        )}
+
+        {!props.reduced && (
+          <div>
             <h3 className="text-2xl">{props.title}</h3>
             {props.subtitle && <p className="col-start-2">{props.subtitle}</p>}
           </div>
-        </Link>
-      );
-    }
-  } else {
-    return (
-      <Link href={props.url} passHref>
-        <div
-          onClick={props.onClick}
-          className={`grid text-center ${divCommon}`}
-        >
-          <h3 className="text-2xl">{props.title}</h3>
-          {props.subtitle && <p>{props.subtitle}</p>}
-        </div>
-      </Link>
-    );
-  }
+        )}
+      </div>
+    </Link>
+  );
 }

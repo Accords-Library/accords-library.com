@@ -6,6 +6,7 @@ import { useSwipeable } from "react-swipeable";
 import { useRouter } from "next/router";
 import Button from "components/Button";
 import { prettyLanguage } from "queries/helpers";
+import { useMediaDesktop, useMediaMobile } from "hooks/useMediaQuery";
 
 type AppLayoutProps = {
   subPanel?: React.ReactNode;
@@ -22,6 +23,9 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
   const [mainPanelOpen, setMainPanelOpen] = useState(false);
   const [subPanelOpen, setSubPanelOpen] = useState(false);
   const [languagePanelOpen, setLanguagePanelOpen] = useState(false);
+  const [mainPanelReduced, setMainPanelReduced] = useState(false);
+  const isMobile = useMediaMobile();
+  const isDesktop = useMediaDesktop();
   const sensibilitySwipe = 1.1;
 
   const handlers = useSwipeable({
@@ -43,18 +47,22 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
     },
   });
 
-  const mainPanelClass =
-    "fixed desktop:left-0 desktop:top-0 desktop:bottom-0 desktop:w-[20rem]";
-  const subPanelClass =
-    "fixed desktop:left-[20rem] desktop:top-0 desktop:bottom-0 desktop:w-[20rem]";
+  const mainPanelClass = `fixed desktop:left-0 desktop:top-0 desktop:bottom-0 transition-all ${
+    mainPanelReduced ? "desktop:w-[8rem]" : "desktop:w-[20rem]"
+  }`;
+  const subPanelClass = `fixed desktop:top-0 desktop:bottom-0 desktop:w-[20rem] transition-all ${
+    mainPanelReduced ? " desktop:left-[8rem]" : "desktop:left-[20rem]"
+  }`;
   let contentPanelClass = "";
   let turnSubIntoContent = false;
   if (props.subPanel && props.contentPanel) {
-    contentPanelClass =
-      "fixed desktop:left-[40rem] desktop:top-0 desktop:bottom-0 desktop:right-0";
+    contentPanelClass = `fixed desktop:top-0 desktop:bottom-0 desktop:right-0 transition-all ${
+      mainPanelReduced ? "desktop:left-[28rem]" : "desktop:left-[40rem]"
+    }`;
   } else if (props.contentPanel) {
-    contentPanelClass =
-      "fixed desktop:left-[20rem] desktop:top-0 desktop:bottom-0 desktop:right-0";
+    contentPanelClass = `fixed desktop:top-0 desktop:bottom-0 desktop:right-0 transition-all ${
+      mainPanelReduced ? "desktop:left-[8rem]" : "desktop:left-[20rem]"
+    }`;
   } else if (props.subPanel) {
     turnSubIntoContent = true;
   }
@@ -114,7 +122,7 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
         className={`fixed bg-dark inset-0 transition-opacity duration-500 
         ${turnSubIntoContent ? "z-10" : ""}
         ${
-          mainPanelOpen || subPanelOpen
+          (mainPanelOpen || subPanelOpen) && isMobile
             ? "opacity-50"
             : "opacity-0 pointer-events-none touch-none"
         }`}
@@ -150,7 +158,20 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
         <MainPanel
           langui={props.langui}
           setLanguagePanelOpen={setLanguagePanelOpen}
+          reduced={mainPanelReduced && isDesktop}
         />
+      </div>
+
+      {/* Main panel minimize button*/}
+      <div
+        className={`mobile:hidden translate-x-0 fixed top-1/2 z-20 ${
+          mainPanelReduced ? "left-[6.65rem]" : "left-[18.65rem]"
+        }`}
+        onClick={() => setMainPanelReduced(!mainPanelReduced)}
+      >
+        <Button className="material-icons bg-light !px-2">
+          {mainPanelReduced ? "chevron_right" : "chevron_left"}
+        </Button>
       </div>
 
       {/* Language selection background */}

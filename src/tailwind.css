@@ -56,6 +56,18 @@
 
   .prose {
     --tw-prose-bullets: theme("colors.dark") !important;
+    --tw-prose-quote-borders: theme("colors.dark") !important;
   }
 
+  .prose footer {
+    @apply border-t-[3px] border-dotted pt-6;
+  }
+
+  .prose footer > div {
+    @apply my-2 px-6 py-4 rounded-xl;
+  }
+
+  .prose footer > div:target {
+    @apply bg-mid shadow-inner-sm shadow-dark;
+  }
 }

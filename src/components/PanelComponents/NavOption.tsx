@@ -7,6 +7,7 @@ type NavOptionProps = {
   title: string;
   subtitle?: string;
   border?: boolean;
+  reduced?: boolean;
 };
 
 export default function NavOption(props: NavOptionProps): JSX.Element {
@@ -20,15 +21,25 @@ export default function NavOption(props: NavOptionProps): JSX.Element {
   } ${isActive ? divActive : ""}`;
 
   if (props.icon) {
-    return (
-      <Link href={props.url} passHref>
-        <div className={`grid grid-cols-[auto_1fr] text-left ${divCommon}`}>
-          <span className="material-icons mt-[.1em]">{props.icon}</span>
-          <h3 className="text-2xl">{props.title}</h3>
-          {props.subtitle && <p className="col-start-2">{props.subtitle}</p>}
-        </div>
-      </Link>
-    );
+    if (props.reduced) {
+      return (
+        <Link href={props.url} passHref>
+          <div className={`grid ${divCommon}`}>
+            <span className="place-self-center material-icons mt-[.1em]">{props.icon}</span>
+          </div>
+        </Link>
+      );
+    } else {
+      return (
+        <Link href={props.url} passHref>
+          <div className={`grid grid-cols-[auto_1fr] text-left ${divCommon}`}>
+            <span className="material-icons mt-[.1em]">{props.icon}</span>
+            <h3 className="text-2xl">{props.title}</h3>
+            {props.subtitle && <p className="col-start-2">{props.subtitle}</p>}
+          </div>
+        </Link>
+      );
+    }
   } else {
     return (
       <Link href={props.url} passHref>

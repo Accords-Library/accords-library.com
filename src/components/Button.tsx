@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { MouseEventHandler } from "react";
 
 type ButtonProps = {
   className?: string;
@@ -6,11 +7,13 @@ type ButtonProps = {
   children: React.ReactChild | React.ReactChild[];
   active?: boolean;
   locale?: string;
+  onClick?: MouseEventHandler<HTMLDivElement>;
 };
 
 export default function Button(props: ButtonProps): JSX.Element {
   const button = (
     <div
+      onClick={props.onClick}
       className={`grid place-content-center place-items-center border-[1px] border-dark text-dark rounded-full px-4 pt-[0.4rem] pb-[0.5rem] transition-all  ${
         props.className
       } ${

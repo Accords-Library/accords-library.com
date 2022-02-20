@@ -1,5 +1,7 @@
 import Button from "components/Button";
 import { GetWebsiteInterfaceQuery } from "graphql/operations-types";
+import { useDispatch } from "react-redux";
+import { setSubPanelOpen } from "redux/AppLayoutSlice";
 
 type ReturnButtonProps = {
   href: string;
@@ -8,8 +10,10 @@ type ReturnButtonProps = {
 };
 
 export default function ReturnButton(props: ReturnButtonProps): JSX.Element {
+  const dispatch = useDispatch();
+
   return (
-    <Button href={props.href}>
+    <Button onClick={() => dispatch(setSubPanelOpen(false))} href={props.href}>
       ❮&emsp;{props.langui.global_return_label} {props.title}
     </Button>
   );

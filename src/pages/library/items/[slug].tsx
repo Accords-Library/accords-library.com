@@ -31,7 +31,7 @@ import HorizontalLine from "components/HorizontalLine";
 import AppLayout from "components/AppLayout";
 import LibraryItemsPreview from "components/Library/LibraryItemsPreview";
 import InsetBox from "components/InsetBox";
-import { setSubPanelOpen } from "redux/AppLayoutSlice";
+import { setSubPanelOpen } from "redux/appLayoutSlice";
 import { useDispatch } from "react-redux";
 import Img, { ImageQuality } from "components/Img";
 

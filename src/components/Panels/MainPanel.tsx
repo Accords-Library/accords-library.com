@@ -8,7 +8,7 @@ import { GetWebsiteInterfaceQuery } from "graphql/operations-types";
 import Markdown from "markdown-to-jsx";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "redux/store";
-import { setLanguagePanelOpen, setMainPanelOpen } from "redux/AppLayoutSlice";
+import { setLanguagePanelOpen, setMainPanelOpen } from "redux/appLayoutSlice";
 import { useMediaDesktop } from "hooks/useMediaQuery";
 
 type MainPanelProps = {

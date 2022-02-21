@@ -13,7 +13,7 @@ import {
   setLanguagePanelOpen,
   setSubPanelOpen,
   setMainPanelReduced,
-} from "redux/AppLayoutSlice";
+} from "redux/appLayoutSlice";
 import { RootState } from "redux/store";
 import ReactTooltip from "react-tooltip";
 

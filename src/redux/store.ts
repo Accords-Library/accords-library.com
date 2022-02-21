@@ -1,5 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
-import appLayoutReducer from "redux/AppLayoutSlice";
+import appLayoutReducer from "redux/appLayoutSlice";
 
 export const store = configureStore({
   reducer: { appLayout: appLayoutReducer },

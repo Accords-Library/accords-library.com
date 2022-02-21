@@ -1,7 +1,7 @@
 import Button from "components/Button";
 import { GetWebsiteInterfaceQuery } from "graphql/operations-types";
 import { useDispatch } from "react-redux";
-import { setSubPanelOpen } from "redux/AppLayoutSlice";
+import { setSubPanelOpen } from "redux/appLayoutSlice";
 
 type ReturnButtonProps = {
   href: string;

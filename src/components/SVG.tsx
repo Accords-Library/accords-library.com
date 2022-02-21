@@ -9,7 +9,13 @@ export type SVGProps = {
 export default function SVG(props: SVGProps): JSX.Element {
   return (
     <div className={props.className}>
-      <Image src={props.src} alt={props.src} height={1000} width={1000} />
+      <Image
+        src={props.src}
+        alt={props.src}
+        height={1000}
+        width={1000}
+        unoptimized
+      />
     </div>
   );
 }

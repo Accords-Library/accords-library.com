@@ -13,8 +13,6 @@ import {
 } from "graphql/operations";
 import PanelHeader from "components/PanelComponents/PanelHeader";
 import AppLayout from "components/AppLayout";
-import ReturnButton from "components/PanelComponents/ReturnButton";
-import HorizontalLine from "components/HorizontalLine";
 import LibraryItemsPreview from "components/Library/LibraryItemsPreview";
 
 type LibraryProps = {
@@ -26,16 +24,10 @@ export default function Library(props: LibraryProps): JSX.Element {
   const langui = props.langui.websiteInterfaces.data[0].attributes;
   const subPanel = (
     <SubPanel>
-      <ReturnButton
-        href="/library"
-        title={langui.main_library}
-        langui={langui}
-      />
-      <HorizontalLine />
       <PanelHeader
         icon="library_books"
-        title={langui.library_items}
-        description={langui.library_items_description}
+        title={langui.main_library}
+        description={langui.library_description}
       />
     </SubPanel>
   );

@@ -24,23 +24,31 @@ export default function Library(props: LibraryProps): JSX.Element {
   const langui = props.langui.websiteInterfaces.data[0].attributes;
 
   props.contents.contents.data.sort((a, b) => {
-    const titleA = a.attributes.titles.length > 0 ? prettyinlineTitle(a.attributes.titles[0].pre_title, a.attributes.titles[0].title, a.attributes.titles[0].subtitle) : a.attributes.slug
-    const titleB = b.attributes.titles.length > 0 ? prettyinlineTitle(b.attributes.titles[0].pre_title, b.attributes.titles[0].title, b.attributes.titles[0].subtitle) : b.attributes.slug
+    const titleA =
+      a.attributes.titles.length > 0
+        ? prettyinlineTitle(
+            a.attributes.titles[0].pre_title,
+            a.attributes.titles[0].title,
+            a.attributes.titles[0].subtitle
+          )
+        : a.attributes.slug;
+    const titleB =
+      b.attributes.titles.length > 0
+        ? prettyinlineTitle(
+            b.attributes.titles[0].pre_title,
+            b.attributes.titles[0].title,
+            b.attributes.titles[0].subtitle
+          )
+        : b.attributes.slug;
     return titleA.localeCompare(titleB);
   });
 
   const subPanel = (
     <SubPanel>
-      <ReturnButton
-        href="/library"
-        title={langui.main_library}
-        langui={langui}
-      />
-      <HorizontalLine />
       <PanelHeader
-        icon="library_books"
-        title={langui.library_content}
-        description={langui.library_content_description}
+        icon="workspaces"
+        title="Contents"
+        description="Laboriosam vitae velit quis. Non et dolor reiciendis officia earum et molestias excepturi. Cupiditate officiis quis qui reprehenderit. Ut neque eos ipsa corrupti autem mollitia inventore. Exercitationem iste magni vel harum."
       />
     </SubPanel>
   );

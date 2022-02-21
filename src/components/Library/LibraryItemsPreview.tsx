@@ -23,7 +23,7 @@ export default function LibraryItemsPreview(
   const item = props.item;
 
   return (
-    <Link href={"/library/items/" + item.slug} passHref>
+    <Link href={"/library/" + item.slug} passHref>
       <div
         className={`drop-shadow-dark-xl cursor-pointer grid items-end hover:rounded-3xl fine:[--cover-opacity:0] hover:[--cover-opacity:1] hover:scale-[1.02] transition-transform ${props.className}`}
       >

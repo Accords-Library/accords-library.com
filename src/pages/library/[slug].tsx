@@ -53,7 +53,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
   const subPanel = (
     <SubPanel>
       <ReturnButton
-        href="/library/items"
+        href="/library/"
         title={langui.library_items}
         langui={langui}
       />
@@ -136,7 +136,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
               <div className="grid place-items-center">
                 <p>{langui.global_subitem_of}</p>
                 <Button
-                  href={`/library/items/${item.subitem_of.data[0].attributes.slug}`}
+                  href={`/library/${item.subitem_of.data[0].attributes.slug}`}
                 >
                   {prettyinlineTitle(
                     "",
@@ -432,7 +432,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
 
                     {content.attributes.scan_set.length > 0 ? (
                       <Button
-                        href={`/library/content/${content.attributes.content.data.attributes.slug}/scans/`}
+                        href={`/contents/${content.attributes.content.data.attributes.slug}/scans/`}
                       >
                         {langui.library_item_view_scans}
                       </Button>
@@ -442,7 +442,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
 
                     {content.attributes.content.data ? (
                       <Button
-                        href={`/library/content/${content.attributes.content.data.attributes.slug}`}
+                        href={`/contents/${content.attributes.content.data.attributes.slug}`}
                       >
                         {langui.library_item_open_content}
                       </Button>

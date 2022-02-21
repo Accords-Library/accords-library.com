@@ -11,7 +11,7 @@
     "@fontsource/material-icons": "^4.5.2",
     "@fontsource/material-icons-rounded": "^4.5.2",
     "@fontsource/vollkorn": "^4.5.4",
-    "@fontsource/zen-maru-gothic": "^4.5.4",
+    "@fontsource/zen-maru-gothic": "^4.5.5",
     "@reduxjs/toolkit": "^1.7.2",
     "markdown-to-jsx": "^7.1.6",
     "next": "^12.1.0",

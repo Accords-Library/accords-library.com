@@ -27,7 +27,7 @@ export default function ContentRead(props: ContentReadProps): JSX.Element {
   const subPanel = (
     <SubPanel>
       <ReturnButton
-        href={`/content/${content.slug}`}
+        href={`/library/content/${content.slug}`}
         title={"Content"}
         langui={langui}
       />

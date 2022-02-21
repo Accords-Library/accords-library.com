@@ -92,6 +92,16 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
       />
 
       <NavOption
+        url="/contents"
+        icon="workspaces"
+        title="Contents"
+        subtitle="Explore all content and filter by type or category"
+        tooltipId="MainPanelTooltip"
+        reduced={mainPanelReduced && isDesktop}
+        onClick={() => dispatch(setMainPanelOpen(false))}
+      />
+
+      <NavOption
         url="/wiki"
         icon="travel_explore"
         title={langui.main_wiki}

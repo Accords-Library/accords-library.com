@@ -5,7 +5,7 @@ import { useSwipeable } from "react-swipeable";
 import { useRouter } from "next/router";
 import Button from "components/Button";
 import { prettyLanguage } from "queries/helpers";
-import { useMediaMobile } from "hooks/useMediaQuery";
+import { useMediaCoarse, useMediaMobile } from "hooks/useMediaQuery";
 
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -28,6 +28,9 @@ type AppLayoutProps = {
 export default function AppLayout(props: AppLayoutProps): JSX.Element {
   const titlePrefix = "Accord’s Library";
   const router = useRouter();
+  const dispatch = useDispatch();
+  const isMobile = useMediaMobile();
+  const isCoarse = useMediaCoarse();
 
   const languagePanelOpen = useSelector(
     (state: RootState) => state.appLayout.languagePanelOpen
@@ -41,10 +44,7 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
   const subPanelOpen = useSelector(
     (state: RootState) => state.appLayout.subPanelOpen
   );
-
-  const dispatch = useDispatch();
-
-  const isMobile = useMediaMobile();
+  
   const sensibilitySwipe = 1.1;
 
   const handlers = useSwipeable({
@@ -225,7 +225,7 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
         effect="solid"
         delayShow={300}
         delayHide={100}
-        disable={!mainPanelReduced || isMobile}
+        disable={!mainPanelReduced || isMobile || isCoarse}
         className="drop-shadow-dark-xl !opacity-100 !bg-light !rounded-lg after:!border-r-light text-left"
       />
     </div>

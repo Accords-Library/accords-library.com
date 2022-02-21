@@ -1,12 +1,24 @@
 import { GetStaticProps } from "next";
 import SubPanel from "components/Panels/SubPanel";
-import { GetWebsiteInterfaceQuery } from "graphql/operations-types";
-import { getWebsiteInterface } from "graphql/operations";
+import ContentPanel, {
+  ContentPanelWidthSizes,
+} from "components/Panels/ContentPanel";
+import {
+  GetLibraryItemsPreviewQuery,
+  GetWebsiteInterfaceQuery,
+} from "graphql/operations-types";
+import {
+  getLibraryItemsPreview,
+  getWebsiteInterface,
+} from "graphql/operations";
 import PanelHeader from "components/PanelComponents/PanelHeader";
 import AppLayout from "components/AppLayout";
-import NavOption from "components/PanelComponents/NavOption";
+import ReturnButton from "components/PanelComponents/ReturnButton";
+import HorizontalLine from "components/HorizontalLine";
+import LibraryItemsPreview from "components/Library/LibraryItemsPreview";
 
 type LibraryProps = {
+  libraryItems: GetLibraryItemsPreviewQuery;
   langui: GetWebsiteInterfaceQuery;
 };
 
@@ -14,31 +26,34 @@ export default function Library(props: LibraryProps): JSX.Element {
   const langui = props.langui.websiteInterfaces.data[0].attributes;
   const subPanel = (
     <SubPanel>
+      <ReturnButton
+        href="/library"
+        title={langui.main_library}
+        langui={langui}
+      />
+      <HorizontalLine />
       <PanelHeader
         icon="library_books"
-        title={langui.main_library}
-        description={langui.library_description}
-      />
-      <NavOption
-        url="/library/items"
         title={langui.library_items}
-        subtitle={langui.library_items_description}
-        border
-      />
-      <NavOption
-        url="/library/content"
-        title={langui.library_content}
-        subtitle={langui.library_content_description}
-        border
+        description={langui.library_items_description}
       />
     </SubPanel>
   );
-
+  const contentPanel = (
+    <ContentPanel width={ContentPanelWidthSizes.large}>
+      <div className="grid gap-8 items-end mobile:grid-cols-2 desktop:grid-cols-[repeat(auto-fill,_minmax(13rem,1fr))]">
+        {props.libraryItems.libraryItems.data.map((item) => (
+          <LibraryItemsPreview key={item.id} item={item.attributes} />
+        ))}
+      </div>
+    </ContentPanel>
+  );
   return (
     <AppLayout
-      title={langui.main_library}
+      title={langui.library_items}
       langui={langui}
       subPanel={subPanel}
+      contentPanel={contentPanel}
     />
   );
 }
@@ -46,6 +61,9 @@ export default function Library(props: LibraryProps): JSX.Element {
 export const getStaticProps: GetStaticProps = async (context) => {
   if (context.locale) {
     const props: LibraryProps = {
+      libraryItems: await getLibraryItemsPreview({
+        language_code: context.locale,
+      }),
       langui: await getWebsiteInterface({
         language_code: context.locale,
       }),

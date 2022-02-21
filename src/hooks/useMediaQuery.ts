@@ -34,14 +34,14 @@ export default function useMediaQuery(query: string): boolean {
 }
 
 export function useMediaThin() {
-    return useMediaQuery("(max-width: 50ch)");
+    return useMediaQuery("(max-width: 25rem)");
 }
 
 export function useMediaMobile() {
-    return useMediaQuery("(max-width: 120ch)");
+    return useMediaQuery("(max-width: 60rem)");
 }
 
 export function useMediaDesktop() {
-    return useMediaQuery("(min-width: 120ch)");
+    return useMediaQuery("(min-width: 60rem)");
 }
 

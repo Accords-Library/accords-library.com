@@ -27,7 +27,7 @@ export default function NavOption(props: NavOptionProps): JSX.Element {
     <Link href={props.url} passHref>
       <div
         onClick={props.onClick}
-        data-html={true}
+        data-html
         data-tip={`
           <div class="px-4 py-3">
           <h3 class="text-2xl">${props.title}</h3>
@@ -39,7 +39,7 @@ export default function NavOption(props: NavOptionProps): JSX.Element {
           </div>
         `}
         data-for={props.tooltipId}
-        data-multiline={true}
+        data-multiline
         className={`grid grid-flow-col grid-cols-[auto] auto-cols-fr justify-center ${
           props.icon ? "text-left" : "text-center"
         } ${divCommon}`}

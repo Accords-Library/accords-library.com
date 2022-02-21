@@ -12,7 +12,7 @@ export default function Home(props: HomeProps): JSX.Element {
   const langui = props.langui.websiteInterfaces.data[0].attributes;
 
   const contentPanel = (
-    <ContentPanel autoformat={true}>
+    <ContentPanel autoformat>
       <div className="grid place-items-center place-content-center w-full gap-5 text-center">
         <SVG
           className="w-32 mobile:w-1/2"

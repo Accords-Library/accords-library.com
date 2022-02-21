@@ -23,13 +23,13 @@ export default function Library(props: LibraryProps): JSX.Element {
         url="/library/items"
         title={langui.library_items}
         subtitle={langui.library_items_description}
-        border={true}
+        border
       />
       <NavOption
         url="/library/content"
         title={langui.library_content}
         subtitle={langui.library_content_description}
-        border={true}
+        border
       />
     </SubPanel>
   );

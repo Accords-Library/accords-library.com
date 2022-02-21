@@ -80,7 +80,7 @@ export default function DataChronology(
           subtitle={
             era.attributes.starting_year + " → " + era.attributes.ending_year
           }
-          border={true}
+          border
         />
       ))}
     </SubPanel>

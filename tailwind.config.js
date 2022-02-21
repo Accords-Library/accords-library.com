@@ -15,9 +15,9 @@ module.exports = {
       monospace: ["monospace"],
     },
     screens: {
-      desktop: { min: "120ch" },
-      mobile: { max: "120ch" },
-      thin: { max: "50ch" },
+      desktop: { min: "60rem" },
+      mobile: { max: "60rem" },
+      thin: { max: "25rem" },
       coarse: { raw: "(pointer: coarse)" },
       fine: { raw: "(pointer: fine)" },
     },

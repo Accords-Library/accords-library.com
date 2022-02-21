@@ -59,30 +59,22 @@ type ImgProps = {
 };
 
 export default function Img(props: ImgProps): JSX.Element {
-  if (props.layout == "fill") {
-    return (
-      <Image
-        src={getAssetURL(props.image.url, props.quality)}
-        alt={props.alt ? props.alt : props.image.alternativeText}
-        layout={props.layout}
-        objectFit={props.objectFit}
-        priority={props.priority}
-      />
-    );
-  } else {
-    return (
-      <Image
-        src={getAssetURL(props.image.url, props.quality)}
-        alt={props.alt ? props.alt : props.image.alternativeText}
-        {...getImgSizesByQuality(
-          props.image.width,
-          props.image.height,
-          props.quality ? props.quality : ImageQuality.Small
-        )}
-        layout={props.layout}
-        objectFit={props.objectFit}
-        priority={props.priority}
-      />
-    );
-  }
+  const imgSize = getImgSizesByQuality(
+    props.image.width,
+    props.image.height,
+    props.quality ? props.quality : ImageQuality.Small
+  );
+  return (
+    <Image
+      className={props.className}
+      src={getAssetURL(props.image.url, props.quality)}
+      alt={props.alt ? props.alt : props.image.alternativeText}
+      width={props.layout === "fill" ? undefined : imgSize.width}
+      height={props.layout === "fill" ? undefined : imgSize.height}
+      layout={props.layout}
+      objectFit={props.objectFit}
+      priority={props.priority}
+      unoptimized
+    />
+  );
 }

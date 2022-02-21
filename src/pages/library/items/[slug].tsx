@@ -63,7 +63,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
         <NavOption
           title={langui.library_item_summary}
           url="#summary"
-          border={true}
+          border
           onClick={() => dispatch(setSubPanelOpen(false))}
         />
 
@@ -71,7 +71,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
           <NavOption
             title={langui.library_item_gallery}
             url="#gallery"
-            border={true}
+            border
             onClick={() => dispatch(setSubPanelOpen(false))}
           />
         ) : (
@@ -81,7 +81,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
         <NavOption
           title={langui.library_item_details}
           url="#details"
-          border={true}
+          border
           onClick={() => dispatch(setSubPanelOpen(false))}
         />
 
@@ -93,7 +93,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
                 : langui.library_item_subitems
             }
             url={isVariantSet ? "#variants" : "#subitems"}
-            border={true}
+            border
             onClick={() => dispatch(setSubPanelOpen(false))}
           />
         ) : (
@@ -104,7 +104,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
           <NavOption
             title={langui.library_item_content}
             url="#content"
-            border={true}
+            border
           />
         ) : (
           ""

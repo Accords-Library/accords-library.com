@@ -205,20 +205,14 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
           <h2 className="text-2xl">Select a language</h2>
           <div className="flex flex-wrap flex-row gap-2">
             {router.locales?.sort().map((locale) => (
-              <>
-                {locale !== "xx" ? (
-                  <Button
-                    key={locale}
-                    active={locale === router.locale}
-                    href={router.asPath}
-                    locale={locale}
-                  >
-                    {prettyLanguage(locale)}
-                  </Button>
-                ) : (
-                  ""
-                )}
-              </>
+              <Button
+                key={locale}
+                active={locale === router.locale}
+                href={router.asPath}
+                locale={locale}
+              >
+                {prettyLanguage(locale)}
+              </Button>
             ))}
           </div>
         </div>

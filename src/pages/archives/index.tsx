@@ -20,7 +20,13 @@ export default function Archives(props: ArchivesProps): JSX.Element {
       />
     </SubPanel>
   );
-  return <AppLayout title={langui.main_archives} langui={langui} subPanel={subPanel} />;
+  return (
+    <AppLayout
+      title={langui.main_archives}
+      langui={langui}
+      subPanel={subPanel}
+    />
+  );
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {

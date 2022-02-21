@@ -20,7 +20,13 @@ export default function AboutUs(props: AboutUsProps): JSX.Element {
       />
     </SubPanel>
   );
-  return <AppLayout title={langui.main_about_us} langui={langui} subPanel={subPanel} />;
+  return (
+    <AppLayout
+      title={langui.main_about_us}
+      langui={langui}
+      subPanel={subPanel}
+    />
+  );
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {

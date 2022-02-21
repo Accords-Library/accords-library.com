@@ -38,10 +38,10 @@ export function useMediaThin() {
 }
 
 export function useMediaMobile() {
-    return useMediaQuery("(max-width: 150ch)");
+    return useMediaQuery("(max-width: 120ch)");
 }
 
 export function useMediaDesktop() {
-    return useMediaQuery("(min-width: 150ch)");
+    return useMediaQuery("(min-width: 120ch)");
 }
 

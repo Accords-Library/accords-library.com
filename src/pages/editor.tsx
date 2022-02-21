@@ -58,7 +58,7 @@ export default function Editor(props: EditorProps): JSX.Element {
                 codeBlockStyle: "fenced",
                 bulletListMarker: "-",
                 emDelimiter: "*",
-                strongDelimiter: "**"
+                strongDelimiter: "**",
               });
 
               let paste = event.clipboardData.getData("text/html");

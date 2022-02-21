@@ -21,7 +21,9 @@ export default function News(props: NewsProps): JSX.Element {
     </SubPanel>
   );
 
-  return <AppLayout title={langui.main_news} langui={langui} subPanel={subPanel} />;
+  return (
+    <AppLayout title={langui.main_news} langui={langui} subPanel={subPanel} />
+  );
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {

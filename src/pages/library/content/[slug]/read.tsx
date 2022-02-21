@@ -10,10 +10,8 @@ import {
 } from "graphql/operations-types";
 import ContentPanel from "components/Panels/ContentPanel";
 import HorizontalLine from "components/HorizontalLine";
-import Markdown from "markdown-to-jsx";
 import SubPanel from "components/Panels/SubPanel";
 import ReturnButton from "components/PanelComponents/ReturnButton";
-import SceneBreak from "components/Markdown/SceneBreak";
 import ThumbnailHeader from "components/Content/ThumbnailHeader";
 import AppLayout from "components/AppLayout";
 import Markdawn from "components/Markdown/Markdawn";

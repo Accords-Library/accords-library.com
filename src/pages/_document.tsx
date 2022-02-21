@@ -36,7 +36,10 @@ class MyDocument extends Document {
           <meta name="twitter:title" content={siteTitle}></meta>
           <meta name="twitter:description" content={siteDescription}></meta>
           <meta name="twitter:image" content={thumbnailImage}></meta>
-          <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+          <meta
+            name="apple-mobile-web-app-status-bar-style"
+            content="black-translucent"
+          />
           <link rel="manifest" href="manifest.json" />
           <meta name="theme-color" content="#FFEDD8" />
         </Head>

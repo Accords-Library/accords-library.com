@@ -72,7 +72,11 @@ export default function DataChronology(
         <NavOption
           key={era.id}
           url={"#" + era.attributes.slug}
-          title={era.attributes.title.length > 0 ? era.attributes.title[0].title : prettySlug(era.attributes.slug)}
+          title={
+            era.attributes.title.length > 0
+              ? era.attributes.title[0].title
+              : prettySlug(era.attributes.slug)
+          }
           subtitle={
             era.attributes.starting_year + " → " + era.attributes.ending_year
           }

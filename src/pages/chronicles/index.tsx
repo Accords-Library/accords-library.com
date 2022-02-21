@@ -20,7 +20,13 @@ export default function Chronicles(props: ChroniclesProps): JSX.Element {
       />
     </SubPanel>
   );
-  return <AppLayout title={langui.main_chronicles} langui={langui} subPanel={subPanel} />;
+  return (
+    <AppLayout
+      title={langui.main_chronicles}
+      langui={langui}
+      subPanel={subPanel}
+    />
+  );
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {

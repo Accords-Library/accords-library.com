@@ -1,7 +1,6 @@
 import ContentPanel, {
   ContentPanelWidthSizes,
 } from "components/Panels/ContentPanel";
-import Image from "next/image";
 import { GetStaticPaths, GetStaticProps } from "next";
 import {
   getLibraryItem,
@@ -16,14 +15,12 @@ import {
 } from "graphql/operations-types";
 import {
   convertMmToInch,
-  getAssetURL,
   prettyDate,
   prettyinlineTitle,
   prettyItemType,
   prettyItemSubType,
   prettyPrice,
   prettySlug,
-  ImageQuality,
 } from "queries/helpers";
 import SubPanel from "components/Panels/SubPanel";
 import ReturnButton from "components/PanelComponents/ReturnButton";
@@ -36,6 +33,7 @@ import LibraryItemsPreview from "components/Library/LibraryItemsPreview";
 import InsetBox from "components/InsetBox";
 import { setSubPanelOpen } from "redux/AppLayoutSlice";
 import { useDispatch } from "react-redux";
+import Img, { ImageQuality } from "components/Img";
 
 type LibrarySlugProps = {
   libraryItem: GetLibraryItemQuery;
@@ -46,7 +44,12 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
   const item = props.libraryItem.libraryItems.data[0].attributes;
   const langui = props.langui.websiteInterfaces.data[0].attributes;
   const dispatch = useDispatch();
-  
+
+  const isVariantSet =
+    item.metadata.length > 0 &&
+    item.metadata[0].__typename === "ComponentMetadataOther" &&
+    item.metadata[0].subtype.data.attributes.slug === "variant-set";
+
   const subPanel = (
     <SubPanel>
       <ReturnButton
@@ -83,23 +86,16 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
         />
 
         {item.subitems.data.length > 0 ? (
-          item.metadata.length > 0 &&
-          item.metadata[0].__typename === "ComponentMetadataOther" &&
-          item.metadata[0].subtype.data.attributes.slug === "variant-set" ? (
-            <NavOption
-              title={langui.library_item_variants}
-              url="#variants"
-              border={true}
-              onClick={() => dispatch(setSubPanelOpen(false))}
-            />
-          ) : (
-            <NavOption
-              title={langui.library_item_subitems}
-              url="#subitems"
-              border={true}
-              onClick={() => dispatch(setSubPanelOpen(false))}
-            />
-          )
+          <NavOption
+            title={
+              isVariantSet
+                ? langui.library_item_variants
+                : langui.library_item_subitems
+            }
+            url={isVariantSet ? "#variants" : "#subitems"}
+            border={true}
+            onClick={() => dispatch(setSubPanelOpen(false))}
+          />
         ) : (
           ""
         )}
@@ -120,18 +116,14 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
   const contentPanel = (
     <ContentPanel width={ContentPanelWidthSizes.large}>
       <div className="grid place-items-center gap-12">
-        <div className="drop-shadow-dark-xl w-full h-[50vh] mobile:h-[80vh] mb-16 ">
+        <div className="drop-shadow-dark-xl w-full h-[50vh] mobile:h-[80vh] mb-16 relative">
           {item.thumbnail.data ? (
-            <Image
-              src={getAssetURL(
-                item.thumbnail.data.attributes.url,
-                ImageQuality.Medium
-              )}
-              alt={item.thumbnail.data.attributes.alternativeText}
-              width={item.thumbnail.data.attributes.width}
-              height={item.thumbnail.data.attributes.height}
+            <Img
+              image={item.thumbnail.data.attributes}
+              quality={ImageQuality.Medium}
               layout="fill"
               objectFit="contain"
+              priority
             />
           ) : (
             <div className="w-full aspect-[21/29.7] bg-light rounded-xl"></div>
@@ -182,12 +174,9 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
                   className="relative aspect-square hover:scale-[1.02] transition-transform cursor-pointer"
                 >
                   <div className="bg-light absolute inset-0 rounded-lg shadow-md"></div>
-                  <Image
+                  <Img
                     className="rounded-lg"
-                    src={getAssetURL(galleryItem.attributes.url)}
-                    alt={galleryItem.attributes.alternativeText}
-                    width={galleryItem.attributes.width}
-                    height={galleryItem.attributes.height}
+                    image={galleryItem.attributes}
                     layout="fill"
                     objectFit="cover"
                   />
@@ -356,35 +345,24 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
         </InsetBox>
 
         {item.subitems.data.length > 0 ? (
-          item.metadata.length > 0 &&
-          item.metadata[0].__typename === "ComponentMetadataOther" &&
-          item.metadata[0].subtype.data.attributes.slug === "variant-set" ? (
-            <div id="variants" className="grid place-items-center gap-8 w-full">
-              <h2 className="text-2xl">{langui.library_item_variants}</h2>
-              <div className="grid gap-8 items-end mobile:grid-cols-2 grid-cols-[repeat(auto-fill,minmax(15rem,1fr))] w-full">
-                {item.subitems.data.map((variant) => (
-                  <LibraryItemsPreview
-                    key={variant.id}
-                    item={variant.attributes}
-                    langui={langui}
-                  />
-                ))}
-              </div>
+          <div
+            id={isVariantSet ? "variants" : "subitems"}
+            className="grid place-items-center gap-8 w-full"
+          >
+            <h2 className="text-2xl">
+              {isVariantSet
+                ? langui.library_item_variants
+                : langui.library_item_subitems}
+            </h2>
+            <div className="grid gap-8 items-end mobile:grid-cols-2 grid-cols-[repeat(auto-fill,minmax(15rem,1fr))] w-full">
+              {item.subitems.data.map((subitem) => (
+                <LibraryItemsPreview
+                  key={subitem.id}
+                  item={subitem.attributes}
+                />
+              ))}
             </div>
-          ) : (
-            <div id="subitems" className="grid place-items-center gap-8 w-full">
-              <h2 className="text-2xl">{langui.library_item_subitems}</h2>
-              <div className="grid gap-8 items-end mobile:grid-cols-2 grid-cols-[repeat(auto-fill,minmax(15rem,1fr))] w-full">
-                {item.subitems.data.map((subitem) => (
-                  <LibraryItemsPreview
-                    key={subitem.id}
-                    item={subitem.attributes}
-                    langui={langui}
-                  />
-                ))}
-              </div>
-            </div>
-          )
+          </div>
         ) : (
           ""
         )}

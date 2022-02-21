@@ -31,7 +31,11 @@ export default function NavOption(props: NavOptionProps): JSX.Element {
         data-tip={`
           <div class="px-4 py-3">
           <h3 class="text-2xl">${props.title}</h3>
-          ${props.subtitle ? `<p class="max-w-[10rem]">${props.subtitle}</p>` : ""}
+          ${
+            props.subtitle
+              ? `<p class="max-w-[10rem]">${props.subtitle}</p>`
+              : ""
+          }
           </div>
         `}
         data-for={props.tooltipId}

@@ -29,7 +29,9 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
   return (
     <div
       id="mainPanel"
-      className={`flex flex-col justify-center content-start gap-y-2 justify-items-center text-center p-8 ${mainPanelReduced && "px-4"}`}
+      className={`flex flex-col justify-center content-start gap-y-2 justify-items-center text-center p-8 ${
+        mainPanelReduced && "px-4"
+      }`}
     >
       {mainPanelReduced && isDesktop ? (
         <div className="grid place-items-center gap-4">

@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { GetContentsQuery } from "graphql/operations-types";
-import { getAssetURL, prettySlug } from "queries/helpers";
-import Image from "next/image";
+import { prettySlug } from "queries/helpers";
 import Chip from "components/Chip";
+import Img, { ImageQuality } from "components/Img";
 
 export type LibraryContentPreviewProps = {
   item: {
@@ -23,12 +23,10 @@ export default function LibraryContentPreview(
     <Link href={"/library/content/" + item.slug} passHref>
       <div className="drop-shadow-dark-xl cursor-pointer grid items-end fine:[--cover-opacity:0] hover:[--cover-opacity:1] hover:scale-[1.02] transition-transform">
         {item.thumbnail.data ? (
-          <Image
+          <Img
             className="rounded-md coarse:rounded-b-none"
-            src={getAssetURL(item.thumbnail.data.attributes.url)}
-            alt={item.thumbnail.data.attributes.alternativeText}
-            height={item.thumbnail.data.attributes.height}
-            width={item.thumbnail.data.attributes.width}
+            image={item.thumbnail.data.attributes}
+            quality={ImageQuality.Medium}
           />
         ) : (
           <div className="w-full aspect-[3/2] bg-light rounded-lg"></div>

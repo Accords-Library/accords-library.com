@@ -17,7 +17,11 @@ export default function Gallery(props: GalleryProps): JSX.Element {
   );
 
   return (
-    <AppLayout title={langui.main_gallery} langui={langui} contentPanel={contentPanel} />
+    <AppLayout
+      title={langui.main_gallery}
+      langui={langui}
+      contentPanel={contentPanel}
+    />
   );
 }
 

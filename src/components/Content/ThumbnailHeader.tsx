@@ -2,9 +2,9 @@ import {
   GetContentQuery,
   GetWebsiteInterfaceQuery,
 } from "graphql/operations-types";
-import { getAssetURL, ImageQuality, prettySlug } from "queries/helpers";
-import Image from "next/image";
+import { prettySlug } from "queries/helpers";
 import Button from "components/Button";
+import Img, { ImageQuality } from "components/Img";
 
 export type ThumbnailHeaderProps = {
   content: {
@@ -28,12 +28,11 @@ export default function ThumbnailHeader(
       <div className="grid place-items-center gap-12  mb-12">
         <div className="drop-shadow-dark-lg">
           {content.thumbnail.data ? (
-            <Image
+            <Img
               className=" rounded-xl"
-              src={getAssetURL(content.thumbnail.data.attributes.url, ImageQuality.Medium)}
-              alt={content.thumbnail.data.attributes.alternativeText}
-              width={content.thumbnail.data.attributes.width}
-              height={content.thumbnail.data.attributes.height}
+              image={content.thumbnail.data.attributes}
+              quality={ImageQuality.Medium}
+              priority
             />
           ) : (
             <div className="w-full aspect-[4/3] bg-light rounded-xl"></div>

@@ -1,20 +1,11 @@
 import Link from "next/link";
-import {
-  GetLibraryItemsPreviewQuery,
-  GetWebsiteInterfaceQuery,
-} from "graphql/operations-types";
-import {
-  getAssetURL,
-  prettyDate,
-  prettyPrice,
-  prettyItemSubType,
-} from "queries/helpers";
-import Image from "next/image";
+import { GetLibraryItemsPreviewQuery } from "graphql/operations-types";
+import { prettyDate, prettyPrice, prettyItemSubType } from "queries/helpers";
 import Chip from "components/Chip";
+import Img, { ImageQuality } from "components/Img";
 
 export type LibraryItemsPreviewProps = {
   className?: string;
-  langui: GetWebsiteInterfaceQuery["websiteInterfaces"]["data"][number]["attributes"];
   item: {
     slug: GetLibraryItemsPreviewQuery["libraryItems"]["data"][number]["attributes"]["slug"];
     thumbnail: GetLibraryItemsPreviewQuery["libraryItems"]["data"][number]["attributes"]["thumbnail"];
@@ -30,7 +21,6 @@ export default function LibraryItemsPreview(
   props: LibraryItemsPreviewProps
 ): JSX.Element {
   const item = props.item;
-  const langui = props.langui;
 
   return (
     <Link href={"/library/items/" + item.slug} passHref>
@@ -38,11 +28,9 @@ export default function LibraryItemsPreview(
         className={`drop-shadow-dark-xl cursor-pointer grid items-end hover:rounded-3xl fine:[--cover-opacity:0] hover:[--cover-opacity:1] hover:scale-[1.02] transition-transform ${props.className}`}
       >
         {item.thumbnail.data ? (
-          <Image
-            src={getAssetURL(item.thumbnail.data.attributes.url)}
-            alt={item.thumbnail.data.attributes.alternativeText}
-            height={item.thumbnail.data.attributes.height}
-            width={item.thumbnail.data.attributes.width}
+          <Img
+            image={item.thumbnail.data.attributes}
+            quality={ImageQuality.Medium}
           />
         ) : (
           <div className="w-full aspect-[21/29.7] bg-light rounded-lg"></div>

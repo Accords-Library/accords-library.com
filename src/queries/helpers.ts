@@ -3,20 +3,6 @@ import {
   GetWebsiteInterfaceQuery,
 } from "graphql/operations-types";
 
-export enum ImageQuality {
-  Small = "small",
-  Medium = "medium",
-  Large = "large"
-}
-
-export function getAssetURL(url: string, quality?: ImageQuality): string {
-  if (!quality) quality = ImageQuality.Small;
-  url = url.replace(/^\/uploads/, "/" + quality);
-  url = url.replace(/.jpg$/, ".webp");
-  url = url.replace(/.png$/, ".webp");
-  return process.env.NEXT_PUBLIC_URL_IMG + url;
-}
-
 export function prettyDate(
   datePicker: GetLibraryItemsPreviewQuery["libraryItems"]["data"][number]["attributes"]["release_date"]
 ): string {

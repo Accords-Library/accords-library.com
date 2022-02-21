@@ -43,11 +43,7 @@ export default function Library(props: LibraryProps): JSX.Element {
     <ContentPanel width={ContentPanelWidthSizes.large}>
       <div className="grid gap-8 items-end mobile:grid-cols-2 desktop:grid-cols-[repeat(auto-fill,_minmax(13rem,1fr))]">
         {props.libraryItems.libraryItems.data.map((item) => (
-          <LibraryItemsPreview
-            key={item.id}
-            item={item.attributes}
-            langui={langui}
-          />
+          <LibraryItemsPreview key={item.id} item={item.attributes} />
         ))}
       </div>
     </ContentPanel>

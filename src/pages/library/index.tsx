@@ -1,11 +1,7 @@
 import { GetStaticProps } from "next";
 import SubPanel from "components/Panels/SubPanel";
-import {
-  GetWebsiteInterfaceQuery,
-} from "graphql/operations-types";
-import {
-  getWebsiteInterface,
-} from "graphql/operations";
+import { GetWebsiteInterfaceQuery } from "graphql/operations-types";
+import { getWebsiteInterface } from "graphql/operations";
 import PanelHeader from "components/PanelComponents/PanelHeader";
 import AppLayout from "components/AppLayout";
 import NavOption from "components/PanelComponents/NavOption";
@@ -38,7 +34,13 @@ export default function Library(props: LibraryProps): JSX.Element {
     </SubPanel>
   );
 
-  return <AppLayout title={langui.main_library} langui={langui} subPanel={subPanel} />;
+  return (
+    <AppLayout
+      title={langui.main_library}
+      langui={langui}
+      subPanel={subPanel}
+    />
+  );
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {

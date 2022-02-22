@@ -72,7 +72,7 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
     <div className={appLayout.darkMode ? "dark" : ""}>
       <div
         {...handlers}
-        className="touch-pan-y p-0 m-0 bg-light dark:bg-dark-light text-black dark:text-dark-black mobile:text-[90%]"
+        className="fixed inset-0 touch-pan-y p-0 m-0 bg-light dark:bg-dark-light text-black dark:text-dark-black"
       >
         <Head>
           <title>

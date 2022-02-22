@@ -1,5 +1,5 @@
 import useStateWithLocalStorage from "hooks/useStateWithLocalStorage";
-import React, { ReactNode, useContext, useEffect, useState } from "react";
+import React, { ReactNode, useContext } from "react";
 
 export interface AppLayoutState {
   subPanelOpen: boolean;

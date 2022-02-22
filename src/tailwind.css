@@ -68,6 +68,6 @@
   }
 
   .prose footer > div:target {
-    @apply bg-mid shadow-inner-sm shadow-dark;
+    @apply bg-mid shadow-inner-sm shadow-shade;
   }
 }

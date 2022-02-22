@@ -8,7 +8,7 @@ export default function InsetBox(props: InsetBoxProps): JSX.Element {
   return (
     <div
       id={props.id}
-      className={`w-full shadow-inner-sm shadow-dark bg-mid rounded-xl p-8 ${props.className}`}
+      className={`w-full shadow-inner-sm shadow-shade bg-mid rounded-xl p-8 ${props.className}`}
     >
       {props.children}
     </div>

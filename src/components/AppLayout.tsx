@@ -16,6 +16,7 @@ import {
 } from "redux/appLayoutSlice";
 import { RootState } from "redux/store";
 import ReactTooltip from "react-tooltip";
+import Script from "next/script";
 
 type AppLayoutProps = {
   subPanel?: React.ReactNode;
@@ -44,7 +45,7 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
   const subPanelOpen = useSelector(
     (state: RootState) => state.appLayout.subPanelOpen
   );
-  
+
   const sensibilitySwipe = 1.1;
 
   const handlers = useSwipeable({
@@ -135,7 +136,7 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
 
       {/* Background when navbar is opened */}
       <div
-        className={`fixed bg-dark inset-0 transition-opacity duration-500 
+        className={`fixed bg-shade inset-0 transition-opacity duration-500 
         ${turnSubIntoContent ? "z-10" : ""}
         ${
           (mainPanelOpen || subPanelOpen) && isMobile
@@ -188,7 +189,7 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
 
       {/* Language selection background */}
       <div
-        className={`fixed bg-dark inset-0 transition-all duration-500 z-20 grid place-content-center ${
+        className={`fixed bg-shade inset-0 transition-all duration-500 z-20 grid place-content-center ${
           languagePanelOpen
             ? "bg-opacity-50"
             : "bg-opacity-0 pointer-events-none touch-none"
@@ -198,7 +199,7 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
         }}
       >
         <div
-          className={`p-10 bg-light rounded-lg shadow-2xl shadow-dark grid gap-4 place-items-center transition-transform ${
+          className={`p-10 bg-light rounded-lg shadow-2xl shadow-shade grid gap-4 place-items-center transition-transform ${
             languagePanelOpen ? "scale-100" : "scale-0"
           }`}
         >
@@ -226,8 +227,10 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
         delayShow={300}
         delayHide={100}
         disable={!mainPanelReduced || isMobile || isCoarse}
-        className="drop-shadow-dark-xl !opacity-100 !bg-light !rounded-lg after:!border-r-light text-left"
+        className="drop-shadow-shade-xl !opacity-100 !bg-light !rounded-lg after:!border-r-light text-left !text-black"
       />
+
+      <Script src="/js/toggleTheme.js" defer />
     </div>
   );
 }

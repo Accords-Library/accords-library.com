@@ -43,7 +43,7 @@ class MyDocument extends Document {
           <link rel="manifest" href="manifest.json" />
           <meta name="theme-color" content="#FFEDD8" />
         </Head>
-        <body className="bg-light text-black">
+        <body>
           <Main />
           <NextScript />
         </body>

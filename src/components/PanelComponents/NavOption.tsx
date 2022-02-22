@@ -16,10 +16,10 @@ type NavOptionProps = {
 export default function NavOption(props: NavOptionProps): JSX.Element {
   const router = useRouter();
   const isActive = router.asPath.startsWith(props.url);
-  const divActive = "bg-mid shadow-inner-sm shadow-dark";
+  const divActive = "bg-mid shadow-inner-sm shadow-shade";
   const border =
     "outline outline-mid outline-2 outline-offset-[-2px] hover:outline-[transparent]";
-  const divCommon = `gap-x-5 w-full rounded-2xl cursor-pointer p-4 hover:bg-mid hover:shadow-inner-sm hover:shadow-dark hover:active:shadow-inner hover:active:shadow-dark transition-all ${
+  const divCommon = `gap-x-5 w-full rounded-2xl cursor-pointer p-4 hover:bg-mid hover:shadow-inner-sm hover:shadow-shade hover:active:shadow-inner hover:active:shadow-shade transition-all ${
     props.border ? border : ""
   } ${isActive ? divActive : ""}`;
 

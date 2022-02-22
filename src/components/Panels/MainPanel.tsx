@@ -36,7 +36,7 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
       {mainPanelReduced && isDesktop ? (
         <div className="grid place-items-center gap-4">
           <Link href="/" passHref>
-            <div className="w-12 cursor-pointer transition-[filter] hover:colorize-dark">
+            <div className="w-12 cursor-pointer transition-[filter] colorize-black hover:colorize-dark">
               <SVG
                 src={"/icons/accords.svg"}
                 alt={"Logo of Accord's Library"}
@@ -55,25 +55,34 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
         <div>
           <div className="grid place-items-center">
             <Link href="/" passHref>
-              <div className="w-1/2 cursor-pointer transition-[filter] hover:colorize-dark">
+              <div className="w-1/2 cursor-pointer transition-[filter] colorize-black hover:colorize-dark">
                 <SVG
                   src={"/icons/accords.svg"}
                   alt={"Logo of Accord's Library"}
                 />
               </div>
             </Link>
-            <div
-              className="relative mt-5"
-              onClick={() => dispatch(setLanguagePanelOpen(true))}
-            >
-              {router.locale ? (
-                <Button className="absolute right-0 top-[-1.3em] text-xs !py-0.5 !px-2.5">
+
+            <h2 className="text-3xl">Accord&rsquo;s Library</h2>
+
+            <div className="flex flex-row flex-wrap gap-2">
+              <Button
+                id="themeButton"
+                className="right-0 top-[-1.3em] !py-0.5 !px-2.5"
+              >
+                <span id="themeButtonIcon" className="material-icons !text-sm">
+                  dark_mode
+                </span>
+              </Button>
+
+              {router.locale && (
+                <Button
+                  onClick={() => dispatch(setLanguagePanelOpen(true))}
+                  className="right-0 top-[-1.3em] text-sm !py-0.5 !px-2.5"
+                >
                   {router.locale.toUpperCase()}
                 </Button>
-              ) : (
-                ""
               )}
-              <h2 className="text-3xl">Accord&rsquo;s Library</h2>
             </div>
           </div>
         </div>
@@ -183,7 +192,7 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
           )}
         </p>
         <a
-          className="transition-[filter] hover:colorize-dark"
+          className="transition-[filter] colorize-black hover:colorize-dark"
           href="https://creativecommons.org/licenses/by-sa/4.0/"
         >
           <div className="mt-4 mb-8 grid grid-flow-col place-content-center gap-1">
@@ -213,7 +222,7 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
         </p>
         <div className="mt-12 mb-4 grid h-4 grid-flow-col place-content-center gap-8">
           <a
-            className="transition-[filter] hover:colorize-dark"
+            className="transition-[filter] colorize-black hover:colorize-dark"
             href="https://github.com/Accords-Library"
             target="_blank"
             rel="noopener noreferrer"
@@ -221,7 +230,7 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
             <SVG className="w-10" src={"/icons/github-brands.svg"} alt={""} />
           </a>
           <a
-            className="transition-[filter] hover:colorize-dark"
+            className="transition-[filter] colorize-black hover:colorize-dark"
             href="/discord"
             target="_blank"
             rel="noopener noreferrer"

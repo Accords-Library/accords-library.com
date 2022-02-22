@@ -28,7 +28,7 @@ export default function ContentIndex(props: ContentIndexProps): JSX.Element {
     <SubPanel>
       <ReturnButton
         href="/contents"
-        title={langui.library_content}
+        title={"Contents"}
         langui={langui}
       />
       <HorizontalLine />

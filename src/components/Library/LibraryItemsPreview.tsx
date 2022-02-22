@@ -25,7 +25,7 @@ export default function LibraryItemsPreview(
   return (
     <Link href={"/library/" + item.slug} passHref>
       <div
-        className={`drop-shadow-shade-xl cursor-pointer grid items-end hover:rounded-3xl fine:[--cover-opacity:0] hover:[--cover-opacity:1] hover:scale-[1.02] transition-transform ${props.className}`}
+        className={`drop-shadow-shade-xl dark:drop-shadow-dark-shade-xl cursor-pointer grid items-end hover:rounded-3xl fine:[--cover-opacity:0] hover:[--cover-opacity:1] hover:scale-[1.02] transition-transform ${props.className}`}
       >
         {item.thumbnail.data ? (
           <Img
@@ -33,10 +33,10 @@ export default function LibraryItemsPreview(
             quality={ImageQuality.Medium}
           />
         ) : (
-          <div className="w-full aspect-[21/29.7] bg-light rounded-lg"></div>
+          <div className="w-full aspect-[21/29.7] bg-light dark:bg-dark-light rounded-lg"></div>
         )}
 
-        <div className="linearbg-obi fine:drop-shadow-shade-lg fine:absolute place-items-start bottom-2 -inset-x-0.5 opacity-[var(--cover-opacity)] transition-opacity z-20 grid p-4 gap-2">
+        <div className="linearbg-obi dark:linearbg-dark-obi fine:drop-shadow-shade-lg dark:fine:drop-shadow-dark-shade-lg fine:absolute place-items-start bottom-2 -inset-x-0.5 opacity-[var(--cover-opacity)] transition-opacity z-20 grid p-4 gap-2">
           {item.metadata && item.metadata.length > 0 ? (
             <div className="flex flex-row gap-1">
               <Chip>{prettyItemSubType(item.metadata[0])}</Chip>

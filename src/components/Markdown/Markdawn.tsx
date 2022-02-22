@@ -9,7 +9,7 @@ type ScenBreakProps = {
 export default function Markdawn(props: ScenBreakProps): JSX.Element {
   return (
     <Markdown
-      className={`prose prose-p:text-justify text-black ${props.className}`}
+      className={`prose prose-p:text-justify text-black dark:text-dark-black ${props.className}`}
       options={{
         overrides: {
           hr: {

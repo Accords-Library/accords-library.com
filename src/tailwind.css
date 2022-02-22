@@ -3,10 +3,6 @@
 @tailwind utilities;
 
 @layer base {
-  html,
-  body {
-    @apply p-0 m-0 bg-light text-black mobile:text-[90%];
-  }
 
   * {
     @apply box-border font-body font-medium scroll-smooth scroll-m-8;
@@ -22,18 +18,17 @@
   }
 
   a {
-    @apply transition-colors underline-offset-2 decoration-dotted underline decoration-dark hover:text-dark;
+    @apply transition-colors underline-offset-2 decoration-dotted underline decoration-dark dark:decoration-dark-dark hover:text-dark dark:hover:text-dark-dark;
   }
 
   *::selection {
-    @apply bg-dark text-light;
+    @apply bg-dark dark:bg-dark-dark text-light dark:text-dark-light;
   }
 
   /* SCROLLBARS STYLING */
 
   * {
-    scrollbar-color: theme("colors.dark") transparent;
-    scrollbar-width: thin;
+    @apply [scrollbar-color:theme(colors.dark)_transparent] dark:[scrollbar-color:theme(colors.dark-dark)_transparent] [scrollbar-width:thin];
   }
 
   *::-webkit-scrollbar {
@@ -41,22 +36,17 @@
   }
 
   *::-webkit-scrollbar-track {
-    @apply bg-[transparent];
+    @apply bg-light dark:bg-dark-light;
   }
 
   *::-webkit-scrollbar-thumb {
-    @apply bg-dark rounded-full border-[3px] border-solid border-light;
+    @apply bg-dark dark:bg-dark-dark rounded-full border-[3px] border-solid border-light dark:border-dark-light;
   }
 
   /* CHANGE PROSE DEFAULTS */
 
   .prose a {
-    @apply transition-colors underline-offset-2 decoration-dotted underline decoration-dark hover:text-dark;
-  }
-
-  .prose {
-    --tw-prose-bullets: theme("colors.dark") !important;
-    --tw-prose-quote-borders: theme("colors.dark") !important;
+    @apply transition-colors underline-offset-2 decoration-dotted underline decoration-dark dark:decoration-dark-dark hover:text-dark dark:hover:text-dark-dark;
   }
 
   .prose footer {
@@ -68,6 +58,6 @@
   }
 
   .prose footer > div:target {
-    @apply bg-mid shadow-inner-sm shadow-shade;
+    @apply bg-mid dark:bg-dark-mid shadow-inner-sm shadow-shade dark:shadow-dark-shade;
   }
 }

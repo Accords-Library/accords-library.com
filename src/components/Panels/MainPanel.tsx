@@ -6,10 +6,8 @@ import Button from "components/Button";
 import HorizontalLine from "components/HorizontalLine";
 import { GetWebsiteInterfaceQuery } from "graphql/operations-types";
 import Markdown from "markdown-to-jsx";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "redux/store";
-import { setLanguagePanelOpen, setMainPanelOpen } from "redux/appLayoutSlice";
 import { useMediaDesktop } from "hooks/useMediaQuery";
+import { useAppLayout } from "contexts/AppLayoutContext";
 
 type MainPanelProps = {
   langui: GetWebsiteInterfaceQuery["websiteInterfaces"]["data"][number]["attributes"];
@@ -19,32 +17,34 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
   const langui = props.langui;
   const router = useRouter();
   const isDesktop = useMediaDesktop();
-
-  const mainPanelReduced = useSelector(
-    (state: RootState) => state.appLayout.mainPanelReduced
-  );
-
-  const dispatch = useDispatch();
+  const appLayout = useAppLayout();
 
   return (
     <div
-      id="mainPanel"
       className={`flex flex-col justify-center content-start gap-y-2 justify-items-center text-center p-8 ${
-        mainPanelReduced && "px-4"
+        appLayout.mainPanelReduced && "px-4"
       }`}
     >
-      {mainPanelReduced && isDesktop ? (
+      {appLayout.mainPanelReduced && isDesktop ? (
         <div className="grid place-items-center gap-4">
           <Link href="/" passHref>
-            <div className="w-12 cursor-pointer transition-[filter] colorize-black hover:colorize-dark">
+            <div
+              onClick={() => appLayout.setMainPanelOpen(false)}
+              className="w-12 cursor-pointer transition-[filter] colorize-black dark:colorize-dark-black hover:colorize-dark dark:hover:colorize-dark-dark"
+            >
               <SVG
                 src={"/icons/accords.svg"}
                 alt={"Logo of Accord's Library"}
               />
             </div>
           </Link>
+          <Button onClick={() => appLayout.setDarkMode(!appLayout.darkMode)}>
+            <span className="material-icons !text-sm">
+              {appLayout.darkMode ? "light_mode" : "dark_mode"}
+            </span>
+          </Button>
           {router.locale ? (
-            <div onClick={() => dispatch(setLanguagePanelOpen(true))}>
+            <div onClick={() => appLayout.setLanguagePanelOpen(true)}>
               <Button className="text-xs">{router.locale.toUpperCase()}</Button>
             </div>
           ) : (
@@ -55,7 +55,10 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
         <div>
           <div className="grid place-items-center">
             <Link href="/" passHref>
-              <div className="w-1/2 cursor-pointer transition-[filter] colorize-black hover:colorize-dark">
+              <div
+                onClick={() => appLayout.setMainPanelOpen(false)}
+                className="w-1/2 cursor-pointer transition-[filter] colorize-black dark:colorize-dark-black hover:colorize-dark dark:hover:colorize-dark-dark"
+              >
                 <SVG
                   src={"/icons/accords.svg"}
                   alt={"Logo of Accord's Library"}
@@ -67,17 +70,17 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
 
             <div className="flex flex-row flex-wrap gap-2">
               <Button
-                id="themeButton"
+                onClick={() => appLayout.setDarkMode(!appLayout.darkMode)}
                 className="right-0 top-[-1.3em] !py-0.5 !px-2.5"
               >
-                <span id="themeButtonIcon" className="material-icons !text-sm">
-                  dark_mode
+                <span className="material-icons !text-sm">
+                  {appLayout.darkMode ? "dark_mode" : "light_mode"}
                 </span>
               </Button>
 
               {router.locale && (
                 <Button
-                  onClick={() => dispatch(setLanguagePanelOpen(true))}
+                  onClick={() => appLayout.setLanguagePanelOpen(true)}
                   className="right-0 top-[-1.3em] text-sm !py-0.5 !px-2.5"
                 >
                   {router.locale.toUpperCase()}
@@ -88,16 +91,14 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
         </div>
       )}
 
-      <HorizontalLine />
-
       <NavOption
         url="/library"
         icon="library_books"
         title={langui.main_library}
         subtitle={langui.main_library_description}
         tooltipId="MainPanelTooltip"
-        reduced={mainPanelReduced && isDesktop}
-        onClick={() => dispatch(setMainPanelOpen(false))}
+        reduced={appLayout.mainPanelReduced && isDesktop}
+        onClick={() => appLayout.setMainPanelOpen(false)}
       />
 
       <NavOption
@@ -106,8 +107,8 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
         title="Contents"
         subtitle="Explore all content and filter by type or category"
         tooltipId="MainPanelTooltip"
-        reduced={mainPanelReduced && isDesktop}
-        onClick={() => dispatch(setMainPanelOpen(false))}
+        reduced={appLayout.mainPanelReduced && isDesktop}
+        onClick={() => appLayout.setMainPanelOpen(false)}
       />
 
       <NavOption
@@ -116,8 +117,8 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
         title={langui.main_wiki}
         subtitle={langui.main_wiki_description}
         tooltipId="MainPanelTooltip"
-        reduced={mainPanelReduced && isDesktop}
-        onClick={() => dispatch(setMainPanelOpen(false))}
+        reduced={appLayout.mainPanelReduced && isDesktop}
+        onClick={() => appLayout.setMainPanelOpen(false)}
       />
 
       <NavOption
@@ -126,8 +127,8 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
         title={langui.main_chronicles}
         subtitle={langui.main_chronicles_description}
         tooltipId="MainPanelTooltip"
-        reduced={mainPanelReduced && isDesktop}
-        onClick={() => dispatch(setMainPanelOpen(false))}
+        reduced={appLayout.mainPanelReduced && isDesktop}
+        onClick={() => appLayout.setMainPanelOpen(false)}
       />
 
       <HorizontalLine />
@@ -137,8 +138,8 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
         icon="feed"
         title={langui.main_news}
         tooltipId="MainPanelTooltip"
-        reduced={mainPanelReduced && isDesktop}
-        onClick={() => dispatch(setMainPanelOpen(false))}
+        reduced={appLayout.mainPanelReduced && isDesktop}
+        onClick={() => appLayout.setMainPanelOpen(false)}
       />
 
       <NavOption
@@ -146,8 +147,8 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
         icon="store"
         title={langui.main_merch}
         tooltipId="MainPanelTooltip"
-        reduced={mainPanelReduced && isDesktop}
-        onClick={() => dispatch(setMainPanelOpen(false))}
+        reduced={appLayout.mainPanelReduced && isDesktop}
+        onClick={() => appLayout.setMainPanelOpen(false)}
       />
 
       <NavOption
@@ -155,8 +156,8 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
         icon="collections"
         title={langui.main_gallery}
         tooltipId="MainPanelTooltip"
-        reduced={mainPanelReduced && isDesktop}
-        onClick={() => dispatch(setMainPanelOpen(false))}
+        reduced={appLayout.mainPanelReduced && isDesktop}
+        onClick={() => appLayout.setMainPanelOpen(false)}
       />
 
       <NavOption
@@ -164,8 +165,8 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
         icon="inventory"
         title={langui.main_archives}
         tooltipId="MainPanelTooltip"
-        reduced={mainPanelReduced && isDesktop}
-        onClick={() => dispatch(setMainPanelOpen(false))}
+        reduced={appLayout.mainPanelReduced && isDesktop}
+        onClick={() => appLayout.setMainPanelOpen(false)}
       />
 
       <NavOption
@@ -173,15 +174,15 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
         icon="info"
         title={langui.main_about_us}
         tooltipId="MainPanelTooltip"
-        reduced={mainPanelReduced && isDesktop}
-        onClick={() => dispatch(setMainPanelOpen(false))}
+        reduced={appLayout.mainPanelReduced && isDesktop}
+        onClick={() => appLayout.setMainPanelOpen(false)}
       />
 
-      {mainPanelReduced && isDesktop ? "" : <HorizontalLine />}
+      {appLayout.mainPanelReduced && isDesktop ? "" : <HorizontalLine />}
 
       <div
         className={`text-center ${
-          mainPanelReduced && isDesktop ? "hidden" : ""
+          appLayout.mainPanelReduced && isDesktop ? "hidden" : ""
         }`}
       >
         <p>
@@ -192,7 +193,7 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
           )}
         </p>
         <a
-          className="transition-[filter] colorize-black hover:colorize-dark"
+          className="transition-[filter] colorize-black dark:colorize-dark-black hover:colorize-dark dark:hover:colorize-dark-dark"
           href="https://creativecommons.org/licenses/by-sa/4.0/"
         >
           <div className="mt-4 mb-8 grid grid-flow-col place-content-center gap-1">
@@ -222,7 +223,7 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
         </p>
         <div className="mt-12 mb-4 grid h-4 grid-flow-col place-content-center gap-8">
           <a
-            className="transition-[filter] colorize-black hover:colorize-dark"
+            className="transition-[filter] colorize-black dark:colorize-dark-black hover:colorize-dark dark:hover:colorize-dark-dark"
             href="https://github.com/Accords-Library"
             target="_blank"
             rel="noopener noreferrer"
@@ -230,7 +231,7 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
             <SVG className="w-10" src={"/icons/github-brands.svg"} alt={""} />
           </a>
           <a
-            className="transition-[filter] colorize-black hover:colorize-dark"
+            className="transition-[filter] colorize-black dark:colorize-dark-black hover:colorize-dark dark:hover:colorize-dark-dark"
             href="/discord"
             target="_blank"
             rel="noopener noreferrer"

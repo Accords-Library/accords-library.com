@@ -22,5 +22,6 @@
   - Support for [Material Icons](https://fonts.google.com/icons) 
 - Framework: [Next.js](https://nextjs.org/) (React)
   - Multilanguage support
-- State Management: [Redux Toolkit](https://redux-toolkit.js.org)
+- State Management: [React Context](https://reactjs.org/docs/context.html)
+  - Persistent app state using LocalStorage 
 - Support for many screen sizes and resolutions

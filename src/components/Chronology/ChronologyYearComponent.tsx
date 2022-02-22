@@ -11,7 +11,7 @@ export default function ChronologyYearComponent(
 ): JSX.Element {
   return (
     <div
-      className="target:bg-mid rounded-2xl target:py-4 target:my-4"
+      className="target:bg-mid dark:bg-dark-mid rounded-2xl target:py-4 target:my-4"
       id={props.items.length > 1 ? props.year.toString() : undefined}
     >
       {props.items.map((item, index) => (

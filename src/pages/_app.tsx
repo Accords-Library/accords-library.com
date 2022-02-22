@@ -4,13 +4,12 @@ import "@fontsource/zen-maru-gothic/500.css";
 import "@fontsource/vollkorn/700.css";
 import "@fontsource/material-icons";
 
-import { store } from "redux/store";
-import { Provider } from "react-redux";
+import { AppContextProvider } from "contexts/AppLayoutContext";
 
 export default function AccordsLibraryApp(appProps: AppProps) {
   return (
-    <Provider store={store}>
+    <AppContextProvider>
       <appProps.Component {...appProps.pageProps} />
-    </Provider>
+    </AppContextProvider>
   );
 }

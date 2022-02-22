@@ -43,7 +43,7 @@ export default function Editor(props: EditorProps): JSX.Element {
           <textarea
             id="editorTextArea"
             onInput={handleInput}
-            className="bg-mid rounded-xl p-8 w-full font-monospace"
+            className="bg-mid dark:bg-dark-mid rounded-xl p-8 w-full font-monospace"
             value={markdown}
           />
 
@@ -71,12 +71,12 @@ export default function Editor(props: EditorProps): JSX.Element {
               target.select();
               event.preventDefault();
             }}
-            className="bg-mid rounded-xl p-8 w-full font-monospace"
+            className="bg-mid dark:bg-dark-mid rounded-xl p-8 w-full font-monospace"
           />
         </div>
         <div>
           <h2>Preview</h2>
-          <div className="bg-mid rounded-xl p-8">
+          <div className="bg-mid dark:bg-dark-mid rounded-xl p-8">
             <Markdawn className="max-w-full" text={markdown} />
           </div>
         </div>

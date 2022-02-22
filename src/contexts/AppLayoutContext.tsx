@@ -1,3 +1,4 @@
+import useStateWithLocalStorage from "hooks/useStateWithLocalStorage";
 import React, { ReactNode, useContext, useEffect, useState } from "react";
 
 export interface AppLayoutState {
@@ -39,44 +40,32 @@ type Props = {
 };
 
 export const AppContextProvider = (props: Props) => {
-  function useLocalStorage(
-    value: boolean,
-    setter: React.Dispatch<React.SetStateAction<boolean>>,
-    name: string
-  ): void {
-    useEffect(() => {
-      const data = localStorage.getItem(name);
-      if (data) setter(JSON.parse(data));
-    }, [setter, name]);
-
-    useEffect(() => {
-      localStorage.setItem(name, JSON.stringify(value));
-    }, [value, name]);
-  }
-
-  const [subPanelOpen, setSubPanelOpen] = useState<boolean>(
+  const [subPanelOpen, setSubPanelOpen] = useStateWithLocalStorage<boolean>(
+    "subPanelOpen",
     initialState.subPanelOpen
   );
 
-  const [languagePanelOpen, setLanguagePanelOpen] = useState<boolean>(
-    initialState.languagePanelOpen
-  );
+  const [languagePanelOpen, setLanguagePanelOpen] =
+    useStateWithLocalStorage<boolean>(
+      "languagePanelOpen",
+      initialState.languagePanelOpen
+    );
 
-  const [mainPanelReduced, setMainPanelReduced] = useState<boolean>(
-    initialState.mainPanelReduced
-  );
+  const [mainPanelReduced, setMainPanelReduced] =
+    useStateWithLocalStorage<boolean>(
+      "mainPanelReduced",
+      initialState.mainPanelReduced
+    );
 
-  const [mainPanelOpen, setMainPanelOpen] = useState<boolean>(
+  const [mainPanelOpen, setMainPanelOpen] = useStateWithLocalStorage<boolean>(
+    "mainPanelOpen",
     initialState.mainPanelOpen
   );
 
-  const [darkMode, setDarkMode] = useState<boolean>(initialState.darkMode);
-
-  useLocalStorage(subPanelOpen, setSubPanelOpen, "subPanelOpen");
-  useLocalStorage(languagePanelOpen, setLanguagePanelOpen, "languagePanelOpen");
-  useLocalStorage(mainPanelReduced, setMainPanelReduced, "mainPanelReduced");
-  useLocalStorage(mainPanelOpen, setMainPanelOpen, "mainPanelOpen");
-  useLocalStorage(darkMode, setDarkMode, "darkMode");
+  const [darkMode, setDarkMode] = useStateWithLocalStorage<boolean>(
+    "darkMode",
+    initialState.darkMode
+  );
 
   return (
     <AppContext.Provider

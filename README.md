@@ -25,3 +25,4 @@
 - State Management: [React Context](https://reactjs.org/docs/context.html)
   - Persistent app state using LocalStorage 
 - Support for many screen sizes and resolutions
+- Support for light and dark mode with a manual switch and system's selected theme by default

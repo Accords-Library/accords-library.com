@@ -374,7 +374,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
                 <div
                   id={content.attributes.slug}
                   key={content.id}
-                  className="grid gap-2 px-4 rounded-lg target:bg-mid dark:bg-dark-mid target:shadow-inner-sm target:shadow-shade target:h-auto target:py-3 target:my-2 target:[--displaySubContentMenu:grid] [--displaySubContentMenu:none]"
+                  className="grid gap-2 px-4 rounded-lg target:bg-mid dark:target:bg-dark-mid target:shadow-inner-sm target:shadow-shade dark:target:shadow-dark-shade target:h-auto target:py-3 target:my-2 target:[--displaySubContentMenu:grid] [--displaySubContentMenu:none]"
                 >
                   <div className="grid gap-4 place-items-center grid-cols-[auto_auto_1fr_auto_12ch] thin:grid-cols-[auto_auto_1fr_auto]">
                     <a href={`#${content.attributes.slug}`}>

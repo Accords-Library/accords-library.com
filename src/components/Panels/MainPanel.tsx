@@ -25,12 +25,14 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
         appLayout.mainPanelReduced && "px-4"
       }`}
     >
-      {appLayout.mainPanelReduced && isDesktop ? (
-        <div className="grid place-items-center gap-4">
+      <div>
+        <div className="grid place-items-center">
           <Link href="/" passHref>
             <div
               onClick={() => appLayout.setMainPanelOpen(false)}
-              className="w-12 cursor-pointer transition-[filter] colorize-black dark:colorize-dark-black hover:colorize-dark dark:hover:colorize-dark-dark"
+              className={`${
+                appLayout.mainPanelReduced && isDesktop ? "w-12" : "w-1/2"
+              } cursor-pointer transition-[filter] colorize-black dark:colorize-dark-black hover:colorize-dark dark:hover:colorize-dark-dark`}
             >
               <SVG
                 src={"/icons/accords.svg"}
@@ -38,58 +40,49 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
               />
             </div>
           </Link>
-          <Button onClick={() => appLayout.setDarkMode(!appLayout.darkMode)}>
-            <span className="material-icons !text-sm">
-              {appLayout.darkMode ? "light_mode" : "dark_mode"}
-            </span>
-          </Button>
-          {router.locale ? (
-            <div onClick={() => appLayout.setLanguagePanelOpen(true)}>
-              <Button className="text-xs">{router.locale.toUpperCase()}</Button>
-            </div>
-          ) : (
+
+          {appLayout.mainPanelReduced && isDesktop ? (
             ""
-          )}
-        </div>
-      ) : (
-        <div>
-          <div className="grid place-items-center">
-            <Link href="/" passHref>
-              <div
-                onClick={() => appLayout.setMainPanelOpen(false)}
-                className="w-1/2 cursor-pointer transition-[filter] colorize-black dark:colorize-dark-black hover:colorize-dark dark:hover:colorize-dark-dark"
-              >
-                <SVG
-                  src={"/icons/accords.svg"}
-                  alt={"Logo of Accord's Library"}
-                />
-              </div>
-            </Link>
-
+          ) : (
             <h2 className="text-3xl">Accord&rsquo;s Library</h2>
+          )}
 
-            <div className="flex flex-row flex-wrap gap-2">
+          <div
+            className={`flex ${
+              appLayout.mainPanelReduced && isDesktop ? "flex-col" : "flex-row"
+            } flex-wrap gap-2`}
+          >
+            <Button
+              onClick={() => {
+                appLayout.setDarkMode(!appLayout.darkMode);
+                appLayout.setSelectedThemeMode(true);
+              }}
+              className={
+                appLayout.mainPanelReduced && isDesktop ? "" : "!py-0.5 !px-2.5"
+              }
+            >
+              <span className="material-icons !text-sm">
+                {appLayout.darkMode ? "dark_mode" : "light_mode"}
+              </span>
+            </Button>
+
+            {router.locale && (
               <Button
-                onClick={() => appLayout.setDarkMode(!appLayout.darkMode)}
-                className="right-0 top-[-1.3em] !py-0.5 !px-2.5"
+                onClick={() => appLayout.setLanguagePanelOpen(true)}
+                className={
+                  appLayout.mainPanelReduced && isDesktop
+                    ? ""
+                    : "!py-0.5 !px-2.5 !text-sm"
+                }
               >
-                <span className="material-icons !text-sm">
-                  {appLayout.darkMode ? "dark_mode" : "light_mode"}
-                </span>
+                {router.locale.toUpperCase()}
               </Button>
-
-              {router.locale && (
-                <Button
-                  onClick={() => appLayout.setLanguagePanelOpen(true)}
-                  className="right-0 top-[-1.3em] text-sm !py-0.5 !px-2.5"
-                >
-                  {router.locale.toUpperCase()}
-                </Button>
-              )}
-            </div>
+            )}
           </div>
         </div>
-      )}
+      </div>
+
+      <HorizontalLine />
 
       <NavOption
         url="/library"

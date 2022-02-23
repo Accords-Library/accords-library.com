@@ -1,17 +1,25 @@
+import useDarkMode from "hooks/useDarkMode";
 import useStateWithLocalStorage from "hooks/useStateWithLocalStorage";
-import React, { ReactNode, useContext } from "react";
+import React, { ReactNode, useContext, useEffect } from "react";
 
 export interface AppLayoutState {
-  subPanelOpen: boolean;
-  languagePanelOpen: boolean;
-  mainPanelReduced: boolean;
-  mainPanelOpen: boolean;
-  darkMode: boolean;
-  setSubPanelOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  setLanguagePanelOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  setMainPanelReduced: React.Dispatch<React.SetStateAction<boolean>>;
-  setMainPanelOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  setDarkMode: React.Dispatch<React.SetStateAction<boolean>>;
+  subPanelOpen: boolean | undefined;
+  languagePanelOpen: boolean | undefined;
+  mainPanelReduced: boolean | undefined;
+  mainPanelOpen: boolean | undefined;
+  darkMode: boolean | undefined;
+  setSubPanelOpen: React.Dispatch<React.SetStateAction<boolean | undefined>>;
+  setLanguagePanelOpen: React.Dispatch<
+    React.SetStateAction<boolean | undefined>
+  >;
+  setMainPanelReduced: React.Dispatch<
+    React.SetStateAction<boolean | undefined>
+  >;
+  setMainPanelOpen: React.Dispatch<React.SetStateAction<boolean | undefined>>;
+  setDarkMode: React.Dispatch<React.SetStateAction<boolean | undefined>>;
+  setSelectedThemeMode: React.Dispatch<
+    React.SetStateAction<boolean | undefined>
+  >;
 }
 
 const initialState: AppLayoutState = {
@@ -25,6 +33,7 @@ const initialState: AppLayoutState = {
   setMainPanelReduced: () => {},
   setMainPanelOpen: () => {},
   setDarkMode: () => {},
+  setSelectedThemeMode: () => {},
 };
 
 const AppContext = React.createContext<AppLayoutState>(initialState);
@@ -40,29 +49,23 @@ type Props = {
 };
 
 export const AppContextProvider = (props: Props) => {
-  const [subPanelOpen, setSubPanelOpen] = useStateWithLocalStorage<boolean>(
-    "subPanelOpen",
-    initialState.subPanelOpen
-  );
+  const [subPanelOpen, setSubPanelOpen] = useStateWithLocalStorage<
+    boolean | undefined
+  >("subPanelOpen", initialState.subPanelOpen);
 
-  const [languagePanelOpen, setLanguagePanelOpen] =
-    useStateWithLocalStorage<boolean>(
-      "languagePanelOpen",
-      initialState.languagePanelOpen
-    );
+  const [languagePanelOpen, setLanguagePanelOpen] = useStateWithLocalStorage<
+    boolean | undefined
+  >("languagePanelOpen", initialState.languagePanelOpen);
 
-  const [mainPanelReduced, setMainPanelReduced] =
-    useStateWithLocalStorage<boolean>(
-      "mainPanelReduced",
-      initialState.mainPanelReduced
-    );
+  const [mainPanelReduced, setMainPanelReduced] = useStateWithLocalStorage<
+    boolean | undefined
+  >("mainPanelReduced", initialState.mainPanelReduced);
 
-  const [mainPanelOpen, setMainPanelOpen] = useStateWithLocalStorage<boolean>(
-    "mainPanelOpen",
-    initialState.mainPanelOpen
-  );
+  const [mainPanelOpen, setMainPanelOpen] = useStateWithLocalStorage<
+    boolean | undefined
+  >("mainPanelOpen", initialState.mainPanelOpen);
 
-  const [darkMode, setDarkMode] = useStateWithLocalStorage<boolean>(
+  const [darkMode, setDarkMode, setSelectedThemeMode] = useDarkMode(
     "darkMode",
     initialState.darkMode
   );
@@ -80,6 +83,7 @@ export const AppContextProvider = (props: Props) => {
         setMainPanelReduced,
         setMainPanelOpen,
         setDarkMode,
+        setSelectedThemeMode,
       }}
     >
       {props.children}

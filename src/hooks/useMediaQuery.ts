@@ -34,15 +34,15 @@ export default function useMediaQuery(query: string): boolean {
 }
 
 export function useMediaThin() {
-    return useMediaQuery("(max-width: 25rem)");
+  return useMediaQuery("(max-width: 25rem)");
 }
 
 export function useMediaMobile() {
-    return useMediaQuery("(max-width: 60rem)");
+  return useMediaQuery("(max-width: 60rem)");
 }
 
 export function useMediaDesktop() {
-    return useMediaQuery("(min-width: 60rem)");
+  return useMediaQuery("(min-width: 60rem)");
 }
 
 export function useMediaCoarse() {
@@ -51,4 +51,8 @@ export function useMediaCoarse() {
 
 export function useMediaFine() {
   return useMediaQuery("(pointer: fine)");
+}
+
+export function usePrefersDarkMode() {
+  return useMediaQuery("(prefers-color-scheme: dark)");
 }

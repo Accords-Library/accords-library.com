@@ -487,7 +487,6 @@ export type GetLibraryItemQuery = {
                   __typename: "VideoSubtypeEntity";
                   attributes: {
                     __typename: "VideoSubtype";
-                    slug: string;
                     titles: Array<{
                       __typename: "ComponentTranslationsSimpleTitle";
                       title: string;
@@ -598,9 +597,9 @@ export type GetLibraryItemQuery = {
             id: string;
             attributes: {
               __typename: "LibraryItem";
-              slug: string;
               title: string;
               subtitle: string;
+              slug: string;
               thumbnail: {
                 __typename: "UploadFileEntityResponse";
                 data: {
@@ -616,6 +615,111 @@ export type GetLibraryItemQuery = {
                   };
                 };
               };
+              release_date: {
+                __typename: "ComponentBasicsDatepicker";
+                year: number;
+                month: number;
+                day: number;
+              };
+              price: {
+                __typename: "ComponentBasicsPrice";
+                amount: number;
+                currency: {
+                  __typename: "CurrencyEntityResponse";
+                  data: {
+                    __typename: "CurrencyEntity";
+                    attributes: {
+                      __typename: "Currency";
+                      symbol: string;
+                      code: string;
+                    };
+                  };
+                };
+              };
+              metadata: Array<
+                | {
+                    __typename: "ComponentMetadataBooks";
+                    subtype: {
+                      __typename: "TextualSubtypeEntityResponse";
+                      data: {
+                        __typename: "TextualSubtypeEntity";
+                        attributes: {
+                          __typename: "TextualSubtype";
+                          slug: string;
+                          titles: Array<{
+                            __typename: "ComponentTranslationsSimpleTitle";
+                            title: string;
+                          }>;
+                        };
+                      };
+                    };
+                  }
+                | {
+                    __typename: "ComponentMetadataVideo";
+                    subtype: {
+                      __typename: "VideoSubtypeEntityResponse";
+                      data: {
+                        __typename: "VideoSubtypeEntity";
+                        attributes: {
+                          __typename: "VideoSubtype";
+                          slug: string;
+                          titles: Array<{
+                            __typename: "ComponentTranslationsSimpleTitle";
+                            title: string;
+                          }>;
+                        };
+                      };
+                    };
+                  }
+                | {
+                    __typename: "ComponentMetadataGame";
+                    platform: {
+                      __typename: "GamePlatformEntityResponse";
+                      data: {
+                        __typename: "GamePlatformEntity";
+                        attributes: {
+                          __typename: "GamePlatform";
+                          short: string;
+                        };
+                      };
+                    };
+                  }
+                | {
+                    __typename: "ComponentMetadataAudio";
+                    subtype: {
+                      __typename: "AudioSubtypeEntityResponse";
+                      data: {
+                        __typename: "AudioSubtypeEntity";
+                        attributes: {
+                          __typename: "AudioSubtype";
+                          slug: string;
+                          titles: Array<{
+                            __typename: "ComponentTranslationsSimpleTitle";
+                            title: string;
+                          }>;
+                        };
+                      };
+                    };
+                  }
+                | {
+                    __typename: "ComponentMetadataOther";
+                    subtype: {
+                      __typename: "OtherSubtypeEntityResponse";
+                      data: {
+                        __typename: "OtherSubtypeEntity";
+                        attributes: {
+                          __typename: "OtherSubtype";
+                          slug: string;
+                          titles: Array<{
+                            __typename: "ComponentTranslationsSimpleTitle";
+                            title: string;
+                          }>;
+                        };
+                      };
+                    };
+                  }
+                | { __typename: "Error" }
+              >;
             };
           }>;
         };

@@ -22,7 +22,7 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
   return (
     <div
       className={`flex flex-col justify-center content-start gap-y-2 justify-items-center text-center p-8 ${
-        appLayout.mainPanelReduced && "px-4"
+        appLayout.mainPanelReduced && isDesktop && "px-4"
       }`}
     >
       <div>
@@ -49,7 +49,7 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
 
           <div
             className={`flex ${
-              appLayout.mainPanelReduced && isDesktop ? "flex-col" : "flex-row"
+              appLayout.mainPanelReduced && isDesktop ? "mt-4 flex-col gap-3" : "flex-row"
             } flex-wrap gap-2`}
           >
             <Button

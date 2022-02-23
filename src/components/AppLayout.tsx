@@ -81,7 +81,7 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
         </Head>
 
         {/* Navbar */}
-        <div className="fixed bottom-0 left-0 right-0 h-20 border-t-[1px] border-black dark:border-dark-black border-dotted grid grid-cols-[5rem_1fr_5rem] place-items-center desktop:hidden bg-light dark:bg-dark-light bg-paper bg-blend-multiply bg-local bg-[length:10cm]">
+        <div className="fixed inset-0 top-auto h-20 border-t-[1px] border-black dark:border-dark-black border-dotted grid grid-cols-[5rem_1fr_5rem] place-items-center desktop:hidden bg-light dark:bg-dark-light texture-paper-dots">
           <span
             className="material-icons mt-[.1em] cursor-pointer"
             onClick={() => appLayout.setMainPanelOpen(true)}
@@ -103,7 +103,7 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
 
         {/* Content panel */}
         <div
-          className={`top-0 left-0 right-0 bottom-20 overflow-y-scroll bg-light dark:bg-dark-light bg-paper bg-blend-multiply bg-local bg-[length:10cm] ${contentPanelClass}`}
+          className={`top-0 left-0 right-0 bottom-20 overflow-y-scroll bg-light dark:bg-dark-light texture-paper-dots ${contentPanelClass}`}
         >
           {props.contentPanel ? (
             props.contentPanel
@@ -137,7 +137,7 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
         {/* Sub panel */}
         {props.subPanel ? (
           <div
-            className={`${subPanelClass} border-r-[1px] mobile:border-r-0 mobile:border-l-[1px] border-black dark:border-dark-black border-dotted top-0 bottom-0 right-0 left-12 overflow-y-scroll webkit-scrollbar:w-0 [scrollbar-width:none] transition-transform duration-300 bg-light dark:bg-dark-light bg-paper bg-blend-multiply bg-local bg-[length:10cm]
+            className={`${subPanelClass} border-r-[1px] mobile:border-r-0 mobile:border-l-[1px] border-black dark:border-dark-black border-dotted top-0 bottom-0 right-0 left-12 overflow-y-scroll webkit-scrollbar:w-0 [scrollbar-width:none] transition-transform duration-300 bg-light dark:bg-dark-light texture-paper-dots
           ${
             turnSubIntoContent
               ? "mobile:translate-x-0 mobile:bottom-20 mobile:left-0 mobile:border-l-0"
@@ -154,7 +154,7 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
 
         {/* Main panel */}
         <div
-          className={`${mainPanelClass} border-r-[1px] border-black dark:border-dark-black border-dotted top-0 bottom-0 left-0 right-12 overflow-y-scroll webkit-scrollbar:w-0 [scrollbar-width:none] transition-transform duration-300 z-20 bg-light dark:bg-dark-light bg-paper bg-blend-multiply bg-local bg-[length:10cm]
+          className={`${mainPanelClass} border-r-[1px] border-black dark:border-dark-black border-dotted top-0 bottom-0 left-0 right-12 overflow-y-scroll webkit-scrollbar:w-0 [scrollbar-width:none] transition-transform duration-300 z-20 bg-light dark:bg-dark-light texture-paper-dots
         ${appLayout.mainPanelOpen ? "" : "mobile:-translate-x-full"}`}
         >
           <MainPanel langui={props.langui} />

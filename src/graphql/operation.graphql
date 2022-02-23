@@ -335,7 +335,6 @@ query getLibraryItem($slug: String, $language_code: String) {
             subtype {
               data {
                 attributes {
-                  slug
                   titles(
                     filters: { language: { code: { eq: $language_code } } }
                   ) {
@@ -421,9 +420,9 @@ query getLibraryItem($slug: String, $language_code: String) {
           data {
             id
             attributes {
-              slug
               title
               subtitle
+              slug
               thumbnail {
                 data {
                   attributes {
@@ -433,6 +432,98 @@ query getLibraryItem($slug: String, $language_code: String) {
                     width
                     height
                     url
+                  }
+                }
+              }
+              release_date {
+                year
+                month
+                day
+              }
+              price {
+                amount
+                currency {
+                  data {
+                    attributes {
+                      symbol
+                      code
+                    }
+                  }
+                }
+              }
+              metadata {
+                __typename
+                ... on ComponentMetadataBooks {
+                  subtype {
+                    data {
+                      attributes {
+                        slug
+                        titles(
+                          filters: {
+                            language: { code: { eq: $language_code } }
+                          }
+                        ) {
+                          title
+                        }
+                      }
+                    }
+                  }
+                }
+                ... on ComponentMetadataGame {
+                  platform {
+                    data {
+                      attributes {
+                        short
+                      }
+                    }
+                  }
+                }
+                ... on ComponentMetadataVideo {
+                  subtype {
+                    data {
+                      attributes {
+                        slug
+                        titles(
+                          filters: {
+                            language: { code: { eq: $language_code } }
+                          }
+                        ) {
+                          title
+                        }
+                      }
+                    }
+                  }
+                }
+                ... on ComponentMetadataAudio {
+                  subtype {
+                    data {
+                      attributes {
+                        slug
+                        titles(
+                          filters: {
+                            language: { code: { eq: $language_code } }
+                          }
+                        ) {
+                          title
+                        }
+                      }
+                    }
+                  }
+                }
+                ... on ComponentMetadataOther {
+                  subtype {
+                    data {
+                      attributes {
+                        slug
+                        titles(
+                          filters: {
+                            language: { code: { eq: $language_code } }
+                          }
+                        ) {
+                          title
+                        }
+                      }
+                    }
                   }
                 }
               }

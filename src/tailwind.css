@@ -3,7 +3,6 @@
 @tailwind utilities;
 
 @layer base {
-
   * {
     @apply box-border font-body font-medium scroll-smooth scroll-m-8;
   }
@@ -45,6 +44,19 @@
 
   /* CHANGE PROSE DEFAULTS */
 
+  .prose,
+  .prose p,
+  .prose h1,
+  .prose h2,
+  .prose h3,
+  .prose h4,
+  .prose h5,
+  .prose h6,
+  .prose a,
+  .prose strong {
+    @apply text-black dark:text-dark-black;
+  }
+
   .prose a {
     @apply transition-colors underline-offset-2 decoration-dotted underline decoration-dark dark:decoration-dark-dark hover:text-dark dark:hover:text-dark-dark;
   }
@@ -59,5 +71,11 @@
 
   .prose footer > div:target {
     @apply bg-mid dark:bg-dark-mid shadow-inner-sm shadow-shade dark:shadow-dark-shade;
+  }
+}
+
+@layer components {
+  .texture-paper-dots {
+    @apply bg-paper-dots dark:bg-dark-paper-dots bg-blend-multiply dark:bg-blend-overlay bg-local bg-[length:10cm];
   }
 }

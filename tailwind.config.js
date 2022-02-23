@@ -52,8 +52,8 @@ module.exports = {
       fine: { raw: "(pointer: fine)" },
     },
     backgroundImage: {
-      paper: "url('/paper.webp')",
-      "dark-paper": "url('/paper.webp')",
+      "paper-dots": "url('/paper-dots.webp')",
+      "dark-paper-dots": "url('/paper-dots-dark.webp')",
     },
     extend: {
       boxShadow: {

@@ -21,7 +21,7 @@ export default function LibraryContentPreview(
 
   return (
     <Link href={"/contents/" + item.slug} passHref>
-      <div className="drop-shadow-shade-xl dark:drop-shadow-dark-shade-xl cursor-pointer grid items-end fine:[--cover-opacity:0] hover:[--cover-opacity:1] hover:scale-[1.02] transition-transform">
+      <div className="drop-shadow-shade-xl cursor-pointer grid items-end fine:[--cover-opacity:0] hover:[--cover-opacity:1] hover:scale-[1.02] transition-transform">
         {item.thumbnail.data ? (
           <Img
             className="rounded-md coarse:rounded-b-none"
@@ -29,9 +29,9 @@ export default function LibraryContentPreview(
             quality={ImageQuality.Medium}
           />
         ) : (
-          <div className="w-full aspect-[3/2] bg-light dark:bg-dark-light rounded-lg"></div>
+          <div className="w-full aspect-[3/2] bg-light rounded-lg"></div>
         )}
-        <div className="linearbg-obi dark:linearbg-dark-obi fine:drop-shadow-shade-lg dark:fine:drop-shadow-dark-shade-lg fine:absolute coarse:rounded-b-md bottom-2 -inset-x-0.5 opacity-[var(--cover-opacity)] transition-opacity z-20 grid p-4 gap-2">
+        <div className="linearbg-obi fine:drop-shadow-shade-lg fine:absolute coarse:rounded-b-md bottom-2 -inset-x-0.5 opacity-[var(--cover-opacity)] transition-opacity z-20 grid p-4 gap-2">
           <div className="grid grid-flow-col gap-1 overflow-hidden place-content-start">
             {item.type ? (
               <Chip>

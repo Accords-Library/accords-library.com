@@ -32,13 +32,8 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
               onClick={() => appLayout.setMainPanelOpen(false)}
               className={`${
                 appLayout.mainPanelReduced && isDesktop ? "w-12" : "w-1/2"
-              } cursor-pointer transition-[filter] colorize-black dark:colorize-dark-black hover:colorize-dark dark:hover:colorize-dark-dark`}
-            >
-              <SVG
-                src={"/icons/accords.svg"}
-                alt={"Logo of Accord's Library"}
-              />
-            </div>
+              } aspect-square cursor-pointer transition-colors [mask:url('/icons/accords.svg')] ![mask-size:contain] ![mask-repeat:no-repeat] ![mask-position:center] bg-black hover:bg-dark mb-4`}
+            ></div>
           </Link>
 
           {appLayout.mainPanelReduced && isDesktop ? (
@@ -49,7 +44,9 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
 
           <div
             className={`flex ${
-              appLayout.mainPanelReduced && isDesktop ? "mt-4 flex-col gap-3" : "flex-row"
+              appLayout.mainPanelReduced && isDesktop
+                ? "flex-col gap-3"
+                : "flex-row"
             } flex-wrap gap-2`}
           >
             <Button
@@ -186,25 +183,13 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
           )}
         </p>
         <a
-          className="transition-[filter] colorize-black dark:colorize-dark-black hover:colorize-dark dark:hover:colorize-dark-dark"
+          className="transition-[filter] colorize-black hover:colorize-dark"
           href="https://creativecommons.org/licenses/by-sa/4.0/"
         >
-          <div className="mt-4 mb-8 grid grid-flow-col place-content-center gap-1">
-            <SVG
-              className="w-6"
-              src={"/icons/creative-commons-brands.svg"}
-              alt={""}
-            />
-            <SVG
-              className="w-6"
-              src={"/icons/creative-commons-by-brands.svg"}
-              alt={""}
-            />
-            <SVG
-              className="w-6"
-              src={"/icons/creative-commons-sa-brands.svg"}
-              alt={""}
-            />
+          <div className="mt-4 mb-8 grid grid-flow-col place-content-center gap-1 hover:[--theme-color-black:var(--theme-color-dark)]">
+            <div className="w-6 aspect-square [mask:url('/icons/creative-commons-brands.svg')] ![mask-size:contain] ![mask-repeat:no-repeat] ![mask-position:center] bg-black" />
+            <div className="w-6 aspect-square [mask:url('/icons/creative-commons-by-brands.svg')] ![mask-size:contain] ![mask-repeat:no-repeat] ![mask-position:center] bg-black" />
+            <div className="w-6 aspect-square [mask:url('/icons/creative-commons-sa-brands.svg')] ![mask-size:contain] ![mask-repeat:no-repeat] ![mask-position:center] bg-black" />
           </div>
         </a>
         <p>
@@ -216,21 +201,17 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
         </p>
         <div className="mt-12 mb-4 grid h-4 grid-flow-col place-content-center gap-8">
           <a
-            className="transition-[filter] colorize-black dark:colorize-dark-black hover:colorize-dark dark:hover:colorize-dark-dark"
+            className="transition-colors [mask:url('/icons/github-brands.svg')] ![mask-size:contain] ![mask-repeat:no-repeat] ![mask-position:center] w-10 aspect-square bg-black hover:bg-dark"
             href="https://github.com/Accords-Library"
             target="_blank"
             rel="noopener noreferrer"
-          >
-            <SVG className="w-10" src={"/icons/github-brands.svg"} alt={""} />
-          </a>
+          ></a>
           <a
-            className="transition-[filter] colorize-black dark:colorize-dark-black hover:colorize-dark dark:hover:colorize-dark-dark"
+            className="transition-colors [mask:url('/icons/discord-brands.svg')] ![mask-size:contain] ![mask-repeat:no-repeat] ![mask-position:center] w-10 aspect-square bg-black hover:bg-dark"
             href="/discord"
             target="_blank"
             rel="noopener noreferrer"
-          >
-            <SVG className="w-10" src={"/icons/discord-brands.svg"} alt={""} />
-          </a>
+          ></a>
         </div>
       </div>
     </div>

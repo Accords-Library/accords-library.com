@@ -115,7 +115,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
   const contentPanel = (
     <ContentPanel width={ContentPanelWidthSizes.large}>
       <div className="grid place-items-center gap-12">
-        <div className="drop-shadow-shade-xl dark:drop-shadow-dark-shade-xl w-full h-[50vh] mobile:h-[80vh] mb-16 relative cursor-pointer">
+        <div className="drop-shadow-shade-xl w-full h-[50vh] mobile:h-[80vh] mb-16 relative cursor-pointer">
           {item.thumbnail.data ? (
             <Img
               image={item.thumbnail.data.attributes}
@@ -125,7 +125,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
               priority
             />
           ) : (
-            <div className="w-full aspect-[21/29.7] bg-light dark:bg-dark-light rounded-xl"></div>
+            <div className="w-full aspect-[21/29.7] bg-light rounded-xl"></div>
           )}
         </div>
 
@@ -172,7 +172,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
                   key={galleryItem.id}
                   className="relative aspect-square hover:scale-[1.02] transition-transform cursor-pointer"
                 >
-                  <div className="bg-light dark:bg-dark-light absolute inset-0 rounded-lg drop-shadow-shade-md dark:drop-shadow-dark-shade-md"></div>
+                  <div className="bg-light absolute inset-0 rounded-lg drop-shadow-shade-md"></div>
                   <Img
                     className="rounded-lg"
                     image={galleryItem.attributes}
@@ -374,7 +374,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
                 <div
                   id={content.attributes.slug}
                   key={content.id}
-                  className="grid gap-2 px-4 rounded-lg target:bg-mid dark:target:bg-dark-mid target:shadow-inner-sm target:shadow-shade dark:target:shadow-dark-shade target:h-auto target:py-3 target:my-2 target:[--displaySubContentMenu:grid] [--displaySubContentMenu:none]"
+                  className="grid gap-2 px-4 rounded-lg target:bg-mid target:shadow-inner-sm target:shadow-shade target:h-auto target:py-3 target:my-2 target:[--displaySubContentMenu:grid] [--displaySubContentMenu:none]"
                 >
                   <div className="grid gap-4 place-items-center grid-cols-[auto_auto_1fr_auto_12ch] thin:grid-cols-[auto_auto_1fr_auto]">
                     <a href={`#${content.attributes.slug}`}>
@@ -402,7 +402,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
                         )
                       )}
                     </div>
-                    <p className="border-b-2 h-4 w-full border-black dark:border-dark-black border-dotted opacity-30"></p>
+                    <p className="border-b-2 h-4 w-full border-black border-dotted opacity-30"></p>
                     <p>
                       {content.attributes.range[0].__typename ===
                       "ComponentRangePageRange"
@@ -425,7 +425,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
                     )}
                   </div>
                   <div className="grid-flow-col place-content-start place-items-center gap-2 [display:var(--displaySubContentMenu)]">
-                    <span className="material-icons text-dark dark:text-dark-dark">
+                    <span className="material-icons text-dark">
                       subdirectory_arrow_right
                     </span>
 

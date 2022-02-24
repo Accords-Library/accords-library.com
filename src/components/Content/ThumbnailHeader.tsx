@@ -26,7 +26,7 @@ export default function ThumbnailHeader(
   return (
     <>
       <div className="grid place-items-center gap-12  mb-12">
-        <div className="drop-shadow-shade-lg dark:drop-shadow-dark-shade-lg">
+        <div className="drop-shadow-shade-lg">
           {content.thumbnail.data ? (
             <Img
               className=" rounded-xl"
@@ -35,7 +35,7 @@ export default function ThumbnailHeader(
               priority
             />
           ) : (
-            <div className="w-full aspect-[4/3] bg-light dark:bg-dark-light rounded-xl"></div>
+            <div className="w-full aspect-[4/3] bg-light rounded-xl"></div>
           )}
         </div>
         <div className="grid place-items-center text-center">

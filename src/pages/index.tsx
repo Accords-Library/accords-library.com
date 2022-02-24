@@ -13,12 +13,8 @@ export default function Home(props: HomeProps): JSX.Element {
 
   const contentPanel = (
     <ContentPanel autoformat>
-      <div className="grid place-items-center place-content-center w-full gap-5 text-center colorize-black dark:colorize-dark-black">
-        <SVG
-          className="w-32 mobile:w-1/2"
-          src={"/icons/accords.svg"}
-          alt={"Logo of Accord's Library"}
-        />
+      <div className="grid place-items-center place-content-center w-full gap-5 text-center">
+        <div className="[mask:url('/icons/accords.svg')] [mask-size:contain] [mask-repeat:no-repeat] [mask-position:center] w-32 aspect-square mobile:w-[50vw] bg-black" />
         <h1 className="text-5xl mb-0">Accord&rsquo;s Library</h1>
         <h2 className="mt-0">Discover • Analyse • Translate • Archive</h2>
       </div>

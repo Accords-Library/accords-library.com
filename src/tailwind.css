@@ -17,17 +17,17 @@
   }
 
   a {
-    @apply transition-colors underline-offset-2 decoration-dotted underline decoration-dark dark:decoration-dark-dark hover:text-dark dark:hover:text-dark-dark;
+    @apply transition-colors underline-offset-2 decoration-dotted underline decoration-dark hover:text-dark;
   }
 
   *::selection {
-    @apply bg-dark dark:bg-dark-dark text-light dark:text-dark-light;
+    @apply bg-dark text-light;
   }
 
   /* SCROLLBARS STYLING */
 
   * {
-    @apply [scrollbar-color:theme(colors.dark)_transparent] dark:[scrollbar-color:theme(colors.dark-dark)_transparent] [scrollbar-width:thin];
+    @apply [scrollbar-color:theme(colors.dark)_transparent] [scrollbar-width:thin];
   }
 
   *::-webkit-scrollbar {
@@ -35,11 +35,11 @@
   }
 
   *::-webkit-scrollbar-track {
-    @apply bg-light dark:bg-dark-light;
+    @apply bg-light;
   }
 
   *::-webkit-scrollbar-thumb {
-    @apply bg-dark dark:bg-dark-dark rounded-full border-[3px] border-solid border-light dark:border-dark-light;
+    @apply bg-dark rounded-full border-[3px] border-solid border-light;
   }
 
   /* CHANGE PROSE DEFAULTS */
@@ -54,11 +54,11 @@
   .prose h6,
   .prose a,
   .prose strong {
-    @apply text-black dark:text-dark-black;
+    @apply text-black;
   }
 
   .prose a {
-    @apply transition-colors underline-offset-2 decoration-dotted underline decoration-dark dark:decoration-dark-dark hover:text-dark dark:hover:text-dark-dark;
+    @apply transition-colors underline-offset-2 decoration-dotted underline decoration-dark hover:text-dark;
   }
 
   .prose footer {
@@ -70,12 +70,12 @@
   }
 
   .prose footer > div:target {
-    @apply bg-mid dark:bg-dark-mid shadow-inner-sm shadow-shade dark:shadow-dark-shade;
+    @apply bg-mid shadow-inner-sm shadow-shade;
   }
 }
 
 @layer components {
   .texture-paper-dots {
-    @apply bg-paper-dots dark:bg-dark-paper-dots bg-blend-multiply dark:bg-blend-overlay bg-local bg-[length:10cm];
+    @apply [background-image:var(--theme-texture-dots)] [background-blend-mode:var(--theme-texture-dots-blend)] bg-local bg-[length:10cm];
   }
 }

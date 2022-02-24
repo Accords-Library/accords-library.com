@@ -53,7 +53,7 @@ export default function ChronologyItemComponent(
 
   return (
     <div
-      className="grid place-content-start grid-rows-[auto_1fr] grid-cols-[4em] py-4 px-8 rounded-2xl target:bg-mid dark:bg-dark-mid target:py-8 target:my-4"
+      className="grid place-content-start grid-rows-[auto_1fr] grid-cols-[4em] py-4 px-8 rounded-2xl target:bg-mid target:py-8 target:my-4"
       id={generateAnchor(
         props.item.attributes.year,
         props.item.attributes.month,
@@ -71,7 +71,7 @@ export default function ChronologyItemComponent(
         ""
       )}
 
-      <p className="col-start-1 text-dark dark:text-dark-dark text-sm">
+      <p className="col-start-1 text-dark text-sm">
         {generateDate(props.item.attributes.month, props.item.attributes.day)}
       </p>
 
@@ -86,7 +86,7 @@ export default function ChronologyItemComponent(
                   <p
                     className={
                       event.translations.length > 1
-                        ? "before:content-['-'] before:text-dark dark:before:text-dark-dark before:inline-block before:w-4 before:ml-[-1em] mt-2 whitespace-pre-line"
+                        ? "before:content-['-'] before:text-dark before:inline-block before:w-4 before:ml-[-1em] mt-2 whitespace-pre-line"
                         : "whitespace-pre-line"
                     }
                   >
@@ -103,7 +103,7 @@ export default function ChronologyItemComponent(
               </>
             ))}
 
-            <p className="text-dark dark:text-dark-dark text-xs inline-grid place-items-center grid-flow-col gap-1">
+            <p className="text-dark text-xs inline-grid place-items-center grid-flow-col gap-1">
               {event.source.data ? (
                 "(" + event.source.data.attributes.name + ")"
               ) : (

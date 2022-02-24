@@ -30,12 +30,15 @@ export function prettyPrice(
   );
 }
 
-export function prettySlug(slug: string, parentSlug?: string): string {
-  if (parentSlug && slug.startsWith(parentSlug))
-    slug = slug.substring(parentSlug.length + 1);
-  slug = slug.replace(new RegExp("-", "g"), " ");
-  slug = slug.replace(new RegExp("_", "g"), " ");
-  return capitalizeString(slug);
+export function prettySlug(slug?: string, parentSlug?: string): string {
+  if (slug) {
+    if (parentSlug && slug.startsWith(parentSlug))
+      slug = slug.substring(parentSlug.length + 1);
+    slug = slug.replace(new RegExp("-", "g"), " ");
+    slug = slug.replace(new RegExp("_", "g"), " ");
+    return capitalizeString(slug);
+  }
+  return "";
 }
 
 export function prettyinlineTitle(
@@ -73,9 +76,11 @@ export function prettyItemType(
   }
 }
 
-export function prettyItemSubType(
-  metadata: GetLibraryItemsPreviewQuery["libraryItems"]["data"][number]["attributes"]["metadata"][number]
-): string {
+export function prettyItemSubType(metadata: {
+  __typename: GetLibraryItemsPreviewQuery["libraryItems"]["data"][number]["attributes"]["metadata"][number]["__typename"];
+  subtype?: any;
+  platform?: any;
+}): string {
   switch (metadata.__typename) {
     case "ComponentMetadataAudio":
     case "ComponentMetadataBooks":

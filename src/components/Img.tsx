@@ -1,4 +1,4 @@
-import { GetLibraryItemsPreviewQuery } from "graphql/operations-types";
+import { StrapiImage } from "graphql/operations-types";
 import { ImageProps } from "next/image";
 import Image from "next/image";
 
@@ -9,11 +9,11 @@ export enum ImageQuality {
   Og = "og",
 }
 
-export function getAssetURL(url: string, quality?: ImageQuality): string {
-  if (!quality) quality = ImageQuality.Small;
+export function getAssetURL(url: string, quality: ImageQuality): string {
   url = url.replace(/^\/uploads/, "/" + quality);
   url = url.replace(/.jpg$/, ".webp");
   url = url.replace(/.png$/, ".webp");
+  if (quality === ImageQuality.Og) url = url.replace(/.webp$/, ".jpg");
   return process.env.NEXT_PUBLIC_URL_IMG + url;
 }
 
@@ -50,7 +50,7 @@ export function getImgSizesByQuality(
 
 type ImgProps = {
   className?: string;
-  image: GetLibraryItemsPreviewQuery["libraryItems"]["data"][number]["attributes"]["thumbnail"]["data"]["attributes"];
+  image: StrapiImage;
   quality?: ImageQuality;
   alt?: ImageProps["alt"];
   layout?: ImageProps["layout"];
@@ -67,7 +67,10 @@ export default function Img(props: ImgProps): JSX.Element {
   return (
     <Image
       className={props.className}
-      src={getAssetURL(props.image.url, props.quality)}
+      src={getAssetURL(
+        props.image.url,
+        props.quality ? props.quality : ImageQuality.Small
+      )}
       alt={props.alt ? props.alt : props.image.alternativeText}
       width={props.layout === "fill" ? undefined : imgSize.width}
       height={props.layout === "fill" ? undefined : imgSize.height}

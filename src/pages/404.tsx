@@ -19,7 +19,7 @@ export default function FourOhFour(props: FourOhFourProps): JSX.Element {
       </Link>
     </ContentPanel>
   );
-  return <AppLayout title="404" langui={langui} contentPanel={contentPanel} />;
+  return <AppLayout navTitle="404" langui={langui} contentPanel={contentPanel} />;
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {

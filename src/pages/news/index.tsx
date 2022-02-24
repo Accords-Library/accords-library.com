@@ -22,7 +22,11 @@ export default function News(props: NewsProps): JSX.Element {
   );
 
   return (
-    <AppLayout title={langui.main_news} langui={langui} subPanel={subPanel} />
+    <AppLayout
+      navTitle={langui.main_news}
+      langui={langui}
+      subPanel={subPanel}
+    />
   );
 }
 

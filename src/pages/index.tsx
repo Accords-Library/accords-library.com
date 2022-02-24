@@ -143,7 +143,7 @@ export default function Home(props: HomeProps): JSX.Element {
   return (
     <>
       <AppLayout
-        title={"Accord’s Library"}
+        navTitle={"Accord’s Library"}
         langui={langui}
         contentPanel={contentPanel}
       />

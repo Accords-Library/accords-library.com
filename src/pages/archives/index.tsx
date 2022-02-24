@@ -22,7 +22,7 @@ export default function Archives(props: ArchivesProps): JSX.Element {
   );
   return (
     <AppLayout
-      title={langui.main_archives}
+      navTitle={langui.main_archives}
       langui={langui}
       subPanel={subPanel}
     />

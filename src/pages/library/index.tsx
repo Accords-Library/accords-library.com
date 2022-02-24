@@ -42,7 +42,7 @@ export default function Library(props: LibraryProps): JSX.Element {
   );
   return (
     <AppLayout
-      title={langui.library_items}
+      navTitle={langui.main_library}
       langui={langui}
       subPanel={subPanel}
       contentPanel={contentPanel}

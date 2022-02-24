@@ -1,20 +1,27 @@
-import { GetWebsiteInterfaceQuery } from "graphql/operations-types";
+import {
+  GetWebsiteInterfaceQuery,
+  StrapiImage,
+} from "graphql/operations-types";
 import MainPanel from "./Panels/MainPanel";
 import Head from "next/head";
 import { useSwipeable } from "react-swipeable";
 import { useRouter } from "next/router";
 import Button from "components/Button";
-import { prettyLanguage } from "queries/helpers";
+import { getOgImage, prettyLanguage } from "queries/helpers";
 import { useMediaCoarse, useMediaMobile } from "hooks/useMediaQuery";
 import ReactTooltip from "react-tooltip";
 import { useAppLayout } from "contexts/AppLayoutContext";
+import { ImageQuality } from "./Img";
 
 type AppLayoutProps = {
   subPanel?: React.ReactNode;
   subPanelIcon?: string;
   contentPanel?: React.ReactNode;
   langui: GetWebsiteInterfaceQuery["websiteInterfaces"]["data"][number]["attributes"];
-  title: string;
+  title?: string;
+  navTitle: string;
+  thumbnail?: StrapiImage;
+  description?: string;
 };
 
 export default function AppLayout(props: AppLayoutProps): JSX.Element {
@@ -68,6 +75,9 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
 
   const turnSubIntoContent = props.subPanel && !props.contentPanel;
 
+  const ogImage = getOgImage(ImageQuality.Og, props.thumbnail);
+  const ogTitle = props.title ? props.title : props.navTitle;
+
   return (
     <div className={appLayout.darkMode ? "set-theme-dark" : "set-theme-light"}>
       <div
@@ -75,9 +85,45 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
         className="fixed inset-0 touch-pan-y p-0 m-0 bg-light text-black"
       >
         <Head>
-          <title>
-            {props.title ? `${titlePrefix} - ${props.title}` : titlePrefix}
-          </title>
+          <title>{`${titlePrefix} - ${ogTitle}`}</title>
+
+          <meta
+            name="twitter:title"
+            content={`${titlePrefix} - ${ogTitle}`}
+          ></meta>
+
+          {props.description && (
+            <>
+              <meta name="description" content={props.description} />
+              <meta
+                name="twitter:description"
+                content={props.description}
+              ></meta>
+            </>
+          )}
+
+          {ogImage && (
+            <>
+              <meta property="og:image" content={ogImage.image}></meta>
+              <meta
+                property="og:image:secure_url"
+                content={ogImage.image}
+              ></meta>
+              <meta
+                property="og:image:width"
+                content={ogImage.width.toString()}
+              ></meta>
+              <meta
+                property="og:image:height"
+                content={ogImage.height.toString()}
+              ></meta>
+              <meta property="og:image:alt" content={ogImage.alt}></meta>
+              <meta property="og:image:type" content="image/jpeg"></meta>
+              <meta name="twitter:card" content="summary_large_image"></meta>
+
+              <meta name="twitter:image" content={ogImage.image}></meta>
+            </>
+          )}
         </Head>
 
         {/* Navbar */}
@@ -88,7 +134,7 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
           >
             menu
           </span>
-          <p className="text-2xl font-black font-headers">{props.title}</p>
+          <p className="text-2xl font-black font-headers">{props.navTitle}</p>
           <span
             className="material-icons mt-[.1em] cursor-pointer"
             onClick={() => appLayout.setSubPanelOpen(true)}

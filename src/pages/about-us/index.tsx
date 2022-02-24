@@ -22,7 +22,7 @@ export default function AboutUs(props: AboutUsProps): JSX.Element {
   );
   return (
     <AppLayout
-      title={langui.main_about_us}
+      navTitle={langui.main_about_us}
       langui={langui}
       subPanel={subPanel}
     />

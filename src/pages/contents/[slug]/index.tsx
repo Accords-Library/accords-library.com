@@ -15,6 +15,7 @@ import ThumbnailHeader from "components/Content/ThumbnailHeader";
 import AppLayout from "components/AppLayout";
 import SubPanel from "components/Panels/SubPanel";
 import ReturnButton from "components/PanelComponents/ReturnButton";
+import { prettyinlineTitle, prettySlug } from "queries/helpers";
 
 type ContentIndexProps = {
   content: GetContentQuery;
@@ -26,11 +27,7 @@ export default function ContentIndex(props: ContentIndexProps): JSX.Element {
   const langui = props.langui.websiteInterfaces.data[0].attributes;
   const subPanel = (
     <SubPanel>
-      <ReturnButton
-        href="/contents"
-        title={"Contents"}
-        langui={langui}
-      />
+      <ReturnButton href="/contents" title={"Contents"} langui={langui} />
       <HorizontalLine />
     </SubPanel>
   );
@@ -70,7 +67,13 @@ export default function ContentIndex(props: ContentIndexProps): JSX.Element {
 
   return (
     <AppLayout
-      title={langui.library_content}
+      navTitle="Contents"
+      title={
+        content.titles.length > 0
+          ? prettyinlineTitle(content.titles[0].pre_title, content.titles[0].title, content.titles[0].subtitle)
+          : prettySlug(content.slug)
+      }
+      thumbnail={content.thumbnail.data.attributes}
       langui={langui}
       contentPanel={contentPanel}
       subPanel={subPanel}

@@ -1,6 +1,12 @@
 import {
+  getAssetURL,
+  getImgSizesByQuality,
+  ImageQuality,
+} from "components/Img";
+import {
   GetLibraryItemsPreviewQuery,
   GetWebsiteInterfaceQuery,
+  StrapiImage,
 } from "graphql/operations-types";
 
 export function prettyDate(
@@ -118,4 +124,30 @@ export function capitalizeString(string: string): string {
 
 export function convertMmToInch(mm: number): string {
   return (mm * 0.03937008).toPrecision(3);
+}
+
+type OgImage = {
+  image: string;
+  width: number;
+  height: number;
+  alt: string;
+};
+
+export function getOgImage(
+  quality: ImageQuality,
+  image?: StrapiImage
+): OgImage | undefined {
+  if (image) {
+    const imgSize = getImgSizesByQuality(
+      image.width,
+      image.height,
+      quality ? quality : ImageQuality.Small
+    );
+    return {
+      image: getAssetURL(image.url, quality),
+      width: imgSize.width,
+      height: imgSize.height,
+      alt: image.alternativeText,
+    };
+  }
 }

@@ -481,10 +481,17 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
 
   return (
     <AppLayout
-      title={langui.library_items}
+      navTitle={langui.main_library}
+      title={prettyinlineTitle("", item.title, item.subtitle)}
       langui={langui}
       contentPanel={contentPanel}
       subPanel={subPanel}
+      thumbnail={item.thumbnail.data.attributes}
+      description={
+        item.descriptions.length > 0
+          ? item.descriptions[0].description
+          : undefined
+      }
     />
   );
 }

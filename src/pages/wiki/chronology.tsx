@@ -119,7 +119,7 @@ export default function DataChronology(
 
   return (
     <AppLayout
-      title="Chronology"
+      navTitle="Chronology"
       langui={langui}
       contentPanel={contentPanel}
       subPanel={subPanel}

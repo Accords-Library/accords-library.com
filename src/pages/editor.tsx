@@ -85,7 +85,7 @@ export default function Editor(props: EditorProps): JSX.Element {
   );
   return (
     <AppLayout
-      title="Markdawn Editor"
+      navTitle="Markdawn Editor"
       langui={langui}
       contentPanel={contentPanel}
     />

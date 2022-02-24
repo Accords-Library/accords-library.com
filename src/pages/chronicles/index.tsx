@@ -22,7 +22,7 @@ export default function Chronicles(props: ChroniclesProps): JSX.Element {
   );
   return (
     <AppLayout
-      title={langui.main_chronicles}
+      navTitle={langui.main_chronicles}
       langui={langui}
       subPanel={subPanel}
     />

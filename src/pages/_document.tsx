@@ -24,18 +24,46 @@ class MyDocument extends Document {
     return (
       <Html>
         <Head>
-          <meta name="description" content={siteDescription} />
-          <link rel="icon" href={siteFavicon} />
-          <meta property="og:image" content={thumbnailImage}></meta>
-          <meta property="og:image:secure_url" content={thumbnailImage}></meta>
-          <meta property="og:image:width" content="1200"></meta>
-          <meta property="og:image:height" content="630"></meta>
-          <meta property="og:image:alt" content="Accord's Library"></meta>
-          <meta property="og:image:type" content="image/jpeg"></meta>
-          <meta name="twitter:card" content="summary_large_image"></meta>
-          <meta name="twitter:title" content={siteTitle}></meta>
-          <meta name="twitter:description" content={siteDescription}></meta>
-          <meta name="twitter:image" content={thumbnailImage}></meta>
+          <meta
+            name="description"
+            content={siteDescription}
+            key="description"
+          />
+          <link rel="icon" href={siteFavicon} key="icon" />
+          <meta property="og:image" content={thumbnailImage} key="ogImage" />
+          <meta
+            property="og:image:secure_url"
+            content={thumbnailImage}
+            key="ogImageSecure"
+          />
+          <meta property="og:image:width" content="1200" key="ogImageWidth" />
+          <meta property="og:image:height" content="630" key="ogImageHeight" />
+          <meta
+            property="og:image:alt"
+            content="Accord's Library"
+            key="ogImageAlt"
+          />
+          <meta
+            property="og:image:type"
+            content="image/jpeg"
+            key="ogImageType"
+          />
+          <meta
+            name="twitter:card"
+            content="summary_large_image"
+            key="twitterCard"
+          />
+          <meta name="twitter:title" content={siteTitle} key="twitterTitle" />
+          <meta
+            name="twitter:description"
+            content={siteDescription}
+            key="twitterDescription"
+          />
+          <meta
+            name="twitter:image"
+            content={thumbnailImage}
+            key="twitterImage"
+          />
           <meta
             name="apple-mobile-web-app-status-bar-style"
             content="black-translucent"

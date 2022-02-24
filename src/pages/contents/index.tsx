@@ -10,8 +10,6 @@ import {
 import { getContents, getWebsiteInterface } from "graphql/operations";
 import PanelHeader from "components/PanelComponents/PanelHeader";
 import AppLayout from "components/AppLayout";
-import ReturnButton from "components/PanelComponents/ReturnButton";
-import HorizontalLine from "components/HorizontalLine";
 import LibraryContentPreview from "components/Library/LibraryContentPreview";
 import { prettyinlineTitle } from "queries/helpers";
 
@@ -63,7 +61,7 @@ export default function Library(props: LibraryProps): JSX.Element {
   );
   return (
     <AppLayout
-      title={langui.library_content}
+      navTitle="Contents"
       langui={langui}
       subPanel={subPanel}
       contentPanel={contentPanel}

@@ -62,6 +62,16 @@ export enum Enum_Componentsetstextset_Status {
   Done = "Done",
 }
 
+export type StrapiImage = {
+  __typename: "UploadFile";
+  name: string;
+  alternativeText: string;
+  caption: string;
+  width: number;
+  height: number;
+  url: string;
+};
+
 // __________________________________________________________________
 
 export type GetWebsiteInterfaceQueryVariables = Exact<{

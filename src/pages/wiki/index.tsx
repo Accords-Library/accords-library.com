@@ -25,7 +25,7 @@ export default function Hubs(props: WikiProps): JSX.Element {
 
   return (
     <AppLayout
-      title={langui.main_wiki}
+      navTitle={langui.main_wiki}
       langui={langui}
       contentPanel={contentPanel}
       subPanel={subPanel}

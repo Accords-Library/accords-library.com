@@ -39,9 +39,6 @@ export default function LibraryItemsPreview(
         <div className="linearbg-obi fine:drop-shadow-shade-lg fine:absolute place-items-start bottom-2 -inset-x-0.5 opacity-[var(--cover-opacity)] transition-opacity z-20 grid p-4 gap-2">
           {item.metadata && item.metadata.length > 0 ? (
             <div className="flex flex-row gap-1">
-              {item.metadata[0].__typename === "ComponentMetadataOther"
-                ? console.log(item.slug)
-                : ""}
               <Chip>{prettyItemSubType(item.metadata[0])}</Chip>
             </div>
           ) : (

@@ -68,8 +68,7 @@ class MyDocument extends Document {
             name="apple-mobile-web-app-status-bar-style"
             content="black-translucent"
           />
-          <link rel="manifest" href="manifest.json" />
-          <meta name="theme-color" content="#FFEDD8" />
+          <link rel="manifest" href="manifest.webmanifest" />
         </Head>
         <body>
           <Main />

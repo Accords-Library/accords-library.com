@@ -77,7 +77,7 @@ export default function ContentIndex(props: ContentIndexProps): JSX.Element {
             )
           : prettySlug(content.slug)
       }
-      thumbnail={content.thumbnail.data.attributes}
+      thumbnail={content.thumbnail.data?.attributes}
       langui={langui}
       contentPanel={contentPanel}
       subPanel={subPanel}

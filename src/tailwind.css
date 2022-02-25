@@ -72,6 +72,11 @@
   .prose footer > div:target {
     @apply bg-mid shadow-inner-sm shadow-shade;
   }
+
+  .prose li::marker {
+    @apply text-dark;
+  }
+
 }
 
 @layer components {

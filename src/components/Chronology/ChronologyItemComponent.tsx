@@ -1,4 +1,8 @@
-import { GetChronologyItemsQuery } from "graphql/operations-types";
+import Chip from "components/Chip";
+import {
+  Enum_Componenttranslationschronologyitem_Status,
+  GetChronologyItemsQuery,
+} from "graphql/operations-types";
 
 export type ChronologyItemComponentProps = {
   item: GetChronologyItemsQuery["chronologyItems"]["data"][number];
@@ -80,7 +84,29 @@ export default function ChronologyItemComponent(
           <div className="m-0" key={event.id}>
             {event.translations.map((translation) => (
               <>
-                {translation.title ? <h3>{translation.title}</h3> : ""}
+                <div className="place-items-start place-content-start grid grid-flow-col gap-2">
+                  {translation.status !==
+                    Enum_Componenttranslationschronologyitem_Status.Done && (
+                    <div
+                      data-tip={
+                        translation.status ===
+                        Enum_Componenttranslationschronologyitem_Status.Incomplete
+                          ? "This entry is only partially translated/transcribed."
+                          : translation.status ===
+                            Enum_Componenttranslationschronologyitem_Status.Draft
+                          ? "This entry is just a draft. It usually means that this is a work-in-progress. Translation/transcription might be poor and/or computer-generated."
+                          : translation.status ===
+                            Enum_Componenttranslationschronologyitem_Status.Review
+                          ? "This entry has not yet being proofread. The content should still be accurate."
+                          : ""
+                      }
+                      data-for={"ChronologyTooltip"}
+                    >
+                      <Chip>{translation.status}</Chip>
+                    </div>
+                  )}
+                  {translation.title ? <h3>{translation.title}</h3> : ""}
+                </div>
 
                 {translation.description ? (
                   <p
@@ -103,7 +129,7 @@ export default function ChronologyItemComponent(
               </>
             ))}
 
-            <p className="text-dark text-xs inline-grid place-items-center grid-flow-col gap-1">
+            <p className="text-dark text-xs grid place-self-start grid-flow-col gap-1 mt-1">
               {event.source.data ? (
                 "(" + event.source.data.attributes.name + ")"
               ) : (

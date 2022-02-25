@@ -27,3 +27,35 @@
 - State Management: [React Context](https://reactjs.org/docs/context.html)
   - Persistent app state using LocalStorage 
 - Support for many screen sizes and resolutions
+
+## Installation
+
+```bash
+git clone https://github.com/Accords-Library/accords-library.com.git
+cd accords-library.com
+npm install
+```
+
+Create a env file:
+```bash
+nano .env.local
+```
+
+Enter the followind information:
+```txt
+URL_GRAPHQL=https://url-to.strapi-accords-library.com/graphql
+ACCESS_TOKEN=genatedcode-by-strapi-api
+NEXT_PUBLIC_URL_CMS=https://url-to.strapi-accords-library.com/
+NEXT_PUBLIC_URL_IMG=https://url-to.img-accords-library.com/
+```
+
+Run in dev mode:
+```bash
+./run_accords_dev.sh
+```
+
+OR build and run in production mode
+```bash
+./run_accords_build.sh
+./run_accords_prod.sh
+```

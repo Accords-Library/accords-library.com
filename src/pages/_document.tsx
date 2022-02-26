@@ -13,62 +13,39 @@ class MyDocument extends Document {
   }
 
   render() {
-    // General info about the site
-    const siteTitle =
-      "Accord's Library - Discover • Analyse • Translate • Archive";
-    const siteDescription =
-      "Accord's Library aims at gathering and archiving all of Yoko Taro’s work. Yoko Taro is a Japanese video game director and scenario writer.";
-    const siteFavicon = "/favicon.png";
-    const thumbnailImage = "/default_og.jpg";
-
     return (
       <Html>
         <Head>
-          <meta
-            name="description"
-            content={siteDescription}
-            key="description"
+          <link
+            rel="apple-touch-icon"
+            sizes="180x180"
+            href="/apple-touch-icon.png"
           />
-          <link rel="icon" href={siteFavicon} key="icon" />
-          <meta property="og:image" content={thumbnailImage} key="ogImage" />
-          <meta
-            property="og:image:secure_url"
-            content={thumbnailImage}
-            key="ogImageSecure"
+          <link
+            rel="icon"
+            type="image/png"
+            sizes="32x32"
+            href="/favicon-32x32.png"
           />
-          <meta property="og:image:width" content="1200" key="ogImageWidth" />
-          <meta property="og:image:height" content="630" key="ogImageHeight" />
-          <meta
-            property="og:image:alt"
-            content="Accord's Library"
-            key="ogImageAlt"
+          <link
+            rel="icon"
+            type="image/png"
+            sizes="16x16"
+            href="/favicon-16x16.png"
           />
-          <meta
-            property="og:image:type"
-            content="image/jpeg"
-            key="ogImageType"
-          />
-          <meta
-            name="twitter:card"
-            content="summary_large_image"
-            key="twitterCard"
-          />
-          <meta name="twitter:title" content={siteTitle} key="twitterTitle" />
-          <meta
-            name="twitter:description"
-            content={siteDescription}
-            key="twitterDescription"
-          />
-          <meta
-            name="twitter:image"
-            content={thumbnailImage}
-            key="twitterImage"
-          />
+          <link rel="manifest" href="/site.webmanifest" />
+          <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#9c6644" />
+          <meta name="apple-mobile-web-app-title" content="Accord's Library" />
+          <meta name="application-name" content="Accord's Library" />
+          <meta name="msapplication-TileColor" content="#feecd6" />
+          <meta name="msapplication-TileImage" content="/mstile-144x144.png" />
+          <meta name="theme-color" content="#feecd6" />
+
+          <meta name="apple-mobile-web-app-capable" content="yes" />
           <meta
             name="apple-mobile-web-app-status-bar-style"
             content="black-translucent"
           />
-          <link rel="manifest" href="manifest.webmanifest" />
         </Head>
         <body>
           <Main />

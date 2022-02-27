@@ -7,7 +7,7 @@ import Head from "next/head";
 import { useSwipeable } from "react-swipeable";
 import { useRouter } from "next/router";
 import Button from "components/Button";
-import { getOgImage, prettyLanguage } from "queries/helpers";
+import { getOgImage, OgImage, prettyLanguage } from "queries/helpers";
 import { useMediaCoarse, useMediaMobile } from "hooks/useMediaQuery";
 import ReactTooltip from "react-tooltip";
 import { useAppLayout } from "contexts/AppLayoutContext";
@@ -22,10 +22,10 @@ type AppLayoutProps = {
   navTitle: string;
   thumbnail?: StrapiImage;
   description?: string;
+  extra?: React.ReactNode;
 };
 
 export default function AppLayout(props: AppLayoutProps): JSX.Element {
-  const titlePrefix = "Accord’s Library";
   const router = useRouter();
   const isMobile = useMediaMobile();
   const isCoarse = useMediaCoarse();
@@ -75,8 +75,20 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
 
   const turnSubIntoContent = props.subPanel && !props.contentPanel;
 
-  const ogImage = getOgImage(ImageQuality.Og, props.thumbnail);
+  const titlePrefix = "Accord’s Library";
+  const metaImage: OgImage = props.thumbnail
+    ? getOgImage(ImageQuality.Og, props.thumbnail)
+    : {
+        image: "/default_og.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Accord's Library Logo",
+      };
   const ogTitle = props.title ? props.title : props.navTitle;
+
+  const metaDescription = props.description
+    ? props.description
+    : "Accord's Library aims at gathering and archiving all of Yoko Taro’s work. Yoko Taro is a Japanese video game director and scenario writer.";
 
   return (
     <div className={appLayout.darkMode ? "set-theme-dark" : "set-theme-light"}>
@@ -94,36 +106,26 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
 
           {props.description && (
             <>
-              <meta name="description" content={props.description} />
-              <meta
-                name="twitter:description"
-                content={props.description}
-              ></meta>
+              <meta name="description" content={metaDescription} />
+              <meta name="twitter:description" content={metaDescription}></meta>
             </>
           )}
 
-          {ogImage && (
-            <>
-              <meta property="og:image" content={ogImage.image}></meta>
-              <meta
-                property="og:image:secure_url"
-                content={ogImage.image}
-              ></meta>
-              <meta
-                property="og:image:width"
-                content={ogImage.width.toString()}
-              ></meta>
-              <meta
-                property="og:image:height"
-                content={ogImage.height.toString()}
-              ></meta>
-              <meta property="og:image:alt" content={ogImage.alt}></meta>
-              <meta property="og:image:type" content="image/jpeg"></meta>
-              <meta name="twitter:card" content="summary_large_image"></meta>
+          <meta property="og:image" content={metaImage.image}></meta>
+          <meta property="og:image:secure_url" content={metaImage.image}></meta>
+          <meta
+            property="og:image:width"
+            content={metaImage.width.toString()}
+          ></meta>
+          <meta
+            property="og:image:height"
+            content={metaImage.height.toString()}
+          ></meta>
+          <meta property="og:image:alt" content={metaImage.alt}></meta>
+          <meta property="og:image:type" content="image/jpeg"></meta>
+          <meta name="twitter:card" content="summary_large_image"></meta>
 
-              <meta name="twitter:image" content={ogImage.image}></meta>
-            </>
-          )}
+          <meta name="twitter:image" content={metaImage.image}></meta>
         </Head>
 
         {/* Navbar */}
@@ -263,6 +265,8 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
           className="drop-shadow-shade-xl !opacity-100 !bg-light !rounded-lg after:!border-r-light text-left !text-black"
         />
       </div>
+
+      {props.extra}
     </div>
   );
 }

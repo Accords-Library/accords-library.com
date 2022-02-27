@@ -39,7 +39,16 @@ class MyDocument extends Document {
           <meta name="application-name" content="Accord's Library" />
           <meta name="msapplication-TileColor" content="#feecd6" />
           <meta name="msapplication-TileImage" content="/mstile-144x144.png" />
-          <meta name="theme-color" content="#feecd6" />
+          <meta
+            name="theme-color"
+            media="(prefers-color-scheme: light)"
+            content="#feecd6"
+          />
+          <meta
+            name="theme-color"
+            media="(prefers-color-scheme: dark)"
+            content="#26221e"
+          />
 
           <meta name="apple-mobile-web-app-capable" content="yes" />
           <meta

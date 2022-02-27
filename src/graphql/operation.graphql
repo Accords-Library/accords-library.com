@@ -73,7 +73,7 @@ query getWebsiteInterface($language_code: String) {
 }
 
 query getEras($language_code: String) {
-  chronologyEras {
+  chronologyEras(sort: "starting_year") {
     data {
       id
       attributes {
@@ -730,6 +730,7 @@ query getContent($slug: String, $language_code: String) {
           pre_title
           title
           subtitle
+          description
         }
         categories {
           data {
@@ -817,6 +818,7 @@ query getContentText($slug: String, $language_code: String) {
           pre_title
           title
           subtitle
+          description
         }
         categories {
           data {
@@ -875,16 +877,28 @@ query getContentText($slug: String, $language_code: String) {
           source_language {
             data {
               attributes {
-                name
+                code
               }
             }
           }
           transcribers {
             data {
+              id
               attributes {
                 username
                 anonymize
                 anonymous_code
+                pronouns
+                bio(filters: { language: { code: { eq: $language_code } } }) {
+                  bio
+                }
+                languages {
+                  data {
+                    attributes {
+                      code
+                    }
+                  }
+                }
                 avatar {
                   data {
                     attributes {
@@ -902,10 +916,22 @@ query getContentText($slug: String, $language_code: String) {
           }
           translators {
             data {
+              id
               attributes {
                 username
                 anonymize
                 anonymous_code
+                pronouns
+                bio(filters: { language: { code: { eq: $language_code } } }) {
+                  bio
+                }
+                languages {
+                  data {
+                    attributes {
+                      code
+                    }
+                  }
+                }
                 avatar {
                   data {
                     attributes {
@@ -923,10 +949,22 @@ query getContentText($slug: String, $language_code: String) {
           }
           proofreaders {
             data {
+              id
               attributes {
                 username
                 anonymize
                 anonymous_code
+                pronouns
+                bio(filters: { language: { code: { eq: $language_code } } }) {
+                  bio
+                }
+                languages {
+                  data {
+                    attributes {
+                      code
+                    }
+                  }
+                }
                 avatar {
                   data {
                     attributes {

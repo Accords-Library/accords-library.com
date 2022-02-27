@@ -81,6 +81,9 @@ export default function ContentIndex(props: ContentIndexProps): JSX.Element {
       langui={langui}
       contentPanel={contentPanel}
       subPanel={subPanel}
+      description={
+        content.titles.length > 0 ? content.titles[0].description : undefined
+      }
     />
   );
 }

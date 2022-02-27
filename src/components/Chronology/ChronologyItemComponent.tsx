@@ -87,7 +87,7 @@ export default function ChronologyItemComponent(
                 <div className="place-items-start place-content-start grid grid-flow-col gap-2">
                   {translation.status !==
                     Enum_Componenttranslationschronologyitem_Status.Done && (
-                    <div
+                    <Chip
                       data-tip={
                         translation.status ===
                         Enum_Componenttranslationschronologyitem_Status.Incomplete
@@ -102,8 +102,8 @@ export default function ChronologyItemComponent(
                       }
                       data-for={"ChronologyTooltip"}
                     >
-                      <Chip>{translation.status}</Chip>
-                    </div>
+                      {translation.status}
+                    </Chip>
                   )}
                   {translation.title ? <h3>{translation.title}</h3> : ""}
                 </div>

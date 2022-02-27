@@ -398,6 +398,23 @@ type ComponentCollectionsComponentLibraryObiBelt {
   inside_full: UploadFileEntityResponse
 }
 
+input ComponentCollectionsComponentTitlesFiltersInput {
+  title: StringFilterInput
+  and: [ComponentCollectionsComponentTitlesFiltersInput]
+  or: [ComponentCollectionsComponentTitlesFiltersInput]
+  not: ComponentCollectionsComponentTitlesFiltersInput
+}
+
+input ComponentCollectionsComponentTitlesInput {
+  id: ID
+  title: String
+}
+
+type ComponentCollectionsComponentTitles {
+  id: ID!
+  title: String!
+}
+
 input ComponentCollectionsComponentWeaponStoryFiltersInput {
   source: SourceFiltersInput
   categories: CategoryFiltersInput
@@ -426,6 +443,17 @@ type ComponentCollectionsComponentWeaponStory {
     pagination: PaginationArg = {}
     sort: [String] = []
   ): CategoryRelationResponseCollection
+}
+
+type ComponentCollectionsComponentWikiDefinition {
+  id: ID!
+  definition: String
+  categories(
+    filters: CategoryFiltersInput
+    pagination: PaginationArg = {}
+    sort: [String] = []
+  ): CategoryRelationResponseCollection
+  source: SourceEntityResponse
 }
 
 type ComponentMetadataAudio {
@@ -771,6 +799,69 @@ type ComponentSetsVideoSet {
   notes: String
 }
 
+enum ENUM_COMPONENTSETSWIKISET_STATUS {
+  Incomplete
+  Draft
+  Review
+  Done
+}
+
+input ComponentSetsWikiSetFiltersInput {
+  language: LanguageFiltersInput
+  status: StringFilterInput
+  summary: StringFilterInput
+  body: StringFilterInput
+  source_language: LanguageFiltersInput
+  authors: RecorderFiltersInput
+  translators: RecorderFiltersInput
+  proofreaders: RecorderFiltersInput
+  and: [ComponentSetsWikiSetFiltersInput]
+  or: [ComponentSetsWikiSetFiltersInput]
+  not: ComponentSetsWikiSetFiltersInput
+}
+
+input ComponentSetsWikiSetInput {
+  id: ID
+  language: ID
+  status: ENUM_COMPONENTSETSWIKISET_STATUS
+  titles: [ComponentCollectionsComponentTitlesInput]
+  summary: String
+  body: String
+  source_language: ID
+  authors: [ID]
+  translators: [ID]
+  proofreaders: [ID]
+}
+
+type ComponentSetsWikiSet {
+  id: ID!
+  language: LanguageEntityResponse
+  status: ENUM_COMPONENTSETSWIKISET_STATUS!
+  titles(
+    filters: ComponentCollectionsComponentTitlesFiltersInput
+    pagination: PaginationArg = {}
+    sort: [String] = []
+  ): [ComponentCollectionsComponentTitles]
+  summary: String
+  body: String
+  source_language: LanguageEntityResponse
+  authors(
+    filters: RecorderFiltersInput
+    pagination: PaginationArg = {}
+    sort: [String] = []
+  ): RecorderRelationResponseCollection
+  translators(
+    filters: RecorderFiltersInput
+    pagination: PaginationArg = {}
+    sort: [String] = []
+  ): RecorderRelationResponseCollection
+  proofreaders(
+    filters: RecorderFiltersInput
+    pagination: PaginationArg = {}
+    sort: [String] = []
+  ): RecorderRelationResponseCollection
+}
+
 type ComponentSourceUrlSource {
   id: ID!
   title: String
@@ -794,9 +885,30 @@ type ComponentTranslationsAudioSets {
   credits: ComponentBasicsCredits!
 }
 
+input ComponentTranslationsBioFiltersInput {
+  language: LanguageFiltersInput
+  bio: StringFilterInput
+  and: [ComponentTranslationsBioFiltersInput]
+  or: [ComponentTranslationsBioFiltersInput]
+  not: ComponentTranslationsBioFiltersInput
+}
+
+input ComponentTranslationsBioInput {
+  id: ID
+  language: ID
+  bio: String
+}
+
+type ComponentTranslationsBio {
+  id: ID!
+  language: LanguageEntityResponse
+  bio: String
+}
+
 input ComponentTranslationsChronologyEraFiltersInput {
   title: StringFilterInput
   language: LanguageFiltersInput
+  description: StringFilterInput
   and: [ComponentTranslationsChronologyEraFiltersInput]
   or: [ComponentTranslationsChronologyEraFiltersInput]
   not: ComponentTranslationsChronologyEraFiltersInput
@@ -806,12 +918,14 @@ input ComponentTranslationsChronologyEraInput {
   id: ID
   title: String
   language: ID
+  description: String
 }
 
 type ComponentTranslationsChronologyEra {
   id: ID!
-  title: String
+  title: String!
   language: LanguageEntityResponse
+  description: String
 }
 
 enum ENUM_COMPONENTTRANSLATIONSCHRONOLOGYITEM_STATUS {
@@ -1017,6 +1131,7 @@ input ComponentTranslationsTitleFiltersInput {
   title: StringFilterInput
   subtitle: StringFilterInput
   pre_title: StringFilterInput
+  description: StringFilterInput
   and: [ComponentTranslationsTitleFiltersInput]
   or: [ComponentTranslationsTitleFiltersInput]
   not: ComponentTranslationsTitleFiltersInput
@@ -1028,6 +1143,7 @@ input ComponentTranslationsTitleInput {
   title: String
   subtitle: String
   pre_title: String
+  description: String
 }
 
 type ComponentTranslationsTitle {
@@ -1036,6 +1152,7 @@ type ComponentTranslationsTitle {
   title: String!
   subtitle: String
   pre_title: String
+  description: String
 }
 
 enum ENUM_COMPONENTTRANSLATIONSVIDEOSETS_STATUS {
@@ -2051,6 +2168,7 @@ input RecorderFiltersInput {
   anonymize: BooleanFilterInput
   anonymous_code: StringFilterInput
   languages: LanguageFiltersInput
+  pronouns: StringFilterInput
   createdAt: DateTimeFilterInput
   updatedAt: DateTimeFilterInput
   and: [RecorderFiltersInput]
@@ -2064,6 +2182,8 @@ input RecorderInput {
   anonymous_code: String
   avatar: ID
   languages: [ID]
+  pronouns: String
+  bio: [ComponentTranslationsBioInput]
 }
 
 type Recorder {
@@ -2076,6 +2196,12 @@ type Recorder {
     pagination: PaginationArg = {}
     sort: [String] = []
   ): LanguageRelationResponseCollection
+  pronouns: String
+  bio(
+    filters: ComponentTranslationsBioFiltersInput
+    pagination: PaginationArg = {}
+    sort: [String] = []
+  ): [ComponentTranslationsBio]
   createdAt: DateTime
   updatedAt: DateTime
 }
@@ -2359,12 +2485,7 @@ input WebsiteInterfaceFiltersInput {
   language: LanguageFiltersInput
   main_library: StringFilterInput
   main_library_description: StringFilterInput
-  main_hub: StringFilterInput
-  main_hub_description: StringFilterInput
-  main_chronology: StringFilterInput
-  main_chronology_description: StringFilterInput
   main_news: StringFilterInput
-  main_data: StringFilterInput
   main_merch: StringFilterInput
   main_gallery: StringFilterInput
   main_archives: StringFilterInput
@@ -2394,13 +2515,6 @@ input WebsiteInterfaceFiltersInput {
   global_price: StringFilterInput
   library_item_physical_size: StringFilterInput
   library_item_type_information: StringFilterInput
-  chronology_description: StringFilterInput
-  chronology_timelines: StringFilterInput
-  chronology_timelines_description: StringFilterInput
-  chronology_overview: StringFilterInput
-  chronology_overview_description: StringFilterInput
-  chronology_walkthrough: StringFilterInput
-  chronology_walkthrough_description: StringFilterInput
   library_item_front_matter: StringFilterInput
   library_item_back_matter: StringFilterInput
   library_item_type_textual: StringFilterInput
@@ -2419,6 +2533,21 @@ input WebsiteInterfaceFiltersInput {
   global_hardcover: StringFilterInput
   global_left_to_right: StringFilterInput
   global_right_to_left: StringFilterInput
+  main_wiki: StringFilterInput
+  main_wiki_description: StringFilterInput
+  main_chronicles: StringFilterInput
+  main_chronicles_description: StringFilterInput
+  library_items: StringFilterInput
+  library_items_description: StringFilterInput
+  library_content: StringFilterInput
+  library_content_description: StringFilterInput
+  wiki_description: StringFilterInput
+  news_description: StringFilterInput
+  chronicles_description: StringFilterInput
+  gallery_description: StringFilterInput
+  archives_description: StringFilterInput
+  about_us_description: StringFilterInput
+  merch_description: StringFilterInput
   createdAt: DateTimeFilterInput
   updatedAt: DateTimeFilterInput
   and: [WebsiteInterfaceFiltersInput]
@@ -2430,12 +2559,7 @@ input WebsiteInterfaceInput {
   language: ID
   main_library: String
   main_library_description: String
-  main_hub: String
-  main_hub_description: String
-  main_chronology: String
-  main_chronology_description: String
   main_news: String
-  main_data: String
   main_merch: String
   main_gallery: String
   main_archives: String
@@ -2465,13 +2589,6 @@ input WebsiteInterfaceInput {
   global_price: String
   library_item_physical_size: String
   library_item_type_information: String
-  chronology_description: String
-  chronology_timelines: String
-  chronology_timelines_description: String
-  chronology_overview: String
-  chronology_overview_description: String
-  chronology_walkthrough: String
-  chronology_walkthrough_description: String
   library_item_front_matter: String
   library_item_back_matter: String
   library_item_type_textual: String
@@ -2490,18 +2607,28 @@ input WebsiteInterfaceInput {
   global_hardcover: String
   global_left_to_right: String
   global_right_to_left: String
+  main_wiki: String
+  main_wiki_description: String
+  main_chronicles: String
+  main_chronicles_description: String
+  library_items: String
+  library_items_description: String
+  library_content: String
+  library_content_description: String
+  wiki_description: String
+  news_description: String
+  chronicles_description: String
+  gallery_description: String
+  archives_description: String
+  about_us_description: String
+  merch_description: String
 }
 
 type WebsiteInterface {
   language: LanguageEntityResponse
   main_library: String
   main_library_description: String
-  main_hub: String
-  main_hub_description: String
-  main_chronology: String
-  main_chronology_description: String
   main_news: String
-  main_data: String
   main_merch: String
   main_gallery: String
   main_archives: String
@@ -2531,13 +2658,6 @@ type WebsiteInterface {
   global_price: String
   library_item_physical_size: String
   library_item_type_information: String
-  chronology_description: String
-  chronology_timelines: String
-  chronology_timelines_description: String
-  chronology_overview: String
-  chronology_overview_description: String
-  chronology_walkthrough: String
-  chronology_walkthrough_description: String
   library_item_front_matter: String
   library_item_back_matter: String
   library_item_type_textual: String
@@ -2556,6 +2676,21 @@ type WebsiteInterface {
   global_hardcover: String
   global_left_to_right: String
   global_right_to_left: String
+  main_wiki: String
+  main_wiki_description: String
+  main_chronicles: String
+  main_chronicles_description: String
+  library_items: String
+  library_items_description: String
+  library_content: String
+  library_content_description: String
+  wiki_description: String
+  news_description: String
+  chronicles_description: String
+  gallery_description: String
+  archives_description: String
+  about_us_description: String
+  merch_description: String
   createdAt: DateTime
   updatedAt: DateTime
 }
@@ -2574,6 +2709,91 @@ type WebsiteInterfaceEntityResponseCollection {
   meta: ResponseCollectionMeta!
 }
 
+input WikiPageFiltersInput {
+  id: IDFilterInput
+  slug: StringFilterInput
+  type: WikiPageTypeFiltersInput
+  createdAt: DateTimeFilterInput
+  updatedAt: DateTimeFilterInput
+  and: [WikiPageFiltersInput]
+  or: [WikiPageFiltersInput]
+  not: WikiPageFiltersInput
+}
+
+input WikiPageInput {
+  slug: String
+  thumbnail: ID
+  wiki_set: [ComponentSetsWikiSetInput]
+  type: ID
+}
+
+type WikiPage {
+  slug: String!
+  thumbnail: UploadFileEntityResponse
+  wiki_set(
+    filters: ComponentSetsWikiSetFiltersInput
+    pagination: PaginationArg = {}
+    sort: [String] = []
+  ): [ComponentSetsWikiSet]
+  type: WikiPageTypeEntityResponse
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+type WikiPageEntity {
+  id: ID
+  attributes: WikiPage
+}
+
+type WikiPageEntityResponse {
+  data: WikiPageEntity
+}
+
+type WikiPageEntityResponseCollection {
+  data: [WikiPageEntity!]!
+  meta: ResponseCollectionMeta!
+}
+
+input WikiPageTypeFiltersInput {
+  id: IDFilterInput
+  slug: StringFilterInput
+  createdAt: DateTimeFilterInput
+  updatedAt: DateTimeFilterInput
+  and: [WikiPageTypeFiltersInput]
+  or: [WikiPageTypeFiltersInput]
+  not: WikiPageTypeFiltersInput
+}
+
+input WikiPageTypeInput {
+  slug: String
+  titles: [ComponentTranslationsSimpleTitleInput]
+}
+
+type WikiPageType {
+  slug: String!
+  titles(
+    filters: ComponentTranslationsSimpleTitleFiltersInput
+    pagination: PaginationArg = {}
+    sort: [String] = []
+  ): [ComponentTranslationsSimpleTitle]
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+type WikiPageTypeEntity {
+  id: ID
+  attributes: WikiPageType
+}
+
+type WikiPageTypeEntityResponse {
+  data: WikiPageTypeEntity
+}
+
+type WikiPageTypeEntityResponseCollection {
+  data: [WikiPageTypeEntity!]!
+  meta: ResponseCollectionMeta!
+}
+
 union GenericMorph =
     ComponentBasicsCredits
   | ComponentBasicsDatepicker
@@ -2585,7 +2805,9 @@ union GenericMorph =
   | ComponentCollectionsComponentLibraryDustJacket
   | ComponentCollectionsComponentLibraryImages
   | ComponentCollectionsComponentLibraryObiBelt
+  | ComponentCollectionsComponentTitles
   | ComponentCollectionsComponentWeaponStory
+  | ComponentCollectionsComponentWikiDefinition
   | ComponentMetadataAudio
   | ComponentMetadataBooks
   | ComponentMetadataGame
@@ -2606,8 +2828,10 @@ union GenericMorph =
   | ComponentSetsScanSet
   | ComponentSetsTextSet
   | ComponentSetsVideoSet
+  | ComponentSetsWikiSet
   | ComponentSourceUrlSource
   | ComponentTranslationsAudioSets
+  | ComponentTranslationsBio
   | ComponentTranslationsChronologyEra
   | ComponentTranslationsChronologyItem
   | ComponentTranslationsGlossaryDefinition
@@ -2648,6 +2872,8 @@ union GenericMorph =
   | WeaponStoryGroup
   | WeaponStoryType
   | WebsiteInterface
+  | WikiPage
+  | WikiPageType
 
 input FileInfoInput {
   name: String
@@ -2814,6 +3040,18 @@ type Query {
     pagination: PaginationArg = {}
     sort: [String] = []
   ): WebsiteInterfaceEntityResponseCollection
+  wikiPage(id: ID): WikiPageEntityResponse
+  wikiPages(
+    filters: WikiPageFiltersInput
+    pagination: PaginationArg = {}
+    sort: [String] = []
+  ): WikiPageEntityResponseCollection
+  wikiPageType(id: ID): WikiPageTypeEntityResponse
+  wikiPageTypes(
+    filters: WikiPageTypeFiltersInput
+    pagination: PaginationArg = {}
+    sort: [String] = []
+  ): WikiPageTypeEntityResponseCollection
 }
 
 type Mutation {
@@ -2939,6 +3177,15 @@ type Mutation {
     data: WebsiteInterfaceInput!
   ): WebsiteInterfaceEntityResponse
   deleteWebsiteInterface(id: ID!): WebsiteInterfaceEntityResponse
+  createWikiPage(data: WikiPageInput!): WikiPageEntityResponse
+  updateWikiPage(id: ID!, data: WikiPageInput!): WikiPageEntityResponse
+  deleteWikiPage(id: ID!): WikiPageEntityResponse
+  createWikiPageType(data: WikiPageTypeInput!): WikiPageTypeEntityResponse
+  updateWikiPageType(
+    id: ID!
+    data: WikiPageTypeInput!
+  ): WikiPageTypeEntityResponse
+  deleteWikiPageType(id: ID!): WikiPageTypeEntityResponse
   upload(
     refId: ID
     ref: String

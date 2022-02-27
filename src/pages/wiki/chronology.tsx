@@ -16,7 +16,11 @@ import NavOption from "components/PanelComponents/NavOption";
 import ReturnButton from "components/PanelComponents/ReturnButton";
 import HorizontalLine from "components/HorizontalLine";
 import AppLayout from "components/AppLayout";
-import { prettySlug } from "queries/helpers";
+import {
+  prettySlug,
+  prettyTestError,
+  prettyTestWarning,
+} from "queries/helpers";
 import InsetBox from "components/InsetBox";
 import { useRouter } from "next/router";
 import ReactTooltip from "react-tooltip";
@@ -165,41 +169,52 @@ export function useTesting(
   const router = useRouter();
   chronologyEras.chronologyEras.data.map((era) => {
     if (era.attributes.title.length === 0) {
-      console.warn(
-        `${router.pathname} | ${router.locale} | chronologyEras | ${era.attributes.slug} | Missing translation for title and description, using slug instead`
+      prettyTestError(
+        router,
+        "Missing translation for title and description, using slug instead",
+        ["chronologyEras", era.attributes.slug]
       );
     } else if (era.attributes.title.length > 1) {
-      console.warn(
-        `${router.pathname} | ${router.locale} | chronologyEras | ${era.attributes.slug} | More than one title and description`
-      );
+      prettyTestError(router, "More than one title and description", [
+        "chronologyEras",
+        era.attributes.slug,
+      ]);
     } else {
       if (!era.attributes.title[0].title)
-        console.warn(
-          `${router.pathname} | ${router.locale} | chronologyEras | ${era.attributes.slug} | Missing title, using slug instead`
-        );
+        prettyTestError(router, "Missing title, using slug instead", [
+          "chronologyEras",
+          era.attributes.slug,
+        ]);
       if (!era.attributes.title[0].description)
-        console.warn(
-          `${router.pathname} | ${router.locale} | chronologyEras | ${era.attributes.slug} | Missing description`
-        );
+        prettyTestError(router, "Missing description", [
+          "chronologyEras",
+          era.attributes.slug,
+        ]);
     }
   });
 
   chronologyItems.chronologyItems.data.map((item) => {
+    const date = `${item.attributes.year}/${item.attributes.month}/${item.attributes.day}`;
     if (!(item.attributes.events.length > 0)) {
-      console.warn(
-        `${router.pathname} | ${router.locale} | chronologyItems | ${item.attributes.year}/${item.attributes.month}/${item.attributes.day} | No events for this date`
-      );
+      prettyTestError(router, "No events for this date", [
+        "chronologyItems",
+        date,
+      ]);
     } else {
       item.attributes.events.map((event) => {
         if (!event.source.data) {
-          console.warn(
-            `${router.pathname} | ${router.locale} | chronologyItems | ${item.attributes.year}/${item.attributes.month}/${item.attributes.day} | ${event.id} | No source for this event`
-          );
+          prettyTestError(router, "No source for this event", [
+            "chronologyItems",
+            date,
+            event.id,
+          ]);
         }
         if (!(event.translations.length > 0)) {
-          console.warn(
-            `${router.pathname} | ${router.locale} | chronologyItems | ${item.attributes.year}/${item.attributes.month}/${item.attributes.day} | ${event.id} | No translation for this event`
-          );
+          prettyTestWarning(router, "No translation for this event", [
+            "chronologyItems",
+            date,
+            event.id,
+          ]);
         }
       });
     }

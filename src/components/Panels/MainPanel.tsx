@@ -183,6 +183,7 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
           )}
         </p>
         <a
+          aria-label="Read more about the license we use for this website"
           className="transition-[filter] colorize-black hover:colorize-dark"
           href="https://creativecommons.org/licenses/by-sa/4.0/"
         >
@@ -201,12 +202,14 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
         </p>
         <div className="mt-12 mb-4 grid h-4 grid-flow-col place-content-center gap-8">
           <a
+            aria-label="Browse our GitHub repository, which include this website source code"
             className="transition-colors [mask:url('/icons/github-brands.svg')] ![mask-size:contain] ![mask-repeat:no-repeat] ![mask-position:center] w-10 aspect-square bg-black hover:bg-dark"
             href="https://github.com/Accords-Library"
             target="_blank"
             rel="noopener noreferrer"
           ></a>
           <a
+            aria-label="Join our Discord server!"
             className="transition-colors [mask:url('/icons/discord-brands.svg')] ![mask-size:contain] ![mask-repeat:no-repeat] ![mask-position:center] w-10 aspect-square bg-black hover:bg-dark"
             href="/discord"
             target="_blank"

@@ -1,11 +1,10 @@
 {
-  "name": "Accord's Library",
-  "short_name": "Accord's Lib",
-  "start_url": ".",
-  "display": "standalone",
   "background_color": "#FFEDD8",
-  "theme_color": "#FFEDD8",
+  "categories": ["books", "education", "entertainment", "news", "games"],
   "description": "Accord's Library aims at gathering and archiving all of Yoko Taro’s work. Yoko Taro is a Japanese video game director and scenario writer.",
+  "dir": "auto",
+  "display": "fullscreen",
+
   "icons": [
     {
       "src": "/android-chrome-192x192.png",
@@ -17,5 +16,44 @@
       "sizes": "512x512",
       "type": "image/png"
     }
-  ]
+  ],
+
+  "name": "Accord's Library",
+  "short_name": "Accord's Lib",
+  "start_url": ".",
+
+  "shortcuts": [
+    {
+      "name": "Library",
+      "url": "/library",
+      "description": "Browse all physical and digital media"
+    },
+    {
+      "name": "Contents",
+      "url": "/contents",
+      "description": "Explore all content and filter by type or category"
+    },
+    {
+      "name": "Wiki",
+      "url": "/wiki",
+      "description": "An encyclopedia for everything related to DrakeNieR"
+    },
+    {
+      "name": "Chronicles",
+      "url": "/chronicles",
+      "description": "Experience all events and content in chronological order"
+    },
+    {
+      "name": "News",
+      "url": "/news",
+      "description": "All the latest info"
+    },
+    {
+      "name": "Gallery",
+      "url": "/gallery",
+      "description": "Thousands of offcial artworks"
+    }
+  ],
+
+  "theme_color": "#FFEDD8"
 }

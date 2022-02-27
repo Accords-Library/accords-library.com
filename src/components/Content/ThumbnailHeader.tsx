@@ -5,6 +5,7 @@ import {
 import { prettySlug } from "queries/helpers";
 import Button from "components/Button";
 import Img, { ImageQuality } from "components/Img";
+import InsetBox from "components/InsetBox";
 
 export type ThumbnailHeaderProps = {
   content: {
@@ -25,7 +26,7 @@ export default function ThumbnailHeader(
 
   return (
     <>
-      <div className="grid place-items-center gap-12  mb-12">
+      <div className="grid place-items-center gap-12 mb-12">
         <div className="drop-shadow-shade-lg">
           {content.thumbnail.data ? (
             <Img
@@ -76,6 +77,9 @@ export default function ThumbnailHeader(
           ""
         )}
       </div>
+      {content.titles.length > 0 && content.titles[0].description && (
+        <InsetBox className="mt-8">{content.titles[0].description}</InsetBox>
+      )}
     </>
   );
 }

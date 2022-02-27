@@ -56,6 +56,7 @@ type ImgProps = {
   layout?: ImageProps["layout"];
   objectFit?: ImageProps["objectFit"];
   priority?: ImageProps["priority"];
+  rawImg?: boolean;
 };
 
 export default function Img(props: ImgProps): JSX.Element {
@@ -64,20 +65,37 @@ export default function Img(props: ImgProps): JSX.Element {
     props.image.height,
     props.quality ? props.quality : ImageQuality.Small
   );
-  return (
-    <Image
-      className={props.className}
-      src={getAssetURL(
-        props.image.url,
-        props.quality ? props.quality : ImageQuality.Small
-      )}
-      alt={props.alt ? props.alt : props.image.alternativeText}
-      width={props.layout === "fill" ? undefined : imgSize.width}
-      height={props.layout === "fill" ? undefined : imgSize.height}
-      layout={props.layout}
-      objectFit={props.objectFit}
-      priority={props.priority}
-      unoptimized
-    />
-  );
+
+  if (props.rawImg) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        className={props.className}
+        src={getAssetURL(
+          props.image.url,
+          props.quality ? props.quality : ImageQuality.Small
+        )}
+        alt={props.alt ? props.alt : props.image.alternativeText}
+        width={imgSize.width}
+        height={imgSize.height}
+      />
+    );
+  } else {
+    return (
+      <Image
+        className={props.className}
+        src={getAssetURL(
+          props.image.url,
+          props.quality ? props.quality : ImageQuality.Small
+        )}
+        alt={props.alt ? props.alt : props.image.alternativeText}
+        width={props.layout === "fill" ? undefined : imgSize.width}
+        height={props.layout === "fill" ? undefined : imgSize.height}
+        layout={props.layout}
+        objectFit={props.objectFit}
+        priority={props.priority}
+        unoptimized
+      />
+    );
+  }
 }

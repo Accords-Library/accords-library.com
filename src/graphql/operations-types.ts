@@ -996,6 +996,7 @@ export type GetContentQuery = {
           pre_title: string;
           title: string;
           subtitle: string;
+          description: string;
         }>;
         categories: {
           __typename: "CategoryRelationResponseCollection";
@@ -1116,6 +1117,7 @@ export type GetContentTextQuery = {
           pre_title: string;
           title: string;
           subtitle: string;
+          description: string;
         }>;
         categories: {
           __typename: "CategoryRelationResponseCollection";
@@ -1194,18 +1196,34 @@ export type GetContentTextQuery = {
             __typename: "LanguageEntityResponse";
             data: {
               __typename: "LanguageEntity";
-              attributes: { __typename: "Language"; name: string };
+              attributes: { __typename: "Language"; code: string };
             };
           };
           transcribers: {
             __typename: "RecorderRelationResponseCollection";
             data: Array<{
               __typename: "RecorderEntity";
+              id: string;
               attributes: {
                 __typename: "Recorder";
                 username: string;
                 anonymize: boolean;
                 anonymous_code: string;
+                pronouns: string;
+                bio: Array<{
+                  __typename: "ComponentTranslationsBio";
+                  bio: string;
+                }>;
+                languages: {
+                  __typename: "LanguageRelationResponseCollection";
+                  data: Array<{
+                    __typename: "LanguageEntity";
+                    attributes: {
+                      __typename: "Language";
+                      code: string;
+                    };
+                  }>;
+                };
                 avatar: {
                   __typename: "UploadFileEntityResponse";
                   data: {
@@ -1228,11 +1246,27 @@ export type GetContentTextQuery = {
             __typename: "RecorderRelationResponseCollection";
             data: Array<{
               __typename: "RecorderEntity";
+              id: string;
               attributes: {
                 __typename: "Recorder";
                 username: string;
                 anonymize: boolean;
                 anonymous_code: string;
+                pronouns: string;
+                bio: Array<{
+                  __typename: "ComponentTranslationsBio";
+                  bio: string;
+                }>;
+                languages: {
+                  __typename: "LanguageRelationResponseCollection";
+                  data: Array<{
+                    __typename: "LanguageEntity";
+                    attributes: {
+                      __typename: "Language";
+                      code: string;
+                    };
+                  }>;
+                };
                 avatar: {
                   __typename: "UploadFileEntityResponse";
                   data: {
@@ -1255,11 +1289,27 @@ export type GetContentTextQuery = {
             __typename: "RecorderRelationResponseCollection";
             data: Array<{
               __typename: "RecorderEntity";
+              id: string;
               attributes: {
                 __typename: "Recorder";
                 username: string;
                 anonymize: boolean;
                 anonymous_code: string;
+                pronouns: string;
+                bio: Array<{
+                  __typename: "ComponentTranslationsBio";
+                  bio: string;
+                }>;
+                languages: {
+                  __typename: "LanguageRelationResponseCollection";
+                  data: Array<{
+                    __typename: "LanguageEntity";
+                    attributes: {
+                      __typename: "Language";
+                      code: string;
+                    };
+                  }>;
+                };
                 avatar: {
                   __typename: "UploadFileEntityResponse";
                   data: {

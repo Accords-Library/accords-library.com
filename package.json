@@ -5,8 +5,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "text": "NODE_ENV=test next build"
+    "lint": "next lint"
   },
   "dependencies": {
     "@fontsource/material-icons": "^4.5.2",
@@ -25,6 +24,7 @@
     "@tailwindcss/typography": "^0.5.2",
     "@types/node": "17.0.18",
     "@types/react": "17.0.39",
+    "@types/react-dom": "^17.0.11",
     "eslint": "8.9.0",
     "eslint-config-next": "12.1.0",
     "tailwindcss": "^3.0.23",

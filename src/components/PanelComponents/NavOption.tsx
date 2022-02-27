@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { MouseEventHandler } from "react";
+import ReactDOMServer from "react-dom/server";
 
 type NavOptionProps = {
   url: string;
@@ -29,16 +30,14 @@ export default function NavOption(props: NavOptionProps): JSX.Element {
         onClick={props.onClick}
         data-html
         data-multiline
-        data-tip={`
-          <div class="px-4 py-3">
-          <h3 class="text-2xl">${props.title}</h3>
-          ${
-            props.subtitle
-              ? `<p class="max-w-[10rem]">${props.subtitle}</p>`
-              : ""
-          }
+        data-tip={ReactDOMServer.renderToStaticMarkup(
+          <div className="px-4 py-3">
+            <h3 className="text-2xl">{props.title}</h3>
+            {props.subtitle && (
+              <p className="max-w-[10rem]">{props.subtitle}</p>
+            )}
           </div>
-        `}
+        )}
         data-for={props.tooltipId}
         className={`grid grid-flow-col grid-cols-[auto] auto-cols-fr justify-center ${
           props.icon ? "text-left" : "text-center"

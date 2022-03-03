@@ -29,17 +29,16 @@ import Chip from "components/Chip";
 import ReactTooltip from "react-tooltip";
 import RecorderChip from "components/RecorderChip";
 
-type ContentReadProps = {
+interface ContentReadProps {
   content: GetContentTextQuery;
   langui: GetWebsiteInterfaceQuery;
-};
+}
 
 export default function ContentRead(props: ContentReadProps): JSX.Element {
+  useTesting(props);
   const content = props.content.contents.data[0].attributes;
   const langui = props.langui.websiteInterfaces.data[0].attributes;
   const router = useRouter();
-
-  useTesting(props.content);
 
   const subPanel = (
     <SubPanel>
@@ -191,7 +190,7 @@ export default function ContentRead(props: ContentReadProps): JSX.Element {
             )
           : prettySlug(content.slug)
       }
-      thumbnail={content.thumbnail.data.attributes}
+      thumbnail={content.thumbnail.data?.attributes}
       langui={langui}
       contentPanel={contentPanel}
       subPanel={subPanel}
@@ -244,70 +243,102 @@ export const getStaticPaths: GetStaticPaths = async (context) => {
   };
 };
 
-export function useTesting(content: GetContentTextQuery) {
+export function useTesting(props: ContentReadProps) {
   const router = useRouter();
-  const contentAtr = content.contents.data[0].attributes;
-  if (contentAtr.categories.data.length === 0) {
-    prettyTestError(router, "Missing categories", ["content"]);
+  const content = props.content.contents.data[0].attributes;
+
+  const contentURL =
+    "/admin/content-manager/collectionType/api::content.content/" +
+    props.content.contents.data[0].id;
+
+  if (router.locale === "en") {
+    if (content.categories.data.length === 0) {
+      prettyTestError(router, "Missing categories", ["content"], contentURL);
+    }
   }
 
-  if (contentAtr.ranged_contents.data.length === 0) {
-    prettyTestWarning(router, "Unconnected to any source", ["content"]);
-  }
-
-  if (contentAtr.text_set.length === 0) {
-    prettyTestWarning(router, "Has no textset, nor audioset, nor videoset", [
-      "content",
-    ]);
-  }
-
-  if (contentAtr.text_set.length > 1) {
-    console.warn(
-      prettyTestError(router, "More than one textset for this language", [
-        "content",
-        "text_set",
-      ])
+  if (content.ranged_contents.data.length === 0) {
+    prettyTestWarning(
+      router,
+      "Unconnected to any source",
+      ["content"],
+      contentURL
     );
   }
 
-  if (contentAtr.text_set.length === 1) {
-    const textset = contentAtr.text_set[0];
+  if (content.text_set.length === 0) {
+    prettyTestWarning(
+      router,
+      "Has no textset, nor audioset, nor videoset",
+      ["content"],
+      contentURL
+    );
+  }
+
+  if (content.text_set.length > 1) {
+    console.warn(
+      prettyTestError(
+        router,
+        "More than one textset for this language",
+        ["content", "text_set"],
+        contentURL
+      )
+    );
+  }
+
+  if (content.text_set.length === 1) {
+    const textset = content.text_set[0];
     if (!textset.text) {
-      prettyTestError(router, "Missing text", ["content", "text_set"]);
+      prettyTestError(
+        router,
+        "Missing text",
+        ["content", "text_set"],
+        contentURL
+      );
     }
     if (!textset.source_language.data) {
-      prettyTestError(router, "Missing source language", [
-        "content",
-        "text_set",
-      ]);
+      prettyTestError(
+        router,
+        "Missing source language",
+        ["content", "text_set"],
+        contentURL
+      );
     }
     if (textset.source_language.data.attributes.code === router.locale) {
       // This is a transcript
       if (textset.transcribers.data.length === 0) {
-        prettyTestError(router, "Missing transcribers attribution", [
-          "content",
-          "text_set",
-        ]);
+        prettyTestError(
+          router,
+          "Missing transcribers attribution",
+          ["content", "text_set"],
+          contentURL
+        );
       }
       if (textset.translators.data.length > 0) {
-        prettyTestError(router, "Transcripts shouldn't have translators", [
-          "content",
-          "text_set",
-        ]);
+        prettyTestError(
+          router,
+          "Transcripts shouldn't have translators",
+          ["content", "text_set"],
+          contentURL
+        );
       }
     } else {
       // This is a translation
       if (textset.translators.data.length === 0) {
-        prettyTestError(router, "Missing translators attribution", [
-          "content",
-          "text_set",
-        ]);
+        prettyTestError(
+          router,
+          "Missing translators attribution",
+          ["content", "text_set"],
+          contentURL
+        );
       }
       if (textset.transcribers.data.length > 0) {
-        prettyTestError(router, "Translations shouldn't have transcribers", [
-          "content",
-          "text_set",
-        ]);
+        prettyTestError(
+          router,
+          "Translations shouldn't have transcribers",
+          ["content", "text_set"],
+          contentURL
+        );
       }
     }
   }

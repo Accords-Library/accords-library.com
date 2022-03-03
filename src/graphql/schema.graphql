@@ -486,7 +486,11 @@ type ComponentMetadataBooks {
 
 type ComponentMetadataGame {
   id: ID!
-  platform: GamePlatformEntityResponse
+  platforms(
+    filters: GamePlatformFiltersInput
+    pagination: PaginationArg = {}
+    sort: [String] = []
+  ): GamePlatformRelationResponseCollection
   demo: Boolean!
   audio_languages(
     filters: LanguageFiltersInput
@@ -589,8 +593,8 @@ type ComponentRangeOther {
 
 type ComponentRangePageRange {
   id: ID!
-  starting_page: Int
-  ending_page: Int
+  starting_page: Int!
+  ending_page: Int!
 }
 
 type ComponentRangeTimeRange {
@@ -1708,6 +1712,10 @@ type GamePlatformEntityResponseCollection {
   meta: ResponseCollectionMeta!
 }
 
+type GamePlatformRelationResponseCollection {
+  data: [GamePlatformEntity!]!
+}
+
 input GlossaryItemFiltersInput {
   id: IDFilterInput
   slug: StringFilterInput
@@ -2132,7 +2140,7 @@ input RangedContentInput {
 
 type RangedContent {
   slug: String!
-  range: [RangedContentRangeDynamicZone]
+  range: [RangedContentRangeDynamicZone]!
   scan_set(
     filters: ComponentSetsScanSetFiltersInput
     pagination: PaginationArg = {}

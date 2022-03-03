@@ -7,18 +7,24 @@ type ScenBreakProps = {
 };
 
 export default function Markdawn(props: ScenBreakProps): JSX.Element {
-  return (
-    <Markdown
-      className={`prose prose-p:text-justify text-black ${props.className}`}
-      options={{
-        overrides: {
-          hr: {
-            component: SceneBreak,
+  if (props.text) {
+    return (
+      <Markdown
+        className={`prose prose-p:text-justify text-black ${props.className}`}
+        options={{
+          overrides: {
+            hr: {
+              component: SceneBreak,
+            },
+            player: {
+              component: () => {return <span className="text-dark opacity-70">{"<player>"}</span>}
+            },
           },
-        },
-      }}
-    >
-      {props.text}
-    </Markdown>
-  );
+        }}
+      >
+        {props.text}
+      </Markdown>
+    );
+  }
+  return <></>;
 }

@@ -181,8 +181,9 @@ query getLibraryItemsPreview($language_code: String) {
             }
           }
           ... on ComponentMetadataGame {
-            platform {
+            platforms {
               data {
+                id
                 attributes {
                   short
                 }
@@ -255,6 +256,9 @@ query getLibraryItem($slug: String, $language_code: String) {
         title
         subtitle
         slug
+        root_item
+        primary
+        digital
         thumbnail {
           data {
             attributes {
@@ -345,8 +349,9 @@ query getLibraryItem($slug: String, $language_code: String) {
             }
           }
           ... on ComponentMetadataGame {
-            platform {
+            platforms {
               data {
+                id
                 attributes {
                   short
                 }
@@ -470,8 +475,9 @@ query getLibraryItem($slug: String, $language_code: String) {
                   }
                 }
                 ... on ComponentMetadataGame {
-                  platform {
+                  platforms {
                     data {
+                      id
                       attributes {
                         short
                       }
@@ -812,6 +818,7 @@ query getContent($slug: String, $language_code: String) {
 query getContentText($slug: String, $language_code: String) {
   contents(filters: { slug: { eq: $slug } }) {
     data {
+      id
       attributes {
         slug
         titles(filters: { language: { code: { eq: $language_code } } }) {

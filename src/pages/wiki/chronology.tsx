@@ -34,10 +34,10 @@ interface DataChronologyProps {
 export default function DataChronology(
   props: DataChronologyProps
 ): JSX.Element {
+  useTesting(props);
   const langui = props.langui.websiteInterfaces.data[0].attributes;
   const chronologyItems = props.chronologyItems.chronologyItems;
   const chronologyEras = props.chronologyEras.chronologyEras;
-  useTesting(props.chronologyItems, props.chronologyEras);
 
   // Group by year the Chronology items
   let chronologyItemYearGroups: GetChronologyItemsQuery["chronologyItems"]["data"][number][][][] =
@@ -162,59 +162,76 @@ export const getStaticProps: GetStaticProps = async (context) => {
   return { props: {} };
 };
 
-export function useTesting(
-  chronologyItems: GetChronologyItemsQuery,
-  chronologyEras: GetErasQuery
-) {
+function useTesting({ chronologyItems, chronologyEras }: DataChronologyProps) {
   const router = useRouter();
   chronologyEras.chronologyEras.data.map((era) => {
+    const chronologyErasURL =
+      "/admin/content-manager/collectionType/api::chronology-era.chronology-era/" +
+      chronologyItems.chronologyItems.data[0].id;
+
     if (era.attributes.title.length === 0) {
       prettyTestError(
         router,
         "Missing translation for title and description, using slug instead",
-        ["chronologyEras", era.attributes.slug]
+        ["chronologyEras", era.attributes.slug],
+        chronologyErasURL
       );
     } else if (era.attributes.title.length > 1) {
-      prettyTestError(router, "More than one title and description", [
-        "chronologyEras",
-        era.attributes.slug,
-      ]);
+      prettyTestError(
+        router,
+        "More than one title and description",
+        ["chronologyEras", era.attributes.slug],
+        chronologyErasURL
+      );
     } else {
       if (!era.attributes.title[0].title)
-        prettyTestError(router, "Missing title, using slug instead", [
-          "chronologyEras",
-          era.attributes.slug,
-        ]);
+        prettyTestError(
+          router,
+          "Missing title, using slug instead",
+          ["chronologyEras", era.attributes.slug],
+          chronologyErasURL
+        );
       if (!era.attributes.title[0].description)
-        prettyTestError(router, "Missing description", [
-          "chronologyEras",
-          era.attributes.slug,
-        ]);
+        prettyTestError(
+          router,
+          "Missing description",
+          ["chronologyEras", era.attributes.slug],
+          chronologyErasURL
+        );
     }
   });
 
   chronologyItems.chronologyItems.data.map((item) => {
+    const chronologyItemsURL =
+      "/admin/content-manager/collectionType/api::chronology-item.chronology-item/" +
+      chronologyItems.chronologyItems.data[0].id;
+
     const date = `${item.attributes.year}/${item.attributes.month}/${item.attributes.day}`;
+
     if (!(item.attributes.events.length > 0)) {
-      prettyTestError(router, "No events for this date", [
-        "chronologyItems",
-        date,
-      ]);
+      prettyTestError(
+        router,
+        "No events for this date",
+        ["chronologyItems", date],
+        chronologyItemsURL
+      );
     } else {
       item.attributes.events.map((event) => {
         if (!event.source.data) {
-          prettyTestError(router, "No source for this event", [
-            "chronologyItems",
-            date,
-            event.id,
-          ]);
+          prettyTestError(
+            router,
+            "No source for this event",
+            ["chronologyItems", date, event.id],
+            chronologyItemsURL
+          );
         }
         if (!(event.translations.length > 0)) {
-          prettyTestWarning(router, "No translation for this event", [
-            "chronologyItems",
-            date,
-            event.id,
-          ]);
+          prettyTestWarning(
+            router,
+            "No translation for this event",
+            ["chronologyItems", date, event.id],
+            chronologyItemsURL
+          );
         }
       });
     }

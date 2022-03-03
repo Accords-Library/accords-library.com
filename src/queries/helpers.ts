@@ -4,6 +4,7 @@ import {
   ImageQuality,
 } from "components/Img";
 import {
+  GetLibraryItemQuery,
   GetLibraryItemsPreviewQuery,
   GetWebsiteInterfaceQuery,
   StrapiImage,
@@ -80,7 +81,7 @@ export function prettyItemType(
 export function prettyItemSubType(metadata: {
   __typename: GetLibraryItemsPreviewQuery["libraryItems"]["data"][number]["attributes"]["metadata"][number]["__typename"];
   subtype?: any;
-  platform?: any;
+  platforms?: any;
 }): string {
   switch (metadata.__typename) {
     case "ComponentMetadataAudio":
@@ -92,7 +93,9 @@ export function prettyItemSubType(metadata: {
         : prettySlug(metadata.subtype.data.attributes.slug);
     }
     case "ComponentMetadataGame":
-      return metadata.platform.data.attributes.short;
+      return metadata.platforms.data.length > 0
+        ? metadata.platforms.data[0].attributes.short
+        : "";
 
     default:
       return "";
@@ -121,17 +124,19 @@ export function prettyLanguage(code: string): string {
 export function prettyTestWarning(
   router: NextRouter,
   message: string,
-  subCategory?: string[]
+  subCategory: string[],
+  url: string
 ): void {
-  prettyTestWritter(TestingLevel.Warning, router, message, subCategory);
+  prettyTestWritter(TestingLevel.Warning, router, message, subCategory, url);
 }
 
 export function prettyTestError(
   router: NextRouter,
   message: string,
-  subCategory?: string[]
+  subCategory: string[],
+  url: string
 ): void {
-  prettyTestWritter(TestingLevel.Error, router, message, subCategory);
+  prettyTestWritter(TestingLevel.Error, router, message, subCategory, url);
 }
 
 enum TestingLevel {
@@ -143,12 +148,23 @@ function prettyTestWritter(
   level: TestingLevel,
   { asPath, locale }: NextRouter,
   message: string,
-  subCategory?: string[]
+  subCategory: string[],
+  url: string
 ): void {
-  subCategory?.push("");
-  console.warn(
-    `${level}  - ${asPath} | ${locale} | ${subCategory?.join(" | ")}${message}`
-  );
+  const line = [
+    level,
+    process.env.NEXT_PUBLIC_URL_SELF + "/" + locale + asPath,
+    locale,
+    subCategory?.join(" -> "),
+    message,
+    process.env.NEXT_PUBLIC_URL_CMS + url,
+  ];
+
+  if (level === TestingLevel.Warning) {
+    console.warn(line.join("\t"));
+  } else {
+    console.error(line.join("\t"));
+  }
 }
 
 export function capitalizeString(string: string): string {
@@ -184,4 +200,21 @@ export function getOgImage(quality: ImageQuality, image: StrapiImage): OgImage {
     height: imgSize.height,
     alt: image.alternativeText,
   };
+}
+
+export function sortContent(
+  contents: GetLibraryItemQuery["libraryItems"]["data"][number]["attributes"]["contents"]
+) {
+  contents.data.sort((a, b) => {
+    if (
+      a.attributes.range[0].__typename === "ComponentRangePageRange" &&
+      b.attributes.range[0].__typename === "ComponentRangePageRange"
+    ) {
+      return (
+        a.attributes.range[0].starting_page -
+        b.attributes.range[0].starting_page
+      );
+    }
+    return 0;
+  });
 }

@@ -311,15 +311,16 @@ export type GetLibraryItemsPreviewQuery = {
             }
           | {
               __typename: "ComponentMetadataGame";
-              platform: {
-                __typename: "GamePlatformEntityResponse";
-                data: {
+              platforms: {
+                __typename: "GamePlatformRelationResponseCollection";
+                data: Array<{
                   __typename: "GamePlatformEntity";
+                  id: string;
                   attributes: {
                     __typename: "GamePlatform";
                     short: string;
                   };
-                };
+                }>;
               };
             }
           | {
@@ -395,6 +396,9 @@ export type GetLibraryItemQuery = {
         title: string;
         subtitle: string;
         slug: string;
+        root_item: boolean;
+        primary: boolean;
+        digital: boolean;
         thumbnail: {
           __typename: "UploadFileEntityResponse";
           data: {
@@ -507,15 +511,16 @@ export type GetLibraryItemQuery = {
             }
           | {
               __typename: "ComponentMetadataGame";
-              platform: {
-                __typename: "GamePlatformEntityResponse";
-                data: {
+              platforms: {
+                __typename: "GamePlatformRelationResponseCollection";
+                data: Array<{
                   __typename: "GamePlatformEntity";
+                  id: string;
                   attributes: {
                     __typename: "GamePlatform";
                     short: string;
                   };
-                };
+                }>;
               };
               audio_languages: {
                 __typename: "LanguageRelationResponseCollection";
@@ -683,15 +688,16 @@ export type GetLibraryItemQuery = {
                   }
                 | {
                     __typename: "ComponentMetadataGame";
-                    platform: {
-                      __typename: "GamePlatformEntityResponse";
-                      data: {
+                    platforms: {
+                      __typename: "GamePlatformRelationResponseCollection";
+                      data: Array<{
                         __typename: "GamePlatformEntity";
+                        id: string;
                         attributes: {
                           __typename: "GamePlatform";
                           short: string;
                         };
-                      };
+                      }>;
                     };
                   }
                 | {
@@ -861,11 +867,6 @@ export type GetContentsSlugsQuery = {
   };
 };
 
-export type GetContentQueryVariables = Exact<{
-  slug: InputMaybe<Scalars["String"]>;
-  language_code: InputMaybe<Scalars["String"]>;
-}>;
-
 export type GetContentsQueryVariables = Exact<{
   language_code: InputMaybe<Scalars["String"]>;
 }>;
@@ -981,6 +982,11 @@ export type GetContentsQuery = {
     }>;
   };
 };
+
+export type GetContentQueryVariables = Exact<{
+  slug: InputMaybe<Scalars["String"]>;
+  language_code: InputMaybe<Scalars["String"]>;
+}>;
 
 export type GetContentQuery = {
   __typename: "Query";
@@ -1109,6 +1115,7 @@ export type GetContentTextQuery = {
     __typename: "ContentEntityResponseCollection";
     data: Array<{
       __typename: "ContentEntity";
+      id: string;
       attributes: {
         __typename: "Content";
         slug: string;

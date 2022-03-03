@@ -1,6 +1,6 @@
 import useDarkMode from "hooks/useDarkMode";
 import useStateWithLocalStorage from "hooks/useStateWithLocalStorage";
-import React, { ReactNode, useContext, useEffect } from "react";
+import React, { ReactNode, useContext } from "react";
 
 export interface AppLayoutState {
   subPanelOpen: boolean | undefined;

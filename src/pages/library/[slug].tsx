@@ -21,6 +21,9 @@ import {
   prettyItemSubType,
   prettyPrice,
   prettySlug,
+  prettyTestError,
+  prettyTestWarning,
+  sortContent,
 } from "queries/helpers";
 import SubPanel from "components/Panels/SubPanel";
 import ReturnButton from "components/PanelComponents/ReturnButton";
@@ -33,13 +36,15 @@ import LibraryItemsPreview from "components/Library/LibraryItemsPreview";
 import InsetBox from "components/InsetBox";
 import Img, { ImageQuality } from "components/Img";
 import { useAppLayout } from "contexts/AppLayoutContext";
+import { useRouter } from "next/router";
 
-type LibrarySlugProps = {
+interface LibrarySlugProps {
   libraryItem: GetLibraryItemQuery;
   langui: GetWebsiteInterfaceQuery;
-};
+}
 
 export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
+  useTesting(props);
   const item = props.libraryItem.libraryItems.data[0].attributes;
   const langui = props.langui.websiteInterfaces.data[0].attributes;
   const appLayout = useAppLayout();
@@ -48,6 +53,8 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
     item.metadata.length > 0 &&
     item.metadata[0].__typename === "ComponentMetadataOther" &&
     item.metadata[0].subtype.data.attributes.slug === "variant-set";
+
+  sortContent(item.contents);
 
   const subPanel = (
     <SubPanel>
@@ -465,20 +472,6 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
     </ContentPanel>
   );
 
-  // Sort content by range
-  item.contents.data.sort((a, b) => {
-    if (
-      a.attributes.range[0].__typename === "ComponentRangePageRange" &&
-      b.attributes.range[0].__typename === "ComponentRangePageRange"
-    ) {
-      return (
-        a.attributes.range[0].starting_page -
-        b.attributes.range[0].starting_page
-      );
-    }
-    return 0;
-  });
-
   return (
     <AppLayout
       navTitle={langui.main_library}
@@ -486,7 +479,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
       langui={langui}
       contentPanel={contentPanel}
       subPanel={subPanel}
-      thumbnail={item.thumbnail.data.attributes}
+      thumbnail={item.thumbnail.data?.attributes}
       description={
         item.descriptions.length > 0
           ? item.descriptions[0].description
@@ -539,3 +532,394 @@ export const getStaticPaths: GetStaticPaths = async (context) => {
     fallback: false,
   };
 };
+
+function useTesting(props: LibrarySlugProps) {
+  const libraryItem = props.libraryItem.libraryItems.data[0].attributes;
+  const router = useRouter();
+
+  const libraryItemURL =
+    "/admin/content-manager/collectionType/api::library-item.library-item/" +
+    props.libraryItem.libraryItems.data[0].id;
+
+  sortContent(libraryItem.contents);
+
+  if (router.locale === "en") {
+    if (!libraryItem.thumbnail.data) {
+      prettyTestError(
+        router,
+        "Missing thumbnail",
+        ["libraryItem"],
+        libraryItemURL
+      );
+    }
+    if (libraryItem.metadata.length === 0) {
+      prettyTestError(
+        router,
+        "Missing metadata",
+        ["libraryItem"],
+        libraryItemURL
+      );
+    } else {
+      if (
+        libraryItem.metadata[0].__typename === "ComponentMetadataOther" &&
+        (libraryItem.metadata[0].subtype.data.attributes.slug ===
+          "relation-set" ||
+          libraryItem.metadata[0].subtype.data.attributes.slug ===
+            "variant-set")
+      ) {
+        // This is a group type item
+        if (libraryItem.price) {
+          prettyTestError(
+            router,
+            "Group-type items shouldn't have price",
+            ["libraryItem"],
+            libraryItemURL
+          );
+        }
+        if (libraryItem.size) {
+          prettyTestError(
+            router,
+            "Group-type items shouldn't have size",
+            ["libraryItem"],
+            libraryItemURL
+          );
+        }
+        if (libraryItem.release_date) {
+          prettyTestError(
+            router,
+            "Group-type items shouldn't have release_date",
+            ["libraryItem"],
+            libraryItemURL
+          );
+        }
+        if (libraryItem.contents.data.length > 0) {
+          prettyTestError(
+            router,
+            "Group-type items shouldn't have contents",
+            ["libraryItem"],
+            libraryItemURL
+          );
+        }
+        if (libraryItem.subitems.data.length === 0) {
+          prettyTestError(
+            router,
+            "Group-type items should have subitems",
+            ["libraryItem"],
+            libraryItemURL
+          );
+        }
+      } else {
+        // This is a normal item
+
+        if (libraryItem.metadata[0].__typename === "ComponentMetadataOther") {
+          if (
+            libraryItem.metadata[0].subtype.data.attributes.slug ===
+            "audio-case"
+          ) {
+            let hasAudioSubItem = false;
+            libraryItem.subitems.data.map((subitem) => {
+              if (
+                subitem.attributes.metadata.length > 0 &&
+                subitem.attributes.metadata[0].__typename ===
+                  "ComponentMetadataAudio"
+              )
+                hasAudioSubItem = true;
+            });
+            if (!hasAudioSubItem) {
+              prettyTestError(
+                router,
+                "Audio-case item doesn't have an audio-typed subitem",
+                ["libraryItem"],
+                libraryItemURL
+              );
+            }
+          } else if (
+            libraryItem.metadata[0].subtype.data.attributes.slug === "game-case"
+          ) {
+            let hasGameSubItem = false;
+            libraryItem.subitems.data.map((subitem) => {
+              if (
+                subitem.attributes.metadata.length > 0 &&
+                subitem.attributes.metadata[0].__typename ===
+                  "ComponentMetadataGame"
+              )
+                hasGameSubItem = true;
+            });
+            if (!hasGameSubItem) {
+              prettyTestError(
+                router,
+                "Game-case item doesn't have an Game-typed subitem",
+                ["libraryItem"],
+                libraryItemURL
+              );
+            }
+          } else if (
+            libraryItem.metadata[0].subtype.data.attributes.slug ===
+            "video-case"
+          ) {
+            let hasVideoSubItem = false;
+            libraryItem.subitems.data.map((subitem) => {
+              if (
+                subitem.attributes.metadata.length > 0 &&
+                subitem.attributes.metadata[0].__typename ===
+                  "ComponentMetadataVideo"
+              )
+                hasVideoSubItem = true;
+            });
+            if (!hasVideoSubItem) {
+              prettyTestError(
+                router,
+                "Video-case item doesn't have an Video-typed subitem",
+                ["libraryItem"],
+                libraryItemURL
+              );
+            }
+          } else if (
+            libraryItem.metadata[0].subtype.data.attributes.slug === "item-set"
+          ) {
+            if (libraryItem.subitems.data.length === 0) {
+              prettyTestError(
+                router,
+                "Item-set item should have subitems",
+                ["libraryItem"],
+                libraryItemURL
+              );
+            }
+          }
+        }
+
+        if (!libraryItem.price) {
+          prettyTestWarning(
+            router,
+            "Missing price",
+            ["libraryItem"],
+            libraryItemURL
+          );
+        } else {
+          if (!libraryItem.price.amount) {
+            prettyTestError(
+              router,
+              "Missing amount",
+              ["libraryItem", "price"],
+              libraryItemURL
+            );
+          }
+          if (!libraryItem.price.currency) {
+            prettyTestError(
+              router,
+              "Missing currency",
+              ["libraryItem", "price"],
+              libraryItemURL
+            );
+          }
+        }
+
+        if (!libraryItem.digital) {
+          if (!libraryItem.size) {
+            prettyTestWarning(
+              router,
+              "Missing size",
+              ["libraryItem"],
+              libraryItemURL
+            );
+          } else {
+            if (!libraryItem.size.width) {
+              prettyTestWarning(
+                router,
+                "Missing width",
+                ["libraryItem", "size"],
+                libraryItemURL
+              );
+            }
+            if (!libraryItem.size.height) {
+              prettyTestWarning(
+                router,
+                "Missing height",
+                ["libraryItem", "size"],
+                libraryItemURL
+              );
+            }
+            if (!libraryItem.size.thickness) {
+              prettyTestWarning(
+                router,
+                "Missing thickness",
+                ["libraryItem", "size"],
+                libraryItemURL
+              );
+            }
+          }
+        }
+
+        if (!libraryItem.release_date) {
+          prettyTestWarning(
+            router,
+            "Missing release_date",
+            ["libraryItem"],
+            libraryItemURL
+          );
+        } else {
+          if (!libraryItem.release_date.year) {
+            prettyTestError(
+              router,
+              "Missing year",
+              ["libraryItem", "release_date"],
+              libraryItemURL
+            );
+          }
+          if (!libraryItem.release_date.month) {
+            prettyTestError(
+              router,
+              "Missing month",
+              ["libraryItem", "release_date"],
+              libraryItemURL
+            );
+          }
+          if (!libraryItem.release_date.day) {
+            prettyTestError(
+              router,
+              "Missing day",
+              ["libraryItem", "release_date"],
+              libraryItemURL
+            );
+          }
+        }
+
+        if (libraryItem.contents.data.length === 0) {
+          prettyTestWarning(
+            router,
+            "Missing contents",
+            ["libraryItem"],
+            libraryItemURL
+          );
+        } else {
+          let currentRangePage = 0;
+          libraryItem.contents.data.map((content) => {
+            const contentURL =
+              "/admin/content-manager/collectionType/api::content.content/" +
+              content.id;
+
+            if (content.attributes.scan_set.length === 0) {
+              prettyTestWarning(
+                router,
+                "Missing scan_set",
+                ["libraryItem", "content", content.id],
+                contentURL
+              );
+            }
+            if (content.attributes.range.length === 0) {
+              prettyTestWarning(
+                router,
+                "Missing range",
+                ["libraryItem", "content", content.id],
+                contentURL
+              );
+            } else if (
+              content.attributes.range[0].__typename ===
+              "ComponentRangePageRange"
+            ) {
+              if (
+                content.attributes.range[0].starting_page <
+                currentRangePage + 1
+              ) {
+                prettyTestError(
+                  router,
+                  `Overlapping pages ${content.attributes.range[0].starting_page} to ${currentRangePage}`,
+                  ["libraryItem", "content", content.id, "range"],
+                  libraryItemURL
+                );
+              } else if (
+                content.attributes.range[0].starting_page >
+                currentRangePage + 1
+              ) {
+                prettyTestError(
+                  router,
+                  `Missing pages ${currentRangePage + 1} to ${
+                    content.attributes.range[0].starting_page - 1
+                  }`,
+                  ["libraryItem", "content", content.id, "range"],
+                  libraryItemURL
+                );
+              }
+
+              if (!content.attributes.content.data) {
+                prettyTestWarning(
+                  router,
+                  "Missing content",
+                  ["libraryItem", "content", content.id, "range"],
+                  libraryItemURL
+                );
+              }
+
+              currentRangePage = content.attributes.range[0].ending_page;
+            }
+          });
+
+          if (libraryItem.metadata[0].__typename === "ComponentMetadataBooks") {
+            if (currentRangePage < libraryItem.metadata[0].page_count) {
+              prettyTestError(
+                router,
+                `Missing pages ${currentRangePage + 1} to ${
+                  libraryItem.metadata[0].page_count
+                }`,
+                ["libraryItem", "content"],
+                libraryItemURL
+              );
+            } else if (currentRangePage > libraryItem.metadata[0].page_count) {
+              prettyTestError(
+                router,
+                `Page overflow, content references pages up to ${currentRangePage} when the highest expected was ${libraryItem.metadata[0].page_count}`,
+                ["libraryItem", "content"],
+                libraryItemURL
+              );
+            }
+
+            if (libraryItem.metadata[0].languages.data.length === 0) {
+              prettyTestWarning(
+                router,
+                "Missing language",
+                ["libraryItem", "metadata"],
+                libraryItemURL
+              );
+            }
+
+            if (!libraryItem.metadata[0].page_count) {
+              prettyTestWarning(
+                router,
+                "Missing page_count",
+                ["libraryItem", "metadata"],
+                libraryItemURL
+              );
+            }
+          }
+        }
+      }
+    }
+
+    if (!libraryItem.root_item && libraryItem.subitem_of.data.length === 0) {
+      prettyTestError(
+        router,
+        "This item is inaccessible (not root item and not subitem of another item)",
+        ["libraryItem"],
+        libraryItemURL
+      );
+    }
+
+    if (libraryItem.gallery.data.length === 0) {
+      prettyTestWarning(
+        router,
+        "Missing gallery",
+        ["libraryItem"],
+        libraryItemURL
+      );
+    }
+  }
+
+  if (libraryItem.descriptions.length === 0) {
+    prettyTestWarning(
+      router,
+      "Missing description",
+      ["libraryItem"],
+      libraryItemURL
+    );
+  }
+}

@@ -1,6 +1,6 @@
 type ChipProps = {
   className?: string;
-  children: React.ReactChild | React.ReactChild[];
+  children: React.ReactNode;
   "data-tip"?: string;
   "data-for"?: string;
   "data-html"?: boolean;

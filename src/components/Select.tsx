@@ -13,21 +13,21 @@ export type SelectOption = {
   label: string;
 };
 
-export function selectOptionsIncludes(
-  options: SelectOption[],
-  newOption: SelectOption
-) {
-  options.map((option) => {
-    if (option.label === newOption.label) return true;
-  });
-  return false;
-}
-
 export default function Select(props: SelectProps): JSX.Element {
   const [selected, setSelected] = useState(
     props.selected ? props.selected : props.allowEmpty ? -1 : 0
   );
   const [opened, setOpened] = useState(false);
+
+  useEffect(() => {
+    if (props.onChange) {
+      if (selected >= 0) {
+        props.onChange(props.options[selected].name);
+      } else {
+        props.onChange("");
+      }
+    }
+  }, [props, selected]);
 
   return (
     <div
@@ -45,10 +45,7 @@ export default function Select(props: SelectProps): JSX.Element {
         </p>
         {selected >= 0 && props.allowEmpty && (
           <span
-            onClick={() => {
-              setSelected(-1);
-              props.onChange && props.onChange("");
-            }}
+            onClick={() => setSelected(-1)}
             className="material-icons !text-xs"
           >
             close
@@ -73,7 +70,6 @@ export default function Select(props: SelectProps): JSX.Element {
                 onClick={() => {
                   setOpened(false);
                   setSelected(index);
-                  props.onChange && props.onChange(props.options[index].name);
                 }}
               >
                 {option.label}

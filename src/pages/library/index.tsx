@@ -17,6 +17,7 @@ import LibraryItemsPreview from "components/Library/LibraryItemsPreview";
 import Select from "components/Select";
 import { useEffect, useState } from "react";
 import { prettyDate, prettyinlineTitle } from "queries/helpers";
+import Switch from "components/Switch";
 
 type LibraryProps = {
   libraryItems: GetLibraryItemsPreviewQuery;
@@ -31,21 +32,31 @@ type GroupLibraryItems = Map<
 export default function Library(props: LibraryProps): JSX.Element {
   const langui = props.langui.websiteInterfaces.data[0].attributes;
 
+  const [showSubitems, setShowSubitems] = useState<boolean>(false);
+  const [sortingMethod, setSortingMethod] = useState<string>("title");
+  const [groupingMethod, setGroupingMethod] = useState<string>("");
+
+  const [filteredItems, setFilteredItems] = useState<
+    LibraryProps["libraryItems"]["libraryItems"]["data"]
+  >(filterItems(showSubitems, props.libraryItems.libraryItems.data));
+
   const [sortedItems, setSortedItem] = useState<
     LibraryProps["libraryItems"]["libraryItems"]["data"]
-  >(sortBy("title", props.libraryItems.libraryItems.data));
-
-  const [sortingMethod, setSortingMethod] = useState<string>("title");
+  >(sortBy(groupingMethod, filteredItems));
 
   const [groups, setGroups] = useState<GroupLibraryItems>(
     getGroups("", sortedItems)
   );
 
-  const [groupingMethod, setGroupingMethod] = useState<string>("");
+  useEffect(() => {
+    setFilteredItems(
+      filterItems(showSubitems, props.libraryItems.libraryItems.data)
+    );
+  }, [showSubitems, props.libraryItems.libraryItems.data]);
 
   useEffect(() => {
-    setSortedItem(sortBy(sortingMethod, props.libraryItems.libraryItems.data));
-  }, [props.libraryItems.libraryItems.data, sortingMethod]);
+    setSortedItem(sortBy(sortingMethod, filteredItems));
+  }, [filteredItems, sortingMethod]);
 
   useEffect(() => {
     setGroups(getGroups(groupingMethod, sortedItems));
@@ -85,6 +96,11 @@ export default function Library(props: LibraryProps): JSX.Element {
           onChange={setSortingMethod}
         />
       </div>
+
+      <div className="flex flex-row gap-2 place-items-center">
+        <p className="flex-shrink-0">Show subitems:</p>
+        <Switch state={showSubitems} setState={setShowSubitems} />
+      </div>
     </SubPanel>
   );
   const contentPanel = (
@@ -93,10 +109,10 @@ export default function Library(props: LibraryProps): JSX.Element {
         <>
           {items.length > 0 && (
             <>
-              <h2 className="text-2xl pb-2">{name}</h2>
+              <h2 className="text-2xl pb-2 pt-10 first-of-type:pt-0">{name}</h2>
               <div
                 key={name}
-                className="grid gap-8 items-end mobile:grid-cols-2 desktop:grid-cols-[repeat(auto-fill,_minmax(13rem,1fr))] pb-12"
+                className="grid gap-8 items-end mobile:grid-cols-2 desktop:grid-cols-[repeat(auto-fill,_minmax(13rem,1fr))] pb-12 border-b-[3px] border-dotted last-of-type:border-0"
               >
                 {items.map((item) => (
                   <LibraryItemsPreview key={item.id} item={item.attributes} />
@@ -168,7 +184,26 @@ function getGroups(
               groupType.get("Video")?.push(item);
               break;
             case "ComponentMetadataOther":
-              groupType.get("Other")?.push(item);
+              switch (
+                item.attributes.metadata[0].subtype.data.attributes.slug
+              ) {
+                case "audio-case":
+                  groupType.get("Audio")?.push(item);
+                  break;
+
+                case "video-case":
+                  groupType.get("Video")?.push(item);
+                  break;
+
+                case "game-case":
+                  groupType.get("Game")?.push(item);
+                  break;
+
+                default:
+                  groupType.get("Other")?.push(item);
+                  break;
+              }
+
               break;
           }
         } else {
@@ -208,6 +243,26 @@ function getGroups(
       groupDefault.set("", items);
       return groupDefault;
   }
+}
+
+function filterItems(
+  showSubitems: boolean,
+  items: LibraryProps["libraryItems"]["libraryItems"]["data"]
+): LibraryProps["libraryItems"]["libraryItems"]["data"] {
+  return [...items].filter((item) => {
+    let result = true;
+    if (!showSubitems && !item.attributes.root_item) result = false;
+    if (
+      item.attributes.metadata.length > 0 &&
+      item.attributes.metadata[0].__typename === "ComponentMetadataOther" &&
+      (item.attributes.metadata[0].subtype.data.attributes.slug ===
+        "variant-set" ||
+        item.attributes.metadata[0].subtype.data.attributes.slug ===
+          "relation-set")
+    )
+      result = false;
+    return result;
+  });
 }
 
 function sortBy(

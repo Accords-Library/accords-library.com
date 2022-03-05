@@ -126,7 +126,6 @@ query getChronologyItems($language_code: String) {
 
 query getLibraryItemsPreview($language_code: String) {
   libraryItems(
-    filters: { root_item: { eq: true } }
     pagination: { limit: -1 }
   ) {
     data {
@@ -135,6 +134,7 @@ query getLibraryItemsPreview($language_code: String) {
         title
         subtitle
         slug
+        root_item
         thumbnail {
           data {
             attributes {

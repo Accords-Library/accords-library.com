@@ -238,6 +238,7 @@ export type GetLibraryItemsPreviewQuery = {
         title: string;
         subtitle: string;
         slug: string;
+        root_item: boolean;
         thumbnail: {
           __typename: "UploadFileEntityResponse";
           data: {

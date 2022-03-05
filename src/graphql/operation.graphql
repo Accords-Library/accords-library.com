@@ -148,6 +148,7 @@ query getLibraryItemsPreview($language_code: String) {
         subtitle
         slug
         root_item
+        primary
         thumbnail {
           data {
             attributes {

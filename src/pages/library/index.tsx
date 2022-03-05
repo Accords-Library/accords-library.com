@@ -33,12 +33,21 @@ export default function Library(props: LibraryProps): JSX.Element {
   const langui = props.langui.websiteInterfaces.data[0].attributes;
 
   const [showSubitems, setShowSubitems] = useState<boolean>(false);
+  const [showPrimaryItems, setShowPrimaryItems] = useState<boolean>(true);
+  const [showSecondaryItems, setShowSecondaryItems] = useState<boolean>(false);
   const [sortingMethod, setSortingMethod] = useState<number>(0);
   const [groupingMethod, setGroupingMethod] = useState<number>(-1);
 
   const [filteredItems, setFilteredItems] = useState<
     LibraryProps["libraryItems"]["libraryItems"]["data"]
-  >(filterItems(showSubitems, props.libraryItems.libraryItems.data));
+  >(
+    filterItems(
+      showSubitems,
+      showPrimaryItems,
+      showSecondaryItems,
+      props.libraryItems.libraryItems.data
+    )
+  );
 
   const [sortedItems, setSortedItem] = useState<
     LibraryProps["libraryItems"]["libraryItems"]["data"]
@@ -50,9 +59,19 @@ export default function Library(props: LibraryProps): JSX.Element {
 
   useEffect(() => {
     setFilteredItems(
-      filterItems(showSubitems, props.libraryItems.libraryItems.data)
+      filterItems(
+        showSubitems,
+        showPrimaryItems,
+        showSecondaryItems,
+        props.libraryItems.libraryItems.data
+      )
     );
-  }, [showSubitems, props.libraryItems.libraryItems.data]);
+  }, [
+    showSubitems,
+    props.libraryItems.libraryItems.data,
+    showPrimaryItems,
+    showSecondaryItems,
+  ]);
 
   useEffect(() => {
     setSortedItem(sortBy(sortingMethod, filteredItems));
@@ -94,6 +113,16 @@ export default function Library(props: LibraryProps): JSX.Element {
       <div className="flex flex-row gap-2 place-items-center">
         <p className="flex-shrink-0">{langui.show_subitems}:</p>
         <Switch state={showSubitems} setState={setShowSubitems} />
+      </div>
+
+      <div className="flex flex-row gap-2 place-items-center">
+        <p className="flex-shrink-0">{langui.show_primary_items}:</p>
+        <Switch state={showPrimaryItems} setState={setShowPrimaryItems} />
+      </div>
+
+      <div className="flex flex-row gap-2 place-items-center">
+        <p className="flex-shrink-0">{langui.show_secondary_items}:</p>
+        <Switch state={showSecondaryItems} setState={setShowSecondaryItems} />
       </div>
     </SubPanel>
   );
@@ -242,12 +271,14 @@ function getGroups(
 
 function filterItems(
   showSubitems: boolean,
+  showPrimaryItems: boolean,
+  showSecondaryItems: boolean,
   items: LibraryProps["libraryItems"]["libraryItems"]["data"]
 ): LibraryProps["libraryItems"]["libraryItems"]["data"] {
   return [...items].filter((item) => {
-    let result = true;
-    if (!showSubitems && !item.attributes.root_item) result = false;
+    if (!showSubitems && !item.attributes.root_item) return false;
     if (
+      showSubitems &&
       item.attributes.metadata.length > 0 &&
       item.attributes.metadata[0].__typename === "ComponentMetadataOther" &&
       (item.attributes.metadata[0].subtype.data.attributes.slug ===
@@ -255,8 +286,10 @@ function filterItems(
         item.attributes.metadata[0].subtype.data.attributes.slug ===
           "relation-set")
     )
-      result = false;
-    return result;
+      return false;
+    if (item.attributes.primary && !showPrimaryItems) return false;
+    if (!item.attributes.primary && !showSecondaryItems) return false;
+    return true;
   });
 }
 

@@ -15,14 +15,14 @@ export default function AboutUs(props: AboutUsProps): JSX.Element {
     <SubPanel>
       <PanelHeader
         icon="info"
-        title={langui.main_about_us}
+        title={langui.about_us}
         description={langui.about_us_description}
       />
     </SubPanel>
   );
   return (
     <AppLayout
-      navTitle={langui.main_about_us}
+      navTitle={langui.about_us}
       langui={langui}
       subPanel={subPanel}
     />

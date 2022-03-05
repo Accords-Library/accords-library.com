@@ -30,7 +30,7 @@ export default function LibraryItemsPreview(
         {item.thumbnail.data ? (
           <Img
             image={item.thumbnail.data.attributes}
-            quality={ImageQuality.Medium}
+            quality={ImageQuality.Small}
           />
         ) : (
           <div className="w-full aspect-[21/29.7] bg-light rounded-lg"></div>

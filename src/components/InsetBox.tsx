@@ -1,6 +1,6 @@
 type InsetBoxProps = {
   className?: string;
-  children: React.ReactChild | React.ReactChild[];
+  children: React.ReactNode;
   id?: string;
 };
 

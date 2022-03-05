@@ -141,13 +141,11 @@ export default function Home(props: HomeProps): JSX.Element {
   );
 
   return (
-    <>
-      <AppLayout
-        navTitle={"Accord’s Library"}
-        langui={langui}
-        contentPanel={contentPanel}
-      />
-    </>
+    <AppLayout
+      navTitle={"Home"}
+      langui={langui}
+      contentPanel={contentPanel}
+    />
   );
 }
 

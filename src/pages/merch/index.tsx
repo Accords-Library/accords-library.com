@@ -15,7 +15,7 @@ export default function Merch(props: MerchProps): JSX.Element {
     <SubPanel>
       <PanelHeader
         icon="store"
-        title={langui.main_merch}
+        title={langui.merch}
         description={langui.merch_description}
       />
     </SubPanel>
@@ -23,7 +23,7 @@ export default function Merch(props: MerchProps): JSX.Element {
 
   return (
     <AppLayout
-      navTitle={langui.main_merch}
+      navTitle={langui.merch}
       langui={langui}
       subPanel={subPanel}
     />

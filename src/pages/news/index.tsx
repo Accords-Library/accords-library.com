@@ -15,7 +15,7 @@ export default function News(props: NewsProps): JSX.Element {
     <SubPanel>
       <PanelHeader
         icon="feed"
-        title={langui.main_news}
+        title={langui.news}
         description={langui.news_description}
       />
     </SubPanel>
@@ -23,7 +23,7 @@ export default function News(props: NewsProps): JSX.Element {
 
   return (
     <AppLayout
-      navTitle={langui.main_news}
+      navTitle={langui.news}
       langui={langui}
       subPanel={subPanel}
     />

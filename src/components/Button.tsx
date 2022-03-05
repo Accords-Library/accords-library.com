@@ -5,7 +5,7 @@ type ButtonProps = {
   id?: string;
   className?: string;
   href?: string;
-  children: React.ReactChild | React.ReactChild[];
+  children: React.ReactNode;
   active?: boolean;
   locale?: string;
   onClick?: MouseEventHandler<HTMLDivElement>;

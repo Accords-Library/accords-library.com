@@ -82,6 +82,7 @@ query getWebsiteInterface($language_code: String) {
         order_by
         group_by
         select_option_sidebar
+        group
       }
     }
   }
@@ -148,6 +149,7 @@ query getLibraryItemsPreview($language_code: String) {
         subtitle
         slug
         root_item
+        primary
         thumbnail {
           data {
             attributes {
@@ -230,8 +232,20 @@ query getLibraryItemsPreview($language_code: String) {
               }
             }
           }
-          ... on ComponentMetadataOther {
+          ... on ComponentMetadataGroup {
             subtype {
+              data {
+                attributes {
+                  slug
+                  titles(
+                    filters: { language: { code: { eq: $language_code } } }
+                  ) {
+                    title
+                  }
+                }
+              }
+            }
+            subitems_type {
               data {
                 attributes {
                   slug
@@ -408,8 +422,20 @@ query getLibraryItem($slug: String, $language_code: String) {
               }
             }
           }
-          ... on ComponentMetadataOther {
+          ... on ComponentMetadataGroup {
             subtype {
+              data {
+                attributes {
+                  slug
+                  titles(
+                    filters: { language: { code: { eq: $language_code } } }
+                  ) {
+                    title
+                  }
+                }
+              }
+            }
+            subitems_type {
               data {
                 attributes {
                   slug
@@ -528,8 +554,22 @@ query getLibraryItem($slug: String, $language_code: String) {
                     }
                   }
                 }
-                ... on ComponentMetadataOther {
+                ... on ComponentMetadataGroup {
                   subtype {
+                    data {
+                      attributes {
+                        slug
+                        titles(
+                          filters: {
+                            language: { code: { eq: $language_code } }
+                          }
+                        ) {
+                          title
+                        }
+                      }
+                    }
+                  }
+                  subitems_type {
                     data {
                       attributes {
                         slug

@@ -71,6 +71,8 @@ export function prettyItemType(
       return langui.game;
     case "ComponentMetadataVideo":
       return langui.video;
+    case "ComponentMetadataGroup":
+      return langui.group;
     case "ComponentMetadataOther":
       return langui.other;
     default:
@@ -82,21 +84,32 @@ export function prettyItemSubType(metadata: {
   __typename: GetLibraryItemsPreviewQuery["libraryItems"]["data"][number]["attributes"]["metadata"][number]["__typename"];
   subtype?: any;
   platforms?: any;
+  subitems_type?: any;
 }): string {
   switch (metadata.__typename) {
     case "ComponentMetadataAudio":
     case "ComponentMetadataBooks":
     case "ComponentMetadataVideo":
-    case "ComponentMetadataOther": {
       return metadata.subtype.data.attributes.titles.length > 0
         ? metadata.subtype.data.attributes.titles[0].title
         : prettySlug(metadata.subtype.data.attributes.slug);
-    }
     case "ComponentMetadataGame":
       return metadata.platforms.data.length > 0
         ? metadata.platforms.data[0].attributes.short
         : "";
 
+    case "ComponentMetadataGroup": {
+      const firstPart =
+        metadata.subtype.data.attributes.titles.length > 0
+          ? metadata.subtype.data.attributes.titles[0].title
+          : prettySlug(metadata.subtype.data.attributes.slug);
+
+      const secondPart =
+        metadata.subitems_type.data.attributes.titles.length > 0
+          ? metadata.subitems_type.data.attributes.titles[0].title
+          : prettySlug(metadata.subitems_type.data.attributes.slug);
+      return `${secondPart} ${firstPart})`;
+    }
     default:
       return "";
   }

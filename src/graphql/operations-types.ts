@@ -164,6 +164,7 @@ export type GetWebsiteInterfaceQuery = {
         order_by: string;
         group_by: string;
         select_option_sidebar: string;
+        group: string;
       };
     }>;
   };
@@ -252,6 +253,7 @@ export type GetLibraryItemsPreviewQuery = {
         subtitle: string;
         slug: string;
         root_item: boolean;
+        primary: boolean;
         thumbnail: {
           __typename: "UploadFileEntityResponse";
           data: {
@@ -290,13 +292,13 @@ export type GetLibraryItemsPreviewQuery = {
         };
         metadata: Array<
           | {
-              __typename: "ComponentMetadataBooks";
+              __typename: "ComponentMetadataAudio";
               subtype: {
-                __typename: "TextualSubtypeEntityResponse";
+                __typename: "AudioSubtypeEntityResponse";
                 data: {
-                  __typename: "TextualSubtypeEntity";
+                  __typename: "AudioSubtypeEntity";
                   attributes: {
-                    __typename: "TextualSubtype";
+                    __typename: "AudioSubtype";
                     slug: string;
                     titles: Array<{
                       __typename: "ComponentTranslationsSimpleTitle";
@@ -307,13 +309,13 @@ export type GetLibraryItemsPreviewQuery = {
               };
             }
           | {
-              __typename: "ComponentMetadataVideo";
+              __typename: "ComponentMetadataBooks";
               subtype: {
-                __typename: "VideoSubtypeEntityResponse";
+                __typename: "TextualSubtypeEntityResponse";
                 data: {
-                  __typename: "VideoSubtypeEntity";
+                  __typename: "TextualSubtypeEntity";
                   attributes: {
-                    __typename: "VideoSubtype";
+                    __typename: "TextualSubtype";
                     slug: string;
                     titles: Array<{
                       __typename: "ComponentTranslationsSimpleTitle";
@@ -338,13 +340,27 @@ export type GetLibraryItemsPreviewQuery = {
               };
             }
           | {
-              __typename: "ComponentMetadataAudio";
+              __typename: "ComponentMetadataGroup";
               subtype: {
-                __typename: "AudioSubtypeEntityResponse";
+                __typename: "GroupSubtypeEntityResponse";
                 data: {
-                  __typename: "AudioSubtypeEntity";
+                  __typename: "GroupSubtypeEntity";
                   attributes: {
-                    __typename: "AudioSubtype";
+                    __typename: "GroupSubtype";
+                    slug: string;
+                    titles: Array<{
+                      __typename: "ComponentTranslationsSimpleTitle";
+                      title: string;
+                    }>;
+                  };
+                };
+              };
+              subitems_type: {
+                __typename: "MetadataTypeEntityResponse";
+                data: {
+                  __typename: "MetadataTypeEntity";
+                  attributes: {
+                    __typename: "MetadataType";
                     slug: string;
                     titles: Array<{
                       __typename: "ComponentTranslationsSimpleTitle";
@@ -354,14 +370,15 @@ export type GetLibraryItemsPreviewQuery = {
                 };
               };
             }
+          | { __typename: "ComponentMetadataOther" }
           | {
-              __typename: "ComponentMetadataOther";
+              __typename: "ComponentMetadataVideo";
               subtype: {
-                __typename: "OtherSubtypeEntityResponse";
+                __typename: "VideoSubtypeEntityResponse";
                 data: {
-                  __typename: "OtherSubtypeEntity";
+                  __typename: "VideoSubtypeEntity";
                   attributes: {
-                    __typename: "OtherSubtype";
+                    __typename: "VideoSubtype";
                     slug: string;
                     titles: Array<{
                       __typename: "ComponentTranslationsSimpleTitle";
@@ -477,6 +494,23 @@ export type GetLibraryItemQuery = {
         }>;
         metadata: Array<
           | {
+              __typename: "ComponentMetadataAudio";
+              subtype: {
+                __typename: "AudioSubtypeEntityResponse";
+                data: {
+                  __typename: "AudioSubtypeEntity";
+                  attributes: {
+                    __typename: "AudioSubtype";
+                    slug: string;
+                    titles: Array<{
+                      __typename: "ComponentTranslationsSimpleTitle";
+                      title: string;
+                    }>;
+                  };
+                };
+              };
+            }
+          | {
               __typename: "ComponentMetadataBooks";
               binding_type: Enum_Componentmetadatabooks_Binding_Type;
               page_count: number;
@@ -505,22 +539,6 @@ export type GetLibraryItemQuery = {
                     name: string;
                   };
                 }>;
-              };
-            }
-          | {
-              __typename: "ComponentMetadataVideo";
-              subtype: {
-                __typename: "VideoSubtypeEntityResponse";
-                data: {
-                  __typename: "VideoSubtypeEntity";
-                  attributes: {
-                    __typename: "VideoSubtype";
-                    titles: Array<{
-                      __typename: "ComponentTranslationsSimpleTitle";
-                      title: string;
-                    }>;
-                  };
-                };
               };
             }
           | {
@@ -571,13 +589,27 @@ export type GetLibraryItemQuery = {
               };
             }
           | {
-              __typename: "ComponentMetadataAudio";
+              __typename: "ComponentMetadataGroup";
               subtype: {
-                __typename: "AudioSubtypeEntityResponse";
+                __typename: "GroupSubtypeEntityResponse";
                 data: {
-                  __typename: "AudioSubtypeEntity";
+                  __typename: "GroupSubtypeEntity";
                   attributes: {
-                    __typename: "AudioSubtype";
+                    __typename: "GroupSubtype";
+                    slug: string;
+                    titles: Array<{
+                      __typename: "ComponentTranslationsSimpleTitle";
+                      title: string;
+                    }>;
+                  };
+                };
+              };
+              subitems_type: {
+                __typename: "MetadataTypeEntityResponse";
+                data: {
+                  __typename: "MetadataTypeEntity";
+                  attributes: {
+                    __typename: "MetadataType";
                     slug: string;
                     titles: Array<{
                       __typename: "ComponentTranslationsSimpleTitle";
@@ -587,15 +619,15 @@ export type GetLibraryItemQuery = {
                 };
               };
             }
+          | { __typename: "ComponentMetadataOther" }
           | {
-              __typename: "ComponentMetadataOther";
+              __typename: "ComponentMetadataVideo";
               subtype: {
-                __typename: "OtherSubtypeEntityResponse";
+                __typename: "VideoSubtypeEntityResponse";
                 data: {
-                  __typename: "OtherSubtypeEntity";
+                  __typename: "VideoSubtypeEntity";
                   attributes: {
-                    __typename: "OtherSubtype";
-                    slug: string;
+                    __typename: "VideoSubtype";
                     titles: Array<{
                       __typename: "ComponentTranslationsSimpleTitle";
                       title: string;
@@ -667,13 +699,13 @@ export type GetLibraryItemQuery = {
               };
               metadata: Array<
                 | {
-                    __typename: "ComponentMetadataBooks";
+                    __typename: "ComponentMetadataAudio";
                     subtype: {
-                      __typename: "TextualSubtypeEntityResponse";
+                      __typename: "AudioSubtypeEntityResponse";
                       data: {
-                        __typename: "TextualSubtypeEntity";
+                        __typename: "AudioSubtypeEntity";
                         attributes: {
-                          __typename: "TextualSubtype";
+                          __typename: "AudioSubtype";
                           slug: string;
                           titles: Array<{
                             __typename: "ComponentTranslationsSimpleTitle";
@@ -684,13 +716,13 @@ export type GetLibraryItemQuery = {
                     };
                   }
                 | {
-                    __typename: "ComponentMetadataVideo";
+                    __typename: "ComponentMetadataBooks";
                     subtype: {
-                      __typename: "VideoSubtypeEntityResponse";
+                      __typename: "TextualSubtypeEntityResponse";
                       data: {
-                        __typename: "VideoSubtypeEntity";
+                        __typename: "TextualSubtypeEntity";
                         attributes: {
-                          __typename: "VideoSubtype";
+                          __typename: "TextualSubtype";
                           slug: string;
                           titles: Array<{
                             __typename: "ComponentTranslationsSimpleTitle";
@@ -715,13 +747,27 @@ export type GetLibraryItemQuery = {
                     };
                   }
                 | {
-                    __typename: "ComponentMetadataAudio";
+                    __typename: "ComponentMetadataGroup";
                     subtype: {
-                      __typename: "AudioSubtypeEntityResponse";
+                      __typename: "GroupSubtypeEntityResponse";
                       data: {
-                        __typename: "AudioSubtypeEntity";
+                        __typename: "GroupSubtypeEntity";
                         attributes: {
-                          __typename: "AudioSubtype";
+                          __typename: "GroupSubtype";
+                          slug: string;
+                          titles: Array<{
+                            __typename: "ComponentTranslationsSimpleTitle";
+                            title: string;
+                          }>;
+                        };
+                      };
+                    };
+                    subitems_type: {
+                      __typename: "MetadataTypeEntityResponse";
+                      data: {
+                        __typename: "MetadataTypeEntity";
+                        attributes: {
+                          __typename: "MetadataType";
                           slug: string;
                           titles: Array<{
                             __typename: "ComponentTranslationsSimpleTitle";
@@ -731,14 +777,15 @@ export type GetLibraryItemQuery = {
                       };
                     };
                   }
+                | { __typename: "ComponentMetadataOther" }
                 | {
-                    __typename: "ComponentMetadataOther";
+                    __typename: "ComponentMetadataVideo";
                     subtype: {
-                      __typename: "OtherSubtypeEntityResponse";
+                      __typename: "VideoSubtypeEntityResponse";
                       data: {
-                        __typename: "OtherSubtypeEntity";
+                        __typename: "VideoSubtypeEntity";
                         attributes: {
-                          __typename: "OtherSubtype";
+                          __typename: "VideoSubtype";
                           slug: string;
                           titles: Array<{
                             __typename: "ComponentTranslationsSimpleTitle";

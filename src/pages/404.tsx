@@ -4,6 +4,7 @@ import { getWebsiteInterface } from "graphql/operations";
 import { GetStaticProps } from "next";
 import { GetWebsiteInterfaceQuery } from "graphql/operations-types";
 import AppLayout from "components/AppLayout";
+import ReturnButton from "components/PanelComponents/ReturnButton";
 
 type FourOhFourProps = {
   langui: GetWebsiteInterfaceQuery;
@@ -14,9 +15,7 @@ export default function FourOhFour(props: FourOhFourProps): JSX.Element {
   const contentPanel = (
     <ContentPanel>
       <h1>404 - {langui.page_not_found}</h1>
-      <Link href="/">
-        <a>Go back home</a>
-      </Link>
+      <ReturnButton href="/" title="Home" langui={langui} />
     </ContentPanel>
   );
   return (

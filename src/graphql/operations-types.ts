@@ -163,6 +163,7 @@ export type GetWebsiteInterfaceQuery = {
         no_year: string;
         order_by: string;
         group_by: string;
+        select_option_sidebar: string;
       };
     }>;
   };

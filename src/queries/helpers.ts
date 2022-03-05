@@ -64,15 +64,15 @@ export function prettyItemType(
   const type = metadata.__typename;
   switch (metadata.__typename) {
     case "ComponentMetadataAudio":
-      return langui.library_item_type_audio;
+      return langui.audio;
     case "ComponentMetadataBooks":
-      return langui.library_item_type_textual;
+      return langui.textual;
     case "ComponentMetadataGame":
-      return langui.library_item_type_game;
+      return langui.game;
     case "ComponentMetadataVideo":
-      return langui.library_item_type_video;
+      return langui.video;
     case "ComponentMetadataOther":
-      return langui.library_item_type_other;
+      return langui.other;
     default:
       return "";
   }

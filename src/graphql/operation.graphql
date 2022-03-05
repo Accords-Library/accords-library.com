@@ -81,6 +81,7 @@ query getWebsiteInterface($language_code: String) {
         no_year
         order_by
         group_by
+        select_option_sidebar
       }
     }
   }

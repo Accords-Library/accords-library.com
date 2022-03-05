@@ -104,12 +104,8 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
             content={`${titlePrefix} - ${ogTitle}`}
           ></meta>
 
-          {props.description && (
-            <>
-              <meta name="description" content={metaDescription} />
-              <meta name="twitter:description" content={metaDescription}></meta>
-            </>
-          )}
+          <meta name="description" content={metaDescription} />
+          <meta name="twitter:description" content={metaDescription}></meta>
 
           <meta property="og:image" content={metaImage.image}></meta>
           <meta property="og:image:secure_url" content={metaImage.image}></meta>
@@ -160,7 +156,7 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
               <div className="text-dark border-dark border-2 border-dotted rounded-2xl p-8 grid grid-flow-col place-items-center gap-9 opacity-40">
                 <p className="text-4xl">❮</p>
                 <p className="text-2xl w-64">
-                  Select one of the options in the sidebar
+                  {props.langui.select_option_sidebar}
                 </p>
               </div>
             </div>
@@ -238,7 +234,7 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
               appLayout.languagePanelOpen ? "scale-100" : "scale-0"
             }`}
           >
-            <h2 className="text-2xl">Select a language</h2>
+            <h2 className="text-2xl">{props.langui.select_language}</h2>
             <div className="flex flex-wrap flex-row gap-2">
               {router.locales?.sort().map((locale) => (
                 <Button

@@ -191,6 +191,7 @@ function getGroups(
       groupType.set(langui.textual, []);
       groupType.set(langui.video, []);
       groupType.set(langui.other, []);
+      groupType.set(langui.group, []);
       groupType.set(langui.no_type, []);
       items.map((item) => {
         if (item.attributes.metadata.length > 0) {
@@ -208,26 +209,28 @@ function getGroups(
               groupType.get(langui.video)?.push(item);
               break;
             case "ComponentMetadataOther":
+              groupType.get(langui.other)?.push(item);
+              break;
+            case "ComponentMetadataGroup":
               switch (
-                item.attributes.metadata[0].subtype.data.attributes.slug
+                item.attributes.metadata[0].subitems_type.data.attributes.slug
               ) {
-                case "audio-case":
+                case "audio":
                   groupType.get(langui.audio)?.push(item);
                   break;
-
-                case "video-case":
+                case "video":
                   groupType.get(langui.video)?.push(item);
                   break;
-
-                case "game-case":
+                case "game":
                   groupType.get(langui.game)?.push(item);
                   break;
-
-                default:
-                  groupType.get(langui.other)?.push(item);
+                case "textual":
+                  groupType.get(langui.textual)?.push(item);
+                  break;
+                case "mixed":
+                  groupType.get(langui.group)?.push(item);
                   break;
               }
-
               break;
           }
         } else {
@@ -280,7 +283,7 @@ function filterItems(
     if (
       showSubitems &&
       item.attributes.metadata.length > 0 &&
-      item.attributes.metadata[0].__typename === "ComponentMetadataOther" &&
+      item.attributes.metadata[0].__typename === "ComponentMetadataGroup" &&
       (item.attributes.metadata[0].subtype.data.attributes.slug ===
         "variant-set" ||
         item.attributes.metadata[0].subtype.data.attributes.slug ===

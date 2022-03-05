@@ -103,7 +103,6 @@ export async function getContentsSlugs(
   return await graphQL(query, JSON.stringify(variables));
 }
 
-
 export async function getContents(
   variables: GetContentsQueryVariables
 ): Promise<GetContentsQuery> {

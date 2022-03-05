@@ -1,6 +1,8 @@
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 
 export type SelectProps = {
+  setState: Dispatch<SetStateAction<number>>;
+  state: number;
   options: SelectOption[];
   selected?: number;
   allowEmpty?: boolean;
@@ -14,20 +16,7 @@ export type SelectOption = {
 };
 
 export default function Select(props: SelectProps): JSX.Element {
-  const [selected, setSelected] = useState(
-    props.selected ? props.selected : props.allowEmpty ? -1 : 0
-  );
   const [opened, setOpened] = useState(false);
-
-  useEffect(() => {
-    if (props.onChange) {
-      if (selected >= 0) {
-        props.onChange(props.options[selected].name);
-      } else {
-        props.onChange("");
-      }
-    }
-  }, [props, selected]);
 
   return (
     <div
@@ -41,11 +30,11 @@ export default function Select(props: SelectProps): JSX.Element {
         }`}
       >
         <p onClick={() => setOpened(!opened)} className="w-full">
-          {selected === -1 ? "—" : props.options[selected].label}
+          {props.state === -1 ? "—" : props.options[props.state].label}
         </p>
-        {selected >= 0 && props.allowEmpty && (
+        {props.state >= 0 && props.allowEmpty && (
           <span
-            onClick={() => setSelected(-1)}
+            onClick={() => props.setState(-1)}
             className="material-icons !text-xs"
           >
             close
@@ -62,14 +51,14 @@ export default function Select(props: SelectProps): JSX.Element {
       >
         {props.options.map((option, index) => (
           <>
-            {index !== selected && (
+            {index !== props.state && (
               <div
                 className="bg-light hover:bg-mid transition-colors cursor-pointer p-1 last-of-type:rounded-b-[1em]"
                 key={option.name}
                 id={option.name}
                 onClick={() => {
                   setOpened(false);
-                  setSelected(index);
+                  props.setState(index);
                 }}
               >
                 {option.label}

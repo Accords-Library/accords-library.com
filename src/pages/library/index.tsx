@@ -33,8 +33,8 @@ export default function Library(props: LibraryProps): JSX.Element {
   const langui = props.langui.websiteInterfaces.data[0].attributes;
 
   const [showSubitems, setShowSubitems] = useState<boolean>(false);
-  const [sortingMethod, setSortingMethod] = useState<string>("title");
-  const [groupingMethod, setGroupingMethod] = useState<string>("");
+  const [sortingMethod, setSortingMethod] = useState<number>(0);
+  const [groupingMethod, setGroupingMethod] = useState<number>(-1);
 
   const [filteredItems, setFilteredItems] = useState<
     LibraryProps["libraryItems"]["libraryItems"]["data"]
@@ -45,7 +45,7 @@ export default function Library(props: LibraryProps): JSX.Element {
   >(sortBy(groupingMethod, filteredItems));
 
   const [groups, setGroups] = useState<GroupLibraryItems>(
-    getGroups("", sortedItems)
+    getGroups(groupingMethod, sortedItems)
   );
 
   useEffect(() => {
@@ -79,7 +79,8 @@ export default function Library(props: LibraryProps): JSX.Element {
             { name: "type", label: "Type" },
             { name: "releaseYear", label: "Release year" },
           ]}
-          onChange={setGroupingMethod}
+          state={groupingMethod}
+          setState={setGroupingMethod}
           allowEmpty
         />
       </div>
@@ -90,10 +91,11 @@ export default function Library(props: LibraryProps): JSX.Element {
           className="w-full"
           options={[
             { name: "title", label: "Title" },
-            { name: "releaseDate", label: "Release date" },
             { name: "price", label: "Price" },
+            { name: "releaseDate", label: "Release date" },
           ]}
-          onChange={setSortingMethod}
+          state={sortingMethod}
+          setState={setSortingMethod}
         />
       </div>
 
@@ -153,14 +155,14 @@ export const getStaticProps: GetStaticProps = async (context) => {
 };
 
 function getGroups(
-  groupByType: string,
+  groupByType: number,
   items: LibraryProps["libraryItems"]["libraryItems"]["data"]
 ): GroupLibraryItems {
   switch (groupByType) {
-    case "category":
+    case 0:
       return new Map();
 
-    case "type":
+    case 1:
       const groupType: GroupLibraryItems = new Map();
       groupType.set("Audio", []);
       groupType.set("Game", []);
@@ -212,7 +214,7 @@ function getGroups(
       });
       return groupType;
 
-    case "releaseYear":
+    case 2:
       const years: number[] = [];
       items.map((item) => {
         if (item.attributes.release_date) {
@@ -266,11 +268,11 @@ function filterItems(
 }
 
 function sortBy(
-  orderByType: string,
+  orderByType: number,
   items: LibraryProps["libraryItems"]["libraryItems"]["data"]
 ): LibraryProps["libraryItems"]["libraryItems"]["data"] {
   switch (orderByType) {
-    case "title":
+    case 0:
       return [...items].sort((a, b) => {
         const titleA = prettyinlineTitle(
           "",
@@ -284,13 +286,13 @@ function sortBy(
         );
         return titleA.localeCompare(titleB);
       });
-    case "price":
+    case 1:
       return [...items].sort((a, b) => {
         const priceA = a.attributes.price ? a.attributes.price.amount : 99999;
         const priceB = b.attributes.price ? b.attributes.price.amount : 99999;
         return priceA - priceB;
       });
-    case "releaseDate":
+    case 2:
       return [...items].sort((a, b) => {
         const dateA =
           a.attributes.release_date !== null
@@ -302,6 +304,7 @@ function sortBy(
             : "9999";
         return dateA.localeCompare(dateB);
       });
+    default:
+      return items;
   }
-  return items;
 }

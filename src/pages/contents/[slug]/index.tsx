@@ -40,7 +40,7 @@ export default function ContentIndex(props: ContentIndexProps): JSX.Element {
 
         {content.text_set.length > 0 ? (
           <Button href={`/contents/${content.slug}/read/`}>
-            {langui.content_read_content}
+            {langui.read_content}
           </Button>
         ) : (
           ""
@@ -48,7 +48,7 @@ export default function ContentIndex(props: ContentIndexProps): JSX.Element {
 
         {content.audio_set.length > 0 ? (
           <Button href={`/contents/${content.slug}/listen/`}>
-            {langui.content_listen_content}
+            {langui.listen_content}
           </Button>
         ) : (
           ""
@@ -56,7 +56,7 @@ export default function ContentIndex(props: ContentIndexProps): JSX.Element {
 
         {content.video_set.length > 0 ? (
           <Button href={`/contents/${content.slug}/watch/`}>
-            {langui.content_watch_content}
+            {langui.watch_content}
           </Button>
         ) : (
           ""

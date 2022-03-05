@@ -1,6 +1,5 @@
 import Link from "next/link";
 import NavOption from "components/PanelComponents/NavOption";
-import SVG from "components/SVG";
 import { useRouter } from "next/router";
 import Button from "components/Button";
 import HorizontalLine from "components/HorizontalLine";
@@ -84,8 +83,8 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
       <NavOption
         url="/library"
         icon="library_books"
-        title={langui.main_library}
-        subtitle={langui.main_library_description}
+        title={langui.library}
+        subtitle={langui.library_short_description}
         tooltipId="MainPanelTooltip"
         reduced={appLayout.mainPanelReduced && isDesktop}
         onClick={() => appLayout.setMainPanelOpen(false)}
@@ -94,8 +93,8 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
       <NavOption
         url="/contents"
         icon="workspaces"
-        title="Contents"
-        subtitle="Explore all content and filter by type or category"
+        title={langui.contents}
+        subtitle={langui.contents_short_description}
         tooltipId="MainPanelTooltip"
         reduced={appLayout.mainPanelReduced && isDesktop}
         onClick={() => appLayout.setMainPanelOpen(false)}
@@ -104,8 +103,8 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
       <NavOption
         url="/wiki"
         icon="travel_explore"
-        title={langui.main_wiki}
-        subtitle={langui.main_wiki_description}
+        title={langui.wiki}
+        subtitle={langui.wiki_short_description}
         tooltipId="MainPanelTooltip"
         reduced={appLayout.mainPanelReduced && isDesktop}
         onClick={() => appLayout.setMainPanelOpen(false)}
@@ -114,8 +113,8 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
       <NavOption
         url="/chronicles"
         icon="watch_later"
-        title={langui.main_chronicles}
-        subtitle={langui.main_chronicles_description}
+        title={langui.chronicles}
+        subtitle={langui.chronicles_short_description}
         tooltipId="MainPanelTooltip"
         reduced={appLayout.mainPanelReduced && isDesktop}
         onClick={() => appLayout.setMainPanelOpen(false)}
@@ -126,7 +125,7 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
       <NavOption
         url="/news"
         icon="feed"
-        title={langui.main_news}
+        title={langui.news}
         tooltipId="MainPanelTooltip"
         reduced={appLayout.mainPanelReduced && isDesktop}
         onClick={() => appLayout.setMainPanelOpen(false)}
@@ -135,7 +134,7 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
       <NavOption
         url="/merch"
         icon="store"
-        title={langui.main_merch}
+        title={langui.merch}
         tooltipId="MainPanelTooltip"
         reduced={appLayout.mainPanelReduced && isDesktop}
         onClick={() => appLayout.setMainPanelOpen(false)}
@@ -144,7 +143,7 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
       <NavOption
         url="/gallery"
         icon="collections"
-        title={langui.main_gallery}
+        title={langui.gallery}
         tooltipId="MainPanelTooltip"
         reduced={appLayout.mainPanelReduced && isDesktop}
         onClick={() => appLayout.setMainPanelOpen(false)}
@@ -153,7 +152,7 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
       <NavOption
         url="/archives"
         icon="inventory"
-        title={langui.main_archives}
+        title={langui.archives}
         tooltipId="MainPanelTooltip"
         reduced={appLayout.mainPanelReduced && isDesktop}
         onClick={() => appLayout.setMainPanelOpen(false)}
@@ -162,7 +161,7 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
       <NavOption
         url="/about-us"
         icon="info"
-        title={langui.main_about_us}
+        title={langui.about_us}
         tooltipId="MainPanelTooltip"
         reduced={appLayout.mainPanelReduced && isDesktop}
         onClick={() => appLayout.setMainPanelOpen(false)}
@@ -176,8 +175,8 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
         }`}
       >
         <p>
-          {langui.main_licensing ? (
-            <Markdown>{langui.main_licensing}</Markdown>
+          {langui.licensing_notice ? (
+            <Markdown>{langui.licensing_notice}</Markdown>
           ) : (
             ""
           )}
@@ -194,8 +193,8 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
           </div>
         </a>
         <p>
-          {langui.main_copyright ? (
-            <Markdown>{langui.main_copyright}</Markdown>
+          {langui.copyright_notice ? (
+            <Markdown>{langui.copyright_notice}</Markdown>
           ) : (
             ""
           )}

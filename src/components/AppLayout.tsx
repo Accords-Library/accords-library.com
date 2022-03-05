@@ -88,7 +88,7 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
 
   const metaDescription = props.description
     ? props.description
-    : "Accord's Library aims at gathering and archiving all of Yoko Taro’s work. Yoko Taro is a Japanese video game director and scenario writer.";
+    : props.langui.default_description;
 
   return (
     <div className={appLayout.darkMode ? "set-theme-dark" : "set-theme-light"}>

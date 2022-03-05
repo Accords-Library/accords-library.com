@@ -13,7 +13,7 @@ export default function ReturnButton(props: ReturnButtonProps): JSX.Element {
 
   return (
     <Button onClick={() => appLayout.setSubPanelOpen(false)} href={props.href}>
-      ❮&emsp;{props.langui.global_return_label} {props.title}
+      ❮&emsp;{props.langui.return_to} {props.title}
     </Button>
   );
 }

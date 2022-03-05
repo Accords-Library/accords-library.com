@@ -3,16 +3,11 @@ import { Dispatch, SetStateAction, useState } from "react";
 export type SelectProps = {
   setState: Dispatch<SetStateAction<number>>;
   state: number;
-  options: SelectOption[];
+  options: string[];
   selected?: number;
   allowEmpty?: boolean;
   className?: string;
   onChange?: Function;
-};
-
-export type SelectOption = {
-  name: string;
-  label: string;
 };
 
 export default function Select(props: SelectProps): JSX.Element {
@@ -30,7 +25,7 @@ export default function Select(props: SelectProps): JSX.Element {
         }`}
       >
         <p onClick={() => setOpened(!opened)} className="w-full">
-          {props.state === -1 ? "—" : props.options[props.state].label}
+          {props.state === -1 ? "—" : props.options[props.state]}
         </p>
         {props.state >= 0 && props.allowEmpty && (
           <span
@@ -54,14 +49,14 @@ export default function Select(props: SelectProps): JSX.Element {
             {index !== props.state && (
               <div
                 className="bg-light hover:bg-mid transition-colors cursor-pointer p-1 last-of-type:rounded-b-[1em]"
-                key={option.name}
-                id={option.name}
+                key={option}
+                id={option}
                 onClick={() => {
                   setOpened(false);
                   props.setState(index);
                 }}
               >
-                {option.label}
+                {option}
               </div>
             )}
           </>

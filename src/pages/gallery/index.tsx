@@ -18,7 +18,7 @@ export default function Gallery(props: GalleryProps): JSX.Element {
 
   return (
     <AppLayout
-      navTitle={langui.main_gallery}
+      navTitle={langui.gallery}
       langui={langui}
       contentPanel={contentPanel}
     />

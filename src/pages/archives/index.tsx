@@ -15,14 +15,14 @@ export default function Archives(props: ArchivesProps): JSX.Element {
     <SubPanel>
       <PanelHeader
         icon="inventory"
-        title={langui.main_archives}
+        title={langui.archives}
         description={langui.archives_description}
       />
     </SubPanel>
   );
   return (
     <AppLayout
-      navTitle={langui.main_archives}
+      navTitle={langui.archives}
       langui={langui}
       subPanel={subPanel}
     />

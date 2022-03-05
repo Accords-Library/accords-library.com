@@ -13,13 +13,15 @@ export default function FourOhFour(props: FourOhFourProps): JSX.Element {
   const langui = props.langui.websiteInterfaces.data[0].attributes;
   const contentPanel = (
     <ContentPanel>
-      <h1>404 - Page Not Found</h1>
+      <h1>404 - {langui.page_not_found}</h1>
       <Link href="/">
         <a>Go back home</a>
       </Link>
     </ContentPanel>
   );
-  return <AppLayout navTitle="404" langui={langui} contentPanel={contentPanel} />;
+  return (
+    <AppLayout navTitle="404" langui={langui} contentPanel={contentPanel} />
+  );
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {

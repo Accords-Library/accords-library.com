@@ -15,14 +15,14 @@ export default function Chronicles(props: ChroniclesProps): JSX.Element {
     <SubPanel>
       <PanelHeader
         icon="watch_later"
-        title={langui.main_chronicles}
+        title={langui.chronicles}
         description={langui.chronicles_description}
       />
     </SubPanel>
   );
   return (
     <AppLayout
-      navTitle={langui.main_chronicles}
+      navTitle={langui.chronicles}
       langui={langui}
       subPanel={subPanel}
     />

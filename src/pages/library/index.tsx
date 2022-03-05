@@ -45,7 +45,7 @@ export default function Library(props: LibraryProps): JSX.Element {
   >(sortBy(groupingMethod, filteredItems));
 
   const [groups, setGroups] = useState<GroupLibraryItems>(
-    getGroups(groupingMethod, sortedItems)
+    getGroups(langui, groupingMethod, sortedItems)
   );
 
   useEffect(() => {
@@ -59,26 +59,22 @@ export default function Library(props: LibraryProps): JSX.Element {
   }, [filteredItems, sortingMethod]);
 
   useEffect(() => {
-    setGroups(getGroups(groupingMethod, sortedItems));
-  }, [groupingMethod, sortedItems]);
+    setGroups(getGroups(langui, groupingMethod, sortedItems));
+  }, [langui, groupingMethod, sortedItems]);
 
   const subPanel = (
     <SubPanel>
       <PanelHeader
         icon="library_books"
-        title={langui.main_library}
+        title={langui.library}
         description={langui.library_description}
       />
 
       <div className="flex flex-row gap-2 place-items-center">
-        <p className="flex-shrink-0">Group by:</p>
+        <p className="flex-shrink-0">{langui.group_by}:</p>
         <Select
           className="w-full"
-          options={[
-            { name: "category", label: "Category" },
-            { name: "type", label: "Type" },
-            { name: "releaseYear", label: "Release year" },
-          ]}
+          options={[langui.category, langui.type, langui.release_year]}
           state={groupingMethod}
           setState={setGroupingMethod}
           allowEmpty
@@ -86,21 +82,17 @@ export default function Library(props: LibraryProps): JSX.Element {
       </div>
 
       <div className="flex flex-row gap-2 place-items-center">
-        <p className="flex-shrink-0">Order by:</p>
+        <p className="flex-shrink-0">{langui.order_by}:</p>
         <Select
           className="w-full"
-          options={[
-            { name: "title", label: "Title" },
-            { name: "price", label: "Price" },
-            { name: "releaseDate", label: "Release date" },
-          ]}
+          options={[langui.name, langui.price, langui.release_date]}
           state={sortingMethod}
           setState={setSortingMethod}
         />
       </div>
 
       <div className="flex flex-row gap-2 place-items-center">
-        <p className="flex-shrink-0">Show subitems:</p>
+        <p className="flex-shrink-0">{langui.show_subitems}:</p>
         <Switch state={showSubitems} setState={setShowSubitems} />
       </div>
     </SubPanel>
@@ -128,7 +120,7 @@ export default function Library(props: LibraryProps): JSX.Element {
   );
   return (
     <AppLayout
-      navTitle={langui.main_library}
+      navTitle={langui.library}
       langui={langui}
       subPanel={subPanel}
       contentPanel={contentPanel}
@@ -155,6 +147,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 };
 
 function getGroups(
+  langui: GetWebsiteInterfaceQuery["websiteInterfaces"]["data"][number]["attributes"],
   groupByType: number,
   items: LibraryProps["libraryItems"]["libraryItems"]["data"]
 ): GroupLibraryItems {
@@ -164,52 +157,52 @@ function getGroups(
 
     case 1:
       const groupType: GroupLibraryItems = new Map();
-      groupType.set("Audio", []);
-      groupType.set("Game", []);
-      groupType.set("Textual", []);
-      groupType.set("Video", []);
-      groupType.set("Other", []);
-      groupType.set("No type", []);
+      groupType.set(langui.audio, []);
+      groupType.set(langui.game, []);
+      groupType.set(langui.textual, []);
+      groupType.set(langui.video, []);
+      groupType.set(langui.other, []);
+      groupType.set(langui.no_type, []);
       items.map((item) => {
         if (item.attributes.metadata.length > 0) {
           switch (item.attributes.metadata[0].__typename) {
             case "ComponentMetadataAudio":
-              groupType.get("Audio")?.push(item);
+              groupType.get(langui.audio)?.push(item);
               break;
             case "ComponentMetadataGame":
-              groupType.get("Game")?.push(item);
+              groupType.get(langui.game)?.push(item);
               break;
             case "ComponentMetadataBooks":
-              groupType.get("Textual")?.push(item);
+              groupType.get(langui.textual)?.push(item);
               break;
             case "ComponentMetadataVideo":
-              groupType.get("Video")?.push(item);
+              groupType.get(langui.video)?.push(item);
               break;
             case "ComponentMetadataOther":
               switch (
                 item.attributes.metadata[0].subtype.data.attributes.slug
               ) {
                 case "audio-case":
-                  groupType.get("Audio")?.push(item);
+                  groupType.get(langui.audio)?.push(item);
                   break;
 
                 case "video-case":
-                  groupType.get("Video")?.push(item);
+                  groupType.get(langui.video)?.push(item);
                   break;
 
                 case "game-case":
-                  groupType.get("Game")?.push(item);
+                  groupType.get(langui.game)?.push(item);
                   break;
 
                 default:
-                  groupType.get("Other")?.push(item);
+                  groupType.get(langui.other)?.push(item);
                   break;
               }
 
               break;
           }
         } else {
-          groupType.get("No type")?.push(item);
+          groupType.get(langui.no_type)?.push(item);
         }
       });
       return groupType;
@@ -227,14 +220,14 @@ function getGroups(
       years.map((year) => {
         groupYear.set(year.toString(), []);
       });
-      groupYear.set("No year", []);
+      groupYear.set(langui.no_year, []);
       items.map((item) => {
         if (item.attributes.release_date) {
           groupYear
             .get(item.attributes.release_date.year.toString())
             ?.push(item);
         } else {
-          groupYear.get("No year")?.push(item);
+          groupYear.get(langui.no_year)?.push(item);
         }
       });
 

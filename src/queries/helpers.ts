@@ -108,7 +108,7 @@ export function prettyItemSubType(metadata: {
         metadata.subitems_type.data.attributes.titles.length > 0
           ? metadata.subitems_type.data.attributes.titles[0].title
           : prettySlug(metadata.subitems_type.data.attributes.slug);
-      return `${secondPart} ${firstPart})`;
+      return `${secondPart} ${firstPart}`;
     }
     default:
       return "";

@@ -13,6 +13,7 @@ export interface AppLayoutState {
   fontSize: number | undefined;
   dyslexic: boolean | undefined;
   currency: string | undefined;
+  playerName: string | undefined;
   setSubPanelOpen: React.Dispatch<React.SetStateAction<boolean | undefined>>;
   setLanguagePanelOpen: React.Dispatch<
     React.SetStateAction<boolean | undefined>
@@ -29,6 +30,7 @@ export interface AppLayoutState {
   setFontSize: React.Dispatch<React.SetStateAction<number | undefined>>;
   setDyslexic: React.Dispatch<React.SetStateAction<boolean | undefined>>;
   setCurrency: React.Dispatch<React.SetStateAction<string | undefined>>;
+  setPlayerName: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
 const initialState: AppLayoutState = {
@@ -42,6 +44,7 @@ const initialState: AppLayoutState = {
   fontSize: 1,
   dyslexic: false,
   currency: "USD",
+  playerName: "",
   setSubPanelOpen: () => {},
   setLanguagePanelOpen: () => {},
   setMainPanelReduced: () => {},
@@ -52,6 +55,7 @@ const initialState: AppLayoutState = {
   setFontSize: () => {},
   setDyslexic: () => {},
   setCurrency: () => {},
+  setPlayerName: () => {},
 };
 
 const AppContext = React.createContext<AppLayoutState>(initialState);
@@ -105,6 +109,10 @@ export const AppContextProvider = (props: Props) => {
     initialState.currency
   );
 
+  const [playerName, setPlayerName] = useStateWithLocalStorage<
+    string | undefined
+  >("playerName", initialState.playerName);
+
   return (
     <AppContext.Provider
       value={{
@@ -118,6 +126,7 @@ export const AppContextProvider = (props: Props) => {
         fontSize,
         dyslexic,
         currency,
+        playerName,
         setSubPanelOpen,
         setLanguagePanelOpen,
         setConfigPanelOpen,
@@ -128,6 +137,7 @@ export const AppContextProvider = (props: Props) => {
         setFontSize,
         setDyslexic,
         setCurrency,
+        setPlayerName,
       }}
     >
       {props.children}

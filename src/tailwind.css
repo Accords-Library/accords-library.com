@@ -80,6 +80,20 @@
   .prose blockquote {
     @apply border-l-dark;
   }
+
+  /* INPUT */
+
+  input {
+    @apply rounded-full p-2 text-center bg-light outline outline-mid outline-2 outline-offset-[-2px] hover:outline-[transparent] text-dark hover:bg-mid transition-all;
+  }
+
+  input::placeholder {
+    @apply text-dark opacity-60;
+  }
+
+  input:focus-visible {
+    @apply outline-none bg-mid shadow-inner-sm;
+  }
 }
 
 @layer components {

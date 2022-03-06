@@ -1,3 +1,4 @@
+import { useAppLayout } from "contexts/AppLayoutContext";
 import Markdown from "markdown-to-jsx";
 import SceneBreak from "./SceneBreak";
 
@@ -7,6 +8,8 @@ type ScenBreakProps = {
 };
 
 export default function Markdawn(props: ScenBreakProps): JSX.Element {
+  const appLayout = useAppLayout();
+
   if (props.text) {
     return (
       <Markdown
@@ -17,7 +20,13 @@ export default function Markdawn(props: ScenBreakProps): JSX.Element {
               component: SceneBreak,
             },
             player: {
-              component: () => {return <span className="text-dark opacity-70">{"<player>"}</span>}
+              component: () => {
+                return (
+                  <span className="text-dark opacity-70">
+                    {appLayout.playerName ? appLayout.playerName : "<player>"}
+                  </span>
+                );
+              },
             },
           },
         }}

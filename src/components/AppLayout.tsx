@@ -105,11 +105,13 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
   useEffect(() => {
     appLayout.currency &&
       setCurrencySelect(currencyOptions.indexOf(appLayout.currency));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [appLayout.currency]);
 
   useEffect(() => {
     currencySelect >= 0 &&
       appLayout.setCurrency(currencyOptions[currencySelect]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currencySelect]);
 
   return (
@@ -397,6 +399,16 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
                   OpenDyslexic
                 </Button>
               </div>
+            </div>
+
+            <div>
+              <h3 className="text-xl">Player name</h3>
+              <input
+                type="text"
+                placeholder="<player>"
+                className="w-48"
+                onInput={(e) => appLayout.setPlayerName(e.target.value)}
+              />
             </div>
           </div>
         </Popup>

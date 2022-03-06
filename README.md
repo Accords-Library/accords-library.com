@@ -1,5 +1,7 @@
 # Accords-library.com
 
+[![Node.js CI](https://github.com/Accords-Library/accords-library.com/actions/workflows/node.js.yml/badge.svg?branch=main)](https://github.com/Accords-Library/accords-library.com/actions/workflows/node.js.yml)
+
 ## Technologies
 
 #### [Back](https://github.com/Accords-Library/strapi.accords-library.com)

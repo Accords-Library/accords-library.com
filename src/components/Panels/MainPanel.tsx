@@ -49,16 +49,19 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
             } flex-wrap gap-2`}
           >
             <Button
-              onClick={() => {
-                appLayout.setDarkMode(!appLayout.darkMode);
-                appLayout.setSelectedThemeMode(true);
-              }}
               className={
                 appLayout.mainPanelReduced && isDesktop ? "" : "!py-0.5 !px-2.5"
               }
+              onClick={() => {
+                appLayout.setConfigPanelOpen(true);
+              }}
             >
-              <span className="material-icons !text-sm">
-                {appLayout.darkMode ? "dark_mode" : "light_mode"}
+              <span
+                className={`material-icons ${
+                  !(appLayout.mainPanelReduced && isDesktop) && "!text-sm"
+                } `}
+              >
+                settings
               </span>
             </Button>
 

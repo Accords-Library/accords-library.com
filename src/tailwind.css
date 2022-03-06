@@ -78,9 +78,8 @@
   }
 
   .prose blockquote {
-    @apply border-l-dark
+    @apply border-l-dark;
   }
-
 }
 
 @layer components {

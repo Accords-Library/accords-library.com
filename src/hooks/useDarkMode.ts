@@ -7,6 +7,7 @@ export default function useDarkMode(
   initialValue: boolean | undefined
 ): [
   boolean | undefined,
+  boolean | undefined,
   React.Dispatch<React.SetStateAction<boolean | undefined>>,
   React.Dispatch<React.SetStateAction<boolean | undefined>>
 ] {
@@ -23,5 +24,5 @@ export default function useDarkMode(
     if (selectedThemeMode === false) setDarkMode(prefersDarkMode);
   }, [selectedThemeMode, prefersDarkMode, setDarkMode]);
 
-  return [darkMode, setDarkMode, setSelectedThemeMode];
+  return [darkMode, selectedThemeMode, setDarkMode, setSelectedThemeMode];
 }

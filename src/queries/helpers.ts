@@ -173,10 +173,12 @@ function prettyTestWritter(
     process.env.NEXT_PUBLIC_URL_CMS + url,
   ];
 
-  if (level === TestingLevel.Warning) {
-    console.warn(line.join("\t"));
-  } else {
-    console.error(line.join("\t"));
+  if (process.env.ENABLE_TESTING_LOG) {
+    if (level === TestingLevel.Warning) {
+      console.warn(line.join("\t"));
+    } else {
+      console.error(line.join("\t"));
+    }
   }
 }
 

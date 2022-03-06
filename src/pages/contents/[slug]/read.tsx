@@ -12,7 +12,9 @@ import {
 import ContentPanel from "components/Panels/ContentPanel";
 import HorizontalLine from "components/HorizontalLine";
 import SubPanel from "components/Panels/SubPanel";
-import ReturnButton from "components/PanelComponents/ReturnButton";
+import ReturnButton, {
+  ReturnButtonType,
+} from "components/PanelComponents/ReturnButton";
 import ThumbnailHeader from "components/Content/ThumbnailHeader";
 import AppLayout from "components/AppLayout";
 import Markdawn from "components/Markdown/Markdawn";
@@ -46,9 +48,9 @@ export default function ContentRead(props: ContentReadProps): JSX.Element {
         href={`/contents/${content.slug}`}
         title={"Content"}
         langui={langui}
+        displayOn={ReturnButtonType.Desktop}
+        horizontalLine
       />
-
-      <HorizontalLine />
 
       {content.text_set.length > 0 ? (
         <div className="grid gap-5">
@@ -138,6 +140,13 @@ export default function ContentRead(props: ContentReadProps): JSX.Element {
   );
   const contentPanel = (
     <ContentPanel>
+      <ReturnButton
+        href={`/contents/${content.slug}`}
+        title={"Content"}
+        langui={langui}
+        displayOn={ReturnButtonType.Mobile}
+        className="mb-10"
+      />
       <div className="grid place-items-center">
         <ThumbnailHeader content={content} langui={langui} />
 

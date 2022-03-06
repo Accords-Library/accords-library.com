@@ -26,7 +26,9 @@ import {
   sortContent,
 } from "queries/helpers";
 import SubPanel from "components/Panels/SubPanel";
-import ReturnButton from "components/PanelComponents/ReturnButton";
+import ReturnButton, {
+  ReturnButtonType,
+} from "components/PanelComponents/ReturnButton";
 import NavOption from "components/PanelComponents/NavOption";
 import Chip from "components/Chip";
 import Button from "components/Button";
@@ -59,8 +61,13 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
 
   const subPanel = (
     <SubPanel>
-      <ReturnButton href="/library/" title={langui.library} langui={langui} />
-      <HorizontalLine />
+      <ReturnButton
+        href="/library/"
+        title={langui.library}
+        langui={langui}
+        displayOn={ReturnButtonType.Desktop}
+        horizontalLine
+      />
 
       <div className="grid gap-4">
         <NavOption
@@ -110,8 +117,15 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
 
   const contentPanel = (
     <ContentPanel width={ContentPanelWidthSizes.large}>
+      <ReturnButton
+        href="/library/"
+        title={langui.library}
+        langui={langui}
+        displayOn={ReturnButtonType.Mobile}
+        className="mb-10"
+      />
       <div className="grid place-items-center gap-12">
-        <div className="drop-shadow-shade-xl w-full h-[50vh] mobile:h-[60vh] mb-16 relative cursor-pointer">
+        <div className="drop-shadow-shade-xl w-full h-[50vh] mobile:h-[60vh] desktop:mb-16 relative cursor-pointer">
           {item.thumbnail.data ? (
             <Img
               image={item.thumbnail.data.attributes}

@@ -13,7 +13,9 @@ import {
   getWebsiteInterface,
 } from "graphql/operations";
 import NavOption from "components/PanelComponents/NavOption";
-import ReturnButton from "components/PanelComponents/ReturnButton";
+import ReturnButton, {
+  ReturnButtonType,
+} from "components/PanelComponents/ReturnButton";
 import HorizontalLine from "components/HorizontalLine";
 import AppLayout from "components/AppLayout";
 import {
@@ -72,9 +74,6 @@ export default function DataChronology(
 
   const subPanel = (
     <SubPanel>
-      <ReturnButton href="/data" title="Data" langui={langui} />
-      <HorizontalLine />
-
       {props.chronologyEras.chronologyEras.data.map((era) => (
         <NavOption
           key={era.id}

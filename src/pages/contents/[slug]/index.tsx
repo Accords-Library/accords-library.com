@@ -14,7 +14,9 @@ import HorizontalLine from "components/HorizontalLine";
 import ThumbnailHeader from "components/Content/ThumbnailHeader";
 import AppLayout from "components/AppLayout";
 import SubPanel from "components/Panels/SubPanel";
-import ReturnButton from "components/PanelComponents/ReturnButton";
+import ReturnButton, {
+  ReturnButtonType,
+} from "components/PanelComponents/ReturnButton";
 import { prettyinlineTitle, prettySlug } from "queries/helpers";
 
 type ContentIndexProps = {
@@ -27,12 +29,25 @@ export default function ContentIndex(props: ContentIndexProps): JSX.Element {
   const langui = props.langui.websiteInterfaces.data[0].attributes;
   const subPanel = (
     <SubPanel>
-      <ReturnButton href="/contents" title={"Contents"} langui={langui} />
-      <HorizontalLine />
+      <ReturnButton
+        href="/contents"
+        title={"Contents"}
+        langui={langui}
+        displayOn={ReturnButtonType.Desktop}
+        horizontalLine
+      />
+      
     </SubPanel>
   );
   const contentPanel = (
     <ContentPanel>
+      <ReturnButton
+        href="/contents"
+        title={"Contents"}
+        langui={langui}
+        displayOn={ReturnButtonType.Mobile}
+        className="mb-10"
+      />
       <div className="grid place-items-center">
         <ThumbnailHeader content={content} langui={langui} />
 

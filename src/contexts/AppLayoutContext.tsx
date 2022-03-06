@@ -12,6 +12,7 @@ export interface AppLayoutState {
   selectedThemeMode: boolean | undefined;
   fontSize: number | undefined;
   dyslexic: boolean | undefined;
+  currency: string | undefined;
   setSubPanelOpen: React.Dispatch<React.SetStateAction<boolean | undefined>>;
   setLanguagePanelOpen: React.Dispatch<
     React.SetStateAction<boolean | undefined>
@@ -27,6 +28,7 @@ export interface AppLayoutState {
   >;
   setFontSize: React.Dispatch<React.SetStateAction<number | undefined>>;
   setDyslexic: React.Dispatch<React.SetStateAction<boolean | undefined>>;
+  setCurrency: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
 const initialState: AppLayoutState = {
@@ -39,6 +41,7 @@ const initialState: AppLayoutState = {
   selectedThemeMode: false,
   fontSize: 1,
   dyslexic: false,
+  currency: "USD",
   setSubPanelOpen: () => {},
   setLanguagePanelOpen: () => {},
   setMainPanelReduced: () => {},
@@ -48,6 +51,7 @@ const initialState: AppLayoutState = {
   setConfigPanelOpen: () => {},
   setFontSize: () => {},
   setDyslexic: () => {},
+  setCurrency: () => {},
 };
 
 const AppContext = React.createContext<AppLayoutState>(initialState);
@@ -96,6 +100,11 @@ export const AppContextProvider = (props: Props) => {
     initialState.dyslexic
   );
 
+  const [currency, setCurrency] = useStateWithLocalStorage<string | undefined>(
+    "currency",
+    initialState.currency
+  );
+
   return (
     <AppContext.Provider
       value={{
@@ -108,6 +117,7 @@ export const AppContextProvider = (props: Props) => {
         selectedThemeMode,
         fontSize,
         dyslexic,
+        currency,
         setSubPanelOpen,
         setLanguagePanelOpen,
         setConfigPanelOpen,
@@ -117,6 +127,7 @@ export const AppContextProvider = (props: Props) => {
         setSelectedThemeMode,
         setFontSize,
         setDyslexic,
+        setCurrency,
       }}
     >
       {props.children}

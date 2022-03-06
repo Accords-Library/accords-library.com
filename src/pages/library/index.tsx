@@ -4,10 +4,12 @@ import ContentPanel, {
   ContentPanelWidthSizes,
 } from "components/Panels/ContentPanel";
 import {
+  GetCurrenciesQuery,
   GetLibraryItemsPreviewQuery,
   GetWebsiteInterfaceQuery,
 } from "graphql/operations-types";
 import {
+  getCurrencies,
   getLibraryItemsPreview,
   getWebsiteInterface,
 } from "graphql/operations";
@@ -22,6 +24,7 @@ import Switch from "components/Switch";
 type LibraryProps = {
   libraryItems: GetLibraryItemsPreviewQuery;
   langui: GetWebsiteInterfaceQuery;
+  currencies: GetCurrenciesQuery;
 };
 
 type GroupLibraryItems = Map<
@@ -138,7 +141,11 @@ export default function Library(props: LibraryProps): JSX.Element {
                 className="grid gap-8 items-end mobile:grid-cols-2 desktop:grid-cols-[repeat(auto-fill,_minmax(13rem,1fr))] pb-12 border-b-[3px] border-dotted last-of-type:border-0"
               >
                 {items.map((item) => (
-                  <LibraryItemsPreview key={item.id} item={item.attributes} />
+                  <LibraryItemsPreview
+                    key={item.id}
+                    item={item.attributes}
+                    currencies={props.currencies.currencies.data}
+                  />
                 ))}
               </div>
             </>
@@ -166,6 +173,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
       langui: await getWebsiteInterface({
         language_code: context.locale,
       }),
+      currencies: await getCurrencies({}),
     };
     return {
       props: props,

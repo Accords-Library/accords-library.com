@@ -1647,6 +1647,7 @@ input CurrencyFiltersInput {
   id: IDFilterInput
   symbol: StringFilterInput
   code: StringFilterInput
+  rate_to_usd: FloatFilterInput
   createdAt: DateTimeFilterInput
   updatedAt: DateTimeFilterInput
   and: [CurrencyFiltersInput]
@@ -1657,11 +1658,13 @@ input CurrencyFiltersInput {
 input CurrencyInput {
   symbol: String
   code: String
+  rate_to_usd: Float
 }
 
 type Currency {
   symbol: String!
   code: String!
+  rate_to_usd: Float
   createdAt: DateTime
   updatedAt: DateTime
 }
@@ -2096,46 +2099,6 @@ type MetadataTypeEntityResponse {
 
 type MetadataTypeEntityResponseCollection {
   data: [MetadataTypeEntity!]!
-  meta: ResponseCollectionMeta!
-}
-
-input OtherSubtypeFiltersInput {
-  id: IDFilterInput
-  slug: StringFilterInput
-  createdAt: DateTimeFilterInput
-  updatedAt: DateTimeFilterInput
-  and: [OtherSubtypeFiltersInput]
-  or: [OtherSubtypeFiltersInput]
-  not: OtherSubtypeFiltersInput
-}
-
-input OtherSubtypeInput {
-  slug: String
-  titles: [ComponentTranslationsSimpleTitleInput]
-}
-
-type OtherSubtype {
-  slug: String!
-  titles(
-    filters: ComponentTranslationsSimpleTitleFiltersInput
-    pagination: PaginationArg = {}
-    sort: [String] = []
-  ): [ComponentTranslationsSimpleTitle]
-  createdAt: DateTime
-  updatedAt: DateTime
-}
-
-type OtherSubtypeEntity {
-  id: ID
-  attributes: OtherSubtype
-}
-
-type OtherSubtypeEntityResponse {
-  data: OtherSubtypeEntity
-}
-
-type OtherSubtypeEntityResponseCollection {
-  data: [OtherSubtypeEntity!]!
   meta: ResponseCollectionMeta!
 }
 
@@ -2655,6 +2618,7 @@ input WebsiteInterfaceFiltersInput {
   order_by: StringFilterInput
   group_by: StringFilterInput
   select_option_sidebar: StringFilterInput
+  group: StringFilterInput
   createdAt: DateTimeFilterInput
   updatedAt: DateTimeFilterInput
   and: [WebsiteInterfaceFiltersInput]
@@ -2742,6 +2706,7 @@ input WebsiteInterfaceInput {
   order_by: String
   group_by: String
   select_option_sidebar: String
+  group: String
 }
 
 type WebsiteInterface {
@@ -2824,6 +2789,7 @@ type WebsiteInterface {
   order_by: String
   group_by: String
   select_option_sidebar: String
+  group: String
   createdAt: DateTime
   updatedAt: DateTime
 }
@@ -2997,7 +2963,6 @@ union GenericMorph =
   | LibraryItem
   | MerchItem
   | MetadataType
-  | OtherSubtype
   | Post
   | RangedContent
   | Recorder
@@ -3121,12 +3086,6 @@ type Query {
     pagination: PaginationArg = {}
     sort: [String] = []
   ): MetadataTypeEntityResponseCollection
-  otherSubtype(id: ID): OtherSubtypeEntityResponse
-  otherSubtypes(
-    filters: OtherSubtypeFiltersInput
-    pagination: PaginationArg = {}
-    sort: [String] = []
-  ): OtherSubtypeEntityResponseCollection
   post(id: ID): PostEntityResponse
   posts(
     filters: PostFiltersInput
@@ -3277,12 +3236,6 @@ type Mutation {
     data: MetadataTypeInput!
   ): MetadataTypeEntityResponse
   deleteMetadataType(id: ID!): MetadataTypeEntityResponse
-  createOtherSubtype(data: OtherSubtypeInput!): OtherSubtypeEntityResponse
-  updateOtherSubtype(
-    id: ID!
-    data: OtherSubtypeInput!
-  ): OtherSubtypeEntityResponse
-  deleteOtherSubtype(id: ID!): OtherSubtypeEntityResponse
   createPost(data: PostInput!): PostEntityResponse
   updatePost(id: ID!, data: PostInput!): PostEntityResponse
   deletePost(id: ID!): PostEntityResponse

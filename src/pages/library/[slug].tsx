@@ -3,6 +3,7 @@ import ContentPanel, {
 } from "components/Panels/ContentPanel";
 import { GetStaticPaths, GetStaticProps } from "next";
 import {
+  getCurrencies,
   getLibraryItem,
   getLibraryItemsSlugs,
   getWebsiteInterface,
@@ -10,6 +11,7 @@ import {
 import {
   Enum_Componentmetadatabooks_Binding_Type,
   Enum_Componentmetadatabooks_Page_Order,
+  GetCurrenciesQuery,
   GetLibraryItemQuery,
   GetWebsiteInterfaceQuery,
 } from "graphql/operations-types";
@@ -20,7 +22,6 @@ import {
   prettyItemType,
   prettyItemSubType,
   prettyPrice,
-  prettySlug,
   prettyTestError,
   prettyTestWarning,
   sortContent,
@@ -32,7 +33,6 @@ import ReturnButton, {
 import NavOption from "components/PanelComponents/NavOption";
 import Chip from "components/Chip";
 import Button from "components/Button";
-import HorizontalLine from "components/HorizontalLine";
 import AppLayout from "components/AppLayout";
 import LibraryItemsPreview from "components/Library/LibraryItemsPreview";
 import InsetBox from "components/InsetBox";
@@ -44,12 +44,14 @@ import ContentTOCLine from "components/Library/ContentTOCLine";
 interface LibrarySlugProps {
   libraryItem: GetLibraryItemQuery;
   langui: GetWebsiteInterfaceQuery;
+  currencies: GetCurrenciesQuery;
 }
 
 export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
   useTesting(props);
   const item = props.libraryItem.libraryItems.data[0].attributes;
   const langui = props.langui.websiteInterfaces.data[0].attributes;
+  const currencies = props.currencies.currencies.data;
   const appLayout = useAppLayout();
 
   const isVariantSet =
@@ -226,7 +228,9 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
               {item.price ? (
                 <div className="grid place-items-center">
                   <h3 className="text-xl">{langui.price}</h3>
-                  <p>{prettyPrice(item.price)}</p>
+                  <p>
+                    {prettyPrice(item.price, currencies, appLayout.currency)}
+                  </p>
                 </div>
               ) : (
                 ""
@@ -409,6 +413,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
         langui: await getWebsiteInterface({
           language_code: context.locale,
         }),
+        currencies: await getCurrencies({}),
       };
       return {
         props: props,

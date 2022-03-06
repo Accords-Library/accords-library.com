@@ -286,6 +286,7 @@ export type GetLibraryItemsPreviewQuery = {
                 __typename: "Currency";
                 symbol: string;
                 code: string;
+                rate_to_usd: number;
               };
             };
           };
@@ -478,6 +479,7 @@ export type GetLibraryItemQuery = {
                 __typename: "Currency";
                 symbol: string;
                 code: string;
+                rate_to_usd: number;
               };
             };
           };
@@ -693,6 +695,7 @@ export type GetLibraryItemQuery = {
                       __typename: "Currency";
                       symbol: string;
                       code: string;
+                      rate_to_usd: number;
                     };
                   };
                 };
@@ -1412,6 +1415,26 @@ export type GetContentTextQuery = {
             };
           };
         };
+      };
+    }>;
+  };
+};
+
+export type GetCurrenciesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetCurrenciesQuery = {
+  __typename: "Query";
+  currencies: {
+    __typename: "CurrencyEntityResponseCollection";
+    data: Array<{
+      __typename: "CurrencyEntity";
+      id: string;
+      attributes: {
+        __typename: "Currency";
+        code: string;
+        symbol: string;
+        rate_to_usd: number;
+        display_decimals: boolean;
       };
     }>;
   };

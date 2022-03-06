@@ -13,7 +13,8 @@ import ReactTooltip from "react-tooltip";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { ImageQuality } from "./Img";
 import Popup from "./Popup";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import Select from "./Select";
 
 type AppLayoutProps = {
   subPanel?: React.ReactNode;
@@ -96,7 +97,20 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
     document.getElementsByTagName("html")[0].style.fontSize = `${
       (appLayout.fontSize || 1) * 100
     }%`;
-  });
+  }, [appLayout.fontSize]);
+
+  const currencyOptions = ["EUR", "USD", "CAD", "JPY"];
+  const [currencySelect, setCurrencySelect] = useState<number>(-1);
+
+  useEffect(() => {
+    appLayout.currency &&
+      setCurrencySelect(currencyOptions.indexOf(appLayout.currency));
+  }, [appLayout.currency]);
+
+  useEffect(() => {
+    currencySelect >= 0 &&
+      appLayout.setCurrency(currencyOptions[currencySelect]);
+  }, [currencySelect]);
 
   return (
     <div
@@ -268,93 +282,115 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
         >
           <h2 className="text-2xl">Settings</h2>
 
-          <h3 className="text-xl mt-4">Theme</h3>
-          <div className="flex flex-row">
-            <Button
-              onClick={() => {
-                appLayout.setDarkMode(false);
-                appLayout.setSelectedThemeMode(true);
-              }}
-              active={
-                appLayout.selectedThemeMode === true &&
-                appLayout.darkMode === false
-              }
-              className="rounded-r-none"
-            >
-              Light
-            </Button>
-            <Button
-              onClick={() => {
-                appLayout.setSelectedThemeMode(false);
-              }}
-              active={appLayout.selectedThemeMode === false}
-              className="rounded-l-none rounded-r-none border-x-0"
-            >
-              Auto
-            </Button>
-            <Button
-              onClick={() => {
-                appLayout.setDarkMode(true);
-                appLayout.setSelectedThemeMode(true);
-              }}
-              active={
-                appLayout.selectedThemeMode === true &&
-                appLayout.darkMode === true
-              }
-              className="rounded-l-none"
-            >
-              Dark
-            </Button>
-          </div>
+          <div className="mt-4 grid gap-8 place-items-center text-center desktop:grid-cols-2">
+            <div>
+              <h3 className="text-xl">Theme</h3>
+              <div className="flex flex-row">
+                <Button
+                  onClick={() => {
+                    appLayout.setDarkMode(false);
+                    appLayout.setSelectedThemeMode(true);
+                  }}
+                  active={
+                    appLayout.selectedThemeMode === true &&
+                    appLayout.darkMode === false
+                  }
+                  className="rounded-r-none"
+                >
+                  Light
+                </Button>
+                <Button
+                  onClick={() => {
+                    appLayout.setSelectedThemeMode(false);
+                  }}
+                  active={appLayout.selectedThemeMode === false}
+                  className="rounded-l-none rounded-r-none border-x-0"
+                >
+                  Auto
+                </Button>
+                <Button
+                  onClick={() => {
+                    appLayout.setDarkMode(true);
+                    appLayout.setSelectedThemeMode(true);
+                  }}
+                  active={
+                    appLayout.selectedThemeMode === true &&
+                    appLayout.darkMode === true
+                  }
+                  className="rounded-l-none"
+                >
+                  Dark
+                </Button>
+              </div>
+            </div>
 
-          <h3 className="text-xl mt-4">Font size</h3>
-          <div className="flex flex-row">
-            <Button
-              className="rounded-r-none"
-              onClick={() =>
-                appLayout.setFontSize(
-                  appLayout.fontSize ? appLayout.fontSize / 1.05 : 1 / 1.05
-                )
-              }
-            >
-              <span className="material-icons">text_decrease</span>
-            </Button>
-            <Button
-              className="rounded-l-none rounded-r-none border-x-0"
-              onClick={() => appLayout.setFontSize(1)}
-            >
-              {((appLayout.fontSize || 1) * 100).toLocaleString(undefined, {
-                maximumFractionDigits: 0,
-              })}
-              %
-            </Button>
-            <Button
-              className="rounded-l-none"
-              onClick={() =>
-                appLayout.setFontSize(
-                  appLayout.fontSize ? appLayout.fontSize * 1.05 : 1 * 1.05
-                )
-              }
-            >
-              <span className="material-icons">text_increase</span>
-            </Button>
-          </div>
+            <div>
+              <h3 className="text-xl">Currency</h3>
+              <div>
+                <Select
+                  options={currencyOptions}
+                  state={currencySelect}
+                  setState={setCurrencySelect}
+                  className="w-28"
+                />
+              </div>
+            </div>
 
-          <h3 className="text-xl mt-4">Font</h3>
-          <Button
-            active={appLayout.dyslexic === false}
-            onClick={() => appLayout.setDyslexic(false)}
-            className="font-zenMaruGothic"
-          >
-            Zen Maru Gothic
-          </Button>
-          <Button
-            active={appLayout.dyslexic === true}
-            onClick={() => appLayout.setDyslexic(true)}
-            className="font-openDyslexic"
-          >
-            OpenDyslexic
-          </Button>
+            <div>
+              <h3 className="text-xl">Font size</h3>
+              <div className="flex flex-row">
+                <Button
+                  className="rounded-r-none"
+                  onClick={() =>
+                    appLayout.setFontSize(
+                      appLayout.fontSize ? appLayout.fontSize / 1.05 : 1 / 1.05
+                    )
+                  }
+                >
+                  <span className="material-icons">text_decrease</span>
+                </Button>
+                <Button
+                  className="rounded-l-none rounded-r-none border-x-0"
+                  onClick={() => appLayout.setFontSize(1)}
+                >
+                  {((appLayout.fontSize || 1) * 100).toLocaleString(undefined, {
+                    maximumFractionDigits: 0,
+                  })}
+                  %
+                </Button>
+                <Button
+                  className="rounded-l-none"
+                  onClick={() =>
+                    appLayout.setFontSize(
+                      appLayout.fontSize ? appLayout.fontSize * 1.05 : 1 * 1.05
+                    )
+                  }
+                >
+                  <span className="material-icons">text_increase</span>
+                </Button>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-xl">Font</h3>
+              <div className="grid gap-2">
+                <Button
+                  active={appLayout.dyslexic === false}
+                  onClick={() => appLayout.setDyslexic(false)}
+                  className="font-zenMaruGothic"
+                >
+                  Zen Maru Gothic
+                </Button>
+                <Button
+                  active={appLayout.dyslexic === true}
+                  onClick={() => appLayout.setDyslexic(true)}
+                  className="font-openDyslexic"
+                >
+                  OpenDyslexic
+                </Button>
+              </div>
+            </div>
+          </div>
         </Popup>
 
         <ReactTooltip

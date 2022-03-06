@@ -15,7 +15,7 @@ export default function Select(props: SelectProps): JSX.Element {
 
   return (
     <div
-      className={`relative transition-[filter] ${
+      className={`relative text-center transition-[filter] ${
         opened && "drop-shadow-shade-lg z-10"
       } ${props.className}`}
     >

@@ -111,7 +111,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
   const contentPanel = (
     <ContentPanel width={ContentPanelWidthSizes.large}>
       <div className="grid place-items-center gap-12">
-        <div className="drop-shadow-shade-xl w-full h-[50vh] mobile:h-[80vh] mb-16 relative cursor-pointer">
+        <div className="drop-shadow-shade-xl w-full h-[50vh] mobile:h-[60vh] mb-16 relative cursor-pointer">
           {item.thumbnail.data ? (
             <Img
               image={item.thumbnail.data.attributes}

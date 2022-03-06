@@ -174,18 +174,26 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
 
         {/* Background when navbar is opened */}
         <div
-          className={`fixed bg-shade inset-0 transition-opacity duration-500 
+          className={`fixed inset-0 transition-[backdrop-filter] duration-500 ${
+            (appLayout.mainPanelOpen || appLayout.subPanelOpen) && isMobile
+              ? "[backdrop-filter:blur(2px)]"
+              : "pointer-events-none touch-none "
+          }`}
+        >
+          <div
+            className={`fixed bg-shade inset-0 transition-opacity duration-500 
         ${turnSubIntoContent ? "z-10" : ""}
         ${
           (appLayout.mainPanelOpen || appLayout.subPanelOpen) && isMobile
             ? "opacity-60"
-            : "opacity-0 pointer-events-none touch-none"
+            : "opacity-0"
         }`}
-          onClick={() => {
-            appLayout.setMainPanelOpen(false);
-            appLayout.setSubPanelOpen(false);
-          }}
-        ></div>
+            onClick={() => {
+              appLayout.setMainPanelOpen(false);
+              appLayout.setSubPanelOpen(false);
+            }}
+          ></div>
+        </div>
 
         {/* Sub panel */}
         {props.subPanel ? (
@@ -261,7 +269,7 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
           setState={appLayout.setLanguagePanelOpen}
         >
           <h2 className="text-2xl">{props.langui.select_language}</h2>
-          <div className="flex flex-wrap flex-row gap-2">
+          <div className="flex flex-wrap flex-row gap-2 mobile:flex-col">
             {router.locales?.sort().map((locale) => (
               <Button
                 key={locale}

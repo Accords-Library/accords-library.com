@@ -77,6 +77,20 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
                 {router.locale.toUpperCase()}
               </Button>
             )}
+
+            <Button
+              className={
+                appLayout.mainPanelReduced && isDesktop ? "" : "!py-0.5 !px-2.5"
+              }
+            >
+              <span
+                className={`material-icons ${
+                  !(appLayout.mainPanelReduced && isDesktop) && "!text-sm"
+                } `}
+              >
+                search
+              </span>
+            </Button>
           </div>
         </div>
       </div>

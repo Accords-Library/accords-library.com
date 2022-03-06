@@ -204,7 +204,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
             <h2 className="text-2xl text-center">{langui.details}</h2>
             <div className="grid grid-flow-col w-full place-content-between">
               {item.metadata.length > 0 ? (
-                <div className="grid place-items-center">
+                <div className="grid place-items-center place-content-start">
                   <h3 className="text-xl">{langui.type}</h3>
                   <div className="grid grid-flow-col gap-1">
                     <Chip>{prettyItemType(item.metadata[0], langui)}</Chip>
@@ -217,7 +217,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
               )}
 
               {item.release_date ? (
-                <div className="grid place-items-center">
+                <div className="grid place-items-center place-content-start">
                   <h3 className="text-xl">{langui.release_date}</h3>
                   <p>{prettyDate(item.release_date)}</p>
                 </div>
@@ -226,11 +226,23 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
               )}
 
               {item.price ? (
-                <div className="grid place-items-center">
+                <div className="grid place-items-center text-center place-content-start">
                   <h3 className="text-xl">{langui.price}</h3>
                   <p>
-                    {prettyPrice(item.price, currencies, appLayout.currency)}
+                    {prettyPrice(
+                      item.price,
+                      currencies,
+                      item.price.currency.data.attributes.code
+                    )}
                   </p>
+                  {item.price.currency.data.attributes.code !==
+                    appLayout.currency && (
+                    <p>
+                      {prettyPrice(item.price, currencies, appLayout.currency)}{" "}
+                      <br />
+                      (calculated)
+                    </p>
+                  )}
                 </div>
               ) : (
                 ""

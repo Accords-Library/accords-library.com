@@ -125,27 +125,6 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
           <meta name="twitter:image" content={metaImage.image}></meta>
         </Head>
 
-        {/* Navbar */}
-        <div className="fixed inset-0 top-auto h-20 border-t-[1px] border-black border-dotted grid grid-cols-[5rem_1fr_5rem] place-items-center desktop:hidden bg-light texture-paper-dots">
-          <span
-            className="material-icons mt-[.1em] cursor-pointer"
-            onClick={() => appLayout.setMainPanelOpen(true)}
-          >
-            menu
-          </span>
-          <p className="text-2xl font-black font-headers">{props.navTitle}</p>
-          <span
-            className="material-icons mt-[.1em] cursor-pointer"
-            onClick={() => appLayout.setSubPanelOpen(true)}
-          >
-            {props.subPanel && !turnSubIntoContent
-              ? props.subPanelIcon
-                ? props.subPanelIcon
-                : "tune"
-              : ""}
-          </span>
-        </div>
-
         {/* Content panel */}
         <div
           className={`top-0 left-0 right-0 bottom-20 overflow-y-scroll bg-light texture-paper-dots ${contentPanelClass}`}
@@ -182,10 +161,10 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
         {/* Sub panel */}
         {props.subPanel ? (
           <div
-            className={`${subPanelClass} border-r-[1px] mobile:border-r-0 mobile:border-l-[1px] border-black border-dotted top-0 bottom-0 right-0 left-12 overflow-y-scroll webkit-scrollbar:w-0 [scrollbar-width:none] transition-transform duration-300 bg-light texture-paper-dots
+            className={`${subPanelClass} border-r-[1px] mobile:bottom-20 mobile:border-r-0 mobile:border-l-[1px] border-black border-dotted top-0 bottom-0 right-0 left-12 overflow-y-scroll webkit-scrollbar:w-0 [scrollbar-width:none] transition-transform duration-300 bg-light texture-paper-dots
           ${
             turnSubIntoContent
-              ? "mobile:translate-x-0 mobile:bottom-20 mobile:left-0 mobile:border-l-0"
+              ? "mobile:translate-x-0 mobile:left-0 mobile:border-l-0"
               : !appLayout.subPanelOpen
               ? "mobile:translate-x-full"
               : ""
@@ -199,7 +178,7 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
 
         {/* Main panel */}
         <div
-          className={`${mainPanelClass} border-r-[1px] border-black border-dotted top-0 bottom-0 left-0 right-12 overflow-y-scroll webkit-scrollbar:w-0 [scrollbar-width:none] transition-transform duration-300 z-20 bg-light texture-paper-dots
+          className={`${mainPanelClass} border-r-[1px] mobile:bottom-20 border-black border-dotted top-0 bottom-0 left-0 right-12 overflow-y-scroll webkit-scrollbar:w-0 [scrollbar-width:none] transition-transform duration-300 z-20 bg-light texture-paper-dots
         ${appLayout.mainPanelOpen ? "" : "mobile:-translate-x-full"}`}
         >
           <MainPanel langui={props.langui} />
@@ -217,6 +196,35 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
           <Button className="material-icons bg-light !px-2">
             {appLayout.mainPanelReduced ? "chevron_right" : "chevron_left"}
           </Button>
+        </div>
+
+        {/* Navbar */}
+        <div className="fixed inset-0 z-30 top-auto h-20 border-t-[1px] border-black border-dotted grid grid-cols-[5rem_1fr_5rem] place-items-center desktop:hidden bg-light texture-paper-dots">
+          <span
+            className="material-icons mt-[.1em] cursor-pointer"
+            onClick={() => {
+              appLayout.setMainPanelOpen(!appLayout.mainPanelOpen);
+              appLayout.setSubPanelOpen(false);
+            }}
+          >
+            {appLayout.mainPanelOpen ? "close" : "menu"}
+          </span>
+          <p className="text-2xl font-black font-headers">{props.navTitle}</p>
+          <span
+            className="material-icons mt-[.1em] cursor-pointer"
+            onClick={() => {
+              appLayout.setSubPanelOpen(!appLayout.subPanelOpen);
+              appLayout.setMainPanelOpen(false);
+            }}
+          >
+            {props.subPanel && !turnSubIntoContent
+              ? appLayout.subPanelOpen
+                ? "close"
+                : props.subPanelIcon
+                ? props.subPanelIcon
+                : "tune"
+              : ""}
+          </span>
         </div>
 
         <Popup

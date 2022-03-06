@@ -12,6 +12,7 @@ import { useMediaCoarse, useMediaMobile } from "hooks/useMediaQuery";
 import ReactTooltip from "react-tooltip";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { ImageQuality } from "./Img";
+import Popup from "./Popup";
 
 type AppLayoutProps = {
   subPanel?: React.ReactNode;
@@ -218,37 +219,25 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
           </Button>
         </div>
 
-        {/* Language selection background */}
-        <div
-          className={`fixed bg-shade inset-0 transition-all duration-500 z-20 grid place-content-center ${
-            appLayout.languagePanelOpen
-              ? "bg-opacity-60"
-              : "bg-opacity-0 pointer-events-none touch-none"
-          }`}
-          onClick={() => {
-            appLayout.setLanguagePanelOpen(false);
-          }}
+        <Popup
+          state={appLayout.languagePanelOpen}
+          setState={appLayout.setLanguagePanelOpen}
         >
-          <div
-            className={`p-10 bg-light rounded-lg shadow-2xl shadow-shade grid gap-4 place-items-center transition-transform ${
-              appLayout.languagePanelOpen ? "scale-100" : "scale-0"
-            }`}
-          >
-            <h2 className="text-2xl">{props.langui.select_language}</h2>
-            <div className="flex flex-wrap flex-row gap-2">
-              {router.locales?.sort().map((locale) => (
-                <Button
-                  key={locale}
-                  active={locale === router.locale}
-                  href={router.asPath}
-                  locale={locale}
-                >
-                  {prettyLanguage(locale)}
-                </Button>
-              ))}
-            </div>
+          <h2 className="text-2xl">{props.langui.select_language}</h2>
+          <div className="flex flex-wrap flex-row gap-2">
+            {router.locales?.sort().map((locale) => (
+              <Button
+                key={locale}
+                active={locale === router.locale}
+                href={router.asPath}
+                locale={locale}
+                onClick={() => appLayout.setLanguagePanelOpen(false)}
+              >
+                {prettyLanguage(locale)}
+              </Button>
+            ))}
           </div>
-        </div>
+        </Popup>
 
         <ReactTooltip
           id="MainPanelTooltip"

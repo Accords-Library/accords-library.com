@@ -51,7 +51,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
 
   const isVariantSet =
     item.metadata.length > 0 &&
-    item.metadata[0].__typename === "ComponentMetadataOther" &&
+    item.metadata[0].__typename === "ComponentMetadataGroup" &&
     item.metadata[0].subtype.data.attributes.slug === "variant-set";
 
   sortContent(item.contents);
@@ -184,9 +184,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
 
         <InsetBox id="details" className="grid place-items-center">
           <div className="w-[clamp(0px,100%,42rem)] grid place-items gap-8">
-            <h2 className="text-2xl text-center">
-              {langui.details}
-            </h2>
+            <h2 className="text-2xl text-center">{langui.details}</h2>
             <div className="grid grid-flow-col w-full place-content-between">
               {item.metadata.length > 0 ? (
                 <div className="grid place-items-center">
@@ -256,9 +254,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
 
             {item.metadata.length > 0 ? (
               <>
-                <h3 className="text-xl">
-                  {langui.type_information}
-                </h3>
+                <h3 className="text-xl">{langui.type_information}</h3>
                 <div className="grid grid-cols-2 w-full place-content-between">
                   {item.metadata[0].__typename === "ComponentMetadataBooks" ? (
                     <>
@@ -312,21 +308,8 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
                     "ComponentMetadataGame" ? (
                     <></>
                   ) : item.metadata[0].__typename ===
-                    "ComponentMetadataOther" ? (
-                    <>
-                      <div className="flex flex-row place-content-start gap-4">
-                        <p className="font-bold">{langui.type}:</p>
-                        <Chip>
-                          {item.metadata[0].subtype.data.attributes.titles
-                            .length > 0
-                            ? item.metadata[0].subtype.data.attributes.titles[0]
-                                .title
-                            : prettySlug(
-                                item.metadata[0].subtype.data.attributes.slug
-                              )}
-                        </Chip>
-                      </div>
-                    </>
+                    "ComponentMetadataGroup" ? (
+                    <></>
                   ) : (
                     ""
                   )}
@@ -344,9 +327,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
             className="grid place-items-center gap-8 w-full"
           >
             <h2 className="text-2xl">
-              {isVariantSet
-                ? langui.variants
-                : langui.subitems}
+              {isVariantSet ? langui.variants : langui.subitems}
             </h2>
             <div className="grid gap-8 items-end mobile:grid-cols-2 grid-cols-[repeat(auto-fill,minmax(15rem,1fr))] w-full">
               {item.subitems.data.map((subitem) => (
@@ -549,7 +530,7 @@ function useTesting(props: LibrarySlugProps) {
       );
     } else {
       if (
-        libraryItem.metadata[0].__typename === "ComponentMetadataOther" &&
+        libraryItem.metadata[0].__typename === "ComponentMetadataGroup" &&
         (libraryItem.metadata[0].subtype.data.attributes.slug ===
           "relation-set" ||
           libraryItem.metadata[0].subtype.data.attributes.slug ===
@@ -599,80 +580,14 @@ function useTesting(props: LibrarySlugProps) {
       } else {
         // This is a normal item
 
-        if (libraryItem.metadata[0].__typename === "ComponentMetadataOther") {
-          if (
-            libraryItem.metadata[0].subtype.data.attributes.slug ===
-            "audio-case"
-          ) {
-            let hasAudioSubItem = false;
-            libraryItem.subitems.data.map((subitem) => {
-              if (
-                subitem.attributes.metadata.length > 0 &&
-                subitem.attributes.metadata[0].__typename ===
-                  "ComponentMetadataAudio"
-              )
-                hasAudioSubItem = true;
-            });
-            if (!hasAudioSubItem) {
-              prettyTestError(
-                router,
-                "Audio-case item doesn't have an audio-typed subitem",
-                ["libraryItem"],
-                libraryItemURL
-              );
-            }
-          } else if (
-            libraryItem.metadata[0].subtype.data.attributes.slug === "game-case"
-          ) {
-            let hasGameSubItem = false;
-            libraryItem.subitems.data.map((subitem) => {
-              if (
-                subitem.attributes.metadata.length > 0 &&
-                subitem.attributes.metadata[0].__typename ===
-                  "ComponentMetadataGame"
-              )
-                hasGameSubItem = true;
-            });
-            if (!hasGameSubItem) {
-              prettyTestError(
-                router,
-                "Game-case item doesn't have an Game-typed subitem",
-                ["libraryItem"],
-                libraryItemURL
-              );
-            }
-          } else if (
-            libraryItem.metadata[0].subtype.data.attributes.slug ===
-            "video-case"
-          ) {
-            let hasVideoSubItem = false;
-            libraryItem.subitems.data.map((subitem) => {
-              if (
-                subitem.attributes.metadata.length > 0 &&
-                subitem.attributes.metadata[0].__typename ===
-                  "ComponentMetadataVideo"
-              )
-                hasVideoSubItem = true;
-            });
-            if (!hasVideoSubItem) {
-              prettyTestError(
-                router,
-                "Video-case item doesn't have an Video-typed subitem",
-                ["libraryItem"],
-                libraryItemURL
-              );
-            }
-          } else if (
-            libraryItem.metadata[0].subtype.data.attributes.slug === "item-set"
-          ) {
-            if (libraryItem.subitems.data.length === 0) {
-              prettyTestError(
-                router,
-                "Item-set item should have subitems",
-                ["libraryItem"],
-                libraryItemURL
-              );
-            }
+        if (libraryItem.metadata[0].__typename === "ComponentMetadataGroup") {
+          if (libraryItem.subitems.data.length === 0) {
+            prettyTestError(
+              router,
+              "Group-type item should have subitems",
+              ["libraryItem"],
+              libraryItemURL
+            );
           }
         }
 

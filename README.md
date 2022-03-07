@@ -9,6 +9,13 @@
   - Multilanguage support
   - Markdown format for the rich text fields
 
+#### [Image Processor](https://github.com/Accords-Library/img.accords-library.com)
+- Convert the images from the CMS to 4 formats
+  - Small: 512x512, quality 60, .webp
+  - Medium: 1024x1024, quality 75, .webp
+  - Large: 2048x2048, quality 80, .webp
+  - Og: 512x512, quality 60, .jpg
+
 #### [Front](https://github.com/Accords-Library/accords-library.com) (this repository)
 
 - Language: [TypeScript](https://www.typescriptlang.org/)
@@ -29,6 +36,12 @@
 - State Management: [React Context](https://reactjs.org/docs/context.html)
   - Persistent app state using LocalStorage
 - Support for many screen sizes and resolutions
+- SSG (Static Site Generation):
+  - The website is built before running in production
+  - Performances are great, and possibility to deploy the app using a CDN
+- OpenGraph and Metadata
+  - Good defaults for the metadate and OpenGraph properties
+  - Each page can provide the thumbnail, title, description to be used
 - Data quality testing
   - Data from the CMS is subject to a battery of tests (about 20 warning types and 40 error types) at build time
   - Each warning/error comes with a front-end link to the incriminating element, as well as a link to the CMS to fix it.

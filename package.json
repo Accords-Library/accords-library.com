@@ -10,6 +10,7 @@
   "dependencies": {
     "@fontsource/material-icons": "^4.5.2",
     "@fontsource/material-icons-rounded": "^4.5.2",
+    "@fontsource/opendyslexic": "^4.5.2",
     "@fontsource/vollkorn": "^4.5.4",
     "@fontsource/zen-maru-gothic": "^4.5.5",
     "markdown-to-jsx": "^7.1.6",

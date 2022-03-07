@@ -1,8 +1,12 @@
 import Link from "next/link";
-import { GetLibraryItemsPreviewQuery } from "graphql/operations-types";
+import {
+  GetCurrenciesQuery,
+  GetLibraryItemsPreviewQuery,
+} from "graphql/operations-types";
 import { prettyDate, prettyPrice, prettyItemSubType } from "queries/helpers";
 import Chip from "components/Chip";
 import Img, { ImageQuality } from "components/Img";
+import { useAppLayout } from "contexts/AppLayoutContext";
 
 export type LibraryItemsPreviewProps = {
   className?: string;
@@ -15,12 +19,14 @@ export type LibraryItemsPreviewProps = {
     release_date?: GetLibraryItemsPreviewQuery["libraryItems"]["data"][number]["attributes"]["release_date"];
     metadata?: GetLibraryItemsPreviewQuery["libraryItems"]["data"][number]["attributes"]["metadata"];
   };
+  currencies?: GetCurrenciesQuery["currencies"]["data"];
 };
 
 export default function LibraryItemsPreview(
   props: LibraryItemsPreviewProps
 ): JSX.Element {
   const item = props.item;
+  const appLayout = useAppLayout();
 
   return (
     <Link href={"/library/" + item.slug} passHref>
@@ -61,12 +67,16 @@ export default function LibraryItemsPreview(
               ) : (
                 ""
               )}
-              {item.price ? (
+              {item.price && props.currencies ? (
                 <p className="mobile:text-xs text-sm justify-self-end">
                   <span className="material-icons !text-base translate-y-[.15em] mr-1">
                     shopping_cart
                   </span>
-                  {prettyPrice(item.price)}
+                  {prettyPrice(
+                    item.price,
+                    props.currencies,
+                    appLayout.currency
+                  )}
                 </p>
               ) : (
                 ""

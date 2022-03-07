@@ -1,15 +1,20 @@
 import Chip from "components/Chip";
-import { GetContentTextQuery } from "graphql/operations-types";
+import {
+  GetContentTextQuery,
+  GetWebsiteInterfaceQuery,
+} from "graphql/operations-types";
 import Img, { ImageQuality } from "./Img";
 import ReactDOMServer from "react-dom/server";
 
 type RecorderChipProps = {
   className?: string;
   recorder: GetContentTextQuery["contents"]["data"][number]["attributes"]["text_set"][number]["transcribers"]["data"][number];
+  langui: GetWebsiteInterfaceQuery["websiteInterfaces"]["data"][number]["attributes"];
 };
 
 export default function RecorderChip(props: RecorderChipProps): JSX.Element {
   const recorder = props.recorder;
+  const langui = props.langui;
   return (
     <Chip
       key={recorder.id}
@@ -28,7 +33,7 @@ export default function RecorderChip(props: RecorderChipProps): JSX.Element {
           </div>
           {recorder.attributes.languages.data.length > 0 && (
             <div className="flex flex-row flex-wrap gap-1">
-              <p>Languages:</p>
+              <p>{langui.languages}:</p>
               {recorder.attributes.languages.data.map((language) => (
                 <Chip key={language.attributes.code}>
                   {language.attributes.code.toUpperCase()}
@@ -38,7 +43,7 @@ export default function RecorderChip(props: RecorderChipProps): JSX.Element {
           )}
           {recorder.attributes.pronouns && (
             <div className="flex flex-row flex-wrap gap-1">
-              <p>Pronouns:</p>
+              <p>{langui.pronouns}:</p>
               <Chip>{recorder.attributes.pronouns}</Chip>
             </div>
           )}

@@ -4,6 +4,7 @@ import {
   ImageQuality,
 } from "components/Img";
 import {
+  GetCurrenciesQuery,
   GetLibraryItemQuery,
   GetLibraryItemsPreviewQuery,
   GetWebsiteInterfaceQuery,
@@ -24,12 +25,27 @@ export function prettyDate(
 }
 
 export function prettyPrice(
-  pricePicker: GetLibraryItemsPreviewQuery["libraryItems"]["data"][number]["attributes"]["price"]
+  pricePicker: GetLibraryItemsPreviewQuery["libraryItems"]["data"][number]["attributes"]["price"],
+  currencies: GetCurrenciesQuery["currencies"]["data"],
+  targetCurrencyCode?: string
 ): string {
-  return (
-    pricePicker.currency.data.attributes.symbol +
-    pricePicker.amount.toLocaleString()
-  );
+  if (!targetCurrencyCode) return "";
+  let result = "";
+  currencies.map((currency) => {
+    if (currency.attributes.code === targetCurrencyCode) {
+      let amountInUSD =
+        pricePicker.amount * pricePicker.currency.data.attributes.rate_to_usd;
+      let amountInTargetCurrency =
+        amountInUSD / currency.attributes.rate_to_usd;
+      result =
+        currency.attributes.symbol +
+        amountInTargetCurrency.toLocaleString(undefined, {
+          minimumFractionDigits: currency.attributes.display_decimals ? 2 : 0,
+          maximumFractionDigits: currency.attributes.display_decimals ? 2 : 0,
+        });
+    }
+  });
+  return result;
 }
 
 export function prettySlug(slug?: string, parentSlug?: string): string {

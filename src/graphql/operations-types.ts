@@ -165,6 +165,32 @@ export type GetWebsiteInterfaceQuery = {
         group_by: string;
         select_option_sidebar: string;
         group: string;
+        settings: string;
+        theme: string;
+        light: string;
+        auto: string;
+        dark: string;
+        font_size: string;
+        player_name: string;
+        currency: string;
+        font: string;
+        calculated: string;
+        status_incomplete: string;
+        status_draft: string;
+        status_review: string;
+        status_done: string;
+        incomplete: string;
+        draft: string;
+        review: string;
+        done: string;
+        status: string;
+        transcribers: string;
+        translators: string;
+        proofreaders: string;
+        transcript_notice: string;
+        translation_notice: string;
+        source_language: string;
+        pronouns: string;
       };
     }>;
   };
@@ -286,6 +312,7 @@ export type GetLibraryItemsPreviewQuery = {
                 __typename: "Currency";
                 symbol: string;
                 code: string;
+                rate_to_usd: number;
               };
             };
           };
@@ -478,6 +505,7 @@ export type GetLibraryItemQuery = {
                 __typename: "Currency";
                 symbol: string;
                 code: string;
+                rate_to_usd: number;
               };
             };
           };
@@ -693,6 +721,7 @@ export type GetLibraryItemQuery = {
                       __typename: "Currency";
                       symbol: string;
                       code: string;
+                      rate_to_usd: number;
                     };
                   };
                 };
@@ -1412,6 +1441,45 @@ export type GetContentTextQuery = {
             };
           };
         };
+      };
+    }>;
+  };
+};
+
+export type GetCurrenciesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetCurrenciesQuery = {
+  __typename: "Query";
+  currencies: {
+    __typename: "CurrencyEntityResponseCollection";
+    data: Array<{
+      __typename: "CurrencyEntity";
+      id: string;
+      attributes: {
+        __typename: "Currency";
+        code: string;
+        symbol: string;
+        rate_to_usd: number;
+        display_decimals: boolean;
+      };
+    }>;
+  };
+};
+
+export type GetLanguagesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetLanguagesQuery = {
+  __typename: "Query";
+  languages: {
+    __typename: "LanguageEntityResponseCollection";
+    data: Array<{
+      __typename: "LanguageEntity";
+      id: string;
+      attributes: {
+        __typename: "Language";
+        name: string;
+        code: string;
+        localized_name: string;
       };
     }>;
   };

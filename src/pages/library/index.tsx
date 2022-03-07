@@ -7,10 +7,7 @@ import {
   GetLibraryItemsPreviewQuery,
   GetWebsiteInterfaceQuery,
 } from "graphql/operations-types";
-import {
-  getLibraryItemsPreview,
-  getWebsiteInterface,
-} from "graphql/operations";
+import { getLibraryItemsPreview } from "graphql/operations";
 import PanelHeader from "components/PanelComponents/PanelHeader";
 import AppLayout from "components/AppLayout";
 import LibraryItemsPreview from "components/Library/LibraryItemsPreview";
@@ -18,11 +15,11 @@ import Select from "components/Select";
 import { useEffect, useState } from "react";
 import { prettyDate, prettyinlineTitle } from "queries/helpers";
 import Switch from "components/Switch";
+import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 
-type LibraryProps = {
-  libraryItems: GetLibraryItemsPreviewQuery;
-  langui: GetWebsiteInterfaceQuery;
-};
+interface LibraryProps extends AppStaticProps {
+  items: GetLibraryItemsPreviewQuery["libraryItems"]["data"];
+}
 
 type GroupLibraryItems = Map<
   string,
@@ -30,7 +27,7 @@ type GroupLibraryItems = Map<
 >;
 
 export default function Library(props: LibraryProps): JSX.Element {
-  const langui = props.langui.websiteInterfaces.data[0].attributes;
+  const { langui, items } = props;
 
   const [showSubitems, setShowSubitems] = useState<boolean>(false);
   const [showPrimaryItems, setShowPrimaryItems] = useState<boolean>(true);
@@ -38,20 +35,13 @@ export default function Library(props: LibraryProps): JSX.Element {
   const [sortingMethod, setSortingMethod] = useState<number>(0);
   const [groupingMethod, setGroupingMethod] = useState<number>(-1);
 
-  const [filteredItems, setFilteredItems] = useState<
-    LibraryProps["libraryItems"]["libraryItems"]["data"]
-  >(
-    filterItems(
-      showSubitems,
-      showPrimaryItems,
-      showSecondaryItems,
-      props.libraryItems.libraryItems.data
-    )
+  const [filteredItems, setFilteredItems] = useState<LibraryProps["items"]>(
+    filterItems(showSubitems, showPrimaryItems, showSecondaryItems, items)
   );
 
-  const [sortedItems, setSortedItem] = useState<
-    LibraryProps["libraryItems"]["libraryItems"]["data"]
-  >(sortBy(groupingMethod, filteredItems));
+  const [sortedItems, setSortedItem] = useState<LibraryProps["items"]>(
+    sortBy(groupingMethod, filteredItems)
+  );
 
   const [groups, setGroups] = useState<GroupLibraryItems>(
     getGroups(langui, groupingMethod, sortedItems)
@@ -59,19 +49,9 @@ export default function Library(props: LibraryProps): JSX.Element {
 
   useEffect(() => {
     setFilteredItems(
-      filterItems(
-        showSubitems,
-        showPrimaryItems,
-        showSecondaryItems,
-        props.libraryItems.libraryItems.data
-      )
+      filterItems(showSubitems, showPrimaryItems, showSecondaryItems, items)
     );
-  }, [
-    showSubitems,
-    props.libraryItems.libraryItems.data,
-    showPrimaryItems,
-    showSecondaryItems,
-  ]);
+  }, [showSubitems, items, showPrimaryItems, showSecondaryItems]);
 
   useEffect(() => {
     setSortedItem(sortBy(sortingMethod, filteredItems));
@@ -138,7 +118,11 @@ export default function Library(props: LibraryProps): JSX.Element {
                 className="grid gap-8 items-end mobile:grid-cols-2 desktop:grid-cols-[repeat(auto-fill,_minmax(13rem,1fr))] pb-12 border-b-[3px] border-dotted last-of-type:border-0"
               >
                 {items.map((item) => (
-                  <LibraryItemsPreview key={item.id} item={item.attributes} />
+                  <LibraryItemsPreview
+                    key={item.id}
+                    item={item.attributes}
+                    currencies={props.currencies}
+                  />
                 ))}
               </div>
             </>
@@ -150,35 +134,31 @@ export default function Library(props: LibraryProps): JSX.Element {
   return (
     <AppLayout
       navTitle={langui.library}
-      langui={langui}
       subPanel={subPanel}
       contentPanel={contentPanel}
+      {...props}
     />
   );
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  if (context.locale) {
-    const props: LibraryProps = {
-      libraryItems: await getLibraryItemsPreview({
-        language_code: context.locale,
-      }),
-      langui: await getWebsiteInterface({
-        language_code: context.locale,
-      }),
-    };
-    return {
-      props: props,
-    };
-  } else {
-    return { props: {} };
-  }
+  const props: LibraryProps = {
+    ...(await getAppStaticProps(context)),
+    items: (
+      await getLibraryItemsPreview({
+        language_code: context.locale || "en",
+      })
+    ).libraryItems.data,
+  };
+  return {
+    props: props,
+  };
 };
 
 function getGroups(
   langui: GetWebsiteInterfaceQuery["websiteInterfaces"]["data"][number]["attributes"],
   groupByType: number,
-  items: LibraryProps["libraryItems"]["libraryItems"]["data"]
+  items: LibraryProps["items"]
 ): GroupLibraryItems {
   switch (groupByType) {
     case 0:
@@ -276,8 +256,8 @@ function filterItems(
   showSubitems: boolean,
   showPrimaryItems: boolean,
   showSecondaryItems: boolean,
-  items: LibraryProps["libraryItems"]["libraryItems"]["data"]
-): LibraryProps["libraryItems"]["libraryItems"]["data"] {
+  items: LibraryProps["items"]
+): LibraryProps["items"] {
   return [...items].filter((item) => {
     if (!showSubitems && !item.attributes.root_item) return false;
     if (
@@ -298,8 +278,8 @@ function filterItems(
 
 function sortBy(
   orderByType: number,
-  items: LibraryProps["libraryItems"]["libraryItems"]["data"]
-): LibraryProps["libraryItems"]["libraryItems"]["data"] {
+  items: LibraryProps["items"]
+): LibraryProps["items"] {
   switch (orderByType) {
     case 0:
       return [...items].sort((a, b) => {

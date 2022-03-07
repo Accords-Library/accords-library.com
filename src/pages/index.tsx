@@ -1,16 +1,11 @@
 import AppLayout from "components/AppLayout";
 import ContentPanel from "components/Panels/ContentPanel";
-import SVG from "components/SVG";
-import { getWebsiteInterface } from "graphql/operations";
-import { GetWebsiteInterfaceQuery } from "graphql/operations-types";
 import { GetStaticProps } from "next";
-type HomeProps = {
-  langui: GetWebsiteInterfaceQuery;
-};
+import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
+
+interface HomeProps extends AppStaticProps {}
 
 export default function Home(props: HomeProps): JSX.Element {
-  const langui = props.langui.websiteInterfaces.data[0].attributes;
-
   const contentPanel = (
     <ContentPanel autoformat>
       <div className="grid place-items-center place-content-center w-full gap-5 text-center">
@@ -140,26 +135,14 @@ export default function Home(props: HomeProps): JSX.Element {
     </ContentPanel>
   );
 
-  return (
-    <AppLayout
-      navTitle={"Home"}
-      langui={langui}
-      contentPanel={contentPanel}
-    />
-  );
+  return <AppLayout navTitle={"Home"} contentPanel={contentPanel} {...props} />;
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  if (context.locale) {
-    const props: HomeProps = {
-      langui: await getWebsiteInterface({
-        language_code: context.locale,
-      }),
-    };
-    return {
-      props: props,
-    };
-  } else {
-    return { props: {} };
-  }
+  const props: HomeProps = {
+    ...(await getAppStaticProps(context)),
+  };
+  return {
+    props: props,
+  };
 };

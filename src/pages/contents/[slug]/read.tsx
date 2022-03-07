@@ -1,13 +1,8 @@
 import { GetStaticPaths, GetStaticProps } from "next";
-import {
-  getContentsSlugs,
-  getContentText,
-  getWebsiteInterface,
-} from "graphql/operations";
+import { getContentsSlugs, getContentText } from "graphql/operations";
 import {
   Enum_Componentsetstextset_Status,
   GetContentTextQuery,
-  GetWebsiteInterfaceQuery,
 } from "graphql/operations-types";
 import ContentPanel from "components/Panels/ContentPanel";
 import HorizontalLine from "components/HorizontalLine";
@@ -30,16 +25,16 @@ import { useRouter } from "next/router";
 import Chip from "components/Chip";
 import ReactTooltip from "react-tooltip";
 import RecorderChip from "components/RecorderChip";
+import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 
-interface ContentReadProps {
-  content: GetContentTextQuery;
-  langui: GetWebsiteInterfaceQuery;
+interface ContentReadProps extends AppStaticProps {
+  content: GetContentTextQuery["contents"]["data"][number]["attributes"];
+  contentId: GetContentTextQuery["contents"]["data"][number]["id"];
 }
 
 export default function ContentRead(props: ContentReadProps): JSX.Element {
   useTesting(props);
-  const content = props.content.contents.data[0].attributes;
-  const langui = props.langui.websiteInterfaces.data[0].attributes;
+  const { langui, content } = props;
   const router = useRouter();
 
   const subPanel = (
@@ -57,14 +52,14 @@ export default function ContentRead(props: ContentReadProps): JSX.Element {
           <h2 className="text-xl">
             {content.text_set[0].source_language.data.attributes.code ===
             router.locale
-              ? "This content is a transcript"
-              : "This content is a fan-translation"}
+              ? langui.transcript_notice
+              : langui.translation_notice}
           </h2>
 
           {content.text_set[0].source_language.data.attributes.code !==
             router.locale && (
             <div className="grid place-items-center gap-2">
-              <p className="font-headers">Source language:</p>
+              <p className="font-headers">{langui.source_language}:</p>
               <Button
                 href={router.asPath}
                 locale={
@@ -79,20 +74,20 @@ export default function ContentRead(props: ContentReadProps): JSX.Element {
           )}
 
           <div className="grid grid-flow-col place-items-center place-content-center gap-2">
-            <p className="font-headers">Status:</p>
+            <p className="font-headers">{langui.status}:</p>
 
             <Chip
               data-tip={
                 content.text_set[0].status ===
                 Enum_Componentsetstextset_Status.Incomplete
-                  ? "This entry is only partially translated/transcribed."
+                  ? langui.status_incomplete
                   : content.text_set[0].status ===
                     Enum_Componentsetstextset_Status.Draft
-                  ? "This entry is just a draft. It usually means that this is a work-in-progress. Translation/transcription might be poor and/or computer-generated."
+                  ? langui.status_draft
                   : content.text_set[0].status ===
                     Enum_Componentsetstextset_Status.Review
-                  ? "This entry has not yet being proofread. The content should still be accurate."
-                  : "This entry has been checked and proofread. If you notice any translation errors or typos, please contact us so we can fix it!"
+                  ? langui.status_review
+                  : langui.status_done
               }
               data-for={"StatusTooltip"}
             >
@@ -102,10 +97,14 @@ export default function ContentRead(props: ContentReadProps): JSX.Element {
 
           {content.text_set[0].transcribers.data.length > 0 && (
             <div>
-              <p className="font-headers">Transcribers:</p>
+              <p className="font-headers">{langui.transcribers}:</p>
               <div className="grid place-items-center place-content-center gap-2">
                 {content.text_set[0].transcribers.data.map((recorder) => (
-                  <RecorderChip key={recorder.id} recorder={recorder} />
+                  <RecorderChip
+                    key={recorder.id}
+                    langui={langui}
+                    recorder={recorder}
+                  />
                 ))}
               </div>
             </div>
@@ -113,10 +112,14 @@ export default function ContentRead(props: ContentReadProps): JSX.Element {
 
           {content.text_set[0].translators.data.length > 0 && (
             <div>
-              <p className="font-headers">Translators:</p>
+              <p className="font-headers">{langui.translators}:</p>
               <div className="grid place-items-center place-content-center gap-2">
                 {content.text_set[0].translators.data.map((recorder) => (
-                  <RecorderChip key={recorder.id} recorder={recorder} />
+                  <RecorderChip
+                    key={recorder.id}
+                    langui={langui}
+                    recorder={recorder}
+                  />
                 ))}
               </div>
             </div>
@@ -124,10 +127,14 @@ export default function ContentRead(props: ContentReadProps): JSX.Element {
 
           {content.text_set[0].proofreaders.data.length > 0 && (
             <div>
-              <p className="font-headers">Proofreaders:</p>
+              <p className="font-headers">{langui.proofreaders}:</p>
               <div className="grid place-items-center place-content-center gap-2">
                 {content.text_set[0].proofreaders.data.map((recorder) => (
-                  <RecorderChip key={recorder.id} recorder={recorder} />
+                  <RecorderChip
+                    key={recorder.id}
+                    langui={langui}
+                    recorder={recorder}
+                  />
                 ))}
               </div>
             </div>
@@ -200,35 +207,45 @@ export default function ContentRead(props: ContentReadProps): JSX.Element {
           : prettySlug(content.slug)
       }
       thumbnail={content.thumbnail.data?.attributes}
-      langui={langui}
       contentPanel={contentPanel}
       subPanel={subPanel}
       extra={extra}
+      description={`${langui.type}: ${
+        content.type.data.attributes.titles.length > 0
+          ? content.type.data.attributes.titles[0].title
+          : prettySlug(content.type.data.attributes.slug)
+      }
+      ${langui.categories}: ${
+        content.categories.data.length > 0 &&
+        content.categories.data
+          .map((category) => {
+            return category.attributes.short;
+          })
+          .join(" | ")
+      }
+         
+        ${content.titles.length > 0 ? content.titles[0].description : undefined}
+        `}
+      {...props}
     />
   );
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  if (context.params) {
-    if (context.params.slug && context.locale) {
-      if (context.params.slug instanceof Array)
-        context.params.slug = context.params.slug.join("");
-
-      const props: ContentReadProps = {
-        content: await getContentText({
-          slug: context.params.slug,
-          language_code: context.locale,
-        }),
-        langui: await getWebsiteInterface({
-          language_code: context.locale,
-        }),
-      };
-      return {
-        props: props,
-      };
-    }
-  }
-  return { props: {} };
+  const content = (
+    await getContentText({
+      slug: context.params?.slug?.toString() || "",
+      language_code: context.locale || "en",
+    })
+  ).contents.data[0];
+  const props: ContentReadProps = {
+    ...(await getAppStaticProps(context)),
+    content: content.attributes,
+    contentId: content.id,
+  };
+  return {
+    props: props,
+  };
 };
 
 export const getStaticPaths: GetStaticPaths = async (context) => {
@@ -254,11 +271,10 @@ export const getStaticPaths: GetStaticPaths = async (context) => {
 
 export function useTesting(props: ContentReadProps) {
   const router = useRouter();
-  const content = props.content.contents.data[0].attributes;
+  const { content, contentId } = props;
 
   const contentURL =
-    "/admin/content-manager/collectionType/api::content.content/" +
-    props.content.contents.data[0].id;
+    "/admin/content-manager/collectionType/api::content.content/" + contentId;
 
   if (router.locale === "en") {
     if (content.categories.data.length === 0) {

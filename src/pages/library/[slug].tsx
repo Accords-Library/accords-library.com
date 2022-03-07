@@ -2,16 +2,11 @@ import ContentPanel, {
   ContentPanelWidthSizes,
 } from "components/Panels/ContentPanel";
 import { GetStaticPaths, GetStaticProps } from "next";
-import {
-  getLibraryItem,
-  getLibraryItemsSlugs,
-  getWebsiteInterface,
-} from "graphql/operations";
+import { getLibraryItem, getLibraryItemsSlugs } from "graphql/operations";
 import {
   Enum_Componentmetadatabooks_Binding_Type,
   Enum_Componentmetadatabooks_Page_Order,
   GetLibraryItemQuery,
-  GetWebsiteInterfaceQuery,
 } from "graphql/operations-types";
 import {
   convertMmToInch,
@@ -20,7 +15,6 @@ import {
   prettyItemType,
   prettyItemSubType,
   prettyPrice,
-  prettySlug,
   prettyTestError,
   prettyTestWarning,
   sortContent,
@@ -32,7 +26,6 @@ import ReturnButton, {
 import NavOption from "components/PanelComponents/NavOption";
 import Chip from "components/Chip";
 import Button from "components/Button";
-import HorizontalLine from "components/HorizontalLine";
 import AppLayout from "components/AppLayout";
 import LibraryItemsPreview from "components/Library/LibraryItemsPreview";
 import InsetBox from "components/InsetBox";
@@ -40,16 +33,16 @@ import Img, { ImageQuality } from "components/Img";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { useRouter } from "next/router";
 import ContentTOCLine from "components/Library/ContentTOCLine";
+import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 
-interface LibrarySlugProps {
-  libraryItem: GetLibraryItemQuery;
-  langui: GetWebsiteInterfaceQuery;
+interface LibrarySlugProps extends AppStaticProps {
+  item: GetLibraryItemQuery["libraryItems"]["data"][number]["attributes"];
+  itemId: GetLibraryItemQuery["libraryItems"]["data"][number]["id"];
 }
 
 export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
   useTesting(props);
-  const item = props.libraryItem.libraryItems.data[0].attributes;
-  const langui = props.langui.websiteInterfaces.data[0].attributes;
+  const { item, langui, currencies } = props;
   const appLayout = useAppLayout();
 
   const isVariantSet =
@@ -202,7 +195,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
             <h2 className="text-2xl text-center">{langui.details}</h2>
             <div className="grid grid-flow-col w-full place-content-between">
               {item.metadata.length > 0 ? (
-                <div className="grid place-items-center">
+                <div className="grid place-items-center place-content-start">
                   <h3 className="text-xl">{langui.type}</h3>
                   <div className="grid grid-flow-col gap-1">
                     <Chip>{prettyItemType(item.metadata[0], langui)}</Chip>
@@ -215,7 +208,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
               )}
 
               {item.release_date ? (
-                <div className="grid place-items-center">
+                <div className="grid place-items-center place-content-start">
                   <h3 className="text-xl">{langui.release_date}</h3>
                   <p>{prettyDate(item.release_date)}</p>
                 </div>
@@ -224,9 +217,22 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
               )}
 
               {item.price ? (
-                <div className="grid place-items-center">
+                <div className="grid place-items-center text-center place-content-start">
                   <h3 className="text-xl">{langui.price}</h3>
-                  <p>{prettyPrice(item.price)}</p>
+                  <p>
+                    {prettyPrice(
+                      item.price,
+                      currencies,
+                      item.price.currency.data.attributes.code
+                    )}
+                  </p>
+                  {item.price.currency.data.attributes.code !==
+                    appLayout.currency && (
+                    <p>
+                      {prettyPrice(item.price, currencies, appLayout.currency)}{" "}
+                      <br />({langui.calculated?.toLowerCase()})
+                    </p>
+                  )}
                 </div>
               ) : (
                 ""
@@ -267,7 +273,9 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
               ""
             )}
 
-            {item.metadata.length > 0 ? (
+            {item.metadata.length > 0 &&
+            item.metadata[0].__typename !== "ComponentMetadataGroup" &&
+            item.metadata[0].__typename !== "ComponentMetadataOther" ? (
               <>
                 <h3 className="text-xl">{langui.type_information}</h3>
                 <div className="grid grid-cols-2 w-full place-content-between">
@@ -321,9 +329,6 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
                     <></>
                   ) : item.metadata[0].__typename ===
                     "ComponentMetadataGame" ? (
-                    <></>
-                  ) : item.metadata[0].__typename ===
-                    "ComponentMetadataGroup" ? (
                     <></>
                   ) : (
                     ""
@@ -382,7 +387,6 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
     <AppLayout
       navTitle={langui.library}
       title={prettyinlineTitle("", item.title, item.subtitle)}
-      langui={langui}
       contentPanel={contentPanel}
       subPanel={subPanel}
       thumbnail={item.thumbnail.data?.attributes}
@@ -391,31 +395,26 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
           ? item.descriptions[0].description
           : undefined
       }
+      {...props}
     />
   );
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  if (context.params) {
-    if (context.params.slug && context.locale) {
-      if (context.params.slug instanceof Array)
-        context.params.slug = context.params.slug.join("");
-
-      const props: LibrarySlugProps = {
-        libraryItem: await getLibraryItem({
-          slug: context.params.slug,
-          language_code: context.locale,
-        }),
-        langui: await getWebsiteInterface({
-          language_code: context.locale,
-        }),
-      };
-      return {
-        props: props,
-      };
-    }
-  }
-  return { props: {} };
+  const item = (
+    await getLibraryItem({
+      slug: context.params?.slug?.toString() || "",
+      language_code: context.locale || "en",
+    })
+  ).libraryItems.data[0];
+  const props: LibrarySlugProps = {
+    ...(await getAppStaticProps(context)),
+    item: item.attributes,
+    itemId: item.id,
+  };
+  return {
+    props: props,
+  };
 };
 
 export const getStaticPaths: GetStaticPaths = async (context) => {
@@ -440,17 +439,17 @@ export const getStaticPaths: GetStaticPaths = async (context) => {
 };
 
 function useTesting(props: LibrarySlugProps) {
-  const libraryItem = props.libraryItem.libraryItems.data[0].attributes;
+  const { item, itemId } = props;
   const router = useRouter();
 
   const libraryItemURL =
     "/admin/content-manager/collectionType/api::library-item.library-item/" +
-    props.libraryItem.libraryItems.data[0].id;
+    itemId;
 
-  sortContent(libraryItem.contents);
+  sortContent(item.contents);
 
   if (router.locale === "en") {
-    if (!libraryItem.thumbnail.data) {
+    if (!item.thumbnail.data) {
       prettyTestError(
         router,
         "Missing thumbnail",
@@ -458,7 +457,7 @@ function useTesting(props: LibrarySlugProps) {
         libraryItemURL
       );
     }
-    if (libraryItem.metadata.length === 0) {
+    if (item.metadata.length === 0) {
       prettyTestError(
         router,
         "Missing metadata",
@@ -467,14 +466,12 @@ function useTesting(props: LibrarySlugProps) {
       );
     } else {
       if (
-        libraryItem.metadata[0].__typename === "ComponentMetadataGroup" &&
-        (libraryItem.metadata[0].subtype.data.attributes.slug ===
-          "relation-set" ||
-          libraryItem.metadata[0].subtype.data.attributes.slug ===
-            "variant-set")
+        item.metadata[0].__typename === "ComponentMetadataGroup" &&
+        (item.metadata[0].subtype.data.attributes.slug === "relation-set" ||
+          item.metadata[0].subtype.data.attributes.slug === "variant-set")
       ) {
         // This is a group type item
-        if (libraryItem.price) {
+        if (item.price) {
           prettyTestError(
             router,
             "Group-type items shouldn't have price",
@@ -482,7 +479,7 @@ function useTesting(props: LibrarySlugProps) {
             libraryItemURL
           );
         }
-        if (libraryItem.size) {
+        if (item.size) {
           prettyTestError(
             router,
             "Group-type items shouldn't have size",
@@ -490,7 +487,7 @@ function useTesting(props: LibrarySlugProps) {
             libraryItemURL
           );
         }
-        if (libraryItem.release_date) {
+        if (item.release_date) {
           prettyTestError(
             router,
             "Group-type items shouldn't have release_date",
@@ -498,7 +495,7 @@ function useTesting(props: LibrarySlugProps) {
             libraryItemURL
           );
         }
-        if (libraryItem.contents.data.length > 0) {
+        if (item.contents.data.length > 0) {
           prettyTestError(
             router,
             "Group-type items shouldn't have contents",
@@ -506,7 +503,7 @@ function useTesting(props: LibrarySlugProps) {
             libraryItemURL
           );
         }
-        if (libraryItem.subitems.data.length === 0) {
+        if (item.subitems.data.length === 0) {
           prettyTestError(
             router,
             "Group-type items should have subitems",
@@ -517,8 +514,8 @@ function useTesting(props: LibrarySlugProps) {
       } else {
         // This is a normal item
 
-        if (libraryItem.metadata[0].__typename === "ComponentMetadataGroup") {
-          if (libraryItem.subitems.data.length === 0) {
+        if (item.metadata[0].__typename === "ComponentMetadataGroup") {
+          if (item.subitems.data.length === 0) {
             prettyTestError(
               router,
               "Group-type item should have subitems",
@@ -528,7 +525,7 @@ function useTesting(props: LibrarySlugProps) {
           }
         }
 
-        if (!libraryItem.price) {
+        if (!item.price) {
           prettyTestWarning(
             router,
             "Missing price",
@@ -536,7 +533,7 @@ function useTesting(props: LibrarySlugProps) {
             libraryItemURL
           );
         } else {
-          if (!libraryItem.price.amount) {
+          if (!item.price.amount) {
             prettyTestError(
               router,
               "Missing amount",
@@ -544,7 +541,7 @@ function useTesting(props: LibrarySlugProps) {
               libraryItemURL
             );
           }
-          if (!libraryItem.price.currency) {
+          if (!item.price.currency) {
             prettyTestError(
               router,
               "Missing currency",
@@ -554,8 +551,8 @@ function useTesting(props: LibrarySlugProps) {
           }
         }
 
-        if (!libraryItem.digital) {
-          if (!libraryItem.size) {
+        if (!item.digital) {
+          if (!item.size) {
             prettyTestWarning(
               router,
               "Missing size",
@@ -563,7 +560,7 @@ function useTesting(props: LibrarySlugProps) {
               libraryItemURL
             );
           } else {
-            if (!libraryItem.size.width) {
+            if (!item.size.width) {
               prettyTestWarning(
                 router,
                 "Missing width",
@@ -571,7 +568,7 @@ function useTesting(props: LibrarySlugProps) {
                 libraryItemURL
               );
             }
-            if (!libraryItem.size.height) {
+            if (!item.size.height) {
               prettyTestWarning(
                 router,
                 "Missing height",
@@ -579,7 +576,7 @@ function useTesting(props: LibrarySlugProps) {
                 libraryItemURL
               );
             }
-            if (!libraryItem.size.thickness) {
+            if (!item.size.thickness) {
               prettyTestWarning(
                 router,
                 "Missing thickness",
@@ -590,7 +587,7 @@ function useTesting(props: LibrarySlugProps) {
           }
         }
 
-        if (!libraryItem.release_date) {
+        if (!item.release_date) {
           prettyTestWarning(
             router,
             "Missing release_date",
@@ -598,7 +595,7 @@ function useTesting(props: LibrarySlugProps) {
             libraryItemURL
           );
         } else {
-          if (!libraryItem.release_date.year) {
+          if (!item.release_date.year) {
             prettyTestError(
               router,
               "Missing year",
@@ -606,7 +603,7 @@ function useTesting(props: LibrarySlugProps) {
               libraryItemURL
             );
           }
-          if (!libraryItem.release_date.month) {
+          if (!item.release_date.month) {
             prettyTestError(
               router,
               "Missing month",
@@ -614,7 +611,7 @@ function useTesting(props: LibrarySlugProps) {
               libraryItemURL
             );
           }
-          if (!libraryItem.release_date.day) {
+          if (!item.release_date.day) {
             prettyTestError(
               router,
               "Missing day",
@@ -624,7 +621,7 @@ function useTesting(props: LibrarySlugProps) {
           }
         }
 
-        if (libraryItem.contents.data.length === 0) {
+        if (item.contents.data.length === 0) {
           prettyTestWarning(
             router,
             "Missing contents",
@@ -633,7 +630,7 @@ function useTesting(props: LibrarySlugProps) {
           );
         } else {
           let currentRangePage = 0;
-          libraryItem.contents.data.map((content) => {
+          item.contents.data.map((content) => {
             const contentURL =
               "/admin/content-manager/collectionType/api::content.content/" +
               content.id;
@@ -694,26 +691,26 @@ function useTesting(props: LibrarySlugProps) {
             }
           });
 
-          if (libraryItem.metadata[0].__typename === "ComponentMetadataBooks") {
-            if (currentRangePage < libraryItem.metadata[0].page_count) {
+          if (item.metadata[0].__typename === "ComponentMetadataBooks") {
+            if (currentRangePage < item.metadata[0].page_count) {
               prettyTestError(
                 router,
                 `Missing pages ${currentRangePage + 1} to ${
-                  libraryItem.metadata[0].page_count
+                  item.metadata[0].page_count
                 }`,
                 ["libraryItem", "content"],
                 libraryItemURL
               );
-            } else if (currentRangePage > libraryItem.metadata[0].page_count) {
+            } else if (currentRangePage > item.metadata[0].page_count) {
               prettyTestError(
                 router,
-                `Page overflow, content references pages up to ${currentRangePage} when the highest expected was ${libraryItem.metadata[0].page_count}`,
+                `Page overflow, content references pages up to ${currentRangePage} when the highest expected was ${item.metadata[0].page_count}`,
                 ["libraryItem", "content"],
                 libraryItemURL
               );
             }
 
-            if (libraryItem.metadata[0].languages.data.length === 0) {
+            if (item.metadata[0].languages.data.length === 0) {
               prettyTestWarning(
                 router,
                 "Missing language",
@@ -722,7 +719,7 @@ function useTesting(props: LibrarySlugProps) {
               );
             }
 
-            if (!libraryItem.metadata[0].page_count) {
+            if (!item.metadata[0].page_count) {
               prettyTestWarning(
                 router,
                 "Missing page_count",
@@ -735,7 +732,7 @@ function useTesting(props: LibrarySlugProps) {
       }
     }
 
-    if (!libraryItem.root_item && libraryItem.subitem_of.data.length === 0) {
+    if (!item.root_item && item.subitem_of.data.length === 0) {
       prettyTestError(
         router,
         "This item is inaccessible (not root item and not subitem of another item)",
@@ -744,7 +741,7 @@ function useTesting(props: LibrarySlugProps) {
       );
     }
 
-    if (libraryItem.gallery.data.length === 0) {
+    if (item.gallery.data.length === 0) {
       prettyTestWarning(
         router,
         "Missing gallery",
@@ -754,7 +751,7 @@ function useTesting(props: LibrarySlugProps) {
     }
   }
 
-  if (libraryItem.descriptions.length === 0) {
+  if (item.descriptions.length === 0) {
     prettyTestWarning(
       router,
       "Missing description",

@@ -1,16 +1,13 @@
 import SubPanel from "components/Panels/SubPanel";
 import PanelHeader from "components/PanelComponents/PanelHeader";
-import { GetWebsiteInterfaceQuery } from "graphql/operations-types";
 import { GetStaticProps } from "next";
-import { getWebsiteInterface } from "graphql/operations";
 import AppLayout from "components/AppLayout";
+import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 
-type ArchivesProps = {
-  langui: GetWebsiteInterfaceQuery;
-};
+interface ArchivesProps extends AppStaticProps {}
 
 export default function Archives(props: ArchivesProps): JSX.Element {
-  const langui = props.langui.websiteInterfaces.data[0].attributes;
+  const { langui } = props;
   const subPanel = (
     <SubPanel>
       <PanelHeader
@@ -21,24 +18,15 @@ export default function Archives(props: ArchivesProps): JSX.Element {
     </SubPanel>
   );
   return (
-    <AppLayout
-      navTitle={langui.archives}
-      langui={langui}
-      subPanel={subPanel}
-    />
+    <AppLayout navTitle={langui.archives} subPanel={subPanel} {...props} />
   );
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  if (context.locale) {
-    const props: ArchivesProps = {
-      langui: await getWebsiteInterface({
-        language_code: context.locale,
-      }),
-    };
-    return {
-      props: props,
-    };
-  }
-  return { props: {} };
+  const props: ArchivesProps = {
+    ...(await getAppStaticProps(context)),
+  };
+  return {
+    props: props,
+  };
 };

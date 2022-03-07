@@ -1,13 +1,6 @@
 import { GetStaticPaths, GetStaticProps } from "next";
-import {
-  getContent,
-  getContentsSlugs,
-  getWebsiteInterface,
-} from "graphql/operations";
-import {
-  GetContentQuery,
-  GetWebsiteInterfaceQuery,
-} from "graphql/operations-types";
+import { getContent, getContentsSlugs } from "graphql/operations";
+import { GetContentQuery } from "graphql/operations-types";
 import ContentPanel from "components/Panels/ContentPanel";
 import Button from "components/Button";
 import HorizontalLine from "components/HorizontalLine";
@@ -18,15 +11,14 @@ import ReturnButton, {
   ReturnButtonType,
 } from "components/PanelComponents/ReturnButton";
 import { prettyinlineTitle, prettySlug } from "queries/helpers";
+import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 
-type ContentIndexProps = {
-  content: GetContentQuery;
-  langui: GetWebsiteInterfaceQuery;
-};
+interface ContentIndexProps extends AppStaticProps {
+  content: GetContentQuery["contents"]["data"][number]["attributes"];
+}
 
 export default function ContentIndex(props: ContentIndexProps): JSX.Element {
-  const content = props.content.contents.data[0].attributes;
-  const langui = props.langui.websiteInterfaces.data[0].attributes;
+  const { content, langui } = props;
   const subPanel = (
     <SubPanel>
       <ReturnButton
@@ -36,7 +28,6 @@ export default function ContentIndex(props: ContentIndexProps): JSX.Element {
         displayOn={ReturnButtonType.Desktop}
         horizontalLine
       />
-      
     </SubPanel>
   );
   const contentPanel = (
@@ -93,46 +84,46 @@ export default function ContentIndex(props: ContentIndexProps): JSX.Element {
           : prettySlug(content.slug)
       }
       thumbnail={content.thumbnail.data?.attributes}
-      langui={langui}
       contentPanel={contentPanel}
       subPanel={subPanel}
-      description={
-        content.titles.length > 0 ? content.titles[0].description : undefined
+      description={`${langui.type}: ${
+        content.type.data.attributes.titles.length > 0
+          ? content.type.data.attributes.titles[0].title
+          : prettySlug(content.type.data.attributes.slug)
       }
+      ${langui.categories}: ${
+        content.categories.data.length > 0 &&
+        content.categories.data
+          .map((category) => {
+            return category.attributes.short;
+          })
+          .join(" | ")
+      }
+         
+        ${content.titles.length > 0 ? content.titles[0].description : undefined}
+        `}
+      {...props}
     />
   );
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  if (context.params) {
-    if (context.params.slug && context.locale) {
-      if (context.params.slug instanceof Array)
-        context.params.slug = context.params.slug.join("");
-
-      const props: ContentIndexProps = {
-        content: await getContent({
-          slug: context.params.slug,
-          language_code: context.locale,
-        }),
-        langui: await getWebsiteInterface({
-          language_code: context.locale,
-        }),
-      };
-      return {
-        props: props,
-      };
-    }
-  }
-  return { props: {} };
+  const props: ContentIndexProps = {
+    ...(await getAppStaticProps(context)),
+    content: (
+      await getContent({
+        slug: context.params?.slug?.toString() || "",
+        language_code: context.locale || "en",
+      })
+    ).contents.data[0].attributes,
+  };
+  return {
+    props: props,
+  };
 };
 
 export const getStaticPaths: GetStaticPaths = async (context) => {
-  type Path = {
-    params: {
-      slug: string;
-    };
-    locale: string;
-  };
+  type Path = { params: { slug: string }; locale: string };
 
   const data = await getContentsSlugs({});
   const paths: Path[] = [];

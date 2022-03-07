@@ -15,7 +15,7 @@ export default function Select(props: SelectProps): JSX.Element {
 
   return (
     <div
-      className={`relative transition-[filter] ${
+      className={`relative text-center transition-[filter] ${
         opened && "drop-shadow-shade-lg z-10"
       } ${props.className}`}
     >
@@ -49,7 +49,7 @@ export default function Select(props: SelectProps): JSX.Element {
             {index !== props.state && (
               <div
                 className="bg-light hover:bg-mid transition-colors cursor-pointer p-1 last-of-type:rounded-b-[1em]"
-                key={option}
+                key={index}
                 id={option}
                 onClick={() => {
                   setOpened(false);

@@ -33,10 +33,7 @@ export function prettyPrice(
   let result = "";
   currencies.map((currency) => {
     if (currency.attributes.code === targetCurrencyCode) {
-      let amountInUSD =
-        pricePicker.amount * pricePicker.currency.data.attributes.rate_to_usd;
-      let amountInTargetCurrency =
-        amountInUSD / currency.attributes.rate_to_usd;
+      const amountInTargetCurrency = convertPrice(pricePicker, currency);
       result =
         currency.attributes.symbol +
         amountInTargetCurrency.toLocaleString(undefined, {
@@ -46,6 +43,16 @@ export function prettyPrice(
     }
   });
   return result;
+}
+
+export function convertPrice(
+  pricePicker: GetLibraryItemsPreviewQuery["libraryItems"]["data"][number]["attributes"]["price"],
+  targetCurrency: GetCurrenciesQuery["currencies"]["data"][number]
+): number {
+  return (
+    (pricePicker.amount * pricePicker.currency.data.attributes.rate_to_usd) /
+    targetCurrency.attributes.rate_to_usd
+  );
 }
 
 export function prettySlug(slug?: string, parentSlug?: string): string {

@@ -83,6 +83,32 @@ query getWebsiteInterface($language_code: String) {
         group_by
         select_option_sidebar
         group
+        settings
+        theme
+        light
+        auto
+        dark
+        font_size
+        player_name
+        currency
+        font
+        calculated
+        status_incomplete
+        status_draft
+        status_review
+        status_done
+        incomplete
+        draft
+        review
+        done
+        status
+        transcribers
+        translators
+        proofreaders
+        transcript_notice
+        translation_notice
+        source_language
+        pronouns
       }
     }
   }

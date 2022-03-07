@@ -29,6 +29,7 @@ type AppLayoutProps = {
 };
 
 export default function AppLayout(props: AppLayoutProps): JSX.Element {
+  const langui = props.langui;
   const router = useRouter();
   const isMobile = useMediaMobile();
   const isCoarse = useMediaCoarse();
@@ -91,7 +92,7 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
 
   const metaDescription = props.description
     ? props.description
-    : props.langui.default_description;
+    : langui.default_description;
 
   useEffect(() => {
     document.getElementsByTagName("html")[0].style.fontSize = `${
@@ -166,9 +167,7 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
             <div className="grid place-content-center h-full">
               <div className="text-dark border-dark border-2 border-dotted rounded-2xl p-8 grid grid-flow-col place-items-center gap-9 opacity-40">
                 <p className="text-4xl">❮</p>
-                <p className="text-2xl w-64">
-                  {props.langui.select_option_sidebar}
-                </p>
+                <p className="text-2xl w-64">{langui.select_option_sidebar}</p>
               </div>
             </div>
           )}
@@ -220,7 +219,7 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
           className={`${mainPanelClass} border-r-[1px] mobile:bottom-20 border-black border-dotted top-0 bottom-0 left-0 right-12 overflow-y-scroll webkit-scrollbar:w-0 [scrollbar-width:none] transition-transform duration-300 z-20 bg-light texture-paper-dots
         ${appLayout.mainPanelOpen ? "" : "mobile:-translate-x-full"}`}
         >
-          <MainPanel langui={props.langui} />
+          <MainPanel langui={langui} />
         </div>
 
         {/* Main panel minimize button*/}
@@ -270,7 +269,7 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
           state={appLayout.languagePanelOpen}
           setState={appLayout.setLanguagePanelOpen}
         >
-          <h2 className="text-2xl">{props.langui.select_language}</h2>
+          <h2 className="text-2xl">{langui.select_language}</h2>
           <div className="flex flex-wrap flex-row gap-2 mobile:flex-col">
             {router.locales?.sort().map((locale) => (
               <Button
@@ -290,11 +289,11 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
           state={appLayout.configPanelOpen}
           setState={appLayout.setConfigPanelOpen}
         >
-          <h2 className="text-2xl">Settings</h2>
+          <h2 className="text-2xl">{langui.settings}</h2>
 
           <div className="mt-4 grid gap-8 place-items-center text-center desktop:grid-cols-2">
             <div>
-              <h3 className="text-xl">Theme</h3>
+              <h3 className="text-xl">{langui.theme}</h3>
               <div className="flex flex-row">
                 <Button
                   onClick={() => {
@@ -307,7 +306,7 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
                   }
                   className="rounded-r-none"
                 >
-                  Light
+                  {langui.light}
                 </Button>
                 <Button
                   onClick={() => {
@@ -316,7 +315,7 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
                   active={appLayout.selectedThemeMode === false}
                   className="rounded-l-none rounded-r-none border-x-0"
                 >
-                  Auto
+                  {langui.auto}
                 </Button>
                 <Button
                   onClick={() => {
@@ -329,13 +328,13 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
                   }
                   className="rounded-l-none"
                 >
-                  Dark
+                  {langui.dark}
                 </Button>
               </div>
             </div>
 
             <div>
-              <h3 className="text-xl">Currency</h3>
+              <h3 className="text-xl">{langui.currency}</h3>
               <div>
                 <Select
                   options={currencyOptions}
@@ -347,7 +346,7 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
             </div>
 
             <div>
-              <h3 className="text-xl">Font size</h3>
+              <h3 className="text-xl">{langui.font_size}</h3>
               <div className="flex flex-row">
                 <Button
                   className="rounded-r-none"
@@ -382,7 +381,7 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
             </div>
 
             <div>
-              <h3 className="text-xl">Font</h3>
+              <h3 className="text-xl">{langui.font}</h3>
               <div className="grid gap-2">
                 <Button
                   active={appLayout.dyslexic === false}
@@ -402,12 +401,14 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
             </div>
 
             <div>
-              <h3 className="text-xl">Player name</h3>
+              <h3 className="text-xl">{langui.player_name}</h3>
               <input
                 type="text"
                 placeholder="<player>"
                 className="w-48"
-                onInput={(e) => appLayout.setPlayerName(e.target.value)}
+                onInput={(e) =>
+                  appLayout.setPlayerName((e.target as HTMLInputElement).value)
+                }
               />
             </div>
           </div>

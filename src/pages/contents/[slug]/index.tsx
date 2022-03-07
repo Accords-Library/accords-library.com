@@ -36,7 +36,6 @@ export default function ContentIndex(props: ContentIndexProps): JSX.Element {
         displayOn={ReturnButtonType.Desktop}
         horizontalLine
       />
-      
     </SubPanel>
   );
   const contentPanel = (
@@ -96,9 +95,22 @@ export default function ContentIndex(props: ContentIndexProps): JSX.Element {
       langui={langui}
       contentPanel={contentPanel}
       subPanel={subPanel}
-      description={
-        content.titles.length > 0 ? content.titles[0].description : undefined
+      description={`${langui.type}: ${
+        content.type.data.attributes.titles.length > 0
+          ? content.type.data.attributes.titles[0].title
+          : prettySlug(content.type.data.attributes.slug)
       }
+      ${langui.categories}: ${
+        content.categories.data.length > 0 &&
+        content.categories.data
+          .map((category) => {
+            return category.attributes.short;
+          })
+          .join(" | ")
+      }
+         
+        ${content.titles.length > 0 ? content.titles[0].description : undefined}
+        `}
     />
   );
 }

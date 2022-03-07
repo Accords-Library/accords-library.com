@@ -239,8 +239,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
                     appLayout.currency && (
                     <p>
                       {prettyPrice(item.price, currencies, appLayout.currency)}{" "}
-                      <br />
-                      (calculated)
+                      <br />({langui.calculated.toLowerCase()})
                     </p>
                   )}
                 </div>
@@ -283,7 +282,9 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
               ""
             )}
 
-            {item.metadata.length > 0 ? (
+            {item.metadata.length > 0 &&
+            item.metadata[0].__typename !== "ComponentMetadataGroup" &&
+            item.metadata[0].__typename !== "ComponentMetadataOther" ? (
               <>
                 <h3 className="text-xl">{langui.type_information}</h3>
                 <div className="grid grid-cols-2 w-full place-content-between">
@@ -337,9 +338,6 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
                     <></>
                   ) : item.metadata[0].__typename ===
                     "ComponentMetadataGame" ? (
-                    <></>
-                  ) : item.metadata[0].__typename ===
-                    "ComponentMetadataGroup" ? (
                     <></>
                   ) : (
                     ""

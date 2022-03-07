@@ -57,14 +57,14 @@ export default function ContentRead(props: ContentReadProps): JSX.Element {
           <h2 className="text-xl">
             {content.text_set[0].source_language.data.attributes.code ===
             router.locale
-              ? "This content is a transcript"
-              : "This content is a fan-translation"}
+              ? langui.transcript_notice
+              : langui.translation_notice}
           </h2>
 
           {content.text_set[0].source_language.data.attributes.code !==
             router.locale && (
             <div className="grid place-items-center gap-2">
-              <p className="font-headers">Source language:</p>
+              <p className="font-headers">{langui.source_language}:</p>
               <Button
                 href={router.asPath}
                 locale={
@@ -79,20 +79,20 @@ export default function ContentRead(props: ContentReadProps): JSX.Element {
           )}
 
           <div className="grid grid-flow-col place-items-center place-content-center gap-2">
-            <p className="font-headers">Status:</p>
+            <p className="font-headers">{langui.status}:</p>
 
             <Chip
               data-tip={
                 content.text_set[0].status ===
                 Enum_Componentsetstextset_Status.Incomplete
-                  ? "This entry is only partially translated/transcribed."
+                  ? langui.status_incomplete
                   : content.text_set[0].status ===
                     Enum_Componentsetstextset_Status.Draft
-                  ? "This entry is just a draft. It usually means that this is a work-in-progress. Translation/transcription might be poor and/or computer-generated."
+                  ? langui.status_draft
                   : content.text_set[0].status ===
                     Enum_Componentsetstextset_Status.Review
-                  ? "This entry has not yet being proofread. The content should still be accurate."
-                  : "This entry has been checked and proofread. If you notice any translation errors or typos, please contact us so we can fix it!"
+                  ? langui.status_review
+                  : langui.status_done
               }
               data-for={"StatusTooltip"}
             >
@@ -102,10 +102,14 @@ export default function ContentRead(props: ContentReadProps): JSX.Element {
 
           {content.text_set[0].transcribers.data.length > 0 && (
             <div>
-              <p className="font-headers">Transcribers:</p>
+              <p className="font-headers">{langui.transcribers}:</p>
               <div className="grid place-items-center place-content-center gap-2">
                 {content.text_set[0].transcribers.data.map((recorder) => (
-                  <RecorderChip key={recorder.id} recorder={recorder} />
+                  <RecorderChip
+                    key={recorder.id}
+                    langui={langui}
+                    recorder={recorder}
+                  />
                 ))}
               </div>
             </div>
@@ -113,10 +117,14 @@ export default function ContentRead(props: ContentReadProps): JSX.Element {
 
           {content.text_set[0].translators.data.length > 0 && (
             <div>
-              <p className="font-headers">Translators:</p>
+              <p className="font-headers">{langui.translators}:</p>
               <div className="grid place-items-center place-content-center gap-2">
                 {content.text_set[0].translators.data.map((recorder) => (
-                  <RecorderChip key={recorder.id} recorder={recorder} />
+                  <RecorderChip
+                    key={recorder.id}
+                    langui={langui}
+                    recorder={recorder}
+                  />
                 ))}
               </div>
             </div>
@@ -124,10 +132,14 @@ export default function ContentRead(props: ContentReadProps): JSX.Element {
 
           {content.text_set[0].proofreaders.data.length > 0 && (
             <div>
-              <p className="font-headers">Proofreaders:</p>
+              <p className="font-headers">{langui.proofreaders}:</p>
               <div className="grid place-items-center place-content-center gap-2">
                 {content.text_set[0].proofreaders.data.map((recorder) => (
-                  <RecorderChip key={recorder.id} recorder={recorder} />
+                  <RecorderChip
+                    key={recorder.id}
+                    langui={langui}
+                    recorder={recorder}
+                  />
                 ))}
               </div>
             </div>
@@ -204,6 +216,22 @@ export default function ContentRead(props: ContentReadProps): JSX.Element {
       contentPanel={contentPanel}
       subPanel={subPanel}
       extra={extra}
+      description={`${langui.type}: ${
+        content.type.data.attributes.titles.length > 0
+          ? content.type.data.attributes.titles[0].title
+          : prettySlug(content.type.data.attributes.slug)
+      }
+      ${langui.categories}: ${
+        content.categories.data.length > 0 &&
+        content.categories.data
+          .map((category) => {
+            return category.attributes.short;
+          })
+          .join(" | ")
+      }
+         
+        ${content.titles.length > 0 ? content.titles[0].description : undefined}
+        `}
     />
   );
 }

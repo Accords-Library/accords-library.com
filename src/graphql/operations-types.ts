@@ -1465,3 +1465,22 @@ export type GetCurrenciesQuery = {
     }>;
   };
 };
+
+export type GetLanguagesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetLanguagesQuery = {
+  __typename: "Query";
+  languages: {
+    __typename: "LanguageEntityResponseCollection";
+    data: Array<{
+      __typename: "LanguageEntity";
+      id: string;
+      attributes: {
+        __typename: "Language";
+        name: string;
+        code: string;
+        localized_name: string;
+      };
+    }>;
+  };
+};

@@ -1,20 +1,17 @@
 import ContentPanel, {
   ContentPanelWidthSizes,
 } from "components/Panels/ContentPanel";
-import { getWebsiteInterface } from "graphql/operations";
 import { GetStaticProps } from "next";
-import { GetWebsiteInterfaceQuery } from "graphql/operations-types";
 import AppLayout from "components/AppLayout";
 import { useCallback, useState } from "react";
 import Markdawn from "components/Markdown/Markdawn";
 import Script from "next/script";
+import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 
-type EditorProps = {
-  langui: GetWebsiteInterfaceQuery;
-};
+interface EditorProps extends AppStaticProps {}
 
 export default function Editor(props: EditorProps): JSX.Element {
-  const langui = props.langui.websiteInterfaces.data[0].attributes;
+  const { langui } = props;
 
   const handleInput = useCallback((e) => {
     setMarkdown(e.target.value);
@@ -45,12 +42,14 @@ export default function Editor(props: EditorProps): JSX.Element {
             onInput={handleInput}
             className="bg-mid rounded-xl p-8 w-full font-monospace"
             value={markdown}
+            title="Input textarea"
           />
 
           <h2 className="mt-4">Convert text to markdown</h2>
           <textarea
             readOnly
             id="htmlMdTextArea"
+            title="Ouput textarea"
             onPaste={(event) => {
               const TurndownService = require("turndown").default;
               const turndownService = new TurndownService({
@@ -86,22 +85,17 @@ export default function Editor(props: EditorProps): JSX.Element {
   return (
     <AppLayout
       navTitle="Markdawn Editor"
-      langui={langui}
       contentPanel={contentPanel}
+      {...props}
     />
   );
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  if (context.locale) {
-    const props: EditorProps = {
-      langui: await getWebsiteInterface({
-        language_code: context.locale,
-      }),
-    };
-    return {
-      props: props,
-    };
-  }
-  return { props: {} };
+  const props: EditorProps = {
+    ...(await getAppStaticProps(context)),
+  };
+  return {
+    props: props,
+  };
 };

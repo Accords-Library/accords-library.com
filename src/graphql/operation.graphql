@@ -1100,3 +1100,16 @@ query getCurrencies {
     }
   }
 }
+
+query getLanguages {
+  languages {
+    data {
+      id
+      attributes {
+        name
+        code
+        localized_name
+      }
+    }
+  }
+}

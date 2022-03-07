@@ -1,17 +1,13 @@
 import SubPanel from "components/Panels/SubPanel";
 import PanelHeader from "components/PanelComponents/PanelHeader";
-import { GetWebsiteInterfaceQuery } from "graphql/operations-types";
 import { GetStaticProps } from "next";
-import { getWebsiteInterface } from "graphql/operations";
-import ContentPanel from "components/Panels/ContentPanel";
 import AppLayout from "components/AppLayout";
+import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 
-type WikiProps = {
-  langui: GetWebsiteInterfaceQuery;
-};
+interface WikiProps extends AppStaticProps {}
 
 export default function Hubs(props: WikiProps): JSX.Element {
-  const langui = props.langui.websiteInterfaces.data[0].attributes;
+  const { langui } = props;
   const subPanel = (
     <SubPanel>
       <PanelHeader
@@ -21,28 +17,15 @@ export default function Hubs(props: WikiProps): JSX.Element {
       />
     </SubPanel>
   );
-  const contentPanel = <ContentPanel>Hello</ContentPanel>;
 
-  return (
-    <AppLayout
-      navTitle={langui.wiki}
-      langui={langui}
-      contentPanel={contentPanel}
-      subPanel={subPanel}
-    />
-  );
+  return <AppLayout navTitle={langui.wiki} subPanel={subPanel} {...props} />;
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  if (context.locale) {
-    const props: WikiProps = {
-      langui: await getWebsiteInterface({
-        language_code: context.locale,
-      }),
-    };
-    return {
-      props: props,
-    };
-  }
-  return { props: {} };
+  const props: WikiProps = {
+    ...(await getAppStaticProps(context)),
+  };
+  return {
+    props: props,
+  };
 };

@@ -1,19 +1,15 @@
-import Link from "next/link";
 import ContentPanel from "components/Panels/ContentPanel";
-import { getWebsiteInterface } from "graphql/operations";
 import { GetStaticProps } from "next";
-import { GetWebsiteInterfaceQuery } from "graphql/operations-types";
 import AppLayout from "components/AppLayout";
 import ReturnButton, {
   ReturnButtonType,
 } from "components/PanelComponents/ReturnButton";
+import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 
-type FourOhFourProps = {
-  langui: GetWebsiteInterfaceQuery;
-};
+interface FourOhFourProps extends AppStaticProps {}
 
 export default function FourOhFour(props: FourOhFourProps): JSX.Element {
-  const langui = props.langui.websiteInterfaces.data[0].attributes;
+  const { langui } = props;
   const contentPanel = (
     <ContentPanel>
       <h1>404 - {langui.page_not_found}</h1>
@@ -25,21 +21,14 @@ export default function FourOhFour(props: FourOhFourProps): JSX.Element {
       />
     </ContentPanel>
   );
-  return (
-    <AppLayout navTitle="404" langui={langui} contentPanel={contentPanel} />
-  );
+  return <AppLayout navTitle="404" contentPanel={contentPanel} {...props} />;
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  if (context.locale) {
-    const props: FourOhFourProps = {
-      langui: await getWebsiteInterface({
-        language_code: context.locale,
-      }),
-    };
-    return {
-      props: props,
-    };
-  }
-  return { props: {} };
+  const props: FourOhFourProps = {
+    ...(await getAppStaticProps(context)),
+  };
+  return {
+    props: props,
+  };
 };

@@ -15,6 +15,8 @@ import {
   GetCurrenciesQueryVariables,
   GetErasQuery,
   GetErasQueryVariables,
+  GetLanguagesQuery,
+  GetLanguagesQueryVariables,
   GetLibraryItemQuery,
   GetLibraryItemQueryVariables,
   GetLibraryItemsPreviewQuery,
@@ -130,5 +132,12 @@ export async function getCurrencies(
   variables: GetCurrenciesQueryVariables
 ): Promise<GetCurrenciesQuery> {
   const query = getQueryFromOperations("getCurrencies");
+  return await graphQL(query, JSON.stringify(variables));
+}
+
+export async function getLanguages(
+  variables: GetLanguagesQueryVariables
+): Promise<GetLanguagesQuery> {
+  const query = getQueryFromOperations("getLanguages");
   return await graphQL(query, JSON.stringify(variables));
 }

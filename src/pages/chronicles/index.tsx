@@ -1,16 +1,13 @@
 import SubPanel from "components/Panels/SubPanel";
 import PanelHeader from "components/PanelComponents/PanelHeader";
-import { GetWebsiteInterfaceQuery } from "graphql/operations-types";
 import { GetStaticProps } from "next";
-import { getWebsiteInterface } from "graphql/operations";
 import AppLayout from "components/AppLayout";
+import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 
-type ChroniclesProps = {
-  langui: GetWebsiteInterfaceQuery;
-};
+interface ChroniclesProps extends AppStaticProps {}
 
 export default function Chronicles(props: ChroniclesProps): JSX.Element {
-  const langui = props.langui.websiteInterfaces.data[0].attributes;
+  const { langui } = props;
   const subPanel = (
     <SubPanel>
       <PanelHeader
@@ -21,24 +18,15 @@ export default function Chronicles(props: ChroniclesProps): JSX.Element {
     </SubPanel>
   );
   return (
-    <AppLayout
-      navTitle={langui.chronicles}
-      langui={langui}
-      subPanel={subPanel}
-    />
+    <AppLayout navTitle={langui.chronicles} subPanel={subPanel} {...props} />
   );
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  if (context.locale) {
-    const props: ChroniclesProps = {
-      langui: await getWebsiteInterface({
-        language_code: context.locale,
-      }),
-    };
-    return {
-      props: props,
-    };
-  }
-  return { props: {} };
+  const props: ChroniclesProps = {
+    ...(await getAppStaticProps(context)),
+  };
+  return {
+    props: props,
+  };
 };

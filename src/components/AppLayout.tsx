@@ -15,21 +15,21 @@ import { ImageQuality } from "./Img";
 import Popup from "./Popup";
 import { useEffect, useState } from "react";
 import Select from "./Select";
+import { AppStaticProps } from "queries/getAppStaticProps";
 
-type AppLayoutProps = {
+interface AppLayoutProps extends AppStaticProps {
   subPanel?: React.ReactNode;
   subPanelIcon?: string;
   contentPanel?: React.ReactNode;
-  langui: GetWebsiteInterfaceQuery["websiteInterfaces"]["data"][number]["attributes"];
   title?: string;
   navTitle: string;
   thumbnail?: StrapiImage;
   description?: string;
   extra?: React.ReactNode;
-};
+}
 
 export default function AppLayout(props: AppLayoutProps): JSX.Element {
-  const langui = props.langui;
+  const { langui, currencies, languages, subPanel, contentPanel } = props;
   const router = useRouter();
   const isMobile = useMediaMobile();
   const isCoarse = useMediaCoarse();
@@ -42,7 +42,7 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
       if (SwipeEventData.velocity < sensibilitySwipe) return;
       if (appLayout.mainPanelOpen) {
         appLayout.setMainPanelOpen(false);
-      } else if (props.subPanel && props.contentPanel) {
+      } else if (subPanel && contentPanel) {
         appLayout.setSubPanelOpen(true);
       }
     },
@@ -63,13 +63,13 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
     appLayout.mainPanelReduced ? " desktop:left-[6rem]" : "desktop:left-[20rem]"
   }`;
   let contentPanelClass = "";
-  if (props.subPanel) {
+  if (subPanel) {
     contentPanelClass = `fixed desktop:top-0 desktop:bottom-0 desktop:right-0 ${
       appLayout.mainPanelReduced
         ? "desktop:left-[26rem]"
         : "desktop:left-[40rem]"
     }`;
-  } else if (props.contentPanel) {
+  } else if (contentPanel) {
     contentPanelClass = `fixed desktop:top-0 desktop:bottom-0 desktop:right-0 ${
       appLayout.mainPanelReduced
         ? "desktop:left-[6rem]"
@@ -77,7 +77,7 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
     }`;
   }
 
-  const turnSubIntoContent = props.subPanel && !props.contentPanel;
+  const turnSubIntoContent = subPanel && !contentPanel;
 
   const titlePrefix = "Accord’s Library";
   const metaImage: OgImage = props.thumbnail
@@ -100,7 +100,9 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
     }%`;
   }, [appLayout.fontSize]);
 
-  const currencyOptions = ["EUR", "USD", "CAD", "JPY"];
+  const currencyOptions = currencies.map((currency) => {
+    return currency.attributes.code;
+  });
   const [currencySelect, setCurrencySelect] = useState<number>(-1);
 
   useEffect(() => {
@@ -161,8 +163,8 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
         <div
           className={`top-0 left-0 right-0 bottom-20 overflow-y-scroll bg-light texture-paper-dots ${contentPanelClass}`}
         >
-          {props.contentPanel ? (
-            props.contentPanel
+          {contentPanel ? (
+            contentPanel
           ) : (
             <div className="grid place-content-center h-full">
               <div className="text-dark border-dark border-2 border-dotted rounded-2xl p-8 grid grid-flow-col place-items-center gap-9 opacity-40">
@@ -197,7 +199,7 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
         </div>
 
         {/* Sub panel */}
-        {props.subPanel ? (
+        {subPanel ? (
           <div
             className={`${subPanelClass} border-r-[1px] mobile:bottom-20 mobile:border-r-0 mobile:border-l-[1px] border-black border-dotted top-0 bottom-0 right-0 left-12 overflow-y-scroll webkit-scrollbar:w-0 [scrollbar-width:none] transition-transform duration-300 bg-light texture-paper-dots
           ${
@@ -208,7 +210,7 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
               : ""
           }`}
           >
-            {props.subPanel}
+            {subPanel}
           </div>
         ) : (
           ""
@@ -255,7 +257,7 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
               appLayout.setMainPanelOpen(false);
             }}
           >
-            {props.subPanel && !turnSubIntoContent
+            {subPanel && !turnSubIntoContent
               ? appLayout.subPanelOpen
                 ? "close"
                 : props.subPanelIcon
@@ -271,15 +273,15 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
         >
           <h2 className="text-2xl">{langui.select_language}</h2>
           <div className="flex flex-wrap flex-row gap-2 mobile:flex-col">
-            {router.locales?.sort().map((locale) => (
+            {languages.map((language) => (
               <Button
-                key={locale}
-                active={locale === router.locale}
+                key={language.id}
+                active={language.attributes.code === router.locale}
                 href={router.asPath}
-                locale={locale}
+                locale={language.attributes.code}
                 onClick={() => appLayout.setLanguagePanelOpen(false)}
               >
-                {prettyLanguage(locale)}
+                {language.attributes.localized_name}
               </Button>
             ))}
           </div>

@@ -1,13 +1,8 @@
 import { GetStaticPaths, GetStaticProps } from "next";
-import {
-  getContentsSlugs,
-  getContentText,
-  getWebsiteInterface,
-} from "graphql/operations";
+import { getContentsSlugs, getContentText } from "graphql/operations";
 import {
   Enum_Componentsetstextset_Status,
   GetContentTextQuery,
-  GetWebsiteInterfaceQuery,
 } from "graphql/operations-types";
 import ContentPanel from "components/Panels/ContentPanel";
 import HorizontalLine from "components/HorizontalLine";
@@ -30,16 +25,16 @@ import { useRouter } from "next/router";
 import Chip from "components/Chip";
 import ReactTooltip from "react-tooltip";
 import RecorderChip from "components/RecorderChip";
+import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 
-interface ContentReadProps {
-  content: GetContentTextQuery;
-  langui: GetWebsiteInterfaceQuery;
+interface ContentReadProps extends AppStaticProps {
+  content: GetContentTextQuery["contents"]["data"][number]["attributes"];
+  contentId: GetContentTextQuery["contents"]["data"][number]["id"];
 }
 
 export default function ContentRead(props: ContentReadProps): JSX.Element {
   useTesting(props);
-  const content = props.content.contents.data[0].attributes;
-  const langui = props.langui.websiteInterfaces.data[0].attributes;
+  const { langui, content } = props;
   const router = useRouter();
 
   const subPanel = (
@@ -212,7 +207,6 @@ export default function ContentRead(props: ContentReadProps): JSX.Element {
           : prettySlug(content.slug)
       }
       thumbnail={content.thumbnail.data?.attributes}
-      langui={langui}
       contentPanel={contentPanel}
       subPanel={subPanel}
       extra={extra}
@@ -232,31 +226,26 @@ export default function ContentRead(props: ContentReadProps): JSX.Element {
          
         ${content.titles.length > 0 ? content.titles[0].description : undefined}
         `}
+      {...props}
     />
   );
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  if (context.params) {
-    if (context.params.slug && context.locale) {
-      if (context.params.slug instanceof Array)
-        context.params.slug = context.params.slug.join("");
-
-      const props: ContentReadProps = {
-        content: await getContentText({
-          slug: context.params.slug,
-          language_code: context.locale,
-        }),
-        langui: await getWebsiteInterface({
-          language_code: context.locale,
-        }),
-      };
-      return {
-        props: props,
-      };
-    }
-  }
-  return { props: {} };
+  const content = (
+    await getContentText({
+      slug: context.params?.slug?.toString() || "",
+      language_code: context.locale || "en",
+    })
+  ).contents.data[0];
+  const props: ContentReadProps = {
+    ...(await getAppStaticProps(context)),
+    content: content.attributes,
+    contentId: content.id,
+  };
+  return {
+    props: props,
+  };
 };
 
 export const getStaticPaths: GetStaticPaths = async (context) => {
@@ -282,11 +271,10 @@ export const getStaticPaths: GetStaticPaths = async (context) => {
 
 export function useTesting(props: ContentReadProps) {
   const router = useRouter();
-  const content = props.content.contents.data[0].attributes;
+  const { content, contentId } = props;
 
   const contentURL =
-    "/admin/content-manager/collectionType/api::content.content/" +
-    props.content.contents.data[0].id;
+    "/admin/content-manager/collectionType/api::content.content/" + contentId;
 
   if (router.locale === "en") {
     if (content.categories.data.length === 0) {

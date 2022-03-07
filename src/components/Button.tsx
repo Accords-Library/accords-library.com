@@ -21,7 +21,7 @@ export default function Button(props: ButtonProps): JSX.Element {
       } ${
         props.active
           ? "text-light bg-black drop-shadow-black-lg !border-black cursor-not-allowed"
-          : "cursor-pointer hover:text-light hover:bg-dark hover:drop-shadow-shade-lg active:bg-black active:drop-shadow-black-lg active:border-black"
+          : "cursor-pointer hover:text-light hover:bg-dark hover:drop-shadow-shade-lg active:bg-black active:text-light active:drop-shadow-black-lg active:border-black"
       }`}
     >
       {props.children}

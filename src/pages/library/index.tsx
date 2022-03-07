@@ -4,6 +4,7 @@ import ContentPanel, {
   ContentPanelWidthSizes,
 } from "components/Panels/ContentPanel";
 import {
+  GetCurrenciesQuery,
   GetLibraryItemsPreviewQuery,
   GetWebsiteInterfaceQuery,
 } from "graphql/operations-types";
@@ -13,7 +14,7 @@ import AppLayout from "components/AppLayout";
 import LibraryItemsPreview from "components/Library/LibraryItemsPreview";
 import Select from "components/Select";
 import { useEffect, useState } from "react";
-import { prettyDate, prettyinlineTitle } from "queries/helpers";
+import { convertPrice, prettyDate, prettyinlineTitle } from "queries/helpers";
 import Switch from "components/Switch";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 
@@ -27,7 +28,7 @@ type GroupLibraryItems = Map<
 >;
 
 export default function Library(props: LibraryProps): JSX.Element {
-  const { langui, items } = props;
+  const { langui, items, currencies } = props;
 
   const [showSubitems, setShowSubitems] = useState<boolean>(false);
   const [showPrimaryItems, setShowPrimaryItems] = useState<boolean>(true);
@@ -40,7 +41,7 @@ export default function Library(props: LibraryProps): JSX.Element {
   );
 
   const [sortedItems, setSortedItem] = useState<LibraryProps["items"]>(
-    sortBy(groupingMethod, filteredItems)
+    sortBy(groupingMethod, filteredItems, currencies)
   );
 
   const [groups, setGroups] = useState<GroupLibraryItems>(
@@ -54,7 +55,7 @@ export default function Library(props: LibraryProps): JSX.Element {
   }, [showSubitems, items, showPrimaryItems, showSecondaryItems]);
 
   useEffect(() => {
-    setSortedItem(sortBy(sortingMethod, filteredItems));
+    setSortedItem(sortBy(sortingMethod, filteredItems, currencies));
   }, [filteredItems, sortingMethod]);
 
   useEffect(() => {
@@ -278,7 +279,8 @@ function filterItems(
 
 function sortBy(
   orderByType: number,
-  items: LibraryProps["items"]
+  items: LibraryProps["items"],
+  currencies: GetCurrenciesQuery["currencies"]["data"]
 ): LibraryProps["items"] {
   switch (orderByType) {
     case 0:
@@ -297,8 +299,12 @@ function sortBy(
       });
     case 1:
       return [...items].sort((a, b) => {
-        const priceA = a.attributes.price ? a.attributes.price.amount : 99999;
-        const priceB = b.attributes.price ? b.attributes.price.amount : 99999;
+        const priceA = a.attributes.price
+          ? convertPrice(a.attributes.price, currencies[0])
+          : 99999;
+        const priceB = b.attributes.price
+          ? convertPrice(b.attributes.price, currencies[0])
+          : 99999;
         return priceA - priceB;
       });
     case 2:

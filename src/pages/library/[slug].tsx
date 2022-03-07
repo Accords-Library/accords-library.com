@@ -230,7 +230,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
                     appLayout.currency && (
                     <p>
                       {prettyPrice(item.price, currencies, appLayout.currency)}{" "}
-                      <br />({langui.calculated.toLowerCase()})
+                      <br />({langui.calculated?.toLowerCase()})
                     </p>
                   )}
                 </div>

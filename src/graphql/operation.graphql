@@ -363,6 +363,15 @@ query getLibraryItem($slug: String, $language_code: String) {
             }
           }
         }
+        categories {
+          data {
+            id
+            attributes {
+              name
+              short
+            }
+          }
+        }
         size {
           width
           height
@@ -529,6 +538,15 @@ query getLibraryItem($slug: String, $language_code: String) {
                       code
                       rate_to_usd
                     }
+                  }
+                }
+              }
+              categories {
+                data {
+                  id
+                  attributes {
+                    name
+                    short
                   }
                 }
               }

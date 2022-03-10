@@ -216,6 +216,20 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
                 </div>
               )}
             </div>
+
+            {item.categories.data.length > 0 && (
+              <div>
+                <h3 className="text-xl">{langui.categories}</h3>
+                <div className="flex flex-row flex-wrap place-items-center place-content-start gap-2">
+                  {item.categories.data.map((category) => (
+                    <Chip key={category.id}>
+                      {category.attributes.short}
+                    </Chip>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {item.size && (
               <>
                 <h3 className="text-xl">{langui.size}</h3>

@@ -522,6 +522,18 @@ export type GetLibraryItemQuery = {
             };
           };
         };
+        categories: {
+          __typename: "CategoryRelationResponseCollection";
+          data: Array<{
+            __typename: "CategoryEntity";
+            id: string;
+            attributes: {
+              __typename: "Category";
+              name: string;
+              short: string;
+            };
+          }>;
+        };
         size: {
           __typename: "ComponentBasicsSize";
           width: number;
@@ -737,6 +749,18 @@ export type GetLibraryItemQuery = {
                     };
                   };
                 };
+              };
+              categories: {
+                __typename: "CategoryRelationResponseCollection";
+                data: Array<{
+                  __typename: "CategoryEntity";
+                  id: string;
+                  attributes: {
+                    __typename: "Category";
+                    name: string;
+                    short: string;
+                  };
+                }>;
               };
               metadata: Array<
                 | {

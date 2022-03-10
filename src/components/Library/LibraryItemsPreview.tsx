@@ -63,31 +63,30 @@ export default function LibraryItemsPreview(
             ))}
           </div>
 
-          {item.release_date ||
-            (item.price && (
-              <div className="grid grid-flow-col w-full">
-                {item.release_date && (
-                  <p className="mobile:text-xs text-sm">
-                    <span className="material-icons !text-base translate-y-[.15em] mr-1">
-                      event
-                    </span>
-                    {prettyDate(item.release_date)}
-                  </p>
-                )}
-                {item.price && props.currencies && (
-                  <p className="mobile:text-xs text-sm justify-self-end">
-                    <span className="material-icons !text-base translate-y-[.15em] mr-1">
-                      shopping_cart
-                    </span>
-                    {prettyPrice(
-                      item.price,
-                      props.currencies,
-                      appLayout.currency
-                    )}
-                  </p>
-                )}
-              </div>
-            ))}
+          {(item.release_date || item.price) && (
+            <div className="grid grid-flow-col w-full">
+              {item.release_date && (
+                <p className="mobile:text-xs text-sm">
+                  <span className="material-icons !text-base translate-y-[.15em] mr-1">
+                    event
+                  </span>
+                  {prettyDate(item.release_date)}
+                </p>
+              )}
+              {item.price && props.currencies && (
+                <p className="mobile:text-xs text-sm justify-self-end">
+                  <span className="material-icons !text-base translate-y-[.15em] mr-1">
+                    shopping_cart
+                  </span>
+                  {prettyPrice(
+                    item.price,
+                    props.currencies,
+                    appLayout.currency
+                  )}
+                </p>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </Link>

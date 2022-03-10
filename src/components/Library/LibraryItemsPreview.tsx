@@ -16,6 +16,7 @@ export type LibraryItemsPreviewProps = {
     title: GetLibraryItemsPreviewQuery["libraryItems"]["data"][number]["attributes"]["title"];
     subtitle: GetLibraryItemsPreviewQuery["libraryItems"]["data"][number]["attributes"]["subtitle"];
     price?: GetLibraryItemsPreviewQuery["libraryItems"]["data"][number]["attributes"]["price"];
+    categories: GetLibraryItemsPreviewQuery["libraryItems"]["data"][number]["attributes"]["categories"];
     release_date?: GetLibraryItemsPreviewQuery["libraryItems"]["data"][number]["attributes"]["release_date"];
     metadata?: GetLibraryItemsPreviewQuery["libraryItems"]["data"][number]["attributes"]["metadata"];
   };
@@ -55,6 +56,15 @@ export default function LibraryItemsPreview(
             <h2 className="mobile:text-sm text-lg leading-5">{item.title}</h2>
             <h3 className="mobile:text-xs leading-3">{item.subtitle}</h3>
           </div>
+
+          <div className="w-full grid grid-flow-col gap-1 overflow-x-scroll webkit-scrollbar:w-0 [scrollbar-width:none] place-content-start">
+            {item.categories.data.map((category) => (
+              <Chip key={category.id} className="text-sm">
+                {category.attributes.short}
+              </Chip>
+            ))}
+          </div>
+
           {item.release_date || item.price ? (
             <div className="grid grid-flow-col w-full">
               {item.release_date ? (

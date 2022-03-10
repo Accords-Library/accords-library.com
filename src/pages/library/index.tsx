@@ -56,7 +56,7 @@ export default function Library(props: LibraryProps): JSX.Element {
 
   useEffect(() => {
     setSortedItem(sortBy(sortingMethod, filteredItems, currencies));
-  }, [filteredItems, sortingMethod]);
+  }, [currencies, filteredItems, sortingMethod]);
 
   useEffect(() => {
     setGroups(getGroups(langui, groupingMethod, sortedItems));
@@ -163,7 +163,37 @@ function getGroups(
 ): GroupLibraryItems {
   switch (groupByType) {
     case 0:
-      return new Map();
+      const typeGroup = new Map();
+      typeGroup.set("Drakengard 1", []);
+      typeGroup.set("Drakengard 1.3", []);
+      typeGroup.set("Drakengard 2", []);
+      typeGroup.set("Drakengard 3", []);
+      typeGroup.set("Drakengard 4", []);
+      typeGroup.set("NieR Gestalt", []);
+      typeGroup.set("NieR Replicant", []);
+      typeGroup.set("NieR Replicant ver.1.22474487139...", []);
+      typeGroup.set("NieR:Automata", []);
+      typeGroup.set("NieR Re[in]carnation", []);
+      typeGroup.set("SINoALICE", []);
+      typeGroup.set("Voice of Cards", []);
+      typeGroup.set("Final Fantasy XIV", []);
+      typeGroup.set("Thou Shalt Not Die", []);
+      typeGroup.set("Bakuken", []);
+      typeGroup.set("YoRHa", []);
+      typeGroup.set("YoRHa Boys", []);
+      typeGroup.set("No category", []);
+
+      items.map((item) => {
+        if (item.attributes.categories.data.length === 0) {
+          typeGroup.get("No category")?.push(item);
+        } else {
+          item.attributes.categories.data.map((category) => {
+            typeGroup.get(category.attributes.name)?.push(item);
+          });
+        }
+      });
+
+      return typeGroup;
 
     case 1:
       const groupType: GroupLibraryItems = new Map();

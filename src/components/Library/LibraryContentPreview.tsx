@@ -33,14 +33,12 @@ export default function LibraryContentPreview(
         )}
         <div className="linearbg-obi fine:drop-shadow-shade-lg fine:absolute coarse:rounded-b-md bottom-2 -inset-x-0.5 opacity-[var(--cover-opacity)] transition-opacity z-20 grid p-4 gap-2">
           <div className="grid grid-flow-col gap-1 overflow-hidden place-content-start">
-            {item.type.data ? (
+            {item.type.data && (
               <Chip>
                 {item.type.data.attributes.titles.length > 0
                   ? item.type.data.attributes.titles[0].title
                   : prettySlug(item.type.data.attributes.slug)}
               </Chip>
-            ) : (
-              ""
             )}
           </div>
           <div>

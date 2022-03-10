@@ -53,7 +53,7 @@ export default function ThumbnailHeader(
       </div>
 
       <div className="grid grid-flow-col gap-8">
-        {content.type ? (
+        {content.type && (
           <div className="grid place-items-center place-content-start gap-2">
             <h3 className="text-xl">{langui.type}</h3>
             <Button>
@@ -62,19 +62,15 @@ export default function ThumbnailHeader(
                 : prettySlug(content.type.data.attributes.slug)}
             </Button>
           </div>
-        ) : (
-          ""
         )}
 
-        {content.categories.data.length > 0 ? (
+        {content.categories.data.length > 0 && (
           <div className="grid place-items-center place-content-start gap-2">
             <h3 className="text-xl">{langui.categories}</h3>
             {content.categories.data.map((category) => (
               <Button key={category.id}>{category.attributes.name}</Button>
             ))}
           </div>
-        ) : (
-          ""
         )}
       </div>
       {content.titles.length > 0 && content.titles[0].description && (

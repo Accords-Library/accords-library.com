@@ -70,15 +70,13 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
           onClick={() => appLayout.setSubPanelOpen(false)}
         />
 
-        {item.gallery.data.length > 0 ? (
+        {item.gallery.data.length > 0 && (
           <NavOption
             title={langui.gallery}
             url="#gallery"
             border
             onClick={() => appLayout.setSubPanelOpen(false)}
           />
-        ) : (
-          ""
         )}
 
         <NavOption
@@ -88,21 +86,17 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
           onClick={() => appLayout.setSubPanelOpen(false)}
         />
 
-        {item.subitems.data.length > 0 ? (
+        {item.subitems.data.length > 0 && (
           <NavOption
             title={isVariantSet ? langui.variants : langui.subitems}
             url={isVariantSet ? "#variants" : "#subitems"}
             border
             onClick={() => appLayout.setSubPanelOpen(false)}
           />
-        ) : (
-          ""
         )}
 
-        {item.contents.data.length > 0 ? (
+        {item.contents.data.length > 0 && (
           <NavOption title={langui.contents} url="#contents" border />
-        ) : (
-          ""
         )}
       </div>
     </SubPanel>
@@ -134,7 +128,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
 
         <InsetBox id="summary" className="grid place-items-center">
           <div className="w-[clamp(0px,100%,42rem)] grid place-items-center gap-8">
-            {item.subitem_of.data.length > 0 ? (
+            {item.subitem_of.data.length > 0 && (
               <div className="grid place-items-center">
                 <p>{langui.subitem_of}</p>
                 <Button
@@ -147,26 +141,18 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
                   )}
                 </Button>
               </div>
-            ) : (
-              ""
             )}
             <div className="grid place-items-center">
               <h1 className="text-3xl">{item.title}</h1>
-              {item.subtitle ? (
-                <h2 className="text-2xl">{item.subtitle}</h2>
-              ) : (
-                ""
-              )}
+              {item.subtitle && <h2 className="text-2xl">{item.subtitle}</h2>}
             </div>
-            {item.descriptions.length > 0 ? (
+            {item.descriptions.length > 0 && (
               <p className="text-justify">{item.descriptions[0].description}</p>
-            ) : (
-              ""
             )}
           </div>
         </InsetBox>
 
-        {item.gallery.data.length > 0 ? (
+        {item.gallery.data.length > 0 && (
           <div id="gallery" className="grid place-items-center gap-8  w-full">
             <h2 className="text-2xl">{langui.gallery}</h2>
             <div className="grid w-full gap-8 items-end grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))]">
@@ -186,15 +172,13 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
               ))}
             </div>
           </div>
-        ) : (
-          ""
         )}
 
         <InsetBox id="details" className="grid place-items-center">
           <div className="w-[clamp(0px,100%,42rem)] grid place-items gap-8">
             <h2 className="text-2xl text-center">{langui.details}</h2>
             <div className="grid grid-flow-col w-full place-content-between">
-              {item.metadata.length > 0 ? (
+              {item.metadata.length > 0 && (
                 <div className="grid place-items-center place-content-start">
                   <h3 className="text-xl">{langui.type}</h3>
                   <div className="grid grid-flow-col gap-1">
@@ -203,20 +187,16 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
                     <Chip>{prettyItemSubType(item.metadata[0])}</Chip>
                   </div>
                 </div>
-              ) : (
-                ""
               )}
 
-              {item.release_date ? (
+              {item.release_date && (
                 <div className="grid place-items-center place-content-start">
                   <h3 className="text-xl">{langui.release_date}</h3>
                   <p>{prettyDate(item.release_date)}</p>
                 </div>
-              ) : (
-                ""
               )}
 
-              {item.price ? (
+              {item.price && (
                 <div className="grid place-items-center text-center place-content-start">
                   <h3 className="text-xl">{langui.price}</h3>
                   <p>
@@ -234,11 +214,9 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
                     </p>
                   )}
                 </div>
-              ) : (
-                ""
               )}
             </div>
-            {item.size ? (
+            {item.size && (
               <>
                 <h3 className="text-xl">{langui.size}</h3>
                 <div className="grid grid-flow-col w-full place-content-between">
@@ -256,7 +234,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
                       <p>{convertMmToInch(item.size.height)} in</p>
                     </div>
                   </div>
-                  {item.size.thickness ? (
+                  {item.size.thickness && (
                     <div className="flex flex-row flex-wrap place-items-start gap-4">
                       <p className="font-bold">{langui.thickness}:</p>
                       <div>
@@ -264,84 +242,68 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
                         <p>{convertMmToInch(item.size.thickness)} in</p>
                       </div>
                     </div>
-                  ) : (
-                    ""
                   )}
                 </div>
               </>
-            ) : (
-              ""
             )}
 
             {item.metadata.length > 0 &&
-            item.metadata[0].__typename !== "ComponentMetadataGroup" &&
-            item.metadata[0].__typename !== "ComponentMetadataOther" ? (
-              <>
-                <h3 className="text-xl">{langui.type_information}</h3>
-                <div className="grid grid-cols-2 w-full place-content-between">
-                  {item.metadata[0].__typename === "ComponentMetadataBooks" ? (
-                    <>
-                      <div className="flex flex-row place-content-start gap-4">
-                        <p className="font-bold">{langui.pages}:</p>
-                        <p>{item.metadata[0].page_count}</p>
-                      </div>
+              item.metadata[0].__typename !== "ComponentMetadataGroup" &&
+              item.metadata[0].__typename !== "ComponentMetadataOther" && (
+                <>
+                  <h3 className="text-xl">{langui.type_information}</h3>
+                  <div className="grid grid-cols-2 w-full place-content-between">
+                    {item.metadata[0].__typename ===
+                      "ComponentMetadataBooks" && (
+                      <>
+                        <div className="flex flex-row place-content-start gap-4">
+                          <p className="font-bold">{langui.pages}:</p>
+                          <p>{item.metadata[0].page_count}</p>
+                        </div>
 
-                      <div className="flex flex-row place-content-start gap-4">
-                        <p className="font-bold">{langui.binding}:</p>
-                        <p>
-                          {item.metadata[0].binding_type ===
-                          Enum_Componentmetadatabooks_Binding_Type.Paperback
-                            ? langui.paperback
-                            : item.metadata[0].binding_type ===
-                              Enum_Componentmetadatabooks_Binding_Type.Hardcover
-                            ? langui.hardcover
-                            : ""}
-                        </p>
-                      </div>
-
-                      <div className="flex flex-row place-content-start gap-4">
-                        <p className="font-bold">{langui.page_order}:</p>
-                        <p>
-                          {item.metadata[0].page_order ===
-                          Enum_Componentmetadatabooks_Page_Order.LeftToRight
-                            ? langui.left_to_right
-                            : item.metadata[0].page_order ===
-                              Enum_Componentmetadatabooks_Page_Order.RightToLeft
-                            ? langui.right_to_left
-                            : ""}
-                        </p>
-                      </div>
-
-                      <div className="flex flex-row place-content-start gap-4">
-                        <p className="font-bold">{langui.languages}:</p>
-                        {item.metadata[0].languages.data.map((lang) => (
-                          <p key={lang.attributes.code}>
-                            {lang.attributes.name}
+                        <div className="flex flex-row place-content-start gap-4">
+                          <p className="font-bold">{langui.binding}:</p>
+                          <p>
+                            {item.metadata[0].binding_type ===
+                            Enum_Componentmetadatabooks_Binding_Type.Paperback
+                              ? langui.paperback
+                              : item.metadata[0].binding_type ===
+                                Enum_Componentmetadatabooks_Binding_Type.Hardcover
+                              ? langui.hardcover
+                              : ""}
                           </p>
-                        ))}
-                      </div>
-                    </>
-                  ) : item.metadata[0].__typename ===
-                    "ComponentMetadataAudio" ? (
-                    <></>
-                  ) : item.metadata[0].__typename ===
-                    "ComponentMetadataVideo" ? (
-                    <></>
-                  ) : item.metadata[0].__typename ===
-                    "ComponentMetadataGame" ? (
-                    <></>
-                  ) : (
-                    ""
-                  )}
-                </div>
-              </>
-            ) : (
-              ""
-            )}
+                        </div>
+
+                        <div className="flex flex-row place-content-start gap-4">
+                          <p className="font-bold">{langui.page_order}:</p>
+                          <p>
+                            {item.metadata[0].page_order ===
+                            Enum_Componentmetadatabooks_Page_Order.LeftToRight
+                              ? langui.left_to_right
+                              : item.metadata[0].page_order ===
+                                Enum_Componentmetadatabooks_Page_Order.RightToLeft
+                              ? langui.right_to_left
+                              : ""}
+                          </p>
+                        </div>
+
+                        <div className="flex flex-row place-content-start gap-4">
+                          <p className="font-bold">{langui.languages}:</p>
+                          {item.metadata[0].languages.data.map((lang) => (
+                            <p key={lang.attributes.code}>
+                              {lang.attributes.name}
+                            </p>
+                          ))}
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </>
+              )}
           </div>
         </InsetBox>
 
-        {item.subitems.data.length > 0 ? (
+        {item.subitems.data.length > 0 && (
           <div
             id={isVariantSet ? "variants" : "subitems"}
             className="grid place-items-center gap-8 w-full"
@@ -358,11 +320,9 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
               ))}
             </div>
           </div>
-        ) : (
-          ""
         )}
 
-        {item.contents.data.length > 0 ? (
+        {item.contents.data.length > 0 && (
           <div id="contents" className="w-full grid place-items-center gap-8">
             <h2 className="text-2xl">{langui.contents}</h2>
             <div className="grid gap-4 w-full">
@@ -376,8 +336,6 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
               ))}
             </div>
           </div>
-        ) : (
-          ""
         )}
       </div>
     </ContentPanel>

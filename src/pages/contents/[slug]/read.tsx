@@ -47,7 +47,7 @@ export default function ContentRead(props: ContentReadProps): JSX.Element {
         horizontalLine
       />
 
-      {content.text_set.length > 0 ? (
+      {content.text_set.length > 0 && (
         <div className="grid gap-5">
           <h2 className="text-xl">
             {content.text_set[0].source_language.data.attributes.code ===
@@ -140,8 +140,6 @@ export default function ContentRead(props: ContentReadProps): JSX.Element {
             </div>
           )}
         </div>
-      ) : (
-        ""
       )}
     </SubPanel>
   );
@@ -159,10 +157,8 @@ export default function ContentRead(props: ContentReadProps): JSX.Element {
 
         <HorizontalLine />
 
-        {content.text_set.length > 0 ? (
+        {content.text_set.length > 0 && (
           <Markdawn text={content.text_set[0].text} />
-        ) : (
-          ""
         )}
       </div>
     </ContentPanel>

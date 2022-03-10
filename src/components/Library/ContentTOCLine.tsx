@@ -54,7 +54,7 @@ export default function ContentTOCLine(
             ? content.attributes.range[0].starting_page
             : ""}
         </p>
-        {content.attributes.content.data ? (
+        {content.attributes.content.data && (
           <Chip className="justify-self-end thin:hidden">
             {content.attributes.content.data.attributes.type.data.attributes
               .titles.length > 0
@@ -65,8 +65,6 @@ export default function ContentTOCLine(
                     .attributes.slug
                 )}
           </Chip>
-        ) : (
-          ""
         )}
       </div>
       <div
@@ -78,24 +76,20 @@ export default function ContentTOCLine(
           subdirectory_arrow_right
         </span>
 
-        {content.attributes.scan_set.length > 0 ? (
+        {content.attributes.scan_set.length > 0 && (
           <Button
             href={`/contents/${content.attributes.content.data.attributes.slug}/scans/`}
           >
             {langui.view_scans}
           </Button>
-        ) : (
-          ""
         )}
 
-        {content.attributes.content.data ? (
+        {content.attributes.content.data && (
           <Button
             href={`/contents/${content.attributes.content.data.attributes.slug}`}
           >
             {langui.open_content}
           </Button>
-        ) : (
-          ""
         )}
 
         {content.attributes.scan_set.length === 0 &&

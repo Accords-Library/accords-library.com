@@ -113,9 +113,16 @@ export default function Library(props: LibraryProps): JSX.Element {
         <>
           {items.length > 0 && (
             <>
-              <h2 className="text-2xl pb-2 pt-10 first-of-type:pt-0">{name}</h2>
+              {name && (
+                <h2
+                  key={"h2" + name}
+                  className="text-2xl pb-2 pt-10 first-of-type:pt-0"
+                >
+                  {name}
+                </h2>
+              )}
               <div
-                key={name}
+                key={"items" + name}
                 className="grid gap-8 items-end mobile:grid-cols-2 desktop:grid-cols-[repeat(auto-fill,_minmax(13rem,1fr))] pb-12 border-b-[3px] border-dotted last-of-type:border-0"
               >
                 {items.map((item) => (

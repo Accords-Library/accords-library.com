@@ -199,7 +199,7 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
         </div>
 
         {/* Sub panel */}
-        {subPanel ? (
+        {subPanel && (
           <div
             className={`${subPanelClass} border-r-[1px] mobile:bottom-20 mobile:border-r-0 mobile:border-l-[1px] border-black border-dotted top-0 bottom-0 right-0 left-12 overflow-y-scroll webkit-scrollbar:w-0 [scrollbar-width:none] transition-transform duration-300 bg-light texture-paper-dots
           ${
@@ -212,8 +212,6 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
           >
             {subPanel}
           </div>
-        ) : (
-          ""
         )}
 
         {/* Main panel */}

@@ -34,8 +34,10 @@ export default function ReturnButton(props: ReturnButtonProps): JSX.Element {
       <Button
         onClick={() => appLayout.setSubPanelOpen(false)}
         href={props.href}
+        className="grid grid-flow-col gap-2"
       >
-        ❮&emsp;{props.langui.return_to} {props.title}
+        <span className="material-icons">navigate_before</span>
+        {props.langui.return_to} {props.title}
       </Button>
       {props.horizontalLine && <HorizontalLine />}
     </div>

@@ -192,10 +192,8 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
         }`}
       >
         <p>
-          {langui.licensing_notice ? (
+          {langui.licensing_notice && (
             <Markdown>{langui.licensing_notice}</Markdown>
-          ) : (
-            ""
           )}
         </p>
         <a
@@ -210,10 +208,8 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
           </div>
         </a>
         <p>
-          {langui.copyright_notice ? (
+          {langui.copyright_notice && (
             <Markdown>{langui.copyright_notice}</Markdown>
-          ) : (
-            ""
           )}
         </p>
         <div className="mt-12 mb-4 grid h-4 grid-flow-col place-content-center gap-8">

@@ -205,6 +205,15 @@ query getLibraryItemsPreview($language_code: String) {
             }
           }
         }
+        categories {
+          data {
+            id
+            attributes {
+              name
+              short
+            }
+          }
+        }
         metadata {
           __typename
           ... on ComponentMetadataBooks {
@@ -351,6 +360,15 @@ query getLibraryItem($slug: String, $language_code: String) {
                 code
                 rate_to_usd
               }
+            }
+          }
+        }
+        categories {
+          data {
+            id
+            attributes {
+              name
+              short
             }
           }
         }
@@ -523,6 +541,15 @@ query getLibraryItem($slug: String, $language_code: String) {
                   }
                 }
               }
+              categories {
+                data {
+                  id
+                  attributes {
+                    name
+                    short
+                  }
+                }
+              }
               metadata {
                 __typename
                 ... on ComponentMetadataBooks {
@@ -666,6 +693,7 @@ query getLibraryItem($slug: String, $language_code: String) {
                       data {
                         id
                         attributes {
+                          name
                           short
                         }
                       }
@@ -736,6 +764,7 @@ query getContents($language_code: String) {
           data {
             id
             attributes {
+              name
               short
             }
           }

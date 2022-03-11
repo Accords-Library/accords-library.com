@@ -64,15 +64,13 @@ export default function ChronologyItemComponent(
         props.item.attributes.day
       )}
     >
-      {props.displayYear ? (
+      {props.displayYear && (
         <p className="text-lg mt-[-.2em] font-bold">
           {generateYear(
             props.item.attributes.displayed_date,
             props.item.attributes.year
           )}
         </p>
-      ) : (
-        ""
       )}
 
       <p className="col-start-1 text-dark text-sm">
@@ -108,7 +106,7 @@ export default function ChronologyItemComponent(
                   {translation.title ? <h3>{translation.title}</h3> : ""}
                 </div>
 
-                {translation.description ? (
+                {translation.description && (
                   <p
                     className={
                       event.translations.length > 1
@@ -118,8 +116,6 @@ export default function ChronologyItemComponent(
                   >
                     {translation.description}
                   </p>
-                ) : (
-                  ""
                 )}
                 {translation.note ? (
                   <em>{"Notes: " + translation.note}</em>

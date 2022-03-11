@@ -317,6 +317,18 @@ export type GetLibraryItemsPreviewQuery = {
             };
           };
         };
+        categories: {
+          __typename: "CategoryRelationResponseCollection";
+          data: Array<{
+            __typename: "CategoryEntity";
+            id: string;
+            attributes: {
+              __typename: "Category";
+              name: string;
+              short: string;
+            };
+          }>;
+        };
         metadata: Array<
           | {
               __typename: "ComponentMetadataAudio";
@@ -509,6 +521,18 @@ export type GetLibraryItemQuery = {
               };
             };
           };
+        };
+        categories: {
+          __typename: "CategoryRelationResponseCollection";
+          data: Array<{
+            __typename: "CategoryEntity";
+            id: string;
+            attributes: {
+              __typename: "Category";
+              name: string;
+              short: string;
+            };
+          }>;
         };
         size: {
           __typename: "ComponentBasicsSize";
@@ -726,6 +750,18 @@ export type GetLibraryItemQuery = {
                   };
                 };
               };
+              categories: {
+                __typename: "CategoryRelationResponseCollection";
+                data: Array<{
+                  __typename: "CategoryEntity";
+                  id: string;
+                  attributes: {
+                    __typename: "Category";
+                    name: string;
+                    short: string;
+                  };
+                }>;
+              };
               metadata: Array<
                 | {
                     __typename: "ComponentMetadataAudio";
@@ -897,6 +933,7 @@ export type GetLibraryItemQuery = {
                         id: string;
                         attributes: {
                           __typename: "Category";
+                          name: string;
                           short: string;
                         };
                       }>;
@@ -982,7 +1019,11 @@ export type GetContentsQuery = {
           data: Array<{
             __typename: "CategoryEntity";
             id: string;
-            attributes: { __typename: "Category"; short: string };
+            attributes: {
+              __typename: "Category";
+              name: string;
+              short: string;
+            };
           }>;
         };
         type: {

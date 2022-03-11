@@ -44,28 +44,22 @@ export default function ContentIndex(props: ContentIndexProps): JSX.Element {
 
         <HorizontalLine />
 
-        {content.text_set.length > 0 ? (
+        {content.text_set.length > 0 && (
           <Button href={`/contents/${content.slug}/read/`}>
             {langui.read_content}
           </Button>
-        ) : (
-          ""
         )}
 
-        {content.audio_set.length > 0 ? (
+        {content.audio_set.length > 0 && (
           <Button href={`/contents/${content.slug}/listen/`}>
             {langui.listen_content}
           </Button>
-        ) : (
-          ""
         )}
 
-        {content.video_set.length > 0 ? (
+        {content.video_set.length > 0 && (
           <Button href={`/contents/${content.slug}/watch/`}>
             {langui.watch_content}
           </Button>
-        ) : (
-          ""
         )}
       </div>
     </ContentPanel>

@@ -7,9 +7,8 @@ import Head from "next/head";
 import { useSwipeable } from "react-swipeable";
 import { useRouter } from "next/router";
 import Button from "components/Button";
-import { getOgImage, OgImage, prettyLanguage } from "queries/helpers";
+import { getOgImage, OgImage } from "queries/helpers";
 import { useMediaCoarse, useMediaMobile } from "hooks/useMediaQuery";
-import ReactTooltip from "react-tooltip";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { ImageQuality } from "./Img";
 import Popup from "./Popup";
@@ -25,7 +24,6 @@ interface AppLayoutProps extends AppStaticProps {
   navTitle: string;
   thumbnail?: StrapiImage;
   description?: string;
-  extra?: React.ReactNode;
 }
 
 export default function AppLayout(props: AppLayoutProps): JSX.Element {
@@ -413,20 +411,7 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
             </div>
           </div>
         </Popup>
-
-        <ReactTooltip
-          id="MainPanelTooltip"
-          place="right"
-          type="light"
-          effect="solid"
-          delayShow={300}
-          delayHide={100}
-          disable={!appLayout.mainPanelReduced || isMobile || isCoarse}
-          className="drop-shadow-shade-xl !opacity-100 !bg-light !rounded-lg after:!border-r-light text-left !text-black"
-        />
       </div>
-
-      {props.extra}
     </div>
   );
 }

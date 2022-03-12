@@ -5,6 +5,7 @@ import {
 } from "components/Img";
 import {
   GetCurrenciesQuery,
+  GetLanguagesQuery,
   GetLibraryItemQuery,
   GetLibraryItemsPreviewQuery,
   GetWebsiteInterfaceQuery,
@@ -138,23 +139,16 @@ export function prettyItemSubType(metadata: {
   }
 }
 
-export function prettyLanguage(code: string): string {
-  switch (code) {
-    case "en":
-      return "English";
-    case "es":
-      return "Español";
-    case "fr":
-      return "Français";
-    case "ja":
-      return "日本語";
-    case "en":
-      return "English";
-    case "xx":
-      return "██";
-    default:
-      return code;
-  }
+export function prettyLanguage(
+  code: string,
+  languages: GetLanguagesQuery["languages"]["data"]
+): string {
+  let result = code;
+  languages.forEach((language) => {
+    if (language.attributes.code === code)
+      result = language.attributes.localized_name;
+  });
+  return result;
 }
 
 export function prettyTestWarning(

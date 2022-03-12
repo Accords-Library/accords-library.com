@@ -16,7 +16,6 @@ import {
 } from "queries/helpers";
 import InsetBox from "components/InsetBox";
 import { useRouter } from "next/router";
-import ReactTooltip from "react-tooltip";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 
 interface ChronologyProps extends AppStaticProps {
@@ -107,16 +106,6 @@ export default function Chronology(props: ChronologyProps): JSX.Element {
           ))}
         </>
       ))}
-
-      <ReactTooltip
-        id="ChronologyTooltip"
-        place="top"
-        type="light"
-        effect="solid"
-        delayShow={50}
-        clickable={true}
-        className="drop-shadow-shade-xl !opacity-100 mobile:after:!border-r-light !bg-light !rounded-lg desktop:after:!border-t-light text-left !text-black max-w-xs"
-      />
     </ContentPanel>
   );
 

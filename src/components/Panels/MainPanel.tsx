@@ -102,7 +102,6 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
         icon="library_books"
         title={langui.library}
         subtitle={langui.library_short_description}
-        tooltipId="MainPanelTooltip"
         reduced={appLayout.mainPanelReduced && isDesktop}
         onClick={() => appLayout.setMainPanelOpen(false)}
       />
@@ -112,7 +111,6 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
         icon="workspaces"
         title={langui.contents}
         subtitle={langui.contents_short_description}
-        tooltipId="MainPanelTooltip"
         reduced={appLayout.mainPanelReduced && isDesktop}
         onClick={() => appLayout.setMainPanelOpen(false)}
       />
@@ -124,7 +122,7 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
         icon="travel_explore"
         title={langui.wiki}
         subtitle={langui.wiki_short_description}
-        tooltipId="MainPanelTooltip"
+        
         reduced={appLayout.mainPanelReduced && isDesktop}
         onClick={() => appLayout.setMainPanelOpen(false)}
       />
@@ -134,7 +132,7 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
         icon="watch_later"
         title={langui.chronicles}
         subtitle={langui.chronicles_short_description}
-        tooltipId="MainPanelTooltip"
+        
         reduced={appLayout.mainPanelReduced && isDesktop}
         onClick={() => appLayout.setMainPanelOpen(false)}
       />
@@ -147,7 +145,6 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
         url="/news"
         icon="feed"
         title={langui.news}
-        tooltipId="MainPanelTooltip"
         reduced={appLayout.mainPanelReduced && isDesktop}
         onClick={() => appLayout.setMainPanelOpen(false)}
       />
@@ -156,7 +153,7 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
         url="/merch"
         icon="store"
         title={langui.merch}
-        tooltipId="MainPanelTooltip"
+        
         reduced={appLayout.mainPanelReduced && isDesktop}
         onClick={() => appLayout.setMainPanelOpen(false)}
       />
@@ -167,7 +164,6 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
         url="/gallery"
         icon="collections"
         title={langui.gallery}
-        tooltipId="MainPanelTooltip"
         reduced={appLayout.mainPanelReduced && isDesktop}
         onClick={() => appLayout.setMainPanelOpen(false)}
       />
@@ -178,7 +174,7 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
         url="/archives"
         icon="inventory"
         title={langui.archives}
-        tooltipId="MainPanelTooltip"
+        
         reduced={appLayout.mainPanelReduced && isDesktop}
         onClick={() => appLayout.setMainPanelOpen(false)}
       />
@@ -190,7 +186,6 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
         url="/about-us"
         icon="info"
         title={langui.about_us}
-        tooltipId="MainPanelTooltip"
         reduced={appLayout.mainPanelReduced && isDesktop}
         onClick={() => appLayout.setMainPanelOpen(false)}
       />

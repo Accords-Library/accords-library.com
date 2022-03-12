@@ -85,23 +85,7 @@ export default function ChronologyItemComponent(
                 <div className="place-items-start place-content-start grid grid-flow-col gap-2">
                   {translation.status !==
                     Enum_Componenttranslationschronologyitem_Status.Done && (
-                    <Chip
-                      data-tip={
-                        translation.status ===
-                        Enum_Componenttranslationschronologyitem_Status.Incomplete
-                          ? "This entry is only partially translated/transcribed."
-                          : translation.status ===
-                            Enum_Componenttranslationschronologyitem_Status.Draft
-                          ? "This entry is just a draft. It usually means that this is a work-in-progress. Translation/transcription might be poor and/or computer-generated."
-                          : translation.status ===
-                            Enum_Componenttranslationschronologyitem_Status.Review
-                          ? "This entry has not yet being proofread. The content should still be accurate."
-                          : ""
-                      }
-                      data-for={"ChronologyTooltip"}
-                    >
-                      {translation.status}
-                    </Chip>
+                    <Chip>{translation.status}</Chip>
                   )}
                   {translation.title ? <h3>{translation.title}</h3> : ""}
                 </div>

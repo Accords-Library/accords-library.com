@@ -19,14 +19,12 @@ import { useRouter } from "next/router";
 import ReactTooltip from "react-tooltip";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 
-interface DataChronologyProps extends AppStaticProps {
+interface ChronologyProps extends AppStaticProps {
   chronologyItems: GetChronologyItemsQuery["chronologyItems"]["data"];
   chronologyEras: GetErasQuery["chronologyEras"]["data"];
 }
 
-export default function DataChronology(
-  props: DataChronologyProps
-): JSX.Element {
+export default function Chronology(props: ChronologyProps): JSX.Element {
   useTesting(props);
   const { chronologyItems, chronologyEras } = props;
 
@@ -133,7 +131,7 @@ export default function DataChronology(
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const props: DataChronologyProps = {
+  const props: ChronologyProps = {
     ...(await getAppStaticProps(context)),
     chronologyItems: (
       await getChronologyItems({
@@ -148,7 +146,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   };
 };
 
-function useTesting(props: DataChronologyProps) {
+function useTesting(props: ChronologyProps) {
   const router = useRouter();
   const { chronologyItems, chronologyEras } = props;
   chronologyEras.map((era) => {

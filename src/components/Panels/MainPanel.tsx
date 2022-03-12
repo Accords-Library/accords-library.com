@@ -117,6 +117,8 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
         onClick={() => appLayout.setMainPanelOpen(false)}
       />
 
+      {/*
+      
       <NavOption
         url="/wiki"
         icon="travel_explore"
@@ -136,6 +138,8 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
         reduced={appLayout.mainPanelReduced && isDesktop}
         onClick={() => appLayout.setMainPanelOpen(false)}
       />
+      
+      */}
 
       <HorizontalLine />
 
@@ -147,7 +151,7 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
         reduced={appLayout.mainPanelReduced && isDesktop}
         onClick={() => appLayout.setMainPanelOpen(false)}
       />
-
+      {/*
       <NavOption
         url="/merch"
         icon="store"
@@ -156,6 +160,8 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
         reduced={appLayout.mainPanelReduced && isDesktop}
         onClick={() => appLayout.setMainPanelOpen(false)}
       />
+      
+      */}
 
       <NavOption
         url="/gallery"
@@ -166,6 +172,8 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
         onClick={() => appLayout.setMainPanelOpen(false)}
       />
 
+      {/*
+
       <NavOption
         url="/archives"
         icon="inventory"
@@ -174,6 +182,9 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
         reduced={appLayout.mainPanelReduced && isDesktop}
         onClick={() => appLayout.setMainPanelOpen(false)}
       />
+
+
+      */}
 
       <NavOption
         url="/about-us"

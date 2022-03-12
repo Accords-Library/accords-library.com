@@ -23,6 +23,8 @@ import {
   GetLibraryItemsPreviewQueryVariables,
   GetLibraryItemsSlugsQuery,
   GetLibraryItemsSlugsQueryVariables,
+  GetPostQuery,
+  GetPostQueryVariables,
   GetWebsiteInterfaceQuery,
   GetWebsiteInterfaceQueryVariables,
 } from "graphql/operations-types";
@@ -139,5 +141,12 @@ export async function getLanguages(
   variables: GetLanguagesQueryVariables
 ): Promise<GetLanguagesQuery> {
   const query = getQueryFromOperations("getLanguages");
+  return await graphQL(query, JSON.stringify(variables));
+}
+
+export async function getPost(
+  variables: GetPostQueryVariables
+): Promise<GetPostQuery> {
+  const query = getQueryFromOperations("getPost");
   return await graphQL(query, JSON.stringify(variables));
 }

@@ -109,6 +109,12 @@ query getWebsiteInterface($language_code: String) {
         translation_notice
         source_language
         pronouns
+        no_category
+        item
+        items
+        content
+        result
+        results
       }
     }
   }
@@ -1138,6 +1144,80 @@ query getLanguages {
         name
         code
         localized_name
+      }
+    }
+  }
+}
+
+query getPost($slug: String, $language_code: String) {
+  posts(filters: { slug: { eq: $slug } }) {
+    data {
+      id
+      attributes {
+        slug
+        publishedAt
+        updatedAt
+        authors {
+          data {
+            id
+            attributes {
+              username
+              anonymize
+              anonymous_code
+              pronouns
+              bio(filters: { language: { code: { eq: $language_code } } }) {
+                bio
+              }
+              languages {
+                data {
+                  attributes {
+                    code
+                  }
+                }
+              }
+              avatar {
+                data {
+                  attributes {
+                    name
+                    alternativeText
+                    caption
+                    width
+                    height
+                    url
+                  }
+                }
+              }
+            }
+          }
+        }
+        categories {
+          data {
+            id
+            attributes {
+              name
+              short
+            }
+          }
+        }
+        hidden
+        translations(filters: { language: { code: { eq: $language_code } } }) {
+          Status
+          title
+          excerpt
+          thumbnail {
+            data {
+              attributes {
+                name
+                alternativeText
+                caption
+                width
+                height
+                url
+              }
+            }
+          }
+          body
+        }
       }
     }
   }

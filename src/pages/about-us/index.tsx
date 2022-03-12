@@ -3,6 +3,7 @@ import PanelHeader from "components/PanelComponents/PanelHeader";
 import { GetStaticProps } from "next";
 import AppLayout from "components/AppLayout";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
+import NavOption from "components/PanelComponents/NavOption";
 
 interface AboutUsProps extends AppStaticProps {}
 
@@ -15,6 +16,15 @@ export default function AboutUs(props: AboutUsProps): JSX.Element {
         title={langui.about_us}
         description={langui.about_us_description}
       />
+      <NavOption title="Accord’s Handbook" url="/about-us/handbook" border />
+      <NavOption
+        title="Site information"
+        url="/about-us/site-information"
+        border
+      />
+      <NavOption title="FAQ" url="/about-us/faq" border />
+      <NavOption title="Sharing Policy" url="/about-us/sharing-policy" border />
+      <NavOption title="Contact us" url="/about-us/contact" border />
     </SubPanel>
   );
   return (

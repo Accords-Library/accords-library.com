@@ -48,6 +48,13 @@ export enum Enum_Componentmetadatavideo_Resolution {
   QuadHd_2160p = "QuadHD_2160p",
 }
 
+export enum Enum_Componenttranslationsposts_Status {
+  Incomplete = "Incomplete",
+  Draft = "Draft",
+  Review = "Review",
+  Done = "Done",
+}
+
 export enum Enum_Componenttranslationschronologyitem_Status {
   Incomplete = "Incomplete",
   Draft = "Draft",
@@ -191,6 +198,12 @@ export type GetWebsiteInterfaceQuery = {
         translation_notice: string;
         source_language: string;
         pronouns: string;
+        no_category: string;
+        item: string;
+        items: string;
+        content: string;
+        result: string;
+        results: string;
       };
     }>;
   };
@@ -1521,6 +1534,103 @@ export type GetLanguagesQuery = {
         name: string;
         code: string;
         localized_name: string;
+      };
+    }>;
+  };
+};
+
+export type GetPostQueryVariables = Exact<{
+  slug: InputMaybe<Scalars["String"]>;
+  language_code: InputMaybe<Scalars["String"]>;
+}>;
+
+export type GetPostQuery = {
+  __typename: "Query";
+  posts: {
+    __typename: "PostEntityResponseCollection";
+    data: Array<{
+      __typename: "PostEntity";
+      id: string;
+      attributes: {
+        __typename: "Post";
+        slug: string;
+        publishedAt: any;
+        updatedAt: any;
+        hidden: boolean;
+        authors: {
+          __typename: "RecorderRelationResponseCollection";
+          data: Array<{
+            __typename: "RecorderEntity";
+            id: string;
+            attributes: {
+              __typename: "Recorder";
+              username: string;
+              anonymize: boolean;
+              anonymous_code: string;
+              pronouns: string;
+              bio: Array<{
+                __typename: "ComponentTranslationsBio";
+                bio: string;
+              }>;
+              languages: {
+                __typename: "LanguageRelationResponseCollection";
+                data: Array<{
+                  __typename: "LanguageEntity";
+                  attributes: { __typename: "Language"; code: string };
+                }>;
+              };
+              avatar: {
+                __typename: "UploadFileEntityResponse";
+                data: {
+                  __typename: "UploadFileEntity";
+                  attributes: {
+                    __typename: "UploadFile";
+                    name: string;
+                    alternativeText: string;
+                    caption: string;
+                    width: number;
+                    height: number;
+                    url: string;
+                  };
+                };
+              };
+            };
+          }>;
+        };
+        categories: {
+          __typename: "CategoryRelationResponseCollection";
+          data: Array<{
+            __typename: "CategoryEntity";
+            id: string;
+            attributes: {
+              __typename: "Category";
+              name: string;
+              short: string;
+            };
+          }>;
+        };
+        translations: Array<{
+          __typename: "ComponentTranslationsPosts";
+          Status: Enum_Componenttranslationsposts_Status;
+          title: string;
+          excerpt: string;
+          body: string;
+          thumbnail: {
+            __typename: "UploadFileEntityResponse";
+            data: {
+              __typename: "UploadFileEntity";
+              attributes: {
+                __typename: "UploadFile";
+                name: string;
+                alternativeText: string;
+                caption: string;
+                width: number;
+                height: number;
+                url: string;
+              };
+            };
+          };
+        }>;
       };
     }>;
   };

@@ -1060,6 +1060,8 @@ input ComponentTranslationsPostsFiltersInput {
   Status: StringFilterInput
   title: StringFilterInput
   excerpt: StringFilterInput
+  body: StringFilterInput
+  language: LanguageFiltersInput
   and: [ComponentTranslationsPostsFiltersInput]
   or: [ComponentTranslationsPostsFiltersInput]
   not: ComponentTranslationsPostsFiltersInput
@@ -1071,6 +1073,8 @@ input ComponentTranslationsPostsInput {
   title: String
   excerpt: String
   thumbnail: ID
+  body: String
+  language: ID
 }
 
 type ComponentTranslationsPosts {
@@ -1079,6 +1083,8 @@ type ComponentTranslationsPosts {
   title: String!
   excerpt: String
   thumbnail: UploadFileEntityResponse
+  body: String
+  language: LanguageEntityResponse
 }
 
 enum ENUM_COMPONENTTRANSLATIONSSCANSET_STATUS {
@@ -1648,6 +1654,7 @@ input CurrencyFiltersInput {
   symbol: StringFilterInput
   code: StringFilterInput
   rate_to_usd: FloatFilterInput
+  display_decimals: BooleanFilterInput
   createdAt: DateTimeFilterInput
   updatedAt: DateTimeFilterInput
   and: [CurrencyFiltersInput]
@@ -1659,12 +1666,14 @@ input CurrencyInput {
   symbol: String
   code: String
   rate_to_usd: Float
+  display_decimals: Boolean
 }
 
 type Currency {
   symbol: String!
   code: String!
-  rate_to_usd: Float
+  rate_to_usd: Float!
+  display_decimals: Boolean!
   createdAt: DateTime
   updatedAt: DateTime
 }
@@ -1916,6 +1925,7 @@ input LibraryItemFiltersInput {
   digital: BooleanFilterInput
   primary: BooleanFilterInput
   submerchs: MerchItemFiltersInput
+  categories: CategoryFiltersInput
   createdAt: DateTimeFilterInput
   updatedAt: DateTimeFilterInput
   and: [LibraryItemFiltersInput]
@@ -1942,6 +1952,7 @@ input LibraryItemInput {
   digital: Boolean
   primary: Boolean
   submerchs: [ID]
+  categories: [ID]
 }
 
 type LibraryItem {
@@ -1987,6 +1998,11 @@ type LibraryItem {
     pagination: PaginationArg = {}
     sort: [String] = []
   ): MerchItemRelationResponseCollection
+  categories(
+    filters: CategoryFiltersInput
+    pagination: PaginationArg = {}
+    sort: [String] = []
+  ): CategoryRelationResponseCollection
   createdAt: DateTime
   updatedAt: DateTime
 }
@@ -2107,6 +2123,7 @@ input PostFiltersInput {
   authors: RecorderFiltersInput
   slug: StringFilterInput
   categories: CategoryFiltersInput
+  hidden: BooleanFilterInput
   createdAt: DateTimeFilterInput
   updatedAt: DateTimeFilterInput
   publishedAt: DateTimeFilterInput
@@ -2120,6 +2137,7 @@ input PostInput {
   slug: String
   categories: [ID]
   translations: [ComponentTranslationsPostsInput]
+  hidden: Boolean
   publishedAt: DateTime
 }
 
@@ -2140,6 +2158,7 @@ type Post {
     pagination: PaginationArg = {}
     sort: [String] = []
   ): [ComponentTranslationsPosts]
+  hidden: Boolean!
   createdAt: DateTime
   updatedAt: DateTime
   publishedAt: DateTime
@@ -2619,6 +2638,38 @@ input WebsiteInterfaceFiltersInput {
   group_by: StringFilterInput
   select_option_sidebar: StringFilterInput
   group: StringFilterInput
+  settings: StringFilterInput
+  theme: StringFilterInput
+  light: StringFilterInput
+  auto: StringFilterInput
+  dark: StringFilterInput
+  font_size: StringFilterInput
+  player_name: StringFilterInput
+  currency: StringFilterInput
+  font: StringFilterInput
+  calculated: StringFilterInput
+  status_incomplete: StringFilterInput
+  status_draft: StringFilterInput
+  status_review: StringFilterInput
+  status_done: StringFilterInput
+  incomplete: StringFilterInput
+  draft: StringFilterInput
+  review: StringFilterInput
+  done: StringFilterInput
+  status: StringFilterInput
+  transcribers: StringFilterInput
+  translators: StringFilterInput
+  proofreaders: StringFilterInput
+  transcript_notice: StringFilterInput
+  translation_notice: StringFilterInput
+  source_language: StringFilterInput
+  pronouns: StringFilterInput
+  no_category: StringFilterInput
+  item: StringFilterInput
+  items: StringFilterInput
+  content: StringFilterInput
+  result: StringFilterInput
+  results: StringFilterInput
   createdAt: DateTimeFilterInput
   updatedAt: DateTimeFilterInput
   and: [WebsiteInterfaceFiltersInput]
@@ -2707,6 +2758,38 @@ input WebsiteInterfaceInput {
   group_by: String
   select_option_sidebar: String
   group: String
+  settings: String
+  theme: String
+  light: String
+  auto: String
+  dark: String
+  font_size: String
+  player_name: String
+  currency: String
+  font: String
+  calculated: String
+  status_incomplete: String
+  status_draft: String
+  status_review: String
+  status_done: String
+  incomplete: String
+  draft: String
+  review: String
+  done: String
+  status: String
+  transcribers: String
+  translators: String
+  proofreaders: String
+  transcript_notice: String
+  translation_notice: String
+  source_language: String
+  pronouns: String
+  no_category: String
+  item: String
+  items: String
+  content: String
+  result: String
+  results: String
 }
 
 type WebsiteInterface {
@@ -2790,6 +2873,38 @@ type WebsiteInterface {
   group_by: String
   select_option_sidebar: String
   group: String
+  settings: String
+  theme: String
+  light: String
+  auto: String
+  dark: String
+  font_size: String
+  player_name: String
+  currency: String
+  font: String
+  calculated: String
+  status_incomplete: String
+  status_draft: String
+  status_review: String
+  status_done: String
+  incomplete: String
+  draft: String
+  review: String
+  done: String
+  status: String
+  transcribers: String
+  translators: String
+  proofreaders: String
+  transcript_notice: String
+  translation_notice: String
+  source_language: String
+  pronouns: String
+  no_category: String
+  item: String
+  items: String
+  content: String
+  result: String
+  results: String
   createdAt: DateTime
   updatedAt: DateTime
 }

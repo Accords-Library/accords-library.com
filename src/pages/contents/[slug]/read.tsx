@@ -143,19 +143,23 @@ export default function ContentRead(props: ContentReadProps): JSX.Element {
         </div>
       )}
 
-      <HorizontalLine />
-      <TOC
-        text={content.text_set[0].text}
-        title={
-          content.titles.length > 0
-            ? prettyinlineTitle(
-                content.titles[0].pre_title,
-                content.titles[0].title,
-                content.titles[0].subtitle
-              )
-            : prettySlug(content.slug)
-        }
-      />
+      {content.text_set.length > 0 && content.text_set[0].text && (
+        <>
+          <HorizontalLine />
+          <TOC
+            text={content.text_set[0].text}
+            title={
+              content.titles.length > 0
+                ? prettyinlineTitle(
+                    content.titles[0].pre_title,
+                    content.titles[0].title,
+                    content.titles[0].subtitle
+                  )
+                : prettySlug(content.slug)
+            }
+          />
+        </>
+      )}
     </SubPanel>
   );
   const contentPanel = (
@@ -172,7 +176,7 @@ export default function ContentRead(props: ContentReadProps): JSX.Element {
 
         <HorizontalLine />
 
-        {content.text_set.length > 0 && (
+        {content.text_set.length > 0 && content.text_set[0].text && (
           <Markdawn text={content.text_set[0].text} />
         )}
       </div>

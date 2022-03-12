@@ -6,7 +6,7 @@ import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 
 interface WikiProps extends AppStaticProps {}
 
-export default function Hubs(props: WikiProps): JSX.Element {
+export default function Wiki(props: WikiProps): JSX.Element {
   const { langui } = props;
   const subPanel = (
     <SubPanel>

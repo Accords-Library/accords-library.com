@@ -6,7 +6,7 @@ export type SwitchProps = {
   className?: string;
 };
 
-export default function Select(props: SwitchProps): JSX.Element {
+export default function Switch(props: SwitchProps): JSX.Element {
   return (
     <div
       className={`h-6 w-12 rounded-full border-2 border-mid grid transition-colors relative cursor-pointer ${

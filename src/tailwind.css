@@ -24,6 +24,10 @@
     @apply bg-dark text-light;
   }
 
+  mark {
+    @apply bg-mid px-2
+  }
+
   /* SCROLLBARS STYLING */
 
   * {
@@ -42,43 +46,80 @@
     @apply bg-dark rounded-full border-[3px] border-solid border-light;
   }
 
-  /* CHANGE PROSE DEFAULTS */
+  /* CHANGE FORMATTED DEFAULTS */
 
-  .prose,
-  .prose p,
-  .prose h1,
-  .prose h2,
-  .prose h3,
-  .prose h4,
-  .prose h5,
-  .prose h6,
-  .prose a,
-  .prose strong {
-    @apply text-black;
+  .formatted h1,
+  .formatted h2,
+  .formatted h3,
+  .formatted h4,
+  .formatted h5,
+  .formatted h6 {
+    @apply text-center;
   }
 
-  .prose a {
-    @apply transition-colors underline-offset-2 decoration-dotted underline decoration-dark hover:text-dark;
+  .formatted h1 {
+    @apply text-4xl my-16;
   }
 
-  .prose footer {
+  .formatted h1 + h2 {
+    @apply -mt-10;
+  }
+
+  .formatted h2 {
+    @apply text-3xl my-12;
+  }
+
+  .formatted h2 + h3 {
+    @apply -mt-8;
+  }
+
+  .formatted h3 {
+    @apply text-2xl my-8;
+  }
+
+  .formatted h3 + h4 {
+    @apply -mt-6;
+  }
+
+  .formatted h4 {
+    @apply text-xl my-6;
+  }
+
+  .formatted h5 {
+    @apply text-lg my-4;
+  }
+
+  .formatted p,
+  .formatted strong {
+    @apply my-2 text-justify;
+  }
+
+  .formatted footer {
     @apply border-t-[3px] border-dotted pt-6;
   }
 
-  .prose footer > div {
+  .formatted footer > div {
     @apply my-2 px-6 py-4 rounded-xl;
   }
 
-  .prose footer > div:target {
+  .formatted footer > div:target {
     @apply bg-mid shadow-inner-sm shadow-shade;
   }
 
-  .prose li::marker {
+  .formatted li::marker {
     @apply text-dark;
   }
 
-  .prose blockquote {
+  .formatted blockquote {
     @apply border-l-dark;
+  }
+
+  .formatted ul {
+    @apply list-disc pl-4;
+  }
+
+  .formatted ol {
+    @apply list-decimal pl-4;
   }
 
   /* INPUT */

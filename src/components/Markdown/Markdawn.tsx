@@ -21,6 +21,30 @@ export default function Markdawn(props: ScenBreakProps): JSX.Element {
         options={{
           slugify: slugify,
           overrides: {
+            h2: {
+              component: (props: { id: string; children: React.ReactNode }) => {
+                return (
+                  <div className="flex flex-row place-items-center place-content-center gap-3 hover:[--anchor-opacity:100] [--anchor-opacity:0]">
+                    <h2 id={props.id}>{props.children}</h2>
+                    <abbr title="Copy anchor link">
+                      <span
+                        className="material-icons opacity-[var(--anchor-opacity)] transition-all hover:text-dark cursor-pointer"
+                        onClick={() => {
+                          navigator.clipboard.writeText(
+                            process.env.NEXT_PUBLIC_URL_SELF +
+                              window.location.pathname +
+                              "#" +
+                              props.id
+                          );
+                        }}
+                      >
+                        link
+                      </span>
+                    </abbr>
+                  </div>
+                );
+              },
+            },
             Sep: {
               component: () => {
                 return <div className="my-24"></div>;

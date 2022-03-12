@@ -148,6 +148,7 @@ export default function ContentRead(props: ContentReadProps): JSX.Element {
           <HorizontalLine />
           <TOC
             text={content.text_set[0].text}
+            router={router}
             title={
               content.titles.length > 0
                 ? prettyinlineTitle(

@@ -1,20 +1,23 @@
+import { NextRouter } from "next/router";
 import { slugify } from "queries/helpers";
 import { preprocessMarkDawn } from "./Markdawn";
 
 type TOCProps = {
   text: string;
   title?: string;
+  router: NextRouter;
 };
 
 export default function TOC(props: TOCProps): JSX.Element {
-  const toc = getTocFromMarkdawn(preprocessMarkDawn(props.text), props.title);
+  const { router, text, title } = props;
+  const toc = getTocFromMarkdawn(preprocessMarkDawn(text), title);
 
   return (
     <div>
       <h3 className="text-xl">Table of content</h3>
       <ol className="text-left">
         <li className="my-2 overflow-x-hidden w-full text-ellipsis whitespace-nowrap">
-          <a className="" href={`#${toc.slug}`}>
+          <a className="" onClick={() => router.replace(`#${toc.slug}`)}>
             {<abbr title={toc.title}>{toc.title}</abbr>}
           </a>
         </li>
@@ -25,7 +28,7 @@ export default function TOC(props: TOCProps): JSX.Element {
               className="my-2 overflow-x-hidden w-full text-ellipsis whitespace-nowrap"
             >
               <span className="text-dark">{`${h2Index + 1}. `}</span>
-              <a href={`#${h2.slug}`}>
+              <a onClick={() => router.replace(`#${h2.slug}`)}>
                 {<abbr title={h2.title}>{h2.title}</abbr>}
               </a>
             </li>
@@ -38,7 +41,7 @@ export default function TOC(props: TOCProps): JSX.Element {
                   <span className="text-dark">{`${h2Index + 1}.${
                     h3Index + 1
                   }. `}</span>
-                  <a href={`#${h3.slug}`}>
+                  <a onClick={() => router.replace(`#${h3.slug}`)}>
                     {<abbr title={h3.title}>{h3.title}</abbr>}
                   </a>
                 </li>

@@ -17,7 +17,7 @@
   }
 
   a {
-    @apply transition-colors underline-offset-2 decoration-dotted underline decoration-dark hover:text-dark;
+    @apply transition-colors underline-offset-2 decoration-dotted underline decoration-dark hover:text-dark cursor-pointer;
   }
 
   *::selection {

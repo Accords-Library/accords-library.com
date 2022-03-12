@@ -3,7 +3,10 @@ import SubPanel from "components/Panels/SubPanel";
 import ContentPanel, {
   ContentPanelWidthSizes,
 } from "components/Panels/ContentPanel";
-import { GetContentsQuery } from "graphql/operations-types";
+import {
+  GetContentsQuery,
+  GetWebsiteInterfaceQuery,
+} from "graphql/operations-types";
 import { getContents } from "graphql/operations";
 import PanelHeader from "components/PanelComponents/PanelHeader";
 import AppLayout from "components/AppLayout";
@@ -12,6 +15,7 @@ import { prettyinlineTitle, prettySlug } from "queries/helpers";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 import Select from "components/Select";
 import { useEffect, useState } from "react";
+import Chip from "components/Chip";
 
 interface ContentsProps extends AppStaticProps {
   contents: GetContentsQuery["contents"]["data"];
@@ -25,11 +29,11 @@ export default function Contents(props: ContentsProps): JSX.Element {
   const [groupingMethod, setGroupingMethod] = useState<number>(-1);
 
   const [groups, setGroups] = useState<GroupContentItems>(
-    getGroups(groupingMethod, contents)
+    getGroups(langui, groupingMethod, contents)
   );
 
   useEffect(() => {
-    setGroups(getGroups(groupingMethod, contents));
+    setGroups(getGroups(langui, groupingMethod, contents));
   }, [langui, groupingMethod, contents]);
 
   const subPanel = (
@@ -61,9 +65,14 @@ export default function Contents(props: ContentsProps): JSX.Element {
               {name && (
                 <h2
                   key={"h2" + name}
-                  className="text-2xl pb-2 pt-10 first-of-type:pt-0"
+                  className="text-2xl pb-2 pt-10 first-of-type:pt-0 flex flex-row place-items-center gap-2"
                 >
                   {name}
+                  <Chip>{`${items.length} ${
+                    items.length <= 1
+                      ? langui.result.toLowerCase()
+                      : langui.results.toLowerCase()
+                  }`}</Chip>
                 </h2>
               )}
               <div
@@ -127,6 +136,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 };
 
 function getGroups(
+  langui: GetWebsiteInterfaceQuery["websiteInterfaces"]["data"][number]["attributes"],
   groupByType: number,
   items: ContentsProps["contents"]
 ): GroupContentItems {
@@ -150,11 +160,11 @@ function getGroups(
       typeGroup.set("Bakuken", []);
       typeGroup.set("YoRHa", []);
       typeGroup.set("YoRHa Boys", []);
-      typeGroup.set("No category", []);
+      typeGroup.set(langui.no_category, []);
 
       items.map((item) => {
         if (item.attributes.categories.data.length === 0) {
-          typeGroup.get("No category")?.push(item);
+          typeGroup.get(langui.no_category)?.push(item);
         } else {
           item.attributes.categories.data.map((category) => {
             typeGroup.get(category.attributes.name)?.push(item);

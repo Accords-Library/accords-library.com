@@ -2,10 +2,11 @@ import {
   GetContentQuery,
   GetWebsiteInterfaceQuery,
 } from "graphql/operations-types";
-import { prettySlug } from "queries/helpers";
+import { prettyinlineTitle, prettySlug, slugify } from "queries/helpers";
 import Button from "components/Button";
 import Img, { ImageQuality } from "components/Img";
 import InsetBox from "components/InsetBox";
+import Chip from "components/Chip";
 
 export type ThumbnailHeaderProps = {
   content: {
@@ -39,7 +40,18 @@ export default function ThumbnailHeader(
             <div className="w-full aspect-[4/3] bg-light rounded-xl"></div>
           )}
         </div>
-        <div className="grid place-items-center text-center">
+        <div
+          id={slugify(
+            content.titles.length > 0
+              ? prettyinlineTitle(
+                  content.titles[0].pre_title,
+                  content.titles[0].title,
+                  content.titles[0].subtitle
+                )
+              : prettySlug(content.slug)
+          )}
+          className="grid place-items-center text-center"
+        >
           {content.titles.length > 0 ? (
             <>
               <p className="text-2xl">{content.titles[0].pre_title}</p>
@@ -54,22 +66,26 @@ export default function ThumbnailHeader(
 
       <div className="grid grid-flow-col gap-8">
         {content.type && (
-          <div className="grid place-items-center place-content-start gap-2">
+          <div className="flex flex-col place-items-center gap-2">
             <h3 className="text-xl">{langui.type}</h3>
-            <Button>
-              {content.type.data.attributes.titles.length > 0
-                ? content.type.data.attributes.titles[0].title
-                : prettySlug(content.type.data.attributes.slug)}
-            </Button>
+            <div className="flex flex-row flex-wrap">
+              <Chip>
+                {content.type.data.attributes.titles.length > 0
+                  ? content.type.data.attributes.titles[0].title
+                  : prettySlug(content.type.data.attributes.slug)}
+              </Chip>
+            </div>
           </div>
         )}
 
         {content.categories.data.length > 0 && (
-          <div className="grid place-items-center place-content-start gap-2">
+          <div className="flex flex-col place-items-center gap-2">
             <h3 className="text-xl">{langui.categories}</h3>
-            {content.categories.data.map((category) => (
-              <Button key={category.id}>{category.attributes.name}</Button>
-            ))}
+            <div className="flex flex-row flex-wrap place-content-center gap-2">
+              {content.categories.data.map((category) => (
+                <Chip key={category.id}>{category.attributes.name}</Chip>
+              ))}
+            </div>
           </div>
         )}
       </div>

@@ -17,6 +17,7 @@ import { useEffect, useState } from "react";
 import { convertPrice, prettyDate, prettyinlineTitle } from "queries/helpers";
 import Switch from "components/Switch";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
+import Chip from "components/Chip";
 
 interface LibraryProps extends AppStaticProps {
   items: GetLibraryItemsPreviewQuery["libraryItems"]["data"];
@@ -116,9 +117,14 @@ export default function Library(props: LibraryProps): JSX.Element {
               {name && (
                 <h2
                   key={"h2" + name}
-                  className="text-2xl pb-2 pt-10 first-of-type:pt-0"
+                  className="text-2xl pb-2 pt-10 first-of-type:pt-0 flex flex-row place-items-center gap-2"
                 >
                   {name}
+                  <Chip>{`${items.length} ${
+                    items.length <= 1
+                      ? langui.result.toLowerCase()
+                      : langui.results.toLowerCase()
+                  }`}</Chip>
                 </h2>
               )}
               <div
@@ -188,11 +194,11 @@ function getGroups(
       typeGroup.set("Bakuken", []);
       typeGroup.set("YoRHa", []);
       typeGroup.set("YoRHa Boys", []);
-      typeGroup.set("No category", []);
+      typeGroup.set(langui.no_category, []);
 
       items.map((item) => {
         if (item.attributes.categories.data.length === 0) {
-          typeGroup.get("No category")?.push(item);
+          typeGroup.get(langui.no_category)?.push(item);
         } else {
           item.attributes.categories.data.map((category) => {
             typeGroup.get(category.attributes.name)?.push(item);

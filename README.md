@@ -1,6 +1,8 @@
 # Accords-library.com
 
 [![Node.js CI](https://github.com/Accords-Library/accords-library.com/actions/workflows/node.js.yml/badge.svg?branch=main)](https://github.com/Accords-Library/accords-library.com/actions/workflows/node.js.yml)
+[![GitHub](https://img.shields.io/github/license/Accords-Library/accords-library.com?style=flat-square)](https://github.com/Accords-Library/accords-library.com/blob/main/LICENSE)
+![Libraries.io dependency status for GitHub repo](https://img.shields.io/librariesio/github/Accords-Library/accords-library.com?style=flat-square)
 
 ## Technologies
 

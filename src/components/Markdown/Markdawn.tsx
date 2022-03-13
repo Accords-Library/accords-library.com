@@ -1,5 +1,6 @@
 import HorizontalLine from "components/HorizontalLine";
 import InsetBox from "components/InsetBox";
+import ToolTip from "components/ToolTip";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import Markdown from "markdown-to-jsx";
 import { slugify } from "queries/helpers";
@@ -28,28 +29,60 @@ export default function Markdawn(props: ScenBreakProps): JSX.Element {
                 children: React.ReactNode;
               }) => {
                 return (
-                  <h2
-                    id={props.id}
-                    className="flex flex-row place-items-center place-content-center gap-3 hover:[--anchor-opacity:100] [--anchor-opacity:0]"
-                    style={props.style}
-                  >
-                    {props.children}
-                    <abbr title="Copy anchor link">
-                      <span
-                        className="material-icons opacity-[var(--anchor-opacity)] transition-all hover:text-dark cursor-pointer"
-                        onClick={() => {
-                          navigator.clipboard.writeText(
-                            process.env.NEXT_PUBLIC_URL_SELF +
-                              window.location.pathname +
-                              "#" +
-                              props.id
-                          );
-                        }}
-                      >
-                        link
-                      </span>
-                    </abbr>
-                  </h2>
+                  <div className="flex flex-row place-items-center place-content-center gap-3">
+                    <h2 id={props.id} style={props.style}>
+                      {props.children}
+                    </h2>
+                    <ToolTip content={"Copy anchor link"} trigger="mouseenter">
+                      <ToolTip content={"Copied! 👍"} trigger="click">
+                        <span
+                          className="material-icons transition-color hover:text-dark cursor-pointer"
+                          onClick={() => {
+                            navigator.clipboard.writeText(
+                              process.env.NEXT_PUBLIC_URL_SELF +
+                                window.location.pathname +
+                                "#" +
+                                props.id
+                            );
+                          }}
+                        >
+                          link
+                        </span>
+                      </ToolTip>
+                    </ToolTip>
+                  </div>
+                );
+              },
+            },
+            h3: {
+              component: (props: {
+                id: string;
+                style: React.CSSProperties;
+                children: React.ReactNode;
+              }) => {
+                return (
+                  <div className="flex flex-row place-items-center place-content-center gap-3">
+                    <h3 id={props.id} style={props.style}>
+                      {props.children}
+                    </h3>
+                    <ToolTip content={"Copy anchor link"} trigger="mouseenter">
+                      <ToolTip content={"Copied! 👍"} trigger="click">
+                        <span
+                          className="material-icons transition-color hover:text-dark cursor-pointer"
+                          onClick={() => {
+                            navigator.clipboard.writeText(
+                              process.env.NEXT_PUBLIC_URL_SELF +
+                                window.location.pathname +
+                                "#" +
+                                props.id
+                            );
+                          }}
+                        >
+                          link
+                        </span>
+                      </ToolTip>
+                    </ToolTip>
+                  </div>
                 );
               },
             },
@@ -82,7 +115,7 @@ export default function Markdawn(props: ScenBreakProps): JSX.Element {
             Transcript: {
               component: (props) => {
                 return (
-                  <div className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-2">
+                  <div className="grid grid-cols-[auto_1fr] mobile:grid-cols-1 gap-x-6 gap-y-2">
                     {props.children}
                   </div>
                 );
@@ -92,7 +125,7 @@ export default function Markdawn(props: ScenBreakProps): JSX.Element {
               component: (props) => {
                 return (
                   <>
-                    <strong className="text-dark opacity-60">
+                    <strong className="text-dark opacity-60 mobile:!-mb-4">
                       {props.name}
                     </strong>
                     <p className="whitespace-pre-line">{props.children}</p>

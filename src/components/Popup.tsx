@@ -11,7 +11,9 @@ export default function Popup(props: PopupProps): JSX.Element {
   return (
     <div
       className={`fixed inset-0 z-50 grid place-content-center transition-[backdrop-filter] duration-500 ${
-        props.state ? "[backdrop-filter:blur(2px)]" : "pointer-events-none touch-none"
+        props.state
+          ? "[backdrop-filter:blur(2px)]"
+          : "pointer-events-none touch-none"
       }`}
     >
       <div

@@ -54,27 +54,6 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
     },
   });
 
-  const mainPanelClass = `fixed desktop:left-0 desktop:top-0 desktop:bottom-0 ${
-    appLayout.mainPanelReduced ? "desktop:w-[6rem]" : "desktop:w-[20rem]"
-  }`;
-  const subPanelClass = `fixed desktop:top-0 desktop:bottom-0 desktop:w-[20rem] ${
-    appLayout.mainPanelReduced ? " desktop:left-[6rem]" : "desktop:left-[20rem]"
-  }`;
-  let contentPanelClass = "";
-  if (subPanel) {
-    contentPanelClass = `fixed desktop:top-0 desktop:bottom-0 desktop:right-0 ${
-      appLayout.mainPanelReduced
-        ? "desktop:left-[26rem]"
-        : "desktop:left-[40rem]"
-    }`;
-  } else if (contentPanel) {
-    contentPanelClass = `fixed desktop:top-0 desktop:bottom-0 desktop:right-0 ${
-      appLayout.mainPanelReduced
-        ? "desktop:left-[6rem]"
-        : "desktop:left-[20rem]"
-    }`;
-  }
-
   const turnSubIntoContent = subPanel && !contentPanel;
 
   const titlePrefix = "Accord’s Library";
@@ -115,6 +94,21 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currencySelect]);
 
+  let gridCol = "";
+  if (props.subPanel) {
+    if (appLayout.mainPanelReduced) {
+      gridCol = "grid-cols-[6rem_20rem_1fr]";
+    } else {
+      gridCol = "grid-cols-[20rem_20rem_1fr]";
+    }
+  } else {
+    if (appLayout.mainPanelReduced) {
+      gridCol = "grid-cols-[6rem_0px_1fr]";
+    } else {
+      gridCol = "grid-cols-[20rem_0px_1fr]";
+    }
+  }
+
   return (
     <div
       className={`${
@@ -127,7 +121,7 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
     >
       <div
         {...handlers}
-        className="fixed inset-0 touch-pan-y p-0 m-0 bg-light text-black"
+        className={`fixed inset-0 touch-pan-y p-0 m-0 bg-light text-black grid [grid-template-areas:'main_sub_content'] ${gridCol} mobile:grid-cols-[1fr] mobile:grid-rows-[1fr_5rem] mobile:[grid-template-areas:'content''navbar']`}
       >
         <Head>
           <title>{`${titlePrefix} - ${ogTitle}`}</title>
@@ -157,9 +151,32 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
           <meta name="twitter:image" content={metaImage.image}></meta>
         </Head>
 
+        {/* Background when navbar is opened */}
+        <div
+          className={`[grid-area:content] mobile:z-10 absolute inset-0 transition-[backdrop-filter] duration-500 ${
+            (appLayout.mainPanelOpen || appLayout.subPanelOpen) && isMobile
+              ? "[backdrop-filter:blur(2px)]"
+              : "pointer-events-none touch-none "
+          }`}
+        >
+          <div
+            className={`absolute bg-shade inset-0 transition-opacity duration-500 
+        ${turnSubIntoContent ? "" : ""}
+        ${
+          (appLayout.mainPanelOpen || appLayout.subPanelOpen) && isMobile
+            ? "opacity-60"
+            : "opacity-0"
+        }`}
+            onClick={() => {
+              appLayout.setMainPanelOpen(false);
+              appLayout.setSubPanelOpen(false);
+            }}
+          ></div>
+        </div>
+
         {/* Content panel */}
         <div
-          className={`top-0 left-0 right-0 bottom-20 overflow-y-scroll bg-light texture-paper-dots ${contentPanelClass}`}
+          className={`[grid-area:content] overflow-y-scroll bg-light texture-paper-dots`}
         >
           {contentPanel ? (
             contentPanel
@@ -173,38 +190,15 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
           )}
         </div>
 
-        {/* Background when navbar is opened */}
-        <div
-          className={`fixed inset-0 transition-[backdrop-filter] duration-500 ${
-            (appLayout.mainPanelOpen || appLayout.subPanelOpen) && isMobile
-              ? "[backdrop-filter:blur(2px)]"
-              : "pointer-events-none touch-none "
-          }`}
-        >
-          <div
-            className={`fixed bg-shade inset-0 transition-opacity duration-500 
-        ${turnSubIntoContent ? "z-10" : ""}
-        ${
-          (appLayout.mainPanelOpen || appLayout.subPanelOpen) && isMobile
-            ? "opacity-60"
-            : "opacity-0"
-        }`}
-            onClick={() => {
-              appLayout.setMainPanelOpen(false);
-              appLayout.setSubPanelOpen(false);
-            }}
-          ></div>
-        </div>
-
         {/* Sub panel */}
         {subPanel && (
           <div
-            className={`${subPanelClass} border-r-[1px] mobile:bottom-20 mobile:border-r-0 mobile:border-l-[1px] border-black border-dotted top-0 bottom-0 right-0 left-12 overflow-y-scroll webkit-scrollbar:w-0 [scrollbar-width:none] transition-transform duration-300 bg-light texture-paper-dots
+            className={`[grid-area:sub] mobile:[grid-area:content] mobile:z-10 mobile:w-[90%] mobile:justify-self-end border-r-[1px] mobile:border-r-0 mobile:border-l-[1px] border-black border-dotted overflow-y-scroll webkit-scrollbar:w-0 [scrollbar-width:none] transition-transform duration-300 bg-light texture-paper-dots
           ${
             turnSubIntoContent
-              ? "mobile:translate-x-0 mobile:left-0 mobile:border-l-0"
+              ? "mobile:border-l-0 mobile:w-full"
               : !appLayout.subPanelOpen
-              ? "mobile:translate-x-full"
+              ? "mobile:translate-x-[100vw]"
               : ""
           }`}
           >
@@ -214,28 +208,14 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
 
         {/* Main panel */}
         <div
-          className={`${mainPanelClass} border-r-[1px] mobile:bottom-20 border-black border-dotted top-0 bottom-0 left-0 right-12 overflow-y-scroll webkit-scrollbar:w-0 [scrollbar-width:none] transition-transform duration-300 z-20 bg-light texture-paper-dots
+          className={`[grid-area:main] mobile:[grid-area:content] mobile:z-10 mobile:w-[90%] mobile:justify-self-start border-r-[1px] border-black border-dotted overflow-y-scroll webkit-scrollbar:w-0 [scrollbar-width:none] transition-transform duration-300 bg-light texture-paper-dots
         ${appLayout.mainPanelOpen ? "" : "mobile:-translate-x-full"}`}
         >
           <MainPanel langui={langui} />
         </div>
 
-        {/* Main panel minimize button*/}
-        <div
-          className={`mobile:hidden translate-x-0 fixed top-1/2 z-20 ${
-            appLayout.mainPanelReduced ? "left-[4.65rem]" : "left-[18.65rem]"
-          }`}
-          onClick={() =>
-            appLayout.setMainPanelReduced(!appLayout.mainPanelReduced)
-          }
-        >
-          <Button className="material-icons bg-light !px-2">
-            {appLayout.mainPanelReduced ? "chevron_right" : "chevron_left"}
-          </Button>
-        </div>
-
         {/* Navbar */}
-        <div className="fixed inset-0 z-30 top-auto h-20 border-t-[1px] border-black border-dotted grid grid-cols-[5rem_1fr_5rem] place-items-center desktop:hidden bg-light texture-paper-dots">
+        <div className="[grid-area:navbar] border-t-[1px] border-black border-dotted grid grid-cols-[5rem_1fr_5rem] place-items-center desktop:hidden bg-light texture-paper-dots">
           <span
             className="material-icons mt-[.1em] cursor-pointer"
             onClick={() => {

@@ -24,6 +24,20 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
         appLayout.mainPanelReduced && isDesktop && "px-4"
       }`}
     >
+      {/* Reduce/expand main menu */}
+      <div
+        className={`mobile:hidden top-1/2 fixed ${
+          appLayout.mainPanelReduced ? "left-[4.65rem]" : "left-[18.65rem]"
+        }`}
+        onClick={() =>
+          appLayout.setMainPanelReduced(!appLayout.mainPanelReduced)
+        }
+      >
+        <Button className="material-icons bg-light !px-2">
+          {appLayout.mainPanelReduced ? "chevron_right" : "chevron_left"}
+        </Button>
+      </div>
+
       <div>
         <div className="grid place-items-center">
           <Link href="/" passHref>

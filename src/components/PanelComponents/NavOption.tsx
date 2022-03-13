@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { MouseEventHandler } from "react";
+import { MouseEventHandler, useState } from "react";
+import ToolTip from "components/ToolTip";
 
 type NavOptionProps = {
   url: string;
@@ -22,11 +23,15 @@ export default function NavOption(props: NavOptionProps): JSX.Element {
     props.border ? border : ""
   } ${isActive ? divActive : ""}`;
 
+  const [hovered, setHovered] = useState(false);
+
   return (
     <Link href={props.url} passHref>
       <div
         onClick={props.onClick}
-        className={`grid grid-flow-col grid-cols-[auto] auto-cols-fr justify-center ${
+        onMouseEnter={() => props.reduced && setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        className={`relative grid grid-flow-col grid-cols-[auto] auto-cols-fr justify-center ${
           props.icon ? "text-left" : "text-center"
         } ${divCommon}`}
       >
@@ -40,6 +45,11 @@ export default function NavOption(props: NavOptionProps): JSX.Element {
             {props.subtitle && <p className="col-start-2">{props.subtitle}</p>}
           </div>
         )}
+
+        <ToolTip hovered={hovered} direction="right" offset="3.5rem">
+          <h3 className="text-2xl">{props.title}</h3>
+          {props.subtitle && <p className="col-start-2">{props.subtitle}</p>}
+        </ToolTip>
       </div>
     </Link>
   );

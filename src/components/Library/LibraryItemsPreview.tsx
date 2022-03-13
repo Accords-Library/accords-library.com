@@ -55,7 +55,7 @@ export default function LibraryItemsPreview(
             <h3 className="mobile:text-xs leading-3">{item.subtitle}</h3>
           </div>
 
-          <div className="w-full grid grid-flow-col gap-1 overflow-x-scroll webkit-scrollbar:w-0 [scrollbar-width:none] place-content-start">
+          <div className="w-full grid grid-flow-col gap-1 overflow-x-scroll webkit-scrollbar:h-0 [scrollbar-width:none] place-content-start">
             {item.categories.data.map((category) => (
               <Chip key={category.id} className="text-sm">
                 {category.attributes.short}

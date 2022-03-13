@@ -6,7 +6,6 @@ import {
   GetWebsiteInterfaceQuery,
 } from "graphql/operations-types";
 import { getStatusDescription } from "queries/helpers";
-import { useState } from "react";
 
 export type ChronologyItemComponentProps = {
   item: GetChronologyItemsQuery["chronologyItems"]["data"][number];
@@ -18,7 +17,6 @@ export default function ChronologyItemComponent(
   props: ChronologyItemComponentProps
 ): JSX.Element {
   const { langui } = props;
-  const [statusHovered, setStatusHovered] = useState(false);
 
   function generateAnchor(year: number, month: number, day: number): string {
     let result: string = "";
@@ -93,23 +91,12 @@ export default function ChronologyItemComponent(
                 <div className="place-items-start place-content-start grid grid-flow-col gap-2">
                   {translation.status !==
                     Enum_Componenttranslationschronologyitem_Status.Done && (
-                    <Chip
-                      onMouseEnter={() => setStatusHovered(true)}
-                      onMouseLeave={() => setStatusHovered(false)}
+                    <ToolTip
+                      content={getStatusDescription(translation.status, langui)}
+                      maxWidth={"20rem"}
                     >
-                      {translation.status}
-                      <ToolTip
-                        direction="top"
-                        hovered={statusHovered}
-                        offset={"1.5rem"}
-                        maxWidth="max-w-[10rem]"
-                        delayShow={100}
-                      >
-                        <p>
-                          {getStatusDescription(translation.status, langui)}
-                        </p>
-                      </ToolTip>
-                    </Chip>
+                      <Chip>{translation.status}</Chip>
+                    </ToolTip>
                   )}
                   {translation.title ? <h3>{translation.title}</h3> : ""}
                 </div>

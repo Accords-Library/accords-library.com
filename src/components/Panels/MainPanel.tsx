@@ -7,6 +7,7 @@ import { GetWebsiteInterfaceQuery } from "graphql/operations-types";
 import Markdown from "markdown-to-jsx";
 import { useMediaDesktop } from "hooks/useMediaQuery";
 import { useAppLayout } from "contexts/AppLayoutContext";
+import ToolTip from "components/ToolTip";
 
 type MainPanelProps = {
   langui: GetWebsiteInterfaceQuery["websiteInterfaces"]["data"][number]["attributes"];
@@ -62,49 +63,74 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
                 : "flex-row"
             } flex-wrap gap-2`}
           >
-            <Button
-              className={
-                appLayout.mainPanelReduced && isDesktop ? "" : "!py-0.5 !px-2.5"
-              }
-              onClick={() => {
-                appLayout.setConfigPanelOpen(true);
-              }}
+            <ToolTip
+              content={<h3 className="text-2xl">{"Open settings"}</h3>}
+              placement="right"
+              className="text-left"
+              disabled={!appLayout.mainPanelReduced}
             >
-              <span
-                className={`material-icons ${
-                  !(appLayout.mainPanelReduced && isDesktop) && "!text-sm"
-                } `}
-              >
-                settings
-              </span>
-            </Button>
-
-            {router.locale && (
               <Button
-                onClick={() => appLayout.setLanguagePanelOpen(true)}
                 className={
                   appLayout.mainPanelReduced && isDesktop
                     ? ""
-                    : "!py-0.5 !px-2.5 !text-sm"
+                    : "!py-0.5 !px-2.5"
                 }
+                onClick={() => {
+                  appLayout.setConfigPanelOpen(true);
+                }}
               >
-                {router.locale.toUpperCase()}
+                <span
+                  className={`material-icons ${
+                    !(appLayout.mainPanelReduced && isDesktop) && "!text-sm"
+                  } `}
+                >
+                  settings
+                </span>
               </Button>
+            </ToolTip>
+
+            {router.locale && (
+              <ToolTip
+                content={<h3 className="text-2xl">{"Change language"}</h3>}
+                placement="right"
+                className="text-left"
+                disabled={!appLayout.mainPanelReduced}
+              >
+                <Button
+                  onClick={() => appLayout.setLanguagePanelOpen(true)}
+                  className={
+                    appLayout.mainPanelReduced && isDesktop
+                      ? ""
+                      : "!py-0.5 !px-2.5 !text-sm"
+                  }
+                >
+                  {router.locale.toUpperCase()}
+                </Button>
+              </ToolTip>
             )}
 
-            <Button
-              className={
-                appLayout.mainPanelReduced && isDesktop ? "" : "!py-0.5 !px-2.5"
-              }
+            <ToolTip
+              content={<h3 className="text-2xl">{"Open search"}</h3>}
+              placement="right"
+              className="text-left"
+              disabled={!appLayout.mainPanelReduced}
             >
-              <span
-                className={`material-icons ${
-                  !(appLayout.mainPanelReduced && isDesktop) && "!text-sm"
-                } `}
+              <Button
+                className={
+                  appLayout.mainPanelReduced && isDesktop
+                    ? ""
+                    : "!py-0.5 !px-2.5"
+                }
               >
-                search
-              </span>
-            </Button>
+                <span
+                  className={`material-icons ${
+                    !(appLayout.mainPanelReduced && isDesktop) && "!text-sm"
+                  } `}
+                >
+                  search
+                </span>
+              </Button>
+            </ToolTip>
           </div>
         </div>
       </div>

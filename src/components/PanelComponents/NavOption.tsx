@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { MouseEventHandler, useState } from "react";
+import { MouseEventHandler } from "react";
 import ToolTip from "components/ToolTip";
 
 type NavOptionProps = {
@@ -23,34 +23,39 @@ export default function NavOption(props: NavOptionProps): JSX.Element {
     props.border ? border : ""
   } ${isActive ? divActive : ""}`;
 
-  const [hovered, setHovered] = useState(false);
-
   return (
-    <Link href={props.url} passHref>
-      <div
-        onClick={props.onClick}
-        onMouseEnter={() => props.reduced && setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
-        className={`relative grid grid-flow-col grid-cols-[auto] auto-cols-fr justify-center ${
-          props.icon ? "text-left" : "text-center"
-        } ${divCommon}`}
-      >
-        {props.icon && (
-          <span className="material-icons mt-[.1em]">{props.icon}</span>
-        )}
-
-        {!props.reduced && (
-          <div>
-            <h3 className="text-2xl">{props.title}</h3>
-            {props.subtitle && <p className="col-start-2">{props.subtitle}</p>}
-          </div>
-        )}
-
-        <ToolTip hovered={hovered} direction="right" offset="3.5rem">
+    <ToolTip
+      content={
+        <div>
           <h3 className="text-2xl">{props.title}</h3>
           {props.subtitle && <p className="col-start-2">{props.subtitle}</p>}
-        </ToolTip>
-      </div>
-    </Link>
+        </div>
+      }
+      placement="right"
+      className="text-left"
+      disabled={!props.reduced}
+    >
+      <Link href={props.url} passHref>
+        <div
+          onClick={props.onClick}
+          className={`relative grid grid-flow-col grid-cols-[auto] auto-cols-fr justify-center ${
+            props.icon ? "text-left" : "text-center"
+          } ${divCommon}`}
+        >
+          {props.icon && (
+            <span className="material-icons mt-[.1em]">{props.icon}</span>
+          )}
+
+          {!props.reduced && (
+            <div>
+              <h3 className="text-2xl">{props.title}</h3>
+              {props.subtitle && (
+                <p className="col-start-2">{props.subtitle}</p>
+              )}
+            </div>
+          )}
+        </div>
+      </Link>
+    </ToolTip>
   );
 }

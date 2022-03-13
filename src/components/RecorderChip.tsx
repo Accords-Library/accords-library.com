@@ -3,7 +3,6 @@ import {
   GetContentTextQuery,
   GetWebsiteInterfaceQuery,
 } from "graphql/operations-types";
-import { useState } from "react";
 import Img, { ImageQuality } from "./Img";
 import ToolTip from "./ToolTip";
 
@@ -17,24 +16,9 @@ export default function RecorderChip(props: RecorderChipProps): JSX.Element {
   const recorder = props.recorder;
   const langui = props.langui;
 
-  const [hovered, setHovered] = useState(false);
-
   return (
-    <Chip
-      key={recorder.id}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
-      {recorder.attributes.anonymize
-        ? `Recorder#${recorder.attributes.anonymous_code}`
-        : recorder.attributes.username}
-
-      <ToolTip
-        hovered={hovered}
-        direction="top"
-        offset="1.5rem"
-        delayShow={150}
-      >
+    <ToolTip
+      content={
         <div className="p-2 py-5 grid gap-2">
           <div className="grid grid-flow-col gap-2 place-items-center place-content-start">
             {recorder.attributes.avatar.data && (
@@ -68,7 +52,14 @@ export default function RecorderChip(props: RecorderChipProps): JSX.Element {
               recorder.attributes.bio[0].bio}
           </p>
         </div>
-      </ToolTip>
-    </Chip>
+      }
+      placement="top"
+    >
+      <Chip key={recorder.id}>
+        {recorder.attributes.anonymize
+          ? `Recorder#${recorder.attributes.anonymous_code}`
+          : recorder.attributes.username}
+      </Chip>
+    </ToolTip>
   );
 }

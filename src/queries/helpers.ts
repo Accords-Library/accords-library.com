@@ -4,7 +4,9 @@ import {
   ImageQuality,
 } from "components/Img";
 import {
+  Enum_Componentsetstextset_Status,
   GetCurrenciesQuery,
+  GetLanguagesQuery,
   GetLibraryItemQuery,
   GetLibraryItemsPreviewQuery,
   GetWebsiteInterfaceQuery,
@@ -138,23 +140,16 @@ export function prettyItemSubType(metadata: {
   }
 }
 
-export function prettyLanguage(code: string): string {
-  switch (code) {
-    case "en":
-      return "English";
-    case "es":
-      return "Español";
-    case "fr":
-      return "Français";
-    case "ja":
-      return "日本語";
-    case "en":
-      return "English";
-    case "xx":
-      return "██";
-    default:
-      return code;
-  }
+export function prettyLanguage(
+  code: string,
+  languages: GetLanguagesQuery["languages"]["data"]
+): string {
+  let result = code;
+  languages.forEach((language) => {
+    if (language.attributes.code === code)
+      result = language.attributes.localized_name;
+  });
+  return result;
 }
 
 export function prettyTestWarning(
@@ -255,6 +250,28 @@ export function sortContent(
     }
     return 0;
   });
+}
+
+export function getStatusDescription(
+  status: string,
+  langui: GetWebsiteInterfaceQuery["websiteInterfaces"]["data"][number]["attributes"]
+): string {
+  switch (status) {
+    case Enum_Componentsetstextset_Status.Incomplete:
+      return langui.status_incomplete;
+
+    case Enum_Componentsetstextset_Status.Draft:
+      return langui.status_draft;
+
+    case Enum_Componentsetstextset_Status.Review:
+      return langui.status_review;
+
+    case Enum_Componentsetstextset_Status.Done:
+      return langui.status_done;
+
+    default:
+      return "";
+  }
 }
 
 export function slugify(str: string): string {

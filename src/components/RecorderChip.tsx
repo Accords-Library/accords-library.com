@@ -4,7 +4,7 @@ import {
   GetWebsiteInterfaceQuery,
 } from "graphql/operations-types";
 import Img, { ImageQuality } from "./Img";
-import ReactDOMServer from "react-dom/server";
+import ToolTip from "./ToolTip";
 
 type RecorderChipProps = {
   className?: string;
@@ -15,10 +15,10 @@ type RecorderChipProps = {
 export default function RecorderChip(props: RecorderChipProps): JSX.Element {
   const recorder = props.recorder;
   const langui = props.langui;
+
   return (
-    <Chip
-      key={recorder.id}
-      data-tip={ReactDOMServer.renderToStaticMarkup(
+    <ToolTip
+      content={
         <div className="p-2 py-5 grid gap-2">
           <div className="grid grid-flow-col gap-2 place-items-center place-content-start">
             {recorder.attributes.avatar.data && (
@@ -52,14 +52,14 @@ export default function RecorderChip(props: RecorderChipProps): JSX.Element {
               recorder.attributes.bio[0].bio}
           </p>
         </div>
-      )}
-      data-for={"RecordersTooltip"}
-      data-multiline
-      data-html
+      }
+      placement="top"
     >
-      {recorder.attributes.anonymize
-        ? `Recorder#${recorder.attributes.anonymous_code}`
-        : recorder.attributes.username}
-    </Chip>
+      <Chip key={recorder.id}>
+        {recorder.attributes.anonymize
+          ? `Recorder#${recorder.attributes.anonymous_code}`
+          : recorder.attributes.username}
+      </Chip>
+    </ToolTip>
   );
 }

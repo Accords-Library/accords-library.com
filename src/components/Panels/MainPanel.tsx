@@ -7,6 +7,7 @@ import { GetWebsiteInterfaceQuery } from "graphql/operations-types";
 import Markdown from "markdown-to-jsx";
 import { useMediaDesktop } from "hooks/useMediaQuery";
 import { useAppLayout } from "contexts/AppLayoutContext";
+import ToolTip from "components/ToolTip";
 
 type MainPanelProps = {
   langui: GetWebsiteInterfaceQuery["websiteInterfaces"]["data"][number]["attributes"];
@@ -24,6 +25,20 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
         appLayout.mainPanelReduced && isDesktop && "px-4"
       }`}
     >
+      {/* Reduce/expand main menu */}
+      <div
+        className={`mobile:hidden top-1/2 fixed ${
+          appLayout.mainPanelReduced ? "left-[4.65rem]" : "left-[18.65rem]"
+        }`}
+        onClick={() =>
+          appLayout.setMainPanelReduced(!appLayout.mainPanelReduced)
+        }
+      >
+        <Button className="material-icons bg-light !px-2">
+          {appLayout.mainPanelReduced ? "chevron_right" : "chevron_left"}
+        </Button>
+      </div>
+
       <div>
         <div className="grid place-items-center">
           <Link href="/" passHref>
@@ -48,49 +63,74 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
                 : "flex-row"
             } flex-wrap gap-2`}
           >
-            <Button
-              className={
-                appLayout.mainPanelReduced && isDesktop ? "" : "!py-0.5 !px-2.5"
-              }
-              onClick={() => {
-                appLayout.setConfigPanelOpen(true);
-              }}
+            <ToolTip
+              content={<h3 className="text-2xl">{"Open settings"}</h3>}
+              placement="right"
+              className="text-left"
+              disabled={!appLayout.mainPanelReduced}
             >
-              <span
-                className={`material-icons ${
-                  !(appLayout.mainPanelReduced && isDesktop) && "!text-sm"
-                } `}
-              >
-                settings
-              </span>
-            </Button>
-
-            {router.locale && (
               <Button
-                onClick={() => appLayout.setLanguagePanelOpen(true)}
                 className={
                   appLayout.mainPanelReduced && isDesktop
                     ? ""
-                    : "!py-0.5 !px-2.5 !text-sm"
+                    : "!py-0.5 !px-2.5"
                 }
+                onClick={() => {
+                  appLayout.setConfigPanelOpen(true);
+                }}
               >
-                {router.locale.toUpperCase()}
+                <span
+                  className={`material-icons ${
+                    !(appLayout.mainPanelReduced && isDesktop) && "!text-sm"
+                  } `}
+                >
+                  settings
+                </span>
               </Button>
+            </ToolTip>
+
+            {router.locale && (
+              <ToolTip
+                content={<h3 className="text-2xl">{"Change language"}</h3>}
+                placement="right"
+                className="text-left"
+                disabled={!appLayout.mainPanelReduced}
+              >
+                <Button
+                  onClick={() => appLayout.setLanguagePanelOpen(true)}
+                  className={
+                    appLayout.mainPanelReduced && isDesktop
+                      ? ""
+                      : "!py-0.5 !px-2.5 !text-sm"
+                  }
+                >
+                  {router.locale.toUpperCase()}
+                </Button>
+              </ToolTip>
             )}
 
-            <Button
-              className={
-                appLayout.mainPanelReduced && isDesktop ? "" : "!py-0.5 !px-2.5"
-              }
+            <ToolTip
+              content={<h3 className="text-2xl">{"Open search"}</h3>}
+              placement="right"
+              className="text-left"
+              disabled={!appLayout.mainPanelReduced}
             >
-              <span
-                className={`material-icons ${
-                  !(appLayout.mainPanelReduced && isDesktop) && "!text-sm"
-                } `}
+              <Button
+                className={
+                  appLayout.mainPanelReduced && isDesktop
+                    ? ""
+                    : "!py-0.5 !px-2.5"
+                }
               >
-                search
-              </span>
-            </Button>
+                <span
+                  className={`material-icons ${
+                    !(appLayout.mainPanelReduced && isDesktop) && "!text-sm"
+                  } `}
+                >
+                  search
+                </span>
+              </Button>
+            </ToolTip>
           </div>
         </div>
       </div>
@@ -102,7 +142,6 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
         icon="library_books"
         title={langui.library}
         subtitle={langui.library_short_description}
-        tooltipId="MainPanelTooltip"
         reduced={appLayout.mainPanelReduced && isDesktop}
         onClick={() => appLayout.setMainPanelOpen(false)}
       />
@@ -112,7 +151,6 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
         icon="workspaces"
         title={langui.contents}
         subtitle={langui.contents_short_description}
-        tooltipId="MainPanelTooltip"
         reduced={appLayout.mainPanelReduced && isDesktop}
         onClick={() => appLayout.setMainPanelOpen(false)}
       />
@@ -124,7 +162,7 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
         icon="travel_explore"
         title={langui.wiki}
         subtitle={langui.wiki_short_description}
-        tooltipId="MainPanelTooltip"
+        
         reduced={appLayout.mainPanelReduced && isDesktop}
         onClick={() => appLayout.setMainPanelOpen(false)}
       />
@@ -134,7 +172,7 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
         icon="watch_later"
         title={langui.chronicles}
         subtitle={langui.chronicles_short_description}
-        tooltipId="MainPanelTooltip"
+        
         reduced={appLayout.mainPanelReduced && isDesktop}
         onClick={() => appLayout.setMainPanelOpen(false)}
       />
@@ -147,7 +185,6 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
         url="/news"
         icon="feed"
         title={langui.news}
-        tooltipId="MainPanelTooltip"
         reduced={appLayout.mainPanelReduced && isDesktop}
         onClick={() => appLayout.setMainPanelOpen(false)}
       />
@@ -156,7 +193,7 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
         url="/merch"
         icon="store"
         title={langui.merch}
-        tooltipId="MainPanelTooltip"
+        
         reduced={appLayout.mainPanelReduced && isDesktop}
         onClick={() => appLayout.setMainPanelOpen(false)}
       />
@@ -167,7 +204,6 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
         url="/gallery"
         icon="collections"
         title={langui.gallery}
-        tooltipId="MainPanelTooltip"
         reduced={appLayout.mainPanelReduced && isDesktop}
         onClick={() => appLayout.setMainPanelOpen(false)}
       />
@@ -178,7 +214,7 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
         url="/archives"
         icon="inventory"
         title={langui.archives}
-        tooltipId="MainPanelTooltip"
+        
         reduced={appLayout.mainPanelReduced && isDesktop}
         onClick={() => appLayout.setMainPanelOpen(false)}
       />
@@ -190,7 +226,6 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
         url="/about-us"
         icon="info"
         title={langui.about_us}
-        tooltipId="MainPanelTooltip"
         reduced={appLayout.mainPanelReduced && isDesktop}
         onClick={() => appLayout.setMainPanelOpen(false)}
       />

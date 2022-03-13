@@ -14,6 +14,7 @@ import ThumbnailHeader from "components/Content/ThumbnailHeader";
 import AppLayout from "components/AppLayout";
 import Markdawn from "components/Markdown/Markdawn";
 import {
+  getStatusDescription,
   prettyinlineTitle,
   prettyLanguage,
   prettySlug,
@@ -23,10 +24,10 @@ import {
 import Button from "components/Button";
 import { useRouter } from "next/router";
 import Chip from "components/Chip";
-import ReactTooltip from "react-tooltip";
 import RecorderChip from "components/RecorderChip";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 import TOC from "components/Markdown/TOC";
+import ToolTip from "components/ToolTip";
 
 interface ContentReadProps extends AppStaticProps {
   content: GetContentTextQuery["contents"]["data"][number]["attributes"];
@@ -35,7 +36,7 @@ interface ContentReadProps extends AppStaticProps {
 
 export default function ContentRead(props: ContentReadProps): JSX.Element {
   useTesting(props);
-  const { langui, content } = props;
+  const { langui, content, languages } = props;
   const router = useRouter();
 
   const subPanel = (
@@ -68,7 +69,8 @@ export default function ContentRead(props: ContentReadProps): JSX.Element {
                 }
               >
                 {prettyLanguage(
-                  content.text_set[0].source_language.data.attributes.code
+                  content.text_set[0].source_language.data.attributes.code,
+                  languages
                 )}
               </Button>
             </div>
@@ -77,23 +79,12 @@ export default function ContentRead(props: ContentReadProps): JSX.Element {
           <div className="grid grid-flow-col place-items-center place-content-center gap-2">
             <p className="font-headers">{langui.status}:</p>
 
-            <Chip
-              data-tip={
-                content.text_set[0].status ===
-                Enum_Componentsetstextset_Status.Incomplete
-                  ? langui.status_incomplete
-                  : content.text_set[0].status ===
-                    Enum_Componentsetstextset_Status.Draft
-                  ? langui.status_draft
-                  : content.text_set[0].status ===
-                    Enum_Componentsetstextset_Status.Review
-                  ? langui.status_review
-                  : langui.status_done
-              }
-              data-for={"StatusTooltip"}
+            <ToolTip
+              content={getStatusDescription(content.text_set[0].status, langui)}
+              maxWidth={"20rem"}
             >
-              {content.text_set[0].status}
-            </Chip>
+              <Chip>{content.text_set[0].status}</Chip>
+            </ToolTip>
           </div>
 
           {content.text_set[0].transcribers.data.length > 0 && (
@@ -148,6 +139,7 @@ export default function ContentRead(props: ContentReadProps): JSX.Element {
           <HorizontalLine />
           <TOC
             text={content.text_set[0].text}
+            router={router}
             title={
               content.titles.length > 0
                 ? prettyinlineTitle(
@@ -183,32 +175,6 @@ export default function ContentRead(props: ContentReadProps): JSX.Element {
     </ContentPanel>
   );
 
-  const extra = (
-    <>
-      <ReactTooltip
-        id="StatusTooltip"
-        place="top"
-        type="light"
-        effect="solid"
-        delayShow={50}
-        clickable={true}
-        className="drop-shadow-shade-xl !opacity-100 !bg-light !rounded-lg desktop:after:!border-t-light text-left !text-black max-w-xs"
-      />
-
-      <ReactTooltip
-        id="RecordersTooltip"
-        place="top"
-        type="light"
-        effect="solid"
-        delayShow={100}
-        delayUpdate={100}
-        delayHide={100}
-        clickable={true}
-        className="drop-shadow-shade-xl !opacity-100 !bg-light !rounded-lg desktop:after:!border-t-light text-left !text-black max-w-[22rem]"
-      />
-    </>
-  );
-
   return (
     <AppLayout
       navTitle="Contents"
@@ -224,7 +190,6 @@ export default function ContentRead(props: ContentReadProps): JSX.Element {
       thumbnail={content.thumbnail.data?.attributes}
       contentPanel={contentPanel}
       subPanel={subPanel}
-      extra={extra}
       description={`${langui.type}: ${
         content.type.data.attributes.titles.length > 0
           ? content.type.data.attributes.titles[0].title

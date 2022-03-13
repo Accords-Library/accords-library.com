@@ -14,6 +14,7 @@
   - Markdown format for the rich text fields
 
 #### [Image Processor](https://github.com/Accords-Library/img.accords-library.com)
+
 - Convert the images from the CMS to 4 formats
   - Small: 512x512, quality 60, .webp
   - Medium: 1024x1024, quality 75, .webp

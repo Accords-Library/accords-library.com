@@ -1,17 +1,23 @@
 import Chip from "components/Chip";
+import ToolTip from "components/ToolTip";
 import {
   Enum_Componenttranslationschronologyitem_Status,
   GetChronologyItemsQuery,
+  GetWebsiteInterfaceQuery,
 } from "graphql/operations-types";
+import { getStatusDescription } from "queries/helpers";
 
 export type ChronologyItemComponentProps = {
   item: GetChronologyItemsQuery["chronologyItems"]["data"][number];
   displayYear: boolean;
+  langui: GetWebsiteInterfaceQuery["websiteInterfaces"]["data"][number]["attributes"];
 };
 
 export default function ChronologyItemComponent(
   props: ChronologyItemComponentProps
 ): JSX.Element {
+  const { langui } = props;
+
   function generateAnchor(year: number, month: number, day: number): string {
     let result: string = "";
     result += year;
@@ -85,23 +91,12 @@ export default function ChronologyItemComponent(
                 <div className="place-items-start place-content-start grid grid-flow-col gap-2">
                   {translation.status !==
                     Enum_Componenttranslationschronologyitem_Status.Done && (
-                    <Chip
-                      data-tip={
-                        translation.status ===
-                        Enum_Componenttranslationschronologyitem_Status.Incomplete
-                          ? "This entry is only partially translated/transcribed."
-                          : translation.status ===
-                            Enum_Componenttranslationschronologyitem_Status.Draft
-                          ? "This entry is just a draft. It usually means that this is a work-in-progress. Translation/transcription might be poor and/or computer-generated."
-                          : translation.status ===
-                            Enum_Componenttranslationschronologyitem_Status.Review
-                          ? "This entry has not yet being proofread. The content should still be accurate."
-                          : ""
-                      }
-                      data-for={"ChronologyTooltip"}
+                    <ToolTip
+                      content={getStatusDescription(translation.status, langui)}
+                      maxWidth={"20rem"}
                     >
-                      {translation.status}
-                    </Chip>
+                      <Chip>{translation.status}</Chip>
+                    </ToolTip>
                   )}
                   {translation.title ? <h3>{translation.title}</h3> : ""}
                 </div>

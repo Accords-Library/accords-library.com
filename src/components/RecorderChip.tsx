@@ -59,7 +59,6 @@ export default function RecorderChip(props: RecorderChipProps): JSX.Element {
         </div>
       }
       placement="top"
-      trigger="click"
     >
       <Chip key={recorder.id}>
         {recorder.attributes.anonymize

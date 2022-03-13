@@ -11,8 +11,9 @@ export default function ToolTip(props: ToolTipProps): JSX.Element {
   if (newProps.interactive === undefined) newProps.interactive = true;
   if (newProps.animation === undefined) newProps.animation = "scale-subtle";
 
+
   return (
-    <Tippy {...newProps}>
+    <Tippy className={`text-[80%] ${newProps.className}`} {...newProps}>
       <div>{props.children}</div>
     </Tippy>
   );

@@ -15,8 +15,8 @@ export default function TOC(props: TOCProps): JSX.Element {
   return (
     <div>
       <h3 className="text-xl">Table of content</h3>
-      <ol className="text-left">
-        <li className="my-2 overflow-x-hidden w-full text-ellipsis whitespace-nowrap">
+      <ol className="text-left max-w-[14.5rem]">
+        <li className="my-2 overflow-x-hidden relative text-ellipsis whitespace-nowrap">
           <a className="" onClick={() => router.replace(`#${toc.slug}`)}>
             {<abbr title={toc.title}>{toc.title}</abbr>}
           </a>

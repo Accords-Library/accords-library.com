@@ -72,7 +72,6 @@ module.exports = {
     },
   },
   plugins: [
-
     plugin(function ({ addUtilities }) {
       addUtilities({
         ".set-theme-light": {

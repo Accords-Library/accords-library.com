@@ -25,7 +25,7 @@ interface ChronologyProps extends AppStaticProps {
 
 export default function Chronology(props: ChronologyProps): JSX.Element {
   useTesting(props);
-  const { chronologyItems, chronologyEras } = props;
+  const { chronologyItems, chronologyEras, langui } = props;
 
   // Group by year the Chronology items
   let chronologyItemYearGroups: GetChronologyItemsQuery["chronologyItems"]["data"][number][][][] =
@@ -102,6 +102,7 @@ export default function Chronology(props: ChronologyProps): JSX.Element {
               key={`${eraIndex}-${index}`}
               year={items[0].attributes.year}
               items={items}
+              langui={langui}
             />
           ))}
         </>

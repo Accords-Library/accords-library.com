@@ -4,6 +4,7 @@ import {
   ImageQuality,
 } from "components/Img";
 import {
+  Enum_Componentsetstextset_Status,
   GetCurrenciesQuery,
   GetLanguagesQuery,
   GetLibraryItemQuery,
@@ -249,6 +250,28 @@ export function sortContent(
     }
     return 0;
   });
+}
+
+export function getStatusDescription(
+  status: string,
+  langui: GetWebsiteInterfaceQuery["websiteInterfaces"]["data"][number]["attributes"]
+): string {
+  switch (status) {
+    case Enum_Componentsetstextset_Status.Incomplete:
+      return langui.status_incomplete;
+
+    case Enum_Componentsetstextset_Status.Draft:
+      return langui.status_draft;
+
+    case Enum_Componentsetstextset_Status.Review:
+      return langui.status_review;
+
+    case Enum_Componentsetstextset_Status.Done:
+      return langui.status_done;
+
+    default:
+      return "";
+  }
 }
 
 export function slugify(str: string): string {

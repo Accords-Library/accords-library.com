@@ -3,15 +3,17 @@ import { useEffect, useState } from "react";
 type ToolTipProps = {
   hovered: boolean;
   children: React.ReactNode;
-  delayShow?: number;
   direction: "right" | "bottom" | "top" | "left";
   offset: string;
+  delayShow?: number;
+  maxWidth?: "max-w-[10rem]" | "max-w-xs" | "max-w-sm" | "max-w-md";
 };
 
 export default function ToolTip(props: ToolTipProps): JSX.Element {
   const { children, hovered, direction, offset } = props;
-  let { delayShow } = props;
-  if (delayShow === undefined) delayShow = 500;
+  let { delayShow, maxWidth } = props;
+  if (delayShow === undefined) delayShow = 300;
+  if (maxWidth === undefined) maxWidth = "max-w-sm";
 
   const [show, setShow] = useState(false);
 
@@ -62,7 +64,7 @@ export default function ToolTip(props: ToolTipProps): JSX.Element {
 
   return (
     <div
-      className={`fixed z-[100] drop-shadow-shade-xl transition-opacity max-w-sm ${
+      className={`fixed z-[100] drop-shadow-shade-xl transition-opacity ${maxWidth} ${
         show
           ? "opacity-100 pointer-events-auto"
           : "opacity-0 pointer-events-none"
@@ -74,7 +76,7 @@ export default function ToolTip(props: ToolTipProps): JSX.Element {
           className={`w-0 h-0 border-8 border-[transparent] place-self-center ${arrowCSS}`}
         />
       </div>
-      <div className="p-2 px-4 bg-light rounded-md">{children}</div>
+      <div className="p-4 px-6 bg-light rounded-md">{children}</div>
     </div>
   );
 }

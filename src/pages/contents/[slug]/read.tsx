@@ -14,6 +14,7 @@ import ThumbnailHeader from "components/Content/ThumbnailHeader";
 import AppLayout from "components/AppLayout";
 import Markdawn from "components/Markdown/Markdawn";
 import {
+  getStatusDescription,
   prettyinlineTitle,
   prettyLanguage,
   prettySlug,
@@ -26,6 +27,8 @@ import Chip from "components/Chip";
 import RecorderChip from "components/RecorderChip";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 import TOC from "components/Markdown/TOC";
+import ToolTip from "components/ToolTip";
+import { useState } from "react";
 
 interface ContentReadProps extends AppStaticProps {
   content: GetContentTextQuery["contents"]["data"][number]["attributes"];
@@ -36,6 +39,8 @@ export default function ContentRead(props: ContentReadProps): JSX.Element {
   useTesting(props);
   const { langui, content, languages } = props;
   const router = useRouter();
+
+  const [statusHovered, setStatusHovered] = useState(false);
 
   const subPanel = (
     <SubPanel>
@@ -77,7 +82,23 @@ export default function ContentRead(props: ContentReadProps): JSX.Element {
           <div className="grid grid-flow-col place-items-center place-content-center gap-2">
             <p className="font-headers">{langui.status}:</p>
 
-            <Chip>{content.text_set[0].status}</Chip>
+            <Chip
+              onMouseEnter={() => setStatusHovered(true)}
+              onMouseLeave={() => setStatusHovered(false)}
+            >
+              {content.text_set[0].status}
+              <ToolTip
+                direction="top"
+                hovered={statusHovered}
+                offset={"1.5rem"}
+                maxWidth="max-w-[10rem]"
+                delayShow={100}
+              >
+                <p>
+                  {getStatusDescription(content.text_set[0].status, langui)}
+                </p>
+              </ToolTip>
+            </Chip>
           </div>
 
           {content.text_set[0].transcribers.data.length > 0 && (

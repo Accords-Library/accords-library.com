@@ -65,7 +65,7 @@ export default function ThumbnailHeader(
       </div>
 
       <div className="grid grid-flow-col gap-8">
-        {content.type && (
+        {content.type.data && (
           <div className="flex flex-col place-items-center gap-2">
             <h3 className="text-xl">{langui.type}</h3>
             <div className="flex flex-row flex-wrap">

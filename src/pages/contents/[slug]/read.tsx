@@ -49,7 +49,7 @@ export default function ContentRead(props: ContentReadProps): JSX.Element {
         horizontalLine
       />
 
-      {content.text_set.length > 0 && (
+      {content.text_set.length > 0 && content.text_set[0].source_language.data && (
         <div className="grid gap-5">
           <h2 className="text-xl">
             {content.text_set[0].source_language.data.attributes.code ===
@@ -175,6 +175,26 @@ export default function ContentRead(props: ContentReadProps): JSX.Element {
     </ContentPanel>
   );
 
+  let description = "";
+  if (content.type.data) {
+    description += `${langui.type}: `;
+    if (content.type.data.attributes.titles.length > 0) {
+      description += content.type.data.attributes.titles[0].title;
+    } else {
+      description += prettySlug(content.type.data.attributes.slug);
+    }
+    description += "\n";
+  }
+  if (content.categories.data.length > 0) {
+    description += `${langui.categories}: `;
+    description += content.categories.data
+      .map((category) => {
+        return category.attributes.short;
+      })
+      .join(" | ");
+    description += "\n";
+  }
+
   return (
     <AppLayout
       navTitle="Contents"
@@ -190,22 +210,7 @@ export default function ContentRead(props: ContentReadProps): JSX.Element {
       thumbnail={content.thumbnail.data?.attributes}
       contentPanel={contentPanel}
       subPanel={subPanel}
-      description={`${langui.type}: ${
-        content.type.data.attributes.titles.length > 0
-          ? content.type.data.attributes.titles[0].title
-          : prettySlug(content.type.data.attributes.slug)
-      }
-      ${langui.categories}: ${
-        content.categories.data.length > 0 &&
-        content.categories.data
-          .map((category) => {
-            return category.attributes.short;
-          })
-          .join(" | ")
-      }
-         
-        ${content.titles.length > 0 ? content.titles[0].description : undefined}
-        `}
+      description={description}
       {...props}
     />
   );
@@ -308,42 +313,43 @@ export function useTesting(props: ContentReadProps) {
         ["content", "text_set"],
         contentURL
       );
-    }
-    if (textset.source_language.data.attributes.code === router.locale) {
-      // This is a transcript
-      if (textset.transcribers.data.length === 0) {
-        prettyTestError(
-          router,
-          "Missing transcribers attribution",
-          ["content", "text_set"],
-          contentURL
-        );
-      }
-      if (textset.translators.data.length > 0) {
-        prettyTestError(
-          router,
-          "Transcripts shouldn't have translators",
-          ["content", "text_set"],
-          contentURL
-        );
-      }
     } else {
-      // This is a translation
-      if (textset.translators.data.length === 0) {
-        prettyTestError(
-          router,
-          "Missing translators attribution",
-          ["content", "text_set"],
-          contentURL
-        );
-      }
-      if (textset.transcribers.data.length > 0) {
-        prettyTestError(
-          router,
-          "Translations shouldn't have transcribers",
-          ["content", "text_set"],
-          contentURL
-        );
+      if (textset.source_language.data.attributes.code === router.locale) {
+        // This is a transcript
+        if (textset.transcribers.data.length === 0) {
+          prettyTestError(
+            router,
+            "Missing transcribers attribution",
+            ["content", "text_set"],
+            contentURL
+          );
+        }
+        if (textset.translators.data.length > 0) {
+          prettyTestError(
+            router,
+            "Transcripts shouldn't have translators",
+            ["content", "text_set"],
+            contentURL
+          );
+        }
+      } else {
+        // This is a translation
+        if (textset.translators.data.length === 0) {
+          prettyTestError(
+            router,
+            "Missing translators attribution",
+            ["content", "text_set"],
+            contentURL
+          );
+        }
+        if (textset.transcribers.data.length > 0) {
+          prettyTestError(
+            router,
+            "Translations shouldn't have transcribers",
+            ["content", "text_set"],
+            contentURL
+          );
+        }
       }
     }
   }

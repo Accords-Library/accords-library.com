@@ -22,6 +22,22 @@ export default function Markdawn(props: ScenBreakProps): JSX.Element {
         options={{
           slugify: slugify,
           overrides: {
+            h1: {
+              component: (props: {
+                id: string;
+                style: React.CSSProperties;
+                children: React.ReactNode;
+              }) => {
+                return (
+                  <div className="flex flex-row place-items-center place-content-center gap-3">
+                    <h1 id={props.id} style={props.style}>
+                      {props.children}
+                    </h1>
+                    <HeaderToolTip id={props.id} />
+                  </div>
+                );
+              },
+            },
             h2: {
               component: (props: {
                 id: string;
@@ -33,23 +49,7 @@ export default function Markdawn(props: ScenBreakProps): JSX.Element {
                     <h2 id={props.id} style={props.style}>
                       {props.children}
                     </h2>
-                    <ToolTip content={"Copy anchor link"} trigger="mouseenter">
-                      <ToolTip content={"Copied! 👍"} trigger="click">
-                        <span
-                          className="material-icons transition-color hover:text-dark cursor-pointer"
-                          onClick={() => {
-                            navigator.clipboard.writeText(
-                              process.env.NEXT_PUBLIC_URL_SELF +
-                                window.location.pathname +
-                                "#" +
-                                props.id
-                            );
-                          }}
-                        >
-                          link
-                        </span>
-                      </ToolTip>
-                    </ToolTip>
+                    <HeaderToolTip id={props.id} />
                   </div>
                 );
               },
@@ -65,23 +65,55 @@ export default function Markdawn(props: ScenBreakProps): JSX.Element {
                     <h3 id={props.id} style={props.style}>
                       {props.children}
                     </h3>
-                    <ToolTip content={"Copy anchor link"} trigger="mouseenter">
-                      <ToolTip content={"Copied! 👍"} trigger="click">
-                        <span
-                          className="material-icons transition-color hover:text-dark cursor-pointer"
-                          onClick={() => {
-                            navigator.clipboard.writeText(
-                              process.env.NEXT_PUBLIC_URL_SELF +
-                                window.location.pathname +
-                                "#" +
-                                props.id
-                            );
-                          }}
-                        >
-                          link
-                        </span>
-                      </ToolTip>
-                    </ToolTip>
+                    <HeaderToolTip id={props.id} />
+                  </div>
+                );
+              },
+            },
+            h4: {
+              component: (props: {
+                id: string;
+                style: React.CSSProperties;
+                children: React.ReactNode;
+              }) => {
+                return (
+                  <div className="flex flex-row place-items-center place-content-center gap-3">
+                    <h4 id={props.id} style={props.style}>
+                      {props.children}
+                    </h4>
+                    <HeaderToolTip id={props.id} />
+                  </div>
+                );
+              },
+            },
+            h5: {
+              component: (props: {
+                id: string;
+                style: React.CSSProperties;
+                children: React.ReactNode;
+              }) => {
+                return (
+                  <div className="flex flex-row place-items-center place-content-center gap-3">
+                    <h5 id={props.id} style={props.style}>
+                      {props.children}
+                    </h5>
+                    <HeaderToolTip id={props.id} />
+                  </div>
+                );
+              },
+            },
+            h6: {
+              component: (props: {
+                id: string;
+                style: React.CSSProperties;
+                children: React.ReactNode;
+              }) => {
+                return (
+                  <div className="flex flex-row place-items-center place-content-center gap-3">
+                    <h6 id={props.id} style={props.style}>
+                      {props.children}
+                    </h6>
+                    <HeaderToolTip id={props.id} />
                   </div>
                 );
               },
@@ -176,6 +208,28 @@ export default function Markdawn(props: ScenBreakProps): JSX.Element {
     );
   }
   return <></>;
+}
+
+function HeaderToolTip(props: { id: string }) {
+  return (
+    <ToolTip content={"Copy anchor link"} trigger="mouseenter">
+      <ToolTip content={"Copied! 👍"} trigger="click">
+        <span
+          className="material-icons transition-color hover:text-dark cursor-pointer"
+          onClick={() => {
+            navigator.clipboard.writeText(
+              process.env.NEXT_PUBLIC_URL_SELF +
+                window.location.pathname +
+                "#" +
+                props.id
+            );
+          }}
+        >
+          link
+        </span>
+      </ToolTip>
+    </ToolTip>
+  );
 }
 
 export function preprocessMarkDawn(text: string): string {

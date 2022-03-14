@@ -180,12 +180,65 @@ export default function Markdawn(props: ScenBreakProps): JSX.Element {
 
 export function preprocessMarkDawn(text: string): string {
   let scenebreakIndex = 0;
+  const visitedSlugs: string[] = [];
+
   const result = text.split("\n").map((line) => {
     if (line === "* * *" || line === "---") {
       scenebreakIndex++;
       return `<SceneBreak id="scene-break-${scenebreakIndex}">`;
     }
+
+    if (line.startsWith("# ")) {
+      return markdawnHeadersParser(headerLevels.h1, line, visitedSlugs);
+    }
+
+    if (line.startsWith("## ")) {
+      return markdawnHeadersParser(headerLevels.h2, line, visitedSlugs);
+    }
+
+    if (line.startsWith("### ")) {
+      return markdawnHeadersParser(headerLevels.h3, line, visitedSlugs);
+    }
+
+    if (line.startsWith("#### ")) {
+      return markdawnHeadersParser(headerLevels.h4, line, visitedSlugs);
+    }
+
+    if (line.startsWith("##### ")) {
+      return markdawnHeadersParser(headerLevels.h5, line, visitedSlugs);
+    }
+
+    if (line.startsWith("###### ")) {
+      return markdawnHeadersParser(headerLevels.h6, line, visitedSlugs);
+    }
+
     return line;
   });
   return result.join("\n");
+}
+
+enum headerLevels {
+  h1 = 1,
+  h2 = 2,
+  h3 = 3,
+  h4 = 4,
+  h5 = 5,
+  h6 = 6,
+}
+
+function markdawnHeadersParser(
+  headerLevel: headerLevels,
+  line: string,
+  visitedSlugs: string[]
+): string {
+  const lineText = line.slice(headerLevel + 1);
+  let slug = slugify(lineText);
+  let newSlug = slug;
+  let index = 2;
+  while (visitedSlugs.includes(newSlug)) {
+    newSlug = `${slug}-${index}`;
+    index++;
+  }
+  visitedSlugs.push(newSlug);
+  return `<${headerLevels[headerLevel]} id="${newSlug}">${lineText}</${headerLevels[headerLevel]}>`;
 }

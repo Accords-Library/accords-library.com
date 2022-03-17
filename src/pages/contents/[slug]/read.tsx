@@ -1,9 +1,6 @@
 import { GetStaticPaths, GetStaticProps } from "next";
 import { getContentsSlugs, getContentText } from "graphql/operations";
-import {
-  Enum_Componentsetstextset_Status,
-  GetContentTextQuery,
-} from "graphql/operations-types";
+import { GetContentTextQuery } from "graphql/operations-types";
 import ContentPanel from "components/Panels/ContentPanel";
 import HorizontalLine from "components/HorizontalLine";
 import SubPanel from "components/Panels/SubPanel";
@@ -158,13 +155,34 @@ export default function ContentRead(props: ContentReadProps): JSX.Element {
     <ContentPanel>
       <ReturnButton
         href={`/contents/${content.slug}`}
-        title={"Content"}
+        title={langui.content}
         langui={langui}
         displayOn={ReturnButtonType.Mobile}
         className="mb-10"
       />
       <div className="grid place-items-center">
-        <ThumbnailHeader content={content} langui={langui} />
+        <ThumbnailHeader
+          thumbnail={content.thumbnail}
+          pre_title={
+            content.titles.length > 0 ? content.titles[0].pre_title : undefined
+          }
+          title={
+            content.titles.length > 0
+              ? content.titles[0].title
+              : prettySlug(content.slug)
+          }
+          subtitle={
+            content.titles.length > 0 ? content.titles[0].subtitle : undefined
+          }
+          description={
+            content.titles.length > 0
+              ? content.titles[0].description
+              : undefined
+          }
+          type={content.type}
+          categories={content.categories}
+          langui={langui}
+        />
 
         <HorizontalLine />
 

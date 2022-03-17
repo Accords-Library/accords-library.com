@@ -1554,8 +1554,13 @@ export type GetPostQuery = {
       attributes: {
         __typename: "Post";
         slug: string;
-        publishedAt: any;
         updatedAt: any;
+        date: {
+          __typename: "ComponentBasicsDatepicker";
+          year: number;
+          month: number;
+          day: number;
+        };
         hidden: boolean;
         authors: {
           __typename: "RecorderRelationResponseCollection";
@@ -1609,12 +1614,109 @@ export type GetPostQuery = {
             };
           }>;
         };
+        thumbnail: {
+          __typename: "UploadFileEntityResponse";
+          data: {
+            __typename: "UploadFileEntity";
+            attributes: {
+              __typename: "UploadFile";
+              name: string;
+              alternativeText: string;
+              caption: string;
+              width: number;
+              height: number;
+              url: string;
+            };
+          };
+        };
         translations: Array<{
           __typename: "ComponentTranslationsPosts";
-          Status: Enum_Componenttranslationsposts_Status;
+          status: Enum_Componenttranslationsposts_Status;
           title: string;
           excerpt: string;
           body: string;
+          thumbnail: {
+            __typename: "UploadFileEntityResponse";
+            data: {
+              __typename: "UploadFileEntity";
+              attributes: {
+                __typename: "UploadFile";
+                name: string;
+                alternativeText: string;
+                caption: string;
+                width: number;
+                height: number;
+                url: string;
+              };
+            };
+          };
+        }>;
+      };
+    }>;
+  };
+};
+
+export type GetPostsSlugsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetPostsSlugsQuery = {
+  __typename: "Query";
+  posts: {
+    __typename: "PostEntityResponseCollection";
+    data: Array<{
+      __typename: "PostEntity";
+      id: string;
+      attributes: { __typename: "Post"; slug: string };
+    }>;
+  };
+};
+
+export type GetPostsPreviewQueryVariables = Exact<{
+  language_code: InputMaybe<Scalars["String"]>;
+}>;
+
+export type GetPostsPreviewQuery = {
+  __typename: "Query";
+  posts: {
+    __typename: "PostEntityResponseCollection";
+    data: Array<{
+      __typename: "PostEntity";
+      id: string;
+      attributes: {
+        __typename: "Post";
+        slug: string;
+        date: {
+          __typename: "ComponentBasicsDatepicker";
+          year: number;
+          month: number;
+          day: number;
+        };
+        categories: {
+          __typename: "CategoryRelationResponseCollection";
+          data: Array<{
+            __typename: "CategoryEntity";
+            id: string;
+            attributes: { __typename: "Category"; short: string };
+          }>;
+        };
+        thumbnail: {
+          __typename: "UploadFileEntityResponse";
+          data: {
+            __typename: "UploadFileEntity";
+            attributes: {
+              __typename: "UploadFile";
+              name: string;
+              alternativeText: string;
+              caption: string;
+              width: number;
+              height: number;
+              url: string;
+            };
+          };
+        };
+        translations: Array<{
+          __typename: "ComponentTranslationsPosts";
+          title: string;
+          excerpt: string;
           thumbnail: {
             __typename: "UploadFileEntityResponse";
             data: {

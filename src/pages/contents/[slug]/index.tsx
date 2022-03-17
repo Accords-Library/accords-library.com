@@ -40,7 +40,28 @@ export default function ContentIndex(props: ContentIndexProps): JSX.Element {
         className="mb-10"
       />
       <div className="grid place-items-center">
-        <ThumbnailHeader content={content} langui={langui} />
+        <ThumbnailHeader
+          thumbnail={content.thumbnail}
+          pre_title={
+            content.titles.length > 0 ? content.titles[0].pre_title : undefined
+          }
+          title={
+            content.titles.length > 0
+              ? content.titles[0].title
+              : prettySlug(content.slug)
+          }
+          subtitle={
+            content.titles.length > 0 ? content.titles[0].subtitle : undefined
+          }
+          description={
+            content.titles.length > 0
+              ? content.titles[0].description
+              : undefined
+          }
+          type={content.type}
+          categories={content.categories}
+          langui={langui}
+        />
 
         <HorizontalLine />
 

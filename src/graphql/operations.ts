@@ -25,6 +25,10 @@ import {
   GetLibraryItemsSlugsQueryVariables,
   GetPostQuery,
   GetPostQueryVariables,
+  GetPostsPreviewQuery,
+  GetPostsPreviewQueryVariables,
+  GetPostsSlugsQuery,
+  GetPostsSlugsQueryVariables,
   GetWebsiteInterfaceQuery,
   GetWebsiteInterfaceQueryVariables,
 } from "graphql/operations-types";
@@ -148,5 +152,19 @@ export async function getPost(
   variables: GetPostQueryVariables
 ): Promise<GetPostQuery> {
   const query = getQueryFromOperations("getPost");
+  return await graphQL(query, JSON.stringify(variables));
+}
+
+export async function getPostsSlugs(
+  variables: GetPostsSlugsQueryVariables
+): Promise<GetPostsSlugsQuery> {
+  const query = getQueryFromOperations("getPostsSlugs");
+  return await graphQL(query, JSON.stringify(variables));
+}
+
+export async function getPostsPreview(
+  variables: GetPostsPreviewQueryVariables
+): Promise<GetPostsPreviewQuery> {
+  const query = getQueryFromOperations("getPostsPreview");
   return await graphQL(query, JSON.stringify(variables));
 }

@@ -167,7 +167,7 @@ export default function Markdawn(props: ScenBreakProps): JSX.Element {
             },
             InsetBox: {
               component: (props) => {
-                return <InsetBox>{props.children}</InsetBox>;
+                return <InsetBox className="my-12">{props.children}</InsetBox>;
               },
             },
             li: {

@@ -40,7 +40,28 @@ export default function ContentIndex(props: ContentIndexProps): JSX.Element {
         className="mb-10"
       />
       <div className="grid place-items-center">
-        <ThumbnailHeader content={content} langui={langui} />
+        <ThumbnailHeader
+          thumbnail={content.thumbnail}
+          pre_title={
+            content.titles.length > 0 ? content.titles[0].pre_title : undefined
+          }
+          title={
+            content.titles.length > 0
+              ? content.titles[0].title
+              : prettySlug(content.slug)
+          }
+          subtitle={
+            content.titles.length > 0 ? content.titles[0].subtitle : undefined
+          }
+          description={
+            content.titles.length > 0
+              ? content.titles[0].description
+              : undefined
+          }
+          type={content.type}
+          categories={content.categories}
+          langui={langui}
+        />
 
         <HorizontalLine />
 
@@ -65,6 +86,31 @@ export default function ContentIndex(props: ContentIndexProps): JSX.Element {
     </ContentPanel>
   );
 
+  let description = "";
+  if (content.type.data) {
+    description += `${langui.type}: `;
+    if (content.type.data.attributes.titles.length > 0) {
+      description += content.type.data.attributes.titles[0].title;
+    } else {
+      description += prettySlug(content.type.data.attributes.slug);
+    }
+    description += "\n";
+  }
+  if (content.categories.data.length > 0) {
+    description += `${langui.categories}: `;
+    description += content.categories.data
+      .map((category) => {
+        return category.attributes.short;
+      })
+      .join(" | ");
+    description += "\n";
+  }
+
+  if (content.titles.length > 0 && content.titles[0].description) {
+    description += "\n";
+    description += content.titles[0].description;
+  }
+
   return (
     <AppLayout
       navTitle="Contents"
@@ -80,22 +126,7 @@ export default function ContentIndex(props: ContentIndexProps): JSX.Element {
       thumbnail={content.thumbnail.data?.attributes}
       contentPanel={contentPanel}
       subPanel={subPanel}
-      description={`${langui.type}: ${
-        content.type.data.attributes.titles.length > 0
-          ? content.type.data.attributes.titles[0].title
-          : prettySlug(content.type.data.attributes.slug)
-      }
-      ${langui.categories}: ${
-        content.categories.data.length > 0 &&
-        content.categories.data
-          .map((category) => {
-            return category.attributes.short;
-          })
-          .join(" | ")
-      }
-         
-        ${content.titles.length > 0 ? content.titles[0].description : undefined}
-        `}
+      description={description}
       {...props}
     />
   );

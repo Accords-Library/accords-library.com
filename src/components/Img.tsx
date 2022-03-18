@@ -50,7 +50,7 @@ export function getImgSizesByQuality(
 
 type ImgProps = {
   className?: string;
-  image: StrapiImage;
+  image?: StrapiImage;
   quality?: ImageQuality;
   alt?: ImageProps["alt"];
   layout?: ImageProps["layout"];
@@ -60,42 +60,46 @@ type ImgProps = {
 };
 
 export default function Img(props: ImgProps): JSX.Element {
-  const imgSize = getImgSizesByQuality(
-    props.image.width,
-    props.image.height,
-    props.quality ? props.quality : ImageQuality.Small
-  );
+  if (props.image) {
+    const imgSize = getImgSizesByQuality(
+      props.image.width,
+      props.image.height,
+      props.quality ? props.quality : ImageQuality.Small
+    );
 
-  if (props.rawImg) {
-    return (
-      // eslint-disable-next-line @next/next/no-img-element
-      <img
-        className={props.className}
-        src={getAssetURL(
-          props.image.url,
-          props.quality ? props.quality : ImageQuality.Small
-        )}
-        alt={props.alt ? props.alt : props.image.alternativeText}
-        width={imgSize.width}
-        height={imgSize.height}
-      />
-    );
+    if (props.rawImg) {
+      return (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          className={props.className}
+          src={getAssetURL(
+            props.image.url,
+            props.quality ? props.quality : ImageQuality.Small
+          )}
+          alt={props.alt ? props.alt : props.image.alternativeText}
+          width={imgSize.width}
+          height={imgSize.height}
+        />
+      );
+    } else {
+      return (
+        <Image
+          className={props.className}
+          src={getAssetURL(
+            props.image.url,
+            props.quality ? props.quality : ImageQuality.Small
+          )}
+          alt={props.alt ? props.alt : props.image.alternativeText}
+          width={props.layout === "fill" ? undefined : imgSize.width}
+          height={props.layout === "fill" ? undefined : imgSize.height}
+          layout={props.layout}
+          objectFit={props.objectFit}
+          priority={props.priority}
+          unoptimized
+        />
+      );
+    }
   } else {
-    return (
-      <Image
-        className={props.className}
-        src={getAssetURL(
-          props.image.url,
-          props.quality ? props.quality : ImageQuality.Small
-        )}
-        alt={props.alt ? props.alt : props.image.alternativeText}
-        width={props.layout === "fill" ? undefined : imgSize.width}
-        height={props.layout === "fill" ? undefined : imgSize.height}
-        layout={props.layout}
-        objectFit={props.objectFit}
-        priority={props.priority}
-        unoptimized
-      />
-    );
+    return <></>;
   }
 }

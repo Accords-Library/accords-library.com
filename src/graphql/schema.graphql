@@ -26,11 +26,6 @@ type ResponseCollectionMeta {
   pagination: Pagination!
 }
 
-enum PublicationState {
-  LIVE
-  PREVIEW
-}
-
 input IDFilterInput {
   and: [ID]
   or: [ID]
@@ -387,6 +382,8 @@ input ComponentCollectionsComponentLibraryObiBeltInput {
   back: ID
   full: ID
   inside_full: ID
+  flap_front: ID
+  flap_back: ID
 }
 
 type ComponentCollectionsComponentLibraryObiBelt {
@@ -396,6 +393,8 @@ type ComponentCollectionsComponentLibraryObiBelt {
   back: UploadFileEntityResponse
   full: UploadFileEntityResponse
   inside_full: UploadFileEntityResponse
+  flap_front: UploadFileEntityResponse
+  flap_back: UploadFileEntityResponse
 }
 
 input ComponentCollectionsComponentTitlesFiltersInput {
@@ -1057,11 +1056,11 @@ enum ENUM_COMPONENTTRANSLATIONSPOSTS_STATUS {
 }
 
 input ComponentTranslationsPostsFiltersInput {
-  Status: StringFilterInput
   title: StringFilterInput
   excerpt: StringFilterInput
   body: StringFilterInput
   language: LanguageFiltersInput
+  status: StringFilterInput
   and: [ComponentTranslationsPostsFiltersInput]
   or: [ComponentTranslationsPostsFiltersInput]
   not: ComponentTranslationsPostsFiltersInput
@@ -1069,22 +1068,22 @@ input ComponentTranslationsPostsFiltersInput {
 
 input ComponentTranslationsPostsInput {
   id: ID
-  Status: ENUM_COMPONENTTRANSLATIONSPOSTS_STATUS
   title: String
   excerpt: String
   thumbnail: ID
   body: String
   language: ID
+  status: ENUM_COMPONENTTRANSLATIONSPOSTS_STATUS
 }
 
 type ComponentTranslationsPosts {
   id: ID!
-  Status: ENUM_COMPONENTTRANSLATIONSPOSTS_STATUS!
   title: String!
   excerpt: String
   thumbnail: UploadFileEntityResponse
   body: String
   language: LanguageEntityResponse
+  status: ENUM_COMPONENTTRANSLATIONSPOSTS_STATUS!
 }
 
 enum ENUM_COMPONENTTRANSLATIONSSCANSET_STATUS {
@@ -2126,7 +2125,6 @@ input PostFiltersInput {
   hidden: BooleanFilterInput
   createdAt: DateTimeFilterInput
   updatedAt: DateTimeFilterInput
-  publishedAt: DateTimeFilterInput
   and: [PostFiltersInput]
   or: [PostFiltersInput]
   not: PostFiltersInput
@@ -2138,7 +2136,7 @@ input PostInput {
   categories: [ID]
   translations: [ComponentTranslationsPostsInput]
   hidden: Boolean
-  publishedAt: DateTime
+  thumbnail: ID
 }
 
 type Post {
@@ -2159,9 +2157,9 @@ type Post {
     sort: [String] = []
   ): [ComponentTranslationsPosts]
   hidden: Boolean!
+  thumbnail: UploadFileEntityResponse
   createdAt: DateTime
   updatedAt: DateTime
-  publishedAt: DateTime
 }
 
 type PostEntity {
@@ -3206,7 +3204,6 @@ type Query {
     filters: PostFiltersInput
     pagination: PaginationArg = {}
     sort: [String] = []
-    publicationState: PublicationState = LIVE
   ): PostEntityResponseCollection
   rangedContent(id: ID): RangedContentEntityResponse
   rangedContents(

@@ -13,44 +13,55 @@ export default function TOC(props: TOCProps): JSX.Element {
   const toc = getTocFromMarkdawn(preprocessMarkDawn(text), title);
 
   return (
-    <div>
+    <>
       <h3 className="text-xl">Table of content</h3>
-      <ol className="text-left max-w-[14.5rem]">
-        <li className="my-2 overflow-x-hidden relative text-ellipsis whitespace-nowrap">
+      <div className="text-left max-w-[14.5rem]">
+        <p className="my-2 overflow-x-hidden relative text-ellipsis whitespace-nowrap text-left">
           <a className="" onClick={() => router.replace(`#${toc.slug}`)}>
             {<abbr title={toc.title}>{toc.title}</abbr>}
           </a>
-        </li>
-        {toc.children.map((h2, h2Index) => (
-          <>
-            <li
-              key={h2.slug}
-              className="my-2 overflow-x-hidden w-full text-ellipsis whitespace-nowrap"
-            >
-              <span className="text-dark">{`${h2Index + 1}. `}</span>
-              <a onClick={() => router.replace(`#${h2.slug}`)}>
-                {<abbr title={h2.title}>{h2.title}</abbr>}
-              </a>
-            </li>
-            <ol className="pl-4 text-left">
-              {h2.children.map((h3, h3Index) => (
-                <li
-                  key={h3.slug}
-                  className="my-2 overflow-x-hidden w-full text-ellipsis whitespace-nowrap"
-                >
-                  <span className="text-dark">{`${h2Index + 1}.${
-                    h3Index + 1
-                  }. `}</span>
-                  <a onClick={() => router.replace(`#${h3.slug}`)}>
-                    {<abbr title={h3.title}>{h3.title}</abbr>}
-                  </a>
-                </li>
-              ))}
-            </ol>
-          </>
-        ))}
-      </ol>
-    </div>
+        </p>
+        <TOCLevel
+          tocchildren={toc.children}
+          parentNumbering=""
+          router={router}
+        />
+      </div>
+    </>
+  );
+}
+
+type TOCLevelProps = {
+  tocchildren: TOC[];
+  parentNumbering: string;
+  router: NextRouter;
+};
+
+function TOCLevel(props: TOCLevelProps): JSX.Element {
+  const { tocchildren, parentNumbering, router } = props;
+  return (
+    <ol className="pl-4 text-left">
+      {tocchildren.map((child, childIndex) => (
+        <>
+          <li
+            key={child.slug}
+            className="my-2 overflow-x-hidden w-full text-ellipsis whitespace-nowrap"
+          >
+            <span className="text-dark">{`${parentNumbering}${
+              childIndex + 1
+            }.`}</span>
+            <a onClick={() => router.replace(`#${child.slug}`)}>
+              {<abbr title={child.title}>{child.title}</abbr>}
+            </a>
+          </li>
+          <TOCLevel
+            tocchildren={child.children}
+            parentNumbering={`${parentNumbering}${childIndex + 1}.`}
+            router={router}
+          />
+        </>
+      ))}
+    </ol>
   );
 }
 
@@ -69,13 +80,23 @@ export function getTocFromMarkdawn(text: string, title?: string): TOC {
   let h5 = -1;
   let scenebreak = 0;
   let scenebreakIndex = 0;
+
+  function getTitle(line: string): string {
+    return line.slice(line.indexOf(`">`) + 2, line.indexOf("</"));
+  }
+
+  function getSlug(line: string): string {
+    return line.slice(line.indexOf(`id="`) + 4, line.indexOf(`">`));
+  }
+
   text.split("\n").map((line) => {
-    if (line.startsWith("# ")) {
-      toc.slug = slugify(line);
-    } else if (line.startsWith("## ")) {
+    if (line.startsWith("<h1 id=")) {
+      toc.title = getTitle(line);
+      toc.slug = getSlug(line);
+    } else if (line.startsWith("<h2 id=")) {
       toc.children.push({
-        title: line.slice("## ".length),
-        slug: slugify(line),
+        title: getTitle(line),
+        slug: getSlug(line),
         children: [],
       });
       h2++;
@@ -83,74 +104,64 @@ export function getTocFromMarkdawn(text: string, title?: string): TOC {
       h4 = -1;
       h5 = -1;
       scenebreak = 0;
-    } else if (line.startsWith("### ")) {
+    } else if (line.startsWith("<h3 id=")) {
       toc.children[h2].children.push({
-        title: line.slice("### ".length),
-        slug: slugify(line),
+        title: getTitle(line),
+        slug: getSlug(line),
         children: [],
       });
       h3++;
       h4 = -1;
       h5 = -1;
       scenebreak = 0;
-    } else if (line.startsWith("#### ")) {
+    } else if (line.startsWith("<h4 id=")) {
       toc.children[h2].children[h3].children.push({
-        title: line.slice("#### ".length),
-        slug: slugify(line),
+        title: getTitle(line),
+        slug: getSlug(line),
         children: [],
       });
       h4++;
       h5 = -1;
       scenebreak = 0;
-    } else if (line.startsWith("##### ")) {
+    } else if (line.startsWith("<h5 id=")) {
       toc.children[h2].children[h3].children[h4].children.push({
-        title: line.slice("##### ".length),
-        slug: slugify(line),
+        title: getTitle(line),
+        slug: getSlug(line),
         children: [],
       });
       h5++;
       scenebreak = 0;
-    } else if (line.startsWith("###### ")) {
+    } else if (line.startsWith("<h6 id=")) {
       toc.children[h2].children[h3].children[h4].children[h5].children.push({
-        title: line.slice("###### ".length),
-        slug: slugify(line),
+        title: getTitle(line),
+        slug: getSlug(line),
         children: [],
       });
     } else if (line.startsWith(`<SceneBreak`)) {
       scenebreak++;
       scenebreakIndex++;
+
+      const child = {
+        title: `Scene break ${scenebreak}`,
+        slug: slugify(`scene-break-${scenebreakIndex}`),
+        children: [],
+      };
+
       if (h5 >= 0) {
-        toc.children[h2].children[h3].children[h4].children[h5].children.push({
-          title: `Scene break ${scenebreak}`,
-          slug: slugify(`scene-break-${scenebreakIndex}`),
-          children: [],
-        });
+        toc.children[h2].children[h3].children[h4].children[h5].children.push(
+          child
+        );
       } else if (h4 >= 0) {
-        toc.children[h2].children[h3].children[h4].children.push({
-          title: `Scene break ${scenebreak}`,
-          slug: slugify(`scene-break-${scenebreakIndex}`),
-          children: [],
-        });
+        toc.children[h2].children[h3].children[h4].children.push(child);
       } else if (h3 >= 0) {
-        toc.children[h2].children[h3].children.push({
-          title: `Scene break ${scenebreak}`,
-          slug: slugify(`scene-break-${scenebreakIndex}`),
-          children: [],
-        });
+        toc.children[h2].children[h3].children.push(child);
       } else if (h2 >= 0) {
-        toc.children[h2].children.push({
-          title: `Scene break ${scenebreak}`,
-          slug: slugify(`scene-break-${scenebreakIndex}`),
-          children: [],
-        });
+        toc.children[h2].children.push(child);
       } else {
-        toc.children.push({
-          title: `Scene break ${scenebreak}`,
-          slug: slugify(`scene-break-${scenebreakIndex}`),
-          children: [],
-        });
+        toc.children.push(child);
       }
     }
   });
+
   return toc;
 }

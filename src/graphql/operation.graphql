@@ -1155,8 +1155,12 @@ query getPost($slug: String, $language_code: String) {
       id
       attributes {
         slug
-        publishedAt
         updatedAt
+        date {
+          year
+          month
+          day
+        }
         authors {
           data {
             id
@@ -1200,8 +1204,20 @@ query getPost($slug: String, $language_code: String) {
           }
         }
         hidden
+        thumbnail {
+          data {
+            attributes {
+              name
+              alternativeText
+              caption
+              width
+              height
+              url
+            }
+          }
+        }
         translations(filters: { language: { code: { eq: $language_code } } }) {
-          Status
+          status
           title
           excerpt
           thumbnail {
@@ -1217,6 +1233,69 @@ query getPost($slug: String, $language_code: String) {
             }
           }
           body
+        }
+      }
+    }
+  }
+}
+
+query getPostsSlugs {
+  posts(filters: { hidden: { eq: false } }) {
+    data {
+      id
+      attributes {
+        slug
+      }
+    }
+  }
+}
+
+query getPostsPreview($language_code: String) {
+  posts(filters: { hidden: { eq: false } }) {
+    data {
+      id
+      attributes {
+        slug
+        date {
+          year
+          month
+          day
+        }
+        categories {
+          data {
+            id
+            attributes {
+              short
+            }
+          }
+        }
+        thumbnail {
+          data {
+            attributes {
+              name
+              alternativeText
+              caption
+              width
+              height
+              url
+            }
+          }
+        }
+        translations(filters: { language: { code: { eq: $language_code } } }) {
+          title
+          excerpt
+          thumbnail {
+            data {
+              attributes {
+                name
+                alternativeText
+                caption
+                width
+                height
+                url
+              }
+            }
+          }
         }
       }
     }

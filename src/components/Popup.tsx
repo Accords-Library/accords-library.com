@@ -2,12 +2,17 @@ import { Dispatch, SetStateAction } from "react";
 import Button from "./Button";
 
 export type PopupProps = {
-  setState: Dispatch<SetStateAction<boolean | undefined>>;
+  setState:
+    | Dispatch<SetStateAction<boolean>>
+    | Dispatch<SetStateAction<boolean | undefined>>;
   state?: boolean;
   children: React.ReactNode;
+  fillViewport?: boolean;
+  hideBackground?: boolean;
 };
 
 export default function Popup(props: PopupProps): JSX.Element {
+  
   return (
     <div
       className={`fixed inset-0 z-50 grid place-content-center transition-[backdrop-filter] duration-500 ${
@@ -15,6 +20,10 @@ export default function Popup(props: PopupProps): JSX.Element {
           ? "[backdrop-filter:blur(2px)]"
           : "pointer-events-none touch-none"
       }`}
+      onKeyUp={(e) => {
+        if (e.key.match("Escape")) props.setState(false);
+      }}
+      tabIndex={0}
     >
       <div
         className={`fixed bg-shade inset-0 transition-all duration-500 ${
@@ -25,8 +34,12 @@ export default function Popup(props: PopupProps): JSX.Element {
         }}
       />
       <div
-        className={`relative p-10 bg-light rounded-lg shadow-2xl shadow-shade grid gap-4 place-items-center transition-transform ${
+        className={`p-10 grid gap-4 place-items-center transition-transform ${
           props.state ? "scale-100" : "scale-0"
+        } ${props.fillViewport ? "absolute inset-10 top-20" : "relative"} ${
+          props.hideBackground
+            ? ""
+            : "bg-light rounded-lg shadow-2xl shadow-shade"
         }`}
       >
         <Button

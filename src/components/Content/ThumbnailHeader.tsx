@@ -14,7 +14,7 @@ export type ThumbnailHeaderProps = {
   description?: string;
   type?: GetContentQuery["contents"]["data"][number]["attributes"]["type"];
   categories?: GetContentQuery["contents"]["data"][number]["attributes"]["categories"];
-  thumbnail?: GetContentQuery["contents"]["data"][number]["attributes"]["thumbnail"];
+  thumbnail?: GetContentQuery["contents"]["data"][number]["attributes"]["thumbnail"]["data"]["attributes"];
   langui: GetWebsiteInterfaceQuery["websiteInterfaces"]["data"][number]["attributes"];
 };
 
@@ -36,10 +36,10 @@ export default function ThumbnailHeader(
     <>
       <div className="grid place-items-center gap-12 mb-12">
         <div className="drop-shadow-shade-lg">
-          {thumbnail && thumbnail.data ? (
+          {thumbnail ? (
             <Img
               className=" rounded-xl"
-              image={thumbnail.data.attributes}
+              image={thumbnail}
               quality={ImageQuality.Medium}
               priority
             />

@@ -12,7 +12,7 @@ import SubPanel from "components/Panels/SubPanel";
 import RecorderChip from "components/RecorderChip";
 import ToolTip from "components/ToolTip";
 import { getPost, getPostsSlugs } from "graphql/operations";
-import { GetPostQuery } from "graphql/operations-types";
+import { GetPostQuery, StrapiImage } from "graphql/operations-types";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
@@ -26,6 +26,13 @@ interface PostProps extends AppStaticProps {
 export default function LibrarySlug(props: PostProps): JSX.Element {
   const { post, postId, langui } = props;
   const router = useRouter();
+
+  const thumbnail: StrapiImage | undefined =
+    post.translations.length > 0 && post.translations[0].thumbnail.data
+      ? post.translations[0].thumbnail.data.attributes
+      : post.thumbnail.data
+      ? post.thumbnail.data.attributes
+      : undefined;
 
   const subPanel = (
     <SubPanel>
@@ -83,11 +90,7 @@ export default function LibrarySlug(props: PostProps): JSX.Element {
       />
 
       <ThumbnailHeader
-        thumbnail={
-          post.translations.length > 0 && post.translations[0].thumbnail.data
-            ? post.translations[0].thumbnail
-            : post.thumbnail
-        }
+        thumbnail={thumbnail}
         title={
           post.translations.length > 0
             ? post.translations[0].title
@@ -120,7 +123,7 @@ export default function LibrarySlug(props: PostProps): JSX.Element {
       }
       contentPanel={contentPanel}
       subPanel={subPanel}
-      thumbnail={post.translations[0].thumbnail.data?.attributes}
+      thumbnail={thumbnail}
       {...props}
     />
   );

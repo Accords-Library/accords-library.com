@@ -7,7 +7,6 @@ import {
   Enum_Componentmetadatabooks_Binding_Type,
   Enum_Componentmetadatabooks_Page_Order,
   GetLibraryItemQuery,
-  StrapiImage,
 } from "graphql/operations-types";
 import {
   convertMmToInch,
@@ -30,13 +29,12 @@ import Button from "components/Button";
 import AppLayout from "components/AppLayout";
 import LibraryItemsPreview from "components/Library/LibraryItemsPreview";
 import InsetBox from "components/InsetBox";
-import Img, { ImageQuality } from "components/Img";
+import Img, { getAssetURL, ImageQuality } from "components/Img";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { useRouter } from "next/router";
 import ContentTOCLine from "components/Library/ContentTOCLine";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 import { useState } from "react";
-import Popup from "components/Popup";
 import LightBox from "components/LightBox";
 
 interface LibrarySlugProps extends AppStaticProps {
@@ -56,8 +54,9 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
 
   sortContent(item.contents);
 
-  const [lightboxOpened, setLightboxOpened] = useState(false);
-  const [lightboxImage, setLightboxImage] = useState<StrapiImage>();
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxImages, setLightboxImages] = useState([""]);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
 
   const subPanel = (
     <SubPanel>
@@ -112,9 +111,11 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
   const contentPanel = (
     <ContentPanel width={ContentPanelWidthSizes.large}>
       <LightBox
-        image={lightboxImage}
-        setState={setLightboxOpened}
-        state={lightboxOpened}
+        state={lightboxOpen}
+        setState={setLightboxOpen}
+        images={lightboxImages}
+        index={lightboxIndex}
+        setIndex={setLightboxIndex}
       />
 
       <ReturnButton
@@ -128,16 +129,20 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
         <div
           className="drop-shadow-shade-xl w-full h-[50vh] mobile:h-[60vh] desktop:mb-16 relative cursor-pointer"
           onClick={() => {
-            if (item.thumbnail.data) {
-              setLightboxImage(item.thumbnail.data.attributes);
-              setLightboxOpened(true);
-            }
+            setLightboxOpen(true);
+            setLightboxImages([
+              getAssetURL(
+                item.thumbnail.data.attributes.url,
+                ImageQuality.Large
+              ),
+            ]);
+            setLightboxIndex(0);
           }}
         >
           {item.thumbnail.data ? (
             <Img
               image={item.thumbnail.data.attributes}
-              quality={ImageQuality.Medium}
+              quality={ImageQuality.Large}
               layout="fill"
               objectFit="contain"
               priority
@@ -177,13 +182,21 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
           <div id="gallery" className="grid place-items-center gap-8  w-full">
             <h2 className="text-2xl">{langui.gallery}</h2>
             <div className="grid w-full gap-8 items-end grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))]">
-              {item.gallery.data.map((galleryItem) => (
+              {item.gallery.data.map((galleryItem, index) => (
                 <div
                   key={galleryItem.id}
                   className="relative aspect-square hover:scale-[1.02] transition-transform cursor-pointer"
                   onClick={() => {
-                    setLightboxImage(galleryItem.attributes);
-                    setLightboxOpened(true);
+                    setLightboxOpen(true);
+                    setLightboxImages(
+                      item.gallery.data.map((image) => {
+                        return getAssetURL(
+                          image.attributes.url,
+                          ImageQuality.Large
+                        );
+                      })
+                    );
+                    setLightboxIndex(index);
                   }}
                 >
                   <div className="bg-light absolute inset-0 rounded-lg drop-shadow-shade-md"></div>

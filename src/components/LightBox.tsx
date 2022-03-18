@@ -1,31 +1,36 @@
-import { StrapiImage } from "graphql/operations-types";
 import { Dispatch, SetStateAction } from "react";
-import Img, { ImageQuality } from "./Img";
-import Popup from "./Popup";
+import Lightbox from "react-image-lightbox";
 
 export type LightBoxProps = {
   setState:
     | Dispatch<SetStateAction<boolean>>
     | Dispatch<SetStateAction<boolean | undefined>>;
   state: boolean;
-  image?: StrapiImage;
+  images: string[];
+  index: number;
+  setIndex: Dispatch<SetStateAction<number>>;
 };
 
 export default function LightBox(props: LightBoxProps): JSX.Element {
+  const { state, setState, images, index, setIndex } = props;
   return (
-    <Popup
-      setState={props.setState}
-      state={props.state}
-      fillViewport
-      hideBackground
-    >
-      <Img
-        className="rounded-lg"
-        image={props.image}
-        layout="fill"
-        objectFit="contain"
-        quality={ImageQuality.Large}
-      />
-    </Popup>
+    <>
+      {state && (
+        <Lightbox
+          reactModalProps={{
+            parentSelector: () => document.getElementById("MyAppLayout"),
+          }}
+          mainSrc={images[index]}
+          prevSrc={index > 0 ? images[index - 1] : undefined}
+          nextSrc={index < images.length ? images[index + 1] : undefined}
+          onMovePrevRequest={() => setIndex(index - 1)}
+          onMoveNextRequest={() => setIndex(index + 1)}
+          imageCaption=""
+          imageTitle=""
+          onCloseRequest={() => setState(false)}
+          imagePadding={50}
+        />
+      )}
+    </>
   );
 }

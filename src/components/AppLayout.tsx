@@ -111,6 +111,7 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
 
   return (
     <div
+      id="MyAppLayout"
       className={`${
         appLayout.darkMode ? "set-theme-dark" : "set-theme-light"
       } ${

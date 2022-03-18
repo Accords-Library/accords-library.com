@@ -41,7 +41,7 @@ export default function ContentIndex(props: ContentIndexProps): JSX.Element {
       />
       <div className="grid place-items-center">
         <ThumbnailHeader
-          thumbnail={content.thumbnail}
+          thumbnail={content.thumbnail.data?.attributes}
           pre_title={
             content.titles.length > 0 ? content.titles[0].pre_title : undefined
           }

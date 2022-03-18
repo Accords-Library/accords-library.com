@@ -1,3 +1,4 @@
+import { useMediaMobile } from "hooks/useMediaQuery";
 import { Dispatch, SetStateAction } from "react";
 import Lightbox from "react-image-lightbox";
 
@@ -13,6 +14,8 @@ export type LightBoxProps = {
 
 export default function LightBox(props: LightBoxProps): JSX.Element {
   const { state, setState, images, index, setIndex } = props;
+  const mobile = useMediaMobile();
+
   return (
     <>
       {state && (
@@ -28,7 +31,7 @@ export default function LightBox(props: LightBoxProps): JSX.Element {
           imageCaption=""
           imageTitle=""
           onCloseRequest={() => setState(false)}
-          imagePadding={50}
+          imagePadding={mobile ? 0 : 70}
         />
       )}
     </>

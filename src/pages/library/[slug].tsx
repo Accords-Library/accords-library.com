@@ -7,6 +7,7 @@ import {
   Enum_Componentmetadatabooks_Binding_Type,
   Enum_Componentmetadatabooks_Page_Order,
   GetLibraryItemQuery,
+  StrapiImage,
 } from "graphql/operations-types";
 import {
   convertMmToInch,
@@ -34,6 +35,9 @@ import { useAppLayout } from "contexts/AppLayoutContext";
 import { useRouter } from "next/router";
 import ContentTOCLine from "components/Library/ContentTOCLine";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
+import { useState } from "react";
+import Popup from "components/Popup";
+import LightBox from "components/LightBox";
 
 interface LibrarySlugProps extends AppStaticProps {
   item: GetLibraryItemQuery["libraryItems"]["data"][number]["attributes"];
@@ -51,6 +55,9 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
     item.metadata[0].subtype.data.attributes.slug === "variant-set";
 
   sortContent(item.contents);
+
+  const [lightboxOpened, setLightboxOpened] = useState(false);
+  const [lightboxImage, setLightboxImage] = useState<StrapiImage>();
 
   const subPanel = (
     <SubPanel>
@@ -104,6 +111,12 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
 
   const contentPanel = (
     <ContentPanel width={ContentPanelWidthSizes.large}>
+      <LightBox
+        image={lightboxImage}
+        setState={setLightboxOpened}
+        state={lightboxOpened}
+      />
+
       <ReturnButton
         href="/library/"
         title={langui.library}
@@ -112,7 +125,15 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
         className="mb-10"
       />
       <div className="grid place-items-center gap-12">
-        <div className="drop-shadow-shade-xl w-full h-[50vh] mobile:h-[60vh] desktop:mb-16 relative cursor-pointer">
+        <div
+          className="drop-shadow-shade-xl w-full h-[50vh] mobile:h-[60vh] desktop:mb-16 relative cursor-pointer"
+          onClick={() => {
+            if (item.thumbnail.data) {
+              setLightboxImage(item.thumbnail.data.attributes);
+              setLightboxOpened(true);
+            }
+          }}
+        >
           {item.thumbnail.data ? (
             <Img
               image={item.thumbnail.data.attributes}
@@ -160,6 +181,10 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
                 <div
                   key={galleryItem.id}
                   className="relative aspect-square hover:scale-[1.02] transition-transform cursor-pointer"
+                  onClick={() => {
+                    setLightboxImage(galleryItem.attributes);
+                    setLightboxOpened(true);
+                  }}
                 >
                   <div className="bg-light absolute inset-0 rounded-lg drop-shadow-shade-md"></div>
                   <Img

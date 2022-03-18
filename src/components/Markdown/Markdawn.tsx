@@ -1,4 +1,5 @@
 import HorizontalLine from "components/HorizontalLine";
+import Img, { ImageQuality } from "components/Img";
 import InsetBox from "components/InsetBox";
 import ToolTip from "components/ToolTip";
 import { useAppLayout } from "contexts/AppLayoutContext";
@@ -196,6 +197,43 @@ export default function Markdawn(props: ScenBreakProps): JSX.Element {
                   <>
                     <HorizontalLine />
                     <div>{props.children}</div>
+                  </>
+                );
+              },
+            },
+            img: {
+              component: (props: {
+                alt: string;
+                src: string;
+                width?: number;
+                height?: number;
+                caption?: string;
+                name?: string;
+              }) => {
+                return (
+                  <>
+                    {props.src.startsWith("/uploads/") ? (
+                      <div className="relative w-full aspect-video my-8">
+                        <Img
+                          image={{
+                            __typename: "UploadFile",
+                            alternativeText: props.alt,
+                            url: props.src,
+                            width: props.width || 1500,
+                            height: props.height || 1000,
+                            caption: props.caption || "",
+                            name: props.name || "",
+                          }}
+                          layout="fill"
+                          objectFit="contain"
+                          quality={ImageQuality.Medium}
+                        ></Img>
+                      </div>
+                    ) : (
+                      <div className="grid place-content-center my-8">
+                        <img {...props} className="max-h-[50vh] " />
+                      </div>
+                    )}
                   </>
                 );
               },

@@ -54,7 +54,7 @@
   .formatted h4,
   .formatted h5,
   .formatted h6 {
-    @apply text-center;
+    @apply text-center flex gap-3 justify-center;
   }
 
   .formatted h1 {
@@ -94,6 +94,10 @@
     @apply my-2 text-justify;
   }
 
+  .formatted strong {
+    @apply font-black;
+  }
+
   .formatted footer {
     @apply border-t-[3px] border-dotted pt-6;
   }
@@ -120,6 +124,14 @@
 
   .formatted ol {
     @apply list-decimal pl-4;
+  }
+
+  .formatted blockquote {
+    @apply border-2 border-mid rounded-lg p-5 text-center my-8;
+  }
+
+  .formatted blockquote cite {
+    @apply text-dark block;
   }
 
   /* INPUT */

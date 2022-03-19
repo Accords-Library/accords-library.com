@@ -5,17 +5,21 @@ import LightBox from "components/LightBox";
 import ToolTip from "components/ToolTip";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import Markdown from "markdown-to-jsx";
+import { NextRouter } from "next/router";
 import { slugify } from "queries/helpers";
 import React, { useState } from "react";
 
-type ScenBreakProps = {
+type MarkdawnProps = {
   className?: string;
   text: string;
+  router: NextRouter;
 };
 
-export default function Markdawn(props: ScenBreakProps): JSX.Element {
+export default function Markdawn(props: MarkdawnProps): JSX.Element {
   const appLayout = useAppLayout();
   const text = preprocessMarkDawn(props.text);
+
+  const { router } = props;
 
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxImages, setLightboxImages] = useState([""]);
@@ -43,12 +47,10 @@ export default function Markdawn(props: ScenBreakProps): JSX.Element {
                   children: React.ReactNode;
                 }) => {
                   return (
-                    <div className="flex flex-row place-items-center place-content-center gap-3">
-                      <h1 id={props.id} style={props.style}>
-                        {props.children}
-                      </h1>
+                    <h1 id={props.id} style={props.style}>
+                      {props.children}
                       <HeaderToolTip id={props.id} />
-                    </div>
+                    </h1>
                   );
                 },
               },
@@ -59,12 +61,10 @@ export default function Markdawn(props: ScenBreakProps): JSX.Element {
                   children: React.ReactNode;
                 }) => {
                   return (
-                    <div className="flex flex-row place-items-center place-content-center gap-3">
-                      <h2 id={props.id} style={props.style}>
-                        {props.children}
-                      </h2>
+                    <h2 id={props.id} style={props.style}>
+                      {props.children}
                       <HeaderToolTip id={props.id} />
-                    </div>
+                    </h2>
                   );
                 },
               },
@@ -75,12 +75,10 @@ export default function Markdawn(props: ScenBreakProps): JSX.Element {
                   children: React.ReactNode;
                 }) => {
                   return (
-                    <div className="flex flex-row place-items-center place-content-center gap-3">
-                      <h3 id={props.id} style={props.style}>
-                        {props.children}
-                      </h3>
+                    <h3 id={props.id} style={props.style}>
+                      {props.children}
                       <HeaderToolTip id={props.id} />
-                    </div>
+                    </h3>
                   );
                 },
               },
@@ -91,12 +89,10 @@ export default function Markdawn(props: ScenBreakProps): JSX.Element {
                   children: React.ReactNode;
                 }) => {
                   return (
-                    <div className="flex flex-row place-items-center place-content-center gap-3">
-                      <h4 id={props.id} style={props.style}>
-                        {props.children}
-                      </h4>
+                    <h4 id={props.id} style={props.style}>
+                      {props.children}
                       <HeaderToolTip id={props.id} />
-                    </div>
+                    </h4>
                   );
                 },
               },
@@ -107,12 +103,10 @@ export default function Markdawn(props: ScenBreakProps): JSX.Element {
                   children: React.ReactNode;
                 }) => {
                   return (
-                    <div className="flex flex-row place-items-center place-content-center gap-3">
-                      <h5 id={props.id} style={props.style}>
-                        {props.children}
-                      </h5>
+                    <h5 id={props.id} style={props.style}>
+                      {props.children}
                       <HeaderToolTip id={props.id} />
-                    </div>
+                    </h5>
                   );
                 },
               },
@@ -123,12 +117,10 @@ export default function Markdawn(props: ScenBreakProps): JSX.Element {
                   children: React.ReactNode;
                 }) => {
                   return (
-                    <div className="flex flex-row place-items-center place-content-center gap-3">
-                      <h6 id={props.id} style={props.style}>
-                        {props.children}
-                      </h6>
+                    <h6 id={props.id} style={props.style}>
+                      {props.children}
                       <HeaderToolTip id={props.id} />
-                    </div>
+                    </h6>
                   );
                 },
               },
@@ -148,6 +140,28 @@ export default function Markdawn(props: ScenBreakProps): JSX.Element {
                     >
                       * * *
                     </div>
+                  );
+                },
+              },
+              IntraLink: {
+                component: (props: {
+                  children: React.ReactNode;
+                  target?: string;
+                  page?: string;
+                }) => {
+                  const slug = props.target
+                    ? slugify(props.target)
+                    : slugify(props.children?.toString());
+                  return (
+                    <a
+                      onClick={() =>
+                        router.replace(
+                          `${props.page ? props.page : ""}#${slug}`
+                        )
+                      }
+                    >
+                      {props.children}
+                    </a>
                   );
                 },
               },
@@ -219,6 +233,25 @@ export default function Markdawn(props: ScenBreakProps): JSX.Element {
                   );
                 },
               },
+              blockquote: {
+                component: (props: {
+                  children: React.ReactNode;
+                  cite?: string;
+                }) => {
+                  return (
+                    <blockquote>
+                      {props.cite ? (
+                        <>
+                          &ldquo;{props.children}&rdquo;
+                          <cite>— {props.cite}</cite>
+                        </>
+                      ) : (
+                        props.children
+                      )}
+                    </blockquote>
+                  );
+                },
+              },
               img: {
                 component: (props: {
                   alt: string;
@@ -230,7 +263,7 @@ export default function Markdawn(props: ScenBreakProps): JSX.Element {
                 }) => {
                   return (
                     <div
-                    className="my-8 cursor-pointer"
+                      className="my-8 cursor-pointer"
                       onClick={() => {
                         setLightboxOpen(true);
                         setLightboxImages([
@@ -280,8 +313,12 @@ export default function Markdawn(props: ScenBreakProps): JSX.Element {
 
 function HeaderToolTip(props: { id: string }) {
   return (
-    <ToolTip content={"Copy anchor link"} trigger="mouseenter">
-      <ToolTip content={"Copied! 👍"} trigger="click">
+    <ToolTip
+      content={"Copy anchor link"}
+      trigger="mouseenter"
+      className="text-sm"
+    >
+      <ToolTip content={"Copied! 👍"} trigger="click" className="text-sm">
         <span
           className="material-icons transition-color hover:text-dark cursor-pointer"
           onClick={() => {

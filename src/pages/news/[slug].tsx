@@ -108,7 +108,7 @@ export default function LibrarySlug(props: PostProps): JSX.Element {
       <HorizontalLine />
 
       {post.translations.length > 0 && post.translations[0].body && (
-        <Markdawn text={post.translations[0].body} />
+        <Markdawn router={router} text={post.translations[0].body} />
       )}
     </ContentPanel>
   );

@@ -4,6 +4,7 @@ import ContentPanel from "components/Panels/ContentPanel";
 import { getPost } from "graphql/operations";
 import { GetPostQuery } from "graphql/operations-types";
 import { GetStaticProps } from "next";
+import { useRouter } from "next/router";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 import { prettySlug } from "queries/helpers";
 
@@ -13,6 +14,8 @@ interface HomeProps extends AppStaticProps {
 
 export default function Home(props: HomeProps): JSX.Element {
   const { post } = props;
+  const router = useRouter();
+
   const contentPanel = (
     <ContentPanel>
       <div className="grid place-items-center place-content-center w-full gap-5 text-center">
@@ -23,7 +26,7 @@ export default function Home(props: HomeProps): JSX.Element {
         </h2>
       </div>
       {post.translations.length > 0 && (
-        <Markdawn text={post.translations[0].body} />
+        <Markdawn router={router} text={post.translations[0].body} />
       )}
     </ContentPanel>
   );

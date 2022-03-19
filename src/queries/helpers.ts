@@ -274,8 +274,9 @@ export function getStatusDescription(
   }
 }
 
-export function slugify(str: string): string {
-  return str
+export function slugify(string: string | undefined): string {
+  if (!string) return "";
+  return string
     .replace(/[ÀÁÂÃÄÅàáâãäåæÆ]/g, "a")
     .replace(/[çÇ]/g, "c")
     .replace(/[ðÐ]/g, "d")

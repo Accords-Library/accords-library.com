@@ -187,7 +187,7 @@ export default function ContentRead(props: ContentReadProps): JSX.Element {
         <HorizontalLine />
 
         {content.text_set.length > 0 && content.text_set[0].text && (
-          <Markdawn text={content.text_set[0].text} />
+          <Markdawn router={router} text={content.text_set[0].text} />
         )}
       </div>
     </ContentPanel>

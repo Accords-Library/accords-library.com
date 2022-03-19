@@ -7,11 +7,13 @@ import { useCallback, useState } from "react";
 import Markdawn from "components/Markdown/Markdawn";
 import Script from "next/script";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
+import { useRouter } from "next/router";
 
 interface EditorProps extends AppStaticProps {}
 
 export default function Editor(props: EditorProps): JSX.Element {
   const { langui } = props;
+  const router = useRouter();
 
   const handleInput = useCallback((e) => {
     setMarkdown(e.target.value);
@@ -76,7 +78,7 @@ export default function Editor(props: EditorProps): JSX.Element {
         <div>
           <h2>Preview</h2>
           <div className="bg-mid rounded-xl p-8">
-            <Markdawn className="max-w-full" text={markdown} />
+            <Markdawn router={router} className="max-w-full" text={markdown} />
           </div>
         </div>
       </div>

@@ -155,17 +155,16 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
         onClick={() => appLayout.setMainPanelOpen(false)}
       />
 
-      {/*
-      
       <NavOption
         url="/wiki"
         icon="travel_explore"
         title={langui.wiki}
         subtitle={langui.wiki_short_description}
-        
         reduced={appLayout.mainPanelReduced && isDesktop}
         onClick={() => appLayout.setMainPanelOpen(false)}
       />
+
+      {/*
 
       <NavOption
         url="/chronicles"

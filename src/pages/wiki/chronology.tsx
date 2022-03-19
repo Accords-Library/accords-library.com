@@ -91,7 +91,6 @@ export default function Chronology(props: ChronologyProps): JSX.Element {
 
   const contentPanel = (
     <ContentPanel>
-
       <ReturnButton
         href="/wiki"
         title={langui.wiki}

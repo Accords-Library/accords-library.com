@@ -16,12 +16,12 @@ export default function AboutUs(props: AboutUsProps): JSX.Element {
         title={langui.about_us}
         description={langui.about_us_description}
       />
-      <NavOption title="Accord’s Handbook" url="/about-us/accords-handbook" border />
       <NavOption
-        title="Legality"
-        url="/about-us/legality"
+        title="Accord’s Handbook"
+        url="/about-us/accords-handbook"
         border
       />
+      <NavOption title="Legality" url="/about-us/legality" border />
       <NavOption title="Members" url="/about-us/members" border />
       <NavOption title="Sharing Policy" url="/about-us/sharing-policy" border />
       <NavOption title="Contact us" url="/about-us/contact" border />

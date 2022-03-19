@@ -12,7 +12,6 @@ export type PopupProps = {
 };
 
 export default function Popup(props: PopupProps): JSX.Element {
-  
   return (
     <div
       className={`fixed inset-0 z-50 grid place-content-center transition-[backdrop-filter] duration-500 ${

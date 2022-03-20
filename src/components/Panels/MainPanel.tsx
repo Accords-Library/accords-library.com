@@ -64,7 +64,7 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
             } flex-wrap gap-2`}
           >
             <ToolTip
-              content={<h3 className="text-2xl">{"Open settings"}</h3>}
+              content={<h3 className="text-2xl">{langui.open_settings}</h3>}
               placement="right"
               className="text-left"
               disabled={!appLayout.mainPanelReduced}
@@ -91,7 +91,7 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
 
             {router.locale && (
               <ToolTip
-                content={<h3 className="text-2xl">{"Change language"}</h3>}
+                content={<h3 className="text-2xl">{langui.change_language}</h3>}
                 placement="right"
                 className="text-left"
                 disabled={!appLayout.mainPanelReduced}
@@ -110,7 +110,7 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
             )}
 
             <ToolTip
-              content={<h3 className="text-2xl">{"Open search"}</h3>}
+              content={<h3 className="text-2xl">{langui.open_search}</h3>}
               placement="right"
               className="text-left"
               disabled={!appLayout.mainPanelReduced}
@@ -155,17 +155,16 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
         onClick={() => appLayout.setMainPanelOpen(false)}
       />
 
-      {/*
-      
       <NavOption
         url="/wiki"
         icon="travel_explore"
         title={langui.wiki}
         subtitle={langui.wiki_short_description}
-        
         reduced={appLayout.mainPanelReduced && isDesktop}
         onClick={() => appLayout.setMainPanelOpen(false)}
       />
+
+      {/*
 
       <NavOption
         url="/chronicles"

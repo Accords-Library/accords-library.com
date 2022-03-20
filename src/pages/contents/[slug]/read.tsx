@@ -1,5 +1,9 @@
 import { GetStaticPaths, GetStaticProps } from "next";
-import { getContentsSlugs, getContentText } from "graphql/operations";
+import {
+  getContentLanguages,
+  getContentsSlugs,
+  getContentText,
+} from "graphql/operations";
 import { GetContentTextQuery } from "graphql/operations-types";
 import ContentPanel from "components/Panels/ContentPanel";
 import HorizontalLine from "components/HorizontalLine";
@@ -25,15 +29,17 @@ import RecorderChip from "components/RecorderChip";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 import TOC from "components/Markdown/TOC";
 import ToolTip from "components/ToolTip";
+import LanguageSwitcher from "components/LanguageSwitcher";
 
 interface ContentReadProps extends AppStaticProps {
   content: GetContentTextQuery["contents"]["data"][number]["attributes"];
   contentId: GetContentTextQuery["contents"]["data"][number]["id"];
+  locales: string[];
 }
 
 export default function ContentRead(props: ContentReadProps): JSX.Element {
   useTesting(props);
-  const { langui, content, languages } = props;
+  const { langui, content, languages, locales } = props;
   const router = useRouter();
 
   const subPanel = (
@@ -186,8 +192,15 @@ export default function ContentRead(props: ContentReadProps): JSX.Element {
 
         <HorizontalLine />
 
-        {content.text_set.length > 0 && content.text_set[0].text && (
-          <Markdawn text={content.text_set[0].text} />
+        {locales.includes(router.locale || "en") ? (
+          <Markdawn router={router} text={content.text_set[0].text} />
+        ) : (
+          <LanguageSwitcher
+            locales={locales}
+            router={router}
+            languages={props.languages}
+            langui={props.langui}
+          />
         )}
       </div>
     </ContentPanel>
@@ -235,9 +248,10 @@ export default function ContentRead(props: ContentReadProps): JSX.Element {
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
+  const slug = context.params?.slug?.toString() || "";
   const content = (
     await getContentText({
-      slug: context.params?.slug?.toString() || "",
+      slug: slug,
       language_code: context.locale || "en",
     })
   ).contents.data[0];
@@ -245,6 +259,11 @@ export const getStaticProps: GetStaticProps = async (context) => {
     ...(await getAppStaticProps(context)),
     content: content.attributes,
     contentId: content.id,
+    locales: (
+      await getContentLanguages({ slug: slug })
+    ).contents.data[0].attributes.text_set.map((translation) => {
+      return translation.language.data.attributes.code;
+    }),
   };
   return {
     props: props,

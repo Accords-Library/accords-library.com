@@ -3,6 +3,8 @@ import PanelHeader from "components/PanelComponents/PanelHeader";
 import { GetStaticProps } from "next";
 import AppLayout from "components/AppLayout";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
+import HorizontalLine from "components/HorizontalLine";
+import NavOption from "components/PanelComponents/NavOption";
 
 interface WikiProps extends AppStaticProps {}
 
@@ -15,6 +17,7 @@ export default function Wiki(props: WikiProps): JSX.Element {
         title={langui.wiki}
         description={langui.wiki_description}
       />
+      <NavOption title="Chronology" url="/wiki/chronology" border />
     </SubPanel>
   );
 

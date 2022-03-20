@@ -5,7 +5,9 @@ import AppLayout from "components/AppLayout";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 import { GetPostsPreviewQuery } from "graphql/operations-types";
 import { getPostsPreview } from "graphql/operations";
-import ContentPanel, { ContentPanelWidthSizes } from "components/Panels/ContentPanel";
+import ContentPanel, {
+  ContentPanelWidthSizes,
+} from "components/Panels/ContentPanel";
 import PostsPreview from "components/News/PostsPreview";
 
 interface NewsProps extends AppStaticProps {

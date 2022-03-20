@@ -17,6 +17,9 @@ import {
 import InsetBox from "components/InsetBox";
 import { useRouter } from "next/router";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
+import ReturnButton, {
+  ReturnButtonType,
+} from "components/PanelComponents/ReturnButton";
 
 interface ChronologyProps extends AppStaticProps {
   chronologyItems: GetChronologyItemsQuery["chronologyItems"]["data"];
@@ -60,6 +63,14 @@ export default function Chronology(props: ChronologyProps): JSX.Element {
 
   const subPanel = (
     <SubPanel>
+      <ReturnButton
+        href="/wiki"
+        title={langui.wiki}
+        langui={langui}
+        displayOn={ReturnButtonType.Desktop}
+        horizontalLine
+      />
+
       {chronologyEras.map((era) => (
         <NavOption
           key={era.id}
@@ -80,6 +91,14 @@ export default function Chronology(props: ChronologyProps): JSX.Element {
 
   const contentPanel = (
     <ContentPanel>
+      <ReturnButton
+        href="/wiki"
+        title={langui.wiki}
+        langui={langui}
+        displayOn={ReturnButtonType.Mobile}
+        className="mb-10"
+      />
+
       {chronologyItemYearGroups.map((era, eraIndex) => (
         <>
           <InsetBox

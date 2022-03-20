@@ -1,8 +1,10 @@
 import type { AppProps } from "next/app";
 import "tailwind.css";
 import "@fontsource/zen-maru-gothic/500.css";
+import "@fontsource/zen-maru-gothic/900.css";
 import "@fontsource/vollkorn/700.css";
 import "@fontsource/opendyslexic/400.css";
+import "@fontsource/opendyslexic/700.css";
 import "@fontsource/material-icons";
 
 import { AppContextProvider } from "contexts/AppLayoutContext";

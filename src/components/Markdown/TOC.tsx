@@ -49,7 +49,7 @@ function TOCLevel(props: TOCLevelProps): JSX.Element {
           >
             <span className="text-dark">{`${parentNumbering}${
               childIndex + 1
-            }.`}</span>
+            }.`}</span>{" "}
             <a onClick={() => router.replace(`#${child.slug}`)}>
               {<abbr title={child.title}>{child.title}</abbr>}
             </a>

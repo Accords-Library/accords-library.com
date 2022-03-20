@@ -204,6 +204,16 @@ export type GetWebsiteInterfaceQuery = {
         content: string;
         result: string;
         results: string;
+        language_switch_message: string;
+        open_settings: string;
+        change_language: string;
+        open_search: string;
+        chronology: string;
+        accords_handbook: string;
+        legality: string;
+        members: string;
+        sharing_policy: string;
+        contact_us: string;
       };
     }>;
   };
@@ -1730,6 +1740,80 @@ export type GetPostsPreviewQuery = {
                 height: number;
                 url: string;
               };
+            };
+          };
+        }>;
+      };
+    }>;
+  };
+};
+
+export type GetPostLanguagesQueryVariables = Exact<{
+  slug: InputMaybe<Scalars["String"]>;
+}>;
+
+export type GetPostLanguagesQuery = {
+  __typename: "Query";
+  posts: {
+    __typename: "PostEntityResponseCollection";
+    data: Array<{
+      __typename: "PostEntity";
+      attributes: {
+        __typename: "Post";
+        translations: Array<{
+          __typename: "ComponentTranslationsPosts";
+          language: {
+            __typename: "LanguageEntityResponse";
+            data: {
+              __typename: "LanguageEntity";
+              attributes: { __typename: "Language"; code: string };
+            };
+          };
+        }>;
+      };
+    }>;
+  };
+};
+
+export type GetContentLanguagesQueryVariables = Exact<{
+  slug: InputMaybe<Scalars["String"]>;
+}>;
+
+export type GetContentLanguagesQuery = {
+  __typename: "Query";
+  contents: {
+    __typename: "ContentEntityResponseCollection";
+    data: Array<{
+      __typename: "ContentEntity";
+      attributes: {
+        __typename: "Content";
+        text_set: Array<{
+          __typename: "ComponentSetsTextSet";
+          language: {
+            __typename: "LanguageEntityResponse";
+            data: {
+              __typename: "LanguageEntity";
+              attributes: { __typename: "Language"; code: string };
+            };
+          };
+        }>;
+        video_set: Array<{
+          __typename: "ComponentSetsVideoSet";
+          language: {
+            __typename: "LanguageEntityResponse";
+            data: {
+              __typename: "LanguageEntity";
+              attributes: { __typename: "Language"; code: string };
+            };
+          };
+        }>;
+        audio_set: Array<{
+          __typename: "ComponentSetsAudioSet";
+          language: {
+            __typename: "LanguageEntityResponse";
+            data: {
+              __typename: "LanguageEntity";
+              attributes: { __typename: "Language"; code: string };
             };
           };
         }>;

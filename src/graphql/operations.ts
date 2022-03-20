@@ -177,7 +177,6 @@ export async function getPostLanguages(
   variables: GetPostLanguagesQueryVariables
 ): Promise<GetPostLanguagesQuery> {
   const query = getQueryFromOperations("getPostLanguages");
-  console.log(query);
   return await graphQL(query, JSON.stringify(variables));
 }
 
@@ -185,6 +184,5 @@ export async function getContentLanguages(
   variables: GetContentLanguagesQueryVariables
 ): Promise<GetContentLanguagesQuery> {
   const query = getQueryFromOperations("getContentLanguages");
-  console.log(query);
   return await graphQL(query, JSON.stringify(variables));
 }

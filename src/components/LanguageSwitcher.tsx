@@ -17,14 +17,11 @@ type HorizontalLineProps = {
 export default function HorizontalLine(
   props: HorizontalLineProps
 ): JSX.Element {
-  const { locales, router } = props;
+  const { locales, router, langui } = props;
   return (
     <div className="w-full grid place-content-center">
       <div className="flex flex-col place-items-center text-center gap-4 my-12 border-2 border-mid rounded-xl p-8 max-w-lg">
-        <p>
-          This content is not available in the currently selected language. You
-          can select one the following languages instead:
-        </p>
+        <p>{langui.language_switch_message}</p>
         <div className="flex flex-wrap flex-row gap-2">
           {locales.map((locale, index) => (
             <Button

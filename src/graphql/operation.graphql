@@ -115,6 +115,16 @@ query getWebsiteInterface($language_code: String) {
         content
         result
         results
+        language_switch_message
+        open_settings
+        change_language
+        open_search
+        chronology
+        accords_handbook
+        legality
+        members
+        sharing_policy
+        contact_us
       }
     }
   }

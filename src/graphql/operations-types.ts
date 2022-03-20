@@ -204,6 +204,16 @@ export type GetWebsiteInterfaceQuery = {
         content: string;
         result: string;
         results: string;
+        language_switch_message: string;
+        open_settings: string;
+        change_language: string;
+        open_search: string;
+        chronology: string;
+        accords_handbook: string;
+        legality: string;
+        members: string;
+        sharing_policy: string;
+        contact_us: string;
       };
     }>;
   };

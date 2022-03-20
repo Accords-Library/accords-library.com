@@ -17,14 +17,18 @@ export default function AboutUs(props: AboutUsProps): JSX.Element {
         description={langui.about_us_description}
       />
       <NavOption
-        title="Accord’s Handbook"
+        title={langui.accords_handbook}
         url="/about-us/accords-handbook"
         border
       />
-      <NavOption title="Legality" url="/about-us/legality" border />
-      <NavOption title="Members" url="/about-us/members" border />
-      <NavOption title="Sharing Policy" url="/about-us/sharing-policy" border />
-      <NavOption title="Contact us" url="/about-us/contact" border />
+      <NavOption title={langui.legality} url="/about-us/legality" border />
+      <NavOption title={langui.members} url="/about-us/members" border />
+      <NavOption
+        title={langui.sharing_policy}
+        url="/about-us/sharing-policy"
+        border
+      />
+      <NavOption title={langui.contact_us} url="/about-us/contact" border />
     </SubPanel>
   );
   return (

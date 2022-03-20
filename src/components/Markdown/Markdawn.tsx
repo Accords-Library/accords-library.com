@@ -338,6 +338,8 @@ function HeaderToolTip(props: { id: string }) {
 }
 
 export function preprocessMarkDawn(text: string): string {
+  if (!text) return "";
+
   let scenebreakIndex = 0;
   const visitedSlugs: string[] = [];
 

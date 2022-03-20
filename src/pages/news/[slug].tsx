@@ -2,6 +2,7 @@ import AppLayout from "components/AppLayout";
 import Chip from "components/Chip";
 import ThumbnailHeader from "components/Content/ThumbnailHeader";
 import HorizontalLine from "components/HorizontalLine";
+import LanguageSwitcher from "components/LanguageSwitcher";
 import Markdawn from "components/Markdown/Markdawn";
 import TOC from "components/Markdown/TOC";
 import ReturnButton, {
@@ -11,7 +12,7 @@ import ContentPanel from "components/Panels/ContentPanel";
 import SubPanel from "components/Panels/SubPanel";
 import RecorderChip from "components/RecorderChip";
 import ToolTip from "components/ToolTip";
-import { getPost, getPostsSlugs } from "graphql/operations";
+import { getPost, getPostLanguages, getPostsSlugs } from "graphql/operations";
 import { GetPostQuery, StrapiImage } from "graphql/operations-types";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
@@ -21,10 +22,11 @@ import { prettySlug, getStatusDescription } from "queries/helpers";
 interface PostProps extends AppStaticProps {
   post: GetPostQuery["posts"]["data"][number]["attributes"];
   postId: GetPostQuery["posts"]["data"][number]["id"];
+  locales: string[];
 }
 
 export default function LibrarySlug(props: PostProps): JSX.Element {
-  const { post, postId, langui } = props;
+  const { post, locales, langui } = props;
   const router = useRouter();
 
   const thumbnail: StrapiImage | undefined =
@@ -107,8 +109,15 @@ export default function LibrarySlug(props: PostProps): JSX.Element {
 
       <HorizontalLine />
 
-      {post.translations.length > 0 && post.translations[0].body && (
+      {locales.includes(router.locale || "en") ? (
         <Markdawn router={router} text={post.translations[0].body} />
+      ) : (
+        <LanguageSwitcher
+          locales={locales}
+          router={router}
+          languages={props.languages}
+          langui={props.langui}
+        />
       )}
     </ContentPanel>
   );
@@ -130,9 +139,10 @@ export default function LibrarySlug(props: PostProps): JSX.Element {
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
+  const slug = context.params?.slug?.toString() || "";
   const post = (
     await getPost({
-      slug: context.params?.slug?.toString() || "",
+      slug: slug,
       language_code: context.locale || "en",
     })
   ).posts.data[0];
@@ -140,6 +150,11 @@ export const getStaticProps: GetStaticProps = async (context) => {
     ...(await getAppStaticProps(context)),
     post: post.attributes,
     postId: post.id,
+    locales: (
+      await getPostLanguages({ slug: slug })
+    ).posts.data[0].attributes.translations.map((translation) => {
+      return translation.language.data.attributes.code;
+    }),
   };
   return {
     props: props,

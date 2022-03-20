@@ -1,7 +1,4 @@
-import {
-  GetWebsiteInterfaceQuery,
-  StrapiImage,
-} from "graphql/operations-types";
+import { StrapiImage } from "graphql/operations-types";
 import MainPanel from "./Panels/MainPanel";
 import Head from "next/head";
 import { useSwipeable } from "react-swipeable";

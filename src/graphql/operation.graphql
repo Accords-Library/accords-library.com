@@ -1301,3 +1301,57 @@ query getPostsPreview($language_code: String) {
     }
   }
 }
+
+query getPostLanguages($slug: String) {
+  posts(filters: { slug: { eq: $slug } }) {
+    data {
+      attributes {
+        translations {
+          language {
+            data {
+              attributes {
+                code
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+query getContentLanguages($slug: String) {
+  contents(filters: { slug: { eq: $slug } }) {
+    data {
+      attributes {
+        text_set {
+          language {
+            data {
+              attributes {
+                code
+              }
+            }
+          }
+        }
+        video_set {
+          language {
+            data {
+              attributes {
+                code
+              }
+            }
+          }
+        }
+        audio_set {
+          language {
+            data {
+              attributes {
+                code
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

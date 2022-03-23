@@ -26,7 +26,9 @@ export default function AboutUs(props: ContactProps): JSX.Element {
   const { langui, post, locales } = props;
   const router = useRouter();
   const [formResponse, setFormResponse] = useState("");
-  const [formCompleted, setFormCompleted] = useState(false);
+  const [formState, setFormState] = useState<"stale" | "ongoing" | "completed">(
+    "stale"
+  );
 
   const random1 = randomInt(0, 10);
   const random2 = randomInt(0, 10);
@@ -73,17 +75,29 @@ export default function AboutUs(props: ContactProps): JSX.Element {
       <div className="flex flex-col gap-8 text-center">
         <form
           className={`gap-8 grid ${
-            formCompleted &&
+            formState !== "stale" &&
             "opacity-60 cursor-not-allowed touch-none pointer-events-none"
           }`}
           onSubmit={(e) => {
             e.preventDefault();
 
-            if (e.target.verif.value == random1 + random2 && !formCompleted) {
+            const fields = e.target as unknown as {
+              verif: HTMLInputElement;
+              name: HTMLInputElement;
+              email: HTMLInputElement;
+              message: HTMLInputElement;
+            };
+
+            setFormState("ongoing");
+
+            if (
+              parseInt(fields.verif.value) == random1 + random2 &&
+              formState !== "completed"
+            ) {
               const content: RequestMailProps = {
-                name: e.target.name.value,
-                email: e.target.email.value,
-                message: e.target.message.value,
+                name: fields.name.value,
+                email: fields.email.value,
+                message: fields.message.value,
                 formName: "Contact Form",
               };
               fetch("/api/mail", {
@@ -98,24 +112,28 @@ export default function AboutUs(props: ContactProps): JSX.Element {
                   switch (data.code) {
                     case "OKAY":
                       setFormResponse(langui.response_email_success);
-                      setFormCompleted(true);
+                      setFormState("completed");
+
                       break;
 
                     case "EENVELOPE":
-                      langui.response_invalid_email;
+                      setFormResponse(langui.response_invalid_email);
+                      setFormState("stale");
                       break;
 
                     default:
                       setFormResponse(data.message || "");
+                      setFormState("stale");
                       break;
                   }
                 });
             } else {
               setFormResponse(langui.response_invalid_code);
+              setFormState("stale");
             }
 
             router.replace("#send-response");
-            e.target.verif.value = "";
+            fields.verif.value = "";
           }}
         >
           <div className="flex flex-col place-items-center gap-1">
@@ -126,7 +144,7 @@ export default function AboutUs(props: ContactProps): JSX.Element {
               name="name"
               id="name"
               required
-              disabled={formCompleted}
+              disabled={formState !== "stale"}
             />
           </div>
 
@@ -138,7 +156,7 @@ export default function AboutUs(props: ContactProps): JSX.Element {
               name="email"
               id="email"
               required
-              disabled={formCompleted}
+              disabled={formState !== "stale"}
             />
             <p className="text-sm text-dark italic opacity-70">
               {langui.email_gdpr_notice}
@@ -153,7 +171,7 @@ export default function AboutUs(props: ContactProps): JSX.Element {
               className="w-full"
               rows={8}
               required
-              disabled={formCompleted}
+              disabled={formState !== "stale"}
             />
           </div>
 
@@ -169,7 +187,7 @@ export default function AboutUs(props: ContactProps): JSX.Element {
                 name="verif"
                 id="verif"
                 required
-                disabled={formCompleted}
+                disabled={formState !== "stale"}
               />
             </div>
 
@@ -177,7 +195,7 @@ export default function AboutUs(props: ContactProps): JSX.Element {
               type="submit"
               value={langui.send}
               className="w-min !px-6"
-              disabled={formCompleted}
+              disabled={formState !== "stale"}
             />
           </div>
         </form>

@@ -125,6 +125,13 @@ query getWebsiteInterface($language_code: String) {
         members
         sharing_policy
         contact_us
+        email
+        email_gdpr_notice
+        message
+        send
+        response_invalid_code
+        response_invalid_email
+        response_email_success
       }
     }
   }

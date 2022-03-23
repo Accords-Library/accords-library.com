@@ -72,7 +72,7 @@ export default function Editor(props: EditorProps): JSX.Element {
               target.select();
               event.preventDefault();
             }}
-            className="bg-mid rounded-xl p-8 w-full font-monospace"
+            className="font-monospace"
           />
         </div>
         <div>

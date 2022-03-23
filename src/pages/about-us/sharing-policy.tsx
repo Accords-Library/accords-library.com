@@ -84,7 +84,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     ...(await getAppStaticProps(context)),
     post: (
       await getPost({
-        slug: "sharing-policy",
+        slug: slug,
         language_code: context.locale || "en",
       })
     ).posts.data[0].attributes,

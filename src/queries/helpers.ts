@@ -291,3 +291,7 @@ export function slugify(string: string | undefined): string {
     .replace(/ /gi, "-")
     .toLowerCase();
 }
+
+export function randomInt(min: number, max: number) {
+  return Math.floor(Math.random() * (max - min)) + min;
+}

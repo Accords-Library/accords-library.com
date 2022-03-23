@@ -67,6 +67,9 @@ Enter the followind information:
 ```txt
 URL_GRAPHQL=https://url-to.strapi-accords-library.com/graphql
 ACCESS_TOKEN=genatedcode-by-strapi-api
+SMTP_HOST=email.provider.com
+SMTP_USER=email@example.com
+SMTP_PASSWORD=mypassword123
 NEXT_PUBLIC_URL_CMS=https://url-to.strapi-accords-library.com/
 NEXT_PUBLIC_URL_IMG=https://url-to.img-accords-library.com/
 NEXT_PUBLIC_URL_SELF=https://url-to-front-accords-library.com

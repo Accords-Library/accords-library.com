@@ -214,6 +214,13 @@ export type GetWebsiteInterfaceQuery = {
         members: string;
         sharing_policy: string;
         contact_us: string;
+        email: string;
+        email_gdpr_notice: string;
+        message: string;
+        send: string;
+        response_invalid_code: string;
+        response_invalid_email: string;
+        response_email_success: string;
       };
     }>;
   };

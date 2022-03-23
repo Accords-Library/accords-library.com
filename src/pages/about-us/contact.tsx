@@ -30,8 +30,8 @@ export default function AboutUs(props: ContactProps): JSX.Element {
     "stale"
   );
 
-  const random1 = randomInt(0, 10);
-  const random2 = randomInt(0, 10);
+  const [randomNumber1, setRandomNumber1] = useState(randomInt(0, 10));
+  const [randomNumber2, setRandomNumber2] = useState(randomInt(0, 10));
 
   const subPanel = (
     <SubPanel>
@@ -91,7 +91,7 @@ export default function AboutUs(props: ContactProps): JSX.Element {
             setFormState("ongoing");
 
             if (
-              parseInt(fields.verif.value) == random1 + random2 &&
+              parseInt(fields.verif.value) == randomNumber1 + randomNumber2 &&
               formState !== "completed"
             ) {
               const content: RequestMailProps = {
@@ -130,6 +130,8 @@ export default function AboutUs(props: ContactProps): JSX.Element {
             } else {
               setFormResponse(langui.response_invalid_code);
               setFormState("stale");
+              setRandomNumber1(randomInt(0, 10));
+              setRandomNumber2(randomInt(0, 10));
             }
 
             router.replace("#send-response");
@@ -180,7 +182,7 @@ export default function AboutUs(props: ContactProps): JSX.Element {
               <label
                 className="flex-shrink-0"
                 htmlFor="verif"
-              >{`${random1} + ${random2} =`}</label>
+              >{`${randomNumber1} + ${randomNumber2} =`}</label>
               <input
                 className="w-24"
                 type="number"

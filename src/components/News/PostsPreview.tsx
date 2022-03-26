@@ -1,8 +1,8 @@
-import Link from "next/link";
-import { prettyDate, prettySlug } from "queries/helpers";
 import Chip from "components/Chip";
 import Img, { ImageQuality } from "components/Img";
 import { GetPostsPreviewQuery } from "graphql/operations-types";
+import Link from "next/link";
+import { prettyDate, prettySlug } from "queries/helpers";
 
 export type PostPreviewProps = {
   post: {

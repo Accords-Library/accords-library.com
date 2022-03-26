@@ -1,23 +1,23 @@
-import { GetStaticProps } from "next";
-import SubPanel from "components/Panels/SubPanel";
+import AppLayout from "components/AppLayout";
+import Chip from "components/Chip";
+import LibraryItemsPreview from "components/Library/LibraryItemsPreview";
+import PanelHeader from "components/PanelComponents/PanelHeader";
 import ContentPanel, {
   ContentPanelWidthSizes,
 } from "components/Panels/ContentPanel";
+import SubPanel from "components/Panels/SubPanel";
+import Select from "components/Select";
+import Switch from "components/Switch";
+import { getLibraryItemsPreview } from "graphql/operations";
 import {
   GetCurrenciesQuery,
   GetLibraryItemsPreviewQuery,
   GetWebsiteInterfaceQuery,
 } from "graphql/operations-types";
-import { getLibraryItemsPreview } from "graphql/operations";
-import PanelHeader from "components/PanelComponents/PanelHeader";
-import AppLayout from "components/AppLayout";
-import LibraryItemsPreview from "components/Library/LibraryItemsPreview";
-import Select from "components/Select";
-import { useEffect, useState } from "react";
-import { convertPrice, prettyDate, prettyinlineTitle } from "queries/helpers";
-import Switch from "components/Switch";
+import { GetStaticProps } from "next";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
-import Chip from "components/Chip";
+import { convertPrice, prettyDate, prettyinlineTitle } from "queries/helpers";
+import { useEffect, useState } from "react";
 
 interface LibraryProps extends AppStaticProps {
   items: GetLibraryItemsPreviewQuery["libraryItems"]["data"];

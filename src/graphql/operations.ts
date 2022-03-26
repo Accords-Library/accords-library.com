@@ -1,5 +1,4 @@
 import { readFileSync } from "fs";
-
 import {
   GetChronologyItemsQuery,
   GetChronologyItemsQueryVariables,

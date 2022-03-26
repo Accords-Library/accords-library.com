@@ -1,17 +1,17 @@
-import { GetStaticPaths, GetStaticProps } from "next";
-import { getContent, getContentsSlugs } from "graphql/operations";
-import { GetContentQuery } from "graphql/operations-types";
-import ContentPanel from "components/Panels/ContentPanel";
-import Button from "components/Button";
-import HorizontalLine from "components/HorizontalLine";
-import ThumbnailHeader from "components/Content/ThumbnailHeader";
 import AppLayout from "components/AppLayout";
-import SubPanel from "components/Panels/SubPanel";
+import Button from "components/Button";
+import ThumbnailHeader from "components/Content/ThumbnailHeader";
+import HorizontalLine from "components/HorizontalLine";
 import ReturnButton, {
   ReturnButtonType,
 } from "components/PanelComponents/ReturnButton";
-import { prettyinlineTitle, prettySlug } from "queries/helpers";
+import ContentPanel from "components/Panels/ContentPanel";
+import SubPanel from "components/Panels/SubPanel";
+import { getContent, getContentsSlugs } from "graphql/operations";
+import { GetContentQuery } from "graphql/operations-types";
+import { GetStaticPaths, GetStaticProps } from "next";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
+import { prettyinlineTitle, prettySlug } from "queries/helpers";
 
 interface ContentIndexProps extends AppStaticProps {
   content: GetContentQuery["contents"]["data"][number]["attributes"];

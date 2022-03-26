@@ -1,10 +1,9 @@
-import SubPanel from "components/Panels/SubPanel";
-import PanelHeader from "components/PanelComponents/PanelHeader";
-import { GetStaticProps } from "next";
 import AppLayout from "components/AppLayout";
-import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
-import HorizontalLine from "components/HorizontalLine";
 import NavOption from "components/PanelComponents/NavOption";
+import PanelHeader from "components/PanelComponents/PanelHeader";
+import SubPanel from "components/Panels/SubPanel";
+import { GetStaticProps } from "next";
+import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 
 interface WikiProps extends AppStaticProps {}
 

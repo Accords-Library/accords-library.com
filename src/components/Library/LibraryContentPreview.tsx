@@ -1,8 +1,8 @@
-import Link from "next/link";
-import { GetContentsQuery } from "graphql/operations-types";
-import { prettySlug } from "queries/helpers";
 import Chip from "components/Chip";
 import Img, { ImageQuality } from "components/Img";
+import { GetContentsQuery } from "graphql/operations-types";
+import Link from "next/link";
+import { prettySlug } from "queries/helpers";
 
 export type LibraryContentPreviewProps = {
   item: {

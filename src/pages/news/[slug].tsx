@@ -17,7 +17,7 @@ import { GetPostQuery, StrapiImage } from "graphql/operations-types";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
-import { prettySlug, getStatusDescription } from "queries/helpers";
+import { getStatusDescription, prettySlug } from "queries/helpers";
 
 interface PostProps extends AppStaticProps {
   post: GetPostQuery["posts"]["data"][number]["attributes"];

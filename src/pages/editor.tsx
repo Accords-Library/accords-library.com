@@ -1,13 +1,13 @@
+import AppLayout from "components/AppLayout";
+import Markdawn from "components/Markdown/Markdawn";
 import ContentPanel, {
   ContentPanelWidthSizes,
 } from "components/Panels/ContentPanel";
 import { GetStaticProps } from "next";
-import AppLayout from "components/AppLayout";
-import { useCallback, useState } from "react";
-import Markdawn from "components/Markdown/Markdawn";
+import { useRouter } from "next/router";
 import Script from "next/script";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
-import { useRouter } from "next/router";
+import { useCallback, useState } from "react";
 
 interface EditorProps extends AppStaticProps {}
 

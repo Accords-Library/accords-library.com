@@ -1,21 +1,21 @@
-import SubPanel from "components/Panels/SubPanel";
-import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
+import AppLayout from "components/AppLayout";
+import InsetBox from "components/InsetBox";
+import LanguageSwitcher from "components/LanguageSwitcher";
+import Markdawn from "components/Markdown/Markdawn";
+import TOC from "components/Markdown/TOC";
 import ReturnButton, {
   ReturnButtonType,
 } from "components/PanelComponents/ReturnButton";
-import AppLayout from "components/AppLayout";
 import ContentPanel from "components/Panels/ContentPanel";
-import { GetStaticProps } from "next";
+import SubPanel from "components/Panels/SubPanel";
 import { getPost, getPostLanguages } from "graphql/operations";
 import { GetPostQuery } from "graphql/operations-types";
+import { GetStaticProps } from "next";
 import { useRouter } from "next/router";
-import LanguageSwitcher from "components/LanguageSwitcher";
-import Markdawn from "components/Markdown/Markdawn";
 import { RequestMailProps, ResponseMailProps } from "pages/api/mail";
-import { useState } from "react";
-import InsetBox from "components/InsetBox";
+import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 import { randomInt } from "queries/helpers";
-import TOC from "components/Markdown/TOC";
+import { useState } from "react";
 
 interface ContactProps extends AppStaticProps {
   post: GetPostQuery["posts"]["data"][number]["attributes"];

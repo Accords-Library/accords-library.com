@@ -1,11 +1,11 @@
+import Chip from "components/Chip";
+import Img, { ImageQuality } from "components/Img";
+import InsetBox from "components/InsetBox";
 import {
   GetContentQuery,
   GetWebsiteInterfaceQuery,
 } from "graphql/operations-types";
 import { prettyinlineTitle, prettySlug, slugify } from "queries/helpers";
-import Img, { ImageQuality } from "components/Img";
-import InsetBox from "components/InsetBox";
-import Chip from "components/Chip";
 
 export type ThumbnailHeaderProps = {
   pre_title?: string;

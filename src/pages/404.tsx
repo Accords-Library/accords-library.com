@@ -1,9 +1,9 @@
-import ContentPanel from "components/Panels/ContentPanel";
-import { GetStaticProps } from "next";
 import AppLayout from "components/AppLayout";
 import ReturnButton, {
   ReturnButtonType,
 } from "components/PanelComponents/ReturnButton";
+import ContentPanel from "components/Panels/ContentPanel";
+import { GetStaticProps } from "next";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 
 interface FourOhFourProps extends AppStaticProps {}

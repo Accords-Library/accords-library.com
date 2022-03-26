@@ -1,25 +1,25 @@
-import { GetStaticProps } from "next";
+import AppLayout from "components/AppLayout";
+import ChronologyYearComponent from "components/Chronology/ChronologyYearComponent";
+import InsetBox from "components/InsetBox";
+import NavOption from "components/PanelComponents/NavOption";
+import ReturnButton, {
+  ReturnButtonType,
+} from "components/PanelComponents/ReturnButton";
 import ContentPanel from "components/Panels/ContentPanel";
 import SubPanel from "components/Panels/SubPanel";
-import ChronologyYearComponent from "components/Chronology/ChronologyYearComponent";
+import { getChronologyItems, getEras } from "graphql/operations";
 import {
   GetChronologyItemsQuery,
   GetErasQuery,
 } from "graphql/operations-types";
-import { getEras, getChronologyItems } from "graphql/operations";
-import NavOption from "components/PanelComponents/NavOption";
-import AppLayout from "components/AppLayout";
+import { GetStaticProps } from "next";
+import { useRouter } from "next/router";
+import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 import {
   prettySlug,
   prettyTestError,
   prettyTestWarning,
 } from "queries/helpers";
-import InsetBox from "components/InsetBox";
-import { useRouter } from "next/router";
-import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
-import ReturnButton, {
-  ReturnButtonType,
-} from "components/PanelComponents/ReturnButton";
 
 interface ChronologyProps extends AppStaticProps {
   chronologyItems: GetChronologyItemsQuery["chronologyItems"]["data"];

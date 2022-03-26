@@ -1,19 +1,27 @@
-import { GetStaticPaths, GetStaticProps } from "next";
+import AppLayout from "components/AppLayout";
+import Button from "components/Button";
+import Chip from "components/Chip";
+import ThumbnailHeader from "components/Content/ThumbnailHeader";
+import HorizontalLine from "components/HorizontalLine";
+import LanguageSwitcher from "components/LanguageSwitcher";
+import Markdawn from "components/Markdown/Markdawn";
+import TOC from "components/Markdown/TOC";
+import ReturnButton, {
+  ReturnButtonType,
+} from "components/PanelComponents/ReturnButton";
+import ContentPanel from "components/Panels/ContentPanel";
+import SubPanel from "components/Panels/SubPanel";
+import RecorderChip from "components/RecorderChip";
+import ToolTip from "components/ToolTip";
 import {
   getContentLanguages,
   getContentsSlugs,
   getContentText,
 } from "graphql/operations";
 import { GetContentTextQuery } from "graphql/operations-types";
-import ContentPanel from "components/Panels/ContentPanel";
-import HorizontalLine from "components/HorizontalLine";
-import SubPanel from "components/Panels/SubPanel";
-import ReturnButton, {
-  ReturnButtonType,
-} from "components/PanelComponents/ReturnButton";
-import ThumbnailHeader from "components/Content/ThumbnailHeader";
-import AppLayout from "components/AppLayout";
-import Markdawn from "components/Markdown/Markdawn";
+import { GetStaticPaths, GetStaticProps } from "next";
+import { useRouter } from "next/router";
+import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 import {
   getStatusDescription,
   prettyinlineTitle,
@@ -22,14 +30,6 @@ import {
   prettyTestError,
   prettyTestWarning,
 } from "queries/helpers";
-import Button from "components/Button";
-import { useRouter } from "next/router";
-import Chip from "components/Chip";
-import RecorderChip from "components/RecorderChip";
-import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
-import TOC from "components/Markdown/TOC";
-import ToolTip from "components/ToolTip";
-import LanguageSwitcher from "components/LanguageSwitcher";
 
 interface ContentReadProps extends AppStaticProps {
   content: GetContentTextQuery["contents"]["data"][number]["attributes"];

@@ -1,21 +1,21 @@
-import { GetStaticProps } from "next";
-import SubPanel from "components/Panels/SubPanel";
+import AppLayout from "components/AppLayout";
+import Chip from "components/Chip";
+import LibraryContentPreview from "components/Library/LibraryContentPreview";
+import PanelHeader from "components/PanelComponents/PanelHeader";
 import ContentPanel, {
   ContentPanelWidthSizes,
 } from "components/Panels/ContentPanel";
+import SubPanel from "components/Panels/SubPanel";
+import Select from "components/Select";
+import { getContents } from "graphql/operations";
 import {
   GetContentsQuery,
   GetWebsiteInterfaceQuery,
 } from "graphql/operations-types";
-import { getContents } from "graphql/operations";
-import PanelHeader from "components/PanelComponents/PanelHeader";
-import AppLayout from "components/AppLayout";
-import LibraryContentPreview from "components/Library/LibraryContentPreview";
-import { prettyinlineTitle, prettySlug } from "queries/helpers";
+import { GetStaticProps } from "next";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
-import Select from "components/Select";
+import { prettyinlineTitle, prettySlug } from "queries/helpers";
 import { useEffect, useState } from "react";
-import Chip from "components/Chip";
 
 interface ContentsProps extends AppStaticProps {
   contents: GetContentsQuery["contents"]["data"];

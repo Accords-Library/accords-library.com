@@ -1,41 +1,41 @@
+import AppLayout from "components/AppLayout";
+import Button from "components/Button";
+import Chip from "components/Chip";
+import Img, { getAssetURL, ImageQuality } from "components/Img";
+import InsetBox from "components/InsetBox";
+import ContentTOCLine from "components/Library/ContentTOCLine";
+import LibraryItemsPreview from "components/Library/LibraryItemsPreview";
+import LightBox from "components/LightBox";
+import NavOption from "components/PanelComponents/NavOption";
+import ReturnButton, {
+  ReturnButtonType,
+} from "components/PanelComponents/ReturnButton";
 import ContentPanel, {
   ContentPanelWidthSizes,
 } from "components/Panels/ContentPanel";
-import { GetStaticPaths, GetStaticProps } from "next";
+import SubPanel from "components/Panels/SubPanel";
+import { useAppLayout } from "contexts/AppLayoutContext";
 import { getLibraryItem, getLibraryItemsSlugs } from "graphql/operations";
 import {
   Enum_Componentmetadatabooks_Binding_Type,
   Enum_Componentmetadatabooks_Page_Order,
   GetLibraryItemQuery,
 } from "graphql/operations-types";
+import { GetStaticPaths, GetStaticProps } from "next";
+import { useRouter } from "next/router";
+import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 import {
   convertMmToInch,
   prettyDate,
   prettyinlineTitle,
-  prettyItemType,
   prettyItemSubType,
+  prettyItemType,
   prettyPrice,
   prettyTestError,
   prettyTestWarning,
   sortContent,
 } from "queries/helpers";
-import SubPanel from "components/Panels/SubPanel";
-import ReturnButton, {
-  ReturnButtonType,
-} from "components/PanelComponents/ReturnButton";
-import NavOption from "components/PanelComponents/NavOption";
-import Chip from "components/Chip";
-import Button from "components/Button";
-import AppLayout from "components/AppLayout";
-import LibraryItemsPreview from "components/Library/LibraryItemsPreview";
-import InsetBox from "components/InsetBox";
-import Img, { getAssetURL, ImageQuality } from "components/Img";
-import { useAppLayout } from "contexts/AppLayoutContext";
-import { useRouter } from "next/router";
-import ContentTOCLine from "components/Library/ContentTOCLine";
-import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 import { useState } from "react";
-import LightBox from "components/LightBox";
 
 interface LibrarySlugProps extends AppStaticProps {
   item: GetLibraryItemQuery["libraryItems"]["data"][number]["attributes"];

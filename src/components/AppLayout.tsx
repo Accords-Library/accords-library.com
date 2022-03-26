@@ -1,17 +1,17 @@
-import { StrapiImage } from "graphql/operations-types";
-import MainPanel from "./Panels/MainPanel";
-import Head from "next/head";
-import { useSwipeable } from "react-swipeable";
-import { useRouter } from "next/router";
 import Button from "components/Button";
-import { getOgImage, OgImage } from "queries/helpers";
-import { useMediaCoarse, useMediaMobile } from "hooks/useMediaQuery";
 import { useAppLayout } from "contexts/AppLayoutContext";
-import { ImageQuality } from "./Img";
-import Popup from "./Popup";
-import { useEffect, useState } from "react";
-import Select from "./Select";
+import { StrapiImage } from "graphql/operations-types";
+import { useMediaCoarse, useMediaMobile } from "hooks/useMediaQuery";
+import Head from "next/head";
+import { useRouter } from "next/router";
 import { AppStaticProps } from "queries/getAppStaticProps";
+import { getOgImage, OgImage } from "queries/helpers";
+import { useEffect, useState } from "react";
+import { useSwipeable } from "react-swipeable";
+import { ImageQuality } from "./Img";
+import MainPanel from "./Panels/MainPanel";
+import Popup from "./Popup";
+import Select from "./Select";
 
 interface AppLayoutProps extends AppStaticProps {
   subPanel?: React.ReactNode;

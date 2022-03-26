@@ -1,6 +1,5 @@
 import { StrapiImage } from "graphql/operations-types";
-import { ImageProps } from "next/image";
-import Image from "next/image";
+import Image, { ImageProps } from "next/image";
 
 export enum ImageQuality {
   Small = "small",

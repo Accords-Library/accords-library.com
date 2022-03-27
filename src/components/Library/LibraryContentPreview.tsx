@@ -17,10 +17,10 @@ export type LibraryContentPreviewProps = {
 export default function LibraryContentPreview(
   props: LibraryContentPreviewProps
 ): JSX.Element {
-  const item = props.item;
+  const { item } = props;
 
   return (
-    <Link href={"/contents/" + item.slug} passHref>
+    <Link href={`/contents/${item.slug}`} passHref>
       <div className="drop-shadow-shade-xl cursor-pointer grid items-end fine:[--cover-opacity:0] hover:[--cover-opacity:1] hover:scale-[1.02] transition-transform">
         {item.thumbnail.data ? (
           <Img

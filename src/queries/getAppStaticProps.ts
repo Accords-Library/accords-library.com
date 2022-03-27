@@ -8,8 +8,7 @@ import {
   GetLanguagesQuery,
   GetWebsiteInterfaceQuery,
 } from "graphql/operations-types";
-import { GetStaticPropsContext, PreviewData } from "next";
-import { ParsedUrlQuery } from "querystring";
+import { GetStaticPropsContext } from "next";
 
 export interface AppStaticProps {
   langui: GetWebsiteInterfaceQuery["websiteInterfaces"]["data"][number]["attributes"];
@@ -18,24 +17,20 @@ export interface AppStaticProps {
 }
 
 export async function getAppStaticProps(
-  context: GetStaticPropsContext<ParsedUrlQuery, PreviewData>
+  context: GetStaticPropsContext
 ): Promise<AppStaticProps> {
   const languages = (await getLanguages({})).languages.data;
-  languages.sort((a, b) => {
-    return a.attributes.localized_name.localeCompare(
-      b.attributes.localized_name
-    );
-  });
+  languages.sort((a, b) =>
+    a.attributes.localized_name.localeCompare(b.attributes.localized_name)
+  );
 
   const currencies = (await getCurrencies({})).currencies.data;
-  currencies.sort((a, b) => {
-    return a.attributes.code.localeCompare(b.attributes.code);
-  });
+  currencies.sort((a, b) => a.attributes.code.localeCompare(b.attributes.code));
 
   return {
     langui: (
       await getWebsiteInterface({
-        language_code: context.locale || "en",
+        language_code: context.locale ?? "en",
       })
     ).websiteInterfaces.data[0].attributes,
     currencies: currencies,

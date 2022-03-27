@@ -1,5 +1,5 @@
 import AppLayout from "components/AppLayout";
-import { GetStaticProps } from "next";
+import { GetStaticPropsContext } from "next";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 
 interface GalleryProps extends AppStaticProps {}
@@ -22,11 +22,13 @@ export default function Gallery(props: GalleryProps): JSX.Element {
   );
 }
 
-export const getStaticProps: GetStaticProps = async (context) => {
+export async function getStaticProps(
+  context: GetStaticPropsContext
+): Promise<{ props: GalleryProps }> {
   const props: GalleryProps = {
     ...(await getAppStaticProps(context)),
   };
   return {
     props: props,
   };
-};
+}

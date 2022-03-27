@@ -1,7 +1,7 @@
 import AppLayout from "components/AppLayout";
 import PanelHeader from "components/PanelComponents/PanelHeader";
 import SubPanel from "components/Panels/SubPanel";
-import { GetStaticProps } from "next";
+import { GetStaticPropsContext } from "next";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 
 interface MerchProps extends AppStaticProps {}
@@ -20,11 +20,13 @@ export default function Merch(props: MerchProps): JSX.Element {
   return <AppLayout navTitle={langui.merch} subPanel={subPanel} {...props} />;
 }
 
-export const getStaticProps: GetStaticProps = async (context) => {
+export async function getStaticProps(
+  context: GetStaticPropsContext
+): Promise<{ props: MerchProps }> {
   const props: MerchProps = {
     ...(await getAppStaticProps(context)),
   };
   return {
     props: props,
   };
-};
+}

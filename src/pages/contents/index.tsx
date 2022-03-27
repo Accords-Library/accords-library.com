@@ -12,7 +12,7 @@ import {
   GetContentsQuery,
   GetWebsiteInterfaceQuery,
 } from "graphql/operations-types";
-import { GetStaticProps } from "next";
+import { GetStaticPropsContext } from "next";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 import { prettyinlineTitle, prettySlug } from "queries/helpers";
 import { useEffect, useState } from "react";
@@ -64,7 +64,7 @@ export default function Contents(props: ContentsProps): JSX.Element {
             <>
               {name && (
                 <h2
-                  key={"h2" + name}
+                  key={`h2${name}`}
                   className="text-2xl pb-2 pt-10 first-of-type:pt-0 flex flex-row place-items-center gap-2"
                 >
                   {name}
@@ -76,7 +76,7 @@ export default function Contents(props: ContentsProps): JSX.Element {
                 </h2>
               )}
               <div
-                key={"items" + name}
+                key={`items${name}`}
                 className="grid gap-8 items-end grid-cols-2 desktop:grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))]"
               >
                 {items.map((item) => (
@@ -99,10 +99,12 @@ export default function Contents(props: ContentsProps): JSX.Element {
   );
 }
 
-export const getStaticProps: GetStaticProps = async (context) => {
+export async function getStaticProps(
+  context: GetStaticPropsContext
+): Promise<{ props: ContentsProps }> {
   const contents = (
     await getContents({
-      language_code: context.locale || "en",
+      language_code: context.locale ?? "en",
     })
   ).contents.data;
 
@@ -133,7 +135,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   return {
     props: props,
   };
-};
+}
 
 function getGroups(
   langui: GetWebsiteInterfaceQuery["websiteInterfaces"]["data"][number]["attributes"],
@@ -141,55 +143,58 @@ function getGroups(
   items: ContentsProps["contents"]
 ): GroupContentItems {
   switch (groupByType) {
-    case 0:
-      const typeGroup = new Map();
-      typeGroup.set("Drakengard 1", []);
-      typeGroup.set("Drakengard 1.3", []);
-      typeGroup.set("Drakengard 2", []);
-      typeGroup.set("Drakengard 3", []);
-      typeGroup.set("Drakengard 4", []);
-      typeGroup.set("NieR Gestalt", []);
-      typeGroup.set("NieR Replicant", []);
-      typeGroup.set("NieR Replicant ver.1.22474487139...", []);
-      typeGroup.set("NieR:Automata", []);
-      typeGroup.set("NieR Re[in]carnation", []);
-      typeGroup.set("SINoALICE", []);
-      typeGroup.set("Voice of Cards", []);
-      typeGroup.set("Final Fantasy XIV", []);
-      typeGroup.set("Thou Shalt Not Die", []);
-      typeGroup.set("Bakuken", []);
-      typeGroup.set("YoRHa", []);
-      typeGroup.set("YoRHa Boys", []);
-      typeGroup.set(langui.no_category, []);
+    case 0: {
+      const group = new Map();
+      group.set("Drakengard 1", []);
+      group.set("Drakengard 1.3", []);
+      group.set("Drakengard 2", []);
+      group.set("Drakengard 3", []);
+      group.set("Drakengard 4", []);
+      group.set("NieR Gestalt", []);
+      group.set("NieR Replicant", []);
+      group.set("NieR Replicant ver.1.22474487139...", []);
+      group.set("NieR:Automata", []);
+      group.set("NieR Re[in]carnation", []);
+      group.set("SINoALICE", []);
+      group.set("Voice of Cards", []);
+      group.set("Final Fantasy XIV", []);
+      group.set("Thou Shalt Not Die", []);
+      group.set("Bakuken", []);
+      group.set("YoRHa", []);
+      group.set("YoRHa Boys", []);
+      group.set(langui.no_category, []);
 
       items.map((item) => {
         if (item.attributes.categories.data.length === 0) {
-          typeGroup.get(langui.no_category)?.push(item);
+          group.get(langui.no_category)?.push(item);
         } else {
           item.attributes.categories.data.map((category) => {
-            typeGroup.get(category.attributes.name)?.push(item);
+            group.get(category.attributes.name)?.push(item);
           });
         }
       });
-      return typeGroup;
+      return group;
+    }
 
-    case 1:
-      const groupType: GroupContentItems = new Map();
+    case 1: {
+      const group: GroupContentItems = new Map();
       items.map((item) => {
         const type =
           item.attributes.type.data.attributes.titles.length > 0
             ? item.attributes.type.data.attributes.titles[0].title
             : prettySlug(item.attributes.type.data.attributes.slug);
 
-        if (!groupType.has(type)) groupType.set(type, []);
-        groupType.get(type)?.push(item);
+        if (!group.has(type)) group.set(type, []);
+        group.get(type)?.push(item);
       });
 
-      return groupType;
+      return group;
+    }
 
-    default:
-      const groupDefault: GroupContentItems = new Map();
-      groupDefault.set("", items);
-      return groupDefault;
+    default: {
+      const group: GroupContentItems = new Map();
+      group.set("", items);
+      return group;
+    }
   }
 }

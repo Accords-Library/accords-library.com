@@ -5,8 +5,8 @@ type ContentPanelProps = {
 };
 
 export enum ContentPanelWidthSizes {
-  default,
-  large,
+  default = "default",
+  large = "large",
 }
 
 export default function ContentPanel(props: ContentPanelProps): JSX.Element {

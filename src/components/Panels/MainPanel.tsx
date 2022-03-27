@@ -14,7 +14,7 @@ type MainPanelProps = {
 };
 
 export default function MainPanel(props: MainPanelProps): JSX.Element {
-  const langui = props.langui;
+  const { langui } = props;
   const router = useRouter();
   const isDesktop = useMediaDesktop();
   const appLayout = useAppLayout();

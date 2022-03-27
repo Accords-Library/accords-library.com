@@ -3,20 +3,20 @@ import Markdawn from "components/Markdown/Markdawn";
 import ContentPanel, {
   ContentPanelWidthSizes,
 } from "components/Panels/ContentPanel";
-import { GetStaticProps } from "next";
+import { GetStaticPropsContext } from "next";
 import { useRouter } from "next/router";
 import Script from "next/script";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 import { useCallback, useState } from "react";
+import { default as TurndownService } from "turndown";
 
 interface EditorProps extends AppStaticProps {}
 
 export default function Editor(props: EditorProps): JSX.Element {
-  const { langui } = props;
   const router = useRouter();
 
-  const handleInput = useCallback((e) => {
-    setMarkdown(e.target.value);
+  const handleInput = useCallback((event) => {
+    setMarkdown(event.target.value);
   }, []);
 
   const [markdown, setMarkdown] = useState("");
@@ -53,7 +53,6 @@ export default function Editor(props: EditorProps): JSX.Element {
             id="htmlMdTextArea"
             title="Ouput textarea"
             onPaste={(event) => {
-              const TurndownService = require("turndown").default;
               const turndownService = new TurndownService({
                 headingStyle: "atx",
                 codeBlockStyle: "fenced",
@@ -63,9 +62,9 @@ export default function Editor(props: EditorProps): JSX.Element {
               });
 
               let paste = event.clipboardData.getData("text/html");
-              paste = paste.replace(/<\!--.*?-->/g, "");
+              paste = paste.replace(/<!--.*?-->/u, "");
               paste = turndownService.turndown(paste);
-              paste = paste.replace(/<\!--.*?-->/g, "");
+              paste = paste.replace(/<!--.*?-->/u, "");
 
               const target = event.target as HTMLTextAreaElement;
               target.value = paste;
@@ -93,11 +92,13 @@ export default function Editor(props: EditorProps): JSX.Element {
   );
 }
 
-export const getStaticProps: GetStaticProps = async (context) => {
+export async function getStaticProps(
+  context: GetStaticPropsContext
+): Promise<{ props: EditorProps }> {
   const props: EditorProps = {
     ...(await getAppStaticProps(context)),
   };
   return {
     props: props,
   };
-};
+}

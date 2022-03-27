@@ -13,9 +13,9 @@ type ReturnButtonProps = {
 };
 
 export enum ReturnButtonType {
-  Mobile,
-  Desktop,
-  Both,
+  mobile = "mobile",
+  desktop = "desktop",
+  both = "both",
 }
 
 export default function ReturnButton(props: ReturnButtonProps): JSX.Element {
@@ -24,9 +24,9 @@ export default function ReturnButton(props: ReturnButtonProps): JSX.Element {
   return (
     <div
       className={`${
-        props.displayOn === ReturnButtonType.Mobile
+        props.displayOn === ReturnButtonType.mobile
           ? "desktop:hidden"
-          : props.displayOn === ReturnButtonType.Desktop
+          : props.displayOn === ReturnButtonType.desktop
           ? "mobile:hidden"
           : ""
       } ${props.className}`}

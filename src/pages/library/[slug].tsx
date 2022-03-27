@@ -21,7 +21,11 @@ import {
   Enum_Componentmetadatabooks_Page_Order,
   GetLibraryItemQuery,
 } from "graphql/operations-types";
-import { GetStaticPaths, GetStaticProps } from "next";
+import {
+  GetStaticPathsContext,
+  GetStaticPathsResult,
+  GetStaticPropsContext,
+} from "next";
 import { useRouter } from "next/router";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 import {
@@ -64,7 +68,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
         href="/library/"
         title={langui.library}
         langui={langui}
-        displayOn={ReturnButtonType.Desktop}
+        displayOn={ReturnButtonType.desktop}
         horizontalLine
       />
 
@@ -122,7 +126,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
         href="/library/"
         title={langui.library}
         langui={langui}
-        displayOn={ReturnButtonType.Mobile}
+        displayOn={ReturnButtonType.mobile}
         className="mb-10"
       />
       <div className="grid place-items-center gap-12">
@@ -189,12 +193,9 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
                   onClick={() => {
                     setLightboxOpen(true);
                     setLightboxImages(
-                      item.gallery.data.map((image) => {
-                        return getAssetURL(
-                          image.attributes.url,
-                          ImageQuality.Large
-                        );
-                      })
+                      item.gallery.data.map((image) =>
+                        getAssetURL(image.attributes.url, ImageQuality.Large)
+                      )
                     );
                     setLightboxIndex(index);
                   }}
@@ -408,11 +409,13 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
   );
 }
 
-export const getStaticProps: GetStaticProps = async (context) => {
+export async function getStaticProps(
+  context: GetStaticPropsContext
+): Promise<{ props: LibrarySlugProps }> {
   const item = (
     await getLibraryItem({
-      slug: context.params?.slug?.toString() || "",
-      language_code: context.locale || "en",
+      slug: context.params?.slug?.toString() ?? "",
+      language_code: context.locale ?? "en",
     })
   ).libraryItems.data[0];
   const props: LibrarySlugProps = {
@@ -423,19 +426,14 @@ export const getStaticProps: GetStaticProps = async (context) => {
   return {
     props: props,
   };
-};
+}
 
-export const getStaticPaths: GetStaticPaths = async (context) => {
-  type Path = {
-    params: {
-      slug: string;
-    };
-    locale: string;
-  };
-
-  const data = await getLibraryItemsSlugs({});
-  const paths: Path[] = [];
-  data.libraryItems.data.map((item) => {
+export async function getStaticPaths(
+  context: GetStaticPathsContext
+): Promise<GetStaticPathsResult> {
+  const libraryItems = await getLibraryItemsSlugs({});
+  const paths: GetStaticPathsResult["paths"] = [];
+  libraryItems.libraryItems.data.map((item) => {
     context.locales?.map((local) => {
       paths.push({ params: { slug: item.attributes.slug }, locale: local });
     });
@@ -444,15 +442,13 @@ export const getStaticPaths: GetStaticPaths = async (context) => {
     paths,
     fallback: false,
   };
-};
+}
 
 function useTesting(props: LibrarySlugProps) {
   const { item, itemId } = props;
   const router = useRouter();
 
-  const libraryItemURL =
-    "/admin/content-manager/collectionType/api::library-item.library-item/" +
-    itemId;
+  const libraryItemURL = `/admin/content-manager/collectionType/api::library-item.library-item/${itemId}`;
 
   sortContent(item.contents);
 
@@ -472,269 +468,264 @@ function useTesting(props: LibrarySlugProps) {
         ["libraryItem"],
         libraryItemURL
       );
+    } else if (
+      item.metadata[0].__typename === "ComponentMetadataGroup" &&
+      (item.metadata[0].subtype.data.attributes.slug === "relation-set" ||
+        item.metadata[0].subtype.data.attributes.slug === "variant-set")
+    ) {
+      // This is a group type item
+      if (item.price) {
+        prettyTestError(
+          router,
+          "Group-type items shouldn't have price",
+          ["libraryItem"],
+          libraryItemURL
+        );
+      }
+      if (item.size) {
+        prettyTestError(
+          router,
+          "Group-type items shouldn't have size",
+          ["libraryItem"],
+          libraryItemURL
+        );
+      }
+      if (item.release_date) {
+        prettyTestError(
+          router,
+          "Group-type items shouldn't have release_date",
+          ["libraryItem"],
+          libraryItemURL
+        );
+      }
+      if (item.contents.data.length > 0) {
+        prettyTestError(
+          router,
+          "Group-type items shouldn't have contents",
+          ["libraryItem"],
+          libraryItemURL
+        );
+      }
+      if (item.subitems.data.length === 0) {
+        prettyTestError(
+          router,
+          "Group-type items should have subitems",
+          ["libraryItem"],
+          libraryItemURL
+        );
+      }
     } else {
-      if (
-        item.metadata[0].__typename === "ComponentMetadataGroup" &&
-        (item.metadata[0].subtype.data.attributes.slug === "relation-set" ||
-          item.metadata[0].subtype.data.attributes.slug === "variant-set")
-      ) {
-        // This is a group type item
-        if (item.price) {
-          prettyTestError(
-            router,
-            "Group-type items shouldn't have price",
-            ["libraryItem"],
-            libraryItemURL
-          );
-        }
-        if (item.size) {
-          prettyTestError(
-            router,
-            "Group-type items shouldn't have size",
-            ["libraryItem"],
-            libraryItemURL
-          );
-        }
-        if (item.release_date) {
-          prettyTestError(
-            router,
-            "Group-type items shouldn't have release_date",
-            ["libraryItem"],
-            libraryItemURL
-          );
-        }
-        if (item.contents.data.length > 0) {
-          prettyTestError(
-            router,
-            "Group-type items shouldn't have contents",
-            ["libraryItem"],
-            libraryItemURL
-          );
-        }
+      // This is a normal item
+
+      if (item.metadata[0].__typename === "ComponentMetadataGroup") {
         if (item.subitems.data.length === 0) {
           prettyTestError(
             router,
-            "Group-type items should have subitems",
+            "Group-type item should have subitems",
             ["libraryItem"],
+            libraryItemURL
+          );
+        }
+      }
+
+      if (item.price) {
+        if (!item.price.amount) {
+          prettyTestError(
+            router,
+            "Missing amount",
+            ["libraryItem", "price"],
+            libraryItemURL
+          );
+        }
+        if (!item.price.currency) {
+          prettyTestError(
+            router,
+            "Missing currency",
+            ["libraryItem", "price"],
             libraryItemURL
           );
         }
       } else {
-        // This is a normal item
+        prettyTestWarning(
+          router,
+          "Missing price",
+          ["libraryItem"],
+          libraryItemURL
+        );
+      }
 
-        if (item.metadata[0].__typename === "ComponentMetadataGroup") {
-          if (item.subitems.data.length === 0) {
-            prettyTestError(
-              router,
-              "Group-type item should have subitems",
-              ["libraryItem"],
-              libraryItemURL
-            );
-          }
-        }
-
-        if (!item.price) {
-          prettyTestWarning(
-            router,
-            "Missing price",
-            ["libraryItem"],
-            libraryItemURL
-          );
-        } else {
-          if (!item.price.amount) {
-            prettyTestError(
-              router,
-              "Missing amount",
-              ["libraryItem", "price"],
-              libraryItemURL
-            );
-          }
-          if (!item.price.currency) {
-            prettyTestError(
-              router,
-              "Missing currency",
-              ["libraryItem", "price"],
-              libraryItemURL
-            );
-          }
-        }
-
-        if (!item.digital) {
-          if (!item.size) {
+      if (!item.digital) {
+        if (item.size) {
+          if (!item.size.width) {
             prettyTestWarning(
               router,
-              "Missing size",
-              ["libraryItem"],
+              "Missing width",
+              ["libraryItem", "size"],
               libraryItemURL
             );
-          } else {
-            if (!item.size.width) {
-              prettyTestWarning(
-                router,
-                "Missing width",
-                ["libraryItem", "size"],
-                libraryItemURL
-              );
-            }
-            if (!item.size.height) {
-              prettyTestWarning(
-                router,
-                "Missing height",
-                ["libraryItem", "size"],
-                libraryItemURL
-              );
-            }
-            if (!item.size.thickness) {
-              prettyTestWarning(
-                router,
-                "Missing thickness",
-                ["libraryItem", "size"],
-                libraryItemURL
-              );
-            }
           }
-        }
-
-        if (!item.release_date) {
+          if (!item.size.height) {
+            prettyTestWarning(
+              router,
+              "Missing height",
+              ["libraryItem", "size"],
+              libraryItemURL
+            );
+          }
+          if (!item.size.thickness) {
+            prettyTestWarning(
+              router,
+              "Missing thickness",
+              ["libraryItem", "size"],
+              libraryItemURL
+            );
+          }
+        } else {
           prettyTestWarning(
             router,
-            "Missing release_date",
+            "Missing size",
             ["libraryItem"],
             libraryItemURL
           );
-        } else {
-          if (!item.release_date.year) {
-            prettyTestError(
-              router,
-              "Missing year",
-              ["libraryItem", "release_date"],
-              libraryItemURL
-            );
-          }
-          if (!item.release_date.month) {
-            prettyTestError(
-              router,
-              "Missing month",
-              ["libraryItem", "release_date"],
-              libraryItemURL
-            );
-          }
-          if (!item.release_date.day) {
-            prettyTestError(
-              router,
-              "Missing day",
-              ["libraryItem", "release_date"],
-              libraryItemURL
-            );
-          }
         }
+      }
 
-        if (item.contents.data.length === 0) {
-          prettyTestWarning(
+      if (item.release_date) {
+        if (!item.release_date.year) {
+          prettyTestError(
             router,
-            "Missing contents",
-            ["libraryItem"],
+            "Missing year",
+            ["libraryItem", "release_date"],
             libraryItemURL
           );
-        } else {
-          let currentRangePage = 0;
-          item.contents.data.map((content) => {
-            const contentURL =
-              "/admin/content-manager/collectionType/api::content.content/" +
-              content.id;
+        }
+        if (!item.release_date.month) {
+          prettyTestError(
+            router,
+            "Missing month",
+            ["libraryItem", "release_date"],
+            libraryItemURL
+          );
+        }
+        if (!item.release_date.day) {
+          prettyTestError(
+            router,
+            "Missing day",
+            ["libraryItem", "release_date"],
+            libraryItemURL
+          );
+        }
+      } else {
+        prettyTestWarning(
+          router,
+          "Missing release_date",
+          ["libraryItem"],
+          libraryItemURL
+        );
+      }
 
-            if (content.attributes.scan_set.length === 0) {
-              prettyTestWarning(
+      if (item.contents.data.length === 0) {
+        prettyTestWarning(
+          router,
+          "Missing contents",
+          ["libraryItem"],
+          libraryItemURL
+        );
+      } else {
+        let currentRangePage = 0;
+        item.contents.data.map((content) => {
+          const contentURL = `/admin/content-manager/collectionType/api::content.content/${content.id}`;
+
+          if (content.attributes.scan_set.length === 0) {
+            prettyTestWarning(
+              router,
+              "Missing scan_set",
+              ["libraryItem", "content", content.id],
+              contentURL
+            );
+          }
+          if (content.attributes.range.length === 0) {
+            prettyTestWarning(
+              router,
+              "Missing range",
+              ["libraryItem", "content", content.id],
+              contentURL
+            );
+          } else if (
+            content.attributes.range[0].__typename === "ComponentRangePageRange"
+          ) {
+            if (
+              content.attributes.range[0].starting_page <
+              currentRangePage + 1
+            ) {
+              prettyTestError(
                 router,
-                "Missing scan_set",
-                ["libraryItem", "content", content.id],
-                contentURL
-              );
-            }
-            if (content.attributes.range.length === 0) {
-              prettyTestWarning(
-                router,
-                "Missing range",
-                ["libraryItem", "content", content.id],
-                contentURL
+                `Overlapping pages ${content.attributes.range[0].starting_page} to ${currentRangePage}`,
+                ["libraryItem", "content", content.id, "range"],
+                libraryItemURL
               );
             } else if (
-              content.attributes.range[0].__typename ===
-              "ComponentRangePageRange"
+              content.attributes.range[0].starting_page >
+              currentRangePage + 1
             ) {
-              if (
-                content.attributes.range[0].starting_page <
-                currentRangePage + 1
-              ) {
-                prettyTestError(
-                  router,
-                  `Overlapping pages ${content.attributes.range[0].starting_page} to ${currentRangePage}`,
-                  ["libraryItem", "content", content.id, "range"],
-                  libraryItemURL
-                );
-              } else if (
-                content.attributes.range[0].starting_page >
-                currentRangePage + 1
-              ) {
-                prettyTestError(
-                  router,
-                  `Missing pages ${currentRangePage + 1} to ${
-                    content.attributes.range[0].starting_page - 1
-                  }`,
-                  ["libraryItem", "content", content.id, "range"],
-                  libraryItemURL
-                );
-              }
-
-              if (!content.attributes.content.data) {
-                prettyTestWarning(
-                  router,
-                  "Missing content",
-                  ["libraryItem", "content", content.id, "range"],
-                  libraryItemURL
-                );
-              }
-
-              currentRangePage = content.attributes.range[0].ending_page;
-            }
-          });
-
-          if (item.metadata[0].__typename === "ComponentMetadataBooks") {
-            if (currentRangePage < item.metadata[0].page_count) {
               prettyTestError(
                 router,
                 `Missing pages ${currentRangePage + 1} to ${
-                  item.metadata[0].page_count
+                  content.attributes.range[0].starting_page - 1
                 }`,
-                ["libraryItem", "content"],
-                libraryItemURL
-              );
-            } else if (currentRangePage > item.metadata[0].page_count) {
-              prettyTestError(
-                router,
-                `Page overflow, content references pages up to ${currentRangePage} when the highest expected was ${item.metadata[0].page_count}`,
-                ["libraryItem", "content"],
+                ["libraryItem", "content", content.id, "range"],
                 libraryItemURL
               );
             }
 
-            if (item.metadata[0].languages.data.length === 0) {
+            if (!content.attributes.content.data) {
               prettyTestWarning(
                 router,
-                "Missing language",
-                ["libraryItem", "metadata"],
+                "Missing content",
+                ["libraryItem", "content", content.id, "range"],
                 libraryItemURL
               );
             }
 
-            if (!item.metadata[0].page_count) {
-              prettyTestWarning(
-                router,
-                "Missing page_count",
-                ["libraryItem", "metadata"],
-                libraryItemURL
-              );
-            }
+            currentRangePage = content.attributes.range[0].ending_page;
+          }
+        });
+
+        if (item.metadata[0].__typename === "ComponentMetadataBooks") {
+          if (currentRangePage < item.metadata[0].page_count) {
+            prettyTestError(
+              router,
+              `Missing pages ${currentRangePage + 1} to ${
+                item.metadata[0].page_count
+              }`,
+              ["libraryItem", "content"],
+              libraryItemURL
+            );
+          } else if (currentRangePage > item.metadata[0].page_count) {
+            prettyTestError(
+              router,
+              `Page overflow, content references pages up to ${currentRangePage} when the highest expected was ${item.metadata[0].page_count}`,
+              ["libraryItem", "content"],
+              libraryItemURL
+            );
+          }
+
+          if (item.metadata[0].languages.data.length === 0) {
+            prettyTestWarning(
+              router,
+              "Missing language",
+              ["libraryItem", "metadata"],
+              libraryItemURL
+            );
+          }
+
+          if (!item.metadata[0].page_count) {
+            prettyTestWarning(
+              router,
+              "Missing page_count",
+              ["libraryItem", "metadata"],
+              libraryItemURL
+            );
           }
         }
       }

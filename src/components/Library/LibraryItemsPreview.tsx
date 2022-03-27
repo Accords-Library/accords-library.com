@@ -26,11 +26,11 @@ export type LibraryItemsPreviewProps = {
 export default function LibraryItemsPreview(
   props: LibraryItemsPreviewProps
 ): JSX.Element {
-  const item = props.item;
+  const { item } = props;
   const appLayout = useAppLayout();
 
   return (
-    <Link href={"/library/" + item.slug} passHref>
+    <Link href={`/library/${item.slug}`} passHref>
       <div
         className={`drop-shadow-shade-xl cursor-pointer grid items-end hover:rounded-3xl fine:[--cover-opacity:0] hover:[--cover-opacity:1] hover:scale-[1.02] transition-transform ${props.className}`}
       >
@@ -63,7 +63,7 @@ export default function LibraryItemsPreview(
             ))}
           </div>
 
-          {(item.release_date || item.price) && (
+          {(item.release_date ?? item.price) && (
             <div className="grid grid-flow-col w-full">
               {item.release_date && (
                 <p className="mobile:text-xs text-sm">

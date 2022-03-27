@@ -15,10 +15,10 @@ export type PostPreviewProps = {
 };
 
 export default function PostPreview(props: PostPreviewProps): JSX.Element {
-  const post = props.post;
+  const { post } = props;
 
   return (
-    <Link href={"/news/" + post.slug} passHref>
+    <Link href={`/news/${post.slug}`} passHref>
       <div className="drop-shadow-shade-xl cursor-pointer grid items-end hover:scale-[1.02] transition-transform">
         {post.thumbnail.data ? (
           <Img

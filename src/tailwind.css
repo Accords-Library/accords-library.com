@@ -2,167 +2,163 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  * {
-    @apply box-border font-body font-medium scroll-smooth scroll-m-8;
-  }
-
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    @apply font-headers font-black;
-  }
-
-  a {
-    @apply transition-colors underline-offset-2 decoration-dotted underline decoration-dark hover:text-dark cursor-pointer;
-  }
-
-  *::selection {
-    @apply bg-dark text-light;
-  }
-
-  mark {
-    @apply bg-mid px-2;
-  }
-
-  /* SCROLLBARS STYLING */
-
-  * {
-    @apply [scrollbar-color:theme(colors.dark)_transparent] [scrollbar-width:thin];
-  }
-
-  *::-webkit-scrollbar {
-    @apply w-3 mobile:w-0;
-  }
-
-  *::-webkit-scrollbar-track {
-    @apply bg-light;
-  }
-
-  *::-webkit-scrollbar-thumb {
-    @apply bg-dark rounded-full border-[3px] border-solid border-light;
-  }
-
-  /* CHANGE FORMATTED DEFAULTS */
-
-  .formatted h1,
-  .formatted h2,
-  .formatted h3,
-  .formatted h4,
-  .formatted h5,
-  .formatted h6 {
-    @apply text-center flex gap-3 justify-center;
-  }
-
-  .formatted h1 {
-    @apply text-4xl my-16;
-  }
-
-  .formatted h1 + h2 {
-    @apply -mt-10;
-  }
-
-  .formatted h2 {
-    @apply text-3xl my-12;
-  }
-
-  .formatted h2 + h3 {
-    @apply -mt-8;
-  }
-
-  .formatted h3 {
-    @apply text-2xl my-8;
-  }
-
-  .formatted h3 + h4 {
-    @apply -mt-6;
-  }
-
-  .formatted h4 {
-    @apply text-xl my-6;
-  }
-
-  .formatted h5 {
-    @apply text-lg my-4;
-  }
-
-  .formatted p,
-  .formatted strong {
-    @apply my-2 text-justify;
-  }
-
-  .formatted strong {
-    @apply font-black;
-  }
-
-  .formatted footer {
-    @apply border-t-[3px] border-dotted pt-6;
-  }
-
-  .formatted footer > div {
-    @apply my-2 px-6 py-4 rounded-xl;
-  }
-
-  .formatted footer > div:target {
-    @apply bg-mid shadow-inner-sm shadow-shade;
-  }
-
-  .formatted li::marker {
-    @apply text-dark;
-  }
-
-  .formatted blockquote {
-    @apply border-l-dark;
-  }
-
-  .formatted ul {
-    @apply list-disc pl-4;
-  }
-
-  .formatted ol {
-    @apply list-decimal pl-4;
-  }
-
-  .formatted blockquote {
-    @apply border-2 border-mid rounded-lg p-5 text-center my-8;
-  }
-
-  .formatted blockquote cite {
-    @apply text-dark block;
-  }
-
-  /* INPUT */
-
-  input,
-  textarea {
-    @apply rounded-full p-2 text-center bg-light outline outline-mid outline-2 outline-offset-[-2px] hover:outline-[transparent] text-dark hover:bg-mid transition-all placeholder:text-dark placeholder:opacity-60;
-  }
-
-  input::placeholder {
-    @apply text-dark opacity-60;
-  }
-
-  input:focus-visible,
-  textarea:focus-within {
-    @apply outline-none bg-mid shadow-inner-sm shadow-shade;
-  }
-
-  textarea {
-    @apply rounded-2xl text-left p-6;
-  }
-
-  input[type="submit"] {
-    @apply grid place-content-center place-items-center border-[1px] border-dark text-dark rounded-full px-4 pt-[0.4rem] pb-[0.5rem] transition-all cursor-pointer hover:text-light hover:bg-dark hover:drop-shadow-shade-lg active:bg-black active:text-light active:drop-shadow-black-lg active:border-black;
-  }
+* {
+  @apply box-border font-body font-medium scroll-smooth scroll-m-8;
 }
 
-@layer components {
-  .texture-paper-dots {
-    @apply [background-image:var(--theme-texture-dots)] [background-blend-mode:var(--theme-texture-dots-blend)] bg-local bg-[length:10cm];
-  }
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  @apply font-headers font-black;
+}
+
+a {
+  @apply transition-colors underline-offset-2 decoration-dotted underline decoration-dark hover:text-dark cursor-pointer;
+}
+
+*::selection {
+  @apply bg-dark text-light;
+}
+
+mark {
+  @apply bg-mid px-2;
+}
+
+/* SCROLLBARS STYLING */
+
+* {
+  @apply [scrollbar-color:theme(colors.dark)_transparent] [scrollbar-width:thin];
+}
+
+*::-webkit-scrollbar {
+  @apply w-3 mobile:w-0;
+}
+
+*::-webkit-scrollbar-track {
+  @apply bg-light;
+}
+
+*::-webkit-scrollbar-thumb {
+  @apply bg-dark rounded-full border-[3px] border-solid border-light;
+}
+
+/* CHANGE FORMATTED DEFAULTS */
+
+.formatted h1,
+.formatted h2,
+.formatted h3,
+.formatted h4,
+.formatted h5,
+.formatted h6 {
+  @apply text-center flex gap-3 justify-center;
+}
+
+.formatted h1 {
+  @apply text-4xl my-16;
+}
+
+.formatted h1 + h2 {
+  @apply -mt-10;
+}
+
+.formatted h2 {
+  @apply text-3xl my-12;
+}
+
+.formatted h2 + h3 {
+  @apply -mt-8;
+}
+
+.formatted h3 {
+  @apply text-2xl my-8;
+}
+
+.formatted h3 + h4 {
+  @apply -mt-6;
+}
+
+.formatted h4 {
+  @apply text-xl my-6;
+}
+
+.formatted h5 {
+  @apply text-lg my-4;
+}
+
+.formatted p,
+.formatted strong {
+  @apply my-2 text-justify;
+}
+
+.formatted strong {
+  @apply font-black;
+}
+
+.formatted footer {
+  @apply border-t-[3px] border-dotted pt-6;
+}
+
+.formatted footer > div {
+  @apply my-2 px-6 py-4 rounded-xl;
+}
+
+.formatted footer > div:target {
+  @apply bg-mid shadow-inner-sm shadow-shade;
+}
+
+.formatted li::marker {
+  @apply text-dark;
+}
+
+.formatted blockquote {
+  @apply border-l-dark;
+}
+
+.formatted ul {
+  @apply list-disc pl-4;
+}
+
+.formatted ol {
+  @apply list-decimal pl-4;
+}
+
+.formatted blockquote {
+  @apply border-2 border-mid rounded-lg p-5 text-center my-8;
+}
+
+.formatted blockquote cite {
+  @apply text-dark block;
+}
+
+/* INPUT */
+
+input,
+textarea {
+  @apply rounded-full p-2 text-center bg-light outline outline-mid outline-2 outline-offset-[-2px] hover:outline-[transparent] text-dark hover:bg-mid transition-all placeholder:text-dark placeholder:opacity-60;
+}
+
+input::placeholder {
+  @apply text-dark opacity-60;
+}
+
+input:focus-visible,
+textarea:focus-within {
+  @apply outline-none bg-mid shadow-inner-sm shadow-shade;
+}
+
+textarea {
+  @apply rounded-2xl text-left p-6;
+}
+
+input[type="submit"] {
+  @apply grid place-content-center place-items-center border-[1px] border-dark text-dark rounded-full px-4 pt-[0.4rem] pb-[0.5rem] transition-all cursor-pointer hover:text-light hover:bg-dark hover:drop-shadow-shade-lg active:bg-black active:text-light active:drop-shadow-black-lg active:border-black;
+}
+
+.texture-paper-dots {
+  @apply [background-image:var(--theme-texture-dots)] [background-blend-mode:var(--theme-texture-dots-blend)] bg-local bg-[length:10cm];
 }
 
 /* TIPPY */

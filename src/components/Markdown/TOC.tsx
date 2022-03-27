@@ -8,7 +8,7 @@ type TOCProps = {
   router: NextRouter;
 };
 
-export default function TOC(props: TOCProps): JSX.Element {
+export default function TOCComponent(props: TOCProps): JSX.Element {
   const { router, text, title } = props;
   const toc = getTocFromMarkdawn(preprocessMarkDawn(text), title);
 
@@ -17,7 +17,7 @@ export default function TOC(props: TOCProps): JSX.Element {
       <h3 className="text-xl">Table of content</h3>
       <div className="text-left max-w-[14.5rem]">
         <p className="my-2 overflow-x-hidden relative text-ellipsis whitespace-nowrap text-left">
-          <a className="" onClick={() => router.replace(`#${toc.slug}`)}>
+          <a className="" onClick={async () => router.replace(`#${toc.slug}`)}>
             {<abbr title={toc.title}>{toc.title}</abbr>}
           </a>
         </p>
@@ -50,7 +50,7 @@ function TOCLevel(props: TOCLevelProps): JSX.Element {
             <span className="text-dark">{`${parentNumbering}${
               childIndex + 1
             }.`}</span>{" "}
-            <a onClick={() => router.replace(`#${child.slug}`)}>
+            <a onClick={async () => router.replace(`#${child.slug}`)}>
               {<abbr title={child.title}>{child.title}</abbr>}
             </a>
           </li>
@@ -72,8 +72,11 @@ export type TOC = {
 };
 
 export function getTocFromMarkdawn(text: string, title?: string): TOC {
-  if (!title) title = "Return to top";
-  let toc: TOC = { title: title, slug: slugify(title) || "", children: [] };
+  const toc: TOC = {
+    title: title ?? "Return to top",
+    slug: slugify(title) ?? "",
+    children: [],
+  };
   let h2 = -1;
   let h3 = -1;
   let h4 = -1;
@@ -99,7 +102,7 @@ export function getTocFromMarkdawn(text: string, title?: string): TOC {
         slug: getSlug(line),
         children: [],
       });
-      h2++;
+      h2 += 1;
       h3 = -1;
       h4 = -1;
       h5 = -1;
@@ -110,7 +113,7 @@ export function getTocFromMarkdawn(text: string, title?: string): TOC {
         slug: getSlug(line),
         children: [],
       });
-      h3++;
+      h3 += 1;
       h4 = -1;
       h5 = -1;
       scenebreak = 0;
@@ -120,7 +123,7 @@ export function getTocFromMarkdawn(text: string, title?: string): TOC {
         slug: getSlug(line),
         children: [],
       });
-      h4++;
+      h4 += 1;
       h5 = -1;
       scenebreak = 0;
     } else if (line.startsWith("<h5 id=")) {
@@ -129,7 +132,7 @@ export function getTocFromMarkdawn(text: string, title?: string): TOC {
         slug: getSlug(line),
         children: [],
       });
-      h5++;
+      h5 += 1;
       scenebreak = 0;
     } else if (line.startsWith("<h6 id=")) {
       toc.children[h2].children[h3].children[h4].children[h5].children.push({
@@ -138,8 +141,8 @@ export function getTocFromMarkdawn(text: string, title?: string): TOC {
         children: [],
       });
     } else if (line.startsWith(`<SceneBreak`)) {
-      scenebreak++;
-      scenebreakIndex++;
+      scenebreak += 1;
+      scenebreakIndex += 1;
 
       const child = {
         title: `Scene break ${scenebreak}`,

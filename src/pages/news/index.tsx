@@ -7,7 +7,7 @@ import ContentPanel, {
 import SubPanel from "components/Panels/SubPanel";
 import { getPostsPreview } from "graphql/operations";
 import { GetPostsPreviewQuery } from "graphql/operations-types";
-import { GetStaticProps } from "next";
+import { GetStaticPropsContext } from "next";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 
 interface NewsProps extends AppStaticProps {
@@ -46,14 +46,16 @@ export default function News(props: NewsProps): JSX.Element {
   );
 }
 
-export const getStaticProps: GetStaticProps = async (context) => {
+export async function getStaticProps(
+  context: GetStaticPropsContext
+): Promise<{ props: NewsProps }> {
   const props: NewsProps = {
     ...(await getAppStaticProps(context)),
     posts: await (
-      await getPostsPreview({ language_code: context.locale || "en" })
+      await getPostsPreview({ language_code: context.locale ?? "en" })
     ).posts.data,
   };
   return {
     props: props,
   };
-};
+}

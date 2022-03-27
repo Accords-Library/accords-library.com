@@ -10,7 +10,7 @@ import ContentPanel from "components/Panels/ContentPanel";
 import SubPanel from "components/Panels/SubPanel";
 import { getPost, getPostLanguages } from "graphql/operations";
 import { GetPostQuery } from "graphql/operations-types";
-import { GetStaticProps } from "next";
+import { GetStaticPropsContext } from "next";
 import { useRouter } from "next/router";
 import { RequestMailProps, ResponseMailProps } from "pages/api/mail";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
@@ -26,7 +26,7 @@ export default function AboutUs(props: ContactProps): JSX.Element {
   const { langui, post, locales } = props;
   const router = useRouter();
   const [formResponse, setFormResponse] = useState("");
-  const [formState, setFormState] = useState<"stale" | "ongoing" | "completed">(
+  const [formState, setFormState] = useState<"completed" | "ongoing" | "stale">(
     "stale"
   );
 
@@ -37,7 +37,7 @@ export default function AboutUs(props: ContactProps): JSX.Element {
     <SubPanel>
       <ReturnButton
         href="/about-us"
-        displayOn={ReturnButtonType.Desktop}
+        displayOn={ReturnButtonType.desktop}
         langui={langui}
         title={langui.about_us}
         horizontalLine
@@ -56,12 +56,12 @@ export default function AboutUs(props: ContactProps): JSX.Element {
     <ContentPanel>
       <ReturnButton
         href="/about-us"
-        displayOn={ReturnButtonType.Mobile}
+        displayOn={ReturnButtonType.mobile}
         langui={langui}
         title={langui.about_us}
         className="mb-10"
       />
-      {locales.includes(router.locale || "en") ? (
+      {locales.includes(router.locale ?? "en") ? (
         <Markdawn router={router} text={post.translations[0].body} />
       ) : (
         <LanguageSwitcher
@@ -78,10 +78,10 @@ export default function AboutUs(props: ContactProps): JSX.Element {
             formState !== "stale" &&
             "opacity-60 cursor-not-allowed touch-none pointer-events-none"
           }`}
-          onSubmit={(e) => {
-            e.preventDefault();
+          onSubmit={(event) => {
+            event.preventDefault();
 
-            const fields = e.target as unknown as {
+            const fields = event.target as unknown as {
               verif: HTMLInputElement;
               name: HTMLInputElement;
               email: HTMLInputElement;
@@ -91,7 +91,8 @@ export default function AboutUs(props: ContactProps): JSX.Element {
             setFormState("ongoing");
 
             if (
-              parseInt(fields.verif.value) == randomNumber1 + randomNumber2 &&
+              parseInt(fields.verif.value, 10) ===
+                randomNumber1 + randomNumber2 &&
               formState !== "completed"
             ) {
               const content: RequestMailProps = {
@@ -107,9 +108,9 @@ export default function AboutUs(props: ContactProps): JSX.Element {
                   "Content-type": "application/json; charset=UTF-8",
                 },
               })
-                .then((response) => response.json())
-                .then((data: ResponseMailProps) => {
-                  switch (data.code) {
+                .then(async (responseJson) => responseJson.json())
+                .then((response: ResponseMailProps) => {
+                  switch (response.code) {
                     case "OKAY":
                       setFormResponse(langui.response_email_success);
                       setFormState("completed");
@@ -122,7 +123,7 @@ export default function AboutUs(props: ContactProps): JSX.Element {
                       break;
 
                     default:
-                      setFormResponse(data.message || "");
+                      setFormResponse(response.message ?? "");
                       setFormState("stale");
                       break;
                   }
@@ -223,23 +224,25 @@ export default function AboutUs(props: ContactProps): JSX.Element {
   );
 }
 
-export const getStaticProps: GetStaticProps = async (context) => {
+export async function getStaticProps(
+  context: GetStaticPropsContext
+): Promise<{ props: ContactProps }> {
   const slug = "contact";
   const props: ContactProps = {
     ...(await getAppStaticProps(context)),
     post: (
       await getPost({
         slug: slug,
-        language_code: context.locale || "en",
+        language_code: context.locale ?? "en",
       })
     ).posts.data[0].attributes,
     locales: (
       await getPostLanguages({ slug: slug })
-    ).posts.data[0].attributes.translations.map((translation) => {
-      return translation.language.data.attributes.code;
-    }),
+    ).posts.data[0].attributes.translations.map(
+      (translation) => translation.language.data.attributes.code
+    ),
   };
   return {
     props: props,
   };
-};
+}

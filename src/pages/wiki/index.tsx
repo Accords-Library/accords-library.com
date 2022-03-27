@@ -2,7 +2,7 @@ import AppLayout from "components/AppLayout";
 import NavOption from "components/PanelComponents/NavOption";
 import PanelHeader from "components/PanelComponents/PanelHeader";
 import SubPanel from "components/Panels/SubPanel";
-import { GetStaticProps } from "next";
+import { GetStaticPropsContext } from "next";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 
 interface WikiProps extends AppStaticProps {}
@@ -23,11 +23,13 @@ export default function Wiki(props: WikiProps): JSX.Element {
   return <AppLayout navTitle={langui.wiki} subPanel={subPanel} {...props} />;
 }
 
-export const getStaticProps: GetStaticProps = async (context) => {
+export async function getStaticProps(
+  context: GetStaticPropsContext
+): Promise<{ props: WikiProps }> {
   const props: WikiProps = {
     ...(await getAppStaticProps(context)),
   };
   return {
     props: props,
   };
-};
+}

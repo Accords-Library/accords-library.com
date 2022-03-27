@@ -9,7 +9,11 @@ import ContentPanel from "components/Panels/ContentPanel";
 import SubPanel from "components/Panels/SubPanel";
 import { getContent, getContentsSlugs } from "graphql/operations";
 import { GetContentQuery } from "graphql/operations-types";
-import { GetStaticPaths, GetStaticProps } from "next";
+import {
+  GetStaticPathsContext,
+  GetStaticPathsResult,
+  GetStaticPropsContext,
+} from "next";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 import { prettyinlineTitle, prettySlug } from "queries/helpers";
 
@@ -25,7 +29,7 @@ export default function ContentIndex(props: ContentIndexProps): JSX.Element {
         href="/contents"
         title={"Contents"}
         langui={langui}
-        displayOn={ReturnButtonType.Desktop}
+        displayOn={ReturnButtonType.desktop}
         horizontalLine
       />
     </SubPanel>
@@ -36,7 +40,7 @@ export default function ContentIndex(props: ContentIndexProps): JSX.Element {
         href="/contents"
         title={"Contents"}
         langui={langui}
-        displayOn={ReturnButtonType.Mobile}
+        displayOn={ReturnButtonType.mobile}
         className="mb-10"
       />
       <div className="grid place-items-center">
@@ -99,9 +103,7 @@ export default function ContentIndex(props: ContentIndexProps): JSX.Element {
   if (content.categories.data.length > 0) {
     description += `${langui.categories}: `;
     description += content.categories.data
-      .map((category) => {
-        return category.attributes.short;
-      })
+      .map((category) => category.attributes.short)
       .join(" | ");
     description += "\n";
   }
@@ -132,27 +134,29 @@ export default function ContentIndex(props: ContentIndexProps): JSX.Element {
   );
 }
 
-export const getStaticProps: GetStaticProps = async (context) => {
+export async function getStaticProps(context: GetStaticPropsContext): Promise<{
+  props: ContentIndexProps;
+}> {
   const props: ContentIndexProps = {
     ...(await getAppStaticProps(context)),
     content: (
       await getContent({
-        slug: context.params?.slug?.toString() || "",
-        language_code: context.locale || "en",
+        slug: context.params?.slug?.toString() ?? "",
+        language_code: context.locale ?? "en",
       })
     ).contents.data[0].attributes,
   };
   return {
     props: props,
   };
-};
+}
 
-export const getStaticPaths: GetStaticPaths = async (context) => {
-  type Path = { params: { slug: string }; locale: string };
-
-  const data = await getContentsSlugs({});
-  const paths: Path[] = [];
-  data.contents.data.map((item) => {
+export async function getStaticPaths(
+  context: GetStaticPathsContext
+): Promise<GetStaticPathsResult> {
+  const contents = await getContentsSlugs({});
+  const paths: GetStaticPathsResult["paths"] = [];
+  contents.contents.data.map((item) => {
     context.locales?.map((local) => {
       paths.push({ params: { slug: item.attributes.slug }, locale: local });
     });
@@ -161,4 +165,4 @@ export const getStaticPaths: GetStaticPaths = async (context) => {
     paths,
     fallback: false,
   };
-};
+}

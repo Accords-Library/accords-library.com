@@ -3,8 +3,8 @@ import Button from "./Button";
 
 export type PopupProps = {
   setState:
-    | Dispatch<SetStateAction<boolean>>
-    | Dispatch<SetStateAction<boolean | undefined>>;
+    | Dispatch<SetStateAction<boolean | undefined>>
+    | Dispatch<SetStateAction<boolean>>;
   state?: boolean;
   children: React.ReactNode;
   fillViewport?: boolean;
@@ -19,8 +19,8 @@ export default function Popup(props: PopupProps): JSX.Element {
           ? "[backdrop-filter:blur(2px)]"
           : "pointer-events-none touch-none"
       }`}
-      onKeyUp={(e) => {
-        if (e.key.match("Escape")) props.setState(false);
+      onKeyUp={(event) => {
+        if (event.key.match("Escape")) props.setState(false);
       }}
       tabIndex={0}
     >

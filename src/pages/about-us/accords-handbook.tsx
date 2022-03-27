@@ -9,7 +9,7 @@ import ContentPanel from "components/Panels/ContentPanel";
 import SubPanel from "components/Panels/SubPanel";
 import { getPost, getPostLanguages } from "graphql/operations";
 import { GetPostQuery } from "graphql/operations-types";
-import { GetStaticProps } from "next";
+import { GetStaticPropsContext } from "next";
 import { useRouter } from "next/router";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 import { prettySlug } from "queries/helpers";
@@ -29,7 +29,7 @@ export default function AccordsHandbook(
     <SubPanel>
       <ReturnButton
         href="/about-us"
-        displayOn={ReturnButtonType.Desktop}
+        displayOn={ReturnButtonType.desktop}
         langui={langui}
         title={langui.about_us}
         horizontalLine
@@ -48,12 +48,12 @@ export default function AccordsHandbook(
     <ContentPanel>
       <ReturnButton
         href="/about-us"
-        displayOn={ReturnButtonType.Mobile}
+        displayOn={ReturnButtonType.mobile}
         langui={langui}
         title={langui.about_us}
         className="mb-10"
       />
-      {locales.includes(router.locale || "en") ? (
+      {locales.includes(router.locale ?? "en") ? (
         <Markdawn router={router} text={post.translations[0].body} />
       ) : (
         <LanguageSwitcher
@@ -80,23 +80,25 @@ export default function AccordsHandbook(
   );
 }
 
-export const getStaticProps: GetStaticProps = async (context) => {
+export async function getStaticProps(
+  context: GetStaticPropsContext
+): Promise<{ props: AccordsHandbookProps }> {
   const slug = "accords-handbook";
   const props: AccordsHandbookProps = {
     ...(await getAppStaticProps(context)),
     post: (
       await getPost({
         slug: slug,
-        language_code: context.locale || "en",
+        language_code: context.locale ?? "en",
       })
     ).posts.data[0].attributes,
     locales: (
       await getPostLanguages({ slug: slug })
-    ).posts.data[0].attributes.translations.map((translation) => {
-      return translation.language.data.attributes.code;
-    }),
+    ).posts.data[0].attributes.translations.map(
+      (translation) => translation.language.data.attributes.code
+    ),
   };
   return {
     props: props,
   };
-};
+}

@@ -1,8 +1,8 @@
-import Link from "next/link";
-import { prettyDate, prettySlug } from "queries/helpers";
 import Chip from "components/Chip";
 import Img, { ImageQuality } from "components/Img";
 import { GetPostsPreviewQuery } from "graphql/operations-types";
+import Link from "next/link";
+import { prettyDate, prettySlug } from "queries/helpers";
 
 export type PostPreviewProps = {
   post: {
@@ -15,10 +15,10 @@ export type PostPreviewProps = {
 };
 
 export default function PostPreview(props: PostPreviewProps): JSX.Element {
-  const post = props.post;
+  const { post } = props;
 
   return (
-    <Link href={"/news/" + post.slug} passHref>
+    <Link href={`/news/${post.slug}`} passHref>
       <div className="drop-shadow-shade-xl cursor-pointer grid items-end hover:scale-[1.02] transition-transform">
         {post.thumbnail.data ? (
           <Img

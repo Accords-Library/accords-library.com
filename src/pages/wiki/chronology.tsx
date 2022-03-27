@@ -1,25 +1,25 @@
-import { GetStaticProps } from "next";
+import AppLayout from "components/AppLayout";
+import ChronologyYearComponent from "components/Chronology/ChronologyYearComponent";
+import InsetBox from "components/InsetBox";
+import NavOption from "components/PanelComponents/NavOption";
+import ReturnButton, {
+  ReturnButtonType,
+} from "components/PanelComponents/ReturnButton";
 import ContentPanel from "components/Panels/ContentPanel";
 import SubPanel from "components/Panels/SubPanel";
-import ChronologyYearComponent from "components/Chronology/ChronologyYearComponent";
+import { getChronologyItems, getEras } from "graphql/operations";
 import {
   GetChronologyItemsQuery,
   GetErasQuery,
 } from "graphql/operations-types";
-import { getEras, getChronologyItems } from "graphql/operations";
-import NavOption from "components/PanelComponents/NavOption";
-import AppLayout from "components/AppLayout";
+import { GetStaticPropsContext } from "next";
+import { useRouter } from "next/router";
+import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 import {
   prettySlug,
   prettyTestError,
   prettyTestWarning,
 } from "queries/helpers";
-import InsetBox from "components/InsetBox";
-import { useRouter } from "next/router";
-import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
-import ReturnButton, {
-  ReturnButtonType,
-} from "components/PanelComponents/ReturnButton";
 
 interface ChronologyProps extends AppStaticProps {
   chronologyItems: GetChronologyItemsQuery["chronologyItems"]["data"];
@@ -31,7 +31,7 @@ export default function Chronology(props: ChronologyProps): JSX.Element {
   const { chronologyItems, chronologyEras, langui } = props;
 
   // Group by year the Chronology items
-  let chronologyItemYearGroups: GetChronologyItemsQuery["chronologyItems"]["data"][number][][][] =
+  const chronologyItemYearGroups: GetChronologyItemsQuery["chronologyItems"]["data"][number][][][] =
     [];
 
   chronologyEras.map(() => {
@@ -44,20 +44,21 @@ export default function Chronology(props: ChronologyProps): JSX.Element {
       item.attributes.year >
       chronologyEras[currentChronologyEraIndex].attributes.ending_year
     ) {
-      currentChronologyEraIndex++;
+      currentChronologyEraIndex += 1;
     }
     if (
-      !chronologyItemYearGroups[currentChronologyEraIndex].hasOwnProperty(
+      Object.prototype.hasOwnProperty.call(
+        chronologyItemYearGroups[currentChronologyEraIndex],
         item.attributes.year
       )
     ) {
       chronologyItemYearGroups[currentChronologyEraIndex][
         item.attributes.year
-      ] = [item];
+      ].push(item);
     } else {
       chronologyItemYearGroups[currentChronologyEraIndex][
         item.attributes.year
-      ].push(item);
+      ] = [item];
     }
   });
 
@@ -67,22 +68,20 @@ export default function Chronology(props: ChronologyProps): JSX.Element {
         href="/wiki"
         title={langui.wiki}
         langui={langui}
-        displayOn={ReturnButtonType.Desktop}
+        displayOn={ReturnButtonType.desktop}
         horizontalLine
       />
 
       {chronologyEras.map((era) => (
         <NavOption
           key={era.id}
-          url={"#" + era.attributes.slug}
+          url={`#${era.attributes.slug}`}
           title={
             era.attributes.title.length > 0
               ? era.attributes.title[0].title
               : prettySlug(era.attributes.slug)
           }
-          subtitle={
-            era.attributes.starting_year + " → " + era.attributes.ending_year
-          }
+          subtitle={`${era.attributes.starting_year} → ${era.attributes.ending_year}`}
           border
         />
       ))}
@@ -95,7 +94,7 @@ export default function Chronology(props: ChronologyProps): JSX.Element {
         href="/wiki"
         title={langui.wiki}
         langui={langui}
-        displayOn={ReturnButtonType.Mobile}
+        displayOn={ReturnButtonType.mobile}
         className="mb-10"
       />
 
@@ -139,29 +138,29 @@ export default function Chronology(props: ChronologyProps): JSX.Element {
   );
 }
 
-export const getStaticProps: GetStaticProps = async (context) => {
+export async function getStaticProps(
+  context: GetStaticPropsContext
+): Promise<{ props: ChronologyProps }> {
   const props: ChronologyProps = {
     ...(await getAppStaticProps(context)),
     chronologyItems: (
       await getChronologyItems({
-        language_code: context.locale || "en",
+        language_code: context.locale ?? "en",
       })
     ).chronologyItems.data,
-    chronologyEras: (await getEras({ language_code: context.locale || "en" }))
+    chronologyEras: (await getEras({ language_code: context.locale ?? "en" }))
       .chronologyEras.data,
   };
   return {
     props: props,
   };
-};
+}
 
 function useTesting(props: ChronologyProps) {
   const router = useRouter();
   const { chronologyItems, chronologyEras } = props;
   chronologyEras.map((era) => {
-    const chronologyErasURL =
-      "/admin/content-manager/collectionType/api::chronology-era.chronology-era/" +
-      chronologyItems[0].id;
+    const chronologyErasURL = `/admin/content-manager/collectionType/api::chronology-era.chronology-era/${chronologyItems[0].id}`;
 
     if (era.attributes.title.length === 0) {
       prettyTestError(
@@ -196,20 +195,11 @@ function useTesting(props: ChronologyProps) {
   });
 
   chronologyItems.map((item) => {
-    const chronologyItemsURL =
-      "/admin/content-manager/collectionType/api::chronology-item.chronology-item/" +
-      chronologyItems[0].id;
+    const chronologyItemsURL = `/admin/content-manager/collectionType/api::chronology-item.chronology-item/${chronologyItems[0].id}`;
 
     const date = `${item.attributes.year}/${item.attributes.month}/${item.attributes.day}`;
 
-    if (!(item.attributes.events.length > 0)) {
-      prettyTestError(
-        router,
-        "No events for this date",
-        ["chronologyItems", date],
-        chronologyItemsURL
-      );
-    } else {
+    if (item.attributes.events.length > 0) {
       item.attributes.events.map((event) => {
         if (!event.source.data) {
           prettyTestError(
@@ -228,6 +218,13 @@ function useTesting(props: ChronologyProps) {
           );
         }
       });
+    } else {
+      prettyTestError(
+        router,
+        "No events for this date",
+        ["chronologyItems", date],
+        chronologyItemsURL
+      );
     }
   });
 }

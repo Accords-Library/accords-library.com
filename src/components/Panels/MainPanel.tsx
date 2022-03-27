@@ -1,20 +1,20 @@
-import Link from "next/link";
-import NavOption from "components/PanelComponents/NavOption";
-import { useRouter } from "next/router";
 import Button from "components/Button";
 import HorizontalLine from "components/HorizontalLine";
-import { GetWebsiteInterfaceQuery } from "graphql/operations-types";
-import Markdown from "markdown-to-jsx";
-import { useMediaDesktop } from "hooks/useMediaQuery";
-import { useAppLayout } from "contexts/AppLayoutContext";
+import NavOption from "components/PanelComponents/NavOption";
 import ToolTip from "components/ToolTip";
+import { useAppLayout } from "contexts/AppLayoutContext";
+import { GetWebsiteInterfaceQuery } from "graphql/operations-types";
+import { useMediaDesktop } from "hooks/useMediaQuery";
+import Markdown from "markdown-to-jsx";
+import Link from "next/link";
+import { useRouter } from "next/router";
 
 type MainPanelProps = {
   langui: GetWebsiteInterfaceQuery["websiteInterfaces"]["data"][number]["attributes"];
 };
 
 export default function MainPanel(props: MainPanelProps): JSX.Element {
-  const langui = props.langui;
+  const { langui } = props;
   const router = useRouter();
   const isDesktop = useMediaDesktop();
   const appLayout = useAppLayout();

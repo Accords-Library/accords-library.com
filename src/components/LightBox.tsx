@@ -4,8 +4,8 @@ import Lightbox from "react-image-lightbox";
 
 export type LightBoxProps = {
   setState:
-    | Dispatch<SetStateAction<boolean>>
-    | Dispatch<SetStateAction<boolean | undefined>>;
+    | Dispatch<SetStateAction<boolean | undefined>>
+    | Dispatch<SetStateAction<boolean>>;
   state: boolean;
   images: string[];
   index: number;

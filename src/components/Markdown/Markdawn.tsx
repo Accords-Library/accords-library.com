@@ -8,6 +8,7 @@ import Markdown from "markdown-to-jsx";
 import { NextRouter } from "next/router";
 import { slugify } from "queries/helpers";
 import React, { useState } from "react";
+import ReactDOMServer from "react-dom/server";
 
 type MarkdawnProps = {
   className?: string;
@@ -41,264 +42,233 @@ export default function Markdawn(props: MarkdawnProps): JSX.Element {
             slugify: slugify,
             overrides: {
               h1: {
-                component: (props: {
+                component: (compProps: {
                   id: string;
                   style: React.CSSProperties;
                   children: React.ReactNode;
-                }) => {
-                  return (
-                    <h1 id={props.id} style={props.style}>
-                      {props.children}
-                      <HeaderToolTip id={props.id} />
-                    </h1>
-                  );
-                },
+                }) => (
+                  <h1 id={compProps.id} style={compProps.style}>
+                    {compProps.children}
+                    <HeaderToolTip id={compProps.id} />
+                  </h1>
+                ),
               },
               h2: {
-                component: (props: {
+                component: (compProps: {
                   id: string;
                   style: React.CSSProperties;
                   children: React.ReactNode;
-                }) => {
-                  return (
-                    <h2 id={props.id} style={props.style}>
-                      {props.children}
-                      <HeaderToolTip id={props.id} />
-                    </h2>
-                  );
-                },
+                }) => (
+                  <h2 id={compProps.id} style={compProps.style}>
+                    {compProps.children}
+                    <HeaderToolTip id={compProps.id} />
+                  </h2>
+                ),
               },
               h3: {
-                component: (props: {
+                component: (compProps: {
                   id: string;
                   style: React.CSSProperties;
                   children: React.ReactNode;
-                }) => {
-                  return (
-                    <h3 id={props.id} style={props.style}>
-                      {props.children}
-                      <HeaderToolTip id={props.id} />
-                    </h3>
-                  );
-                },
+                }) => (
+                  <h3 id={compProps.id} style={compProps.style}>
+                    {compProps.children}
+                    <HeaderToolTip id={compProps.id} />
+                  </h3>
+                ),
               },
               h4: {
-                component: (props: {
+                component: (compProps: {
                   id: string;
                   style: React.CSSProperties;
                   children: React.ReactNode;
-                }) => {
-                  return (
-                    <h4 id={props.id} style={props.style}>
-                      {props.children}
-                      <HeaderToolTip id={props.id} />
-                    </h4>
-                  );
-                },
+                }) => (
+                  <h4 id={compProps.id} style={compProps.style}>
+                    {compProps.children}
+                    <HeaderToolTip id={compProps.id} />
+                  </h4>
+                ),
               },
               h5: {
-                component: (props: {
+                component: (compProps: {
                   id: string;
                   style: React.CSSProperties;
                   children: React.ReactNode;
-                }) => {
-                  return (
-                    <h5 id={props.id} style={props.style}>
-                      {props.children}
-                      <HeaderToolTip id={props.id} />
-                    </h5>
-                  );
-                },
+                }) => (
+                  <h5 id={compProps.id} style={compProps.style}>
+                    {compProps.children}
+                    <HeaderToolTip id={compProps.id} />
+                  </h5>
+                ),
               },
               h6: {
-                component: (props: {
+                component: (compProps: {
                   id: string;
                   style: React.CSSProperties;
                   children: React.ReactNode;
-                }) => {
-                  return (
-                    <h6 id={props.id} style={props.style}>
-                      {props.children}
-                      <HeaderToolTip id={props.id} />
-                    </h6>
-                  );
-                },
+                }) => (
+                  <h6 id={compProps.id} style={compProps.style}>
+                    {compProps.children}
+                    <HeaderToolTip id={compProps.id} />
+                  </h6>
+                ),
               },
               Sep: {
-                component: () => {
-                  return <div className="my-24"></div>;
-                },
+                component: () => <div className="my-24"></div>,
               },
               SceneBreak: {
-                component: (props: { id: string }) => {
-                  return (
-                    <div
-                      id={props.id}
-                      className={
-                        "h-0 text-center text-3xl text-dark mt-16 mb-20"
-                      }
-                    >
-                      * * *
-                    </div>
-                  );
-                },
+                component: (compProps: { id: string }) => (
+                  <div
+                    id={compProps.id}
+                    className={"h-0 text-center text-3xl text-dark mt-16 mb-20"}
+                  >
+                    * * *
+                  </div>
+                ),
               },
               IntraLink: {
-                component: (props: {
+                component: (compProps: {
                   children: React.ReactNode;
                   target?: string;
                   page?: string;
                 }) => {
-                  const slug = props.target
-                    ? slugify(props.target)
-                    : slugify(props.children?.toString());
+                  const slug = compProps.target
+                    ? slugify(compProps.target)
+                    : slugify(compProps.children?.toString());
                   return (
                     <a
-                      onClick={() =>
+                      onClick={async () =>
                         router.replace(
-                          `${props.page ? props.page : ""}#${slug}`
+                          `${compProps.page ? compProps.page : ""}#${slug}`
                         )
                       }
                     >
-                      {props.children}
+                      {compProps.children}
                     </a>
                   );
                 },
               },
               player: {
-                component: () => {
-                  return (
-                    <span className="text-dark opacity-70">
-                      {appLayout.playerName ? appLayout.playerName : "<player>"}
-                    </span>
-                  );
-                },
+                component: () => (
+                  <span className="text-dark opacity-70">
+                    {appLayout.playerName ? appLayout.playerName : "<player>"}
+                  </span>
+                ),
               },
               Transcript: {
-                component: (props) => {
-                  return (
-                    <div className="grid grid-cols-[auto_1fr] mobile:grid-cols-1 gap-x-6 gap-y-2">
-                      {props.children}
-                    </div>
-                  );
-                },
+                component: (compProps) => (
+                  <div className="grid grid-cols-[auto_1fr] mobile:grid-cols-1 gap-x-6 gap-y-2">
+                    {compProps.children}
+                  </div>
+                ),
               },
               Line: {
-                component: (props) => {
-                  return (
-                    <>
-                      <strong className="text-dark opacity-60 mobile:!-mb-4">
-                        {props.name}
-                      </strong>
-                      <p className="whitespace-pre-line">{props.children}</p>
-                    </>
-                  );
-                },
+                component: (compProps) => (
+                  <>
+                    <strong className="text-dark opacity-60 mobile:!-mb-4">
+                      {compProps.name}
+                    </strong>
+                    <p className="whitespace-pre-line">{compProps.children}</p>
+                  </>
+                ),
               },
               InsetBox: {
-                component: (props) => {
-                  return (
-                    <InsetBox className="my-12">{props.children}</InsetBox>
-                  );
-                },
+                component: (compProps) => (
+                  <InsetBox className="my-12">{compProps.children}</InsetBox>
+                ),
               },
               li: {
-                component: (props: { children: React.ReactNode }) => {
-                  return (
-                    <li
-                      className={
-                        props.children &&
-                        props.children?.toString().length > 100
-                          ? "my-4"
-                          : ""
-                      }
-                    >
-                      {props.children}
-                    </li>
-                  );
-                },
+                component: (compProps: { children: React.ReactNode }) => (
+                  <li
+                    className={
+                      compProps.children &&
+                      ReactDOMServer.renderToStaticMarkup(
+                        <>{compProps.children}</>
+                      ).length > 100
+                        ? "my-4"
+                        : ""
+                    }
+                  >
+                    {compProps.children}
+                  </li>
+                ),
               },
               Highlight: {
-                component: (props: { children: React.ReactNode }) => {
-                  return <mark>{props.children}</mark>;
-                },
+                component: (compProps: { children: React.ReactNode }) => (
+                  <mark>{compProps.children}</mark>
+                ),
               },
               footer: {
-                component: (props: { children: React.ReactNode }) => {
-                  return (
-                    <>
-                      <HorizontalLine />
-                      <div>{props.children}</div>
-                    </>
-                  );
-                },
+                component: (compProps: { children: React.ReactNode }) => (
+                  <>
+                    <HorizontalLine />
+                    <div>{compProps.children}</div>
+                  </>
+                ),
               },
               blockquote: {
-                component: (props: {
+                component: (compProps: {
                   children: React.ReactNode;
                   cite?: string;
-                }) => {
-                  return (
-                    <blockquote>
-                      {props.cite ? (
-                        <>
-                          &ldquo;{props.children}&rdquo;
-                          <cite>— {props.cite}</cite>
-                        </>
-                      ) : (
-                        props.children
-                      )}
-                    </blockquote>
-                  );
-                },
+                }) => (
+                  <blockquote>
+                    {compProps.cite ? (
+                      <>
+                        &ldquo;{compProps.children}&rdquo;
+                        <cite>— {compProps.cite}</cite>
+                      </>
+                    ) : (
+                      compProps.children
+                    )}
+                  </blockquote>
+                ),
               },
               img: {
-                component: (props: {
+                component: (compProps: {
                   alt: string;
                   src: string;
                   width?: number;
                   height?: number;
                   caption?: string;
                   name?: string;
-                }) => {
-                  return (
-                    <div
-                      className="my-8 cursor-pointer"
-                      onClick={() => {
-                        setLightboxOpen(true);
-                        setLightboxImages([
-                          props.src.startsWith("/uploads/")
-                            ? getAssetURL(props.src, ImageQuality.Large)
-                            : props.src,
-                        ]);
-                        setLightboxIndex(0);
-                      }}
-                    >
-                      {props.src.startsWith("/uploads/") ? (
-                        <div className="relative w-full aspect-video">
-                          <Img
-                            image={{
-                              __typename: "UploadFile",
-                              alternativeText: props.alt,
-                              url: props.src,
-                              width: props.width || 1500,
-                              height: props.height || 1000,
-                              caption: props.caption || "",
-                              name: props.name || "",
-                            }}
-                            layout="fill"
-                            objectFit="contain"
-                            quality={ImageQuality.Medium}
-                          ></Img>
-                        </div>
-                      ) : (
-                        <div className="grid place-content-center">
-                          <img {...props} className="max-h-[50vh] " />
-                        </div>
-                      )}
-                    </div>
-                  );
-                },
+                }) => (
+                  <div
+                    className="my-8 cursor-pointer"
+                    onClick={() => {
+                      setLightboxOpen(true);
+                      setLightboxImages([
+                        compProps.src.startsWith("/uploads/")
+                          ? getAssetURL(compProps.src, ImageQuality.Large)
+                          : compProps.src,
+                      ]);
+                      setLightboxIndex(0);
+                    }}
+                  >
+                    {compProps.src.startsWith("/uploads/") ? (
+                      <div className="relative w-full aspect-video">
+                        <Img
+                          image={{
+                            __typename: "UploadFile",
+                            alternativeText: compProps.alt,
+                            url: compProps.src,
+                            width: compProps.width ?? 1500,
+                            height: compProps.height ?? 1000,
+                            caption: compProps.caption ?? "",
+                            name: compProps.name ?? "",
+                          }}
+                          layout="fill"
+                          objectFit="contain"
+                          quality={ImageQuality.Medium}
+                        ></Img>
+                      </div>
+                    ) : (
+                      <div className="grid place-content-center">
+                        {/* eslint-disable-next-line jsx-a11y/alt-text */}
+                        <img {...compProps} className="max-h-[50vh] " />
+                      </div>
+                    )}
+                  </div>
+                ),
               },
             },
           }}
@@ -323,10 +293,9 @@ function HeaderToolTip(props: { id: string }) {
           className="material-icons transition-color hover:text-dark cursor-pointer"
           onClick={() => {
             navigator.clipboard.writeText(
-              process.env.NEXT_PUBLIC_URL_SELF +
-                window.location.pathname +
-                "#" +
+              `${process.env.NEXT_PUBLIC_URL_SELF + window.location.pathname}#${
                 props.id
+              }`
             );
           }}
         >
@@ -344,8 +313,8 @@ export function preprocessMarkDawn(text: string): string {
   const visitedSlugs: string[] = [];
 
   const result = text.split("\n").map((line) => {
-    if (line === "* * *" || line === "---") {
-      scenebreakIndex++;
+    if (line === "* * *" ?? line === "---") {
+      scenebreakIndex += 1;
       return `<SceneBreak id="scene-break-${scenebreakIndex}">`;
     }
 
@@ -393,16 +362,13 @@ function markdawnHeadersParser(
   visitedSlugs: string[]
 ): string {
   const lineText = line.slice(headerLevel + 1);
-  let slug = slugify(lineText);
+  const slug = slugify(lineText);
   let newSlug = slug;
   let index = 2;
   while (visitedSlugs.includes(newSlug)) {
     newSlug = `${slug}-${index}`;
-    index++;
+    index += 1;
   }
   visitedSlugs.push(newSlug);
   return `<${headerLevels[headerLevel]} id="${newSlug}">${lineText}</${headerLevels[headerLevel]}>`;
-}
-function getAssetUrl(): React.SetStateAction<string[]> {
-  throw new Error("Function not implemented.");
 }

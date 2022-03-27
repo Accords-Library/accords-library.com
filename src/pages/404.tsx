@@ -1,9 +1,9 @@
-import ContentPanel from "components/Panels/ContentPanel";
-import { GetStaticProps } from "next";
 import AppLayout from "components/AppLayout";
 import ReturnButton, {
   ReturnButtonType,
 } from "components/PanelComponents/ReturnButton";
+import ContentPanel from "components/Panels/ContentPanel";
+import { GetStaticPropsContext } from "next";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 
 interface FourOhFourProps extends AppStaticProps {}
@@ -17,18 +17,20 @@ export default function FourOhFour(props: FourOhFourProps): JSX.Element {
         href="/"
         title="Home"
         langui={langui}
-        displayOn={ReturnButtonType.Both}
+        displayOn={ReturnButtonType.both}
       />
     </ContentPanel>
   );
   return <AppLayout navTitle="404" contentPanel={contentPanel} {...props} />;
 }
 
-export const getStaticProps: GetStaticProps = async (context) => {
+export async function getStaticProps(
+  context: GetStaticPropsContext
+): Promise<{ props: FourOhFourProps }> {
   const props: FourOhFourProps = {
     ...(await getAppStaticProps(context)),
   };
   return {
     props: props,
   };
-};
+}

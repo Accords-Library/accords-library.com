@@ -4,7 +4,7 @@ import "tippy.js/animations/scale-subtle.css";
 interface ToolTipProps extends TippyProps {}
 
 export default function ToolTip(props: ToolTipProps): JSX.Element {
-  let newProps = { ...props };
+  const newProps = { ...props };
 
   // Set defaults
   if (newProps.delay === undefined) newProps.delay = [150, 0];

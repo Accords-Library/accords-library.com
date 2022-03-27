@@ -14,8 +14,7 @@ type RecorderChipProps = {
 };
 
 export default function RecorderChip(props: RecorderChipProps): JSX.Element {
-  const recorder = props.recorder;
-  const langui = props.langui;
+  const { recorder, langui } = props;
 
   return (
     <ToolTip

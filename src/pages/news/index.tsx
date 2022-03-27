@@ -1,14 +1,14 @@
-import SubPanel from "components/Panels/SubPanel";
-import PanelHeader from "components/PanelComponents/PanelHeader";
-import { GetStaticProps } from "next";
 import AppLayout from "components/AppLayout";
-import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
-import { GetPostsPreviewQuery } from "graphql/operations-types";
-import { getPostsPreview } from "graphql/operations";
+import PostsPreview from "components/News/PostsPreview";
+import PanelHeader from "components/PanelComponents/PanelHeader";
 import ContentPanel, {
   ContentPanelWidthSizes,
 } from "components/Panels/ContentPanel";
-import PostsPreview from "components/News/PostsPreview";
+import SubPanel from "components/Panels/SubPanel";
+import { getPostsPreview } from "graphql/operations";
+import { GetPostsPreviewQuery } from "graphql/operations-types";
+import { GetStaticPropsContext } from "next";
+import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 
 interface NewsProps extends AppStaticProps {
   posts: GetPostsPreviewQuery["posts"]["data"];
@@ -46,14 +46,16 @@ export default function News(props: NewsProps): JSX.Element {
   );
 }
 
-export const getStaticProps: GetStaticProps = async (context) => {
+export async function getStaticProps(
+  context: GetStaticPropsContext
+): Promise<{ props: NewsProps }> {
   const props: NewsProps = {
     ...(await getAppStaticProps(context)),
     posts: await (
-      await getPostsPreview({ language_code: context.locale || "en" })
+      await getPostsPreview({ language_code: context.locale ?? "en" })
     ).posts.data,
   };
   return {
     props: props,
   };
-};
+}

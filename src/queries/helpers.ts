@@ -17,13 +17,9 @@ import { NextRouter } from "next/router";
 export function prettyDate(
   datePicker: GetLibraryItemsPreviewQuery["libraryItems"]["data"][number]["attributes"]["release_date"]
 ): string {
-  return (
-    datePicker.year +
-    "/" +
-    datePicker.month.toString().padStart(2, "0") +
-    "/" +
-    datePicker.day.toString().padStart(2, "0")
-  );
+  return `${datePicker.year}/${datePicker.month
+    .toString()
+    .padStart(2, "0")}/${datePicker.day.toString().padStart(2, "0")}`;
 }
 
 export function prettyPrice(
@@ -74,9 +70,9 @@ export function prettyinlineTitle(
   subtitle: string
 ): string {
   let result = "";
-  if (pretitle) result += pretitle + ": ";
+  if (pretitle) result += `${pretitle}: `;
   result += title;
-  if (subtitle) result += " - " + subtitle;
+  if (subtitle) result += ` - ${subtitle}`;
   return result;
 }
 
@@ -86,7 +82,6 @@ export function prettyItemType(
   },
   langui: GetWebsiteInterfaceQuery["websiteInterfaces"]["data"][number]["attributes"]
 ): string {
-  const type = metadata.__typename;
   switch (metadata.__typename) {
     case "ComponentMetadataAudio":
       return langui.audio;
@@ -106,6 +101,7 @@ export function prettyItemType(
 }
 
 export function prettyItemSubType(metadata: {
+  /* eslint-disable @typescript-eslint/no-explicit-any */
   __typename: GetLibraryItemsPreviewQuery["libraryItems"]["data"][number]["attributes"]["metadata"][number]["__typename"];
   subtype?: any;
   platforms?: any;
@@ -138,6 +134,7 @@ export function prettyItemSubType(metadata: {
     default:
       return "";
   }
+  /* eslint-enable @typescript-eslint/no-explicit-any */
 }
 
 export function prettyLanguage(
@@ -184,7 +181,7 @@ function prettyTestWritter(
 ): void {
   const line = [
     level,
-    process.env.NEXT_PUBLIC_URL_SELF + "/" + locale + asPath,
+    `${process.env.NEXT_PUBLIC_URL_SELF}/${locale}${asPath}`,
     locale,
     subCategory?.join(" -> "),
     message,
@@ -206,7 +203,7 @@ export function capitalizeString(string: string): string {
   }
 
   let words = string.split(" ");
-  words = words.map((word) => (word = capitalizeWord(word)));
+  words = words.map((word) => capitalizeWord(word));
   return words.join(" ");
 }
 
@@ -275,20 +272,22 @@ export function getStatusDescription(
 }
 
 export function slugify(string: string | undefined): string {
-  if (!string) return "";
+  if (!string) {
+    return "";
+  }
   return string
-    .replace(/[ÀÁÂÃÄÅàáâãäåæÆ]/g, "a")
-    .replace(/[çÇ]/g, "c")
-    .replace(/[ðÐ]/g, "d")
-    .replace(/[ÈÉÊËéèêë]/g, "e")
-    .replace(/[ÏïÎîÍíÌì]/g, "i")
-    .replace(/[Ññ]/g, "n")
-    .replace(/[øØœŒÕõÔôÓóÒò]/g, "o")
-    .replace(/[ÜüÛûÚúÙù]/g, "u")
-    .replace(/[ŸÿÝý]/g, "y")
-    .replace(/[^a-z0-9- ]/gi, "")
+    .replace(/[ÀÁÂÃÄÅàáâãäåæÆ]/u, "a")
+    .replace(/[çÇ]/u, "c")
+    .replace(/[ðÐ]/u, "d")
+    .replace(/[ÈÉÊËéèêë]/u, "e")
+    .replace(/[ÏïÎîÍíÌì]/u, "i")
+    .replace(/[Ññ]/u, "n")
+    .replace(/[øØœŒÕõÔôÓóÒò]/u, "o")
+    .replace(/[ÜüÛûÚúÙù]/u, "u")
+    .replace(/[ŸÿÝý]/u, "y")
+    .replace(/[^a-z0-9- ]/iu, "")
     .trim()
-    .replace(/ /gi, "-")
+    .replace(/ /iu, "-")
     .toLowerCase();
 }
 

@@ -1,23 +1,23 @@
-import { GetStaticProps } from "next";
-import SubPanel from "components/Panels/SubPanel";
+import AppLayout from "components/AppLayout";
+import Chip from "components/Chip";
+import LibraryItemsPreview from "components/Library/LibraryItemsPreview";
+import PanelHeader from "components/PanelComponents/PanelHeader";
 import ContentPanel, {
   ContentPanelWidthSizes,
 } from "components/Panels/ContentPanel";
+import SubPanel from "components/Panels/SubPanel";
+import Select from "components/Select";
+import Switch from "components/Switch";
+import { getLibraryItemsPreview } from "graphql/operations";
 import {
   GetCurrenciesQuery,
   GetLibraryItemsPreviewQuery,
   GetWebsiteInterfaceQuery,
 } from "graphql/operations-types";
-import { getLibraryItemsPreview } from "graphql/operations";
-import PanelHeader from "components/PanelComponents/PanelHeader";
-import AppLayout from "components/AppLayout";
-import LibraryItemsPreview from "components/Library/LibraryItemsPreview";
-import Select from "components/Select";
-import { useEffect, useState } from "react";
-import { convertPrice, prettyDate, prettyinlineTitle } from "queries/helpers";
-import Switch from "components/Switch";
+import { GetStaticPropsContext } from "next";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
-import Chip from "components/Chip";
+import { convertPrice, prettyDate, prettyinlineTitle } from "queries/helpers";
+import { useEffect, useState } from "react";
 
 interface LibraryProps extends AppStaticProps {
   items: GetLibraryItemsPreviewQuery["libraryItems"]["data"];
@@ -29,7 +29,7 @@ type GroupLibraryItems = Map<
 >;
 
 export default function Library(props: LibraryProps): JSX.Element {
-  const { langui, items, currencies } = props;
+  const { langui, items: libraryItems, currencies } = props;
 
   const [showSubitems, setShowSubitems] = useState<boolean>(false);
   const [showPrimaryItems, setShowPrimaryItems] = useState<boolean>(true);
@@ -38,7 +38,12 @@ export default function Library(props: LibraryProps): JSX.Element {
   const [groupingMethod, setGroupingMethod] = useState<number>(-1);
 
   const [filteredItems, setFilteredItems] = useState<LibraryProps["items"]>(
-    filterItems(showSubitems, showPrimaryItems, showSecondaryItems, items)
+    filterItems(
+      showSubitems,
+      showPrimaryItems,
+      showSecondaryItems,
+      libraryItems
+    )
   );
 
   const [sortedItems, setSortedItem] = useState<LibraryProps["items"]>(
@@ -51,9 +56,14 @@ export default function Library(props: LibraryProps): JSX.Element {
 
   useEffect(() => {
     setFilteredItems(
-      filterItems(showSubitems, showPrimaryItems, showSecondaryItems, items)
+      filterItems(
+        showSubitems,
+        showPrimaryItems,
+        showSecondaryItems,
+        libraryItems
+      )
     );
-  }, [showSubitems, items, showPrimaryItems, showSecondaryItems]);
+  }, [showSubitems, libraryItems, showPrimaryItems, showSecondaryItems]);
 
   useEffect(() => {
     setSortedItem(sortBy(sortingMethod, filteredItems, currencies));
@@ -116,7 +126,7 @@ export default function Library(props: LibraryProps): JSX.Element {
             <>
               {name && (
                 <h2
-                  key={"h2" + name}
+                  key={`h2${name}`}
                   className="text-2xl pb-2 pt-10 first-of-type:pt-0 flex flex-row place-items-center gap-2"
                 >
                   {name}
@@ -128,7 +138,7 @@ export default function Library(props: LibraryProps): JSX.Element {
                 </h2>
               )}
               <div
-                key={"items" + name}
+                key={`items${name}`}
                 className="grid gap-8 items-end mobile:grid-cols-2 desktop:grid-cols-[repeat(auto-fill,_minmax(13rem,1fr))] pb-12 border-b-[3px] border-dotted last-of-type:border-0"
               >
                 {items.map((item) => (
@@ -155,19 +165,21 @@ export default function Library(props: LibraryProps): JSX.Element {
   );
 }
 
-export const getStaticProps: GetStaticProps = async (context) => {
+export async function getStaticProps(
+  context: GetStaticPropsContext
+): Promise<{ props: LibraryProps }> {
   const props: LibraryProps = {
     ...(await getAppStaticProps(context)),
     items: (
       await getLibraryItemsPreview({
-        language_code: context.locale || "en",
+        language_code: context.locale ?? "en",
       })
     ).libraryItems.data,
   };
   return {
     props: props,
   };
-};
+}
 
 function getGroups(
   langui: GetWebsiteInterfaceQuery["websiteInterfaces"]["data"][number]["attributes"],
@@ -175,7 +187,7 @@ function getGroups(
   items: LibraryProps["items"]
 ): GroupLibraryItems {
   switch (groupByType) {
-    case 0:
+    case 0: {
       const typeGroup = new Map();
       typeGroup.set("Drakengard 1", []);
       typeGroup.set("Drakengard 1.3", []);
@@ -207,63 +219,73 @@ function getGroups(
       });
 
       return typeGroup;
+    }
 
-    case 1:
-      const groupType: GroupLibraryItems = new Map();
-      groupType.set(langui.audio, []);
-      groupType.set(langui.game, []);
-      groupType.set(langui.textual, []);
-      groupType.set(langui.video, []);
-      groupType.set(langui.other, []);
-      groupType.set(langui.group, []);
-      groupType.set(langui.no_type, []);
+    case 1: {
+      const group: GroupLibraryItems = new Map();
+      group.set(langui.audio, []);
+      group.set(langui.game, []);
+      group.set(langui.textual, []);
+      group.set(langui.video, []);
+      group.set(langui.other, []);
+      group.set(langui.group, []);
+      group.set(langui.no_type, []);
       items.map((item) => {
         if (item.attributes.metadata.length > 0) {
           switch (item.attributes.metadata[0].__typename) {
             case "ComponentMetadataAudio":
-              groupType.get(langui.audio)?.push(item);
+              group.get(langui.audio)?.push(item);
               break;
             case "ComponentMetadataGame":
-              groupType.get(langui.game)?.push(item);
+              group.get(langui.game)?.push(item);
               break;
             case "ComponentMetadataBooks":
-              groupType.get(langui.textual)?.push(item);
+              group.get(langui.textual)?.push(item);
               break;
             case "ComponentMetadataVideo":
-              groupType.get(langui.video)?.push(item);
+              group.get(langui.video)?.push(item);
               break;
             case "ComponentMetadataOther":
-              groupType.get(langui.other)?.push(item);
+              group.get(langui.other)?.push(item);
               break;
             case "ComponentMetadataGroup":
               switch (
                 item.attributes.metadata[0].subitems_type.data.attributes.slug
               ) {
                 case "audio":
-                  groupType.get(langui.audio)?.push(item);
+                  group.get(langui.audio)?.push(item);
                   break;
                 case "video":
-                  groupType.get(langui.video)?.push(item);
+                  group.get(langui.video)?.push(item);
                   break;
                 case "game":
-                  groupType.get(langui.game)?.push(item);
+                  group.get(langui.game)?.push(item);
                   break;
                 case "textual":
-                  groupType.get(langui.textual)?.push(item);
+                  group.get(langui.textual)?.push(item);
                   break;
                 case "mixed":
-                  groupType.get(langui.group)?.push(item);
+                  group.get(langui.group)?.push(item);
                   break;
+                default: {
+                  throw new Error(
+                    "An unexpected subtype of group-metadata was given"
+                  );
+                }
               }
               break;
+            default: {
+              throw new Error("An unexpected type of metadata was given");
+            }
           }
         } else {
-          groupType.get(langui.no_type)?.push(item);
+          group.get(langui.no_type)?.push(item);
         }
       });
-      return groupType;
+      return group;
+    }
 
-    case 2:
+    case 2: {
       const years: number[] = [];
       items.map((item) => {
         if (item.attributes.release_date) {
@@ -271,28 +293,28 @@ function getGroups(
             years.push(item.attributes.release_date.year);
         }
       });
-      const groupYear: GroupLibraryItems = new Map();
-      years.sort();
+      const group: GroupLibraryItems = new Map();
+      years.sort((a, b) => a - b);
       years.map((year) => {
-        groupYear.set(year.toString(), []);
+        group.set(year.toString(), []);
       });
-      groupYear.set(langui.no_year, []);
+      group.set(langui.no_year, []);
       items.map((item) => {
         if (item.attributes.release_date) {
-          groupYear
-            .get(item.attributes.release_date.year.toString())
-            ?.push(item);
+          group.get(item.attributes.release_date.year.toString())?.push(item);
         } else {
-          groupYear.get(langui.no_year)?.push(item);
+          group.get(langui.no_year)?.push(item);
         }
       });
 
-      return groupYear;
+      return group;
+    }
 
-    default:
-      const groupDefault: GroupLibraryItems = new Map();
-      groupDefault.set("", items);
-      return groupDefault;
+    default: {
+      const group: GroupLibraryItems = new Map();
+      group.set("", items);
+      return group;
+    }
   }
 }
 
@@ -353,13 +375,13 @@ function sortBy(
     case 2:
       return [...items].sort((a, b) => {
         const dateA =
-          a.attributes.release_date !== null
-            ? prettyDate(a.attributes.release_date)
-            : "9999";
+          a.attributes.release_date === null
+            ? "9999"
+            : prettyDate(a.attributes.release_date);
         const dateB =
-          b.attributes.release_date !== null
-            ? prettyDate(b.attributes.release_date)
-            : "9999";
+          b.attributes.release_date === null
+            ? "9999"
+            : prettyDate(b.attributes.release_date);
         return dateA.localeCompare(dateB);
       });
     default:

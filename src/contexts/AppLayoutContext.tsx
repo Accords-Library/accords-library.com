@@ -33,6 +33,7 @@ export interface AppLayoutState {
   setPlayerName: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
+/* eslint-disable @typescript-eslint/no-empty-function */
 const initialState: AppLayoutState = {
   subPanelOpen: false,
   languagePanelOpen: false,
@@ -57,12 +58,13 @@ const initialState: AppLayoutState = {
   setCurrency: () => {},
   setPlayerName: () => {},
 };
+/* eslint-enable @typescript-eslint/no-empty-function */
 
 const AppContext = React.createContext<AppLayoutState>(initialState);
 
 export default AppContext;
 
-export function useAppLayout() {
+export function useAppLayout(): AppLayoutState {
   return useContext(AppContext);
 }
 
@@ -70,7 +72,7 @@ type Props = {
   children: ReactNode;
 };
 
-export const AppContextProvider = (props: Props) => {
+export function AppContextProvider(props: Props): JSX.Element {
   const [subPanelOpen, setSubPanelOpen] = useStateWithLocalStorage<
     boolean | undefined
   >("subPanelOpen", initialState.subPanelOpen);
@@ -143,4 +145,4 @@ export const AppContextProvider = (props: Props) => {
       {props.children}
     </AppContext.Provider>
   );
-};
+}

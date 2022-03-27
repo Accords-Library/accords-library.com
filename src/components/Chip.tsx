@@ -1,5 +1,3 @@
-import { MouseEventHandler } from "react";
-
 type ChipProps = {
   className?: string;
   children: React.ReactNode;

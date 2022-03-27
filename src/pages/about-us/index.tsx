@@ -1,9 +1,9 @@
-import SubPanel from "components/Panels/SubPanel";
-import PanelHeader from "components/PanelComponents/PanelHeader";
-import { GetStaticProps } from "next";
 import AppLayout from "components/AppLayout";
-import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 import NavOption from "components/PanelComponents/NavOption";
+import PanelHeader from "components/PanelComponents/PanelHeader";
+import SubPanel from "components/Panels/SubPanel";
+import { GetStaticPropsContext } from "next";
+import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 
 interface AboutUsProps extends AppStaticProps {}
 
@@ -36,11 +36,13 @@ export default function AboutUs(props: AboutUsProps): JSX.Element {
   );
 }
 
-export const getStaticProps: GetStaticProps = async (context) => {
+export async function getStaticProps(
+  context: GetStaticPropsContext
+): Promise<{ props: AboutUsProps }> {
   const props: AboutUsProps = {
     ...(await getAppStaticProps(context)),
   };
   return {
     props: props,
   };
-};
+}

@@ -1,11 +1,11 @@
+import Chip from "components/Chip";
+import Img, { ImageQuality } from "components/Img";
+import InsetBox from "components/InsetBox";
 import {
   GetContentQuery,
   GetWebsiteInterfaceQuery,
 } from "graphql/operations-types";
 import { prettyinlineTitle, prettySlug, slugify } from "queries/helpers";
-import Img, { ImageQuality } from "components/Img";
-import InsetBox from "components/InsetBox";
-import Chip from "components/Chip";
 
 export type ThumbnailHeaderProps = {
   pre_title?: string;
@@ -49,7 +49,7 @@ export default function ThumbnailHeader(
         </div>
         <div
           id={slugify(
-            prettyinlineTitle(pre_title || "", title, subtitle || "")
+            prettyinlineTitle(pre_title ?? "", title, subtitle ?? "")
           )}
           className="grid place-items-center text-center"
         >
@@ -60,7 +60,7 @@ export default function ThumbnailHeader(
       </div>
 
       <div className="grid grid-flow-col gap-8">
-        {type && type.data && (
+        {type?.data && (
           <div className="flex flex-col place-items-center gap-2">
             <h3 className="text-xl">{langui.type}</h3>
             <div className="flex flex-row flex-wrap">

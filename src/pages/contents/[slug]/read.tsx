@@ -1,19 +1,31 @@
-import { GetStaticPaths, GetStaticProps } from "next";
+import AppLayout from "components/AppLayout";
+import Button from "components/Button";
+import Chip from "components/Chip";
+import ThumbnailHeader from "components/Content/ThumbnailHeader";
+import HorizontalLine from "components/HorizontalLine";
+import LanguageSwitcher from "components/LanguageSwitcher";
+import Markdawn from "components/Markdown/Markdawn";
+import TOC from "components/Markdown/TOC";
+import ReturnButton, {
+  ReturnButtonType,
+} from "components/PanelComponents/ReturnButton";
+import ContentPanel from "components/Panels/ContentPanel";
+import SubPanel from "components/Panels/SubPanel";
+import RecorderChip from "components/RecorderChip";
+import ToolTip from "components/ToolTip";
 import {
   getContentLanguages,
   getContentsSlugs,
   getContentText,
 } from "graphql/operations";
 import { GetContentTextQuery } from "graphql/operations-types";
-import ContentPanel from "components/Panels/ContentPanel";
-import HorizontalLine from "components/HorizontalLine";
-import SubPanel from "components/Panels/SubPanel";
-import ReturnButton, {
-  ReturnButtonType,
-} from "components/PanelComponents/ReturnButton";
-import ThumbnailHeader from "components/Content/ThumbnailHeader";
-import AppLayout from "components/AppLayout";
-import Markdawn from "components/Markdown/Markdawn";
+import {
+  GetStaticPathsContext,
+  GetStaticPathsResult,
+  GetStaticPropsContext,
+} from "next";
+import { useRouter } from "next/router";
+import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 import {
   getStatusDescription,
   prettyinlineTitle,
@@ -22,14 +34,6 @@ import {
   prettyTestError,
   prettyTestWarning,
 } from "queries/helpers";
-import Button from "components/Button";
-import { useRouter } from "next/router";
-import Chip from "components/Chip";
-import RecorderChip from "components/RecorderChip";
-import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
-import TOC from "components/Markdown/TOC";
-import ToolTip from "components/ToolTip";
-import LanguageSwitcher from "components/LanguageSwitcher";
 
 interface ContentReadProps extends AppStaticProps {
   content: GetContentTextQuery["contents"]["data"][number]["attributes"];
@@ -48,7 +52,7 @@ export default function ContentRead(props: ContentReadProps): JSX.Element {
         href={`/contents/${content.slug}`}
         title={"Content"}
         langui={langui}
-        displayOn={ReturnButtonType.Desktop}
+        displayOn={ReturnButtonType.desktop}
         horizontalLine
       />
 
@@ -163,7 +167,7 @@ export default function ContentRead(props: ContentReadProps): JSX.Element {
         href={`/contents/${content.slug}`}
         title={langui.content}
         langui={langui}
-        displayOn={ReturnButtonType.Mobile}
+        displayOn={ReturnButtonType.mobile}
         className="mb-10"
       />
       <div className="grid place-items-center">
@@ -192,7 +196,7 @@ export default function ContentRead(props: ContentReadProps): JSX.Element {
 
         <HorizontalLine />
 
-        {locales.includes(router.locale || "en") ? (
+        {locales.includes(router.locale ?? "en") ? (
           <Markdawn router={router} text={content.text_set[0].text} />
         ) : (
           <LanguageSwitcher
@@ -219,9 +223,7 @@ export default function ContentRead(props: ContentReadProps): JSX.Element {
   if (content.categories.data.length > 0) {
     description += `${langui.categories}: `;
     description += content.categories.data
-      .map((category) => {
-        return category.attributes.short;
-      })
+      .map((category) => category.attributes.short)
       .join(" | ");
     description += "\n";
   }
@@ -247,12 +249,14 @@ export default function ContentRead(props: ContentReadProps): JSX.Element {
   );
 }
 
-export const getStaticProps: GetStaticProps = async (context) => {
-  const slug = context.params?.slug?.toString() || "";
+export async function getStaticProps(
+  context: GetStaticPropsContext
+): Promise<{ props: ContentReadProps }> {
+  const slug = context.params?.slug?.toString() ?? "";
   const content = (
     await getContentText({
       slug: slug,
-      language_code: context.locale || "en",
+      language_code: context.locale ?? "en",
     })
   ).contents.data[0];
   const props: ContentReadProps = {
@@ -261,26 +265,21 @@ export const getStaticProps: GetStaticProps = async (context) => {
     contentId: content.id,
     locales: (
       await getContentLanguages({ slug: slug })
-    ).contents.data[0].attributes.text_set.map((translation) => {
-      return translation.language.data.attributes.code;
-    }),
+    ).contents.data[0].attributes.text_set.map(
+      (translation) => translation.language.data.attributes.code
+    ),
   };
   return {
     props: props,
   };
-};
+}
 
-export const getStaticPaths: GetStaticPaths = async (context) => {
-  type Path = {
-    params: {
-      slug: string;
-    };
-    locale: string;
-  };
-
-  const data = await getContentsSlugs({});
-  const paths: Path[] = [];
-  data.contents.data.map((item) => {
+export async function getStaticPaths(
+  context: GetStaticPathsContext
+): Promise<GetStaticPathsResult> {
+  const contents = await getContentsSlugs({});
+  const paths: GetStaticPathsResult["paths"] = [];
+  contents.contents.data.map((item) => {
     context.locales?.map((local) => {
       paths.push({ params: { slug: item.attributes.slug }, locale: local });
     });
@@ -289,14 +288,13 @@ export const getStaticPaths: GetStaticPaths = async (context) => {
     paths,
     fallback: false,
   };
-};
+}
 
-export function useTesting(props: ContentReadProps) {
+function useTesting(props: ContentReadProps) {
   const router = useRouter();
   const { content, contentId } = props;
 
-  const contentURL =
-    "/admin/content-manager/collectionType/api::content.content/" + contentId;
+  const contentURL = `/admin/content-manager/collectionType/api::content.content/${contentId}`;
 
   if (router.locale === "en") {
     if (content.categories.data.length === 0) {
@@ -323,18 +321,17 @@ export function useTesting(props: ContentReadProps) {
   }
 
   if (content.text_set.length > 1) {
-    console.warn(
-      prettyTestError(
-        router,
-        "More than one textset for this language",
-        ["content", "text_set"],
-        contentURL
-      )
+    prettyTestError(
+      router,
+      "More than one textset for this language",
+      ["content", "text_set"],
+      contentURL
     );
   }
 
   if (content.text_set.length === 1) {
     const textset = content.text_set[0];
+
     if (!textset.text) {
       prettyTestError(
         router,
@@ -350,43 +347,41 @@ export function useTesting(props: ContentReadProps) {
         ["content", "text_set"],
         contentURL
       );
+    } else if (textset.source_language.data.attributes.code === router.locale) {
+      // This is a transcript
+      if (textset.transcribers.data.length === 0) {
+        prettyTestError(
+          router,
+          "Missing transcribers attribution",
+          ["content", "text_set"],
+          contentURL
+        );
+      }
+      if (textset.translators.data.length > 0) {
+        prettyTestError(
+          router,
+          "Transcripts shouldn't have translators",
+          ["content", "text_set"],
+          contentURL
+        );
+      }
     } else {
-      if (textset.source_language.data.attributes.code === router.locale) {
-        // This is a transcript
-        if (textset.transcribers.data.length === 0) {
-          prettyTestError(
-            router,
-            "Missing transcribers attribution",
-            ["content", "text_set"],
-            contentURL
-          );
-        }
-        if (textset.translators.data.length > 0) {
-          prettyTestError(
-            router,
-            "Transcripts shouldn't have translators",
-            ["content", "text_set"],
-            contentURL
-          );
-        }
-      } else {
-        // This is a translation
-        if (textset.translators.data.length === 0) {
-          prettyTestError(
-            router,
-            "Missing translators attribution",
-            ["content", "text_set"],
-            contentURL
-          );
-        }
-        if (textset.transcribers.data.length > 0) {
-          prettyTestError(
-            router,
-            "Translations shouldn't have transcribers",
-            ["content", "text_set"],
-            contentURL
-          );
-        }
+      // This is a translation
+      if (textset.translators.data.length === 0) {
+        prettyTestError(
+          router,
+          "Missing translators attribution",
+          ["content", "text_set"],
+          contentURL
+        );
+      }
+      if (textset.transcribers.data.length > 0) {
+        prettyTestError(
+          router,
+          "Translations shouldn't have transcribers",
+          ["content", "text_set"],
+          contentURL
+        );
       }
     }
   }

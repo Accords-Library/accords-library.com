@@ -1,17 +1,17 @@
-import { StrapiImage } from "graphql/operations-types";
-import MainPanel from "./Panels/MainPanel";
-import Head from "next/head";
-import { useSwipeable } from "react-swipeable";
-import { useRouter } from "next/router";
 import Button from "components/Button";
-import { getOgImage, OgImage } from "queries/helpers";
-import { useMediaCoarse, useMediaMobile } from "hooks/useMediaQuery";
 import { useAppLayout } from "contexts/AppLayoutContext";
-import { ImageQuality } from "./Img";
-import Popup from "./Popup";
-import { useEffect, useState } from "react";
-import Select from "./Select";
+import { StrapiImage } from "graphql/operations-types";
+import { useMediaMobile } from "hooks/useMediaQuery";
+import Head from "next/head";
+import { useRouter } from "next/router";
 import { AppStaticProps } from "queries/getAppStaticProps";
+import { getOgImage, OgImage } from "queries/helpers";
+import { useEffect, useState } from "react";
+import { useSwipeable } from "react-swipeable";
+import { ImageQuality } from "./Img";
+import MainPanel from "./Panels/MainPanel";
+import Popup from "./Popup";
+import Select from "./Select";
 
 interface AppLayoutProps extends AppStaticProps {
   subPanel?: React.ReactNode;
@@ -27,7 +27,6 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
   const { langui, currencies, languages, subPanel, contentPanel } = props;
   const router = useRouter();
   const isMobile = useMediaMobile();
-  const isCoarse = useMediaCoarse();
   const appLayout = useAppLayout();
 
   const sensibilitySwipe = 1.1;
@@ -70,23 +69,23 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
 
   useEffect(() => {
     document.getElementsByTagName("html")[0].style.fontSize = `${
-      (appLayout.fontSize || 1) * 100
+      (appLayout.fontSize ?? 1) * 100
     }%`;
   }, [appLayout.fontSize]);
 
-  const currencyOptions = currencies.map((currency) => {
-    return currency.attributes.code;
-  });
+  const currencyOptions = currencies.map(
+    (currency) => currency.attributes.code
+  );
   const [currencySelect, setCurrencySelect] = useState<number>(-1);
 
   useEffect(() => {
-    appLayout.currency &&
+    if (appLayout.currency)
       setCurrencySelect(currencyOptions.indexOf(appLayout.currency));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [appLayout.currency]);
 
   useEffect(() => {
-    currencySelect >= 0 &&
+    if (currencySelect >= 0)
       appLayout.setCurrency(currencyOptions[currencySelect]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currencySelect]);
@@ -98,12 +97,10 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
     } else {
       gridCol = "grid-cols-[20rem_20rem_1fr]";
     }
+  } else if (appLayout.mainPanelReduced) {
+    gridCol = "grid-cols-[6rem_0px_1fr]";
   } else {
-    if (appLayout.mainPanelReduced) {
-      gridCol = "grid-cols-[6rem_0px_1fr]";
-    } else {
-      gridCol = "grid-cols-[20rem_0px_1fr]";
-    }
+    gridCol = "grid-cols-[20rem_0px_1fr]";
   }
 
   return (
@@ -152,7 +149,7 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
         {/* Background when navbar is opened */}
         <div
           className={`[grid-area:content] mobile:z-10 absolute inset-0 transition-[backdrop-filter] duration-500 ${
-            (appLayout.mainPanelOpen || appLayout.subPanelOpen) && isMobile
+            (appLayout.mainPanelOpen ?? appLayout.subPanelOpen) && isMobile
               ? "[backdrop-filter:blur(2px)]"
               : "pointer-events-none touch-none "
           }`}
@@ -161,7 +158,7 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
             className={`absolute bg-shade inset-0 transition-opacity duration-500 
         ${turnSubIntoContent ? "" : ""}
         ${
-          (appLayout.mainPanelOpen || appLayout.subPanelOpen) && isMobile
+          (appLayout.mainPanelOpen ?? appLayout.subPanelOpen) && isMobile
             ? "opacity-60"
             : "opacity-0"
         }`}
@@ -195,9 +192,7 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
           ${
             turnSubIntoContent
               ? "mobile:border-l-0 mobile:w-full"
-              : !appLayout.subPanelOpen
-              ? "mobile:translate-x-[100vw]"
-              : ""
+              : !appLayout.subPanelOpen && "mobile:translate-x-[100vw]"
           }`}
           >
             {subPanel}
@@ -338,7 +333,7 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
                   className="rounded-l-none rounded-r-none border-x-0"
                   onClick={() => appLayout.setFontSize(1)}
                 >
-                  {((appLayout.fontSize || 1) * 100).toLocaleString(undefined, {
+                  {((appLayout.fontSize ?? 1) * 100).toLocaleString(undefined, {
                     maximumFractionDigits: 0,
                   })}
                   %
@@ -382,8 +377,10 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
                 type="text"
                 placeholder="<player>"
                 className="w-48"
-                onInput={(e) =>
-                  appLayout.setPlayerName((e.target as HTMLInputElement).value)
+                onInput={(event) =>
+                  appLayout.setPlayerName(
+                    (event.target as HTMLInputElement).value
+                  )
                 }
               />
             </div>

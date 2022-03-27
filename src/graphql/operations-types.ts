@@ -1,3 +1,7 @@
+/* eslint-disable @typescript-eslint/consistent-indexed-object-style */
+/* eslint-disable @typescript-eslint/array-type */
+/* eslint-disable no-shadow */
+/* eslint-disable id-denylist */
 export type Exact<T> = T;
 export type InputMaybe<T> = T;
 export type Scalars = {
@@ -6,30 +10,31 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  JSON: any;
-  DateTime: any;
-  Time: any;
-  Upload: any;
-  LibraryContentRangeDynamicZoneInput: any;
-  LibraryItemMetadataDynamicZoneInput: any;
-  SourceSourceDynamicZoneInput: any;
+  JSON: unknown;
+  DateTime: unknown;
+  Time: unknown;
+  Upload: unknown;
+  LibraryContentRangeDynamicZoneInput: unknown;
+  LibraryItemMetadataDynamicZoneInput: unknown;
+  SourceSourceDynamicZoneInput: unknown;
 };
 
 /*
-  The following is generated using https://www.graphql-code-generator.com/
-  With the following codegen.yml:
-
-  generates:
-  operations-types.ts:
-    plugins:
-      - typescript-operations
-
-  And the schema.graphql and operation.graphql files from this folder.
-  
-  But to make the type easier to work with, it went through the following transformation:
-    - Removed ?
-    - Removed | null
-*/
+ * The following is generated using https://www.graphql-code-generator.com/
+ * With the following codegen.yml:
+ *
+ * generates:
+ * operations-types.ts:
+ *   plugins:
+ *     - typescript-operations
+ *
+ * And the schema.graphql and operation.graphql files from this folder.
+ *
+ * But to make the type easier to work with, it went through the following transformation:
+ *   - Removed ?
+ *   - Removed | null
+ *   - Replaced any by unknown
+ */
 
 export enum Enum_Componentmetadatabooks_Binding_Type {
   Paperback = "Paperback",
@@ -939,8 +944,8 @@ export type GetLibraryItemQuery = {
                   }
                 | {
                     __typename: "ComponentRangeTimeRange";
-                    starting_time: any;
-                    ending_time: any;
+                    starting_time: unknown;
+                    ending_time: unknown;
                   }
                 | { __typename: "ComponentRangeOther" }
                 | { __typename: "Error" }
@@ -1571,7 +1576,7 @@ export type GetPostQuery = {
       attributes: {
         __typename: "Post";
         slug: string;
-        updatedAt: any;
+        updatedAt: unknown;
         date: {
           __typename: "ComponentBasicsDatepicker";
           year: number;

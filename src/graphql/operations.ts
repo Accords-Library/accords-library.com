@@ -1,5 +1,4 @@
 import { readFileSync } from "fs";
-
 import {
   GetChronologyItemsQuery,
   GetChronologyItemsQueryVariables,
@@ -37,7 +36,7 @@ import {
   GetWebsiteInterfaceQueryVariables,
 } from "graphql/operations-types";
 
-const graphQL = async (query: string, variables?: string) => {
+async function graphQL(query: string, variables?: string) {
   const res = await fetch(`${process.env.URL_GRAPHQL}`, {
     method: "POST",
     body: JSON.stringify({
@@ -46,11 +45,11 @@ const graphQL = async (query: string, variables?: string) => {
     }),
     headers: {
       "content-type": "application/json",
-      Authorization: "Bearer " + process.env.ACCESS_TOKEN,
+      Authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
     },
   });
   return (await res.json()).data;
-};
+}
 
 function getQueryFromOperations(queryName: string): string {
   const operations = readFileSync("./src/graphql/operation.graphql", "utf8");

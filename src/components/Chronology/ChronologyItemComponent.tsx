@@ -19,23 +19,22 @@ export default function ChronologyItemComponent(
   const { langui } = props;
 
   function generateAnchor(year: number, month: number, day: number): string {
-    let result: string = "";
+    let result = "";
     result += year;
-    if (month) result += "-" + month.toString().padStart(2, "0");
-    if (day) result += "-" + day.toString().padStart(2, "0");
+    if (month) result += `- ${month.toString().padStart(2, "0")}`;
+    if (day) result += `- ${day.toString().padStart(2, "0")}`;
     return result;
   }
 
   function generateYear(displayed_date: string, year: number): string {
     if (displayed_date) {
       return displayed_date;
-    } else {
-      return year.toString();
     }
+    return year.toString();
   }
 
   function generateDate(month: number, day: number): string {
-    let lut = [
+    const lut = [
       "Jan",
       "Feb",
       "Mar",
@@ -50,11 +49,11 @@ export default function ChronologyItemComponent(
       "Dec",
     ];
 
-    let result: string = "";
+    let result = "";
     if (month) {
       result += lut[month - 1];
       if (day) {
-        result += " " + day;
+        result += ` ${day}`;
       }
     }
 
@@ -113,7 +112,7 @@ export default function ChronologyItemComponent(
                   </p>
                 )}
                 {translation.note ? (
-                  <em>{"Notes: " + translation.note}</em>
+                  <em>{`Notes: ${translation.note}`}</em>
                 ) : (
                   ""
                 )}
@@ -122,7 +121,7 @@ export default function ChronologyItemComponent(
 
             <p className="text-dark text-xs grid place-self-start grid-flow-col gap-1 mt-1">
               {event.source.data ? (
-                "(" + event.source.data.attributes.name + ")"
+                `(${event.source.data.attributes.name})`
               ) : (
                 <>
                   <span className="material-icons !text-sm">warning</span>No

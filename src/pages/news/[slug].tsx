@@ -14,10 +14,14 @@ import RecorderChip from "components/RecorderChip";
 import ToolTip from "components/ToolTip";
 import { getPost, getPostLanguages, getPostsSlugs } from "graphql/operations";
 import { GetPostQuery, StrapiImage } from "graphql/operations-types";
-import { GetStaticPaths, GetStaticProps } from "next";
+import {
+  GetStaticPathsContext,
+  GetStaticPathsResult,
+  GetStaticPropsContext,
+} from "next";
 import { useRouter } from "next/router";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
-import { prettySlug, getStatusDescription } from "queries/helpers";
+import { getStatusDescription, prettySlug } from "queries/helpers";
 
 interface PostProps extends AppStaticProps {
   post: GetPostQuery["posts"]["data"][number]["attributes"];
@@ -42,7 +46,7 @@ export default function LibrarySlug(props: PostProps): JSX.Element {
         href="/news"
         title={langui.news}
         langui={langui}
-        displayOn={ReturnButtonType.Desktop}
+        displayOn={ReturnButtonType.desktop}
         horizontalLine
       />
 
@@ -87,7 +91,7 @@ export default function LibrarySlug(props: PostProps): JSX.Element {
         href="/news"
         title={langui.news}
         langui={langui}
-        displayOn={ReturnButtonType.Mobile}
+        displayOn={ReturnButtonType.mobile}
         className="mb-10"
       />
 
@@ -109,7 +113,7 @@ export default function LibrarySlug(props: PostProps): JSX.Element {
 
       <HorizontalLine />
 
-      {locales.includes(router.locale || "en") ? (
+      {locales.includes(router.locale ?? "en") ? (
         <Markdawn router={router} text={post.translations[0].body} />
       ) : (
         <LanguageSwitcher
@@ -138,12 +142,14 @@ export default function LibrarySlug(props: PostProps): JSX.Element {
   );
 }
 
-export const getStaticProps: GetStaticProps = async (context) => {
-  const slug = context.params?.slug?.toString() || "";
+export async function getStaticProps(
+  context: GetStaticPropsContext
+): Promise<{ props: PostProps }> {
+  const slug = context.params?.slug?.toString() ?? "";
   const post = (
     await getPost({
       slug: slug,
-      language_code: context.locale || "en",
+      language_code: context.locale ?? "en",
     })
   ).posts.data[0];
   const props: PostProps = {
@@ -152,26 +158,21 @@ export const getStaticProps: GetStaticProps = async (context) => {
     postId: post.id,
     locales: (
       await getPostLanguages({ slug: slug })
-    ).posts.data[0].attributes.translations.map((translation) => {
-      return translation.language.data.attributes.code;
-    }),
+    ).posts.data[0].attributes.translations.map(
+      (translation) => translation.language.data.attributes.code
+    ),
   };
   return {
     props: props,
   };
-};
+}
 
-export const getStaticPaths: GetStaticPaths = async (context) => {
-  type Path = {
-    params: {
-      slug: string;
-    };
-    locale: string;
-  };
-
-  const data = await getPostsSlugs({});
-  const paths: Path[] = [];
-  data.posts.data.map((item) => {
+export async function getStaticPaths(
+  context: GetStaticPathsContext
+): Promise<GetStaticPathsResult> {
+  const posts = await getPostsSlugs({});
+  const paths: GetStaticPathsResult["paths"] = [];
+  posts.posts.data.map((item) => {
     context.locales?.map((local) => {
       paths.push({ params: { slug: item.attributes.slug }, locale: local });
     });
@@ -180,4 +181,4 @@ export const getStaticPaths: GetStaticPaths = async (context) => {
     paths,
     fallback: false,
   };
-};
+}

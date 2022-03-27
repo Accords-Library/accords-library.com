@@ -7,7 +7,6 @@ export type SelectProps = {
   selected?: number;
   allowEmpty?: boolean;
   className?: string;
-  onChange?: Function;
 };
 
 export default function Select(props: SelectProps): JSX.Element {

@@ -16,8 +16,7 @@ type ContentTOCLineProps = {
 export default function ContentTOCLine(
   props: ContentTOCLineProps
 ): JSX.Element {
-  const content = props.content;
-  const langui = props.langui;
+  const { content, langui } = props;
 
   const [opened, setOpened] = useState(false);
 

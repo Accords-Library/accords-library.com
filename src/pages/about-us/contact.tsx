@@ -1,21 +1,21 @@
-import SubPanel from "components/Panels/SubPanel";
-import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
+import AppLayout from "components/AppLayout";
+import InsetBox from "components/InsetBox";
+import LanguageSwitcher from "components/LanguageSwitcher";
+import Markdawn from "components/Markdown/Markdawn";
+import TOC from "components/Markdown/TOC";
 import ReturnButton, {
   ReturnButtonType,
 } from "components/PanelComponents/ReturnButton";
-import AppLayout from "components/AppLayout";
 import ContentPanel from "components/Panels/ContentPanel";
-import { GetStaticProps } from "next";
+import SubPanel from "components/Panels/SubPanel";
 import { getPost, getPostLanguages } from "graphql/operations";
 import { GetPostQuery } from "graphql/operations-types";
+import { GetStaticPropsContext } from "next";
 import { useRouter } from "next/router";
-import LanguageSwitcher from "components/LanguageSwitcher";
-import Markdawn from "components/Markdown/Markdawn";
 import { RequestMailProps, ResponseMailProps } from "pages/api/mail";
-import { useState } from "react";
-import InsetBox from "components/InsetBox";
+import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 import { randomInt } from "queries/helpers";
-import TOC from "components/Markdown/TOC";
+import { useState } from "react";
 
 interface ContactProps extends AppStaticProps {
   post: GetPostQuery["posts"]["data"][number]["attributes"];
@@ -26,18 +26,18 @@ export default function AboutUs(props: ContactProps): JSX.Element {
   const { langui, post, locales } = props;
   const router = useRouter();
   const [formResponse, setFormResponse] = useState("");
-  const [formState, setFormState] = useState<"stale" | "ongoing" | "completed">(
+  const [formState, setFormState] = useState<"completed" | "ongoing" | "stale">(
     "stale"
   );
 
-  const random1 = randomInt(0, 10);
-  const random2 = randomInt(0, 10);
+  const [randomNumber1, setRandomNumber1] = useState(randomInt(0, 10));
+  const [randomNumber2, setRandomNumber2] = useState(randomInt(0, 10));
 
   const subPanel = (
     <SubPanel>
       <ReturnButton
         href="/about-us"
-        displayOn={ReturnButtonType.Desktop}
+        displayOn={ReturnButtonType.desktop}
         langui={langui}
         title={langui.about_us}
         horizontalLine
@@ -56,12 +56,12 @@ export default function AboutUs(props: ContactProps): JSX.Element {
     <ContentPanel>
       <ReturnButton
         href="/about-us"
-        displayOn={ReturnButtonType.Mobile}
+        displayOn={ReturnButtonType.mobile}
         langui={langui}
         title={langui.about_us}
         className="mb-10"
       />
-      {locales.includes(router.locale || "en") ? (
+      {locales.includes(router.locale ?? "en") ? (
         <Markdawn router={router} text={post.translations[0].body} />
       ) : (
         <LanguageSwitcher
@@ -78,10 +78,10 @@ export default function AboutUs(props: ContactProps): JSX.Element {
             formState !== "stale" &&
             "opacity-60 cursor-not-allowed touch-none pointer-events-none"
           }`}
-          onSubmit={(e) => {
-            e.preventDefault();
+          onSubmit={(event) => {
+            event.preventDefault();
 
-            const fields = e.target as unknown as {
+            const fields = event.target as unknown as {
               verif: HTMLInputElement;
               name: HTMLInputElement;
               email: HTMLInputElement;
@@ -91,7 +91,8 @@ export default function AboutUs(props: ContactProps): JSX.Element {
             setFormState("ongoing");
 
             if (
-              parseInt(fields.verif.value) == random1 + random2 &&
+              parseInt(fields.verif.value, 10) ===
+                randomNumber1 + randomNumber2 &&
               formState !== "completed"
             ) {
               const content: RequestMailProps = {
@@ -107,9 +108,9 @@ export default function AboutUs(props: ContactProps): JSX.Element {
                   "Content-type": "application/json; charset=UTF-8",
                 },
               })
-                .then((response) => response.json())
-                .then((data: ResponseMailProps) => {
-                  switch (data.code) {
+                .then(async (responseJson) => responseJson.json())
+                .then((response: ResponseMailProps) => {
+                  switch (response.code) {
                     case "OKAY":
                       setFormResponse(langui.response_email_success);
                       setFormState("completed");
@@ -122,7 +123,7 @@ export default function AboutUs(props: ContactProps): JSX.Element {
                       break;
 
                     default:
-                      setFormResponse(data.message || "");
+                      setFormResponse(response.message ?? "");
                       setFormState("stale");
                       break;
                   }
@@ -130,6 +131,8 @@ export default function AboutUs(props: ContactProps): JSX.Element {
             } else {
               setFormResponse(langui.response_invalid_code);
               setFormState("stale");
+              setRandomNumber1(randomInt(0, 10));
+              setRandomNumber2(randomInt(0, 10));
             }
 
             router.replace("#send-response");
@@ -180,7 +183,7 @@ export default function AboutUs(props: ContactProps): JSX.Element {
               <label
                 className="flex-shrink-0"
                 htmlFor="verif"
-              >{`${random1} + ${random2} =`}</label>
+              >{`${randomNumber1} + ${randomNumber2} =`}</label>
               <input
                 className="w-24"
                 type="number"
@@ -221,23 +224,25 @@ export default function AboutUs(props: ContactProps): JSX.Element {
   );
 }
 
-export const getStaticProps: GetStaticProps = async (context) => {
+export async function getStaticProps(
+  context: GetStaticPropsContext
+): Promise<{ props: ContactProps }> {
   const slug = "contact";
   const props: ContactProps = {
     ...(await getAppStaticProps(context)),
     post: (
       await getPost({
         slug: slug,
-        language_code: context.locale || "en",
+        language_code: context.locale ?? "en",
       })
     ).posts.data[0].attributes,
     locales: (
       await getPostLanguages({ slug: slug })
-    ).posts.data[0].attributes.translations.map((translation) => {
-      return translation.language.data.attributes.code;
-    }),
+    ).posts.data[0].attributes.translations.map(
+      (translation) => translation.language.data.attributes.code
+    ),
   };
   return {
     props: props,
   };
-};
+}

@@ -1,7 +1,7 @@
-import { useRouter } from "next/router";
-import Link from "next/link";
-import { MouseEventHandler } from "react";
 import ToolTip from "components/ToolTip";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { MouseEventHandler } from "react";
 
 type NavOptionProps = {
   url: string;

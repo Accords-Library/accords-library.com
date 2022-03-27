@@ -1,6 +1,5 @@
 import { StrapiImage } from "graphql/operations-types";
-import { ImageProps } from "next/image";
-import Image from "next/image";
+import Image, { ImageProps } from "next/image";
 
 export enum ImageQuality {
   Small = "small",
@@ -10,11 +9,12 @@ export enum ImageQuality {
 }
 
 export function getAssetURL(url: string, quality: ImageQuality): string {
-  url = url.replace(/^\/uploads/, "/" + quality);
-  url = url.replace(/.jpg$/, ".webp");
-  url = url.replace(/.png$/, ".webp");
-  if (quality === ImageQuality.Og) url = url.replace(/.webp$/, ".jpg");
-  return process.env.NEXT_PUBLIC_URL_IMG + url;
+  let newUrl = url;
+  newUrl = newUrl.replace(/^\/uploads/u, `/${quality}`);
+  newUrl = newUrl.replace(/.jpg$/u, ".webp");
+  newUrl = newUrl.replace(/.png$/u, ".webp");
+  if (quality === ImageQuality.Og) newUrl = newUrl.replace(/.webp$/u, ".jpg");
+  return process.env.NEXT_PUBLIC_URL_IMG + newUrl;
 }
 
 export function getImgSizesByMaxSize(
@@ -25,10 +25,9 @@ export function getImgSizesByMaxSize(
   if (width > height) {
     if (width < maxSize) return { width: width, height: height };
     return { width: maxSize, height: (height / width) * maxSize };
-  } else {
-    if (height < maxSize) return { width: width, height: height };
-    return { width: (width / height) * maxSize, height: maxSize };
   }
+  if (height < maxSize) return { width: width, height: height };
+  return { width: (width / height) * maxSize, height: maxSize };
 }
 
 export function getImgSizesByQuality(
@@ -45,6 +44,8 @@ export function getImgSizesByQuality(
       return getImgSizesByMaxSize(width, height, 1024);
     case ImageQuality.Large:
       return getImgSizesByMaxSize(width, height, 2048);
+    default:
+      return { width: 0, height: 0 };
   }
 }
 
@@ -81,25 +82,23 @@ export default function Img(props: ImgProps): JSX.Element {
           height={imgSize.height}
         />
       );
-    } else {
-      return (
-        <Image
-          className={props.className}
-          src={getAssetURL(
-            props.image.url,
-            props.quality ? props.quality : ImageQuality.Small
-          )}
-          alt={props.alt ? props.alt : props.image.alternativeText}
-          width={props.layout === "fill" ? undefined : imgSize.width}
-          height={props.layout === "fill" ? undefined : imgSize.height}
-          layout={props.layout}
-          objectFit={props.objectFit}
-          priority={props.priority}
-          unoptimized
-        />
-      );
     }
-  } else {
-    return <></>;
+    return (
+      <Image
+        className={props.className}
+        src={getAssetURL(
+          props.image.url,
+          props.quality ? props.quality : ImageQuality.Small
+        )}
+        alt={props.alt ? props.alt : props.image.alternativeText}
+        width={props.layout === "fill" ? undefined : imgSize.width}
+        height={props.layout === "fill" ? undefined : imgSize.height}
+        layout={props.layout}
+        objectFit={props.objectFit}
+        priority={props.priority}
+        unoptimized
+      />
+    );
   }
+  return <></>;
 }

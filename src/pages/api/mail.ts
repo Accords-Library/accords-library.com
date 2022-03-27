@@ -21,10 +21,10 @@ export default async function Mail(
   if (req.method === "POST") {
     const body = req.body as RequestMailProps;
 
-    let transporter = nodemailer.createTransport({
+    const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
       port: 587,
-      secure: false, // true for 465, false for other ports
+      secure: false,
       auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASSWORD,
@@ -32,7 +32,7 @@ export default async function Mail(
     });
 
     // send mail with defined transport object
-    let info = await transporter
+    await transporter
       .sendMail({
         from: `"${body.name}" <${body.email}>`,
         to: "contact@accords-library.com",
@@ -40,7 +40,7 @@ export default async function Mail(
         text: body.message,
       })
       .catch((reason: SMTPError) => {
-        res.status(reason.responseCode || 500).json({
+        res.status(reason.responseCode ?? 500).json({
           code: reason.code,
           message: reason.response,
         });

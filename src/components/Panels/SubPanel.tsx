@@ -4,7 +4,7 @@ type SubPanelProps = {
 
 export default function SubPanel(props: SubPanelProps): JSX.Element {
   return (
-    <div className="flex flex-col p-8 gap-y-2 justify-items-center text-center mobile:h-full">
+    <div className="grid pt-10 pb-20 px-6 desktop:py-8 desktop:px-10 gap-y-2 text-center">
       {props.children}
     </div>
   );

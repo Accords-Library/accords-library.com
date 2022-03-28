@@ -26,11 +26,6 @@ type ResponseCollectionMeta {
   pagination: Pagination!
 }
 
-enum PublicationState {
-  LIVE
-  PREVIEW
-}
-
 input IDFilterInput {
   and: [ID]
   or: [ID]
@@ -247,6 +242,24 @@ type ComponentBasicsDatepicker {
   day: Int
 }
 
+enum ENUM_COMPONENTBASICSFILESIZE_UNIT {
+  kb
+  mb
+  gb
+}
+
+input ComponentBasicsFileSizeInput {
+  id: ID
+  size: Float
+  unit: ENUM_COMPONENTBASICSFILESIZE_UNIT
+}
+
+type ComponentBasicsFileSize {
+  id: ID!
+  size: Float!
+  unit: ENUM_COMPONENTBASICSFILESIZE_UNIT!
+}
+
 input ComponentBasicsPriceInput {
   id: ID
   amount: Float
@@ -387,6 +400,8 @@ input ComponentCollectionsComponentLibraryObiBeltInput {
   back: ID
   full: ID
   inside_full: ID
+  flap_front: ID
+  flap_back: ID
 }
 
 type ComponentCollectionsComponentLibraryObiBelt {
@@ -396,6 +411,8 @@ type ComponentCollectionsComponentLibraryObiBelt {
   back: UploadFileEntityResponse
   full: UploadFileEntityResponse
   inside_full: UploadFileEntityResponse
+  flap_front: UploadFileEntityResponse
+  flap_back: UploadFileEntityResponse
 }
 
 input ComponentCollectionsComponentTitlesFiltersInput {
@@ -509,6 +526,12 @@ type ComponentMetadataGame {
   ): LanguageRelationResponseCollection
 }
 
+type ComponentMetadataGroup {
+  id: ID!
+  subtype: GroupSubtypeEntityResponse
+  subitems_type: MetadataTypeEntityResponse
+}
+
 type ComponentMetadataMerch {
   id: ID!
   merch_item: MerchItemEntityResponse
@@ -516,7 +539,6 @@ type ComponentMetadataMerch {
 
 type ComponentMetadataOther {
   id: ID!
-  subtype: OtherSubtypeEntityResponse
 }
 
 type ComponentMetadataVideo {
@@ -1052,9 +1074,11 @@ enum ENUM_COMPONENTTRANSLATIONSPOSTS_STATUS {
 }
 
 input ComponentTranslationsPostsFiltersInput {
-  Status: StringFilterInput
   title: StringFilterInput
   excerpt: StringFilterInput
+  body: StringFilterInput
+  language: LanguageFiltersInput
+  status: StringFilterInput
   and: [ComponentTranslationsPostsFiltersInput]
   or: [ComponentTranslationsPostsFiltersInput]
   not: ComponentTranslationsPostsFiltersInput
@@ -1062,18 +1086,22 @@ input ComponentTranslationsPostsFiltersInput {
 
 input ComponentTranslationsPostsInput {
   id: ID
-  Status: ENUM_COMPONENTTRANSLATIONSPOSTS_STATUS
   title: String
   excerpt: String
   thumbnail: ID
+  body: String
+  language: ID
+  status: ENUM_COMPONENTTRANSLATIONSPOSTS_STATUS
 }
 
 type ComponentTranslationsPosts {
   id: ID!
-  Status: ENUM_COMPONENTTRANSLATIONSPOSTS_STATUS!
   title: String!
   excerpt: String
   thumbnail: UploadFileEntityResponse
+  body: String
+  language: LanguageEntityResponse
+  status: ENUM_COMPONENTTRANSLATIONSPOSTS_STATUS!
 }
 
 enum ENUM_COMPONENTTRANSLATIONSSCANSET_STATUS {
@@ -1256,6 +1284,29 @@ type ComponentTranslationsWeaponStory {
   id: ID!
   name: String
   language: LanguageEntityResponse
+}
+
+input ComponentTranslationsWebArchivesFiltersInput {
+  language: LanguageFiltersInput
+  description: StringFilterInput
+  notes: StringFilterInput
+  and: [ComponentTranslationsWebArchivesFiltersInput]
+  or: [ComponentTranslationsWebArchivesFiltersInput]
+  not: ComponentTranslationsWebArchivesFiltersInput
+}
+
+input ComponentTranslationsWebArchivesInput {
+  id: ID
+  language: ID
+  description: String
+  notes: String
+}
+
+type ComponentTranslationsWebArchives {
+  id: ID!
+  language: LanguageEntityResponse
+  description: String
+  notes: String
 }
 
 input UploadFileFiltersInput {
@@ -1642,6 +1693,8 @@ input CurrencyFiltersInput {
   id: IDFilterInput
   symbol: StringFilterInput
   code: StringFilterInput
+  rate_to_usd: FloatFilterInput
+  display_decimals: BooleanFilterInput
   createdAt: DateTimeFilterInput
   updatedAt: DateTimeFilterInput
   and: [CurrencyFiltersInput]
@@ -1652,11 +1705,15 @@ input CurrencyFiltersInput {
 input CurrencyInput {
   symbol: String
   code: String
+  rate_to_usd: Float
+  display_decimals: Boolean
 }
 
 type Currency {
   symbol: String!
   code: String!
+  rate_to_usd: Float!
+  display_decimals: Boolean!
   createdAt: DateTime
   updatedAt: DateTime
 }
@@ -1801,6 +1858,46 @@ type GlossaryItemTypeEntityResponseCollection {
   meta: ResponseCollectionMeta!
 }
 
+input GroupSubtypeFiltersInput {
+  id: IDFilterInput
+  slug: StringFilterInput
+  createdAt: DateTimeFilterInput
+  updatedAt: DateTimeFilterInput
+  and: [GroupSubtypeFiltersInput]
+  or: [GroupSubtypeFiltersInput]
+  not: GroupSubtypeFiltersInput
+}
+
+input GroupSubtypeInput {
+  slug: String
+  titles: [ComponentTranslationsSimpleTitleInput]
+}
+
+type GroupSubtype {
+  slug: String!
+  titles(
+    filters: ComponentTranslationsSimpleTitleFiltersInput
+    pagination: PaginationArg = {}
+    sort: [String] = []
+  ): [ComponentTranslationsSimpleTitle]
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+type GroupSubtypeEntity {
+  id: ID
+  attributes: GroupSubtype
+}
+
+type GroupSubtypeEntityResponse {
+  data: GroupSubtypeEntity
+}
+
+type GroupSubtypeEntityResponseCollection {
+  data: [GroupSubtypeEntity!]!
+  meta: ResponseCollectionMeta!
+}
+
 input LanguageFiltersInput {
   id: IDFilterInput
   name: StringFilterInput
@@ -1846,11 +1943,12 @@ type LanguageRelationResponseCollection {
 }
 
 union LibraryItemMetadataDynamicZone =
-    ComponentMetadataBooks
-  | ComponentMetadataVideo
+    ComponentMetadataAudio
+  | ComponentMetadataBooks
   | ComponentMetadataGame
-  | ComponentMetadataAudio
+  | ComponentMetadataGroup
   | ComponentMetadataOther
+  | ComponentMetadataVideo
   | Error
 
 scalar LibraryItemMetadataDynamicZoneInput
@@ -1867,6 +1965,7 @@ input LibraryItemFiltersInput {
   digital: BooleanFilterInput
   primary: BooleanFilterInput
   submerchs: MerchItemFiltersInput
+  categories: CategoryFiltersInput
   createdAt: DateTimeFilterInput
   updatedAt: DateTimeFilterInput
   and: [LibraryItemFiltersInput]
@@ -1893,6 +1992,7 @@ input LibraryItemInput {
   digital: Boolean
   primary: Boolean
   submerchs: [ID]
+  categories: [ID]
 }
 
 type LibraryItem {
@@ -1938,6 +2038,11 @@ type LibraryItem {
     pagination: PaginationArg = {}
     sort: [String] = []
   ): MerchItemRelationResponseCollection
+  categories(
+    filters: CategoryFiltersInput
+    pagination: PaginationArg = {}
+    sort: [String] = []
+  ): CategoryRelationResponseCollection
   createdAt: DateTime
   updatedAt: DateTime
 }
@@ -2013,22 +2118,22 @@ type MerchItemRelationResponseCollection {
   data: [MerchItemEntity!]!
 }
 
-input OtherSubtypeFiltersInput {
+input MetadataTypeFiltersInput {
   id: IDFilterInput
   slug: StringFilterInput
   createdAt: DateTimeFilterInput
   updatedAt: DateTimeFilterInput
-  and: [OtherSubtypeFiltersInput]
-  or: [OtherSubtypeFiltersInput]
-  not: OtherSubtypeFiltersInput
+  and: [MetadataTypeFiltersInput]
+  or: [MetadataTypeFiltersInput]
+  not: MetadataTypeFiltersInput
 }
 
-input OtherSubtypeInput {
+input MetadataTypeInput {
   slug: String
   titles: [ComponentTranslationsSimpleTitleInput]
 }
 
-type OtherSubtype {
+type MetadataType {
   slug: String!
   titles(
     filters: ComponentTranslationsSimpleTitleFiltersInput
@@ -2039,17 +2144,17 @@ type OtherSubtype {
   updatedAt: DateTime
 }
 
-type OtherSubtypeEntity {
+type MetadataTypeEntity {
   id: ID
-  attributes: OtherSubtype
+  attributes: MetadataType
 }
 
-type OtherSubtypeEntityResponse {
-  data: OtherSubtypeEntity
+type MetadataTypeEntityResponse {
+  data: MetadataTypeEntity
 }
 
-type OtherSubtypeEntityResponseCollection {
-  data: [OtherSubtypeEntity!]!
+type MetadataTypeEntityResponseCollection {
+  data: [MetadataTypeEntity!]!
   meta: ResponseCollectionMeta!
 }
 
@@ -2058,9 +2163,9 @@ input PostFiltersInput {
   authors: RecorderFiltersInput
   slug: StringFilterInput
   categories: CategoryFiltersInput
+  hidden: BooleanFilterInput
   createdAt: DateTimeFilterInput
   updatedAt: DateTimeFilterInput
-  publishedAt: DateTimeFilterInput
   and: [PostFiltersInput]
   or: [PostFiltersInput]
   not: PostFiltersInput
@@ -2071,7 +2176,9 @@ input PostInput {
   slug: String
   categories: [ID]
   translations: [ComponentTranslationsPostsInput]
-  publishedAt: DateTime
+  hidden: Boolean
+  thumbnail: ID
+  date: ComponentBasicsDatepickerInput
 }
 
 type Post {
@@ -2091,9 +2198,11 @@ type Post {
     pagination: PaginationArg = {}
     sort: [String] = []
   ): [ComponentTranslationsPosts]
+  hidden: Boolean!
+  thumbnail: UploadFileEntityResponse
+  date: ComponentBasicsDatepicker!
   createdAt: DateTime
   updatedAt: DateTime
-  publishedAt: DateTime
 }
 
 type PostEntity {
@@ -2488,74 +2597,207 @@ type WeaponStoryTypeEntityResponseCollection {
   meta: ResponseCollectionMeta!
 }
 
+enum ENUM_WEBARCHIVE_TYPE {
+  website
+  webpage
+  online_doc
+}
+
+enum ENUM_WEBARCHIVE_FORMAT {
+  zip
+  wacz
+}
+
+input WebArchiveFiltersInput {
+  id: IDFilterInput
+  type: StringFilterInput
+  source_url: StringFilterInput
+  format: StringFilterInput
+  num_pages: IntFilterInput
+  author: StringFilterInput
+  still_online: BooleanFilterInput
+  createdAt: DateTimeFilterInput
+  updatedAt: DateTimeFilterInput
+  and: [WebArchiveFiltersInput]
+  or: [WebArchiveFiltersInput]
+  not: WebArchiveFiltersInput
+}
+
+input WebArchiveInput {
+  type: ENUM_WEBARCHIVE_TYPE
+  source_url: String
+  format: ENUM_WEBARCHIVE_FORMAT
+  date: ComponentBasicsDatepickerInput
+  num_pages: Int
+  author: String
+  still_online: Boolean
+  size: ComponentBasicsFileSizeInput
+  descriptions: [ComponentTranslationsWebArchivesInput]
+}
+
+type WebArchive {
+  type: ENUM_WEBARCHIVE_TYPE!
+  source_url: String!
+  format: ENUM_WEBARCHIVE_FORMAT!
+  date: ComponentBasicsDatepicker!
+  num_pages: Int
+  author: String
+  still_online: Boolean!
+  size: ComponentBasicsFileSize!
+  descriptions(
+    filters: ComponentTranslationsWebArchivesFiltersInput
+    pagination: PaginationArg = {}
+    sort: [String] = []
+  ): [ComponentTranslationsWebArchives]
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+type WebArchiveEntity {
+  id: ID
+  attributes: WebArchive
+}
+
+type WebArchiveEntityResponse {
+  data: WebArchiveEntity
+}
+
+type WebArchiveEntityResponseCollection {
+  data: [WebArchiveEntity!]!
+  meta: ResponseCollectionMeta!
+}
+
 input WebsiteInterfaceFiltersInput {
   id: IDFilterInput
-  language: LanguageFiltersInput
-  main_library: StringFilterInput
-  main_library_description: StringFilterInput
-  main_news: StringFilterInput
-  main_merch: StringFilterInput
-  main_gallery: StringFilterInput
-  main_archives: StringFilterInput
-  main_about_us: StringFilterInput
-  main_licensing: StringFilterInput
-  main_copyright: StringFilterInput
+  library: StringFilterInput
+  contents: StringFilterInput
+  wiki: StringFilterInput
+  chronicles: StringFilterInput
+  library_short_description: StringFilterInput
+  contents_short_description: StringFilterInput
+  wiki_short_description: StringFilterInput
+  chronicles_short_description: StringFilterInput
+  news: StringFilterInput
+  merch: StringFilterInput
+  gallery: StringFilterInput
+  archives: StringFilterInput
+  about_us: StringFilterInput
+  licensing_notice: StringFilterInput
+  copyright_notice: StringFilterInput
+  contents_description: StringFilterInput
+  type: StringFilterInput
+  category: StringFilterInput
+  categories: StringFilterInput
+  size: StringFilterInput
+  release_date: StringFilterInput
+  release_year: StringFilterInput
+  details: StringFilterInput
+  price: StringFilterInput
+  width: StringFilterInput
+  height: StringFilterInput
+  thickness: StringFilterInput
+  subitem: StringFilterInput
+  subitems: StringFilterInput
+  subitem_of: StringFilterInput
+  variant: StringFilterInput
+  variants: StringFilterInput
+  variant_of: StringFilterInput
+  summary: StringFilterInput
+  audio: StringFilterInput
+  video: StringFilterInput
+  textual: StringFilterInput
+  game: StringFilterInput
+  other: StringFilterInput
+  return_to: StringFilterInput
+  left_to_right: StringFilterInput
+  right_to_left: StringFilterInput
+  page: StringFilterInput
+  pages: StringFilterInput
+  page_order: StringFilterInput
+  binding: StringFilterInput
+  type_information: StringFilterInput
+  front_matter: StringFilterInput
+  back_matter: StringFilterInput
+  open_content: StringFilterInput
+  read_content: StringFilterInput
+  watch_content: StringFilterInput
+  listen_content: StringFilterInput
+  view_scans: StringFilterInput
+  paperback: StringFilterInput
+  hardcover: StringFilterInput
+  ui_language: LanguageFiltersInput
+  languages: StringFilterInput
+  select_language: StringFilterInput
+  language: StringFilterInput
   library_description: StringFilterInput
-  library_item_summary: StringFilterInput
-  library_item_gallery: StringFilterInput
-  library_item_details: StringFilterInput
-  library_item_subitems: StringFilterInput
-  library_item_variants: StringFilterInput
-  library_item_content: StringFilterInput
-  global_return_label: StringFilterInput
-  global_subitem_of: StringFilterInput
-  global_type: StringFilterInput
-  global_width: StringFilterInput
-  global_height: StringFilterInput
-  global_thickness: StringFilterInput
-  global_binding: StringFilterInput
-  global_language: StringFilterInput
-  global_languages: StringFilterInput
-  global_page: StringFilterInput
-  global_pages: StringFilterInput
-  global_page_order: StringFilterInput
-  global_release_date: StringFilterInput
-  global_price: StringFilterInput
-  library_item_physical_size: StringFilterInput
-  library_item_type_information: StringFilterInput
-  library_item_front_matter: StringFilterInput
-  library_item_back_matter: StringFilterInput
-  library_item_type_textual: StringFilterInput
-  library_item_type_audio: StringFilterInput
-  library_item_type_game: StringFilterInput
-  library_item_type_video: StringFilterInput
-  library_item_type_other: StringFilterInput
-  library_item_open_content: StringFilterInput
-  library_item_view_scans: StringFilterInput
-  content_read_content: StringFilterInput
-  content_watch_content: StringFilterInput
-  content_listen_content: StringFilterInput
-  global_category: StringFilterInput
-  global_categories: StringFilterInput
-  global_paperback: StringFilterInput
-  global_hardcover: StringFilterInput
-  global_left_to_right: StringFilterInput
-  global_right_to_left: StringFilterInput
-  main_wiki: StringFilterInput
-  main_wiki_description: StringFilterInput
-  main_chronicles: StringFilterInput
-  main_chronicles_description: StringFilterInput
-  library_items: StringFilterInput
-  library_items_description: StringFilterInput
-  library_content: StringFilterInput
-  library_content_description: StringFilterInput
   wiki_description: StringFilterInput
-  news_description: StringFilterInput
   chronicles_description: StringFilterInput
+  news_description: StringFilterInput
+  merch_description: StringFilterInput
   gallery_description: StringFilterInput
   archives_description: StringFilterInput
   about_us_description: StringFilterInput
-  merch_description: StringFilterInput
+  page_not_found: StringFilterInput
+  default_description: StringFilterInput
+  name: StringFilterInput
+  show_subitems: StringFilterInput
+  show_primary_items: StringFilterInput
+  show_secondary_items: StringFilterInput
+  no_type: StringFilterInput
+  no_year: StringFilterInput
+  order_by: StringFilterInput
+  group_by: StringFilterInput
+  select_option_sidebar: StringFilterInput
+  group: StringFilterInput
+  settings: StringFilterInput
+  theme: StringFilterInput
+  light: StringFilterInput
+  auto: StringFilterInput
+  dark: StringFilterInput
+  font_size: StringFilterInput
+  player_name: StringFilterInput
+  currency: StringFilterInput
+  font: StringFilterInput
+  calculated: StringFilterInput
+  status_incomplete: StringFilterInput
+  status_draft: StringFilterInput
+  status_review: StringFilterInput
+  status_done: StringFilterInput
+  incomplete: StringFilterInput
+  draft: StringFilterInput
+  review: StringFilterInput
+  done: StringFilterInput
+  status: StringFilterInput
+  transcribers: StringFilterInput
+  translators: StringFilterInput
+  proofreaders: StringFilterInput
+  transcript_notice: StringFilterInput
+  translation_notice: StringFilterInput
+  source_language: StringFilterInput
+  pronouns: StringFilterInput
+  no_category: StringFilterInput
+  item: StringFilterInput
+  items: StringFilterInput
+  content: StringFilterInput
+  result: StringFilterInput
+  results: StringFilterInput
+  language_switch_message: StringFilterInput
+  open_settings: StringFilterInput
+  change_language: StringFilterInput
+  open_search: StringFilterInput
+  chronology: StringFilterInput
+  accords_handbook: StringFilterInput
+  legality: StringFilterInput
+  members: StringFilterInput
+  sharing_policy: StringFilterInput
+  contact_us: StringFilterInput
+  email: StringFilterInput
+  email_gdpr_notice: StringFilterInput
+  message: StringFilterInput
+  send: StringFilterInput
+  response_invalid_code: StringFilterInput
+  response_invalid_email: StringFilterInput
+  response_email_success: StringFilterInput
   createdAt: DateTimeFilterInput
   updatedAt: DateTimeFilterInput
   and: [WebsiteInterfaceFiltersInput]
@@ -2564,141 +2806,267 @@ input WebsiteInterfaceFiltersInput {
 }
 
 input WebsiteInterfaceInput {
-  language: ID
-  main_library: String
-  main_library_description: String
-  main_news: String
-  main_merch: String
-  main_gallery: String
-  main_archives: String
-  main_about_us: String
-  main_licensing: String
-  main_copyright: String
+  library: String
+  contents: String
+  wiki: String
+  chronicles: String
+  library_short_description: String
+  contents_short_description: String
+  wiki_short_description: String
+  chronicles_short_description: String
+  news: String
+  merch: String
+  gallery: String
+  archives: String
+  about_us: String
+  licensing_notice: String
+  copyright_notice: String
+  contents_description: String
+  type: String
+  category: String
+  categories: String
+  size: String
+  release_date: String
+  release_year: String
+  details: String
+  price: String
+  width: String
+  height: String
+  thickness: String
+  subitem: String
+  subitems: String
+  subitem_of: String
+  variant: String
+  variants: String
+  variant_of: String
+  summary: String
+  audio: String
+  video: String
+  textual: String
+  game: String
+  other: String
+  return_to: String
+  left_to_right: String
+  right_to_left: String
+  page: String
+  pages: String
+  page_order: String
+  binding: String
+  type_information: String
+  front_matter: String
+  back_matter: String
+  open_content: String
+  read_content: String
+  watch_content: String
+  listen_content: String
+  view_scans: String
+  paperback: String
+  hardcover: String
+  ui_language: ID
+  languages: String
+  select_language: String
+  language: String
   library_description: String
-  library_item_summary: String
-  library_item_gallery: String
-  library_item_details: String
-  library_item_subitems: String
-  library_item_variants: String
-  library_item_content: String
-  global_return_label: String
-  global_subitem_of: String
-  global_type: String
-  global_width: String
-  global_height: String
-  global_thickness: String
-  global_binding: String
-  global_language: String
-  global_languages: String
-  global_page: String
-  global_pages: String
-  global_page_order: String
-  global_release_date: String
-  global_price: String
-  library_item_physical_size: String
-  library_item_type_information: String
-  library_item_front_matter: String
-  library_item_back_matter: String
-  library_item_type_textual: String
-  library_item_type_audio: String
-  library_item_type_game: String
-  library_item_type_video: String
-  library_item_type_other: String
-  library_item_open_content: String
-  library_item_view_scans: String
-  content_read_content: String
-  content_watch_content: String
-  content_listen_content: String
-  global_category: String
-  global_categories: String
-  global_paperback: String
-  global_hardcover: String
-  global_left_to_right: String
-  global_right_to_left: String
-  main_wiki: String
-  main_wiki_description: String
-  main_chronicles: String
-  main_chronicles_description: String
-  library_items: String
-  library_items_description: String
-  library_content: String
-  library_content_description: String
   wiki_description: String
-  news_description: String
   chronicles_description: String
+  news_description: String
+  merch_description: String
   gallery_description: String
   archives_description: String
   about_us_description: String
-  merch_description: String
+  page_not_found: String
+  default_description: String
+  name: String
+  show_subitems: String
+  show_primary_items: String
+  show_secondary_items: String
+  no_type: String
+  no_year: String
+  order_by: String
+  group_by: String
+  select_option_sidebar: String
+  group: String
+  settings: String
+  theme: String
+  light: String
+  auto: String
+  dark: String
+  font_size: String
+  player_name: String
+  currency: String
+  font: String
+  calculated: String
+  status_incomplete: String
+  status_draft: String
+  status_review: String
+  status_done: String
+  incomplete: String
+  draft: String
+  review: String
+  done: String
+  status: String
+  transcribers: String
+  translators: String
+  proofreaders: String
+  transcript_notice: String
+  translation_notice: String
+  source_language: String
+  pronouns: String
+  no_category: String
+  item: String
+  items: String
+  content: String
+  result: String
+  results: String
+  language_switch_message: String
+  open_settings: String
+  change_language: String
+  open_search: String
+  chronology: String
+  accords_handbook: String
+  legality: String
+  members: String
+  sharing_policy: String
+  contact_us: String
+  email: String
+  email_gdpr_notice: String
+  message: String
+  send: String
+  response_invalid_code: String
+  response_invalid_email: String
+  response_email_success: String
 }
 
 type WebsiteInterface {
-  language: LanguageEntityResponse
-  main_library: String
-  main_library_description: String
-  main_news: String
-  main_merch: String
-  main_gallery: String
-  main_archives: String
-  main_about_us: String
-  main_licensing: String
-  main_copyright: String
+  library: String
+  contents: String
+  wiki: String
+  chronicles: String
+  library_short_description: String
+  contents_short_description: String
+  wiki_short_description: String
+  chronicles_short_description: String
+  news: String
+  merch: String
+  gallery: String
+  archives: String
+  about_us: String
+  licensing_notice: String
+  copyright_notice: String
+  contents_description: String
+  type: String
+  category: String
+  categories: String
+  size: String
+  release_date: String
+  release_year: String
+  details: String
+  price: String
+  width: String
+  height: String
+  thickness: String
+  subitem: String
+  subitems: String
+  subitem_of: String
+  variant: String
+  variants: String
+  variant_of: String
+  summary: String
+  audio: String
+  video: String
+  textual: String
+  game: String
+  other: String
+  return_to: String
+  left_to_right: String
+  right_to_left: String
+  page: String
+  pages: String
+  page_order: String
+  binding: String
+  type_information: String
+  front_matter: String
+  back_matter: String
+  open_content: String
+  read_content: String
+  watch_content: String
+  listen_content: String
+  view_scans: String
+  paperback: String
+  hardcover: String
+  ui_language: LanguageEntityResponse
+  languages: String
+  select_language: String
+  language: String
   library_description: String
-  library_item_summary: String
-  library_item_gallery: String
-  library_item_details: String
-  library_item_subitems: String
-  library_item_variants: String
-  library_item_content: String
-  global_return_label: String
-  global_subitem_of: String
-  global_type: String
-  global_width: String
-  global_height: String
-  global_thickness: String
-  global_binding: String
-  global_language: String
-  global_languages: String
-  global_page: String
-  global_pages: String
-  global_page_order: String
-  global_release_date: String
-  global_price: String
-  library_item_physical_size: String
-  library_item_type_information: String
-  library_item_front_matter: String
-  library_item_back_matter: String
-  library_item_type_textual: String
-  library_item_type_audio: String
-  library_item_type_game: String
-  library_item_type_video: String
-  library_item_type_other: String
-  library_item_open_content: String
-  library_item_view_scans: String
-  content_read_content: String
-  content_watch_content: String
-  content_listen_content: String
-  global_category: String
-  global_categories: String
-  global_paperback: String
-  global_hardcover: String
-  global_left_to_right: String
-  global_right_to_left: String
-  main_wiki: String
-  main_wiki_description: String
-  main_chronicles: String
-  main_chronicles_description: String
-  library_items: String
-  library_items_description: String
-  library_content: String
-  library_content_description: String
   wiki_description: String
-  news_description: String
   chronicles_description: String
+  news_description: String
+  merch_description: String
   gallery_description: String
   archives_description: String
   about_us_description: String
-  merch_description: String
+  page_not_found: String
+  default_description: String
+  name: String
+  show_subitems: String
+  show_primary_items: String
+  show_secondary_items: String
+  no_type: String
+  no_year: String
+  order_by: String
+  group_by: String
+  select_option_sidebar: String
+  group: String
+  settings: String
+  theme: String
+  light: String
+  auto: String
+  dark: String
+  font_size: String
+  player_name: String
+  currency: String
+  font: String
+  calculated: String
+  status_incomplete: String
+  status_draft: String
+  status_review: String
+  status_done: String
+  incomplete: String
+  draft: String
+  review: String
+  done: String
+  status: String
+  transcribers: String
+  translators: String
+  proofreaders: String
+  transcript_notice: String
+  translation_notice: String
+  source_language: String
+  pronouns: String
+  no_category: String
+  item: String
+  items: String
+  content: String
+  result: String
+  results: String
+  language_switch_message: String
+  open_settings: String
+  change_language: String
+  open_search: String
+  chronology: String
+  accords_handbook: String
+  legality: String
+  members: String
+  sharing_policy: String
+  contact_us: String
+  email: String
+  email_gdpr_notice: String
+  message: String
+  send: String
+  response_invalid_code: String
+  response_invalid_email: String
+  response_email_success: String
   createdAt: DateTime
   updatedAt: DateTime
 }
@@ -2805,6 +3173,7 @@ type WikiPageTypeEntityResponseCollection {
 union GenericMorph =
     ComponentBasicsCredits
   | ComponentBasicsDatepicker
+  | ComponentBasicsFileSize
   | ComponentBasicsPrice
   | ComponentBasicsSize
   | ComponentCollectionsComponentEvent
@@ -2819,6 +3188,7 @@ union GenericMorph =
   | ComponentMetadataAudio
   | ComponentMetadataBooks
   | ComponentMetadataGame
+  | ComponentMetadataGroup
   | ComponentMetadataMerch
   | ComponentMetadataOther
   | ComponentMetadataVideo
@@ -2855,6 +3225,7 @@ union GenericMorph =
   | ComponentTranslationsWeaponStoryStory
   | ComponentTranslationsWeaponStoryType
   | ComponentTranslationsWeaponStory
+  | ComponentTranslationsWebArchives
   | UploadFile
   | AudioSubtype
   | Category
@@ -2866,10 +3237,11 @@ union GenericMorph =
   | GamePlatform
   | GlossaryItem
   | GlossaryItemType
+  | GroupSubtype
   | Language
   | LibraryItem
   | MerchItem
-  | OtherSubtype
+  | MetadataType
   | Post
   | RangedContent
   | Recorder
@@ -2879,6 +3251,7 @@ union GenericMorph =
   | WeaponStory
   | WeaponStoryGroup
   | WeaponStoryType
+  | WebArchive
   | WebsiteInterface
   | WikiPage
   | WikiPageType
@@ -2963,6 +3336,12 @@ type Query {
     pagination: PaginationArg = {}
     sort: [String] = []
   ): GlossaryItemTypeEntityResponseCollection
+  groupSubtype(id: ID): GroupSubtypeEntityResponse
+  groupSubtypes(
+    filters: GroupSubtypeFiltersInput
+    pagination: PaginationArg = {}
+    sort: [String] = []
+  ): GroupSubtypeEntityResponseCollection
   language(id: ID): LanguageEntityResponse
   languages(
     filters: LanguageFiltersInput
@@ -2981,18 +3360,17 @@ type Query {
     pagination: PaginationArg = {}
     sort: [String] = []
   ): MerchItemEntityResponseCollection
-  otherSubtype(id: ID): OtherSubtypeEntityResponse
-  otherSubtypes(
-    filters: OtherSubtypeFiltersInput
+  metadataType(id: ID): MetadataTypeEntityResponse
+  metadataTypes(
+    filters: MetadataTypeFiltersInput
     pagination: PaginationArg = {}
     sort: [String] = []
-  ): OtherSubtypeEntityResponseCollection
+  ): MetadataTypeEntityResponseCollection
   post(id: ID): PostEntityResponse
   posts(
     filters: PostFiltersInput
     pagination: PaginationArg = {}
     sort: [String] = []
-    publicationState: PublicationState = LIVE
   ): PostEntityResponseCollection
   rangedContent(id: ID): RangedContentEntityResponse
   rangedContents(
@@ -3042,6 +3420,12 @@ type Query {
     pagination: PaginationArg = {}
     sort: [String] = []
   ): WeaponStoryTypeEntityResponseCollection
+  webArchive(id: ID): WebArchiveEntityResponse
+  webArchives(
+    filters: WebArchiveFiltersInput
+    pagination: PaginationArg = {}
+    sort: [String] = []
+  ): WebArchiveEntityResponseCollection
   websiteInterface(id: ID): WebsiteInterfaceEntityResponse
   websiteInterfaces(
     filters: WebsiteInterfaceFiltersInput
@@ -3116,6 +3500,12 @@ type Mutation {
     data: GlossaryItemTypeInput!
   ): GlossaryItemTypeEntityResponse
   deleteGlossaryItemType(id: ID!): GlossaryItemTypeEntityResponse
+  createGroupSubtype(data: GroupSubtypeInput!): GroupSubtypeEntityResponse
+  updateGroupSubtype(
+    id: ID!
+    data: GroupSubtypeInput!
+  ): GroupSubtypeEntityResponse
+  deleteGroupSubtype(id: ID!): GroupSubtypeEntityResponse
   createLanguage(data: LanguageInput!): LanguageEntityResponse
   updateLanguage(id: ID!, data: LanguageInput!): LanguageEntityResponse
   deleteLanguage(id: ID!): LanguageEntityResponse
@@ -3125,12 +3515,12 @@ type Mutation {
   createMerchItem(data: MerchItemInput!): MerchItemEntityResponse
   updateMerchItem(id: ID!, data: MerchItemInput!): MerchItemEntityResponse
   deleteMerchItem(id: ID!): MerchItemEntityResponse
-  createOtherSubtype(data: OtherSubtypeInput!): OtherSubtypeEntityResponse
-  updateOtherSubtype(
+  createMetadataType(data: MetadataTypeInput!): MetadataTypeEntityResponse
+  updateMetadataType(
     id: ID!
-    data: OtherSubtypeInput!
-  ): OtherSubtypeEntityResponse
-  deleteOtherSubtype(id: ID!): OtherSubtypeEntityResponse
+    data: MetadataTypeInput!
+  ): MetadataTypeEntityResponse
+  deleteMetadataType(id: ID!): MetadataTypeEntityResponse
   createPost(data: PostInput!): PostEntityResponse
   updatePost(id: ID!, data: PostInput!): PostEntityResponse
   deletePost(id: ID!): PostEntityResponse
@@ -3177,6 +3567,9 @@ type Mutation {
     data: WeaponStoryTypeInput!
   ): WeaponStoryTypeEntityResponse
   deleteWeaponStoryType(id: ID!): WeaponStoryTypeEntityResponse
+  createWebArchive(data: WebArchiveInput!): WebArchiveEntityResponse
+  updateWebArchive(id: ID!, data: WebArchiveInput!): WebArchiveEntityResponse
+  deleteWebArchive(id: ID!): WebArchiveEntityResponse
   createWebsiteInterface(
     data: WebsiteInterfaceInput!
   ): WebsiteInterfaceEntityResponse

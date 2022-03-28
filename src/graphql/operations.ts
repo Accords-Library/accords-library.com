@@ -1,5 +1,4 @@
 import { readFileSync } from "fs";
-
 import {
   GetChronologyItemsQuery,
   GetChronologyItemsQueryVariables,
@@ -11,19 +10,31 @@ import {
   GetContentsSlugsQueryVariables,
   GetContentTextQuery,
   GetContentTextQueryVariables,
+  GetCurrenciesQuery,
+  GetCurrenciesQueryVariables,
   GetErasQuery,
   GetErasQueryVariables,
+  GetLanguagesQuery,
+  GetLanguagesQueryVariables,
   GetLibraryItemQuery,
   GetLibraryItemQueryVariables,
+  GetLibraryItemScansQuery,
+  GetLibraryItemScansQueryVariables,
   GetLibraryItemsPreviewQuery,
   GetLibraryItemsPreviewQueryVariables,
   GetLibraryItemsSlugsQuery,
   GetLibraryItemsSlugsQueryVariables,
+  GetPostQuery,
+  GetPostQueryVariables,
+  GetPostsPreviewQuery,
+  GetPostsPreviewQueryVariables,
+  GetPostsSlugsQuery,
+  GetPostsSlugsQueryVariables,
   GetWebsiteInterfaceQuery,
   GetWebsiteInterfaceQueryVariables,
 } from "graphql/operations-types";
 
-const graphQL = async (query: string, variables?: string) => {
+async function graphQL(query: string, variables?: string) {
   const res = await fetch(`${process.env.URL_GRAPHQL}`, {
     method: "POST",
     body: JSON.stringify({
@@ -32,11 +43,11 @@ const graphQL = async (query: string, variables?: string) => {
     }),
     headers: {
       "content-type": "application/json",
-      Authorization: "Bearer " + process.env.ACCESS_TOKEN,
+      Authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
     },
   });
   return (await res.json()).data;
-};
+}
 
 function getQueryFromOperations(queryName: string): string {
   const operations = readFileSync("./src/graphql/operation.graphql", "utf8");
@@ -103,7 +114,6 @@ export async function getContentsSlugs(
   return await graphQL(query, JSON.stringify(variables));
 }
 
-
 export async function getContents(
   variables: GetContentsQueryVariables
 ): Promise<GetContentsQuery> {
@@ -122,5 +132,47 @@ export async function getContentText(
   variables: GetContentTextQueryVariables
 ): Promise<GetContentTextQuery> {
   const query = getQueryFromOperations("getContentText");
+  return await graphQL(query, JSON.stringify(variables));
+}
+
+export async function getCurrencies(
+  variables: GetCurrenciesQueryVariables
+): Promise<GetCurrenciesQuery> {
+  const query = getQueryFromOperations("getCurrencies");
+  return await graphQL(query, JSON.stringify(variables));
+}
+
+export async function getLanguages(
+  variables: GetLanguagesQueryVariables
+): Promise<GetLanguagesQuery> {
+  const query = getQueryFromOperations("getLanguages");
+  return await graphQL(query, JSON.stringify(variables));
+}
+
+export async function getPost(
+  variables: GetPostQueryVariables
+): Promise<GetPostQuery> {
+  const query = getQueryFromOperations("getPost");
+  return await graphQL(query, JSON.stringify(variables));
+}
+
+export async function getPostsSlugs(
+  variables: GetPostsSlugsQueryVariables
+): Promise<GetPostsSlugsQuery> {
+  const query = getQueryFromOperations("getPostsSlugs");
+  return await graphQL(query, JSON.stringify(variables));
+}
+
+export async function getPostsPreview(
+  variables: GetPostsPreviewQueryVariables
+): Promise<GetPostsPreviewQuery> {
+  const query = getQueryFromOperations("getPostsPreview");
+  return await graphQL(query, JSON.stringify(variables));
+}
+
+export async function getLibraryItemScans(
+  variables: GetLibraryItemScansQueryVariables
+): Promise<GetLibraryItemScansQuery> {
+  const query = getQueryFromOperations("getLibraryItemScans");
   return await graphQL(query, JSON.stringify(variables));
 }

@@ -1,35 +1,40 @@
 import Chip from "components/Chip";
+import ToolTip from "components/ToolTip";
 import {
   Enum_Componenttranslationschronologyitem_Status,
   GetChronologyItemsQuery,
+  GetWebsiteInterfaceQuery,
 } from "graphql/operations-types";
+import { getStatusDescription } from "queries/helpers";
 
 export type ChronologyItemComponentProps = {
   item: GetChronologyItemsQuery["chronologyItems"]["data"][number];
   displayYear: boolean;
+  langui: GetWebsiteInterfaceQuery["websiteInterfaces"]["data"][number]["attributes"];
 };
 
 export default function ChronologyItemComponent(
   props: ChronologyItemComponentProps
 ): JSX.Element {
+  const { langui } = props;
+
   function generateAnchor(year: number, month: number, day: number): string {
-    let result: string = "";
+    let result = "";
     result += year;
-    if (month) result += "-" + month.toString().padStart(2, "0");
-    if (day) result += "-" + day.toString().padStart(2, "0");
+    if (month) result += `- ${month.toString().padStart(2, "0")}`;
+    if (day) result += `- ${day.toString().padStart(2, "0")}`;
     return result;
   }
 
   function generateYear(displayed_date: string, year: number): string {
     if (displayed_date) {
       return displayed_date;
-    } else {
-      return year.toString();
     }
+    return year.toString();
   }
 
   function generateDate(month: number, day: number): string {
-    let lut = [
+    const lut = [
       "Jan",
       "Feb",
       "Mar",
@@ -44,11 +49,11 @@ export default function ChronologyItemComponent(
       "Dec",
     ];
 
-    let result: string = "";
+    let result = "";
     if (month) {
       result += lut[month - 1];
       if (day) {
-        result += " " + day;
+        result += ` ${day}`;
       }
     }
 
@@ -64,15 +69,13 @@ export default function ChronologyItemComponent(
         props.item.attributes.day
       )}
     >
-      {props.displayYear ? (
+      {props.displayYear && (
         <p className="text-lg mt-[-.2em] font-bold">
           {generateYear(
             props.item.attributes.displayed_date,
             props.item.attributes.year
           )}
         </p>
-      ) : (
-        ""
       )}
 
       <p className="col-start-1 text-dark text-sm">
@@ -87,28 +90,17 @@ export default function ChronologyItemComponent(
                 <div className="place-items-start place-content-start grid grid-flow-col gap-2">
                   {translation.status !==
                     Enum_Componenttranslationschronologyitem_Status.Done && (
-                    <Chip
-                      data-tip={
-                        translation.status ===
-                        Enum_Componenttranslationschronologyitem_Status.Incomplete
-                          ? "This entry is only partially translated/transcribed."
-                          : translation.status ===
-                            Enum_Componenttranslationschronologyitem_Status.Draft
-                          ? "This entry is just a draft. It usually means that this is a work-in-progress. Translation/transcription might be poor and/or computer-generated."
-                          : translation.status ===
-                            Enum_Componenttranslationschronologyitem_Status.Review
-                          ? "This entry has not yet being proofread. The content should still be accurate."
-                          : ""
-                      }
-                      data-for={"ChronologyTooltip"}
+                    <ToolTip
+                      content={getStatusDescription(translation.status, langui)}
+                      maxWidth={"20rem"}
                     >
-                      {translation.status}
-                    </Chip>
+                      <Chip>{translation.status}</Chip>
+                    </ToolTip>
                   )}
                   {translation.title ? <h3>{translation.title}</h3> : ""}
                 </div>
 
-                {translation.description ? (
+                {translation.description && (
                   <p
                     className={
                       event.translations.length > 1
@@ -118,11 +110,9 @@ export default function ChronologyItemComponent(
                   >
                     {translation.description}
                   </p>
-                ) : (
-                  ""
                 )}
                 {translation.note ? (
-                  <em>{"Notes: " + translation.note}</em>
+                  <em>{`Notes: ${translation.note}`}</em>
                 ) : (
                   ""
                 )}
@@ -131,7 +121,7 @@ export default function ChronologyItemComponent(
 
             <p className="text-dark text-xs grid place-self-start grid-flow-col gap-1 mt-1">
               {event.source.data ? (
-                "(" + event.source.data.attributes.name + ")"
+                `(${event.source.data.attributes.name})`
               ) : (
                 <>
                   <span className="material-icons !text-sm">warning</span>No

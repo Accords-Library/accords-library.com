@@ -1,69 +1,117 @@
-import { GetStaticPaths, GetStaticProps } from "next";
-import {
-  getContent,
-  getContentsSlugs,
-  getWebsiteInterface,
-} from "graphql/operations";
-import {
-  GetContentQuery,
-  GetWebsiteInterfaceQuery,
-} from "graphql/operations-types";
-import ContentPanel from "components/Panels/ContentPanel";
-import Button from "components/Button";
-import HorizontalLine from "components/HorizontalLine";
-import ThumbnailHeader from "components/Content/ThumbnailHeader";
 import AppLayout from "components/AppLayout";
+import Button from "components/Button";
+import ThumbnailHeader from "components/Content/ThumbnailHeader";
+import HorizontalLine from "components/HorizontalLine";
+import ReturnButton, {
+  ReturnButtonType,
+} from "components/PanelComponents/ReturnButton";
+import ContentPanel from "components/Panels/ContentPanel";
 import SubPanel from "components/Panels/SubPanel";
-import ReturnButton from "components/PanelComponents/ReturnButton";
+import { getContent, getContentsSlugs } from "graphql/operations";
+import { GetContentQuery } from "graphql/operations-types";
+import {
+  GetStaticPathsContext,
+  GetStaticPathsResult,
+  GetStaticPropsContext,
+} from "next";
+import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 import { prettyinlineTitle, prettySlug } from "queries/helpers";
 
-type ContentIndexProps = {
-  content: GetContentQuery;
-  langui: GetWebsiteInterfaceQuery;
-};
+interface ContentIndexProps extends AppStaticProps {
+  content: GetContentQuery["contents"]["data"][number]["attributes"];
+}
 
 export default function ContentIndex(props: ContentIndexProps): JSX.Element {
-  const content = props.content.contents.data[0].attributes;
-  const langui = props.langui.websiteInterfaces.data[0].attributes;
+  const { content, langui } = props;
   const subPanel = (
     <SubPanel>
-      <ReturnButton href="/contents" title={"Contents"} langui={langui} />
-      <HorizontalLine />
+      <ReturnButton
+        href="/contents"
+        title={"Contents"}
+        langui={langui}
+        displayOn={ReturnButtonType.desktop}
+        horizontalLine
+      />
     </SubPanel>
   );
   const contentPanel = (
     <ContentPanel>
+      <ReturnButton
+        href="/contents"
+        title={"Contents"}
+        langui={langui}
+        displayOn={ReturnButtonType.mobile}
+        className="mb-10"
+      />
       <div className="grid place-items-center">
-        <ThumbnailHeader content={content} langui={langui} />
+        <ThumbnailHeader
+          thumbnail={content.thumbnail.data?.attributes}
+          pre_title={
+            content.titles.length > 0 ? content.titles[0].pre_title : undefined
+          }
+          title={
+            content.titles.length > 0
+              ? content.titles[0].title
+              : prettySlug(content.slug)
+          }
+          subtitle={
+            content.titles.length > 0 ? content.titles[0].subtitle : undefined
+          }
+          description={
+            content.titles.length > 0
+              ? content.titles[0].description
+              : undefined
+          }
+          type={content.type}
+          categories={content.categories}
+          langui={langui}
+        />
 
         <HorizontalLine />
 
-        {content.text_set.length > 0 ? (
+        {content.text_set.length > 0 && (
           <Button href={`/contents/${content.slug}/read/`}>
-            {langui.content_read_content}
+            {langui.read_content}
           </Button>
-        ) : (
-          ""
         )}
 
-        {content.audio_set.length > 0 ? (
+        {content.audio_set.length > 0 && (
           <Button href={`/contents/${content.slug}/listen/`}>
-            {langui.content_listen_content}
+            {langui.listen_content}
           </Button>
-        ) : (
-          ""
         )}
 
-        {content.video_set.length > 0 ? (
+        {content.video_set.length > 0 && (
           <Button href={`/contents/${content.slug}/watch/`}>
-            {langui.content_watch_content}
+            {langui.watch_content}
           </Button>
-        ) : (
-          ""
         )}
       </div>
     </ContentPanel>
   );
+
+  let description = "";
+  if (content.type.data) {
+    description += `${langui.type}: `;
+    if (content.type.data.attributes.titles.length > 0) {
+      description += content.type.data.attributes.titles[0].title;
+    } else {
+      description += prettySlug(content.type.data.attributes.slug);
+    }
+    description += "\n";
+  }
+  if (content.categories.data.length > 0) {
+    description += `${langui.categories}: `;
+    description += content.categories.data
+      .map((category) => category.attributes.short)
+      .join(" | ");
+    description += "\n";
+  }
+
+  if (content.titles.length > 0 && content.titles[0].description) {
+    description += "\n";
+    description += content.titles[0].description;
+  }
 
   return (
     <AppLayout
@@ -78,50 +126,37 @@ export default function ContentIndex(props: ContentIndexProps): JSX.Element {
           : prettySlug(content.slug)
       }
       thumbnail={content.thumbnail.data?.attributes}
-      langui={langui}
       contentPanel={contentPanel}
       subPanel={subPanel}
-      description={
-        content.titles.length > 0 ? content.titles[0].description : undefined
-      }
+      description={description}
+      {...props}
     />
   );
 }
 
-export const getStaticProps: GetStaticProps = async (context) => {
-  if (context.params) {
-    if (context.params.slug && context.locale) {
-      if (context.params.slug instanceof Array)
-        context.params.slug = context.params.slug.join("");
-
-      const props: ContentIndexProps = {
-        content: await getContent({
-          slug: context.params.slug,
-          language_code: context.locale,
-        }),
-        langui: await getWebsiteInterface({
-          language_code: context.locale,
-        }),
-      };
-      return {
-        props: props,
-      };
-    }
-  }
-  return { props: {} };
-};
-
-export const getStaticPaths: GetStaticPaths = async (context) => {
-  type Path = {
-    params: {
-      slug: string;
-    };
-    locale: string;
+export async function getStaticProps(context: GetStaticPropsContext): Promise<{
+  props: ContentIndexProps;
+}> {
+  const props: ContentIndexProps = {
+    ...(await getAppStaticProps(context)),
+    content: (
+      await getContent({
+        slug: context.params?.slug?.toString() ?? "",
+        language_code: context.locale ?? "en",
+      })
+    ).contents.data[0].attributes,
   };
+  return {
+    props: props,
+  };
+}
 
-  const data = await getContentsSlugs({});
-  const paths: Path[] = [];
-  data.contents.data.map((item) => {
+export async function getStaticPaths(
+  context: GetStaticPathsContext
+): Promise<GetStaticPathsResult> {
+  const contents = await getContentsSlugs({});
+  const paths: GetStaticPathsResult["paths"] = [];
+  contents.contents.data.map((item) => {
     context.locales?.map((local) => {
       paths.push({ params: { slug: item.attributes.slug }, locale: local });
     });
@@ -130,4 +165,4 @@ export const getStaticPaths: GetStaticPaths = async (context) => {
     paths,
     fallback: false,
   };
-};
+}

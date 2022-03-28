@@ -4,6 +4,9 @@ import {
   ImageQuality,
 } from "components/Img";
 import {
+  Enum_Componentsetstextset_Status,
+  GetCurrenciesQuery,
+  GetLanguagesQuery,
   GetLibraryItemQuery,
   GetLibraryItemsPreviewQuery,
   GetWebsiteInterfaceQuery,
@@ -14,21 +17,39 @@ import { NextRouter } from "next/router";
 export function prettyDate(
   datePicker: GetLibraryItemsPreviewQuery["libraryItems"]["data"][number]["attributes"]["release_date"]
 ): string {
-  return (
-    datePicker.year +
-    "/" +
-    datePicker.month.toString().padStart(2, "0") +
-    "/" +
-    datePicker.day.toString().padStart(2, "0")
-  );
+  return `${datePicker.year}/${datePicker.month
+    .toString()
+    .padStart(2, "0")}/${datePicker.day.toString().padStart(2, "0")}`;
 }
 
 export function prettyPrice(
-  pricePicker: GetLibraryItemsPreviewQuery["libraryItems"]["data"][number]["attributes"]["price"]
+  pricePicker: GetLibraryItemsPreviewQuery["libraryItems"]["data"][number]["attributes"]["price"],
+  currencies: GetCurrenciesQuery["currencies"]["data"],
+  targetCurrencyCode?: string
 ): string {
+  if (!targetCurrencyCode) return "";
+  let result = "";
+  currencies.map((currency) => {
+    if (currency.attributes.code === targetCurrencyCode) {
+      const amountInTargetCurrency = convertPrice(pricePicker, currency);
+      result =
+        currency.attributes.symbol +
+        amountInTargetCurrency.toLocaleString(undefined, {
+          minimumFractionDigits: currency.attributes.display_decimals ? 2 : 0,
+          maximumFractionDigits: currency.attributes.display_decimals ? 2 : 0,
+        });
+    }
+  });
+  return result;
+}
+
+export function convertPrice(
+  pricePicker: GetLibraryItemsPreviewQuery["libraryItems"]["data"][number]["attributes"]["price"],
+  targetCurrency: GetCurrenciesQuery["currencies"]["data"][number]
+): number {
   return (
-    pricePicker.currency.data.attributes.symbol +
-    pricePicker.amount.toLocaleString()
+    (pricePicker.amount * pricePicker.currency.data.attributes.rate_to_usd) /
+    targetCurrency.attributes.rate_to_usd
   );
 }
 
@@ -49,9 +70,9 @@ export function prettyinlineTitle(
   subtitle: string
 ): string {
   let result = "";
-  if (pretitle) result += pretitle + ": ";
+  if (pretitle) result += `${pretitle}: `;
   result += title;
-  if (subtitle) result += " - " + subtitle;
+  if (subtitle) result += ` - ${subtitle}`;
   return result;
 }
 
@@ -61,64 +82,71 @@ export function prettyItemType(
   },
   langui: GetWebsiteInterfaceQuery["websiteInterfaces"]["data"][number]["attributes"]
 ): string {
-  const type = metadata.__typename;
   switch (metadata.__typename) {
     case "ComponentMetadataAudio":
-      return langui.library_item_type_audio;
+      return langui.audio;
     case "ComponentMetadataBooks":
-      return langui.library_item_type_textual;
+      return langui.textual;
     case "ComponentMetadataGame":
-      return langui.library_item_type_game;
+      return langui.game;
     case "ComponentMetadataVideo":
-      return langui.library_item_type_video;
+      return langui.video;
+    case "ComponentMetadataGroup":
+      return langui.group;
     case "ComponentMetadataOther":
-      return langui.library_item_type_other;
+      return langui.other;
     default:
       return "";
   }
 }
 
 export function prettyItemSubType(metadata: {
+  /* eslint-disable @typescript-eslint/no-explicit-any */
   __typename: GetLibraryItemsPreviewQuery["libraryItems"]["data"][number]["attributes"]["metadata"][number]["__typename"];
   subtype?: any;
   platforms?: any;
+  subitems_type?: any;
 }): string {
   switch (metadata.__typename) {
     case "ComponentMetadataAudio":
     case "ComponentMetadataBooks":
     case "ComponentMetadataVideo":
-    case "ComponentMetadataOther": {
       return metadata.subtype.data.attributes.titles.length > 0
         ? metadata.subtype.data.attributes.titles[0].title
         : prettySlug(metadata.subtype.data.attributes.slug);
-    }
     case "ComponentMetadataGame":
       return metadata.platforms.data.length > 0
         ? metadata.platforms.data[0].attributes.short
         : "";
 
+    case "ComponentMetadataGroup": {
+      const firstPart =
+        metadata.subtype.data.attributes.titles.length > 0
+          ? metadata.subtype.data.attributes.titles[0].title
+          : prettySlug(metadata.subtype.data.attributes.slug);
+
+      const secondPart =
+        metadata.subitems_type.data.attributes.titles.length > 0
+          ? metadata.subitems_type.data.attributes.titles[0].title
+          : prettySlug(metadata.subitems_type.data.attributes.slug);
+      return `${secondPart} ${firstPart}`;
+    }
     default:
       return "";
   }
+  /* eslint-enable @typescript-eslint/no-explicit-any */
 }
 
-export function prettyLanguage(code: string): string {
-  switch (code) {
-    case "en":
-      return "English";
-    case "es":
-      return "Español";
-    case "fr":
-      return "Français";
-    case "ja":
-      return "日本語";
-    case "en":
-      return "English";
-    case "xx":
-      return "██";
-    default:
-      return code;
-  }
+export function prettyLanguage(
+  code: string,
+  languages: GetLanguagesQuery["languages"]["data"]
+): string {
+  let result = code;
+  languages.forEach((language) => {
+    if (language.attributes.code === code)
+      result = language.attributes.localized_name;
+  });
+  return result;
 }
 
 export function prettyTestWarning(
@@ -153,17 +181,19 @@ function prettyTestWritter(
 ): void {
   const line = [
     level,
-    process.env.NEXT_PUBLIC_URL_SELF + "/" + locale + asPath,
+    `${process.env.NEXT_PUBLIC_URL_SELF}/${locale}${asPath}`,
     locale,
     subCategory?.join(" -> "),
     message,
     process.env.NEXT_PUBLIC_URL_CMS + url,
   ];
 
-  if (level === TestingLevel.Warning) {
-    console.warn(line.join("\t"));
-  } else {
-    console.error(line.join("\t"));
+  if (process.env.ENABLE_TESTING_LOG) {
+    if (level === TestingLevel.Warning) {
+      console.warn(line.join("\t"));
+    } else {
+      console.error(line.join("\t"));
+    }
   }
 }
 
@@ -173,7 +203,7 @@ export function capitalizeString(string: string): string {
   }
 
   let words = string.split(" ");
-  words = words.map((word) => (word = capitalizeWord(word)));
+  words = words.map((word) => capitalizeWord(word));
   return words.join(" ");
 }
 
@@ -202,9 +232,13 @@ export function getOgImage(quality: ImageQuality, image: StrapiImage): OgImage {
   };
 }
 
-export function sortContent(
-  contents: GetLibraryItemQuery["libraryItems"]["data"][number]["attributes"]["contents"]
-) {
+export function sortContent(contents: {
+  data: {
+    attributes: {
+      range: GetLibraryItemQuery["libraryItems"]["data"][number]["attributes"]["contents"]["data"][number]["attributes"]["range"];
+    };
+  }[];
+}) {
   contents.data.sort((a, b) => {
     if (
       a.attributes.range[0].__typename === "ComponentRangePageRange" &&
@@ -217,4 +251,64 @@ export function sortContent(
     }
     return 0;
   });
+}
+
+export function getStatusDescription(
+  status: string,
+  langui: GetWebsiteInterfaceQuery["websiteInterfaces"]["data"][number]["attributes"]
+): string {
+  switch (status) {
+    case Enum_Componentsetstextset_Status.Incomplete:
+      return langui.status_incomplete;
+
+    case Enum_Componentsetstextset_Status.Draft:
+      return langui.status_draft;
+
+    case Enum_Componentsetstextset_Status.Review:
+      return langui.status_review;
+
+    case Enum_Componentsetstextset_Status.Done:
+      return langui.status_done;
+
+    default:
+      return "";
+  }
+}
+
+export function slugify(string: string | undefined): string {
+  if (!string) {
+    return "";
+  }
+  return string
+    .replace(/[ÀÁÂÃÄÅàáâãäåæÆ]/g, "a")
+    .replace(/[çÇ]/gu, "c")
+    .replace(/[ðÐ]/gu, "d")
+    .replace(/[ÈÉÊËéèêë]/gu, "e")
+    .replace(/[ÏïÎîÍíÌì]/gu, "i")
+    .replace(/[Ññ]/gu, "n")
+    .replace(/[øØœŒÕõÔôÓóÒò]/gu, "o")
+    .replace(/[ÜüÛûÚúÙù]/gu, "u")
+    .replace(/[ŸÿÝý]/gu, "y")
+    .toLowerCase()
+    .replace(/[^a-z0-9- ]/gu, "")
+    .trim()
+    .replace(/ /gu, "-");
+}
+
+export function randomInt(min: number, max: number) {
+  return Math.floor(Math.random() * (max - min)) + min;
+}
+
+export function getLocalesFromLanguages(
+  languages: {
+    language: {
+      data: {
+        attributes: {
+          code: string;
+        };
+      };
+    };
+  }[]
+) {
+  return languages.map((language) => language.language.data.attributes.code);
 }

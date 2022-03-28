@@ -1,4 +1,5 @@
 import Button from "components/Button";
+import HorizontalLine from "components/HorizontalLine";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { GetWebsiteInterfaceQuery } from "graphql/operations-types";
 
@@ -6,14 +7,39 @@ type ReturnButtonProps = {
   href: string;
   title: string;
   langui: GetWebsiteInterfaceQuery["websiteInterfaces"]["data"][number]["attributes"];
+  displayOn: ReturnButtonType;
+  horizontalLine?: boolean;
+  className?: string;
 };
+
+export enum ReturnButtonType {
+  mobile = "mobile",
+  desktop = "desktop",
+  both = "both",
+}
 
 export default function ReturnButton(props: ReturnButtonProps): JSX.Element {
   const appLayout = useAppLayout();
 
   return (
-    <Button onClick={() => appLayout.setSubPanelOpen(false)} href={props.href}>
-      ❮&emsp;{props.langui.global_return_label} {props.title}
-    </Button>
+    <div
+      className={`${
+        props.displayOn === ReturnButtonType.mobile
+          ? "desktop:hidden"
+          : props.displayOn === ReturnButtonType.desktop
+          ? "mobile:hidden"
+          : ""
+      } ${props.className}`}
+    >
+      <Button
+        onClick={() => appLayout.setSubPanelOpen(false)}
+        href={props.href}
+        className="grid grid-flow-col gap-2"
+      >
+        <span className="material-icons">navigate_before</span>
+        {props.langui.return_to} {props.title}
+      </Button>
+      {props.horizontalLine && <HorizontalLine />}
+    </div>
   );
 }

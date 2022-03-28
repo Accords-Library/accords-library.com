@@ -1,8 +1,8 @@
-import Link from "next/link";
-import { GetContentsQuery } from "graphql/operations-types";
-import { prettySlug } from "queries/helpers";
 import Chip from "components/Chip";
 import Img, { ImageQuality } from "components/Img";
+import { GetContentsQuery } from "graphql/operations-types";
+import Link from "next/link";
+import { prettySlug } from "queries/helpers";
 
 export type LibraryContentPreviewProps = {
   item: {
@@ -17,10 +17,10 @@ export type LibraryContentPreviewProps = {
 export default function LibraryContentPreview(
   props: LibraryContentPreviewProps
 ): JSX.Element {
-  const item = props.item;
+  const { item } = props;
 
   return (
-    <Link href={"/contents/" + item.slug} passHref>
+    <Link href={`/contents/${item.slug}`} passHref>
       <div className="drop-shadow-shade-xl cursor-pointer grid items-end fine:[--cover-opacity:0] hover:[--cover-opacity:1] hover:scale-[1.02] transition-transform">
         {item.thumbnail.data ? (
           <Img
@@ -33,14 +33,12 @@ export default function LibraryContentPreview(
         )}
         <div className="linearbg-obi fine:drop-shadow-shade-lg fine:absolute coarse:rounded-b-md bottom-2 -inset-x-0.5 opacity-[var(--cover-opacity)] transition-opacity z-20 grid p-4 gap-2">
           <div className="grid grid-flow-col gap-1 overflow-hidden place-content-start">
-            {item.type.data ? (
+            {item.type.data && (
               <Chip>
                 {item.type.data.attributes.titles.length > 0
                   ? item.type.data.attributes.titles[0].title
                   : prettySlug(item.type.data.attributes.slug)}
               </Chip>
-            ) : (
-              ""
             )}
           </div>
           <div>

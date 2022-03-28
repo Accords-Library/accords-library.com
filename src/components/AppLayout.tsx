@@ -1,34 +1,32 @@
-import {
-  GetWebsiteInterfaceQuery,
-  StrapiImage,
-} from "graphql/operations-types";
-import MainPanel from "./Panels/MainPanel";
-import Head from "next/head";
-import { useSwipeable } from "react-swipeable";
-import { useRouter } from "next/router";
 import Button from "components/Button";
-import { getOgImage, OgImage, prettyLanguage } from "queries/helpers";
-import { useMediaCoarse, useMediaMobile } from "hooks/useMediaQuery";
-import ReactTooltip from "react-tooltip";
 import { useAppLayout } from "contexts/AppLayoutContext";
+import { StrapiImage } from "graphql/operations-types";
+import { useMediaMobile } from "hooks/useMediaQuery";
+import Head from "next/head";
+import { useRouter } from "next/router";
+import { AppStaticProps } from "queries/getAppStaticProps";
+import { getOgImage, OgImage, prettyLanguage } from "queries/helpers";
+import { useEffect, useState } from "react";
+import { useSwipeable } from "react-swipeable";
 import { ImageQuality } from "./Img";
+import MainPanel from "./Panels/MainPanel";
+import Popup from "./Popup";
+import Select from "./Select";
 
-type AppLayoutProps = {
+interface AppLayoutProps extends AppStaticProps {
   subPanel?: React.ReactNode;
   subPanelIcon?: string;
   contentPanel?: React.ReactNode;
-  langui: GetWebsiteInterfaceQuery["websiteInterfaces"]["data"][number]["attributes"];
   title?: string;
   navTitle: string;
   thumbnail?: StrapiImage;
   description?: string;
-  extra?: React.ReactNode;
-};
+}
 
 export default function AppLayout(props: AppLayoutProps): JSX.Element {
+  const { langui, currencies, languages, subPanel, contentPanel } = props;
   const router = useRouter();
   const isMobile = useMediaMobile();
-  const isCoarse = useMediaCoarse();
   const appLayout = useAppLayout();
 
   const sensibilitySwipe = 1.1;
@@ -38,7 +36,7 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
       if (SwipeEventData.velocity < sensibilitySwipe) return;
       if (appLayout.mainPanelOpen) {
         appLayout.setMainPanelOpen(false);
-      } else if (props.subPanel && props.contentPanel) {
+      } else if (subPanel && contentPanel) {
         appLayout.setSubPanelOpen(true);
       }
     },
@@ -52,28 +50,7 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
     },
   });
 
-  const mainPanelClass = `fixed desktop:left-0 desktop:top-0 desktop:bottom-0 ${
-    appLayout.mainPanelReduced ? "desktop:w-[6rem]" : "desktop:w-[20rem]"
-  }`;
-  const subPanelClass = `fixed desktop:top-0 desktop:bottom-0 desktop:w-[20rem] ${
-    appLayout.mainPanelReduced ? " desktop:left-[6rem]" : "desktop:left-[20rem]"
-  }`;
-  let contentPanelClass = "";
-  if (props.subPanel) {
-    contentPanelClass = `fixed desktop:top-0 desktop:bottom-0 desktop:right-0 ${
-      appLayout.mainPanelReduced
-        ? "desktop:left-[26rem]"
-        : "desktop:left-[40rem]"
-    }`;
-  } else if (props.contentPanel) {
-    contentPanelClass = `fixed desktop:top-0 desktop:bottom-0 desktop:right-0 ${
-      appLayout.mainPanelReduced
-        ? "desktop:left-[6rem]"
-        : "desktop:left-[20rem]"
-    }`;
-  }
-
-  const turnSubIntoContent = props.subPanel && !props.contentPanel;
+  const turnSubIntoContent = subPanel && !contentPanel;
 
   const titlePrefix = "Accord’s Library";
   const metaImage: OgImage = props.thumbnail
@@ -88,13 +65,58 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
 
   const metaDescription = props.description
     ? props.description
-    : "Accord's Library aims at gathering and archiving all of Yoko Taro’s work. Yoko Taro is a Japanese video game director and scenario writer.";
+    : langui.default_description;
+
+  useEffect(() => {
+    document.getElementsByTagName("html")[0].style.fontSize = `${
+      (appLayout.fontSize ?? 1) * 100
+    }%`;
+  }, [appLayout.fontSize]);
+
+  const currencyOptions = currencies.map(
+    (currency) => currency.attributes.code
+  );
+  const [currencySelect, setCurrencySelect] = useState<number>(-1);
+
+  useEffect(() => {
+    if (appLayout.currency)
+      setCurrencySelect(currencyOptions.indexOf(appLayout.currency));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [appLayout.currency]);
+
+  useEffect(() => {
+    if (currencySelect >= 0)
+      appLayout.setCurrency(currencyOptions[currencySelect]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currencySelect]);
+
+  let gridCol = "";
+  if (props.subPanel) {
+    if (appLayout.mainPanelReduced) {
+      gridCol = "grid-cols-[6rem_20rem_1fr]";
+    } else {
+      gridCol = "grid-cols-[20rem_20rem_1fr]";
+    }
+  } else if (appLayout.mainPanelReduced) {
+    gridCol = "grid-cols-[6rem_0px_1fr]";
+  } else {
+    gridCol = "grid-cols-[20rem_0px_1fr]";
+  }
 
   return (
-    <div className={appLayout.darkMode ? "set-theme-dark" : "set-theme-light"}>
+    <div
+      id="MyAppLayout"
+      className={`${
+        appLayout.darkMode ? "set-theme-dark" : "set-theme-light"
+      } ${
+        appLayout.dyslexic
+          ? "set-theme-font-dyslexic"
+          : "set-theme-font-standard"
+      }`}
+    >
       <div
         {...handlers}
-        className="fixed inset-0 touch-pan-y p-0 m-0 bg-light text-black"
+        className={`fixed inset-0 touch-pan-y p-0 m-0 bg-light text-black grid [grid-template-areas:'main_sub_content'] ${gridCol} mobile:grid-cols-[1fr] mobile:grid-rows-[1fr_5rem] mobile:[grid-template-areas:'content''navbar']`}
       >
         <Head>
           <title>{`${titlePrefix} - ${ogTitle}`}</title>
@@ -104,12 +126,8 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
             content={`${titlePrefix} - ${ogTitle}`}
           ></meta>
 
-          {props.description && (
-            <>
-              <meta name="description" content={metaDescription} />
-              <meta name="twitter:description" content={metaDescription}></meta>
-            </>
-          )}
+          <meta name="description" content={metaDescription} />
+          <meta name="twitter:description" content={metaDescription}></meta>
 
           <meta property="og:image" content={metaImage.image}></meta>
           <meta property="og:image:secure_url" content={metaImage.image}></meta>
@@ -128,145 +146,247 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
           <meta name="twitter:image" content={metaImage.image}></meta>
         </Head>
 
+        {/* Background when navbar is opened */}
+        <div
+          className={`[grid-area:content] mobile:z-10 absolute inset-0 transition-[backdrop-filter] duration-500 ${
+            (appLayout.mainPanelOpen || appLayout.subPanelOpen) && isMobile
+              ? "[backdrop-filter:blur(2px)]"
+              : "pointer-events-none touch-none "
+          }`}
+        >
+          <div
+            className={`absolute bg-shade inset-0 transition-opacity duration-500 
+        ${turnSubIntoContent ? "" : ""}
+        ${
+          (appLayout.mainPanelOpen || appLayout.subPanelOpen) && isMobile
+            ? "opacity-60"
+            : "opacity-0"
+        }`}
+            onClick={() => {
+              appLayout.setMainPanelOpen(false);
+              appLayout.setSubPanelOpen(false);
+            }}
+          ></div>
+        </div>
+
+        {/* Content panel */}
+        <div
+          className={`[grid-area:content] overflow-y-scroll bg-light texture-paper-dots`}
+        >
+          {contentPanel ? (
+            contentPanel
+          ) : (
+            <div className="grid place-content-center h-full">
+              <div className="text-dark border-dark border-2 border-dotted rounded-2xl p-8 grid grid-flow-col place-items-center gap-9 opacity-40">
+                <p className="text-4xl">❮</p>
+                <p className="text-2xl w-64">{langui.select_option_sidebar}</p>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Sub panel */}
+        {subPanel && (
+          <div
+            className={`[grid-area:sub] mobile:[grid-area:content] mobile:z-10 mobile:w-[90%] mobile:justify-self-end border-r-[1px] mobile:border-r-0 mobile:border-l-[1px] border-black border-dotted overflow-y-scroll webkit-scrollbar:w-0 [scrollbar-width:none] transition-transform duration-300 bg-light texture-paper-dots
+          ${
+            turnSubIntoContent
+              ? "mobile:border-l-0 mobile:w-full"
+              : !appLayout.subPanelOpen && "mobile:translate-x-[100vw]"
+          }`}
+          >
+            {subPanel}
+          </div>
+        )}
+
+        {/* Main panel */}
+        <div
+          className={`[grid-area:main] mobile:[grid-area:content] mobile:z-10 mobile:w-[90%] mobile:justify-self-start border-r-[1px] border-black border-dotted overflow-y-scroll webkit-scrollbar:w-0 [scrollbar-width:none] transition-transform duration-300 bg-light texture-paper-dots
+        ${appLayout.mainPanelOpen ? "" : "mobile:-translate-x-full"}`}
+        >
+          <MainPanel langui={langui} />
+        </div>
+
         {/* Navbar */}
-        <div className="fixed inset-0 top-auto h-20 border-t-[1px] border-black border-dotted grid grid-cols-[5rem_1fr_5rem] place-items-center desktop:hidden bg-light texture-paper-dots">
+        <div className="[grid-area:navbar] border-t-[1px] border-black border-dotted grid grid-cols-[5rem_1fr_5rem] place-items-center desktop:hidden bg-light texture-paper-dots">
           <span
             className="material-icons mt-[.1em] cursor-pointer"
-            onClick={() => appLayout.setMainPanelOpen(true)}
+            onClick={() => {
+              appLayout.setMainPanelOpen(!appLayout.mainPanelOpen);
+              appLayout.setSubPanelOpen(false);
+            }}
           >
-            menu
+            {appLayout.mainPanelOpen ? "close" : "menu"}
           </span>
           <p className="text-2xl font-black font-headers">{props.navTitle}</p>
           <span
             className="material-icons mt-[.1em] cursor-pointer"
-            onClick={() => appLayout.setSubPanelOpen(true)}
+            onClick={() => {
+              appLayout.setSubPanelOpen(!appLayout.subPanelOpen);
+              appLayout.setMainPanelOpen(false);
+            }}
           >
-            {props.subPanel && !turnSubIntoContent
-              ? props.subPanelIcon
+            {subPanel && !turnSubIntoContent
+              ? appLayout.subPanelOpen
+                ? "close"
+                : props.subPanelIcon
                 ? props.subPanelIcon
                 : "tune"
               : ""}
           </span>
         </div>
 
-        {/* Content panel */}
-        <div
-          className={`top-0 left-0 right-0 bottom-20 overflow-y-scroll bg-light texture-paper-dots ${contentPanelClass}`}
+        <Popup
+          state={appLayout.languagePanelOpen}
+          setState={appLayout.setLanguagePanelOpen}
         >
-          {props.contentPanel ? (
-            props.contentPanel
-          ) : (
-            <div className="grid place-content-center h-full">
-              <div className="text-dark border-dark border-2 border-dotted rounded-2xl p-8 grid grid-flow-col place-items-center gap-9 opacity-40">
-                <p className="text-4xl">❮</p>
-                <p className="text-2xl w-64">
-                  Select one of the options in the sidebar
-                </p>
+          <h2 className="text-2xl">{langui.select_language}</h2>
+          <div className="flex flex-wrap flex-row gap-2 mobile:flex-col">
+            {router.locales?.map((locale) => (
+              <Button
+                key={locale}
+                active={locale === router.locale}
+                href={router.asPath}
+                locale={locale}
+                onClick={() => appLayout.setLanguagePanelOpen(false)}
+              >
+                {prettyLanguage(locale, languages)}
+              </Button>
+            ))}
+          </div>
+        </Popup>
+
+        <Popup
+          state={appLayout.configPanelOpen}
+          setState={appLayout.setConfigPanelOpen}
+        >
+          <h2 className="text-2xl">{langui.settings}</h2>
+
+          <div className="mt-4 grid gap-8 place-items-center text-center desktop:grid-cols-2">
+            <div>
+              <h3 className="text-xl">{langui.theme}</h3>
+              <div className="flex flex-row">
+                <Button
+                  onClick={() => {
+                    appLayout.setDarkMode(false);
+                    appLayout.setSelectedThemeMode(true);
+                  }}
+                  active={
+                    appLayout.selectedThemeMode === true &&
+                    appLayout.darkMode === false
+                  }
+                  className="rounded-r-none"
+                >
+                  {langui.light}
+                </Button>
+                <Button
+                  onClick={() => {
+                    appLayout.setSelectedThemeMode(false);
+                  }}
+                  active={appLayout.selectedThemeMode === false}
+                  className="rounded-l-none rounded-r-none border-x-0"
+                >
+                  {langui.auto}
+                </Button>
+                <Button
+                  onClick={() => {
+                    appLayout.setDarkMode(true);
+                    appLayout.setSelectedThemeMode(true);
+                  }}
+                  active={
+                    appLayout.selectedThemeMode === true &&
+                    appLayout.darkMode === true
+                  }
+                  className="rounded-l-none"
+                >
+                  {langui.dark}
+                </Button>
               </div>
             </div>
-          )}
-        </div>
 
-        {/* Background when navbar is opened */}
-        <div
-          className={`fixed bg-shade inset-0 transition-opacity duration-500 
-        ${turnSubIntoContent ? "z-10" : ""}
-        ${
-          (appLayout.mainPanelOpen || appLayout.subPanelOpen) && isMobile
-            ? "opacity-60"
-            : "opacity-0 pointer-events-none touch-none"
-        }`}
-          onClick={() => {
-            appLayout.setMainPanelOpen(false);
-            appLayout.setSubPanelOpen(false);
-          }}
-        ></div>
+            <div>
+              <h3 className="text-xl">{langui.currency}</h3>
+              <div>
+                <Select
+                  options={currencyOptions}
+                  state={currencySelect}
+                  setState={setCurrencySelect}
+                  className="w-28"
+                />
+              </div>
+            </div>
 
-        {/* Sub panel */}
-        {props.subPanel ? (
-          <div
-            className={`${subPanelClass} border-r-[1px] mobile:border-r-0 mobile:border-l-[1px] border-black border-dotted top-0 bottom-0 right-0 left-12 overflow-y-scroll webkit-scrollbar:w-0 [scrollbar-width:none] transition-transform duration-300 bg-light texture-paper-dots
-          ${
-            turnSubIntoContent
-              ? "mobile:translate-x-0 mobile:bottom-20 mobile:left-0 mobile:border-l-0"
-              : !appLayout.subPanelOpen
-              ? "mobile:translate-x-full"
-              : ""
-          }`}
-          >
-            {props.subPanel}
-          </div>
-        ) : (
-          ""
-        )}
-
-        {/* Main panel */}
-        <div
-          className={`${mainPanelClass} border-r-[1px] border-black border-dotted top-0 bottom-0 left-0 right-12 overflow-y-scroll webkit-scrollbar:w-0 [scrollbar-width:none] transition-transform duration-300 z-20 bg-light texture-paper-dots
-        ${appLayout.mainPanelOpen ? "" : "mobile:-translate-x-full"}`}
-        >
-          <MainPanel langui={props.langui} />
-        </div>
-
-        {/* Main panel minimize button*/}
-        <div
-          className={`mobile:hidden translate-x-0 fixed top-1/2 z-20 ${
-            appLayout.mainPanelReduced ? "left-[4.65rem]" : "left-[18.65rem]"
-          }`}
-          onClick={() =>
-            appLayout.setMainPanelReduced(!appLayout.mainPanelReduced)
-          }
-        >
-          <Button className="material-icons bg-light !px-2">
-            {appLayout.mainPanelReduced ? "chevron_right" : "chevron_left"}
-          </Button>
-        </div>
-
-        {/* Language selection background */}
-        <div
-          className={`fixed bg-shade inset-0 transition-all duration-500 z-20 grid place-content-center ${
-            appLayout.languagePanelOpen
-              ? "bg-opacity-60"
-              : "bg-opacity-0 pointer-events-none touch-none"
-          }`}
-          onClick={() => {
-            appLayout.setLanguagePanelOpen(false);
-          }}
-        >
-          <div
-            className={`p-10 bg-light rounded-lg shadow-2xl shadow-shade grid gap-4 place-items-center transition-transform ${
-              appLayout.languagePanelOpen ? "scale-100" : "scale-0"
-            }`}
-          >
-            <h2 className="text-2xl">Select a language</h2>
-            <div className="flex flex-wrap flex-row gap-2">
-              {router.locales?.sort().map((locale) => (
+            <div>
+              <h3 className="text-xl">{langui.font_size}</h3>
+              <div className="flex flex-row">
                 <Button
-                  key={locale}
-                  active={locale === router.locale}
-                  href={router.asPath}
-                  locale={locale}
+                  className="rounded-r-none"
+                  onClick={() =>
+                    appLayout.setFontSize(
+                      appLayout.fontSize ? appLayout.fontSize / 1.05 : 1 / 1.05
+                    )
+                  }
                 >
-                  {prettyLanguage(locale)}
+                  <span className="material-icons">text_decrease</span>
                 </Button>
-              ))}
+                <Button
+                  className="rounded-l-none rounded-r-none border-x-0"
+                  onClick={() => appLayout.setFontSize(1)}
+                >
+                  {((appLayout.fontSize ?? 1) * 100).toLocaleString(undefined, {
+                    maximumFractionDigits: 0,
+                  })}
+                  %
+                </Button>
+                <Button
+                  className="rounded-l-none"
+                  onClick={() =>
+                    appLayout.setFontSize(
+                      appLayout.fontSize ? appLayout.fontSize * 1.05 : 1 * 1.05
+                    )
+                  }
+                >
+                  <span className="material-icons">text_increase</span>
+                </Button>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-xl">{langui.font}</h3>
+              <div className="grid gap-2">
+                <Button
+                  active={appLayout.dyslexic === false}
+                  onClick={() => appLayout.setDyslexic(false)}
+                  className="font-zenMaruGothic"
+                >
+                  Zen Maru Gothic
+                </Button>
+                <Button
+                  active={appLayout.dyslexic === true}
+                  onClick={() => appLayout.setDyslexic(true)}
+                  className="font-openDyslexic"
+                >
+                  OpenDyslexic
+                </Button>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-xl">{langui.player_name}</h3>
+              <input
+                type="text"
+                placeholder="<player>"
+                className="w-48"
+                onInput={(event) =>
+                  appLayout.setPlayerName(
+                    (event.target as HTMLInputElement).value
+                  )
+                }
+              />
             </div>
           </div>
-        </div>
-
-        <ReactTooltip
-          id="MainPanelTooltip"
-          place="right"
-          type="light"
-          effect="solid"
-          delayShow={300}
-          delayHide={100}
-          disable={!appLayout.mainPanelReduced || isMobile || isCoarse}
-          className="drop-shadow-shade-xl !opacity-100 !bg-light !rounded-lg after:!border-r-light text-left !text-black"
-        />
+        </Popup>
       </div>
-
-      {props.extra}
     </div>
   );
 }

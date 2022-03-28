@@ -1,45 +1,73 @@
-import SubPanel from "components/Panels/SubPanel";
-import PanelHeader from "components/PanelComponents/PanelHeader";
-import { GetWebsiteInterfaceQuery } from "graphql/operations-types";
-import { GetStaticProps } from "next";
-import { getWebsiteInterface } from "graphql/operations";
 import AppLayout from "components/AppLayout";
+import PostsPreview from "components/News/PostsPreview";
+import PanelHeader from "components/PanelComponents/PanelHeader";
+import ContentPanel, {
+  ContentPanelWidthSizes,
+} from "components/Panels/ContentPanel";
+import SubPanel from "components/Panels/SubPanel";
+import { getPostsPreview } from "graphql/operations";
+import { GetPostsPreviewQuery } from "graphql/operations-types";
+import { GetStaticPropsContext } from "next";
+import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
+import { prettyDate } from "queries/helpers";
 
-type NewsProps = {
-  langui: GetWebsiteInterfaceQuery;
-};
+interface NewsProps extends AppStaticProps {
+  posts: GetPostsPreviewQuery["posts"]["data"];
+}
 
 export default function News(props: NewsProps): JSX.Element {
-  const langui = props.langui.websiteInterfaces.data[0].attributes;
+  const { langui, posts } = props;
+
+  posts
+    .sort((a, b) => {
+      const dateA =
+        a.attributes.date === null ? "9999" : prettyDate(a.attributes.date);
+      const dateB =
+        b.attributes.date === null ? "9999" : prettyDate(b.attributes.date);
+      return dateA.localeCompare(dateB);
+    })
+    .reverse();
+
   const subPanel = (
     <SubPanel>
       <PanelHeader
         icon="feed"
-        title={langui.main_news}
+        title={langui.news}
         description={langui.news_description}
       />
     </SubPanel>
   );
 
+  const contentPanel = (
+    <ContentPanel width={ContentPanelWidthSizes.large}>
+      <div className="grid gap-8 items-end grid-cols-1 desktop:grid-cols-[repeat(auto-fill,_minmax(20rem,1fr))]">
+        {posts.map((post) => (
+          <PostsPreview key={post.id} post={post.attributes} />
+        ))}
+      </div>
+    </ContentPanel>
+  );
+
   return (
     <AppLayout
-      navTitle={langui.main_news}
-      langui={langui}
+      navTitle={langui.news}
       subPanel={subPanel}
+      contentPanel={contentPanel}
+      {...props}
     />
   );
 }
 
-export const getStaticProps: GetStaticProps = async (context) => {
-  if (context.locale) {
-    const props: NewsProps = {
-      langui: await getWebsiteInterface({
-        language_code: context.locale,
-      }),
-    };
-    return {
-      props: props,
-    };
-  }
-  return { props: {} };
-};
+export async function getStaticProps(
+  context: GetStaticPropsContext
+): Promise<{ props: NewsProps }> {
+  const props: NewsProps = {
+    ...(await getAppStaticProps(context)),
+    posts: await (
+      await getPostsPreview({ language_code: context.locale ?? "en" })
+    ).posts.data,
+  };
+  return {
+    props: props,
+  };
+}

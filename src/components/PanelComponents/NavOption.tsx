@@ -1,14 +1,12 @@
+import ToolTip from "components/ToolTip";
 import { useRouter } from "next/router";
-import Link from "next/link";
 import { MouseEventHandler } from "react";
-import ReactDOMServer from "react-dom/server";
 
 type NavOptionProps = {
   url: string;
   icon?: string;
   title: string;
   subtitle?: string;
-  tooltipId?: string;
   border?: boolean;
   reduced?: boolean;
   onClick?: MouseEventHandler<HTMLDivElement>;
@@ -25,21 +23,29 @@ export default function NavOption(props: NavOptionProps): JSX.Element {
   } ${isActive ? divActive : ""}`;
 
   return (
-    <Link href={props.url} passHref>
+    <ToolTip
+      content={
+        <div>
+          <h3 className="text-2xl">{props.title}</h3>
+          {props.subtitle && <p className="col-start-2">{props.subtitle}</p>}
+        </div>
+      }
+      placement="right"
+      className="text-left"
+      disabled={!props.reduced}
+    >
       <div
-        onClick={props.onClick}
-        data-html
-        data-multiline
-        data-tip={ReactDOMServer.renderToStaticMarkup(
-          <div className="px-4 py-3">
-            <h3 className="text-2xl">{props.title}</h3>
-            {props.subtitle && (
-              <p className="max-w-[10rem]">{props.subtitle}</p>
-            )}
-          </div>
-        )}
-        data-for={props.tooltipId}
-        className={`grid grid-flow-col grid-cols-[auto] auto-cols-fr justify-center ${
+        onClick={(event) => {
+          if (props.onClick) props.onClick(event);
+          if (props.url) {
+            if (props.url.startsWith("#")) {
+              router.replace(props.url);
+            } else {
+              router.push(props.url);
+            }
+          }
+        }}
+        className={`relative grid grid-flow-col grid-cols-[auto] auto-cols-fr justify-center ${
           props.icon ? "text-left" : "text-center"
         } ${divCommon}`}
       >
@@ -54,6 +60,6 @@ export default function NavOption(props: NavOptionProps): JSX.Element {
           </div>
         )}
       </div>
-    </Link>
+    </ToolTip>
   );
 }

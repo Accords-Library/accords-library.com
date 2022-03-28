@@ -18,6 +18,17 @@ const breakDektop = { min: "60rem" };
 const breakMobile = { max: "60rem" };
 const breakThin = { max: "25rem" };
 
+const fontStandard = {
+  body: "Zen Maru Gothic",
+  headers: "Vollkorn",
+  monospace: "monospace",
+};
+const fontDyslexic = {
+  body: "OpenDyslexic",
+  headers: "OpenDyslexic",
+  monospace: "monospace",
+};
+
 /* END CONFIG */
 
 function withOpacity(variableName) {
@@ -41,9 +52,11 @@ module.exports = {
       black: withOpacity("--theme-color-black"),
     },
     fontFamily: {
-      body: ["Zen Maru Gothic"],
-      headers: ["Vollkorn"],
-      monospace: ["monospace"],
+      body: ["var(--theme-font-body)"],
+      headers: ["var(--theme-font-headers)"],
+      monospace: ["var(--theme-font-monospace)"],
+      openDyslexic: ["OpenDyslexic"],
+      zenMaruGothic: ["Zen Maru Gothic"],
     },
     screens: {
       desktop: breakDektop,
@@ -59,9 +72,6 @@ module.exports = {
     },
   },
   plugins: [
-    require("@tailwindcss/typography"),
-
-    // Colored Dropshadow
     plugin(function ({ addUtilities }) {
       addUtilities({
         ".set-theme-light": {
@@ -81,6 +91,21 @@ module.exports = {
           "--theme-color-black": `${dark_black.r}, ${dark_black.g}, ${dark_black.b}`,
           "--theme-texture-dots": `url("/paper-dots-dark.webp")`,
           "--theme-texture-dots-blend": `overlay`,
+        },
+      });
+    }),
+
+    plugin(function ({ addUtilities }) {
+      addUtilities({
+        ".set-theme-font-standard": {
+          "--theme-font-body": fontStandard.body,
+          "--theme-font-headers": fontStandard.headers,
+          "--theme-font-monospace": fontStandard.monospace,
+        },
+        ".set-theme-font-dyslexic": {
+          "--theme-font-body": fontDyslexic.body,
+          "--theme-font-headers": fontDyslexic.headers,
+          "--theme-font-monospace": fontStandard.monospace,
         },
       });
     }),

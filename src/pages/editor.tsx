@@ -1,23 +1,19 @@
+import AppLayout from "components/AppLayout";
+import Markdawn from "components/Markdown/Markdawn";
 import ContentPanel, {
   ContentPanelWidthSizes,
 } from "components/Panels/ContentPanel";
-import { getWebsiteInterface } from "graphql/operations";
-import { GetStaticProps } from "next";
-import { GetWebsiteInterfaceQuery } from "graphql/operations-types";
-import AppLayout from "components/AppLayout";
-import { useCallback, useState } from "react";
-import Markdawn from "components/Markdown/Markdawn";
+import { GetStaticPropsContext } from "next";
 import Script from "next/script";
+import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
+import { useCallback, useState } from "react";
+import { default as TurndownService } from "turndown";
 
-type EditorProps = {
-  langui: GetWebsiteInterfaceQuery;
-};
+interface EditorProps extends AppStaticProps {}
 
 export default function Editor(props: EditorProps): JSX.Element {
-  const langui = props.langui.websiteInterfaces.data[0].attributes;
-
-  const handleInput = useCallback((e) => {
-    setMarkdown(e.target.value);
+  const handleInput = useCallback((event) => {
+    setMarkdown(event.target.value);
   }, []);
 
   const [markdown, setMarkdown] = useState("");
@@ -45,14 +41,15 @@ export default function Editor(props: EditorProps): JSX.Element {
             onInput={handleInput}
             className="bg-mid rounded-xl p-8 w-full font-monospace"
             value={markdown}
+            title="Input textarea"
           />
 
           <h2 className="mt-4">Convert text to markdown</h2>
           <textarea
             readOnly
             id="htmlMdTextArea"
+            title="Ouput textarea"
             onPaste={(event) => {
-              const TurndownService = require("turndown").default;
               const turndownService = new TurndownService({
                 headingStyle: "atx",
                 codeBlockStyle: "fenced",
@@ -62,16 +59,16 @@ export default function Editor(props: EditorProps): JSX.Element {
               });
 
               let paste = event.clipboardData.getData("text/html");
-              paste = paste.replace(/<\!--.*?-->/g, "");
+              paste = paste.replace(/<!--.*?-->/u, "");
               paste = turndownService.turndown(paste);
-              paste = paste.replace(/<\!--.*?-->/g, "");
+              paste = paste.replace(/<!--.*?-->/u, "");
 
               const target = event.target as HTMLTextAreaElement;
               target.value = paste;
               target.select();
               event.preventDefault();
             }}
-            className="bg-mid rounded-xl p-8 w-full font-monospace"
+            className="font-monospace"
           />
         </div>
         <div>
@@ -86,22 +83,19 @@ export default function Editor(props: EditorProps): JSX.Element {
   return (
     <AppLayout
       navTitle="Markdawn Editor"
-      langui={langui}
       contentPanel={contentPanel}
+      {...props}
     />
   );
 }
 
-export const getStaticProps: GetStaticProps = async (context) => {
-  if (context.locale) {
-    const props: EditorProps = {
-      langui: await getWebsiteInterface({
-        language_code: context.locale,
-      }),
-    };
-    return {
-      props: props,
-    };
-  }
-  return { props: {} };
-};
+export async function getStaticProps(
+  context: GetStaticPropsContext
+): Promise<{ props: EditorProps }> {
+  const props: EditorProps = {
+    ...(await getAppStaticProps(context)),
+  };
+  return {
+    props: props,
+  };
+}

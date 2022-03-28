@@ -1,17 +1,19 @@
-import Link from "next/link";
+import { useRouter } from "next/router";
 import { MouseEventHandler } from "react";
 
 type ButtonProps = {
   id?: string;
   className?: string;
   href?: string;
-  children: React.ReactChild | React.ReactChild[];
+  children: React.ReactNode;
   active?: boolean;
   locale?: string;
   onClick?: MouseEventHandler<HTMLDivElement>;
 };
 
 export default function Button(props: ButtonProps): JSX.Element {
+  const router = useRouter();
+
   const button = (
     <div
       id={props.id}
@@ -21,19 +23,23 @@ export default function Button(props: ButtonProps): JSX.Element {
       } ${
         props.active
           ? "text-light bg-black drop-shadow-black-lg !border-black cursor-not-allowed"
-          : "cursor-pointer hover:text-light hover:bg-dark hover:drop-shadow-shade-lg active:bg-black active:drop-shadow-black-lg active:border-black"
+          : "cursor-pointer hover:text-light hover:bg-dark hover:drop-shadow-shade-lg active:bg-black active:text-light active:drop-shadow-black-lg active:border-black"
       }`}
     >
       {props.children}
     </div>
   );
 
-  const result = props.href ? (
-    <Link href={props.href} locale={props.locale} passHref>
+  return (
+    <div
+      onClick={() => {
+        if (props.href || props.locale)
+          router.push(props.href ?? router.asPath, props.href, {
+            locale: props.locale,
+          });
+      }}
+    >
       {button}
-    </Link>
-  ) : (
-    button
+    </div>
   );
-  return result;
 }

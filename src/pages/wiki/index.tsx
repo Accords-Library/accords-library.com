@@ -1,48 +1,35 @@
-import SubPanel from "components/Panels/SubPanel";
-import PanelHeader from "components/PanelComponents/PanelHeader";
-import { GetWebsiteInterfaceQuery } from "graphql/operations-types";
-import { GetStaticProps } from "next";
-import { getWebsiteInterface } from "graphql/operations";
-import ContentPanel from "components/Panels/ContentPanel";
 import AppLayout from "components/AppLayout";
+import NavOption from "components/PanelComponents/NavOption";
+import PanelHeader from "components/PanelComponents/PanelHeader";
+import SubPanel from "components/Panels/SubPanel";
+import { GetStaticPropsContext } from "next";
+import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 
-type WikiProps = {
-  langui: GetWebsiteInterfaceQuery;
-};
+interface WikiProps extends AppStaticProps {}
 
-export default function Hubs(props: WikiProps): JSX.Element {
-  const langui = props.langui.websiteInterfaces.data[0].attributes;
+export default function Wiki(props: WikiProps): JSX.Element {
+  const { langui } = props;
   const subPanel = (
     <SubPanel>
       <PanelHeader
         icon="travel_explore"
-        title={langui.main_wiki}
+        title={langui.wiki}
         description={langui.wiki_description}
       />
+      <NavOption title="Chronology" url="/wiki/chronology" border />
     </SubPanel>
   );
-  const contentPanel = <ContentPanel>Hello</ContentPanel>;
 
-  return (
-    <AppLayout
-      navTitle={langui.main_wiki}
-      langui={langui}
-      contentPanel={contentPanel}
-      subPanel={subPanel}
-    />
-  );
+  return <AppLayout navTitle={langui.wiki} subPanel={subPanel} {...props} />;
 }
 
-export const getStaticProps: GetStaticProps = async (context) => {
-  if (context.locale) {
-    const props: WikiProps = {
-      langui: await getWebsiteInterface({
-        language_code: context.locale,
-      }),
-    };
-    return {
-      props: props,
-    };
-  }
-  return { props: {} };
-};
+export async function getStaticProps(
+  context: GetStaticPropsContext
+): Promise<{ props: WikiProps }> {
+  const props: WikiProps = {
+    ...(await getAppStaticProps(context)),
+  };
+  return {
+    props: props,
+  };
+}

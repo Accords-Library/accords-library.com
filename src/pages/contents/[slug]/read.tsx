@@ -1,44 +1,47 @@
-import { GetStaticPaths, GetStaticProps } from "next";
-import {
-  getContentsSlugs,
-  getContentText,
-  getWebsiteInterface,
-} from "graphql/operations";
-import {
-  Enum_Componentsetstextset_Status,
-  GetContentTextQuery,
-  GetWebsiteInterfaceQuery,
-} from "graphql/operations-types";
-import ContentPanel from "components/Panels/ContentPanel";
-import HorizontalLine from "components/HorizontalLine";
-import SubPanel from "components/Panels/SubPanel";
-import ReturnButton from "components/PanelComponents/ReturnButton";
-import ThumbnailHeader from "components/Content/ThumbnailHeader";
 import AppLayout from "components/AppLayout";
+import Button from "components/Button";
+import Chip from "components/Chip";
+import ThumbnailHeader from "components/Content/ThumbnailHeader";
+import HorizontalLine from "components/HorizontalLine";
+import LanguageSwitcher from "components/LanguageSwitcher";
 import Markdawn from "components/Markdown/Markdawn";
+import TOC from "components/Markdown/TOC";
+import ReturnButton, {
+  ReturnButtonType,
+} from "components/PanelComponents/ReturnButton";
+import ContentPanel from "components/Panels/ContentPanel";
+import SubPanel from "components/Panels/SubPanel";
+import RecorderChip from "components/RecorderChip";
+import ToolTip from "components/ToolTip";
+import { getContentsSlugs, getContentText } from "graphql/operations";
+import { GetContentTextQuery } from "graphql/operations-types";
 import {
+  GetStaticPathsContext,
+  GetStaticPathsResult,
+  GetStaticPropsContext,
+} from "next";
+import { useRouter } from "next/router";
+import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
+import {
+  getLocalesFromLanguages,
+  getStatusDescription,
   prettyinlineTitle,
   prettyLanguage,
   prettySlug,
   prettyTestError,
   prettyTestWarning,
 } from "queries/helpers";
-import Button from "components/Button";
-import { useRouter } from "next/router";
-import Chip from "components/Chip";
-import ReactTooltip from "react-tooltip";
-import RecorderChip from "components/RecorderChip";
 
-interface ContentReadProps {
-  content: GetContentTextQuery;
-  langui: GetWebsiteInterfaceQuery;
+interface ContentReadProps extends AppStaticProps {
+  content: GetContentTextQuery["contents"]["data"][number]["attributes"];
+  contentId: GetContentTextQuery["contents"]["data"][number]["id"];
 }
 
 export default function ContentRead(props: ContentReadProps): JSX.Element {
   useTesting(props);
-  const content = props.content.contents.data[0].attributes;
-  const langui = props.langui.websiteInterfaces.data[0].attributes;
+  const { langui, content, languages } = props;
   const router = useRouter();
+  const locales = getLocalesFromLanguages(content.text_set_languages);
 
   const subPanel = (
     <SubPanel>
@@ -46,23 +49,23 @@ export default function ContentRead(props: ContentReadProps): JSX.Element {
         href={`/contents/${content.slug}`}
         title={"Content"}
         langui={langui}
+        displayOn={ReturnButtonType.desktop}
+        horizontalLine
       />
 
-      <HorizontalLine />
-
-      {content.text_set.length > 0 ? (
+      {content.text_set.length > 0 && content.text_set[0].source_language.data && (
         <div className="grid gap-5">
           <h2 className="text-xl">
             {content.text_set[0].source_language.data.attributes.code ===
             router.locale
-              ? "This content is a transcript"
-              : "This content is a fan-translation"}
+              ? langui.transcript_notice
+              : langui.translation_notice}
           </h2>
 
           {content.text_set[0].source_language.data.attributes.code !==
             router.locale && (
             <div className="grid place-items-center gap-2">
-              <p className="font-headers">Source language:</p>
+              <p className="font-headers">{langui.source_language}:</p>
               <Button
                 href={router.asPath}
                 locale={
@@ -70,40 +73,34 @@ export default function ContentRead(props: ContentReadProps): JSX.Element {
                 }
               >
                 {prettyLanguage(
-                  content.text_set[0].source_language.data.attributes.code
+                  content.text_set[0].source_language.data.attributes.code,
+                  languages
                 )}
               </Button>
             </div>
           )}
 
           <div className="grid grid-flow-col place-items-center place-content-center gap-2">
-            <p className="font-headers">Status:</p>
+            <p className="font-headers">{langui.status}:</p>
 
-            <Chip
-              data-tip={
-                content.text_set[0].status ===
-                Enum_Componentsetstextset_Status.Incomplete
-                  ? "This entry is only partially translated/transcribed."
-                  : content.text_set[0].status ===
-                    Enum_Componentsetstextset_Status.Draft
-                  ? "This entry is just a draft. It usually means that this is a work-in-progress. Translation/transcription might be poor and/or computer-generated."
-                  : content.text_set[0].status ===
-                    Enum_Componentsetstextset_Status.Review
-                  ? "This entry has not yet being proofread. The content should still be accurate."
-                  : "This entry has been checked and proofread. If you notice any translation errors or typos, please contact us so we can fix it!"
-              }
-              data-for={"StatusTooltip"}
+            <ToolTip
+              content={getStatusDescription(content.text_set[0].status, langui)}
+              maxWidth={"20rem"}
             >
-              {content.text_set[0].status}
-            </Chip>
+              <Chip>{content.text_set[0].status}</Chip>
+            </ToolTip>
           </div>
 
           {content.text_set[0].transcribers.data.length > 0 && (
             <div>
-              <p className="font-headers">Transcribers:</p>
+              <p className="font-headers">{langui.transcribers}:</p>
               <div className="grid place-items-center place-content-center gap-2">
                 {content.text_set[0].transcribers.data.map((recorder) => (
-                  <RecorderChip key={recorder.id} recorder={recorder} />
+                  <RecorderChip
+                    key={recorder.id}
+                    langui={langui}
+                    recorder={recorder}
+                  />
                 ))}
               </div>
             </div>
@@ -111,10 +108,14 @@ export default function ContentRead(props: ContentReadProps): JSX.Element {
 
           {content.text_set[0].translators.data.length > 0 && (
             <div>
-              <p className="font-headers">Translators:</p>
+              <p className="font-headers">{langui.translators}:</p>
               <div className="grid place-items-center place-content-center gap-2">
                 {content.text_set[0].translators.data.map((recorder) => (
-                  <RecorderChip key={recorder.id} recorder={recorder} />
+                  <RecorderChip
+                    key={recorder.id}
+                    langui={langui}
+                    recorder={recorder}
+                  />
                 ))}
               </div>
             </div>
@@ -122,61 +123,105 @@ export default function ContentRead(props: ContentReadProps): JSX.Element {
 
           {content.text_set[0].proofreaders.data.length > 0 && (
             <div>
-              <p className="font-headers">Proofreaders:</p>
+              <p className="font-headers">{langui.proofreaders}:</p>
               <div className="grid place-items-center place-content-center gap-2">
                 {content.text_set[0].proofreaders.data.map((recorder) => (
-                  <RecorderChip key={recorder.id} recorder={recorder} />
+                  <RecorderChip
+                    key={recorder.id}
+                    langui={langui}
+                    recorder={recorder}
+                  />
                 ))}
               </div>
             </div>
           )}
         </div>
-      ) : (
-        ""
+      )}
+
+      {content.text_set.length > 0 && content.text_set[0].text && (
+        <>
+          <HorizontalLine />
+          <TOC
+            text={content.text_set[0].text}
+            title={
+              content.titles.length > 0
+                ? prettyinlineTitle(
+                    content.titles[0].pre_title,
+                    content.titles[0].title,
+                    content.titles[0].subtitle
+                  )
+                : prettySlug(content.slug)
+            }
+          />
+        </>
       )}
     </SubPanel>
   );
   const contentPanel = (
     <ContentPanel>
+      <ReturnButton
+        href={`/contents/${content.slug}`}
+        title={langui.content}
+        langui={langui}
+        displayOn={ReturnButtonType.mobile}
+        className="mb-10"
+      />
       <div className="grid place-items-center">
-        <ThumbnailHeader content={content} langui={langui} />
+        <ThumbnailHeader
+          thumbnail={content.thumbnail.data?.attributes}
+          pre_title={
+            content.titles.length > 0 ? content.titles[0].pre_title : undefined
+          }
+          title={
+            content.titles.length > 0
+              ? content.titles[0].title
+              : prettySlug(content.slug)
+          }
+          subtitle={
+            content.titles.length > 0 ? content.titles[0].subtitle : undefined
+          }
+          description={
+            content.titles.length > 0
+              ? content.titles[0].description
+              : undefined
+          }
+          type={content.type}
+          categories={content.categories}
+          langui={langui}
+        />
 
         <HorizontalLine />
 
-        {content.text_set.length > 0 ? (
+        {locales.includes(router.locale ?? "en") ? (
           <Markdawn text={content.text_set[0].text} />
         ) : (
-          ""
+          <LanguageSwitcher
+            locales={locales}
+            languages={props.languages}
+            langui={props.langui}
+          />
         )}
       </div>
     </ContentPanel>
   );
 
-  const extra = (
-    <>
-      <ReactTooltip
-        id="StatusTooltip"
-        place="top"
-        type="light"
-        effect="solid"
-        delayShow={50}
-        clickable={true}
-        className="drop-shadow-shade-xl !opacity-100 !bg-light !rounded-lg desktop:after:!border-t-light text-left !text-black max-w-xs"
-      />
-
-      <ReactTooltip
-        id="RecordersTooltip"
-        place="top"
-        type="light"
-        effect="solid"
-        delayShow={100}
-        delayUpdate={100}
-        delayHide={100}
-        clickable={true}
-        className="drop-shadow-shade-xl !opacity-100 !bg-light !rounded-lg desktop:after:!border-t-light text-left !text-black max-w-[22rem]"
-      />
-    </>
-  );
+  let description = "";
+  if (content.type.data) {
+    description += `${langui.type}: `;
+    if (content.type.data.attributes.titles.length > 0) {
+      description += content.type.data.attributes.titles[0].title;
+    } else {
+      description += prettySlug(content.type.data.attributes.slug);
+    }
+    description += "\n";
+  }
+  if (content.categories.data.length > 0) {
+    description += `${langui.categories}: `;
+    description += content.categories.data
+      .map((category) => category.attributes.short)
+      .join(" | ");
+    description += "\n";
+  }
 
   return (
     <AppLayout
@@ -191,48 +236,40 @@ export default function ContentRead(props: ContentReadProps): JSX.Element {
           : prettySlug(content.slug)
       }
       thumbnail={content.thumbnail.data?.attributes}
-      langui={langui}
       contentPanel={contentPanel}
       subPanel={subPanel}
-      extra={extra}
+      description={description}
+      {...props}
     />
   );
 }
 
-export const getStaticProps: GetStaticProps = async (context) => {
-  if (context.params) {
-    if (context.params.slug && context.locale) {
-      if (context.params.slug instanceof Array)
-        context.params.slug = context.params.slug.join("");
-
-      const props: ContentReadProps = {
-        content: await getContentText({
-          slug: context.params.slug,
-          language_code: context.locale,
-        }),
-        langui: await getWebsiteInterface({
-          language_code: context.locale,
-        }),
-      };
-      return {
-        props: props,
-      };
-    }
-  }
-  return { props: {} };
-};
-
-export const getStaticPaths: GetStaticPaths = async (context) => {
-  type Path = {
-    params: {
-      slug: string;
-    };
-    locale: string;
+export async function getStaticProps(
+  context: GetStaticPropsContext
+): Promise<{ props: ContentReadProps }> {
+  const slug = context.params?.slug?.toString() ?? "";
+  const content = (
+    await getContentText({
+      slug: slug,
+      language_code: context.locale ?? "en",
+    })
+  ).contents.data[0];
+  const props: ContentReadProps = {
+    ...(await getAppStaticProps(context)),
+    content: content.attributes,
+    contentId: content.id,
   };
+  return {
+    props: props,
+  };
+}
 
-  const data = await getContentsSlugs({});
-  const paths: Path[] = [];
-  data.contents.data.map((item) => {
+export async function getStaticPaths(
+  context: GetStaticPathsContext
+): Promise<GetStaticPathsResult> {
+  const contents = await getContentsSlugs({});
+  const paths: GetStaticPathsResult["paths"] = [];
+  contents.contents.data.map((item) => {
     context.locales?.map((local) => {
       paths.push({ params: { slug: item.attributes.slug }, locale: local });
     });
@@ -241,15 +278,13 @@ export const getStaticPaths: GetStaticPaths = async (context) => {
     paths,
     fallback: false,
   };
-};
+}
 
-export function useTesting(props: ContentReadProps) {
+function useTesting(props: ContentReadProps) {
   const router = useRouter();
-  const content = props.content.contents.data[0].attributes;
+  const { content, contentId } = props;
 
-  const contentURL =
-    "/admin/content-manager/collectionType/api::content.content/" +
-    props.content.contents.data[0].id;
+  const contentURL = `/admin/content-manager/collectionType/api::content.content/${contentId}`;
 
   if (router.locale === "en") {
     if (content.categories.data.length === 0) {
@@ -276,18 +311,17 @@ export function useTesting(props: ContentReadProps) {
   }
 
   if (content.text_set.length > 1) {
-    console.warn(
-      prettyTestError(
-        router,
-        "More than one textset for this language",
-        ["content", "text_set"],
-        contentURL
-      )
+    prettyTestError(
+      router,
+      "More than one textset for this language",
+      ["content", "text_set"],
+      contentURL
     );
   }
 
   if (content.text_set.length === 1) {
     const textset = content.text_set[0];
+
     if (!textset.text) {
       prettyTestError(
         router,
@@ -303,8 +337,7 @@ export function useTesting(props: ContentReadProps) {
         ["content", "text_set"],
         contentURL
       );
-    }
-    if (textset.source_language.data.attributes.code === router.locale) {
+    } else if (textset.source_language.data.attributes.code === router.locale) {
       // This is a transcript
       if (textset.transcribers.data.length === 0) {
         prettyTestError(

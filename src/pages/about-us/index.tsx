@@ -1,44 +1,48 @@
-import SubPanel from "components/Panels/SubPanel";
-import PanelHeader from "components/PanelComponents/PanelHeader";
-import { GetWebsiteInterfaceQuery } from "graphql/operations-types";
-import { GetStaticProps } from "next";
-import { getWebsiteInterface } from "graphql/operations";
 import AppLayout from "components/AppLayout";
+import NavOption from "components/PanelComponents/NavOption";
+import PanelHeader from "components/PanelComponents/PanelHeader";
+import SubPanel from "components/Panels/SubPanel";
+import { GetStaticPropsContext } from "next";
+import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 
-type AboutUsProps = {
-  langui: GetWebsiteInterfaceQuery;
-};
+interface AboutUsProps extends AppStaticProps {}
 
 export default function AboutUs(props: AboutUsProps): JSX.Element {
-  const langui = props.langui.websiteInterfaces.data[0].attributes;
+  const { langui } = props;
   const subPanel = (
     <SubPanel>
       <PanelHeader
         icon="info"
-        title={langui.main_about_us}
+        title={langui.about_us}
         description={langui.about_us_description}
       />
+      <NavOption
+        title={langui.accords_handbook}
+        url="/about-us/accords-handbook"
+        border
+      />
+      <NavOption title={langui.legality} url="/about-us/legality" border />
+      {/* <NavOption title={langui.members} url="/about-us/members" border /> */}
+      <NavOption
+        title={langui.sharing_policy}
+        url="/about-us/sharing-policy"
+        border
+      />
+      <NavOption title={langui.contact_us} url="/about-us/contact" border />
     </SubPanel>
   );
   return (
-    <AppLayout
-      navTitle={langui.main_about_us}
-      langui={langui}
-      subPanel={subPanel}
-    />
+    <AppLayout navTitle={langui.about_us} subPanel={subPanel} {...props} />
   );
 }
 
-export const getStaticProps: GetStaticProps = async (context) => {
-  if (context.locale) {
-    const props: AboutUsProps = {
-      langui: await getWebsiteInterface({
-        language_code: context.locale,
-      }),
-    };
-    return {
-      props: props,
-    };
-  }
-  return { props: {} };
-};
+export async function getStaticProps(
+  context: GetStaticPropsContext
+): Promise<{ props: AboutUsProps }> {
+  const props: AboutUsProps = {
+    ...(await getAppStaticProps(context)),
+  };
+  return {
+    props: props,
+  };
+}

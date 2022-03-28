@@ -1,93 +1,91 @@
-import { GetStaticProps } from "next";
+import AppLayout from "components/AppLayout";
+import ChronologyYearComponent from "components/Chronology/ChronologyYearComponent";
+import InsetBox from "components/InsetBox";
+import NavOption from "components/PanelComponents/NavOption";
+import ReturnButton, {
+  ReturnButtonType,
+} from "components/PanelComponents/ReturnButton";
 import ContentPanel from "components/Panels/ContentPanel";
 import SubPanel from "components/Panels/SubPanel";
-import ChronologyYearComponent from "components/Chronology/ChronologyYearComponent";
+import { useAppLayout } from "contexts/AppLayoutContext";
+import { getChronologyItems, getEras } from "graphql/operations";
 import {
   GetChronologyItemsQuery,
   GetErasQuery,
-  GetWebsiteInterfaceQuery,
 } from "graphql/operations-types";
-import {
-  getEras,
-  getChronologyItems,
-  getWebsiteInterface,
-} from "graphql/operations";
-import NavOption from "components/PanelComponents/NavOption";
-import ReturnButton from "components/PanelComponents/ReturnButton";
-import HorizontalLine from "components/HorizontalLine";
-import AppLayout from "components/AppLayout";
+import { GetStaticPropsContext } from "next";
+import { useRouter } from "next/router";
+import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 import {
   prettySlug,
   prettyTestError,
   prettyTestWarning,
 } from "queries/helpers";
-import InsetBox from "components/InsetBox";
-import { useRouter } from "next/router";
-import ReactTooltip from "react-tooltip";
 
-interface DataChronologyProps {
-  chronologyItems: GetChronologyItemsQuery;
-  chronologyEras: GetErasQuery;
-  langui: GetWebsiteInterfaceQuery;
+interface ChronologyProps extends AppStaticProps {
+  chronologyItems: GetChronologyItemsQuery["chronologyItems"]["data"];
+  chronologyEras: GetErasQuery["chronologyEras"]["data"];
 }
 
-export default function DataChronology(
-  props: DataChronologyProps
-): JSX.Element {
+export default function Chronology(props: ChronologyProps): JSX.Element {
   useTesting(props);
-  const langui = props.langui.websiteInterfaces.data[0].attributes;
-  const chronologyItems = props.chronologyItems.chronologyItems;
-  const chronologyEras = props.chronologyEras.chronologyEras;
+  const { chronologyItems, chronologyEras, langui } = props;
+  const appLayout = useAppLayout();
 
   // Group by year the Chronology items
-  let chronologyItemYearGroups: GetChronologyItemsQuery["chronologyItems"]["data"][number][][][] =
+  const chronologyItemYearGroups: GetChronologyItemsQuery["chronologyItems"]["data"][number][][][] =
     [];
 
-  chronologyEras.data.map(() => {
+  chronologyEras.map(() => {
     chronologyItemYearGroups.push([]);
   });
 
   let currentChronologyEraIndex = 0;
-  chronologyItems.data.map((item) => {
+  chronologyItems.map((item) => {
     if (
       item.attributes.year >
-      chronologyEras.data[currentChronologyEraIndex].attributes.ending_year
+      chronologyEras[currentChronologyEraIndex].attributes.ending_year
     ) {
-      currentChronologyEraIndex++;
+      currentChronologyEraIndex += 1;
     }
     if (
-      !chronologyItemYearGroups[currentChronologyEraIndex].hasOwnProperty(
+      Object.prototype.hasOwnProperty.call(
+        chronologyItemYearGroups[currentChronologyEraIndex],
         item.attributes.year
       )
     ) {
       chronologyItemYearGroups[currentChronologyEraIndex][
         item.attributes.year
-      ] = [item];
+      ].push(item);
     } else {
       chronologyItemYearGroups[currentChronologyEraIndex][
         item.attributes.year
-      ].push(item);
+      ] = [item];
     }
   });
 
   const subPanel = (
     <SubPanel>
-      <ReturnButton href="/data" title="Data" langui={langui} />
-      <HorizontalLine />
+      <ReturnButton
+        href="/wiki"
+        title={langui.wiki}
+        langui={langui}
+        displayOn={ReturnButtonType.desktop}
+        horizontalLine
+      />
 
-      {props.chronologyEras.chronologyEras.data.map((era) => (
+      {chronologyEras.map((era) => (
         <NavOption
           key={era.id}
-          url={"#" + era.attributes.slug}
+          url={`#${era.attributes.slug}`}
           title={
             era.attributes.title.length > 0
               ? era.attributes.title[0].title
               : prettySlug(era.attributes.slug)
           }
-          subtitle={
-            era.attributes.starting_year + " → " + era.attributes.ending_year
-          }
+          subtitle={`${era.attributes.starting_year} → ${era.attributes.ending_year}`}
           border
+          onClick={() => appLayout.setSubPanelOpen(false)}
         />
       ))}
     </SubPanel>
@@ -95,20 +93,28 @@ export default function DataChronology(
 
   const contentPanel = (
     <ContentPanel>
+      <ReturnButton
+        href="/wiki"
+        title={langui.wiki}
+        langui={langui}
+        displayOn={ReturnButtonType.mobile}
+        className="mb-10"
+      />
+
       {chronologyItemYearGroups.map((era, eraIndex) => (
         <>
           <InsetBox
-            id={chronologyEras.data[eraIndex].attributes.slug}
+            id={chronologyEras[eraIndex].attributes.slug}
             className="grid text-center my-8 gap-4"
           >
             <h2 className="text-2xl">
-              {chronologyEras.data[eraIndex].attributes.title.length > 0
-                ? chronologyEras.data[eraIndex].attributes.title[0].title
-                : prettySlug(chronologyEras.data[eraIndex].attributes.slug)}
+              {chronologyEras[eraIndex].attributes.title.length > 0
+                ? chronologyEras[eraIndex].attributes.title[0].title
+                : prettySlug(chronologyEras[eraIndex].attributes.slug)}
             </h2>
             <p className="whitespace-pre-line ">
-              {chronologyEras.data[eraIndex].attributes.title.length > 0
-                ? chronologyEras.data[eraIndex].attributes.title[0].description
+              {chronologyEras[eraIndex].attributes.title.length > 0
+                ? chronologyEras[eraIndex].attributes.title[0].description
                 : ""}
             </p>
           </InsetBox>
@@ -117,57 +123,47 @@ export default function DataChronology(
               key={`${eraIndex}-${index}`}
               year={items[0].attributes.year}
               items={items}
+              langui={langui}
             />
           ))}
         </>
       ))}
-
-      <ReactTooltip
-        id="ChronologyTooltip"
-        place="top"
-        type="light"
-        effect="solid"
-        delayShow={50}
-        clickable={true}
-        className="drop-shadow-shade-xl !opacity-100 mobile:after:!border-r-light !bg-light !rounded-lg desktop:after:!border-t-light text-left !text-black max-w-xs"
-      />
     </ContentPanel>
   );
 
   return (
     <AppLayout
       navTitle="Chronology"
-      langui={langui}
       contentPanel={contentPanel}
       subPanel={subPanel}
+      {...props}
     />
   );
 }
 
-export const getStaticProps: GetStaticProps = async (context) => {
-  if (context.locale) {
-    const props: DataChronologyProps = {
-      chronologyItems: await getChronologyItems({
-        language_code: context.locale,
-      }),
-      chronologyEras: await getEras({ language_code: context.locale }),
-      langui: await getWebsiteInterface({
-        language_code: context.locale,
-      }),
-    };
-    return {
-      props: props,
-    };
-  }
-  return { props: {} };
-};
+export async function getStaticProps(
+  context: GetStaticPropsContext
+): Promise<{ props: ChronologyProps }> {
+  const props: ChronologyProps = {
+    ...(await getAppStaticProps(context)),
+    chronologyItems: (
+      await getChronologyItems({
+        language_code: context.locale ?? "en",
+      })
+    ).chronologyItems.data,
+    chronologyEras: (await getEras({ language_code: context.locale ?? "en" }))
+      .chronologyEras.data,
+  };
+  return {
+    props: props,
+  };
+}
 
-function useTesting({ chronologyItems, chronologyEras }: DataChronologyProps) {
+function useTesting(props: ChronologyProps) {
   const router = useRouter();
-  chronologyEras.chronologyEras.data.map((era) => {
-    const chronologyErasURL =
-      "/admin/content-manager/collectionType/api::chronology-era.chronology-era/" +
-      chronologyItems.chronologyItems.data[0].id;
+  const { chronologyItems, chronologyEras } = props;
+  chronologyEras.map((era) => {
+    const chronologyErasURL = `/admin/content-manager/collectionType/api::chronology-era.chronology-era/${chronologyItems[0].id}`;
 
     if (era.attributes.title.length === 0) {
       prettyTestError(
@@ -201,21 +197,12 @@ function useTesting({ chronologyItems, chronologyEras }: DataChronologyProps) {
     }
   });
 
-  chronologyItems.chronologyItems.data.map((item) => {
-    const chronologyItemsURL =
-      "/admin/content-manager/collectionType/api::chronology-item.chronology-item/" +
-      chronologyItems.chronologyItems.data[0].id;
+  chronologyItems.map((item) => {
+    const chronologyItemsURL = `/admin/content-manager/collectionType/api::chronology-item.chronology-item/${chronologyItems[0].id}`;
 
     const date = `${item.attributes.year}/${item.attributes.month}/${item.attributes.day}`;
 
-    if (!(item.attributes.events.length > 0)) {
-      prettyTestError(
-        router,
-        "No events for this date",
-        ["chronologyItems", date],
-        chronologyItemsURL
-      );
-    } else {
+    if (item.attributes.events.length > 0) {
       item.attributes.events.map((event) => {
         if (!event.source.data) {
           prettyTestError(
@@ -234,6 +221,13 @@ function useTesting({ chronologyItems, chronologyEras }: DataChronologyProps) {
           );
         }
       });
+    } else {
+      prettyTestError(
+        router,
+        "No events for this date",
+        ["chronologyItems", date],
+        chronologyItemsURL
+      );
     }
   });
 }

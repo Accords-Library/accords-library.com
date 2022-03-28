@@ -1,20 +1,20 @@
-import Link from "next/link";
-import NavOption from "components/PanelComponents/NavOption";
-import SVG from "components/SVG";
-import { useRouter } from "next/router";
 import Button from "components/Button";
 import HorizontalLine from "components/HorizontalLine";
-import { GetWebsiteInterfaceQuery } from "graphql/operations-types";
-import Markdown from "markdown-to-jsx";
-import { useMediaDesktop } from "hooks/useMediaQuery";
+import NavOption from "components/PanelComponents/NavOption";
+import ToolTip from "components/ToolTip";
 import { useAppLayout } from "contexts/AppLayoutContext";
+import { GetWebsiteInterfaceQuery } from "graphql/operations-types";
+import { useMediaDesktop } from "hooks/useMediaQuery";
+import Markdown from "markdown-to-jsx";
+import Link from "next/link";
+import { useRouter } from "next/router";
 
 type MainPanelProps = {
   langui: GetWebsiteInterfaceQuery["websiteInterfaces"]["data"][number]["attributes"];
 };
 
 export default function MainPanel(props: MainPanelProps): JSX.Element {
-  const langui = props.langui;
+  const { langui } = props;
   const router = useRouter();
   const isDesktop = useMediaDesktop();
   const appLayout = useAppLayout();
@@ -25,6 +25,20 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
         appLayout.mainPanelReduced && isDesktop && "px-4"
       }`}
     >
+      {/* Reduce/expand main menu */}
+      <div
+        className={`mobile:hidden top-1/2 fixed ${
+          appLayout.mainPanelReduced ? "left-[4.65rem]" : "left-[18.65rem]"
+        }`}
+        onClick={() =>
+          appLayout.setMainPanelReduced(!appLayout.mainPanelReduced)
+        }
+      >
+        <Button className="material-icons bg-light !px-2">
+          {appLayout.mainPanelReduced ? "chevron_right" : "chevron_left"}
+        </Button>
+      </div>
+
       <div>
         <div className="grid place-items-center">
           <Link href="/" passHref>
@@ -49,32 +63,74 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
                 : "flex-row"
             } flex-wrap gap-2`}
           >
-            <Button
-              onClick={() => {
-                appLayout.setDarkMode(!appLayout.darkMode);
-                appLayout.setSelectedThemeMode(true);
-              }}
-              className={
-                appLayout.mainPanelReduced && isDesktop ? "" : "!py-0.5 !px-2.5"
-              }
+            <ToolTip
+              content={<h3 className="text-2xl">{langui.open_settings}</h3>}
+              placement="right"
+              className="text-left"
+              disabled={!appLayout.mainPanelReduced}
             >
-              <span className="material-icons !text-sm">
-                {appLayout.darkMode ? "dark_mode" : "light_mode"}
-              </span>
-            </Button>
-
-            {router.locale && (
               <Button
-                onClick={() => appLayout.setLanguagePanelOpen(true)}
                 className={
                   appLayout.mainPanelReduced && isDesktop
                     ? ""
-                    : "!py-0.5 !px-2.5 !text-sm"
+                    : "!py-0.5 !px-2.5"
+                }
+                onClick={() => {
+                  appLayout.setConfigPanelOpen(true);
+                }}
+              >
+                <span
+                  className={`material-icons ${
+                    !(appLayout.mainPanelReduced && isDesktop) && "!text-sm"
+                  } `}
+                >
+                  settings
+                </span>
+              </Button>
+            </ToolTip>
+
+            {router.locale && (
+              <ToolTip
+                content={<h3 className="text-2xl">{langui.change_language}</h3>}
+                placement="right"
+                className="text-left"
+                disabled={!appLayout.mainPanelReduced}
+              >
+                <Button
+                  onClick={() => appLayout.setLanguagePanelOpen(true)}
+                  className={
+                    appLayout.mainPanelReduced && isDesktop
+                      ? ""
+                      : "!py-0.5 !px-2.5 !text-sm"
+                  }
+                >
+                  {router.locale.toUpperCase()}
+                </Button>
+              </ToolTip>
+            )}
+
+            {/* <ToolTip
+              content={<h3 className="text-2xl">{langui.open_search}</h3>}
+              placement="right"
+              className="text-left"
+              disabled={!appLayout.mainPanelReduced}
+            >
+              <Button
+                className={
+                  appLayout.mainPanelReduced && isDesktop
+                    ? ""
+                    : "!py-0.5 !px-2.5"
                 }
               >
-                {router.locale.toUpperCase()}
+                <span
+                  className={`material-icons ${
+                    !(appLayout.mainPanelReduced && isDesktop) && "!text-sm"
+                  } `}
+                >
+                  search
+                </span>
               </Button>
-            )}
+            </ToolTip> */}
           </div>
         </div>
       </div>
@@ -84,9 +140,8 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
       <NavOption
         url="/library"
         icon="library_books"
-        title={langui.main_library}
-        subtitle={langui.main_library_description}
-        tooltipId="MainPanelTooltip"
+        title={langui.library}
+        subtitle={langui.library_short_description}
         reduced={appLayout.mainPanelReduced && isDesktop}
         onClick={() => appLayout.setMainPanelOpen(false)}
       />
@@ -94,9 +149,8 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
       <NavOption
         url="/contents"
         icon="workspaces"
-        title="Contents"
-        subtitle="Explore all content and filter by type or category"
-        tooltipId="MainPanelTooltip"
+        title={langui.contents}
+        subtitle={langui.contents_short_description}
         reduced={appLayout.mainPanelReduced && isDesktop}
         onClick={() => appLayout.setMainPanelOpen(false)}
       />
@@ -104,66 +158,73 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
       <NavOption
         url="/wiki"
         icon="travel_explore"
-        title={langui.main_wiki}
-        subtitle={langui.main_wiki_description}
-        tooltipId="MainPanelTooltip"
+        title={langui.wiki}
+        subtitle={langui.wiki_short_description}
         reduced={appLayout.mainPanelReduced && isDesktop}
         onClick={() => appLayout.setMainPanelOpen(false)}
       />
 
+      {/*
+
       <NavOption
         url="/chronicles"
         icon="watch_later"
-        title={langui.main_chronicles}
-        subtitle={langui.main_chronicles_description}
-        tooltipId="MainPanelTooltip"
+        title={langui.chronicles}
+        subtitle={langui.chronicles_short_description}
+        
         reduced={appLayout.mainPanelReduced && isDesktop}
         onClick={() => appLayout.setMainPanelOpen(false)}
       />
+      
+      */}
 
       <HorizontalLine />
 
       <NavOption
         url="/news"
         icon="feed"
-        title={langui.main_news}
-        tooltipId="MainPanelTooltip"
+        title={langui.news}
         reduced={appLayout.mainPanelReduced && isDesktop}
         onClick={() => appLayout.setMainPanelOpen(false)}
       />
-
+      {/*
       <NavOption
         url="/merch"
         icon="store"
-        title={langui.main_merch}
-        tooltipId="MainPanelTooltip"
+        title={langui.merch}
+        
         reduced={appLayout.mainPanelReduced && isDesktop}
         onClick={() => appLayout.setMainPanelOpen(false)}
       />
+      
+      */}
 
       <NavOption
         url="/gallery"
         icon="collections"
-        title={langui.main_gallery}
-        tooltipId="MainPanelTooltip"
+        title={langui.gallery}
         reduced={appLayout.mainPanelReduced && isDesktop}
         onClick={() => appLayout.setMainPanelOpen(false)}
       />
+
+      {/*
 
       <NavOption
         url="/archives"
         icon="inventory"
-        title={langui.main_archives}
-        tooltipId="MainPanelTooltip"
+        title={langui.archives}
+        
         reduced={appLayout.mainPanelReduced && isDesktop}
         onClick={() => appLayout.setMainPanelOpen(false)}
       />
 
+
+      */}
+
       <NavOption
         url="/about-us"
         icon="info"
-        title={langui.main_about_us}
-        tooltipId="MainPanelTooltip"
+        title={langui.about_us}
         reduced={appLayout.mainPanelReduced && isDesktop}
         onClick={() => appLayout.setMainPanelOpen(false)}
       />
@@ -176,10 +237,8 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
         }`}
       >
         <p>
-          {langui.main_licensing ? (
-            <Markdown>{langui.main_licensing}</Markdown>
-          ) : (
-            ""
+          {langui.licensing_notice && (
+            <Markdown>{langui.licensing_notice}</Markdown>
           )}
         </p>
         <a
@@ -194,10 +253,8 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
           </div>
         </a>
         <p>
-          {langui.main_copyright ? (
-            <Markdown>{langui.main_copyright}</Markdown>
-          ) : (
-            ""
+          {langui.copyright_notice && (
+            <Markdown>{langui.copyright_notice}</Markdown>
           )}
         </p>
         <div className="mt-12 mb-4 grid h-4 grid-flow-col place-content-center gap-8">

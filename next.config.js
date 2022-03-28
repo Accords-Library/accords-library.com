@@ -3,7 +3,7 @@ module.exports = {
   swcMinify: true,
   reactStrictMode: true,
   i18n: {
-    locales: ["en", "fr", "ja", "es", "xx"],
+    locales: ["en", "fr", "ja", "es", "pt-br"],
     defaultLocale: "en",
   },
   images: {

@@ -1,72 +1,137 @@
 query getWebsiteInterface($language_code: String) {
-  websiteInterfaces(filters: { language: { code: { eq: $language_code } } }) {
+  websiteInterfaces(
+    filters: { ui_language: { code: { eq: $language_code } } }
+  ) {
     data {
       attributes {
-        main_library
-        main_library_description
-        main_news
-        main_merch
-        main_gallery
-        main_archives
-        main_about_us
-        main_licensing
-        main_copyright
+        library
+        contents
+        wiki
+        chronicles
+        library_short_description
+        contents_short_description
+        wiki_short_description
+        chronicles_short_description
+        news
+        merch
+        gallery
+        archives
+        about_us
+        licensing_notice
+        copyright_notice
+        contents_description
+        type
+        category
+        categories
+        size
+        release_date
+        release_year
+        details
+        price
+        width
+        height
+        thickness
+        subitem
+        subitems
+        subitem_of
+        variant
+        variants
+        variant_of
+        summary
+        audio
+        video
+        textual
+        game
+        other
+        return_to
+        left_to_right
+        right_to_left
+        page
+        pages
+        page_order
+        binding
+        type_information
+        front_matter
+        back_matter
+        open_content
+        read_content
+        watch_content
+        listen_content
+        view_scans
+        paperback
+        hardcover
+        languages
+        select_language
+        language
         library_description
-        library_item_summary
-        library_item_gallery
-        library_item_details
-        library_item_subitems
-        library_item_variants
-        library_item_content
-        global_return_label
-        global_subitem_of
-        global_type
-        global_width
-        global_height
-        global_thickness
-        global_binding
-        global_language
-        global_languages
-        global_page
-        global_pages
-        global_page_order
-        global_release_date
-        global_price
-        library_item_physical_size
-        library_item_type_information
-        library_item_front_matter
-        library_item_back_matter
-        library_item_type_textual
-        library_item_type_audio
-        library_item_type_game
-        library_item_type_video
-        library_item_type_other
-        library_item_open_content
-        library_item_view_scans
-        content_read_content
-        content_watch_content
-        content_listen_content
-        global_category
-        global_categories
-        global_paperback
-        global_hardcover
-        global_left_to_right
-        global_right_to_left
-        main_wiki
-        main_wiki_description
-        main_chronicles
-        main_chronicles_description
-        library_items
-        library_items_description
-        library_content
-        library_content_description
         wiki_description
-        news_description
         chronicles_description
+        news_description
+        merch_description
         gallery_description
         archives_description
         about_us_description
-        merch_description
+        page_not_found
+        default_description
+        name
+        show_subitems
+        show_primary_items
+        show_secondary_items
+        no_type
+        no_year
+        order_by
+        group_by
+        select_option_sidebar
+        group
+        settings
+        theme
+        light
+        auto
+        dark
+        font_size
+        player_name
+        currency
+        font
+        calculated
+        status_incomplete
+        status_draft
+        status_review
+        status_done
+        incomplete
+        draft
+        review
+        done
+        status
+        transcribers
+        translators
+        proofreaders
+        transcript_notice
+        translation_notice
+        source_language
+        pronouns
+        no_category
+        item
+        items
+        content
+        result
+        results
+        language_switch_message
+        open_settings
+        change_language
+        open_search
+        chronology
+        accords_handbook
+        legality
+        members
+        sharing_policy
+        contact_us
+        email
+        email_gdpr_notice
+        message
+        send
+        response_invalid_code
+        response_invalid_email
+        response_email_success
       }
     }
   }
@@ -125,17 +190,15 @@ query getChronologyItems($language_code: String) {
 }
 
 query getLibraryItemsPreview($language_code: String) {
-  libraryItems(
-    filters: { root_item: { eq: true } }
-    pagination: { limit: -1 }
-    sort: ["title:asc", "subtitle:asc"]
-  ) {
+  libraryItems(pagination: { limit: -1 }) {
     data {
       id
       attributes {
         title
         subtitle
         slug
+        root_item
+        primary
         thumbnail {
           data {
             attributes {
@@ -160,7 +223,17 @@ query getLibraryItemsPreview($language_code: String) {
               attributes {
                 symbol
                 code
+                rate_to_usd
               }
+            }
+          }
+        }
+        categories {
+          data {
+            id
+            attributes {
+              name
+              short
             }
           }
         }
@@ -218,8 +291,20 @@ query getLibraryItemsPreview($language_code: String) {
               }
             }
           }
-          ... on ComponentMetadataOther {
+          ... on ComponentMetadataGroup {
             subtype {
+              data {
+                attributes {
+                  slug
+                  titles(
+                    filters: { language: { code: { eq: $language_code } } }
+                  ) {
+                    title
+                  }
+                }
+              }
+            }
+            subitems_type {
               data {
                 attributes {
                   slug
@@ -296,7 +381,17 @@ query getLibraryItem($slug: String, $language_code: String) {
               attributes {
                 symbol
                 code
+                rate_to_usd
               }
+            }
+          }
+        }
+        categories {
+          data {
+            id
+            attributes {
+              name
+              short
             }
           }
         }
@@ -396,8 +491,20 @@ query getLibraryItem($slug: String, $language_code: String) {
               }
             }
           }
-          ... on ComponentMetadataOther {
+          ... on ComponentMetadataGroup {
             subtype {
+              data {
+                attributes {
+                  slug
+                  titles(
+                    filters: { language: { code: { eq: $language_code } } }
+                  ) {
+                    title
+                  }
+                }
+              }
+            }
+            subitems_type {
               data {
                 attributes {
                   slug
@@ -452,7 +559,17 @@ query getLibraryItem($slug: String, $language_code: String) {
                     attributes {
                       symbol
                       code
+                      rate_to_usd
                     }
+                  }
+                }
+              }
+              categories {
+                data {
+                  id
+                  attributes {
+                    name
+                    short
                   }
                 }
               }
@@ -516,8 +633,22 @@ query getLibraryItem($slug: String, $language_code: String) {
                     }
                   }
                 }
-                ... on ComponentMetadataOther {
+                ... on ComponentMetadataGroup {
                   subtype {
+                    data {
+                      attributes {
+                        slug
+                        titles(
+                          filters: {
+                            language: { code: { eq: $language_code } }
+                          }
+                        ) {
+                          title
+                        }
+                      }
+                    }
+                  }
+                  subitems_type {
                     data {
                       attributes {
                         slug
@@ -585,6 +716,7 @@ query getLibraryItem($slug: String, $language_code: String) {
                       data {
                         id
                         attributes {
+                          name
                           short
                         }
                       }
@@ -655,6 +787,7 @@ query getContents($language_code: String) {
           data {
             id
             attributes {
+              name
               short
             }
           }
@@ -878,6 +1011,15 @@ query getContentText($slug: String, $language_code: String) {
             }
           }
         }
+        text_set_languages: text_set {
+          language {
+            data {
+              attributes {
+                code
+              }
+            }
+          }
+        }
         text_set(filters: { language: { code: { eq: $language_code } } }) {
           status
           text
@@ -998,6 +1140,420 @@ query getContentText($slug: String, $language_code: String) {
               width
               height
               url
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+query getCurrencies {
+  currencies {
+    data {
+      id
+      attributes {
+        code
+        symbol
+        rate_to_usd
+        display_decimals
+      }
+    }
+  }
+}
+
+query getLanguages {
+  languages {
+    data {
+      id
+      attributes {
+        name
+        code
+        localized_name
+      }
+    }
+  }
+}
+
+query getPost($slug: String, $language_code: String) {
+  posts(filters: { slug: { eq: $slug } }) {
+    data {
+      id
+      attributes {
+        slug
+        updatedAt
+        date {
+          year
+          month
+          day
+        }
+        authors {
+          data {
+            id
+            attributes {
+              username
+              anonymize
+              anonymous_code
+              pronouns
+              bio(filters: { language: { code: { eq: $language_code } } }) {
+                bio
+              }
+              languages {
+                data {
+                  attributes {
+                    code
+                  }
+                }
+              }
+              avatar {
+                data {
+                  attributes {
+                    name
+                    alternativeText
+                    caption
+                    width
+                    height
+                    url
+                  }
+                }
+              }
+            }
+          }
+        }
+        categories {
+          data {
+            id
+            attributes {
+              name
+              short
+            }
+          }
+        }
+        hidden
+        thumbnail {
+          data {
+            attributes {
+              name
+              alternativeText
+              caption
+              width
+              height
+              url
+            }
+          }
+        }
+        translations_languages: translations {
+          language {
+            data {
+              attributes {
+                code
+              }
+            }
+          }
+        }
+        translations(filters: { language: { code: { eq: $language_code } } }) {
+          status
+          title
+          excerpt
+          thumbnail {
+            data {
+              attributes {
+                name
+                alternativeText
+                caption
+                width
+                height
+                url
+              }
+            }
+          }
+          body
+        }
+      }
+    }
+  }
+}
+
+query getPostsSlugs {
+  posts(filters: { hidden: { eq: false } }) {
+    data {
+      id
+      attributes {
+        slug
+      }
+    }
+  }
+}
+
+query getPostsPreview($language_code: String) {
+  posts(filters: { hidden: { eq: false } }) {
+    data {
+      id
+      attributes {
+        slug
+        date {
+          year
+          month
+          day
+        }
+        categories {
+          data {
+            id
+            attributes {
+              short
+            }
+          }
+        }
+        thumbnail {
+          data {
+            attributes {
+              name
+              alternativeText
+              caption
+              width
+              height
+              url
+            }
+          }
+        }
+        translations(filters: { language: { code: { eq: $language_code } } }) {
+          title
+          excerpt
+          thumbnail {
+            data {
+              attributes {
+                name
+                alternativeText
+                caption
+                width
+                height
+                url
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+query getContentLanguages($slug: String) {
+  contents(filters: { slug: { eq: $slug } }) {
+    data {
+      attributes {
+        text_set {
+          language {
+            data {
+              attributes {
+                code
+              }
+            }
+          }
+        }
+        video_set {
+          language {
+            data {
+              attributes {
+                code
+              }
+            }
+          }
+        }
+        audio_set {
+          language {
+            data {
+              attributes {
+                code
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+query getLibraryItemScans($slug: String, $language_code: String) {
+  libraryItems(filters: { slug: { eq: $slug } }) {
+    data {
+      id
+      attributes {
+        slug
+        title
+        subtitle
+        thumbnail {
+          data {
+            attributes {
+              name
+              alternativeText
+              caption
+              width
+              height
+              url
+            }
+          }
+        }
+        contents(pagination: { limit: -1 }) {
+          data {
+            id
+            attributes {
+              slug
+              range {
+                __typename
+                ... on ComponentRangePageRange {
+                  starting_page
+                  ending_page
+                }
+                ... on ComponentRangeTimeRange {
+                  starting_time
+                  ending_time
+                }
+              }
+              scan_set_languages: scan_set {
+                language {
+                  data {
+                    attributes {
+                      code
+                    }
+                  }
+                }
+              }
+              scan_set(
+                filters: {
+                  or: [
+                    { language: { code: { eq: "xx" } } }
+                    { language: { code: { eq: $language_code } } }
+                  ]
+                }
+              ) {
+                status
+                source_language {
+                  data {
+                    attributes {
+                      code
+                    }
+                  }
+                }
+                scanners {
+                  data {
+                    id
+                    attributes {
+                      username
+                      anonymize
+                      anonymous_code
+                      pronouns
+                      bio(
+                        filters: { language: { code: { eq: $language_code } } }
+                      ) {
+                        bio
+                      }
+                      languages {
+                        data {
+                          attributes {
+                            code
+                          }
+                        }
+                      }
+                      avatar {
+                        data {
+                          attributes {
+                            name
+                            alternativeText
+                            caption
+                            width
+                            height
+                            url
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+                cleaners {
+                  data {
+                    id
+                    attributes {
+                      username
+                      anonymize
+                      anonymous_code
+                      pronouns
+                      bio(
+                        filters: { language: { code: { eq: $language_code } } }
+                      ) {
+                        bio
+                      }
+                      languages {
+                        data {
+                          attributes {
+                            code
+                          }
+                        }
+                      }
+                      avatar {
+                        data {
+                          attributes {
+                            name
+                            alternativeText
+                            caption
+                            width
+                            height
+                            url
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+                typesetters {
+                  data {
+                    id
+                    attributes {
+                      username
+                      anonymize
+                      anonymous_code
+                      pronouns
+                      bio(
+                        filters: { language: { code: { eq: $language_code } } }
+                      ) {
+                        bio
+                      }
+                      languages {
+                        data {
+                          attributes {
+                            code
+                          }
+                        }
+                      }
+                      avatar {
+                        data {
+                          attributes {
+                            name
+                            alternativeText
+                            caption
+                            width
+                            height
+                            url
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+                notes
+                pages(pagination: { limit: -1 }) {
+                  data {
+                    id
+                    attributes {
+                      name
+                      alternativeText
+                      caption
+                      width
+                      height
+                      url
+                    }
+                  }
+                }
+              }
             }
           }
         }

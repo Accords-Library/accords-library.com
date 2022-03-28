@@ -1,0 +1,10 @@
+{
+  "extends": ["development"],
+  "hints": {
+    "no-inline-styles": "off",
+    "apple-touch-icons": "off",
+    "compat-api/html": "off",
+    "axe/text-alternatives": "off",
+    "axe/parsing": "off"
+  }
+}

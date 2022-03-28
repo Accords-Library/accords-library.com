@@ -1,14 +1,11 @@
 import AppLayout from "components/AppLayout";
-import { getWebsiteInterface } from "graphql/operations";
-import { GetWebsiteInterfaceQuery } from "graphql/operations-types";
-import { GetStaticProps } from "next";
+import { GetStaticPropsContext } from "next";
+import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 
-type GalleryProps = {
-  langui: GetWebsiteInterfaceQuery;
-};
+interface GalleryProps extends AppStaticProps {}
 
 export default function Gallery(props: GalleryProps): JSX.Element {
-  const langui = props.langui.websiteInterfaces.data[0].attributes;
+  const { langui } = props;
   const contentPanel = (
     <iframe
       className="w-full h-screen"
@@ -18,23 +15,20 @@ export default function Gallery(props: GalleryProps): JSX.Element {
 
   return (
     <AppLayout
-      navTitle={langui.main_gallery}
-      langui={langui}
+      navTitle={langui.gallery}
       contentPanel={contentPanel}
+      {...props}
     />
   );
 }
 
-export const getStaticProps: GetStaticProps = async (context) => {
-  if (context.locale) {
-    const props: GalleryProps = {
-      langui: await getWebsiteInterface({
-        language_code: context.locale,
-      }),
-    };
-    return {
-      props: props,
-    };
-  }
-  return { props: {} };
-};
+export async function getStaticProps(
+  context: GetStaticPropsContext
+): Promise<{ props: GalleryProps }> {
+  const props: GalleryProps = {
+    ...(await getAppStaticProps(context)),
+  };
+  return {
+    props: props,
+  };
+}

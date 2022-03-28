@@ -32,7 +32,7 @@ export type Scalars = {
  *
  * But to make the type easier to work with, it went through the following transformation:
  *   - Removed ?
- *   - Removed | null
+ *   - Removed
  *   - Replaced any by unknown
  */
 
@@ -68,6 +68,13 @@ export enum Enum_Componenttranslationschronologyitem_Status {
 }
 
 export enum Enum_Componentsetstextset_Status {
+  Incomplete = "Incomplete",
+  Draft = "Draft",
+  Review = "Review",
+  Done = "Done",
+}
+
+export enum Enum_Componentsetsscanset_Status {
   Incomplete = "Incomplete",
   Draft = "Draft",
   Review = "Review",
@@ -1360,6 +1367,19 @@ export type GetContentTextQuery = {
             };
           }>;
         };
+        text_set_languages: Array<{
+          __typename: "ComponentSetsTextSet";
+          language: {
+            __typename: "LanguageEntityResponse";
+            data: {
+              __typename: "LanguageEntity";
+              attributes: {
+                __typename: "Language";
+                code: string;
+              };
+            };
+          };
+        }>;
         text_set: Array<{
           __typename: "ComponentSetsTextSet";
           status: Enum_Componentsetstextset_Status;
@@ -1576,14 +1596,14 @@ export type GetPostQuery = {
       attributes: {
         __typename: "Post";
         slug: string;
-        updatedAt: unknown;
+        updatedAt: any;
+        hidden: boolean;
         date: {
           __typename: "ComponentBasicsDatepicker";
           year: number;
           month: number;
           day: number;
         };
-        hidden: boolean;
         authors: {
           __typename: "RecorderRelationResponseCollection";
           data: Array<{
@@ -1629,11 +1649,7 @@ export type GetPostQuery = {
           data: Array<{
             __typename: "CategoryEntity";
             id: string;
-            attributes: {
-              __typename: "Category";
-              name: string;
-              short: string;
-            };
+            attributes: { __typename: "Category"; name: string; short: string };
           }>;
         };
         thumbnail: {
@@ -1651,6 +1667,16 @@ export type GetPostQuery = {
             };
           };
         };
+        translations_languages: Array<{
+          __typename: "ComponentTranslationsPosts";
+          language: {
+            __typename: "LanguageEntityResponse";
+            data: {
+              __typename: "LanguageEntity";
+              attributes: { __typename: "Language"; code: string };
+            };
+          };
+        }>;
         translations: Array<{
           __typename: "ComponentTranslationsPosts";
           status: Enum_Componenttranslationsposts_Status;
@@ -1829,6 +1855,241 @@ export type GetContentLanguagesQuery = {
             };
           };
         }>;
+      };
+    }>;
+  };
+};
+
+export type GetLibraryItemScansQueryVariables = Exact<{
+  slug: InputMaybe<Scalars["String"]>;
+  language_code: InputMaybe<Scalars["String"]>;
+}>;
+
+export type GetLibraryItemScansQuery = {
+  __typename: "Query";
+  libraryItems: {
+    __typename: "LibraryItemEntityResponseCollection";
+    data: Array<{
+      __typename: "LibraryItemEntity";
+      id: string;
+      attributes: {
+        __typename: "LibraryItem";
+        slug: string;
+        title: string;
+        subtitle: string;
+        thumbnail: {
+          __typename: "UploadFileEntityResponse";
+          data: {
+            __typename: "UploadFileEntity";
+            attributes: {
+              __typename: "UploadFile";
+              name: string;
+              alternativeText: string;
+              caption: string;
+              width: number;
+              height: number;
+              url: string;
+            };
+          };
+        };
+        contents: {
+          __typename: "RangedContentRelationResponseCollection";
+          data: Array<{
+            __typename: "RangedContentEntity";
+            id: string;
+            attributes: {
+              __typename: "RangedContent";
+              slug: string;
+              range: Array<
+                | {
+                    __typename: "ComponentRangePageRange";
+                    starting_page: number;
+                    ending_page: number;
+                  }
+                | {
+                    __typename: "ComponentRangeTimeRange";
+                    starting_time: any;
+                    ending_time: any;
+                  }
+                | { __typename: "ComponentRangeOther" }
+                | { __typename: "Error" }
+              >;
+              scan_set_languages: Array<{
+                __typename: "ComponentSetsScanSet";
+                language: {
+                  __typename: "LanguageEntityResponse";
+                  data: {
+                    __typename: "LanguageEntity";
+                    attributes: {
+                      __typename: "Language";
+                      code: string;
+                    };
+                  };
+                };
+              }>;
+              scan_set: Array<{
+                __typename: "ComponentSetsScanSet";
+                status: Enum_Componentsetsscanset_Status;
+                notes: string;
+                source_language: {
+                  __typename: "LanguageEntityResponse";
+                  data: {
+                    __typename: "LanguageEntity";
+                    attributes: {
+                      __typename: "Language";
+                      code: string;
+                    };
+                  };
+                };
+                scanners: {
+                  __typename: "RecorderRelationResponseCollection";
+                  data: Array<{
+                    __typename: "RecorderEntity";
+                    id: string;
+                    attributes: {
+                      __typename: "Recorder";
+                      username: string;
+                      anonymize: boolean;
+                      anonymous_code: string;
+                      pronouns: string;
+                      bio: Array<{
+                        __typename: "ComponentTranslationsBio";
+                        bio: string;
+                      }>;
+                      languages: {
+                        __typename: "LanguageRelationResponseCollection";
+                        data: Array<{
+                          __typename: "LanguageEntity";
+                          attributes: {
+                            __typename: "Language";
+                            code: string;
+                          };
+                        }>;
+                      };
+                      avatar: {
+                        __typename: "UploadFileEntityResponse";
+                        data: {
+                          __typename: "UploadFileEntity";
+                          attributes: {
+                            __typename: "UploadFile";
+                            name: string;
+                            alternativeText: string;
+                            caption: string;
+                            width: number;
+                            height: number;
+                            url: string;
+                          };
+                        };
+                      };
+                    };
+                  }>;
+                };
+                cleaners: {
+                  __typename: "RecorderRelationResponseCollection";
+                  data: Array<{
+                    __typename: "RecorderEntity";
+                    id: string;
+                    attributes: {
+                      __typename: "Recorder";
+                      username: string;
+                      anonymize: boolean;
+                      anonymous_code: string;
+                      pronouns: string;
+                      bio: Array<{
+                        __typename: "ComponentTranslationsBio";
+                        bio: string;
+                      }>;
+                      languages: {
+                        __typename: "LanguageRelationResponseCollection";
+                        data: Array<{
+                          __typename: "LanguageEntity";
+                          attributes: {
+                            __typename: "Language";
+                            code: string;
+                          };
+                        }>;
+                      };
+                      avatar: {
+                        __typename: "UploadFileEntityResponse";
+                        data: {
+                          __typename: "UploadFileEntity";
+                          attributes: {
+                            __typename: "UploadFile";
+                            name: string;
+                            alternativeText: string;
+                            caption: string;
+                            width: number;
+                            height: number;
+                            url: string;
+                          };
+                        };
+                      };
+                    };
+                  }>;
+                };
+                typesetters: {
+                  __typename: "RecorderRelationResponseCollection";
+                  data: Array<{
+                    __typename: "RecorderEntity";
+                    id: string;
+                    attributes: {
+                      __typename: "Recorder";
+                      username: string;
+                      anonymize: boolean;
+                      anonymous_code: string;
+                      pronouns: string;
+                      bio: Array<{
+                        __typename: "ComponentTranslationsBio";
+                        bio: string;
+                      }>;
+                      languages: {
+                        __typename: "LanguageRelationResponseCollection";
+                        data: Array<{
+                          __typename: "LanguageEntity";
+                          attributes: {
+                            __typename: "Language";
+                            code: string;
+                          };
+                        }>;
+                      };
+                      avatar: {
+                        __typename: "UploadFileEntityResponse";
+                        data: {
+                          __typename: "UploadFileEntity";
+                          attributes: {
+                            __typename: "UploadFile";
+                            name: string;
+                            alternativeText: string;
+                            caption: string;
+                            width: number;
+                            height: number;
+                            url: string;
+                          };
+                        };
+                      };
+                    };
+                  }>;
+                };
+                pages: {
+                  __typename: "UploadFileRelationResponseCollection";
+                  data: Array<{
+                    __typename: "UploadFileEntity";
+                    id: string;
+                    attributes: {
+                      __typename: "UploadFile";
+                      name: string;
+                      alternativeText: string;
+                      caption: string;
+                      width: number;
+                      height: number;
+                      url: string;
+                    };
+                  }>;
+                };
+              }>;
+            };
+          }>;
+        };
       };
     }>;
   };

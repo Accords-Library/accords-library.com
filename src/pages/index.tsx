@@ -2,20 +2,20 @@ import AppLayout from "components/AppLayout";
 import LanguageSwitcher from "components/LanguageSwitcher";
 import Markdawn from "components/Markdown/Markdawn";
 import ContentPanel from "components/Panels/ContentPanel";
-import { getPost, getPostLanguages } from "graphql/operations";
+import { getPost } from "graphql/operations";
 import { GetPostQuery } from "graphql/operations-types";
 import { GetStaticPropsContext } from "next";
 import { useRouter } from "next/router";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
-import { prettySlug } from "queries/helpers";
+import { getLocalesFromLanguages, prettySlug } from "queries/helpers";
 
 interface HomeProps extends AppStaticProps {
   post: GetPostQuery["posts"]["data"][number]["attributes"];
-  locales: string[];
 }
 
 export default function Home(props: HomeProps): JSX.Element {
-  const { post, locales } = props;
+  const { post } = props;
+  const locales = getLocalesFromLanguages(post.translations_languages);
   const router = useRouter();
 
   const contentPanel = (
@@ -28,11 +28,10 @@ export default function Home(props: HomeProps): JSX.Element {
         </h2>
       </div>
       {locales.includes(router.locale ?? "en") ? (
-        <Markdawn router={router} text={post.translations[0].body} />
+        <Markdawn text={post.translations[0].body} />
       ) : (
         <LanguageSwitcher
           locales={locales}
-          router={router}
           languages={props.languages}
           langui={props.langui}
         />
@@ -65,11 +64,6 @@ export async function getStaticProps(
         language_code: context.locale ?? "en",
       })
     ).posts.data[0].attributes,
-    locales: (
-      await getPostLanguages({ slug: slug })
-    ).posts.data[0].attributes.translations.map(
-      (translation) => translation.language.data.attributes.code
-    ),
   };
   return {
     props: props,

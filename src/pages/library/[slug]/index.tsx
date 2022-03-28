@@ -106,7 +106,12 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
         )}
 
         {item.contents.data.length > 0 && (
-          <NavOption title={langui.contents} url="#contents" border />
+          <NavOption
+            title={langui.contents}
+            url="#contents"
+            border
+            onClick={() => appLayout.setSubPanelOpen(false)}
+          />
         )}
       </div>
     </SubPanel>

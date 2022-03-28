@@ -1,5 +1,4 @@
 import ToolTip from "components/ToolTip";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { MouseEventHandler } from "react";
 
@@ -35,27 +34,32 @@ export default function NavOption(props: NavOptionProps): JSX.Element {
       className="text-left"
       disabled={!props.reduced}
     >
-      <Link href={props.url} passHref>
-        <div
-          onClick={props.onClick}
-          className={`relative grid grid-flow-col grid-cols-[auto] auto-cols-fr justify-center ${
-            props.icon ? "text-left" : "text-center"
-          } ${divCommon}`}
-        >
-          {props.icon && (
-            <span className="material-icons mt-[.1em]">{props.icon}</span>
-          )}
+      <div
+        onClick={(event) => {
+          if (props.onClick) props.onClick(event);
+          if (props.url) {
+            if (props.url.startsWith("#")) {
+              router.replace(props.url);
+            } else {
+              router.push(props.url);
+            }
+          }
+        }}
+        className={`relative grid grid-flow-col grid-cols-[auto] auto-cols-fr justify-center ${
+          props.icon ? "text-left" : "text-center"
+        } ${divCommon}`}
+      >
+        {props.icon && (
+          <span className="material-icons mt-[.1em]">{props.icon}</span>
+        )}
 
-          {!props.reduced && (
-            <div>
-              <h3 className="text-2xl">{props.title}</h3>
-              {props.subtitle && (
-                <p className="col-start-2">{props.subtitle}</p>
-              )}
-            </div>
-          )}
-        </div>
-      </Link>
+        {!props.reduced && (
+          <div>
+            <h3 className="text-2xl">{props.title}</h3>
+            {props.subtitle && <p className="col-start-2">{props.subtitle}</p>}
+          </div>
+        )}
+      </div>
     </ToolTip>
   );
 }

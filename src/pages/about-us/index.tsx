@@ -22,7 +22,7 @@ export default function AboutUs(props: AboutUsProps): JSX.Element {
         border
       />
       <NavOption title={langui.legality} url="/about-us/legality" border />
-      <NavOption title={langui.members} url="/about-us/members" border />
+      {/* <NavOption title={langui.members} url="/about-us/members" border /> */}
       <NavOption
         title={langui.sharing_policy}
         url="/about-us/sharing-policy"

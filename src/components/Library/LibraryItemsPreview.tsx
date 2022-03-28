@@ -63,7 +63,7 @@ export default function LibraryItemsPreview(
             ))}
           </div>
 
-          {(item.release_date ?? item.price) && (
+          {(item.release_date || item.price) && (
             <div className="grid grid-flow-col w-full">
               {item.release_date && (
                 <p className="mobile:text-xs text-sm">

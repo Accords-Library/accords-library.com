@@ -7,6 +7,7 @@ import ReturnButton, {
 } from "components/PanelComponents/ReturnButton";
 import ContentPanel from "components/Panels/ContentPanel";
 import SubPanel from "components/Panels/SubPanel";
+import { useAppLayout } from "contexts/AppLayoutContext";
 import { getChronologyItems, getEras } from "graphql/operations";
 import {
   GetChronologyItemsQuery,
@@ -29,6 +30,7 @@ interface ChronologyProps extends AppStaticProps {
 export default function Chronology(props: ChronologyProps): JSX.Element {
   useTesting(props);
   const { chronologyItems, chronologyEras, langui } = props;
+  const appLayout = useAppLayout();
 
   // Group by year the Chronology items
   const chronologyItemYearGroups: GetChronologyItemsQuery["chronologyItems"]["data"][number][][][] =
@@ -83,6 +85,7 @@ export default function Chronology(props: ChronologyProps): JSX.Element {
           }
           subtitle={`${era.attributes.starting_year} → ${era.attributes.ending_year}`}
           border
+          onClick={() => appLayout.setSubPanelOpen(false)}
         />
       ))}
     </SubPanel>

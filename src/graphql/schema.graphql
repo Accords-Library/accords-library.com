@@ -242,6 +242,24 @@ type ComponentBasicsDatepicker {
   day: Int
 }
 
+enum ENUM_COMPONENTBASICSFILESIZE_UNIT {
+  kb
+  mb
+  gb
+}
+
+input ComponentBasicsFileSizeInput {
+  id: ID
+  size: Float
+  unit: ENUM_COMPONENTBASICSFILESIZE_UNIT
+}
+
+type ComponentBasicsFileSize {
+  id: ID!
+  size: Float!
+  unit: ENUM_COMPONENTBASICSFILESIZE_UNIT!
+}
+
 input ComponentBasicsPriceInput {
   id: ID
   amount: Float
@@ -1268,6 +1286,29 @@ type ComponentTranslationsWeaponStory {
   language: LanguageEntityResponse
 }
 
+input ComponentTranslationsWebArchivesFiltersInput {
+  language: LanguageFiltersInput
+  description: StringFilterInput
+  notes: StringFilterInput
+  and: [ComponentTranslationsWebArchivesFiltersInput]
+  or: [ComponentTranslationsWebArchivesFiltersInput]
+  not: ComponentTranslationsWebArchivesFiltersInput
+}
+
+input ComponentTranslationsWebArchivesInput {
+  id: ID
+  language: ID
+  description: String
+  notes: String
+}
+
+type ComponentTranslationsWebArchives {
+  id: ID!
+  language: LanguageEntityResponse
+  description: String
+  notes: String
+}
+
 input UploadFileFiltersInput {
   id: IDFilterInput
   name: StringFilterInput
@@ -2137,6 +2178,7 @@ input PostInput {
   translations: [ComponentTranslationsPostsInput]
   hidden: Boolean
   thumbnail: ID
+  date: ComponentBasicsDatepickerInput
 }
 
 type Post {
@@ -2158,6 +2200,7 @@ type Post {
   ): [ComponentTranslationsPosts]
   hidden: Boolean!
   thumbnail: UploadFileEntityResponse
+  date: ComponentBasicsDatepicker!
   createdAt: DateTime
   updatedAt: DateTime
 }
@@ -2554,6 +2597,76 @@ type WeaponStoryTypeEntityResponseCollection {
   meta: ResponseCollectionMeta!
 }
 
+enum ENUM_WEBARCHIVE_TYPE {
+  website
+  webpage
+  online_doc
+}
+
+enum ENUM_WEBARCHIVE_FORMAT {
+  zip
+  wacz
+}
+
+input WebArchiveFiltersInput {
+  id: IDFilterInput
+  type: StringFilterInput
+  source_url: StringFilterInput
+  format: StringFilterInput
+  num_pages: IntFilterInput
+  author: StringFilterInput
+  still_online: BooleanFilterInput
+  createdAt: DateTimeFilterInput
+  updatedAt: DateTimeFilterInput
+  and: [WebArchiveFiltersInput]
+  or: [WebArchiveFiltersInput]
+  not: WebArchiveFiltersInput
+}
+
+input WebArchiveInput {
+  type: ENUM_WEBARCHIVE_TYPE
+  source_url: String
+  format: ENUM_WEBARCHIVE_FORMAT
+  date: ComponentBasicsDatepickerInput
+  num_pages: Int
+  author: String
+  still_online: Boolean
+  size: ComponentBasicsFileSizeInput
+  descriptions: [ComponentTranslationsWebArchivesInput]
+}
+
+type WebArchive {
+  type: ENUM_WEBARCHIVE_TYPE!
+  source_url: String!
+  format: ENUM_WEBARCHIVE_FORMAT!
+  date: ComponentBasicsDatepicker!
+  num_pages: Int
+  author: String
+  still_online: Boolean!
+  size: ComponentBasicsFileSize!
+  descriptions(
+    filters: ComponentTranslationsWebArchivesFiltersInput
+    pagination: PaginationArg = {}
+    sort: [String] = []
+  ): [ComponentTranslationsWebArchives]
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+type WebArchiveEntity {
+  id: ID
+  attributes: WebArchive
+}
+
+type WebArchiveEntityResponse {
+  data: WebArchiveEntity
+}
+
+type WebArchiveEntityResponseCollection {
+  data: [WebArchiveEntity!]!
+  meta: ResponseCollectionMeta!
+}
+
 input WebsiteInterfaceFiltersInput {
   id: IDFilterInput
   library: StringFilterInput
@@ -2668,6 +2781,23 @@ input WebsiteInterfaceFiltersInput {
   content: StringFilterInput
   result: StringFilterInput
   results: StringFilterInput
+  language_switch_message: StringFilterInput
+  open_settings: StringFilterInput
+  change_language: StringFilterInput
+  open_search: StringFilterInput
+  chronology: StringFilterInput
+  accords_handbook: StringFilterInput
+  legality: StringFilterInput
+  members: StringFilterInput
+  sharing_policy: StringFilterInput
+  contact_us: StringFilterInput
+  email: StringFilterInput
+  email_gdpr_notice: StringFilterInput
+  message: StringFilterInput
+  send: StringFilterInput
+  response_invalid_code: StringFilterInput
+  response_invalid_email: StringFilterInput
+  response_email_success: StringFilterInput
   createdAt: DateTimeFilterInput
   updatedAt: DateTimeFilterInput
   and: [WebsiteInterfaceFiltersInput]
@@ -2788,6 +2918,23 @@ input WebsiteInterfaceInput {
   content: String
   result: String
   results: String
+  language_switch_message: String
+  open_settings: String
+  change_language: String
+  open_search: String
+  chronology: String
+  accords_handbook: String
+  legality: String
+  members: String
+  sharing_policy: String
+  contact_us: String
+  email: String
+  email_gdpr_notice: String
+  message: String
+  send: String
+  response_invalid_code: String
+  response_invalid_email: String
+  response_email_success: String
 }
 
 type WebsiteInterface {
@@ -2903,6 +3050,23 @@ type WebsiteInterface {
   content: String
   result: String
   results: String
+  language_switch_message: String
+  open_settings: String
+  change_language: String
+  open_search: String
+  chronology: String
+  accords_handbook: String
+  legality: String
+  members: String
+  sharing_policy: String
+  contact_us: String
+  email: String
+  email_gdpr_notice: String
+  message: String
+  send: String
+  response_invalid_code: String
+  response_invalid_email: String
+  response_email_success: String
   createdAt: DateTime
   updatedAt: DateTime
 }
@@ -3009,6 +3173,7 @@ type WikiPageTypeEntityResponseCollection {
 union GenericMorph =
     ComponentBasicsCredits
   | ComponentBasicsDatepicker
+  | ComponentBasicsFileSize
   | ComponentBasicsPrice
   | ComponentBasicsSize
   | ComponentCollectionsComponentEvent
@@ -3060,6 +3225,7 @@ union GenericMorph =
   | ComponentTranslationsWeaponStoryStory
   | ComponentTranslationsWeaponStoryType
   | ComponentTranslationsWeaponStory
+  | ComponentTranslationsWebArchives
   | UploadFile
   | AudioSubtype
   | Category
@@ -3085,6 +3251,7 @@ union GenericMorph =
   | WeaponStory
   | WeaponStoryGroup
   | WeaponStoryType
+  | WebArchive
   | WebsiteInterface
   | WikiPage
   | WikiPageType
@@ -3253,6 +3420,12 @@ type Query {
     pagination: PaginationArg = {}
     sort: [String] = []
   ): WeaponStoryTypeEntityResponseCollection
+  webArchive(id: ID): WebArchiveEntityResponse
+  webArchives(
+    filters: WebArchiveFiltersInput
+    pagination: PaginationArg = {}
+    sort: [String] = []
+  ): WebArchiveEntityResponseCollection
   websiteInterface(id: ID): WebsiteInterfaceEntityResponse
   websiteInterfaces(
     filters: WebsiteInterfaceFiltersInput
@@ -3394,6 +3567,9 @@ type Mutation {
     data: WeaponStoryTypeInput!
   ): WeaponStoryTypeEntityResponse
   deleteWeaponStoryType(id: ID!): WeaponStoryTypeEntityResponse
+  createWebArchive(data: WebArchiveInput!): WebArchiveEntityResponse
+  updateWebArchive(id: ID!, data: WebArchiveInput!): WebArchiveEntityResponse
+  deleteWebArchive(id: ID!): WebArchiveEntityResponse
   createWebsiteInterface(
     data: WebsiteInterfaceInput!
   ): WebsiteInterfaceEntityResponse

@@ -4,7 +4,6 @@ import ContentPanel, {
   ContentPanelWidthSizes,
 } from "components/Panels/ContentPanel";
 import { GetStaticPropsContext } from "next";
-import { useRouter } from "next/router";
 import Script from "next/script";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 import { useCallback, useState } from "react";
@@ -13,8 +12,6 @@ import { default as TurndownService } from "turndown";
 interface EditorProps extends AppStaticProps {}
 
 export default function Editor(props: EditorProps): JSX.Element {
-  const router = useRouter();
-
   const handleInput = useCallback((event) => {
     setMarkdown(event.target.value);
   }, []);
@@ -77,7 +74,7 @@ export default function Editor(props: EditorProps): JSX.Element {
         <div>
           <h2>Preview</h2>
           <div className="bg-mid rounded-xl p-8">
-            <Markdawn router={router} className="max-w-full" text={markdown} />
+            <Markdawn className="max-w-full" text={markdown} />
           </div>
         </div>
       </div>

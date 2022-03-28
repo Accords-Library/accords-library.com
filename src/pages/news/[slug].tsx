@@ -12,7 +12,7 @@ import ContentPanel from "components/Panels/ContentPanel";
 import SubPanel from "components/Panels/SubPanel";
 import RecorderChip from "components/RecorderChip";
 import ToolTip from "components/ToolTip";
-import { getPost, getPostLanguages, getPostsSlugs } from "graphql/operations";
+import { getPost, getPostsSlugs } from "graphql/operations";
 import { GetPostQuery, StrapiImage } from "graphql/operations-types";
 import {
   GetStaticPathsContext,
@@ -21,16 +21,20 @@ import {
 } from "next";
 import { useRouter } from "next/router";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
-import { getStatusDescription, prettySlug } from "queries/helpers";
+import {
+  getLocalesFromLanguages,
+  getStatusDescription,
+  prettySlug,
+} from "queries/helpers";
 
 interface PostProps extends AppStaticProps {
   post: GetPostQuery["posts"]["data"][number]["attributes"];
   postId: GetPostQuery["posts"]["data"][number]["id"];
-  locales: string[];
 }
 
 export default function LibrarySlug(props: PostProps): JSX.Element {
-  const { post, locales, langui } = props;
+  const { post, langui } = props;
+  const locales = getLocalesFromLanguages(post.translations_languages);
   const router = useRouter();
 
   const thumbnail: StrapiImage | undefined =
@@ -79,7 +83,6 @@ export default function LibrarySlug(props: PostProps): JSX.Element {
       {post.translations.length > 0 && post.translations[0].body && (
         <TOC
           text={post.translations[0].body}
-          router={router}
           title={post.translations[0].title}
         />
       )}
@@ -114,11 +117,10 @@ export default function LibrarySlug(props: PostProps): JSX.Element {
       <HorizontalLine />
 
       {locales.includes(router.locale ?? "en") ? (
-        <Markdawn router={router} text={post.translations[0].body} />
+        <Markdawn text={post.translations[0].body} />
       ) : (
         <LanguageSwitcher
           locales={locales}
-          router={router}
           languages={props.languages}
           langui={props.langui}
         />
@@ -156,11 +158,6 @@ export async function getStaticProps(
     ...(await getAppStaticProps(context)),
     post: post.attributes,
     postId: post.id,
-    locales: (
-      await getPostLanguages({ slug: slug })
-    ).posts.data[0].attributes.translations.map(
-      (translation) => translation.language.data.attributes.code
-    ),
   };
   return {
     props: props,

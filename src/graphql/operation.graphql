@@ -1011,6 +1011,15 @@ query getContentText($slug: String, $language_code: String) {
             }
           }
         }
+        text_set_languages: text_set {
+          language {
+            data {
+              attributes {
+                code
+              }
+            }
+          }
+        }
         text_set(filters: { language: { code: { eq: $language_code } } }) {
           status
           text
@@ -1233,6 +1242,15 @@ query getPost($slug: String, $language_code: String) {
             }
           }
         }
+        translations_languages: translations {
+          language {
+            data {
+              attributes {
+                code
+              }
+            }
+          }
+        }
         translations(filters: { language: { code: { eq: $language_code } } }) {
           status
           title
@@ -1319,24 +1337,6 @@ query getPostsPreview($language_code: String) {
   }
 }
 
-query getPostLanguages($slug: String) {
-  posts(filters: { slug: { eq: $slug } }) {
-    data {
-      attributes {
-        translations {
-          language {
-            data {
-              attributes {
-                code
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-}
-
 query getContentLanguages($slug: String) {
   contents(filters: { slug: { eq: $slug } }) {
     data {
@@ -1364,6 +1364,195 @@ query getContentLanguages($slug: String) {
             data {
               attributes {
                 code
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+query getLibraryItemScans($slug: String, $language_code: String) {
+  libraryItems(filters: { slug: { eq: $slug } }) {
+    data {
+      id
+      attributes {
+        slug
+        title
+        subtitle
+        thumbnail {
+          data {
+            attributes {
+              name
+              alternativeText
+              caption
+              width
+              height
+              url
+            }
+          }
+        }
+        contents(pagination: { limit: -1 }) {
+          data {
+            id
+            attributes {
+              slug
+              range {
+                __typename
+                ... on ComponentRangePageRange {
+                  starting_page
+                  ending_page
+                }
+                ... on ComponentRangeTimeRange {
+                  starting_time
+                  ending_time
+                }
+              }
+              scan_set_languages: scan_set {
+                language {
+                  data {
+                    attributes {
+                      code
+                    }
+                  }
+                }
+              }
+              scan_set(
+                filters: {
+                  or: [
+                    { language: { code: { eq: "xx" } } }
+                    { language: { code: { eq: $language_code } } }
+                  ]
+                }
+              ) {
+                status
+                source_language {
+                  data {
+                    attributes {
+                      code
+                    }
+                  }
+                }
+                scanners {
+                  data {
+                    id
+                    attributes {
+                      username
+                      anonymize
+                      anonymous_code
+                      pronouns
+                      bio(
+                        filters: { language: { code: { eq: $language_code } } }
+                      ) {
+                        bio
+                      }
+                      languages {
+                        data {
+                          attributes {
+                            code
+                          }
+                        }
+                      }
+                      avatar {
+                        data {
+                          attributes {
+                            name
+                            alternativeText
+                            caption
+                            width
+                            height
+                            url
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+                cleaners {
+                  data {
+                    id
+                    attributes {
+                      username
+                      anonymize
+                      anonymous_code
+                      pronouns
+                      bio(
+                        filters: { language: { code: { eq: $language_code } } }
+                      ) {
+                        bio
+                      }
+                      languages {
+                        data {
+                          attributes {
+                            code
+                          }
+                        }
+                      }
+                      avatar {
+                        data {
+                          attributes {
+                            name
+                            alternativeText
+                            caption
+                            width
+                            height
+                            url
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+                typesetters {
+                  data {
+                    id
+                    attributes {
+                      username
+                      anonymize
+                      anonymous_code
+                      pronouns
+                      bio(
+                        filters: { language: { code: { eq: $language_code } } }
+                      ) {
+                        bio
+                      }
+                      languages {
+                        data {
+                          attributes {
+                            code
+                          }
+                        }
+                      }
+                      avatar {
+                        data {
+                          attributes {
+                            name
+                            alternativeText
+                            caption
+                            width
+                            height
+                            url
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+                notes
+                pages(pagination: { limit: -1 }) {
+                  data {
+                    id
+                    attributes {
+                      name
+                      alternativeText
+                      caption
+                      width
+                      height
+                      url
+                    }
+                  }
+                }
               }
             }
           }

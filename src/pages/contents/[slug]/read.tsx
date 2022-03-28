@@ -13,11 +13,7 @@ import ContentPanel from "components/Panels/ContentPanel";
 import SubPanel from "components/Panels/SubPanel";
 import RecorderChip from "components/RecorderChip";
 import ToolTip from "components/ToolTip";
-import {
-  getContentLanguages,
-  getContentsSlugs,
-  getContentText,
-} from "graphql/operations";
+import { getContentsSlugs, getContentText } from "graphql/operations";
 import { GetContentTextQuery } from "graphql/operations-types";
 import {
   GetStaticPathsContext,
@@ -27,6 +23,7 @@ import {
 import { useRouter } from "next/router";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 import {
+  getLocalesFromLanguages,
   getStatusDescription,
   prettyinlineTitle,
   prettyLanguage,
@@ -38,13 +35,13 @@ import {
 interface ContentReadProps extends AppStaticProps {
   content: GetContentTextQuery["contents"]["data"][number]["attributes"];
   contentId: GetContentTextQuery["contents"]["data"][number]["id"];
-  locales: string[];
 }
 
 export default function ContentRead(props: ContentReadProps): JSX.Element {
   useTesting(props);
-  const { langui, content, languages, locales } = props;
+  const { langui, content, languages } = props;
   const router = useRouter();
+  const locales = getLocalesFromLanguages(content.text_set_languages);
 
   const subPanel = (
     <SubPanel>
@@ -146,7 +143,6 @@ export default function ContentRead(props: ContentReadProps): JSX.Element {
           <HorizontalLine />
           <TOC
             text={content.text_set[0].text}
-            router={router}
             title={
               content.titles.length > 0
                 ? prettyinlineTitle(
@@ -197,11 +193,10 @@ export default function ContentRead(props: ContentReadProps): JSX.Element {
         <HorizontalLine />
 
         {locales.includes(router.locale ?? "en") ? (
-          <Markdawn router={router} text={content.text_set[0].text} />
+          <Markdawn text={content.text_set[0].text} />
         ) : (
           <LanguageSwitcher
             locales={locales}
-            router={router}
             languages={props.languages}
             langui={props.langui}
           />
@@ -263,11 +258,6 @@ export async function getStaticProps(
     ...(await getAppStaticProps(context)),
     content: content.attributes,
     contentId: content.id,
-    locales: (
-      await getContentLanguages({ slug: slug })
-    ).contents.data[0].attributes.text_set.map(
-      (translation) => translation.language.data.attributes.code
-    ),
   };
   return {
     props: props,

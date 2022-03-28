@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://accords-library.com
+
+# Sitemaps
+Sitemap: https://accords-library.com/sitemap.xml

@@ -5,7 +5,7 @@ import { useMediaMobile } from "hooks/useMediaQuery";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { AppStaticProps } from "queries/getAppStaticProps";
-import { getOgImage, OgImage } from "queries/helpers";
+import { getOgImage, OgImage, prettyLanguage } from "queries/helpers";
 import { useEffect, useState } from "react";
 import { useSwipeable } from "react-swipeable";
 import { ImageQuality } from "./Img";
@@ -242,15 +242,15 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
         >
           <h2 className="text-2xl">{langui.select_language}</h2>
           <div className="flex flex-wrap flex-row gap-2 mobile:flex-col">
-            {languages.map((language) => (
+            {router.locales?.map((locale) => (
               <Button
-                key={language.id}
-                active={language.attributes.code === router.locale}
+                key={locale}
+                active={locale === router.locale}
                 href={router.asPath}
-                locale={language.attributes.code}
+                locale={locale}
                 onClick={() => appLayout.setLanguagePanelOpen(false)}
               >
-                {language.attributes.localized_name}
+                {prettyLanguage(locale, languages)}
               </Button>
             ))}
           </div>

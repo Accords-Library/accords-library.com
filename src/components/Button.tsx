@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { useRouter } from "next/router";
 import { MouseEventHandler } from "react";
 
 type ButtonProps = {
@@ -12,6 +12,8 @@ type ButtonProps = {
 };
 
 export default function Button(props: ButtonProps): JSX.Element {
+  const router = useRouter();
+
   const button = (
     <div
       id={props.id}
@@ -28,12 +30,16 @@ export default function Button(props: ButtonProps): JSX.Element {
     </div>
   );
 
-  const result = props.href ? (
-    <Link href={props.href} locale={props.locale} passHref>
+  return (
+    <div
+      onClick={() => {
+        if (props.href || props.locale)
+          router.push(props.href ?? router.asPath, props.href, {
+            locale: props.locale,
+          });
+      }}
+    >
       {button}
-    </Link>
-  ) : (
-    button
+    </div>
   );
-  return result;
 }

@@ -9,6 +9,7 @@ import { getPostsPreview } from "graphql/operations";
 import { GetPostsPreviewQuery } from "graphql/operations-types";
 import { GetStaticPropsContext } from "next";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
+import { prettyDate } from "queries/helpers";
 
 interface NewsProps extends AppStaticProps {
   posts: GetPostsPreviewQuery["posts"]["data"];
@@ -16,6 +17,17 @@ interface NewsProps extends AppStaticProps {
 
 export default function News(props: NewsProps): JSX.Element {
   const { langui, posts } = props;
+
+  posts
+    .sort((a, b) => {
+      const dateA =
+        a.attributes.date === null ? "9999" : prettyDate(a.attributes.date);
+      const dateB =
+        b.attributes.date === null ? "9999" : prettyDate(b.attributes.date);
+      return dateA.localeCompare(dateB);
+    })
+    .reverse();
+
   const subPanel = (
     <SubPanel>
       <PanelHeader

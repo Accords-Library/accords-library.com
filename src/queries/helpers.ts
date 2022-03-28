@@ -280,19 +280,19 @@ export function slugify(string: string | undefined): string {
     return "";
   }
   return string
-    .replace(/[ÀÁÂÃÄÅàáâãäåæÆ]/u, "a")
-    .replace(/[çÇ]/u, "c")
-    .replace(/[ðÐ]/u, "d")
-    .replace(/[ÈÉÊËéèêë]/u, "e")
-    .replace(/[ÏïÎîÍíÌì]/u, "i")
-    .replace(/[Ññ]/u, "n")
-    .replace(/[øØœŒÕõÔôÓóÒò]/u, "o")
-    .replace(/[ÜüÛûÚúÙù]/u, "u")
-    .replace(/[ŸÿÝý]/u, "y")
-    .replace(/[^a-z0-9- ]/iu, "")
+    .replace(/[ÀÁÂÃÄÅàáâãäåæÆ]/g, "a")
+    .replace(/[çÇ]/gu, "c")
+    .replace(/[ðÐ]/gu, "d")
+    .replace(/[ÈÉÊËéèêë]/gu, "e")
+    .replace(/[ÏïÎîÍíÌì]/gu, "i")
+    .replace(/[Ññ]/gu, "n")
+    .replace(/[øØœŒÕõÔôÓóÒò]/gu, "o")
+    .replace(/[ÜüÛûÚúÙù]/gu, "u")
+    .replace(/[ŸÿÝý]/gu, "y")
+    .toLowerCase()
+    .replace(/[^a-z0-9- ]/gu, "")
     .trim()
-    .replace(/ /iu, "-")
-    .toLowerCase();
+    .replace(/ /gu, "-");
 }
 
 export function randomInt(min: number, max: number) {

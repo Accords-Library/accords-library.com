@@ -1,11 +1,44 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import getConfig from "next/config";
 
-export type RequestMailProps = {
+export type RequestMailProps =
+  | HookRangedContent
+  | HookPostContent
+  | HookLibraryItem
+  | HookChronology;
+
+export type HookRangedContent = {
   event: "entry.update" | "entry.delete" | "entry.create";
-  model: string;
+  model: "ranged-content";
+  entry: {
+    library_item?: {
+      slug: string;
+    };
+    content?: {
+      slug: string;
+    };
+  };
+};
+
+export type HookPostContent = {
+  event: "entry.update" | "entry.delete" | "entry.create";
+  model: "post";
   entry: {
     slug: string;
   };
+};
+
+export type HookLibraryItem = {
+  event: "entry.update" | "entry.delete" | "entry.create";
+  model: "library-item";
+  entry: {
+    slug: string;
+  };
+};
+
+export type HookChronology = {
+  event: "entry.update" | "entry.delete" | "entry.create";
+  model: "chronology-era" | "chronology-item";
 };
 
 export type ResponseMailProps = {
@@ -19,6 +52,7 @@ export default async function Mail(
 ) {
   console.log(req.body);
   const body = req.body as RequestMailProps;
+  const { serverRuntimeConfig } = getConfig();
 
   // Check for secret to confirm this is a valid request
   if (
@@ -29,16 +63,67 @@ export default async function Mail(
       .json({ message: "Invalid token", revalidated: false });
   }
 
-  const uRLsToRevalidate: string[] = [];
+  const paths: string[] = [];
 
-  if (body.model === "post") {
-    uRLsToRevalidate.push(`/news/${body.entry.slug}`);
+  switch (body.model) {
+    case "post": {
+      paths.push(`/news`);
+      paths.push(`/news/${body.entry.slug}`);
+      serverRuntimeConfig.locales?.map((locale: string) => {
+        paths.push(`/${locale}/news/${body.entry.slug}`);
+        paths.push(`/${locale}/news`);
+      });
+      break;
+    }
+
+    case "library-item": {
+      paths.push(`/library`);
+      paths.push(`/library/${body.entry.slug}`);
+      serverRuntimeConfig.locales?.map((locale: string) => {
+        paths.push(`/${locale}/library/${body.entry.slug}`);
+        paths.push(`/${locale}/library`);
+      });
+      break;
+    }
+
+    case "chronology-era":
+    case "chronology-item": {
+      paths.push(`/wiki/chronology`);
+      serverRuntimeConfig.locales?.map((locale: string) => {
+        paths.push(`/${locale}/wiki/chronology`);
+      });
+      break;
+    }
+
+    case "ranged-content": {
+      if (body.entry.library_item) {
+        paths.push(`/library/${body.entry.library_item.slug}`);
+        paths.push(`/library/${body.entry.library_item.slug}/scans`);
+      }
+      serverRuntimeConfig.locales?.map((locale: string) => {
+        if (body.entry.library_item) {
+          paths.push(`/${locale}/library/${body.entry.library_item.slug}`);
+          paths.push(
+            `/${locale}/library/${body.entry.library_item.slug}/scans`
+          );
+        }
+      });
+
+      break;
+    }
+
+    default:
+      break;
   }
 
-  console.table(uRLsToRevalidate);
+  console.table(paths);
 
   try {
-    uRLsToRevalidate.map(async (url) => await res.unstable_revalidate(url));
+    Promise.all(
+      paths.map(async (path) => {
+        await res.unstable_revalidate(path);
+      })
+    );
     return res.json({ message: "Success!", revalidated: true });
   } catch (err) {
     // If there was an error, Next.js will continue

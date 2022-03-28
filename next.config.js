@@ -1,13 +1,23 @@
 /** @type {import('next').NextConfig} */
+
+/* CONFIG */
+
+const locales = ["en", "fr", "ja", "es", "pt-br"];
+
+/* END CONFIG */
+
 module.exports = {
   swcMinify: true,
   reactStrictMode: true,
   i18n: {
-    locales: ["en", "fr", "ja", "es", "pt-br"],
+    locales: locales,
     defaultLocale: "en",
   },
   images: {
     domains: ["img.accords-library.com"],
+  },
+  serverRuntimeConfig: {
+    locales: locales,
   },
   async redirects() {
     return [

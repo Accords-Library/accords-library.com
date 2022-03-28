@@ -8,27 +8,27 @@ import ReturnButton, {
 } from "components/PanelComponents/ReturnButton";
 import ContentPanel from "components/Panels/ContentPanel";
 import SubPanel from "components/Panels/SubPanel";
-import { getPost, getPostLanguages } from "graphql/operations";
+import { getPost } from "graphql/operations";
 import { GetPostQuery } from "graphql/operations-types";
 import { GetStaticPropsContext } from "next";
 import { useRouter } from "next/router";
 import { RequestMailProps, ResponseMailProps } from "pages/api/mail";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
-import { randomInt } from "queries/helpers";
+import { getLocalesFromLanguages, randomInt } from "queries/helpers";
 import { useState } from "react";
 
 interface ContactProps extends AppStaticProps {
   post: GetPostQuery["posts"]["data"][number]["attributes"];
-  locales: string[];
 }
 
 export default function AboutUs(props: ContactProps): JSX.Element {
-  const { langui, post, locales } = props;
+  const { langui, post } = props;
   const router = useRouter();
   const [formResponse, setFormResponse] = useState("");
   const [formState, setFormState] = useState<"completed" | "ongoing" | "stale">(
     "stale"
   );
+  const locales = getLocalesFromLanguages(post.translations_languages);
 
   const [randomNumber1, setRandomNumber1] = useState(randomInt(0, 10));
   const [randomNumber2, setRandomNumber2] = useState(randomInt(0, 10));
@@ -45,7 +45,6 @@ export default function AboutUs(props: ContactProps): JSX.Element {
       {post.translations.length > 0 && post.translations[0].body && (
         <TOC
           text={post.translations[0].body}
-          router={router}
           title={post.translations[0].title}
         />
       )}
@@ -62,11 +61,10 @@ export default function AboutUs(props: ContactProps): JSX.Element {
         className="mb-10"
       />
       {locales.includes(router.locale ?? "en") ? (
-        <Markdawn router={router} text={post.translations[0].body} />
+        <Markdawn text={post.translations[0].body} />
       ) : (
         <LanguageSwitcher
           locales={locales}
-          router={router}
           languages={props.languages}
           langui={props.langui}
         />
@@ -236,11 +234,6 @@ export async function getStaticProps(
         language_code: context.locale ?? "en",
       })
     ).posts.data[0].attributes,
-    locales: (
-      await getPostLanguages({ slug: slug })
-    ).posts.data[0].attributes.translations.map(
-      (translation) => translation.language.data.attributes.code
-    ),
   };
   return {
     props: props,

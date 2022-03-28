@@ -149,7 +149,7 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
         {/* Background when navbar is opened */}
         <div
           className={`[grid-area:content] mobile:z-10 absolute inset-0 transition-[backdrop-filter] duration-500 ${
-            (appLayout.mainPanelOpen ?? appLayout.subPanelOpen) && isMobile
+            (appLayout.mainPanelOpen || appLayout.subPanelOpen) && isMobile
               ? "[backdrop-filter:blur(2px)]"
               : "pointer-events-none touch-none "
           }`}
@@ -158,7 +158,7 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
             className={`absolute bg-shade inset-0 transition-opacity duration-500 
         ${turnSubIntoContent ? "" : ""}
         ${
-          (appLayout.mainPanelOpen ?? appLayout.subPanelOpen) && isMobile
+          (appLayout.mainPanelOpen || appLayout.subPanelOpen) && isMobile
             ? "opacity-60"
             : "opacity-0"
         }`}

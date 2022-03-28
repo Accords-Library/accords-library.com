@@ -232,9 +232,13 @@ export function getOgImage(quality: ImageQuality, image: StrapiImage): OgImage {
   };
 }
 
-export function sortContent(
-  contents: GetLibraryItemQuery["libraryItems"]["data"][number]["attributes"]["contents"]
-) {
+export function sortContent(contents: {
+  data: {
+    attributes: {
+      range: GetLibraryItemQuery["libraryItems"]["data"][number]["attributes"]["contents"]["data"][number]["attributes"]["range"];
+    };
+  }[];
+}) {
   contents.data.sort((a, b) => {
     if (
       a.attributes.range[0].__typename === "ComponentRangePageRange" &&
@@ -293,4 +297,18 @@ export function slugify(string: string | undefined): string {
 
 export function randomInt(min: number, max: number) {
   return Math.floor(Math.random() * (max - min)) + min;
+}
+
+export function getLocalesFromLanguages(
+  languages: {
+    language: {
+      data: {
+        attributes: {
+          code: string;
+        };
+      };
+    };
+  }[]
+) {
+  return languages.map((language) => language.language.data.attributes.code);
 }

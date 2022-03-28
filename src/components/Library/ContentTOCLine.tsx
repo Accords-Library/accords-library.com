@@ -16,7 +16,7 @@ type ContentTOCLineProps = {
 export default function ContentTOCLine(
   props: ContentTOCLineProps
 ): JSX.Element {
-  const { content, langui } = props;
+  const { content, langui, parentSlug } = props;
 
   const [opened, setOpened] = useState(false);
 
@@ -77,7 +77,7 @@ export default function ContentTOCLine(
 
         {content.attributes.scan_set.length > 0 && (
           <Button
-            href={`/contents/${content.attributes.content.data.attributes.slug}/scans/`}
+            href={`/library/${parentSlug}/scans#${content.attributes.slug}`}
           >
             {langui.view_scans}
           </Button>

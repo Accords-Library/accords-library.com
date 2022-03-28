@@ -1,16 +1,16 @@
-import { NextRouter } from "next/router";
+import { useRouter } from "next/router";
 import { slugify } from "queries/helpers";
 import { preprocessMarkDawn } from "./Markdawn";
 
 type TOCProps = {
   text: string;
   title?: string;
-  router: NextRouter;
 };
 
 export default function TOCComponent(props: TOCProps): JSX.Element {
-  const { router, text, title } = props;
+  const { text, title } = props;
   const toc = getTocFromMarkdawn(preprocessMarkDawn(text), title);
+  const router = useRouter();
 
   return (
     <>
@@ -21,11 +21,7 @@ export default function TOCComponent(props: TOCProps): JSX.Element {
             {<abbr title={toc.title}>{toc.title}</abbr>}
           </a>
         </p>
-        <TOCLevel
-          tocchildren={toc.children}
-          parentNumbering=""
-          router={router}
-        />
+        <TOCLevel tocchildren={toc.children} parentNumbering="" />
       </div>
     </>
   );
@@ -34,11 +30,11 @@ export default function TOCComponent(props: TOCProps): JSX.Element {
 type TOCLevelProps = {
   tocchildren: TOC[];
   parentNumbering: string;
-  router: NextRouter;
 };
 
 function TOCLevel(props: TOCLevelProps): JSX.Element {
-  const { tocchildren, parentNumbering, router } = props;
+  const router = useRouter();
+  const { tocchildren, parentNumbering } = props;
   return (
     <ol className="pl-4 text-left">
       {tocchildren.map((child, childIndex) => (
@@ -57,7 +53,6 @@ function TOCLevel(props: TOCLevelProps): JSX.Element {
           <TOCLevel
             tocchildren={child.children}
             parentNumbering={`${parentNumbering}${childIndex + 1}.`}
-            router={router}
           />
         </>
       ))}

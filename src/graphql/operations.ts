@@ -2,8 +2,6 @@ import { readFileSync } from "fs";
 import {
   GetChronologyItemsQuery,
   GetChronologyItemsQueryVariables,
-  GetContentLanguagesQuery,
-  GetContentLanguagesQueryVariables,
   GetContentQuery,
   GetContentQueryVariables,
   GetContentsQuery,
@@ -20,12 +18,12 @@ import {
   GetLanguagesQueryVariables,
   GetLibraryItemQuery,
   GetLibraryItemQueryVariables,
+  GetLibraryItemScansQuery,
+  GetLibraryItemScansQueryVariables,
   GetLibraryItemsPreviewQuery,
   GetLibraryItemsPreviewQueryVariables,
   GetLibraryItemsSlugsQuery,
   GetLibraryItemsSlugsQueryVariables,
-  GetPostLanguagesQuery,
-  GetPostLanguagesQueryVariables,
   GetPostQuery,
   GetPostQueryVariables,
   GetPostsPreviewQuery,
@@ -172,16 +170,9 @@ export async function getPostsPreview(
   return await graphQL(query, JSON.stringify(variables));
 }
 
-export async function getPostLanguages(
-  variables: GetPostLanguagesQueryVariables
-): Promise<GetPostLanguagesQuery> {
-  const query = getQueryFromOperations("getPostLanguages");
-  return await graphQL(query, JSON.stringify(variables));
-}
-
-export async function getContentLanguages(
-  variables: GetContentLanguagesQueryVariables
-): Promise<GetContentLanguagesQuery> {
-  const query = getQueryFromOperations("getContentLanguages");
+export async function getLibraryItemScans(
+  variables: GetLibraryItemScansQueryVariables
+): Promise<GetLibraryItemScansQuery> {
+  const query = getQueryFromOperations("getLibraryItemScans");
   return await graphQL(query, JSON.stringify(variables));
 }

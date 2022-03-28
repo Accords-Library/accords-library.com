@@ -5,7 +5,7 @@ import LightBox from "components/LightBox";
 import ToolTip from "components/ToolTip";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import Markdown from "markdown-to-jsx";
-import { NextRouter } from "next/router";
+import { useRouter } from "next/router";
 import { slugify } from "queries/helpers";
 import React, { useState } from "react";
 import ReactDOMServer from "react-dom/server";
@@ -13,14 +13,13 @@ import ReactDOMServer from "react-dom/server";
 type MarkdawnProps = {
   className?: string;
   text: string;
-  router: NextRouter;
 };
 
 export default function Markdawn(props: MarkdawnProps): JSX.Element {
   const appLayout = useAppLayout();
   const text = preprocessMarkDawn(props.text);
 
-  const { router } = props;
+  const router = useRouter();
 
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxImages, setLightboxImages] = useState([""]);
@@ -41,6 +40,21 @@ export default function Markdawn(props: MarkdawnProps): JSX.Element {
           options={{
             slugify: slugify,
             overrides: {
+              a: {
+                component: (compProps: {
+                  href: string;
+                  children: React.ReactNode;
+                }) => {
+                  if (compProps.href.startsWith("/")) {
+                    return (
+                      <a onClick={async () => router.push(compProps.href)}>
+                        {compProps.children}
+                      </a>
+                    );
+                  }
+                  return <a href={compProps.href}>{compProps.children}</a>;
+                },
+              },
               h1: {
                 component: (compProps: {
                   id: string;
@@ -313,7 +327,7 @@ export function preprocessMarkDawn(text: string): string {
   const visitedSlugs: string[] = [];
 
   const result = text.split("\n").map((line) => {
-    if (line === "* * *" ?? line === "---") {
+    if (line === "* * *" || line === "---") {
       scenebreakIndex += 1;
       return `<SceneBreak id="scene-break-${scenebreakIndex}">`;
     }

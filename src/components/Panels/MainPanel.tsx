@@ -109,7 +109,7 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
               </ToolTip>
             )}
 
-            <ToolTip
+            {/* <ToolTip
               content={<h3 className="text-2xl">{langui.open_search}</h3>}
               placement="right"
               className="text-left"
@@ -130,7 +130,7 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
                   search
                 </span>
               </Button>
-            </ToolTip>
+            </ToolTip> */}
           </div>
         </div>
       </div>

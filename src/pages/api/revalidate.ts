@@ -1,11 +1,13 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import getConfig from "next/config";
 
-export type RequestMailProps =
+export type RequestProps =
   | HookRangedContent
   | HookPostContent
   | HookLibraryItem
-  | HookChronology;
+  | HookChronology
+  | HookContent
+  | HookCustom;
 
 export type HookRangedContent = {
   event: "entry.update" | "entry.delete" | "entry.create";
@@ -17,6 +19,18 @@ export type HookRangedContent = {
     content?: {
       slug: string;
     };
+  };
+};
+
+export type HookCustom = {
+  model: "custom";
+  url: string;
+};
+
+export type HookContent = {
+  model: "content";
+  entry: {
+    slug: string;
   };
 };
 
@@ -51,7 +65,7 @@ export default async function Mail(
   res: NextApiResponse<ResponseMailProps>
 ) {
   console.log(req.body);
-  const body = req.body as RequestMailProps;
+  const body = req.body as RequestProps;
   const { serverRuntimeConfig } = getConfig();
 
   // Check for secret to confirm this is a valid request
@@ -86,6 +100,16 @@ export default async function Mail(
       break;
     }
 
+    case "content": {
+      paths.push(`/contents`);
+      paths.push(`/contents/${body.entry.slug}`);
+      serverRuntimeConfig.locales?.map((locale: string) => {
+        paths.push(`/${locale}/contents/${body.entry.slug}`);
+        paths.push(`/${locale}/contents`);
+      });
+      break;
+    }
+
     case "chronology-era":
     case "chronology-item": {
       paths.push(`/wiki/chronology`);
@@ -108,7 +132,15 @@ export default async function Mail(
           );
         }
       });
+      break;
+    }
 
+    case "custom": {
+      paths.push(`${body.url}`);
+      break;
+    }
+
+    case "content": {
       break;
     }
 

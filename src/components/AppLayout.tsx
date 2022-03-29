@@ -220,7 +220,7 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
           </span>
           <p
             className={`font-black font-headers text-center overflow-hidden ${
-              props.navTitle.length > 30
+              props.navTitle?.length > 30
                 ? "text-xl max-h-14"
                 : "text-2xl max-h-16"
             }`}

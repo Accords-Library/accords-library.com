@@ -54,7 +54,7 @@ export default function Home(props: HomeProps): JSX.Element {
 
 export async function getStaticProps(
   context: GetStaticPropsContext
-): Promise<{ props: HomeProps }> {
+): Promise<{ notFound: boolean } | { props: HomeProps }> {
   const slug = "home";
   const props: HomeProps = {
     ...(await getAppStaticProps(context)),

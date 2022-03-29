@@ -101,7 +101,7 @@ export default function Contents(props: ContentsProps): JSX.Element {
 
 export async function getStaticProps(
   context: GetStaticPropsContext
-): Promise<{ props: ContentsProps }> {
+): Promise<{ notFound: boolean } | { props: ContentsProps }> {
   const contents = (
     await getContents({
       language_code: context.locale ?? "en",

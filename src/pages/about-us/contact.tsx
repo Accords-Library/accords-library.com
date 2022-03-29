@@ -224,7 +224,7 @@ export default function AboutUs(props: ContactProps): JSX.Element {
 
 export async function getStaticProps(
   context: GetStaticPropsContext
-): Promise<{ props: ContactProps }> {
+): Promise<{ notFound: boolean } | { props: ContactProps }> {
   const slug = "contact";
   const props: ContactProps = {
     ...(await getAppStaticProps(context)),

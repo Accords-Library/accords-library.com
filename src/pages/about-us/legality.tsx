@@ -78,7 +78,7 @@ export default function SiteInformation(props: SiteInfoProps): JSX.Element {
 
 export async function getStaticProps(
   context: GetStaticPropsContext
-): Promise<{ props: SiteInfoProps }> {
+): Promise<{ notFound: boolean } | { props: SiteInfoProps }> {
   const slug = "legality";
   const props: SiteInfoProps = {
     ...(await getAppStaticProps(context)),

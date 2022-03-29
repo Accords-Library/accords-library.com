@@ -6,13 +6,13 @@ import ContentPanel from "components/Panels/ContentPanel";
 import { GetStaticPropsContext } from "next";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 
-interface FourOhFourProps extends AppStaticProps {}
+interface FiveHundredProps extends AppStaticProps {}
 
-export default function FourOhFour(props: FourOhFourProps): JSX.Element {
+export default function FiveHundred(props: FiveHundredProps): JSX.Element {
   const { langui } = props;
   const contentPanel = (
     <ContentPanel>
-      <h1>404 - {langui.page_not_found}</h1>
+      <h1>500 - Internal Server Error</h1>
       <ReturnButton
         href="/"
         title="Home"
@@ -21,13 +21,13 @@ export default function FourOhFour(props: FourOhFourProps): JSX.Element {
       />
     </ContentPanel>
   );
-  return <AppLayout navTitle="404" contentPanel={contentPanel} {...props} />;
+  return <AppLayout navTitle="500" contentPanel={contentPanel} {...props} />;
 }
 
 export async function getStaticProps(
   context: GetStaticPropsContext
-): Promise<{ notFound: boolean } | { props: FourOhFourProps }> {
-  const props: FourOhFourProps = {
+): Promise<{ notFound: boolean } | { props: FiveHundredProps }> {
+  const props: FiveHundredProps = {
     ...(await getAppStaticProps(context)),
   };
   return {

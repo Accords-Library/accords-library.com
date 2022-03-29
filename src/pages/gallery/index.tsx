@@ -24,7 +24,7 @@ export default function Gallery(props: GalleryProps): JSX.Element {
 
 export async function getStaticProps(
   context: GetStaticPropsContext
-): Promise<{ props: GalleryProps }> {
+): Promise<{ notFound: boolean } | { props: GalleryProps }> {
   const props: GalleryProps = {
     ...(await getAppStaticProps(context)),
   };

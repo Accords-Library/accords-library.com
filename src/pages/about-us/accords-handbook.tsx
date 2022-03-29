@@ -80,7 +80,7 @@ export default function AccordsHandbook(
 
 export async function getStaticProps(
   context: GetStaticPropsContext
-): Promise<{ props: AccordsHandbookProps }> {
+): Promise<{ notFound: boolean } | { props: AccordsHandbookProps }> {
   const slug = "accords-handbook";
   const props: AccordsHandbookProps = {
     ...(await getAppStaticProps(context)),

@@ -22,9 +22,9 @@ export default function Chronicles(props: ChroniclesProps): JSX.Element {
   );
 }
 
-export async function getStaticProps(context: GetStaticPropsContext): Promise<{
-  props: ChroniclesProps;
-}> {
+export async function getStaticProps(
+  context: GetStaticPropsContext
+): Promise<{ notFound: boolean } | { props: ChroniclesProps }> {
   const props: ChroniclesProps = {
     ...(await getAppStaticProps(context)),
   };

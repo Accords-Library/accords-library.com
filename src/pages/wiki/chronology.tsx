@@ -143,7 +143,7 @@ export default function Chronology(props: ChronologyProps): JSX.Element {
 
 export async function getStaticProps(
   context: GetStaticPropsContext
-): Promise<{ props: ChronologyProps }> {
+): Promise<{ notFound: boolean } | { props: ChronologyProps }> {
   const props: ChronologyProps = {
     ...(await getAppStaticProps(context)),
     chronologyItems: (

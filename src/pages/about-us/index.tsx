@@ -38,7 +38,7 @@ export default function AboutUs(props: AboutUsProps): JSX.Element {
 
 export async function getStaticProps(
   context: GetStaticPropsContext
-): Promise<{ props: AboutUsProps }> {
+): Promise<{ notFound: boolean } | { props: AboutUsProps }> {
   const props: AboutUsProps = {
     ...(await getAppStaticProps(context)),
   };

@@ -25,7 +25,7 @@ export default function Wiki(props: WikiProps): JSX.Element {
 
 export async function getStaticProps(
   context: GetStaticPropsContext
-): Promise<{ props: WikiProps }> {
+): Promise<{ notFound: boolean } | { props: WikiProps }> {
   const props: WikiProps = {
     ...(await getAppStaticProps(context)),
   };

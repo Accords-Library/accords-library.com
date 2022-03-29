@@ -167,7 +167,7 @@ export default function Library(props: LibraryProps): JSX.Element {
 
 export async function getStaticProps(
   context: GetStaticPropsContext
-): Promise<{ props: LibraryProps }> {
+): Promise<{ notFound: boolean } | { props: LibraryProps }> {
   const props: LibraryProps = {
     ...(await getAppStaticProps(context)),
     items: (

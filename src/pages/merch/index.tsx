@@ -22,7 +22,7 @@ export default function Merch(props: MerchProps): JSX.Element {
 
 export async function getStaticProps(
   context: GetStaticPropsContext
-): Promise<{ props: MerchProps }> {
+): Promise<{ notFound: boolean } | { props: MerchProps }> {
   const props: MerchProps = {
     ...(await getAppStaticProps(context)),
   };

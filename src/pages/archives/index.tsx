@@ -24,7 +24,7 @@ export default function Archives(props: ArchivesProps): JSX.Element {
 
 export async function getStaticProps(
   context: GetStaticPropsContext
-): Promise<{ props: ArchivesProps }> {
+): Promise<{ notFound: boolean } | { props: ArchivesProps }> {
   const props: ArchivesProps = {
     ...(await getAppStaticProps(context)),
   };

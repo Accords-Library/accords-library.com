@@ -246,7 +246,7 @@ export default function ContentRead(props: ContentReadProps): JSX.Element {
 
 export async function getStaticProps(
   context: GetStaticPropsContext
-): Promise<{ props: ContentReadProps }> {
+): Promise<{ notFound: boolean } | { props: ContentReadProps }> {
   const slug = context.params?.slug?.toString() ?? "";
   const content = (
     await getContentText({
@@ -254,6 +254,7 @@ export async function getStaticProps(
       language_code: context.locale ?? "en",
     })
   ).contents.data[0];
+  if (!content) return { notFound: true };
   const props: ContentReadProps = {
     ...(await getAppStaticProps(context)),
     content: content.attributes,

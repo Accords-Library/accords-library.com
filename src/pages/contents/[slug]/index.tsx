@@ -134,17 +134,19 @@ export default function ContentIndex(props: ContentIndexProps): JSX.Element {
   );
 }
 
-export async function getStaticProps(context: GetStaticPropsContext): Promise<{
-  props: ContentIndexProps;
-}> {
+export async function getStaticProps(
+  context: GetStaticPropsContext
+): Promise<{ notFound: boolean } | { props: ContentIndexProps }> {
+  const content = (
+    await getContent({
+      slug: context.params?.slug?.toString() ?? "",
+      language_code: context.locale ?? "en",
+    })
+  ).contents.data[0].attributes;
+  if (!content) return { notFound: true };
   const props: ContentIndexProps = {
     ...(await getAppStaticProps(context)),
-    content: (
-      await getContent({
-        slug: context.params?.slug?.toString() ?? "",
-        language_code: context.locale ?? "en",
-      })
-    ).contents.data[0].attributes,
+    content: content,
   };
   return {
     props: props,

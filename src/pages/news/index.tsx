@@ -60,7 +60,7 @@ export default function News(props: NewsProps): JSX.Element {
 
 export async function getStaticProps(
   context: GetStaticPropsContext
-): Promise<{ props: NewsProps }> {
+): Promise<{ notFound: boolean } | { props: NewsProps }> {
   const props: NewsProps = {
     ...(await getAppStaticProps(context)),
     posts: await (

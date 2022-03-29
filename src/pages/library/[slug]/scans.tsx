@@ -146,13 +146,14 @@ export default function LibrarySlug(props: Props): JSX.Element {
 
 export async function getStaticProps(
   context: GetStaticPropsContext
-): Promise<{ props: Props }> {
+): Promise<{ notFound: boolean } | { props: Props }> {
   const item = (
     await getLibraryItemScans({
       slug: context.params?.slug?.toString() ?? "",
       language_code: context.locale ?? "en",
     })
   ).libraryItems.data[0];
+  if (!item) return { notFound: true };
   const props: Props = {
     ...(await getAppStaticProps(context)),
     item: item.attributes,

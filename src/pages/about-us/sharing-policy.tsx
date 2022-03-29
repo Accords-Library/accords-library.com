@@ -78,7 +78,7 @@ export default function SharingPolicy(props: SharingPolicyProps): JSX.Element {
 
 export async function getStaticProps(
   context: GetStaticPropsContext
-): Promise<{ props: SharingPolicyProps }> {
+): Promise<{ notFound: boolean } | { props: SharingPolicyProps }> {
   const slug = "sharing-policy";
   const props: SharingPolicyProps = {
     ...(await getAppStaticProps(context)),

@@ -91,7 +91,7 @@ export default function Editor(props: EditorProps): JSX.Element {
 
 export async function getStaticProps(
   context: GetStaticPropsContext
-): Promise<{ props: EditorProps }> {
+): Promise<{ notFound: boolean } | { props: EditorProps }> {
   const props: EditorProps = {
     ...(await getAppStaticProps(context)),
   };

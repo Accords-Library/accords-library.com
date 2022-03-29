@@ -146,7 +146,7 @@ export default function LibrarySlug(props: PostProps): JSX.Element {
 
 export async function getStaticProps(
   context: GetStaticPropsContext
-): Promise<{ props: PostProps }> {
+): Promise<{ notFound: boolean } | { props: PostProps }> {
   const slug = context.params?.slug?.toString() ?? "";
   const post = (
     await getPost({
@@ -154,6 +154,7 @@ export async function getStaticProps(
       language_code: context.locale ?? "en",
     })
   ).posts.data[0];
+  if (!post) return { notFound: true };
   const props: PostProps = {
     ...(await getAppStaticProps(context)),
     post: post.attributes,

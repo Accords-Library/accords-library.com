@@ -130,8 +130,7 @@ export default function LibrarySlug(props: PostProps): JSX.Element {
 
   return (
     <AppLayout
-      navTitle={langui.news}
-      title={
+      navTitle={
         post.translations.length > 0
           ? post.translations[0].title
           : prettySlug(post.slug)

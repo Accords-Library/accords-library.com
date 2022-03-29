@@ -218,7 +218,15 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
           >
             {appLayout.mainPanelOpen ? "close" : "menu"}
           </span>
-          <p className="text-2xl font-black font-headers">{props.navTitle}</p>
+          <p
+            className={`font-black font-headers text-center overflow-hidden ${
+              props.navTitle.length > 30
+                ? "text-xl max-h-14"
+                : "text-2xl max-h-16"
+            }`}
+          >
+            {props.navTitle}
+          </p>
           <span
             className="material-icons mt-[.1em] cursor-pointer"
             onClick={() => {

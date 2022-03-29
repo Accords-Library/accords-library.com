@@ -133,7 +133,7 @@ export default function Chronology(props: ChronologyProps): JSX.Element {
 
   return (
     <AppLayout
-      navTitle="Chronology"
+      navTitle={langui.chronology}
       contentPanel={contentPanel}
       subPanel={subPanel}
       {...props}

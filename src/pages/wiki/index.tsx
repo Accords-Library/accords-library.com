@@ -16,7 +16,7 @@ export default function Wiki(props: WikiProps): JSX.Element {
         title={langui.wiki}
         description={langui.wiki_description}
       />
-      <NavOption title="Chronology" url="/wiki/chronology" border />
+      <NavOption title={langui.chronology} url="/wiki/chronology" border />
     </SubPanel>
   );
 

@@ -134,8 +134,7 @@ export default function LibrarySlug(props: Props): JSX.Element {
 
   return (
     <AppLayout
-      navTitle={langui.library}
-      title={prettyinlineTitle("", item.title, item.subtitle)}
+      navTitle={prettyinlineTitle("", item.title, item.subtitle)}
       contentPanel={contentPanel}
       subPanel={subPanel}
       thumbnail={item.thumbnail.data?.attributes}

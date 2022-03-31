@@ -304,12 +304,12 @@ function getGroups(
       years.map((year) => {
         group.set(year.toString(), []);
       });
-      group.set(langui.no_year || "No year", []);
+      group.set(langui.no_year ?? "No year", []);
       items.map((item) => {
         if (item.attributes?.release_date?.year) {
           group.get(item.attributes.release_date.year.toString())?.push(item);
         } else {
-          group.get(langui.no_year || "No year")?.push(item);
+          group.get(langui.no_year ?? "No year")?.push(item);
         }
       });
 

@@ -17,13 +17,7 @@ export default function Merch(props: MerchProps): JSX.Element {
     </SubPanel>
   );
 
-  return (
-    <AppLayout
-      navTitle={langui.merch}
-      subPanel={subPanel}
-      {...props}
-    />
-  );
+  return <AppLayout navTitle={langui.merch} subPanel={subPanel} {...props} />;
 }
 
 export async function getStaticProps(

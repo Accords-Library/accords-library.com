@@ -79,7 +79,8 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
 
   const currencyOptions: string[] = [];
   currencies.map((currency) => {
-    if (currency.attributes?.code) currencyOptions.push(currency.attributes.code);
+    if (currency.attributes?.code)
+      currencyOptions.push(currency.attributes.code);
   });
   const [currencySelect, setCurrencySelect] = useState<number>(-1);
 
@@ -132,10 +133,7 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
           ></meta>
 
           <meta name="description" content={metaDescription} />
-          <meta
-            name="twitter:description"
-            content={metaDescription}
-          ></meta>
+          <meta name="twitter:description" content={metaDescription}></meta>
 
           <meta property="og:image" content={metaImage.image}></meta>
           <meta property="og:image:secure_url" content={metaImage.image}></meta>

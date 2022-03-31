@@ -1,13 +1,14 @@
 import ChronologyItemComponent from "components/Chronology/ChronologyItemComponent";
-import {
-  GetChronologyItemsQuery,
-  GetWebsiteInterfaceQuery,
-} from "graphql/operations-types";
+import { GetChronologyItemsQuery } from "graphql/generated";
+import { AppStaticProps } from "queries/getAppStaticProps";
 
 type ChronologyYearComponentProps = {
   year: number;
-  items: GetChronologyItemsQuery["chronologyItems"]["data"][number][];
-  langui: GetWebsiteInterfaceQuery["websiteInterfaces"]["data"][number]["attributes"];
+  items: Exclude<
+    GetChronologyItemsQuery["chronologyItems"],
+    null | undefined
+  >["data"][number][];
+  langui: AppStaticProps["langui"];
 };
 
 export default function ChronologyYearComponent(

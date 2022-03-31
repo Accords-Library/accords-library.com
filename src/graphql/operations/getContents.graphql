@@ -1,0 +1,77 @@
+query getContents($language_code: String) {
+  contents(pagination: { limit: -1 }) {
+    data {
+      id
+      attributes {
+        slug
+        titles(filters: { language: { code: { eq: $language_code } } }) {
+          pre_title
+          title
+          subtitle
+        }
+        categories {
+          data {
+            id
+            attributes {
+              name
+              short
+            }
+          }
+        }
+        type {
+          data {
+            attributes {
+              slug
+              titles(filters: { language: { code: { eq: $language_code } } }) {
+                title
+              }
+            }
+          }
+        }
+        ranged_contents {
+          data {
+            id
+            attributes {
+              slug
+              scan_set {
+                id
+              }
+              library_item {
+                data {
+                  attributes {
+                    slug
+                    title
+                    subtitle
+                    thumbnail {
+                      data {
+                        attributes {
+                          ...uploadImage
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+        text_set {
+          id
+        }
+        video_set {
+          id
+        }
+        audio_set {
+          id
+        }
+        thumbnail {
+          data {
+            attributes {
+              ...uploadImage
+            }
+          }
+        }
+      }
+    }
+  }
+}

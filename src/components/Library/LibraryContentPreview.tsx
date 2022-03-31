@@ -1,17 +1,14 @@
 import Chip from "components/Chip";
 import Img, { ImageQuality } from "components/Img";
-import { GetContentsQuery } from "graphql/operations-types";
+import { GetContentsQuery } from "graphql/generated";
 import Link from "next/link";
 import { prettySlug } from "queries/helpers";
 
 export type LibraryContentPreviewProps = {
-  item: {
-    slug: GetContentsQuery["contents"]["data"][number]["attributes"]["slug"];
-    thumbnail: GetContentsQuery["contents"]["data"][number]["attributes"]["thumbnail"];
-    titles: GetContentsQuery["contents"]["data"][number]["attributes"]["titles"];
-    categories: GetContentsQuery["contents"]["data"][number]["attributes"]["categories"];
-    type: GetContentsQuery["contents"]["data"][number]["attributes"]["type"];
-  };
+  item: Exclude<
+    GetContentsQuery["contents"],
+    null | undefined
+  >["data"][number]["attributes"];
 };
 
 export default function LibraryContentPreview(
@@ -20,9 +17,9 @@ export default function LibraryContentPreview(
   const { item } = props;
 
   return (
-    <Link href={`/contents/${item.slug}`} passHref>
+    <Link href={`/contents/${item?.slug}`} passHref>
       <div className="drop-shadow-shade-xl cursor-pointer grid items-end fine:[--cover-opacity:0] hover:[--cover-opacity:1] hover:scale-[1.02] transition-transform">
-        {item.thumbnail.data ? (
+        {item?.thumbnail?.data?.attributes ? (
           <Img
             className="rounded-md coarse:rounded-b-none"
             image={item.thumbnail.data.attributes}
@@ -33,29 +30,29 @@ export default function LibraryContentPreview(
         )}
         <div className="linearbg-obi fine:drop-shadow-shade-lg fine:absolute coarse:rounded-b-md bottom-2 -inset-x-0.5 opacity-[var(--cover-opacity)] transition-opacity z-20 grid p-4 gap-2">
           <div className="grid grid-flow-col gap-1 overflow-hidden place-content-start">
-            {item.type.data && (
+            {item?.type?.data?.attributes && (
               <Chip>
-                {item.type.data.attributes.titles.length > 0
-                  ? item.type.data.attributes.titles[0].title
+                {item.type.data.attributes.titles?.[0]
+                  ? item.type.data.attributes.titles[0]?.title
                   : prettySlug(item.type.data.attributes.slug)}
               </Chip>
             )}
           </div>
           <div>
-            {item.titles.length > 0 ? (
+            {item?.titles?.[0] ? (
               <>
                 <p>{item.titles[0].pre_title}</p>
                 <h1 className="text-lg">{item.titles[0].title}</h1>
                 <h2>{item.titles[0].subtitle}</h2>
               </>
             ) : (
-              <h1 className="text-lg">{prettySlug(item.slug)}</h1>
+              <h1 className="text-lg">{prettySlug(item?.slug)}</h1>
             )}
           </div>
           <div className="grid grid-flow-col gap-1 overflow-x-scroll webkit-scrollbar:w-0 [scrollbar-width:none] place-content-start">
-            {item.categories.data.map((category) => (
+            {item?.categories?.data.map((category) => (
               <Chip key={category.id} className="text-sm">
-                {category.attributes.short}
+                {category.attributes?.short}
               </Chip>
             ))}
           </div>

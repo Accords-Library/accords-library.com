@@ -1,0 +1,5 @@
+fragment datePicker on ComponentBasicsDatepicker {
+  year
+  month
+  day
+}

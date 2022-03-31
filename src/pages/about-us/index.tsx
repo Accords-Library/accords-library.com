@@ -5,9 +5,9 @@ import SubPanel from "components/Panels/SubPanel";
 import { GetStaticPropsContext } from "next";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 
-interface AboutUsProps extends AppStaticProps {}
+interface Props extends AppStaticProps {}
 
-export default function AboutUs(props: AboutUsProps): JSX.Element {
+export default function AboutUs(props: Props): JSX.Element {
   const { langui } = props;
   const subPanel = (
     <SubPanel>
@@ -38,8 +38,8 @@ export default function AboutUs(props: AboutUsProps): JSX.Element {
 
 export async function getStaticProps(
   context: GetStaticPropsContext
-): Promise<{ notFound: boolean } | { props: AboutUsProps }> {
-  const props: AboutUsProps = {
+): Promise<{ notFound: boolean } | { props: Props }> {
+  const props: Props = {
     ...(await getAppStaticProps(context)),
   };
   return {

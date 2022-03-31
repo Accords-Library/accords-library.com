@@ -69,7 +69,7 @@ export type TOC = {
 export function getTocFromMarkdawn(text: string, title?: string): TOC {
   const toc: TOC = {
     title: title ?? "Return to top",
-    slug: slugify(title) ?? "",
+    slug: slugify(title),
     children: [],
   };
   let h2 = -1;

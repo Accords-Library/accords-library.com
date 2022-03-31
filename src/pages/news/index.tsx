@@ -5,25 +5,23 @@ import ContentPanel, {
   ContentPanelWidthSizes,
 } from "components/Panels/ContentPanel";
 import SubPanel from "components/Panels/SubPanel";
-import { getPostsPreview } from "graphql/operations";
-import { GetPostsPreviewQuery } from "graphql/operations-types";
+import { GetPostsPreviewQuery } from "graphql/generated";
+import { getReadySdk } from "graphql/sdk";
 import { GetStaticPropsContext } from "next";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 import { prettyDate } from "queries/helpers";
 
-interface NewsProps extends AppStaticProps {
-  posts: GetPostsPreviewQuery["posts"]["data"];
+interface Props extends AppStaticProps {
+  posts: Exclude<GetPostsPreviewQuery["posts"], null | undefined>["data"];
 }
 
-export default function News(props: NewsProps): JSX.Element {
+export default function News(props: Props): JSX.Element {
   const { langui, posts } = props;
 
   posts
     .sort((a, b) => {
-      const dateA =
-        a.attributes.date === null ? "9999" : prettyDate(a.attributes.date);
-      const dateB =
-        b.attributes.date === null ? "9999" : prettyDate(b.attributes.date);
+      const dateA = a.attributes?.date ? prettyDate(a.attributes.date) : "9999";
+      const dateB = b.attributes?.date ? prettyDate(b.attributes.date) : "9999";
       return dateA.localeCompare(dateB);
     })
     .reverse();
@@ -60,12 +58,15 @@ export default function News(props: NewsProps): JSX.Element {
 
 export async function getStaticProps(
   context: GetStaticPropsContext
-): Promise<{ notFound: boolean } | { props: NewsProps }> {
-  const props: NewsProps = {
+): Promise<{ notFound: boolean } | { props: Props }> {
+  const sdk = getReadySdk();
+  const posts = await sdk.getPostsPreview({
+    language_code: context.locale ?? "en",
+  });
+  if (!posts.posts) return { notFound: true };
+  const props: Props = {
     ...(await getAppStaticProps(context)),
-    posts: await (
-      await getPostsPreview({ language_code: context.locale ?? "en" })
-    ).posts.data,
+    posts: posts.posts.data,
   };
   return {
     props: props,

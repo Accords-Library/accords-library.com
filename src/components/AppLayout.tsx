@@ -1,11 +1,16 @@
 import Button from "components/Button";
 import { useAppLayout } from "contexts/AppLayoutContext";
-import { StrapiImage } from "graphql/operations-types";
+import { UploadImageFragment } from "graphql/generated";
 import { useMediaMobile } from "hooks/useMediaQuery";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { AppStaticProps } from "queries/getAppStaticProps";
-import { getOgImage, OgImage, prettyLanguage } from "queries/helpers";
+import {
+  getOgImage,
+  OgImage,
+  prettyLanguage,
+  prettySlug,
+} from "queries/helpers";
 import { useEffect, useState } from "react";
 import { useSwipeable } from "react-swipeable";
 import { ImageQuality } from "./Img";
@@ -18,8 +23,8 @@ interface AppLayoutProps extends AppStaticProps {
   subPanelIcon?: string;
   contentPanel?: React.ReactNode;
   title?: string;
-  navTitle: string;
-  thumbnail?: StrapiImage;
+  navTitle: string | null | undefined;
+  thumbnail?: UploadImageFragment;
   description?: string;
 }
 
@@ -61,11 +66,10 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
         height: 630,
         alt: "Accord's Library Logo",
       };
-  const ogTitle = props.title ? props.title : props.navTitle;
+  const ogTitle =
+    props.title ?? props.navTitle ?? prettySlug(router.asPath.split("/").pop());
 
-  const metaDescription = props.description
-    ? props.description
-    : langui.default_description;
+  const metaDescription = props.description ?? langui.default_description ?? "";
 
   useEffect(() => {
     document.getElementsByTagName("html")[0].style.fontSize = `${
@@ -73,9 +77,10 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
     }%`;
   }, [appLayout.fontSize]);
 
-  const currencyOptions = currencies.map(
-    (currency) => currency.attributes.code
-  );
+  const currencyOptions: string[] = [];
+  currencies.map((currency) => {
+    if (currency.attributes?.code) currencyOptions.push(currency.attributes.code);
+  });
   const [currencySelect, setCurrencySelect] = useState<number>(-1);
 
   useEffect(() => {
@@ -127,7 +132,10 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
           ></meta>
 
           <meta name="description" content={metaDescription} />
-          <meta name="twitter:description" content={metaDescription}></meta>
+          <meta
+            name="twitter:description"
+            content={metaDescription}
+          ></meta>
 
           <meta property="og:image" content={metaImage.image}></meta>
           <meta property="og:image:secure_url" content={metaImage.image}></meta>
@@ -220,12 +228,12 @@ export default function AppLayout(props: AppLayoutProps): JSX.Element {
           </span>
           <p
             className={`font-black font-headers text-center overflow-hidden ${
-              props.navTitle?.length > 30
+              ogTitle && ogTitle.length > 30
                 ? "text-xl max-h-14"
                 : "text-2xl max-h-16"
             }`}
           >
-            {props.navTitle}
+            {ogTitle}
           </p>
           <span
             className="material-icons mt-[.1em] cursor-pointer"

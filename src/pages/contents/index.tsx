@@ -7,21 +7,18 @@ import ContentPanel, {
 } from "components/Panels/ContentPanel";
 import SubPanel from "components/Panels/SubPanel";
 import Select from "components/Select";
-import { getContents } from "graphql/operations";
-import {
-  GetContentsQuery,
-  GetWebsiteInterfaceQuery,
-} from "graphql/operations-types";
+import { GetContentsQuery } from "graphql/generated";
+import { getReadySdk } from "graphql/sdk";
 import { GetStaticPropsContext } from "next";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 import { prettyinlineTitle, prettySlug } from "queries/helpers";
 import { useEffect, useState } from "react";
 
 interface ContentsProps extends AppStaticProps {
-  contents: GetContentsQuery["contents"]["data"];
+  contents: Exclude<GetContentsQuery["contents"], null | undefined>["data"];
 }
 
-type GroupContentItems = Map<string, GetContentsQuery["contents"]["data"]>;
+type GroupContentItems = Map<string, ContentsProps["contents"]>;
 
 export default function Contents(props: ContentsProps): JSX.Element {
   const { langui, contents } = props;
@@ -48,7 +45,7 @@ export default function Contents(props: ContentsProps): JSX.Element {
         <p className="flex-shrink-0">{langui.group_by}:</p>
         <Select
           className="w-full"
-          options={[langui.category, langui.type]}
+          options={[langui.category ?? "", langui.type ?? ""]}
           state={groupingMethod}
           setState={setGroupingMethod}
           allowEmpty
@@ -70,8 +67,8 @@ export default function Contents(props: ContentsProps): JSX.Element {
                   {name}
                   <Chip>{`${items.length} ${
                     items.length <= 1
-                      ? langui.result.toLowerCase()
-                      : langui.results.toLowerCase()
+                      ? langui.result?.toLowerCase() ?? ""
+                      : langui.results?.toLowerCase() ?? ""
                   }`}</Chip>
                 </h2>
               )}
@@ -80,7 +77,14 @@ export default function Contents(props: ContentsProps): JSX.Element {
                 className="grid gap-8 items-end grid-cols-2 desktop:grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))]"
               >
                 {items.map((item) => (
-                  <LibraryContentPreview key={item.id} item={item.attributes} />
+                  <>
+                    {item.attributes && (
+                      <LibraryContentPreview
+                        key={item.id}
+                        item={item.attributes}
+                      />
+                    )}
+                  </>
                 ))}
               </div>
             </>
@@ -102,35 +106,32 @@ export default function Contents(props: ContentsProps): JSX.Element {
 export async function getStaticProps(
   context: GetStaticPropsContext
 ): Promise<{ notFound: boolean } | { props: ContentsProps }> {
-  const contents = (
-    await getContents({
-      language_code: context.locale ?? "en",
-    })
-  ).contents.data;
-
-  contents.sort((a, b) => {
-    const titleA =
-      a.attributes.titles.length > 0
-        ? prettyinlineTitle(
-            a.attributes.titles[0].pre_title,
-            a.attributes.titles[0].title,
-            a.attributes.titles[0].subtitle
-          )
-        : a.attributes.slug;
-    const titleB =
-      b.attributes.titles.length > 0
-        ? prettyinlineTitle(
-            b.attributes.titles[0].pre_title,
-            b.attributes.titles[0].title,
-            b.attributes.titles[0].subtitle
-          )
-        : b.attributes.slug;
+  const sdk = getReadySdk();
+  const contents = await sdk.getContents({
+    language_code: context.locale ?? "en",
+  });
+  if (!contents.contents) return { notFound: true };
+  contents.contents.data.sort((a, b) => {
+    const titleA = a.attributes?.titles?.[0]
+      ? prettyinlineTitle(
+          a.attributes.titles[0].pre_title,
+          a.attributes.titles[0].title,
+          a.attributes.titles[0].subtitle
+        )
+      : a.attributes?.slug ?? "";
+    const titleB = b.attributes?.titles?.[0]
+      ? prettyinlineTitle(
+          b.attributes.titles[0].pre_title,
+          b.attributes.titles[0].title,
+          b.attributes.titles[0].subtitle
+        )
+      : b.attributes?.slug ?? "";
     return titleA.localeCompare(titleB);
   });
 
   const props: ContentsProps = {
     ...(await getAppStaticProps(context)),
-    contents: contents,
+    contents: contents.contents.data,
   };
   return {
     props: props,
@@ -138,7 +139,7 @@ export async function getStaticProps(
 }
 
 function getGroups(
-  langui: GetWebsiteInterfaceQuery["websiteInterfaces"]["data"][number]["attributes"],
+  langui: AppStaticProps["langui"],
   groupByType: number,
   items: ContentsProps["contents"]
 ): GroupContentItems {
@@ -165,11 +166,11 @@ function getGroups(
       group.set(langui.no_category, []);
 
       items.map((item) => {
-        if (item.attributes.categories.data.length === 0) {
+        if (item.attributes?.categories?.data.length === 0) {
           group.get(langui.no_category)?.push(item);
         } else {
-          item.attributes.categories.data.map((category) => {
-            group.get(category.attributes.name)?.push(item);
+          item.attributes?.categories?.data.map((category) => {
+            group.get(category.attributes?.name)?.push(item);
           });
         }
       });
@@ -180,10 +181,8 @@ function getGroups(
       const group: GroupContentItems = new Map();
       items.map((item) => {
         const type =
-          item.attributes.type.data.attributes.titles.length > 0
-            ? item.attributes.type.data.attributes.titles[0].title
-            : prettySlug(item.attributes.type.data.attributes.slug);
-
+          item.attributes?.type?.data?.attributes?.titles?.[0]?.title ??
+          prettySlug(item.attributes?.type?.data?.attributes?.slug);
         if (!group.has(type)) group.set(type, []);
         group.get(type)?.push(item);
       });

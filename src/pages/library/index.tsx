@@ -8,27 +8,23 @@ import ContentPanel, {
 import SubPanel from "components/Panels/SubPanel";
 import Select from "components/Select";
 import Switch from "components/Switch";
-import { getLibraryItemsPreview } from "graphql/operations";
-import {
-  GetCurrenciesQuery,
-  GetLibraryItemsPreviewQuery,
-  GetWebsiteInterfaceQuery,
-} from "graphql/operations-types";
+import { GetLibraryItemsPreviewQuery } from "graphql/generated";
+import { getReadySdk } from "graphql/sdk";
 import { GetStaticPropsContext } from "next";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 import { convertPrice, prettyDate, prettyinlineTitle } from "queries/helpers";
 import { useEffect, useState } from "react";
 
-interface LibraryProps extends AppStaticProps {
-  items: GetLibraryItemsPreviewQuery["libraryItems"]["data"];
+interface Props extends AppStaticProps {
+  items: Exclude<
+    GetLibraryItemsPreviewQuery["libraryItems"],
+    null | undefined
+  >["data"];
 }
 
-type GroupLibraryItems = Map<
-  string,
-  GetLibraryItemsPreviewQuery["libraryItems"]["data"]
->;
+type GroupLibraryItems = Map<string, Props["items"]>;
 
-export default function Library(props: LibraryProps): JSX.Element {
+export default function Library(props: Props): JSX.Element {
   const { langui, items: libraryItems, currencies } = props;
 
   const [showSubitems, setShowSubitems] = useState<boolean>(false);
@@ -37,7 +33,7 @@ export default function Library(props: LibraryProps): JSX.Element {
   const [sortingMethod, setSortingMethod] = useState<number>(0);
   const [groupingMethod, setGroupingMethod] = useState<number>(-1);
 
-  const [filteredItems, setFilteredItems] = useState<LibraryProps["items"]>(
+  const [filteredItems, setFilteredItems] = useState<Props["items"]>(
     filterItems(
       showSubitems,
       showPrimaryItems,
@@ -46,7 +42,7 @@ export default function Library(props: LibraryProps): JSX.Element {
     )
   );
 
-  const [sortedItems, setSortedItem] = useState<LibraryProps["items"]>(
+  const [sortedItems, setSortedItem] = useState<Props["items"]>(
     sortBy(groupingMethod, filteredItems, currencies)
   );
 
@@ -85,7 +81,11 @@ export default function Library(props: LibraryProps): JSX.Element {
         <p className="flex-shrink-0">{langui.group_by}:</p>
         <Select
           className="w-full"
-          options={[langui.category, langui.type, langui.release_year]}
+          options={[
+            langui.category ?? "Category",
+            langui.type ?? "Type",
+            langui.release_year ?? "Year",
+          ]}
           state={groupingMethod}
           setState={setGroupingMethod}
           allowEmpty
@@ -96,7 +96,11 @@ export default function Library(props: LibraryProps): JSX.Element {
         <p className="flex-shrink-0">{langui.order_by}:</p>
         <Select
           className="w-full"
-          options={[langui.name, langui.price, langui.release_date]}
+          options={[
+            langui.name ?? "Name",
+            langui.price ?? "Price",
+            langui.release_date ?? "Release date",
+          ]}
           state={sortingMethod}
           setState={setSortingMethod}
         />
@@ -132,8 +136,8 @@ export default function Library(props: LibraryProps): JSX.Element {
                   {name}
                   <Chip>{`${items.length} ${
                     items.length <= 1
-                      ? langui.result.toLowerCase()
-                      : langui.results.toLowerCase()
+                      ? langui.result?.toLowerCase() ?? "result"
+                      : langui.results?.toLowerCase() ?? "results"
                   }`}</Chip>
                 </h2>
               )}
@@ -167,14 +171,15 @@ export default function Library(props: LibraryProps): JSX.Element {
 
 export async function getStaticProps(
   context: GetStaticPropsContext
-): Promise<{ notFound: boolean } | { props: LibraryProps }> {
-  const props: LibraryProps = {
+): Promise<{ notFound: boolean } | { props: Props }> {
+  const sdk = getReadySdk();
+  const items = await sdk.getLibraryItemsPreview({
+    language_code: context.locale ?? "en",
+  });
+  if (!items.libraryItems) return { notFound: true };
+  const props: Props = {
     ...(await getAppStaticProps(context)),
-    items: (
-      await getLibraryItemsPreview({
-        language_code: context.locale ?? "en",
-      })
-    ).libraryItems.data,
+    items: items.libraryItems.data,
   };
   return {
     props: props,
@@ -182,9 +187,9 @@ export async function getStaticProps(
 }
 
 function getGroups(
-  langui: GetWebsiteInterfaceQuery["websiteInterfaces"]["data"][number]["attributes"],
+  langui: AppStaticProps["langui"],
   groupByType: number,
-  items: LibraryProps["items"]
+  items: Props["items"]
 ): GroupLibraryItems {
   switch (groupByType) {
     case 0: {
@@ -209,11 +214,11 @@ function getGroups(
       typeGroup.set(langui.no_category, []);
 
       items.map((item) => {
-        if (item.attributes.categories.data.length === 0) {
+        if (item.attributes?.categories?.data.length === 0) {
           typeGroup.get(langui.no_category)?.push(item);
         } else {
-          item.attributes.categories.data.map((category) => {
-            typeGroup.get(category.attributes.name)?.push(item);
+          item.attributes?.categories?.data.map((category) => {
+            typeGroup.get(category.attributes?.name)?.push(item);
           });
         }
       });
@@ -223,49 +228,50 @@ function getGroups(
 
     case 1: {
       const group: GroupLibraryItems = new Map();
-      group.set(langui.audio, []);
-      group.set(langui.game, []);
-      group.set(langui.textual, []);
-      group.set(langui.video, []);
-      group.set(langui.other, []);
-      group.set(langui.group, []);
-      group.set(langui.no_type, []);
+      group.set(langui.audio ?? "Audio", []);
+      group.set(langui.game ?? "Game", []);
+      group.set(langui.textual ?? "Textual", []);
+      group.set(langui.video ?? "Video", []);
+      group.set(langui.other ?? "Other", []);
+      group.set(langui.group ?? "Group", []);
+      group.set(langui.no_type ?? "No type", []);
       items.map((item) => {
-        if (item.attributes.metadata.length > 0) {
-          switch (item.attributes.metadata[0].__typename) {
+        if (item.attributes?.metadata && item.attributes.metadata.length > 0) {
+          switch (item.attributes.metadata[0]?.__typename) {
             case "ComponentMetadataAudio":
-              group.get(langui.audio)?.push(item);
+              group.get(langui.audio ?? "Audio")?.push(item);
               break;
             case "ComponentMetadataGame":
-              group.get(langui.game)?.push(item);
+              group.get(langui.game ?? "Game")?.push(item);
               break;
             case "ComponentMetadataBooks":
-              group.get(langui.textual)?.push(item);
+              group.get(langui.textual ?? "Textual")?.push(item);
               break;
             case "ComponentMetadataVideo":
-              group.get(langui.video)?.push(item);
+              group.get(langui.video ?? "Video")?.push(item);
               break;
             case "ComponentMetadataOther":
-              group.get(langui.other)?.push(item);
+              group.get(langui.other ?? "Other")?.push(item);
               break;
             case "ComponentMetadataGroup":
               switch (
-                item.attributes.metadata[0].subitems_type.data.attributes.slug
+                item.attributes.metadata[0]?.subitems_type?.data?.attributes
+                  ?.slug
               ) {
                 case "audio":
-                  group.get(langui.audio)?.push(item);
+                  group.get(langui.audio ?? "Audio")?.push(item);
                   break;
                 case "video":
-                  group.get(langui.video)?.push(item);
+                  group.get(langui.video ?? "Video")?.push(item);
                   break;
                 case "game":
-                  group.get(langui.game)?.push(item);
+                  group.get(langui.game ?? "Game")?.push(item);
                   break;
                 case "textual":
-                  group.get(langui.textual)?.push(item);
+                  group.get(langui.textual ?? "Textual")?.push(item);
                   break;
                 case "mixed":
-                  group.get(langui.group)?.push(item);
+                  group.get(langui.group ?? "Group")?.push(item);
                   break;
                 default: {
                   throw new Error(
@@ -279,7 +285,7 @@ function getGroups(
             }
           }
         } else {
-          group.get(langui.no_type)?.push(item);
+          group.get(langui.no_type ?? "No type")?.push(item);
         }
       });
       return group;
@@ -288,7 +294,7 @@ function getGroups(
     case 2: {
       const years: number[] = [];
       items.map((item) => {
-        if (item.attributes.release_date) {
+        if (item.attributes?.release_date?.year) {
           if (!years.includes(item.attributes.release_date.year))
             years.push(item.attributes.release_date.year);
         }
@@ -298,12 +304,12 @@ function getGroups(
       years.map((year) => {
         group.set(year.toString(), []);
       });
-      group.set(langui.no_year, []);
+      group.set(langui.no_year || "No year", []);
       items.map((item) => {
-        if (item.attributes.release_date) {
+        if (item.attributes?.release_date?.year) {
           group.get(item.attributes.release_date.year.toString())?.push(item);
         } else {
-          group.get(langui.no_year)?.push(item);
+          group.get(langui.no_year || "No year")?.push(item);
         }
       });
 
@@ -322,66 +328,63 @@ function filterItems(
   showSubitems: boolean,
   showPrimaryItems: boolean,
   showSecondaryItems: boolean,
-  items: LibraryProps["items"]
-): LibraryProps["items"] {
+  items: Props["items"]
+): Props["items"] {
   return [...items].filter((item) => {
-    if (!showSubitems && !item.attributes.root_item) return false;
+    if (!showSubitems && !item.attributes?.root_item) return false;
     if (
       showSubitems &&
-      item.attributes.metadata.length > 0 &&
-      item.attributes.metadata[0].__typename === "ComponentMetadataGroup" &&
-      (item.attributes.metadata[0].subtype.data.attributes.slug ===
+      item.attributes?.metadata?.[0]?.__typename === "ComponentMetadataGroup" &&
+      (item.attributes.metadata[0].subtype?.data?.attributes?.slug ===
         "variant-set" ||
-        item.attributes.metadata[0].subtype.data.attributes.slug ===
+        item.attributes.metadata[0].subtype?.data?.attributes?.slug ===
           "relation-set")
     )
       return false;
-    if (item.attributes.primary && !showPrimaryItems) return false;
-    if (!item.attributes.primary && !showSecondaryItems) return false;
+    if (item.attributes?.primary && !showPrimaryItems) return false;
+    if (!item.attributes?.primary && !showSecondaryItems) return false;
     return true;
   });
 }
 
 function sortBy(
   orderByType: number,
-  items: LibraryProps["items"],
-  currencies: GetCurrenciesQuery["currencies"]["data"]
-): LibraryProps["items"] {
+  items: Props["items"],
+  currencies: AppStaticProps["currencies"]
+): Props["items"] {
   switch (orderByType) {
     case 0:
       return [...items].sort((a, b) => {
         const titleA = prettyinlineTitle(
           "",
-          a.attributes.title,
-          a.attributes.subtitle
+          a.attributes?.title,
+          a.attributes?.subtitle
         );
         const titleB = prettyinlineTitle(
           "",
-          b.attributes.title,
-          b.attributes.subtitle
+          b.attributes?.title,
+          b.attributes?.subtitle
         );
         return titleA.localeCompare(titleB);
       });
     case 1:
       return [...items].sort((a, b) => {
-        const priceA = a.attributes.price
+        const priceA = a.attributes?.price
           ? convertPrice(a.attributes.price, currencies[0])
           : 99999;
-        const priceB = b.attributes.price
+        const priceB = b.attributes?.price
           ? convertPrice(b.attributes.price, currencies[0])
           : 99999;
         return priceA - priceB;
       });
     case 2:
       return [...items].sort((a, b) => {
-        const dateA =
-          a.attributes.release_date === null
-            ? "9999"
-            : prettyDate(a.attributes.release_date);
-        const dateB =
-          b.attributes.release_date === null
-            ? "9999"
-            : prettyDate(b.attributes.release_date);
+        const dateA = a.attributes?.release_date
+          ? prettyDate(a.attributes.release_date)
+          : "9999";
+        const dateB = b.attributes?.release_date
+          ? prettyDate(b.attributes.release_date)
+          : "9999";
         return dateA.localeCompare(dateB);
       });
     default:

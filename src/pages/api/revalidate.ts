@@ -64,7 +64,6 @@ export default async function Mail(
   req: NextApiRequest,
   res: NextApiResponse<ResponseMailProps>
 ) {
-  console.log(req.body);
   const body = req.body as RequestProps;
   const { serverRuntimeConfig } = getConfig();
 

@@ -4,33 +4,36 @@ import {
   ImageQuality,
 } from "components/Img";
 import {
+  DatePickerFragment,
   Enum_Componentsetstextset_Status,
   GetCurrenciesQuery,
-  GetLanguagesQuery,
   GetLibraryItemQuery,
-  GetLibraryItemsPreviewQuery,
-  GetWebsiteInterfaceQuery,
-  StrapiImage,
-} from "graphql/operations-types";
+  GetLibraryItemScansQuery,
+  PricePickerFragment,
+  UploadImageFragment,
+} from "graphql/generated";
 import { NextRouter } from "next/router";
+import { AppStaticProps } from "./getAppStaticProps";
 
-export function prettyDate(
-  datePicker: GetLibraryItemsPreviewQuery["libraryItems"]["data"][number]["attributes"]["release_date"]
-): string {
-  return `${datePicker.year}/${datePicker.month
-    .toString()
-    .padStart(2, "0")}/${datePicker.day.toString().padStart(2, "0")}`;
+export function prettyDate(datePicker: DatePickerFragment): string {
+  let result = "";
+  if (datePicker.year) result += datePicker.year.toString();
+  if (datePicker.month)
+    result += `/${datePicker.month.toString().padStart(2, "0")}`;
+  if (datePicker.day)
+    result += `/${datePicker.day.toString().padStart(2, "0")}`;
+  return result;
 }
 
 export function prettyPrice(
-  pricePicker: GetLibraryItemsPreviewQuery["libraryItems"]["data"][number]["attributes"]["price"],
-  currencies: GetCurrenciesQuery["currencies"]["data"],
+  pricePicker: PricePickerFragment,
+  currencies: AppStaticProps["currencies"],
   targetCurrencyCode?: string
 ): string {
   if (!targetCurrencyCode) return "";
   let result = "";
   currencies.map((currency) => {
-    if (currency.attributes.code === targetCurrencyCode) {
+    if (currency?.attributes?.code === targetCurrencyCode) {
       const amountInTargetCurrency = convertPrice(pricePicker, currency);
       result =
         currency.attributes.symbol +
@@ -44,13 +47,22 @@ export function prettyPrice(
 }
 
 export function convertPrice(
-  pricePicker: GetLibraryItemsPreviewQuery["libraryItems"]["data"][number]["attributes"]["price"],
-  targetCurrency: GetCurrenciesQuery["currencies"]["data"][number]
+  pricePicker: PricePickerFragment,
+  targetCurrency: Exclude<
+    GetCurrenciesQuery["currencies"],
+    null | undefined
+  >["data"][number]
 ): number {
-  return (
-    (pricePicker.amount * pricePicker.currency.data.attributes.rate_to_usd) /
-    targetCurrency.attributes.rate_to_usd
-  );
+  if (
+    pricePicker.amount &&
+    pricePicker.currency?.data?.attributes &&
+    targetCurrency.attributes
+  )
+    return (
+      (pricePicker.amount * pricePicker.currency.data.attributes.rate_to_usd) /
+      targetCurrency.attributes.rate_to_usd
+    );
+  return 0;
 }
 
 export function prettySlug(slug?: string, parentSlug?: string): string {
@@ -65,9 +77,9 @@ export function prettySlug(slug?: string, parentSlug?: string): string {
 }
 
 export function prettyinlineTitle(
-  pretitle: string,
-  title: string,
-  subtitle: string
+  pretitle: string | undefined | null,
+  title: string | undefined | null,
+  subtitle: string | undefined | null
 ): string {
   let result = "";
   if (pretitle) result += `${pretitle}: `;
@@ -77,11 +89,9 @@ export function prettyinlineTitle(
 }
 
 export function prettyItemType(
-  metadata: {
-    __typename: GetLibraryItemsPreviewQuery["libraryItems"]["data"][number]["attributes"]["metadata"][number]["__typename"];
-  },
-  langui: GetWebsiteInterfaceQuery["websiteInterfaces"]["data"][number]["attributes"]
-): string {
+  metadata: any,
+  langui: AppStaticProps["langui"]
+): string | undefined | null {
   switch (metadata.__typename) {
     case "ComponentMetadataAudio":
       return langui.audio;
@@ -100,50 +110,132 @@ export function prettyItemType(
   }
 }
 
-export function prettyItemSubType(metadata: {
-  /* eslint-disable @typescript-eslint/no-explicit-any */
-  __typename: GetLibraryItemsPreviewQuery["libraryItems"]["data"][number]["attributes"]["metadata"][number]["__typename"];
-  subtype?: any;
-  platforms?: any;
-  subitems_type?: any;
-}): string {
-  switch (metadata.__typename) {
-    case "ComponentMetadataAudio":
-    case "ComponentMetadataBooks":
-    case "ComponentMetadataVideo":
-      return metadata.subtype.data.attributes.titles.length > 0
-        ? metadata.subtype.data.attributes.titles[0].title
-        : prettySlug(metadata.subtype.data.attributes.slug);
-    case "ComponentMetadataGame":
-      return metadata.platforms.data.length > 0
-        ? metadata.platforms.data[0].attributes.short
-        : "";
-
-    case "ComponentMetadataGroup": {
-      const firstPart =
-        metadata.subtype.data.attributes.titles.length > 0
+export function prettyItemSubType(
+  metadata:
+    | {
+        __typename: "ComponentMetadataAudio";
+        subtype?: {
+          data?: {
+            attributes?: {
+              slug: string;
+              titles?: Array<{
+                title: string;
+              } | null> | null;
+            } | null;
+          } | null;
+        } | null;
+      }
+    | {
+        __typename: "ComponentMetadataBooks";
+        subtype?: {
+          data?: {
+            attributes?: {
+              slug: string;
+              titles?: Array<{
+                title: string;
+              } | null> | null;
+            } | null;
+          } | null;
+        } | null;
+      }
+    | {
+        __typename: "ComponentMetadataGame";
+        platforms?: {
+          data: Array<{
+            id?: string | null;
+            attributes?: {
+              short: string;
+            } | null;
+          }>;
+        } | null;
+      }
+    | {
+        __typename: "ComponentMetadataGroup";
+        subtype?: {
+          data?: {
+            attributes?: {
+              slug: string;
+              titles?: Array<{
+                title: string;
+              } | null> | null;
+            } | null;
+          } | null;
+        } | null;
+        subitems_type?: {
+          data?: {
+            attributes?: {
+              slug: string;
+              titles?: Array<{
+                title: string;
+              } | null> | null;
+            } | null;
+          } | null;
+        } | null;
+      }
+    | { __typename: "ComponentMetadataOther" }
+    | {
+        __typename: "ComponentMetadataVideo";
+        subtype?: {
+          data?: {
+            attributes?: {
+              slug: string;
+              titles?: Array<{
+                title: string;
+              } | null> | null;
+            } | null;
+          } | null;
+        } | null;
+      }
+    | { __typename: "Error" }
+    | null
+): string {
+  if (metadata) {
+    switch (metadata.__typename) {
+      case "ComponentMetadataAudio":
+      case "ComponentMetadataBooks":
+      case "ComponentMetadataVideo":
+        return metadata.subtype?.data?.attributes?.titles &&
+          metadata.subtype?.data?.attributes?.titles.length > 0 &&
+          metadata.subtype.data.attributes.titles[0]
           ? metadata.subtype.data.attributes.titles[0].title
-          : prettySlug(metadata.subtype.data.attributes.slug);
+          : prettySlug(metadata.subtype?.data?.attributes?.slug);
+      case "ComponentMetadataGame":
+        return metadata.platforms?.data &&
+          metadata.platforms?.data.length > 0 &&
+          metadata.platforms.data[0].attributes
+          ? metadata.platforms.data[0].attributes.short
+          : "";
+      case "ComponentMetadataGroup": {
+        const firstPart =
+          metadata.subtype?.data?.attributes?.titles &&
+          metadata.subtype?.data?.attributes?.titles.length > 0 &&
+          metadata.subtype.data.attributes.titles[0]
+            ? metadata.subtype.data.attributes.titles[0].title
+            : prettySlug(metadata.subtype?.data?.attributes?.slug);
 
-      const secondPart =
-        metadata.subitems_type.data.attributes.titles.length > 0
-          ? metadata.subitems_type.data.attributes.titles[0].title
-          : prettySlug(metadata.subitems_type.data.attributes.slug);
-      return `${secondPart} ${firstPart}`;
+        const secondPart =
+          metadata.subitems_type?.data?.attributes?.titles &&
+          metadata.subitems_type?.data?.attributes?.titles.length > 0 &&
+          metadata.subitems_type.data.attributes.titles[0]
+            ? metadata.subitems_type.data.attributes.titles[0].title
+            : prettySlug(metadata.subitems_type?.data?.attributes?.slug);
+        return `${secondPart} ${firstPart}`;
+      }
+      default:
+        return "";
     }
-    default:
-      return "";
   }
+  return "";
   /* eslint-enable @typescript-eslint/no-explicit-any */
 }
 
 export function prettyLanguage(
   code: string,
-  languages: GetLanguagesQuery["languages"]["data"]
+  languages: AppStaticProps["languages"]
 ): string {
   let result = code;
   languages.forEach((language) => {
-    if (language.attributes.code === code)
+    if (language?.attributes?.code === code)
       result = language.attributes.localized_name;
   });
   return result;
@@ -207,8 +299,8 @@ export function capitalizeString(string: string): string {
   return words.join(" ");
 }
 
-export function convertMmToInch(mm: number): string {
-  return (mm * 0.03937008).toPrecision(3);
+export function convertMmToInch(mm: number | null | undefined): string {
+  return mm ? (mm * 0.03937008).toPrecision(3) : "";
 }
 
 export type OgImage = {
@@ -218,31 +310,44 @@ export type OgImage = {
   alt: string;
 };
 
-export function getOgImage(quality: ImageQuality, image: StrapiImage): OgImage {
+export function getOgImage(
+  quality: ImageQuality,
+  image: UploadImageFragment
+): OgImage {
   const imgSize = getImgSizesByQuality(
-    image.width,
-    image.height,
+    image.width ?? 0,
+    image.height ?? 0,
     quality ? quality : ImageQuality.Small
   );
   return {
     image: getAssetURL(image.url, quality),
     width: imgSize.width,
     height: imgSize.height,
-    alt: image.alternativeText,
+    alt: image.alternativeText || "",
   };
 }
 
-export function sortContent(contents: {
-  data: {
-    attributes: {
-      range: GetLibraryItemQuery["libraryItems"]["data"][number]["attributes"]["contents"]["data"][number]["attributes"]["range"];
-    };
-  }[];
-}) {
-  contents.data.sort((a, b) => {
+export function sortContent(
+  contents:
+    | Exclude<
+        Exclude<
+          GetLibraryItemQuery["libraryItems"],
+          null | undefined
+        >["data"][number]["attributes"],
+        null | undefined
+      >["contents"]
+    | Exclude<
+        Exclude<
+          GetLibraryItemScansQuery["libraryItems"],
+          null | undefined
+        >["data"][number]["attributes"],
+        null | undefined
+      >["contents"]
+) {
+  contents?.data.sort((a, b) => {
     if (
-      a.attributes.range[0].__typename === "ComponentRangePageRange" &&
-      b.attributes.range[0].__typename === "ComponentRangePageRange"
+      a.attributes?.range[0]?.__typename === "ComponentRangePageRange" &&
+      b.attributes?.range[0]?.__typename === "ComponentRangePageRange"
     ) {
       return (
         a.attributes.range[0].starting_page -
@@ -255,8 +360,8 @@ export function sortContent(contents: {
 
 export function getStatusDescription(
   status: string,
-  langui: GetWebsiteInterfaceQuery["websiteInterfaces"]["data"][number]["attributes"]
-): string {
+  langui: AppStaticProps["langui"]
+): string | null | undefined {
   switch (status) {
     case Enum_Componentsetstextset_Status.Incomplete:
       return langui.status_incomplete;
@@ -300,15 +405,15 @@ export function randomInt(min: number, max: number) {
 }
 
 export function getLocalesFromLanguages(
-  languages: {
-    language: {
-      data: {
-        attributes: {
-          code: string;
-        };
-      };
-    };
-  }[]
+  languages?: Array<{
+    language?: {
+      data?: {
+        attributes?: { code: string } | null;
+      } | null;
+    } | null;
+  } | null> | null
 ) {
-  return languages.map((language) => language.language.data.attributes.code);
+  return languages
+    ? languages.map((language) => language?.language?.data?.attributes?.code)
+    : [];
 }

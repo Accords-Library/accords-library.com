@@ -1,0 +1,10 @@
+query getPostsSlugs {
+  posts(filters: { hidden: { eq: false } }) {
+    data {
+      id
+      attributes {
+        slug
+      }
+    }
+  }
+}

@@ -1,16 +1,13 @@
-import {
-  GetLanguagesQuery,
-  GetWebsiteInterfaceQuery,
-} from "graphql/operations-types";
 import { useRouter } from "next/router";
+import { AppStaticProps } from "queries/getAppStaticProps";
 import { prettyLanguage } from "queries/helpers";
 import Button from "./Button";
 
 type HorizontalLineProps = {
   className?: string;
-  locales: string[];
-  languages: GetLanguagesQuery["languages"]["data"];
-  langui: GetWebsiteInterfaceQuery["websiteInterfaces"]["data"][number]["attributes"];
+  locales: (string | undefined)[];
+  languages: AppStaticProps["languages"];
+  langui: AppStaticProps["langui"];
   href?: string;
 };
 
@@ -26,14 +23,18 @@ export default function HorizontalLine(
         <p>{langui.language_switch_message}</p>
         <div className="flex flex-wrap flex-row gap-2">
           {locales.map((locale, index) => (
-            <Button
-              key={index}
-              active={locale === router.locale}
-              href={href}
-              locale={locale}
-            >
-              {prettyLanguage(locale, props.languages)}
-            </Button>
+            <>
+              {locale && (
+                <Button
+                  key={index}
+                  active={locale === router.locale}
+                  href={href}
+                  locale={locale}
+                >
+                  {prettyLanguage(locale, props.languages)}
+                </Button>
+              )}
+            </>
           ))}
         </div>
       </div>

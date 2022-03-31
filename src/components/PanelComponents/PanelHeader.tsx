@@ -2,8 +2,8 @@ import HorizontalLine from "components/HorizontalLine";
 
 type PanelHeaderProps = {
   icon?: string;
-  title: string;
-  description?: string;
+  title: string | null | undefined;
+  description?: string | null | undefined;
 };
 
 export default function PanelHeader(props: PanelHeaderProps): JSX.Element {

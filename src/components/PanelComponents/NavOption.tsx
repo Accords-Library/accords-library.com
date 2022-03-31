@@ -5,8 +5,8 @@ import { MouseEventHandler } from "react";
 type NavOptionProps = {
   url: string;
   icon?: string;
-  title: string;
-  subtitle?: string;
+  title: string | null | undefined;
+  subtitle?: string | null | undefined;
   border?: boolean;
   reduced?: boolean;
   onClick?: MouseEventHandler<HTMLDivElement>;

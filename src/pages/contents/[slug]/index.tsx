@@ -13,8 +13,8 @@ import ContentPanel from "components/Panels/ContentPanel";
 import SubPanel from "components/Panels/SubPanel";
 import RecorderChip from "components/RecorderChip";
 import ToolTip from "components/ToolTip";
-import { getContentsSlugs, getContentText } from "graphql/operations";
-import { GetContentTextQuery } from "graphql/operations-types";
+import { GetContentTextQuery } from "graphql/generated";
+import { getReadySdk } from "graphql/sdk";
 import {
   GetStaticPathsContext,
   GetStaticPathsResult,
@@ -33,15 +33,21 @@ import {
 } from "queries/helpers";
 
 interface Props extends AppStaticProps {
-  content: GetContentTextQuery["contents"]["data"][number]["attributes"];
-  contentId: GetContentTextQuery["contents"]["data"][number]["id"];
+  content: Exclude<
+    GetContentTextQuery["contents"],
+    null | undefined
+  >["data"][number]["attributes"];
+  contentId: Exclude<
+    GetContentTextQuery["contents"],
+    null | undefined
+  >["data"][number]["id"];
 }
 
 export default function Content(props: Props): JSX.Element {
   useTesting(props);
   const { langui, content, languages } = props;
   const router = useRouter();
-  const locales = getLocalesFromLanguages(content.text_set_languages);
+  const locales = getLocalesFromLanguages(content?.text_set_languages);
 
   const subPanel = (
     <SubPanel>
@@ -53,7 +59,7 @@ export default function Content(props: Props): JSX.Element {
         horizontalLine
       />
 
-      {content.text_set.length > 0 && content.text_set[0].source_language.data && (
+      {content?.text_set?.[0]?.source_language?.data?.attributes && (
         <div className="grid gap-5">
           <h2 className="text-xl">
             {content.text_set[0].source_language.data.attributes.code ===
@@ -91,134 +97,157 @@ export default function Content(props: Props): JSX.Element {
             </ToolTip>
           </div>
 
-          {content.text_set[0].transcribers.data.length > 0 && (
-            <div>
-              <p className="font-headers">{langui.transcribers}:</p>
-              <div className="grid place-items-center place-content-center gap-2">
-                {content.text_set[0].transcribers.data.map((recorder) => (
-                  <RecorderChip
-                    key={recorder.id}
-                    langui={langui}
-                    recorder={recorder}
-                  />
-                ))}
+          {content.text_set[0].transcribers &&
+            content.text_set[0].transcribers.data.length > 0 && (
+              <div>
+                <p className="font-headers">{langui.transcribers}:</p>
+                <div className="grid place-items-center place-content-center gap-2">
+                  {content.text_set[0].transcribers.data.map((recorder) => (
+                    <>
+                      {recorder.attributes && (
+                        <RecorderChip
+                          key={recorder.id}
+                          langui={langui}
+                          recorder={recorder.attributes}
+                        />
+                      )}
+                    </>
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {content.text_set[0].translators.data.length > 0 && (
-            <div>
-              <p className="font-headers">{langui.translators}:</p>
-              <div className="grid place-items-center place-content-center gap-2">
-                {content.text_set[0].translators.data.map((recorder) => (
-                  <RecorderChip
-                    key={recorder.id}
-                    langui={langui}
-                    recorder={recorder}
-                  />
-                ))}
+          {content.text_set[0].translators &&
+            content.text_set[0].translators.data.length > 0 && (
+              <div>
+                <p className="font-headers">{langui.translators}:</p>
+                <div className="grid place-items-center place-content-center gap-2">
+                  {content.text_set[0].translators.data.map((recorder) => (
+                    <>
+                      {recorder.attributes && (
+                        <RecorderChip
+                          key={recorder.id}
+                          langui={langui}
+                          recorder={recorder.attributes}
+                        />
+                      )}
+                    </>
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {content.text_set[0].proofreaders.data.length > 0 && (
-            <div>
-              <p className="font-headers">{langui.proofreaders}:</p>
-              <div className="grid place-items-center place-content-center gap-2">
-                {content.text_set[0].proofreaders.data.map((recorder) => (
-                  <RecorderChip
-                    key={recorder.id}
-                    langui={langui}
-                    recorder={recorder}
-                  />
-                ))}
+          {content.text_set[0].proofreaders &&
+            content.text_set[0].proofreaders.data.length > 0 && (
+              <div>
+                <p className="font-headers">{langui.proofreaders}:</p>
+                <div className="grid place-items-center place-content-center gap-2">
+                  {content.text_set[0].proofreaders.data.map((recorder) => (
+                    <>
+                      {recorder.attributes && (
+                        <RecorderChip
+                          key={recorder.id}
+                          langui={langui}
+                          recorder={recorder.attributes}
+                        />
+                      )}
+                    </>
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
+            )}
         </div>
       )}
 
-      {content.text_set.length > 0 && content.text_set[0].text && (
-        <>
-          <HorizontalLine />
-          <TOC
-            text={content.text_set[0].text}
-            title={
-              content.titles.length > 0
-                ? prettyinlineTitle(
-                    content.titles[0].pre_title,
-                    content.titles[0].title,
-                    content.titles[0].subtitle
-                  )
-                : prettySlug(content.slug)
-            }
-          />
-        </>
-      )}
+      {content?.text_set &&
+        content.text_set.length > 0 &&
+        content.text_set[0]?.text && (
+          <>
+            <HorizontalLine />
+            <TOC
+              text={content.text_set[0].text}
+              title={
+                content.titles && content.titles.length > 0 && content.titles[0]
+                  ? prettyinlineTitle(
+                      content.titles[0].pre_title,
+                      content.titles[0].title,
+                      content.titles[0].subtitle
+                    )
+                  : prettySlug(content.slug)
+              }
+            />
+          </>
+        )}
     </SubPanel>
   );
   const contentPanel = (
     <ContentPanel>
       <ReturnButton
-        href={`/contents/${content.slug}`}
+        href={`/contents/${content?.slug}`}
         title={langui.content}
         langui={langui}
         displayOn={ReturnButtonType.mobile}
         className="mb-10"
       />
-      <div className="grid place-items-center">
-        <ThumbnailHeader
-          thumbnail={content.thumbnail.data?.attributes}
-          pre_title={
-            content.titles.length > 0 ? content.titles[0].pre_title : undefined
-          }
-          title={
-            content.titles.length > 0
-              ? content.titles[0].title
-              : prettySlug(content.slug)
-          }
-          subtitle={
-            content.titles.length > 0 ? content.titles[0].subtitle : undefined
-          }
-          description={
-            content.titles.length > 0
-              ? content.titles[0].description
-              : undefined
-          }
-          type={content.type}
-          categories={content.categories}
-          langui={langui}
-        />
-
-        <HorizontalLine />
-
-        {locales.includes(router.locale ?? "en") ? (
-          <Markdawn text={content.text_set[0].text} />
-        ) : (
-          <LanguageSwitcher
-            locales={locales}
-            languages={props.languages}
-            langui={props.langui}
+      {content && (
+        <div className="grid place-items-center">
+          <ThumbnailHeader
+            thumbnail={content.thumbnail?.data?.attributes}
+            pre_title={
+              content.titles && content.titles.length > 0
+                ? content.titles[0]?.pre_title
+                : undefined
+            }
+            title={
+              content.titles && content.titles.length > 0
+                ? content.titles[0]?.title
+                : prettySlug(content.slug)
+            }
+            subtitle={
+              content.titles && content.titles.length > 0
+                ? content.titles[0]?.subtitle
+                : undefined
+            }
+            description={
+              content.titles && content.titles.length > 0
+                ? content.titles[0]?.description
+                : undefined
+            }
+            type={content.type}
+            categories={content.categories}
+            langui={langui}
           />
-        )}
-      </div>
+
+          <HorizontalLine />
+
+          {locales.includes(router.locale ?? "en") ? (
+            <Markdawn text={content.text_set?.[0]?.text ?? ""} />
+          ) : (
+            <LanguageSwitcher
+              locales={locales}
+              languages={props.languages}
+              langui={props.langui}
+            />
+          )}
+        </div>
+      )}
     </ContentPanel>
   );
 
   let description = "";
-  if (content.type.data) {
+  if (content?.type?.data) {
     description += `${langui.type}: `;
-    if (content.type.data.attributes.titles.length > 0) {
-      description += content.type.data.attributes.titles[0].title;
-    } else {
-      description += prettySlug(content.type.data.attributes.slug);
-    }
+
+    description +=
+      content.type.data.attributes?.titles?.[0]?.title ??
+      prettySlug(content.type.data.attributes?.slug);
+
     description += "\n";
   }
-  if (content.categories.data.length > 0) {
+  if (content?.categories?.data && content.categories.data.length > 0) {
     description += `${langui.categories}: `;
     description += content.categories.data
-      .map((category) => category.attributes.short)
+      .map((category) => category.attributes?.short)
       .join(" | ");
     description += "\n";
   }
@@ -226,15 +255,15 @@ export default function Content(props: Props): JSX.Element {
   return (
     <AppLayout
       navTitle={
-        content.titles.length > 0
+        content?.titles && content.titles.length > 0 && content.titles[0]
           ? prettyinlineTitle(
               content.titles[0].pre_title,
               content.titles[0].title,
               content.titles[0].subtitle
             )
-          : prettySlug(content.slug)
+          : prettySlug(content?.slug)
       }
-      thumbnail={content.thumbnail.data?.attributes}
+      thumbnail={content?.thumbnail?.data?.attributes ?? undefined}
       contentPanel={contentPanel}
       subPanel={subPanel}
       description={description}
@@ -246,18 +275,19 @@ export default function Content(props: Props): JSX.Element {
 export async function getStaticProps(
   context: GetStaticPropsContext
 ): Promise<{ notFound: boolean } | { props: Props }> {
+  const sdk = getReadySdk();
   const slug = context.params?.slug?.toString() ?? "";
-  const content = (
-    await getContentText({
-      slug: slug,
-      language_code: context.locale ?? "en",
-    })
-  ).contents.data[0];
-  if (!content) return { notFound: true };
+  const content = await sdk.getContentText({
+    slug: slug,
+    language_code: context.locale ?? "en",
+  });
+
+  if (!content.contents || content.contents.data.length === 0)
+    return { notFound: true };
   const props: Props = {
     ...(await getAppStaticProps(context)),
-    content: content.attributes,
-    contentId: content.id,
+    content: content.contents.data[0].attributes,
+    contentId: content.contents.data[0].id,
   };
   return {
     props: props,
@@ -267,11 +297,13 @@ export async function getStaticProps(
 export async function getStaticPaths(
   context: GetStaticPathsContext
 ): Promise<GetStaticPathsResult> {
-  const contents = await getContentsSlugs({});
+  const sdk = getReadySdk();
+  const contents = await sdk.getContentsSlugs();
   const paths: GetStaticPathsResult["paths"] = [];
-  contents.contents.data.map((item) => {
+  contents.contents?.data.map((item) => {
     context.locales?.map((local) => {
-      paths.push({ params: { slug: item.attributes.slug }, locale: local });
+      if (item.attributes)
+        paths.push({ params: { slug: item.attributes.slug }, locale: local });
     });
   });
   return {
@@ -287,12 +319,12 @@ function useTesting(props: Props) {
   const contentURL = `/admin/content-manager/collectionType/api::content.content/${contentId}`;
 
   if (router.locale === "en") {
-    if (content.categories.data.length === 0) {
+    if (content?.categories?.data.length === 0) {
       prettyTestError(router, "Missing categories", ["content"], contentURL);
     }
   }
 
-  if (content.ranged_contents.data.length === 0) {
+  if (content?.ranged_contents?.data.length === 0) {
     prettyTestWarning(
       router,
       "Unconnected to any source",
@@ -301,7 +333,7 @@ function useTesting(props: Props) {
     );
   }
 
-  if (content.text_set.length === 0) {
+  if (content?.text_set?.length === 0) {
     prettyTestWarning(
       router,
       "Has no textset, nor audioset, nor videoset",
@@ -310,7 +342,7 @@ function useTesting(props: Props) {
     );
   }
 
-  if (content.text_set.length > 1) {
+  if (content?.text_set && content.text_set.length > 1) {
     prettyTestError(
       router,
       "More than one textset for this language",
@@ -319,10 +351,10 @@ function useTesting(props: Props) {
     );
   }
 
-  if (content.text_set.length === 1) {
+  if (content?.text_set?.length === 1) {
     const textset = content.text_set[0];
 
-    if (!textset.text) {
+    if (!textset?.text) {
       prettyTestError(
         router,
         "Missing text",
@@ -330,16 +362,18 @@ function useTesting(props: Props) {
         contentURL
       );
     }
-    if (!textset.source_language.data) {
+    if (!textset?.source_language?.data) {
       prettyTestError(
         router,
         "Missing source language",
         ["content", "text_set"],
         contentURL
       );
-    } else if (textset.source_language.data.attributes.code === router.locale) {
+    } else if (
+      textset.source_language.data.attributes?.code === router.locale
+    ) {
       // This is a transcript
-      if (textset.transcribers.data.length === 0) {
+      if (textset.transcribers?.data.length === 0) {
         prettyTestError(
           router,
           "Missing transcribers attribution",
@@ -347,7 +381,7 @@ function useTesting(props: Props) {
           contentURL
         );
       }
-      if (textset.translators.data.length > 0) {
+      if (textset.translators && textset.translators.data.length > 0) {
         prettyTestError(
           router,
           "Transcripts shouldn't have translators",
@@ -357,7 +391,7 @@ function useTesting(props: Props) {
       }
     } else {
       // This is a translation
-      if (textset.translators.data.length === 0) {
+      if (textset.translators?.data.length === 0) {
         prettyTestError(
           router,
           "Missing translators attribution",
@@ -365,7 +399,7 @@ function useTesting(props: Props) {
           contentURL
         );
       }
-      if (textset.transcribers.data.length > 0) {
+      if (textset.transcribers && textset.transcribers.data.length > 0) {
         prettyTestError(
           router,
           "Translations shouldn't have transcribers",

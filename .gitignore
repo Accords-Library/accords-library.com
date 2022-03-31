@@ -2,6 +2,9 @@
 
 /testing_logs/*
 
+# Generated content
+src/graphql/generated.ts
+
 # dependencies
 /node_modules
 /.pnp

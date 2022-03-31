@@ -1,0 +1,12 @@
+fragment pricePicker on ComponentBasicsPrice {
+  amount
+  currency {
+    data {
+      attributes {
+        symbol
+        code
+        rate_to_usd
+      }
+    }
+  }
+}

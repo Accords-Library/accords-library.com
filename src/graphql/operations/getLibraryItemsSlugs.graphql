@@ -1,0 +1,9 @@
+query getLibraryItemsSlugs {
+  libraryItems(pagination: { limit: -1 }) {
+    data {
+      attributes {
+        slug
+      }
+    }
+  }
+}

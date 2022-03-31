@@ -1,4 +1,4 @@
-import { StrapiImage } from "graphql/operations-types";
+import { UploadImageFragment } from "graphql/generated";
 import Image, { ImageProps } from "next/image";
 
 export enum ImageQuality {
@@ -51,7 +51,7 @@ export function getImgSizesByQuality(
 
 type ImgProps = {
   className?: string;
-  image?: StrapiImage;
+  image?: UploadImageFragment;
   quality?: ImageQuality;
   alt?: ImageProps["alt"];
   layout?: ImageProps["layout"];
@@ -61,11 +61,11 @@ type ImgProps = {
 };
 
 export default function Img(props: ImgProps): JSX.Element {
-  if (props.image) {
+  if (props.image?.width && props.image?.height) {
     const imgSize = getImgSizesByQuality(
       props.image.width,
       props.image.height,
-      props.quality ? props.quality : ImageQuality.Small
+      props.quality ?? ImageQuality.Small
     );
 
     if (props.rawImg) {
@@ -75,9 +75,9 @@ export default function Img(props: ImgProps): JSX.Element {
           className={props.className}
           src={getAssetURL(
             props.image.url,
-            props.quality ? props.quality : ImageQuality.Small
+            props.quality ?? ImageQuality.Small
           )}
-          alt={props.alt ? props.alt : props.image.alternativeText}
+          alt={props.alt ?? props.image.alternativeText ?? ""}
           width={imgSize.width}
           height={imgSize.height}
         />
@@ -90,7 +90,7 @@ export default function Img(props: ImgProps): JSX.Element {
           props.image.url,
           props.quality ? props.quality : ImageQuality.Small
         )}
-        alt={props.alt ? props.alt : props.image.alternativeText}
+        alt={props.alt ?? props.image.alternativeText ?? ""}
         width={props.layout === "fill" ? undefined : imgSize.width}
         height={props.layout === "fill" ? undefined : imgSize.height}
         layout={props.layout}

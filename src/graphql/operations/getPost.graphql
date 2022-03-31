@@ -1,0 +1,61 @@
+query getPost($slug: String, $language_code: String) {
+  posts(filters: { slug: { eq: $slug } }) {
+    data {
+      id
+      attributes {
+        slug
+        updatedAt
+        date {
+          ...datePicker
+        }
+        authors {
+          data {
+            id
+            attributes {
+              ...recorderChip
+            }
+          }
+        }
+        categories {
+          data {
+            id
+            attributes {
+              name
+              short
+            }
+          }
+        }
+        hidden
+        thumbnail {
+          data {
+            attributes {
+              ...uploadImage
+            }
+          }
+        }
+        translations_languages: translations {
+          language {
+            data {
+              attributes {
+                code
+              }
+            }
+          }
+        }
+        translations(filters: { language: { code: { eq: $language_code } } }) {
+          status
+          title
+          excerpt
+          thumbnail {
+            data {
+              attributes {
+                ...uploadImage
+              }
+            }
+          }
+          body
+        }
+      }
+    }
+  }
+}

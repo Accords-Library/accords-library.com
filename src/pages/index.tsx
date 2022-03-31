@@ -2,21 +2,27 @@ import AppLayout from "components/AppLayout";
 import LanguageSwitcher from "components/LanguageSwitcher";
 import Markdawn from "components/Markdown/Markdawn";
 import ContentPanel from "components/Panels/ContentPanel";
-import { getPost } from "graphql/operations";
-import { GetPostQuery } from "graphql/operations-types";
+import { GetPostQuery } from "graphql/generated";
+import { getReadySdk } from "graphql/sdk";
 import { GetStaticPropsContext } from "next";
 import { useRouter } from "next/router";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 import { getLocalesFromLanguages, prettySlug } from "queries/helpers";
 
-interface HomeProps extends AppStaticProps {
-  post: GetPostQuery["posts"]["data"][number]["attributes"];
+interface Props extends AppStaticProps {
+  post: Exclude<
+    GetPostQuery["posts"],
+    null | undefined
+  >["data"][number]["attributes"];
 }
 
-export default function Home(props: HomeProps): JSX.Element {
+export default function Home(props: Props): JSX.Element {
   const { post } = props;
-  const locales = getLocalesFromLanguages(post.translations_languages);
+  const locales = getLocalesFromLanguages(post?.translations_languages);
   const router = useRouter();
+
+  const body = post?.translations?.[0]?.body ?? "";
+  const title = post?.translations?.[0]?.title ?? prettySlug(post?.slug);
 
   const contentPanel = (
     <ContentPanel>
@@ -28,7 +34,7 @@ export default function Home(props: HomeProps): JSX.Element {
         </h2>
       </div>
       {locales.includes(router.locale ?? "en") ? (
-        <Markdawn text={post.translations[0].body} />
+        <Markdawn text={body} />
       ) : (
         <LanguageSwitcher
           locales={locales}
@@ -39,31 +45,22 @@ export default function Home(props: HomeProps): JSX.Element {
     </ContentPanel>
   );
 
-  return (
-    <AppLayout
-      navTitle={
-        post.translations.length > 0
-          ? post.translations[0].title
-          : prettySlug(post.slug)
-      }
-      contentPanel={contentPanel}
-      {...props}
-    />
-  );
+  return <AppLayout navTitle={title} contentPanel={contentPanel} {...props} />;
 }
 
 export async function getStaticProps(
   context: GetStaticPropsContext
-): Promise<{ notFound: boolean } | { props: HomeProps }> {
+): Promise<{ notFound: boolean } | { props: Props }> {
+  const sdk = getReadySdk();
   const slug = "home";
-  const props: HomeProps = {
+  const post = await sdk.getPost({
+    slug: slug,
+    language_code: context.locale ?? "en",
+  });
+  if (!post.posts) return { notFound: true };
+  const props: Props = {
     ...(await getAppStaticProps(context)),
-    post: (
-      await getPost({
-        slug: slug,
-        language_code: context.locale ?? "en",
-      })
-    ).posts.data[0].attributes,
+    post: post.posts.data[0].attributes,
   };
   return {
     props: props,

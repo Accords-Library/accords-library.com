@@ -1,0 +1,13 @@
+query getCurrencies {
+  currencies {
+    data {
+      id
+      attributes {
+        code
+        symbol
+        rate_to_usd
+        display_decimals
+      }
+    }
+  }
+}

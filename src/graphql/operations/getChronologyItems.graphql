@@ -1,0 +1,34 @@
+query getChronologyItems($language_code: String) {
+  chronologyItems(
+    pagination: { limit: -1 }
+    sort: ["year:asc", "month:asc", "day:asc"]
+  ) {
+    data {
+      id
+      attributes {
+        year
+        month
+        day
+        displayed_date
+        events {
+          id
+          source {
+            data {
+              attributes {
+                name
+              }
+            }
+          }
+          translations(
+            filters: { language: { code: { eq: $language_code } } }
+          ) {
+            title
+            description
+            note
+            status
+          }
+        }
+      }
+    }
+  }
+}

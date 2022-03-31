@@ -1,0 +1,23 @@
+fragment recorderChip on Recorder {
+  username
+  anonymize
+  anonymous_code
+  pronouns
+  bio(filters: { language: { code: { eq: $language_code } } }) {
+    bio
+  }
+  languages {
+    data {
+      attributes {
+        code
+      }
+    }
+  }
+  avatar {
+    data {
+      attributes {
+        ...uploadImage
+      }
+    }
+  }
+}

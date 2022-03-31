@@ -1,0 +1,387 @@
+query getLibraryItem($slug: String, $language_code: String) {
+  libraryItems(filters: { slug: { eq: $slug } }) {
+    data {
+      id
+      attributes {
+        title
+        subtitle
+        slug
+        root_item
+        primary
+        digital
+        thumbnail {
+          data {
+            attributes {
+              ...uploadImage
+            }
+          }
+        }
+        gallery {
+          data {
+            id
+            attributes {
+              ...uploadImage
+            }
+          }
+        }
+        release_date {
+          ...datePicker
+        }
+        price {
+          ...pricePicker
+        }
+        categories {
+          data {
+            id
+            attributes {
+              name
+              short
+            }
+          }
+        }
+        size {
+          width
+          height
+          thickness
+        }
+        descriptions(filters: { language: { code: { eq: $language_code } } }) {
+          description
+        }
+        metadata {
+          __typename
+          ... on ComponentMetadataBooks {
+            subtype {
+              data {
+                attributes {
+                  slug
+                  titles(
+                    filters: { language: { code: { eq: $language_code } } }
+                  ) {
+                    title
+                  }
+                }
+              }
+            }
+            binding_type
+            page_count
+            page_order
+            languages {
+              data {
+                attributes {
+                  code
+                  name
+                }
+              }
+            }
+          }
+          ... on ComponentMetadataVideo {
+            subtype {
+              data {
+                attributes {
+                  slug
+                  titles(
+                    filters: { language: { code: { eq: $language_code } } }
+                  ) {
+                    title
+                  }
+                }
+              }
+            }
+          }
+          ... on ComponentMetadataGame {
+            platforms {
+              data {
+                id
+                attributes {
+                  short
+                }
+              }
+            }
+            audio_languages {
+              data {
+                attributes {
+                  code
+                  name
+                }
+              }
+            }
+            sub_languages {
+              data {
+                attributes {
+                  code
+                  name
+                }
+              }
+            }
+            interface_languages {
+              data {
+                attributes {
+                  code
+                  name
+                }
+              }
+            }
+          }
+          ... on ComponentMetadataAudio {
+            subtype {
+              data {
+                attributes {
+                  slug
+                  titles(
+                    filters: { language: { code: { eq: $language_code } } }
+                  ) {
+                    title
+                  }
+                }
+              }
+            }
+          }
+          ... on ComponentMetadataGroup {
+            subtype {
+              data {
+                attributes {
+                  slug
+                  titles(
+                    filters: { language: { code: { eq: $language_code } } }
+                  ) {
+                    title
+                  }
+                }
+              }
+            }
+            subitems_type {
+              data {
+                attributes {
+                  slug
+                  titles(
+                    filters: { language: { code: { eq: $language_code } } }
+                  ) {
+                    title
+                  }
+                }
+              }
+            }
+          }
+        }
+        subitem_of {
+          data {
+            id
+            attributes {
+              title
+              subtitle
+              slug
+            }
+          }
+        }
+        subitems {
+          data {
+            id
+            attributes {
+              title
+              subtitle
+              slug
+              thumbnail {
+                data {
+                  attributes {
+                    ...uploadImage
+                  }
+                }
+              }
+              release_date {
+                ...datePicker
+              }
+              price {
+                ...pricePicker
+              }
+              categories {
+                data {
+                  id
+                  attributes {
+                    name
+                    short
+                  }
+                }
+              }
+              metadata {
+                __typename
+                ... on ComponentMetadataBooks {
+                  subtype {
+                    data {
+                      attributes {
+                        slug
+                        titles(
+                          filters: {
+                            language: { code: { eq: $language_code } }
+                          }
+                        ) {
+                          title
+                        }
+                      }
+                    }
+                  }
+                }
+                ... on ComponentMetadataGame {
+                  platforms {
+                    data {
+                      id
+                      attributes {
+                        short
+                      }
+                    }
+                  }
+                }
+                ... on ComponentMetadataVideo {
+                  subtype {
+                    data {
+                      attributes {
+                        slug
+                        titles(
+                          filters: {
+                            language: { code: { eq: $language_code } }
+                          }
+                        ) {
+                          title
+                        }
+                      }
+                    }
+                  }
+                }
+                ... on ComponentMetadataAudio {
+                  subtype {
+                    data {
+                      attributes {
+                        slug
+                        titles(
+                          filters: {
+                            language: { code: { eq: $language_code } }
+                          }
+                        ) {
+                          title
+                        }
+                      }
+                    }
+                  }
+                }
+                ... on ComponentMetadataGroup {
+                  subtype {
+                    data {
+                      attributes {
+                        slug
+                        titles(
+                          filters: {
+                            language: { code: { eq: $language_code } }
+                          }
+                        ) {
+                          title
+                        }
+                      }
+                    }
+                  }
+                  subitems_type {
+                    data {
+                      attributes {
+                        slug
+                        titles(
+                          filters: {
+                            language: { code: { eq: $language_code } }
+                          }
+                        ) {
+                          title
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+        submerchs {
+          data {
+            id
+            attributes {
+              slug
+              title
+              subtitle
+              thumbnail {
+                data {
+                  attributes {
+                    ...uploadImage
+                  }
+                }
+              }
+            }
+          }
+        }
+        contents(pagination: { limit: -1 }) {
+          data {
+            id
+            attributes {
+              slug
+              range {
+                __typename
+                ... on ComponentRangePageRange {
+                  starting_page
+                  ending_page
+                }
+                ... on ComponentRangeTimeRange {
+                  starting_time
+                  ending_time
+                }
+              }
+              scan_set {
+                id
+              }
+              content {
+                data {
+                  attributes {
+                    slug
+                    categories {
+                      data {
+                        id
+                        attributes {
+                          name
+                          short
+                        }
+                      }
+                    }
+                    type {
+                      data {
+                        attributes {
+                          slug
+                          titles(
+                            filters: {
+                              language: { code: { eq: $language_code } }
+                            }
+                          ) {
+                            title
+                          }
+                        }
+                      }
+                    }
+                    titles(
+                      filters: { language: { code: { eq: $language_code } } }
+                    ) {
+                      pre_title
+                      title
+                      subtitle
+                    }
+                    text_set {
+                      id
+                    }
+                    video_set {
+                      id
+                    }
+                    audio_set {
+                      id
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

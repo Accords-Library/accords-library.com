@@ -1,12 +1,12 @@
 import Button from "components/Button";
 import HorizontalLine from "components/HorizontalLine";
 import { useAppLayout } from "contexts/AppLayoutContext";
-import { GetWebsiteInterfaceQuery } from "graphql/operations-types";
+import { AppStaticProps } from "queries/getAppStaticProps";
 
 type ReturnButtonProps = {
   href: string;
-  title: string;
-  langui: GetWebsiteInterfaceQuery["websiteInterfaces"]["data"][number]["attributes"];
+  title: string | null | undefined;
+  langui: AppStaticProps["langui"];
   displayOn: ReturnButtonType;
   horizontalLine?: boolean;
   className?: string;

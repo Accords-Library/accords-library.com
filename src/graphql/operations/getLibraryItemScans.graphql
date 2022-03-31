@@ -1,0 +1,97 @@
+query getLibraryItemScans($slug: String, $language_code: String) {
+  libraryItems(filters: { slug: { eq: $slug } }) {
+    data {
+      id
+      attributes {
+        slug
+        title
+        subtitle
+        thumbnail {
+          data {
+            attributes {
+              ...uploadImage
+            }
+          }
+        }
+        contents(pagination: { limit: -1 }) {
+          data {
+            id
+            attributes {
+              slug
+              range {
+                __typename
+                ... on ComponentRangePageRange {
+                  starting_page
+                  ending_page
+                }
+                ... on ComponentRangeTimeRange {
+                  starting_time
+                  ending_time
+                }
+              }
+              scan_set_languages: scan_set {
+                language {
+                  data {
+                    attributes {
+                      code
+                    }
+                  }
+                }
+              }
+              scan_set(
+                filters: {
+                  or: [
+                    { language: { code: { eq: "xx" } } }
+                    { language: { code: { eq: $language_code } } }
+                  ]
+                }
+              ) {
+                status
+                source_language {
+                  data {
+                    attributes {
+                      code
+                    }
+                  }
+                }
+                scanners {
+                  data {
+                    id
+                    attributes {
+                      ...recorderChip
+                    }
+                  }
+                }
+                cleaners {
+                  data {
+                    id
+                    attributes {
+                      ...recorderChip
+                    }
+                  }
+                }
+                typesetters {
+                  data {
+                    id
+                    attributes {
+                      ...recorderChip
+                    }
+                  }
+                }
+                notes
+                pages(pagination: { limit: -1 }) {
+                  data {
+                    id
+                    attributes {
+                      ...uploadImage
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

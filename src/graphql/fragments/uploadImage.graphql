@@ -1,0 +1,8 @@
+fragment uploadImage on UploadFile {
+  name
+  alternativeText
+  caption
+  width
+  height
+  url
+}

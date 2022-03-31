@@ -12,8 +12,8 @@ import ContentPanel from "components/Panels/ContentPanel";
 import SubPanel from "components/Panels/SubPanel";
 import RecorderChip from "components/RecorderChip";
 import ToolTip from "components/ToolTip";
-import { getPost, getPostsSlugs } from "graphql/operations";
-import { GetPostQuery, StrapiImage } from "graphql/operations-types";
+import { GetPostQuery } from "graphql/generated";
+import { getReadySdk } from "graphql/sdk";
 import {
   GetStaticPathsContext,
   GetStaticPathsResult,
@@ -28,21 +28,30 @@ import {
 } from "queries/helpers";
 
 interface PostProps extends AppStaticProps {
-  post: GetPostQuery["posts"]["data"][number]["attributes"];
-  postId: GetPostQuery["posts"]["data"][number]["id"];
+  post: Exclude<
+    GetPostQuery["posts"],
+    null | undefined
+  >["data"][number]["attributes"];
+  postId: Exclude<
+    GetPostQuery["posts"],
+    null | undefined
+  >["data"][number]["id"];
 }
 
 export default function LibrarySlug(props: PostProps): JSX.Element {
   const { post, langui } = props;
-  const locales = getLocalesFromLanguages(post.translations_languages);
+  const locales = getLocalesFromLanguages(post?.translations_languages);
   const router = useRouter();
 
-  const thumbnail: StrapiImage | undefined =
-    post.translations.length > 0 && post.translations[0].thumbnail.data
-      ? post.translations[0].thumbnail.data.attributes
-      : post.thumbnail.data
-      ? post.thumbnail.data.attributes
-      : undefined;
+  const thumbnail = post?.translations?.[0]?.thumbnail?.data
+    ? post.translations[0].thumbnail.data.attributes
+    : post?.thumbnail?.data
+    ? post.thumbnail.data.attributes
+    : undefined;
+
+  const body = post?.translations?.[0]?.body ?? "";
+  const title = post?.translations?.[0]?.title ?? prettySlug(post?.slug);
+  const except = post?.translations?.[0]?.excerpt ?? "";
 
   const subPanel = (
     <SubPanel>
@@ -54,7 +63,7 @@ export default function LibrarySlug(props: PostProps): JSX.Element {
         horizontalLine
       />
 
-      {post.translations.length > 0 && (
+      {post?.translations?.[0] && (
         <div className="grid grid-flow-col place-items-center place-content-center gap-2">
           <p className="font-headers">{langui.status}:</p>
 
@@ -67,12 +76,20 @@ export default function LibrarySlug(props: PostProps): JSX.Element {
         </div>
       )}
 
-      {post.authors.data.length > 0 && (
+      {post?.authors && post.authors.data.length > 0 && (
         <div>
           <p className="font-headers">{"Authors"}:</p>
           <div className="grid place-items-center place-content-center gap-2">
             {post.authors.data.map((author) => (
-              <RecorderChip key={author.id} langui={langui} recorder={author} />
+              <>
+                {author.attributes && (
+                  <RecorderChip
+                    key={author.id}
+                    langui={langui}
+                    recorder={author.attributes}
+                  />
+                )}
+              </>
             ))}
           </div>
         </div>
@@ -80,12 +97,7 @@ export default function LibrarySlug(props: PostProps): JSX.Element {
 
       <HorizontalLine />
 
-      {post.translations.length > 0 && post.translations[0].body && (
-        <TOC
-          text={post.translations[0].body}
-          title={post.translations[0].title}
-        />
-      )}
+      <TOC text={body} title={title} />
     </SubPanel>
   );
   const contentPanel = (
@@ -100,24 +112,16 @@ export default function LibrarySlug(props: PostProps): JSX.Element {
 
       <ThumbnailHeader
         thumbnail={thumbnail}
-        title={
-          post.translations.length > 0
-            ? post.translations[0].title
-            : prettySlug(post.slug)
-        }
-        description={
-          post.translations.length > 0
-            ? post.translations[0].excerpt
-            : undefined
-        }
+        title={title}
+        description={except}
         langui={langui}
-        categories={post.categories}
+        categories={post?.categories}
       />
 
       <HorizontalLine />
 
       {locales.includes(router.locale ?? "en") ? (
-        <Markdawn text={post.translations[0].body} />
+        <Markdawn text={body} />
       ) : (
         <LanguageSwitcher
           locales={locales}
@@ -130,14 +134,10 @@ export default function LibrarySlug(props: PostProps): JSX.Element {
 
   return (
     <AppLayout
-      navTitle={
-        post.translations.length > 0
-          ? post.translations[0].title
-          : prettySlug(post.slug)
-      }
+      navTitle={title}
       contentPanel={contentPanel}
       subPanel={subPanel}
-      thumbnail={thumbnail}
+      thumbnail={thumbnail ?? undefined}
       {...props}
     />
   );
@@ -146,18 +146,17 @@ export default function LibrarySlug(props: PostProps): JSX.Element {
 export async function getStaticProps(
   context: GetStaticPropsContext
 ): Promise<{ notFound: boolean } | { props: PostProps }> {
-  const slug = context.params?.slug?.toString() ?? "";
-  const post = (
-    await getPost({
-      slug: slug,
-      language_code: context.locale ?? "en",
-    })
-  ).posts.data[0];
-  if (!post) return { notFound: true };
+  const sdk = getReadySdk();
+  const slug = context.params?.slug ? context.params.slug.toString() : "";
+  const post = await sdk.getPost({
+    slug: slug,
+    language_code: context.locale ?? "en",
+  });
+  if (!post.posts?.data[0]) return { notFound: true };
   const props: PostProps = {
     ...(await getAppStaticProps(context)),
-    post: post.attributes,
-    postId: post.id,
+    post: post.posts.data[0].attributes,
+    postId: post.posts.data[0].id,
   };
   return {
     props: props,
@@ -167,13 +166,16 @@ export async function getStaticProps(
 export async function getStaticPaths(
   context: GetStaticPathsContext
 ): Promise<GetStaticPathsResult> {
-  const posts = await getPostsSlugs({});
+  const sdk = getReadySdk();
+  const posts = await sdk.getPostsSlugs();
   const paths: GetStaticPathsResult["paths"] = [];
-  posts.posts.data.map((item) => {
-    context.locales?.map((local) => {
-      paths.push({ params: { slug: item.attributes.slug }, locale: local });
+  if (posts.posts)
+    posts.posts.data.map((item) => {
+      context.locales?.map((local) => {
+        if (item.attributes)
+          paths.push({ params: { slug: item.attributes.slug }, locale: local });
+      });
     });
-  });
   return {
     paths,
     fallback: "blocking",

@@ -1,0 +1,9 @@
+query getContentsSlugs {
+  contents(pagination: { limit: -1 }) {
+    data {
+      attributes {
+        slug
+      }
+    }
+  }
+}

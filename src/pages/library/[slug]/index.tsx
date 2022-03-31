@@ -15,12 +15,12 @@ import ContentPanel, {
 } from "components/Panels/ContentPanel";
 import SubPanel from "components/Panels/SubPanel";
 import { useAppLayout } from "contexts/AppLayoutContext";
-import { getLibraryItem, getLibraryItemsSlugs } from "graphql/operations";
 import {
   Enum_Componentmetadatabooks_Binding_Type,
   Enum_Componentmetadatabooks_Page_Order,
   GetLibraryItemQuery,
-} from "graphql/operations-types";
+} from "graphql/generated";
+import { getReadySdk } from "graphql/sdk";
 import {
   GetStaticPathsContext,
   GetStaticPathsResult,
@@ -41,22 +41,27 @@ import {
 } from "queries/helpers";
 import { useState } from "react";
 
-interface LibrarySlugProps extends AppStaticProps {
-  item: GetLibraryItemQuery["libraryItems"]["data"][number]["attributes"];
-  itemId: GetLibraryItemQuery["libraryItems"]["data"][number]["id"];
+interface Props extends AppStaticProps {
+  item: Exclude<
+    GetLibraryItemQuery["libraryItems"],
+    null | undefined
+  >["data"][number]["attributes"];
+  itemId: Exclude<
+    GetLibraryItemQuery["libraryItems"],
+    null | undefined
+  >["data"][number]["id"];
 }
 
-export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
+export default function LibrarySlug(props: Props): JSX.Element {
   useTesting(props);
   const { item, langui, currencies } = props;
   const appLayout = useAppLayout();
 
   const isVariantSet =
-    item.metadata.length > 0 &&
-    item.metadata[0].__typename === "ComponentMetadataGroup" &&
-    item.metadata[0].subtype.data.attributes.slug === "variant-set";
+    item?.metadata?.[0]?.__typename === "ComponentMetadataGroup" &&
+    item.metadata[0].subtype?.data?.attributes?.slug === "variant-set";
 
-  sortContent(item.contents);
+  sortContent(item?.contents);
 
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxImages, setLightboxImages] = useState([""]);
@@ -80,7 +85,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
           onClick={() => appLayout.setSubPanelOpen(false)}
         />
 
-        {item.gallery.data.length > 0 && (
+        {item?.gallery && item.gallery.data.length > 0 && (
           <NavOption
             title={langui.gallery}
             url="#gallery"
@@ -96,7 +101,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
           onClick={() => appLayout.setSubPanelOpen(false)}
         />
 
-        {item.subitems.data.length > 0 && (
+        {item?.subitems && item.subitems.data.length > 0 && (
           <NavOption
             title={isVariantSet ? langui.variants : langui.subitems}
             url={isVariantSet ? "#variants" : "#subitems"}
@@ -105,7 +110,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
           />
         )}
 
-        {item.contents.data.length > 0 && (
+        {item?.contents && item.contents.data.length > 0 && (
           <NavOption
             title={langui.contents}
             url="#contents"
@@ -138,17 +143,19 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
         <div
           className="drop-shadow-shade-xl w-full h-[50vh] mobile:h-[60vh] desktop:mb-16 relative cursor-pointer"
           onClick={() => {
-            setLightboxOpen(true);
-            setLightboxImages([
-              getAssetURL(
-                item.thumbnail.data.attributes.url,
-                ImageQuality.Large
-              ),
-            ]);
-            setLightboxIndex(0);
+            if (item?.thumbnail?.data?.attributes) {
+              setLightboxOpen(true);
+              setLightboxImages([
+                getAssetURL(
+                  item.thumbnail.data.attributes.url,
+                  ImageQuality.Large
+                ),
+              ]);
+              setLightboxIndex(0);
+            }
           }}
         >
-          {item.thumbnail.data ? (
+          {item?.thumbnail?.data?.attributes ? (
             <Img
               image={item.thumbnail.data.attributes}
               quality={ImageQuality.Large}
@@ -163,7 +170,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
 
         <InsetBox id="summary" className="grid place-items-center">
           <div className="w-[clamp(0px,100%,42rem)] grid place-items-center gap-8">
-            {item.subitem_of.data.length > 0 && (
+            {item?.subitem_of?.data[0]?.attributes && (
               <div className="grid place-items-center">
                 <p>{langui.subitem_of}</p>
                 <Button
@@ -178,41 +185,53 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
               </div>
             )}
             <div className="grid place-items-center">
-              <h1 className="text-3xl">{item.title}</h1>
-              {item.subtitle && <h2 className="text-2xl">{item.subtitle}</h2>}
+              <h1 className="text-3xl">{item?.title}</h1>
+              {item?.subtitle && <h2 className="text-2xl">{item.subtitle}</h2>}
             </div>
-            {item.descriptions.length > 0 && (
+            {item?.descriptions?.[0] && (
               <p className="text-justify">{item.descriptions[0].description}</p>
             )}
           </div>
         </InsetBox>
 
-        {item.gallery.data.length > 0 && (
+        {item?.gallery && item.gallery.data.length > 0 && (
           <div id="gallery" className="grid place-items-center gap-8  w-full">
             <h2 className="text-2xl">{langui.gallery}</h2>
             <div className="grid w-full gap-8 items-end grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))]">
               {item.gallery.data.map((galleryItem, index) => (
-                <div
-                  key={galleryItem.id}
-                  className="relative aspect-square hover:scale-[1.02] transition-transform cursor-pointer"
-                  onClick={() => {
-                    setLightboxOpen(true);
-                    setLightboxImages(
-                      item.gallery.data.map((image) =>
-                        getAssetURL(image.attributes.url, ImageQuality.Large)
-                      )
-                    );
-                    setLightboxIndex(index);
-                  }}
-                >
-                  <div className="bg-light absolute inset-0 rounded-lg drop-shadow-shade-md"></div>
-                  <Img
-                    className="rounded-lg"
-                    image={galleryItem.attributes}
-                    layout="fill"
-                    objectFit="cover"
-                  />
-                </div>
+                <>
+                  {galleryItem.attributes && (
+                    <div
+                      key={galleryItem.id}
+                      className="relative aspect-square hover:scale-[1.02] transition-transform cursor-pointer"
+                      onClick={() => {
+                        if (item.gallery?.data) {
+                          const images: string[] = [];
+                          item.gallery.data.map((image) => {
+                            if (image.attributes)
+                              images.push(
+                                getAssetURL(
+                                  image.attributes.url,
+                                  ImageQuality.Large
+                                )
+                              );
+                          });
+                          setLightboxOpen(true);
+                          setLightboxImages(images);
+                          setLightboxIndex(index);
+                        }
+                      }}
+                    >
+                      <div className="bg-light absolute inset-0 rounded-lg drop-shadow-shade-md"></div>
+                      <Img
+                        className="rounded-lg"
+                        image={galleryItem.attributes}
+                        layout="fill"
+                        objectFit="cover"
+                      />
+                    </div>
+                  )}
+                </>
               ))}
             </div>
           </div>
@@ -222,7 +241,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
           <div className="w-[clamp(0px,100%,42rem)] grid place-items gap-8">
             <h2 className="text-2xl text-center">{langui.details}</h2>
             <div className="grid grid-flow-col w-full place-content-between">
-              {item.metadata.length > 0 && (
+              {item?.metadata?.[0] && (
                 <div className="grid place-items-center place-content-start">
                   <h3 className="text-xl">{langui.type}</h3>
                   <div className="grid grid-flow-col gap-1">
@@ -233,24 +252,24 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
                 </div>
               )}
 
-              {item.release_date && (
+              {item?.release_date && (
                 <div className="grid place-items-center place-content-start">
                   <h3 className="text-xl">{langui.release_date}</h3>
                   <p>{prettyDate(item.release_date)}</p>
                 </div>
               )}
 
-              {item.price && (
+              {item?.price && (
                 <div className="grid place-items-center text-center place-content-start">
                   <h3 className="text-xl">{langui.price}</h3>
                   <p>
                     {prettyPrice(
                       item.price,
                       currencies,
-                      item.price.currency.data.attributes.code
+                      item.price.currency?.data?.attributes?.code
                     )}
                   </p>
-                  {item.price.currency.data.attributes.code !==
+                  {item.price.currency?.data?.attributes?.code !==
                     appLayout.currency && (
                     <p>
                       {prettyPrice(item.price, currencies, appLayout.currency)}{" "}
@@ -261,18 +280,18 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
               )}
             </div>
 
-            {item.categories.data.length > 0 && (
+            {item?.categories && item.categories.data.length > 0 && (
               <div className="flex flex-col place-items-center gap-2">
                 <h3 className="text-xl">{langui.categories}</h3>
                 <div className="flex flex-row flex-wrap place-content-center gap-2">
                   {item.categories.data.map((category) => (
-                    <Chip key={category.id}>{category.attributes.name}</Chip>
+                    <Chip key={category.id}>{category.attributes?.name}</Chip>
                   ))}
                 </div>
               </div>
             )}
 
-            {item.size && (
+            {item?.size && (
               <>
                 <h3 className="text-xl">{langui.size}</h3>
                 <div className="grid grid-flow-col w-full place-content-between">
@@ -303,13 +322,12 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
               </>
             )}
 
-            {item.metadata.length > 0 &&
-              item.metadata[0].__typename !== "ComponentMetadataGroup" &&
-              item.metadata[0].__typename !== "ComponentMetadataOther" && (
+            {item?.metadata?.[0]?.__typename !== "ComponentMetadataGroup" &&
+              item?.metadata?.[0]?.__typename !== "ComponentMetadataOther" && (
                 <>
                   <h3 className="text-xl">{langui.type_information}</h3>
                   <div className="grid grid-cols-2 w-full place-content-between">
-                    {item.metadata[0].__typename ===
+                    {item?.metadata?.[0]?.__typename ===
                       "ComponentMetadataBooks" && (
                       <>
                         <div className="flex flex-row place-content-start gap-4">
@@ -336,18 +354,15 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
                             {item.metadata[0].page_order ===
                             Enum_Componentmetadatabooks_Page_Order.LeftToRight
                               ? langui.left_to_right
-                              : item.metadata[0].page_order ===
-                                Enum_Componentmetadatabooks_Page_Order.RightToLeft
-                              ? langui.right_to_left
-                              : ""}
+                              : langui.right_to_left}
                           </p>
                         </div>
 
                         <div className="flex flex-row place-content-start gap-4">
                           <p className="font-bold">{langui.languages}:</p>
-                          {item.metadata[0].languages.data.map((lang) => (
-                            <p key={lang.attributes.code}>
-                              {lang.attributes.name}
+                          {item.metadata[0]?.languages?.data.map((lang) => (
+                            <p key={lang.attributes?.code}>
+                              {lang.attributes?.name}
                             </p>
                           ))}
                         </div>
@@ -359,7 +374,7 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
           </div>
         </InsetBox>
 
-        {item.subitems.data.length > 0 && (
+        {item?.subitems && item.subitems.data.length > 0 && (
           <div
             id={isVariantSet ? "variants" : "subitems"}
             className="grid place-items-center gap-8 w-full"
@@ -372,13 +387,14 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
                 <LibraryItemsPreview
                   key={subitem.id}
                   item={subitem.attributes}
+                  currencies={props.currencies}
                 />
               ))}
             </div>
           </div>
         )}
 
-        {item.contents.data.length > 0 && (
+        {item?.contents && item.contents.data.length > 0 && (
           <div id="contents" className="w-full grid place-items-center gap-8">
             <h2 className="text-2xl">{langui.contents}</h2>
             <div className="grid gap-4 w-full">
@@ -399,15 +415,11 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
 
   return (
     <AppLayout
-      navTitle={prettyinlineTitle("", item.title, item.subtitle)}
+      navTitle={prettyinlineTitle("", item?.title, item?.subtitle)}
       contentPanel={contentPanel}
       subPanel={subPanel}
-      thumbnail={item.thumbnail.data?.attributes}
-      description={
-        item.descriptions.length > 0
-          ? item.descriptions[0].description
-          : undefined
-      }
+      thumbnail={item?.thumbnail?.data?.attributes ?? undefined}
+      description={item?.descriptions?.[0]?.description ?? undefined}
       {...props}
     />
   );
@@ -415,18 +427,17 @@ export default function LibrarySlug(props: LibrarySlugProps): JSX.Element {
 
 export async function getStaticProps(
   context: GetStaticPropsContext
-): Promise<{ notFound: boolean } | { props: LibrarySlugProps }> {
-  const item = (
-    await getLibraryItem({
-      slug: context.params?.slug?.toString() ?? "",
-      language_code: context.locale ?? "en",
-    })
-  ).libraryItems.data[0];
-  if (!item) return { notFound: true };
-  const props: LibrarySlugProps = {
+): Promise<{ notFound: boolean } | { props: Props }> {
+  const sdk = getReadySdk();
+  const item = await sdk.getLibraryItem({
+    slug: context.params?.slug ? context.params.slug.toString() : "",
+    language_code: context.locale ?? "en",
+  });
+  if (!item.libraryItems) return { notFound: true };
+  const props: Props = {
     ...(await getAppStaticProps(context)),
-    item: item.attributes,
-    itemId: item.id,
+    item: item.libraryItems.data[0].attributes,
+    itemId: item.libraryItems.data[0].id,
   };
   return {
     props: props,
@@ -436,29 +447,32 @@ export async function getStaticProps(
 export async function getStaticPaths(
   context: GetStaticPathsContext
 ): Promise<GetStaticPathsResult> {
-  const libraryItems = await getLibraryItemsSlugs({});
+  const sdk = getReadySdk();
+  const libraryItems = await sdk.getLibraryItemsSlugs();
   const paths: GetStaticPathsResult["paths"] = [];
-  libraryItems.libraryItems.data.map((item) => {
-    context.locales?.map((local) => {
-      paths.push({ params: { slug: item.attributes.slug }, locale: local });
+  if (libraryItems.libraryItems) {
+    libraryItems.libraryItems.data.map((item) => {
+      context.locales?.map((local) => {
+        paths.push({ params: { slug: item.attributes?.slug }, locale: local });
+      });
     });
-  });
+  }
   return {
     paths,
     fallback: "blocking",
   };
 }
 
-function useTesting(props: LibrarySlugProps) {
+function useTesting(props: Props) {
   const { item, itemId } = props;
   const router = useRouter();
 
   const libraryItemURL = `/admin/content-manager/collectionType/api::library-item.library-item/${itemId}`;
 
-  sortContent(item.contents);
+  sortContent(item?.contents);
 
   if (router.locale === "en") {
-    if (!item.thumbnail.data) {
+    if (!item?.thumbnail?.data) {
       prettyTestError(
         router,
         "Missing thumbnail",
@@ -466,7 +480,7 @@ function useTesting(props: LibrarySlugProps) {
         libraryItemURL
       );
     }
-    if (item.metadata.length === 0) {
+    if (item?.metadata?.length === 0) {
       prettyTestError(
         router,
         "Missing metadata",
@@ -474,9 +488,9 @@ function useTesting(props: LibrarySlugProps) {
         libraryItemURL
       );
     } else if (
-      item.metadata[0].__typename === "ComponentMetadataGroup" &&
-      (item.metadata[0].subtype.data.attributes.slug === "relation-set" ||
-        item.metadata[0].subtype.data.attributes.slug === "variant-set")
+      item?.metadata?.[0]?.__typename === "ComponentMetadataGroup" &&
+      (item.metadata[0].subtype?.data?.attributes?.slug === "relation-set" ||
+        item.metadata[0].subtype?.data?.attributes?.slug === "variant-set")
     ) {
       // This is a group type item
       if (item.price) {
@@ -503,7 +517,7 @@ function useTesting(props: LibrarySlugProps) {
           libraryItemURL
         );
       }
-      if (item.contents.data.length > 0) {
+      if (item.contents && item.contents.data.length > 0) {
         prettyTestError(
           router,
           "Group-type items shouldn't have contents",
@@ -511,7 +525,7 @@ function useTesting(props: LibrarySlugProps) {
           libraryItemURL
         );
       }
-      if (item.subitems.data.length === 0) {
+      if (item.subitems && item.subitems.data.length === 0) {
         prettyTestError(
           router,
           "Group-type items should have subitems",
@@ -522,8 +536,8 @@ function useTesting(props: LibrarySlugProps) {
     } else {
       // This is a normal item
 
-      if (item.metadata[0].__typename === "ComponentMetadataGroup") {
-        if (item.subitems.data.length === 0) {
+      if (item?.metadata?.[0]?.__typename === "ComponentMetadataGroup") {
+        if (item.subitems?.data.length === 0) {
           prettyTestError(
             router,
             "Group-type item should have subitems",
@@ -533,7 +547,7 @@ function useTesting(props: LibrarySlugProps) {
         }
       }
 
-      if (item.price) {
+      if (item?.price) {
         if (!item.price.amount) {
           prettyTestError(
             router,
@@ -559,8 +573,8 @@ function useTesting(props: LibrarySlugProps) {
         );
       }
 
-      if (!item.digital) {
-        if (item.size) {
+      if (!item?.digital) {
+        if (item?.size) {
           if (!item.size.width) {
             prettyTestWarning(
               router,
@@ -595,7 +609,7 @@ function useTesting(props: LibrarySlugProps) {
         }
       }
 
-      if (item.release_date) {
+      if (item?.release_date) {
         if (!item.release_date.year) {
           prettyTestError(
             router,
@@ -629,7 +643,7 @@ function useTesting(props: LibrarySlugProps) {
         );
       }
 
-      if (item.contents.data.length === 0) {
+      if (item?.contents?.data.length === 0) {
         prettyTestWarning(
           router,
           "Missing contents",
@@ -638,26 +652,27 @@ function useTesting(props: LibrarySlugProps) {
         );
       } else {
         let currentRangePage = 0;
-        item.contents.data.map((content) => {
+        item?.contents?.data.map((content) => {
           const contentURL = `/admin/content-manager/collectionType/api::content.content/${content.id}`;
 
-          if (content.attributes.scan_set.length === 0) {
+          if (content.attributes?.scan_set?.length === 0) {
             prettyTestWarning(
               router,
               "Missing scan_set",
-              ["libraryItem", "content", content.id],
+              ["libraryItem", "content", content.id ?? ""],
               contentURL
             );
           }
-          if (content.attributes.range.length === 0) {
+          if (content.attributes?.range.length === 0) {
             prettyTestWarning(
               router,
               "Missing range",
-              ["libraryItem", "content", content.id],
+              ["libraryItem", "content", content.id ?? ""],
               contentURL
             );
           } else if (
-            content.attributes.range[0].__typename === "ComponentRangePageRange"
+            content.attributes?.range[0]?.__typename ===
+            "ComponentRangePageRange"
           ) {
             if (
               content.attributes.range[0].starting_page <
@@ -666,7 +681,7 @@ function useTesting(props: LibrarySlugProps) {
               prettyTestError(
                 router,
                 `Overlapping pages ${content.attributes.range[0].starting_page} to ${currentRangePage}`,
-                ["libraryItem", "content", content.id, "range"],
+                ["libraryItem", "content", content.id ?? "", "range"],
                 libraryItemURL
               );
             } else if (
@@ -678,16 +693,16 @@ function useTesting(props: LibrarySlugProps) {
                 `Missing pages ${currentRangePage + 1} to ${
                   content.attributes.range[0].starting_page - 1
                 }`,
-                ["libraryItem", "content", content.id, "range"],
+                ["libraryItem", "content", content.id ?? "", "range"],
                 libraryItemURL
               );
             }
 
-            if (!content.attributes.content.data) {
+            if (!content.attributes.content?.data) {
               prettyTestWarning(
                 router,
                 "Missing content",
-                ["libraryItem", "content", content.id, "range"],
+                ["libraryItem", "content", content.id ?? "", "range"],
                 libraryItemURL
               );
             }
@@ -696,26 +711,8 @@ function useTesting(props: LibrarySlugProps) {
           }
         });
 
-        if (item.metadata[0].__typename === "ComponentMetadataBooks") {
-          if (currentRangePage < item.metadata[0].page_count) {
-            prettyTestError(
-              router,
-              `Missing pages ${currentRangePage + 1} to ${
-                item.metadata[0].page_count
-              }`,
-              ["libraryItem", "content"],
-              libraryItemURL
-            );
-          } else if (currentRangePage > item.metadata[0].page_count) {
-            prettyTestError(
-              router,
-              `Page overflow, content references pages up to ${currentRangePage} when the highest expected was ${item.metadata[0].page_count}`,
-              ["libraryItem", "content"],
-              libraryItemURL
-            );
-          }
-
-          if (item.metadata[0].languages.data.length === 0) {
+        if (item?.metadata?.[0]?.__typename === "ComponentMetadataBooks") {
+          if (item.metadata[0].languages?.data.length === 0) {
             prettyTestWarning(
               router,
               "Missing language",
@@ -724,7 +721,25 @@ function useTesting(props: LibrarySlugProps) {
             );
           }
 
-          if (!item.metadata[0].page_count) {
+          if (item.metadata[0].page_count) {
+            if (currentRangePage < item.metadata[0].page_count) {
+              prettyTestError(
+                router,
+                `Missing pages ${currentRangePage + 1} to ${
+                  item.metadata[0].page_count
+                }`,
+                ["libraryItem", "content"],
+                libraryItemURL
+              );
+            } else if (currentRangePage > item.metadata[0].page_count) {
+              prettyTestError(
+                router,
+                `Page overflow, content references pages up to ${currentRangePage} when the highest expected was ${item.metadata[0].page_count}`,
+                ["libraryItem", "content"],
+                libraryItemURL
+              );
+            }
+          } else {
             prettyTestWarning(
               router,
               "Missing page_count",
@@ -736,7 +751,7 @@ function useTesting(props: LibrarySlugProps) {
       }
     }
 
-    if (!item.root_item && item.subitem_of.data.length === 0) {
+    if (!item?.root_item && item?.subitem_of?.data.length === 0) {
       prettyTestError(
         router,
         "This item is inaccessible (not root item and not subitem of another item)",
@@ -745,7 +760,7 @@ function useTesting(props: LibrarySlugProps) {
       );
     }
 
-    if (item.gallery.data.length === 0) {
+    if (item?.gallery?.data.length === 0) {
       prettyTestWarning(
         router,
         "Missing gallery",
@@ -755,7 +770,7 @@ function useTesting(props: LibrarySlugProps) {
     }
   }
 
-  if (item.descriptions.length === 0) {
+  if (item?.descriptions?.length === 0) {
     prettyTestWarning(
       router,
       "Missing description",

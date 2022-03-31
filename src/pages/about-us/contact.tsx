@@ -8,30 +8,40 @@ import ReturnButton, {
 } from "components/PanelComponents/ReturnButton";
 import ContentPanel from "components/Panels/ContentPanel";
 import SubPanel from "components/Panels/SubPanel";
-import { getPost } from "graphql/operations";
-import { GetPostQuery } from "graphql/operations-types";
+import { GetPostQuery } from "graphql/generated";
+import { getReadySdk } from "graphql/sdk";
 import { GetStaticPropsContext } from "next";
 import { useRouter } from "next/router";
 import { RequestMailProps, ResponseMailProps } from "pages/api/mail";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
-import { getLocalesFromLanguages, randomInt } from "queries/helpers";
+import {
+  getLocalesFromLanguages,
+  prettySlug,
+  randomInt,
+} from "queries/helpers";
 import { useState } from "react";
 
-interface ContactProps extends AppStaticProps {
-  post: GetPostQuery["posts"]["data"][number]["attributes"];
+interface Props extends AppStaticProps {
+  post: Exclude<
+    GetPostQuery["posts"],
+    null | undefined
+  >["data"][number]["attributes"];
 }
 
-export default function AboutUs(props: ContactProps): JSX.Element {
+export default function AboutUs(props: Props): JSX.Element {
   const { langui, post } = props;
   const router = useRouter();
   const [formResponse, setFormResponse] = useState("");
   const [formState, setFormState] = useState<"completed" | "ongoing" | "stale">(
     "stale"
   );
-  const locales = getLocalesFromLanguages(post.translations_languages);
+  const locales = getLocalesFromLanguages(post?.translations_languages);
 
   const [randomNumber1, setRandomNumber1] = useState(randomInt(0, 10));
   const [randomNumber2, setRandomNumber2] = useState(randomInt(0, 10));
+
+  const body = post?.translations?.[0]?.body ?? "";
+  const title = post?.translations?.[0]?.title ?? prettySlug(post?.slug);
 
   const subPanel = (
     <SubPanel>
@@ -42,12 +52,7 @@ export default function AboutUs(props: ContactProps): JSX.Element {
         title={langui.about_us}
         horizontalLine
       />
-      {post.translations.length > 0 && post.translations[0].body && (
-        <TOC
-          text={post.translations[0].body}
-          title={post.translations[0].title}
-        />
-      )}
+      <TOC text={body} title={title} />
     </SubPanel>
   );
 
@@ -61,7 +66,7 @@ export default function AboutUs(props: ContactProps): JSX.Element {
         className="mb-10"
       />
       {locales.includes(router.locale ?? "en") ? (
-        <Markdawn text={post.translations[0].body} />
+        <Markdawn text={body} />
       ) : (
         <LanguageSwitcher
           locales={locales}
@@ -110,13 +115,13 @@ export default function AboutUs(props: ContactProps): JSX.Element {
                 .then((response: ResponseMailProps) => {
                   switch (response.code) {
                     case "OKAY":
-                      setFormResponse(langui.response_email_success);
+                      setFormResponse(langui.response_email_success ?? "");
                       setFormState("completed");
 
                       break;
 
                     case "EENVELOPE":
-                      setFormResponse(langui.response_invalid_email);
+                      setFormResponse(langui.response_invalid_email ?? "");
                       setFormState("stale");
                       break;
 
@@ -127,7 +132,7 @@ export default function AboutUs(props: ContactProps): JSX.Element {
                   }
                 });
             } else {
-              setFormResponse(langui.response_invalid_code);
+              setFormResponse(langui.response_invalid_code ?? "");
               setFormState("stale");
               setRandomNumber1(randomInt(0, 10));
               setRandomNumber2(randomInt(0, 10));
@@ -194,7 +199,7 @@ export default function AboutUs(props: ContactProps): JSX.Element {
 
             <input
               type="submit"
-              value={langui.send}
+              value={langui.send ?? "Send"}
               className="w-min !px-6"
               disabled={formState !== "stale"}
             />
@@ -224,16 +229,17 @@ export default function AboutUs(props: ContactProps): JSX.Element {
 
 export async function getStaticProps(
   context: GetStaticPropsContext
-): Promise<{ notFound: boolean } | { props: ContactProps }> {
+): Promise<{ notFound: boolean } | { props: Props }> {
+  const sdk = getReadySdk();
   const slug = "contact";
-  const props: ContactProps = {
+  const post = await sdk.getPost({
+    slug: slug,
+    language_code: context.locale ?? "en",
+  });
+  if (!post.posts) return { notFound: true };
+  const props: Props = {
     ...(await getAppStaticProps(context)),
-    post: (
-      await getPost({
-        slug: slug,
-        language_code: context.locale ?? "en",
-      })
-    ).posts.data[0].attributes,
+    post: post.posts.data[0].attributes,
   };
   return {
     props: props,

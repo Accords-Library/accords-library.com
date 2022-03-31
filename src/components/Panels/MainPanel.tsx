@@ -3,14 +3,14 @@ import HorizontalLine from "components/HorizontalLine";
 import NavOption from "components/PanelComponents/NavOption";
 import ToolTip from "components/ToolTip";
 import { useAppLayout } from "contexts/AppLayoutContext";
-import { GetWebsiteInterfaceQuery } from "graphql/operations-types";
 import { useMediaDesktop } from "hooks/useMediaQuery";
 import Markdown from "markdown-to-jsx";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { AppStaticProps } from "queries/getAppStaticProps";
 
 type MainPanelProps = {
-  langui: GetWebsiteInterfaceQuery["websiteInterfaces"]["data"][number]["attributes"];
+  langui: AppStaticProps["langui"];
 };
 
 export default function MainPanel(props: MainPanelProps): JSX.Element {

@@ -1,21 +1,31 @@
 import Chip from "components/Chip";
 import Img, { ImageQuality } from "components/Img";
 import InsetBox from "components/InsetBox";
-import {
-  GetContentQuery,
-  GetWebsiteInterfaceQuery,
-} from "graphql/operations-types";
+import { GetContentQuery, UploadImageFragment } from "graphql/generated";
+import { AppStaticProps } from "queries/getAppStaticProps";
 import { prettyinlineTitle, prettySlug, slugify } from "queries/helpers";
 
 export type ThumbnailHeaderProps = {
-  pre_title?: string;
-  title: string;
-  subtitle?: string;
-  description?: string;
-  type?: GetContentQuery["contents"]["data"][number]["attributes"]["type"];
-  categories?: GetContentQuery["contents"]["data"][number]["attributes"]["categories"];
-  thumbnail?: GetContentQuery["contents"]["data"][number]["attributes"]["thumbnail"]["data"]["attributes"];
-  langui: GetWebsiteInterfaceQuery["websiteInterfaces"]["data"][number]["attributes"];
+  pre_title?: string | null | undefined;
+  title: string | null | undefined;
+  subtitle?: string | null | undefined;
+  description?: string | null | undefined;
+  type?: Exclude<
+    Exclude<
+      GetContentQuery["contents"],
+      null | undefined
+    >["data"][number]["attributes"],
+    null | undefined
+  >["type"];
+  categories?: Exclude<
+    Exclude<
+      GetContentQuery["contents"],
+      null | undefined
+    >["data"][number]["attributes"],
+    null | undefined
+  >["categories"];
+  thumbnail?: UploadImageFragment | null | undefined;
+  langui: AppStaticProps["langui"];
 };
 
 export default function ThumbnailHeader(
@@ -60,13 +70,14 @@ export default function ThumbnailHeader(
       </div>
 
       <div className="grid grid-flow-col gap-8">
-        {type?.data && (
+        {type?.data?.attributes && (
           <div className="flex flex-col place-items-center gap-2">
             <h3 className="text-xl">{langui.type}</h3>
             <div className="flex flex-row flex-wrap">
               <Chip>
-                {type.data.attributes.titles.length > 0
-                  ? type.data.attributes.titles[0].title
+                {type.data.attributes.titles &&
+                type.data.attributes.titles.length > 0
+                  ? type.data.attributes.titles[0]?.title
                   : prettySlug(type.data.attributes.slug)}
               </Chip>
             </div>
@@ -78,7 +89,7 @@ export default function ThumbnailHeader(
             <h3 className="text-xl">{langui.categories}</h3>
             <div className="flex flex-row flex-wrap place-content-center gap-2">
               {categories.data.map((category) => (
-                <Chip key={category.id}>{category.attributes.name}</Chip>
+                <Chip key={category.id}>{category.attributes?.name}</Chip>
               ))}
             </div>
           </div>

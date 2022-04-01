@@ -3,7 +3,7 @@ import { AppStaticProps } from "queries/getAppStaticProps";
 import { prettyLanguage } from "queries/helpers";
 import Button from "./Button";
 
-type HorizontalLineProps = {
+type Props = {
   className?: string;
   locales: (string | undefined)[];
   languages: AppStaticProps["languages"];
@@ -11,8 +11,8 @@ type HorizontalLineProps = {
   href?: string;
 };
 
-export default function HorizontalLine(
-  props: HorizontalLineProps
+export default function LanguageSwitcher(
+  props: Props
 ): JSX.Element {
   const { locales, langui, href } = props;
   const router = useRouter();

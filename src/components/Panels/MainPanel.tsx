@@ -207,19 +207,13 @@ export default function MainPanel(props: MainPanelProps): JSX.Element {
         onClick={() => appLayout.setMainPanelOpen(false)}
       />
 
-      {/*
-
       <NavOption
         url="/archives"
         icon="inventory"
         title={langui.archives}
-        
         reduced={appLayout.mainPanelReduced && isDesktop}
         onClick={() => appLayout.setMainPanelOpen(false)}
       />
-
-
-      */}
 
       <NavOption
         url="/about-us"

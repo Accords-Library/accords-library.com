@@ -14,7 +14,7 @@ module.exports = {
     defaultLocale: "en",
   },
   images: {
-    domains: ["img.accords-library.com"],
+    domains: ["img.accords-library.com", "watch.accords-library.com"],
   },
   serverRuntimeConfig: {
     locales: locales,

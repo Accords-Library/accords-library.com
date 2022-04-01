@@ -1,4 +1,5 @@
 import AppLayout from "components/AppLayout";
+import NavOption from "components/PanelComponents/NavOption";
 import PanelHeader from "components/PanelComponents/PanelHeader";
 import SubPanel from "components/Panels/SubPanel";
 import { GetStaticPropsContext } from "next";
@@ -15,6 +16,7 @@ export default function Archives(props: ArchivesProps): JSX.Element {
         title={langui.archives}
         description={langui.archives_description}
       />
+      <NavOption title={"Videos"} url="/archives/videos/" border />
     </SubPanel>
   );
   return (

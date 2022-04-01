@@ -229,6 +229,37 @@ export function prettyItemSubType(
   /* eslint-enable @typescript-eslint/no-explicit-any */
 }
 
+export function prettyShortenNumber(number: number): string {
+  if (number > 1000000) {
+    return number.toLocaleString(undefined, {
+      maximumSignificantDigits: 3,
+    });
+  } else if (number > 1000) {
+    return (number / 1000).toLocaleString(undefined, {
+      maximumSignificantDigits: 2,
+    }) + "K";
+  }
+  return number.toLocaleString();
+}
+
+export function prettyDuration(seconds: number): string {
+  let hours = 0;
+  let minutes = 0;
+  while (seconds > 60) {
+    minutes += 1;
+    seconds -= 60;
+  }
+  while (minutes > 60) {
+    hours += 1;
+    minutes -= 60;
+  }
+  let result = "";
+  if (hours) result += hours.toString().padStart(2, "0") + ":";
+  result += minutes.toString().padStart(2, "0") + ":";
+  result += seconds.toString().padStart(2, "0");
+  return result;
+}
+
 export function prettyLanguage(
   code: string,
   languages: AppStaticProps["languages"]
@@ -416,4 +447,12 @@ export function getLocalesFromLanguages(
   return languages
     ? languages.map((language) => language?.language?.data?.attributes?.code)
     : [];
+}
+
+export function getVideoThumbnailURL(uid: string):string {
+  return `${process.env.NEXT_PUBLIC_URL_WATCH}/videos/${uid}.webp`;
+}
+
+export function getVideoFile(uid: string):string {
+  return `${process.env.NEXT_PUBLIC_URL_WATCH}/videos/${uid}.mp4`;
 }

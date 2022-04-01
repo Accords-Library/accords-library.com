@@ -1,0 +1,10 @@
+query getVideosSlugs {
+	videos(pagination: {limit:-1}) {
+		data {
+			id
+			attributes {
+				uid
+			}
+		}
+	}
+}

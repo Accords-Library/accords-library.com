@@ -1,0 +1,55 @@
+query getVideo($uid: String) {
+  videos(filters: { uid: { eq: $uid } }) {
+    data {
+      id
+      attributes {
+        uid
+        title
+        description
+        published_date {
+          year
+          month
+          day
+        }
+        channel {
+          data {
+            attributes {
+              uid
+              title
+              subscribers
+            }
+          }
+        }
+        categories {
+          data {
+            id
+            attributes {
+              short
+            }
+          }
+        }
+        views
+        likes
+        source
+        audio_languages {
+          data {
+            id
+            attributes {
+              code
+            }
+          }
+        }
+        sub_languages {
+          data {
+            id
+            attributes {
+              code
+            }
+          }
+        }
+        width
+        height
+      }
+    }
+  }
+}

@@ -235,9 +235,11 @@ export function prettyShortenNumber(number: number): string {
       maximumSignificantDigits: 3,
     });
   } else if (number > 1000) {
-    return (number / 1000).toLocaleString(undefined, {
-      maximumSignificantDigits: 2,
-    }) + "K";
+    return (
+      (number / 1000).toLocaleString(undefined, {
+        maximumSignificantDigits: 2,
+      }) + "K"
+    );
   }
   return number.toLocaleString();
 }
@@ -449,10 +451,10 @@ export function getLocalesFromLanguages(
     : [];
 }
 
-export function getVideoThumbnailURL(uid: string):string {
+export function getVideoThumbnailURL(uid: string): string {
   return `${process.env.NEXT_PUBLIC_URL_WATCH}/videos/${uid}.webp`;
 }
 
-export function getVideoFile(uid: string):string {
+export function getVideoFile(uid: string): string {
   return `${process.env.NEXT_PUBLIC_URL_WATCH}/videos/${uid}.mp4`;
 }

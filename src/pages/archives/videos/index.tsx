@@ -1,5 +1,4 @@
 import AppLayout from "components/AppLayout";
-import HorizontalLine from "components/HorizontalLine";
 import PanelHeader from "components/PanelComponents/PanelHeader";
 import ReturnButton, {
   ReturnButtonType,

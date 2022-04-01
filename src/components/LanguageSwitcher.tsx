@@ -11,9 +11,7 @@ type Props = {
   href?: string;
 };
 
-export default function LanguageSwitcher(
-  props: Props
-): JSX.Element {
+export default function LanguageSwitcher(props: Props): JSX.Element {
   const { locales, langui, href } = props;
   const router = useRouter();
 

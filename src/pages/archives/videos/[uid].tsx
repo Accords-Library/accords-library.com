@@ -86,7 +86,11 @@ export default function Video(props: Props): JSX.Element {
           id="video"
           className="w-full rounded-xl shadow-shade shadow-lg overflow-hidden"
         >
-          <video className="w-full" src={getVideoFile(video.uid)} controls></video>
+          <video
+            className="w-full"
+            src={getVideoFile(video.uid)}
+            controls
+          ></video>
           <div className="p-6 mt-2">
             <h1 className="text-2xl">{video.title}</h1>
             <div className="flex flex-row flex-wrap gap-x-6 w-full">
@@ -114,7 +118,10 @@ export default function Video(props: Props): JSX.Element {
                     : video.likes.toLocaleString()}
                 </p>
               )}
-              <Button href="" className="!py-0 !px-3">{`View on ${video.source}`}</Button>
+              <Button
+                href=""
+                className="!py-0 !px-3"
+              >{`View on ${video.source}`}</Button>
             </div>
           </div>
         </div>

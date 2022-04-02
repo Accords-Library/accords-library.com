@@ -6,6 +6,7 @@ query getVideo($uid: String) {
         uid
         title
         description
+        gone
         published_date {
           year
           month

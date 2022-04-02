@@ -1,0 +1,9 @@
+query getVideoChannelsSlugs {
+	videoChannels(pagination: {limit: -1}) {
+		data {
+			attributes {
+        uid
+      }
+		}
+	}
+}

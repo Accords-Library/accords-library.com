@@ -86,11 +86,23 @@ export default function Video(props: Props): JSX.Element {
           id="video"
           className="w-full rounded-xl shadow-shade shadow-lg overflow-hidden"
         >
-          <video
-            className="w-full"
-            src={getVideoFile(video.uid)}
-            controls
-          ></video>
+          {video.gone ? (
+            <video
+              className="w-full"
+              src={getVideoFile(video.uid)}
+              controls
+            ></video>
+          ) : (
+            <iframe
+              src={`https://www.youtube-nocookie.com/embed/${video.uid}`}
+              className="w-full aspect-video"
+              title="YouTube video player"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            ></iframe>
+          )}
+
           <div className="p-6 mt-2">
             <h1 className="text-2xl">{video.title}</h1>
             <div className="flex flex-row flex-wrap gap-x-6 w-full">
@@ -118,10 +130,13 @@ export default function Video(props: Props): JSX.Element {
                     : video.likes.toLocaleString()}
                 </p>
               )}
-              <Button
-                href=""
-                className="!py-0 !px-3"
-              >{`View on ${video.source}`}</Button>
+              <a
+                href={`https://youtu.be/${video.uid}`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <Button className="!py-0 !px-3">{`View on ${video.source}`}</Button>
+              </a>
             </div>
           </div>
         </div>
@@ -131,7 +146,7 @@ export default function Video(props: Props): JSX.Element {
             <div className="w-[clamp(0px,100%,42rem)] grid place-items-center gap-4 text-center">
               <h2 className="text-2xl">{"Channel"}</h2>
               <div>
-                <Button href="#">
+                <Button href={`/archives/videos/c/${video.channel.data.attributes.uid}`}>
                   <h3>{video.channel.data.attributes.title}</h3>
                 </Button>
 
@@ -184,7 +199,7 @@ export async function getStaticPaths(
   context: GetStaticPathsContext
 ): Promise<GetStaticPathsResult> {
   const sdk = getReadySdk();
-  const videos = await sdk.getVideo();
+  const videos = await sdk.getVideosSlugs();
   const paths: GetStaticPathsResult["paths"] = [];
   if (videos.videos?.data)
     videos.videos.data.map((video) => {

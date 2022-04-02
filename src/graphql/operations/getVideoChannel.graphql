@@ -1,0 +1,36 @@
+query getVideoChannel($channel: String) {
+	videoChannels(filters: { uid: { eq: $channel } } ) {
+		data {
+			attributes {
+				uid
+				title
+				subscribers
+				videos (pagination:{limit: -1}) {
+					data {
+						id
+						attributes {
+							uid
+							title
+							views
+							duration
+							gone
+							categories {
+								data {
+									id
+									attributes {
+										short
+									}
+								}
+							}
+							published_date {
+								year
+								month
+								day
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}

@@ -22,7 +22,7 @@ export default function PostPreview(props: Props): JSX.Element {
   const { video } = props;
 
   return (
-    <Link href={`/archives/videos/${video.uid}`} passHref>
+    <Link href={`/archives/videos/v/${video.uid}`} passHref>
       <div className="drop-shadow-shade-xl cursor-pointer grid items-end hover:scale-[1.02] [--bg-opacity:0] hover:[--bg-opacity:0.5] [--play-opacity:0] hover:[--play-opacity:100] transition-transform">
         <div className="relative">
           <img

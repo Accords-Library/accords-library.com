@@ -7,6 +7,7 @@ query getVideosPreview {
         title
         views
         duration
+        gone
         categories {
           data {
             id

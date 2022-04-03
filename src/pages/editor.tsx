@@ -9,9 +9,9 @@ import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 import { useCallback, useState } from "react";
 import { default as TurndownService } from "turndown";
 
-interface EditorProps extends AppStaticProps {}
+interface Props extends AppStaticProps {}
 
-export default function Editor(props: EditorProps): JSX.Element {
+export default function Editor(props: Props): JSX.Element {
   const handleInput = useCallback((event) => {
     setMarkdown(event.target.value);
   }, []);
@@ -91,8 +91,8 @@ export default function Editor(props: EditorProps): JSX.Element {
 
 export async function getStaticProps(
   context: GetStaticPropsContext
-): Promise<{ notFound: boolean } | { props: EditorProps }> {
-  const props: EditorProps = {
+): Promise<{ notFound: boolean } | { props: Props }> {
+  const props: Props = {
     ...(await getAppStaticProps(context)),
   };
   return {

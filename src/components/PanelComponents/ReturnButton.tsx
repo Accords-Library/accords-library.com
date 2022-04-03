@@ -3,14 +3,14 @@ import HorizontalLine from "components/HorizontalLine";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { AppStaticProps } from "queries/getAppStaticProps";
 
-type ReturnButtonProps = {
+interface Props {
   href: string;
   title: string | null | undefined;
   langui: AppStaticProps["langui"];
   displayOn: ReturnButtonType;
   horizontalLine?: boolean;
   className?: string;
-};
+}
 
 export enum ReturnButtonType {
   mobile = "mobile",
@@ -18,7 +18,7 @@ export enum ReturnButtonType {
   both = "both",
 }
 
-export default function ReturnButton(props: ReturnButtonProps): JSX.Element {
+export default function ReturnButton(props: Props): JSX.Element {
   const appLayout = useAppLayout();
 
   return (

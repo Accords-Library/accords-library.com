@@ -4,16 +4,14 @@ import { GetContentsQuery } from "graphql/generated";
 import Link from "next/link";
 import { prettySlug } from "queries/helpers";
 
-export type LibraryContentPreviewProps = {
+interface Props {
   item: Exclude<
     GetContentsQuery["contents"],
     null | undefined
   >["data"][number]["attributes"];
-};
+}
 
-export default function LibraryContentPreview(
-  props: LibraryContentPreviewProps
-): JSX.Element {
+export default function LibraryContentPreview(props: Props): JSX.Element {
   const { item } = props;
 
   return (

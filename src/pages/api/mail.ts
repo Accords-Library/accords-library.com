@@ -2,17 +2,17 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import nodemailer from "nodemailer";
 import { SMTPError } from "nodemailer/lib/smtp-connection";
 
-export type ResponseMailProps = {
+export interface ResponseMailProps {
   code?: string;
   message?: string;
-};
+}
 
-export type RequestMailProps = {
+export interface RequestMailProps {
   name: string;
   email: string;
   message: string;
   formName: string;
-};
+}
 
 export default async function Mail(
   req: NextApiRequest,

@@ -9,7 +9,7 @@ import Link from "next/link";
 import { AppStaticProps } from "queries/getAppStaticProps";
 import { prettyDate, prettyItemSubType, prettyPrice } from "queries/helpers";
 
-export type LibraryItemsPreviewProps = {
+interface Props {
   className?: string;
   item:
     | Exclude<
@@ -27,11 +27,9 @@ export type LibraryItemsPreviewProps = {
         null | undefined
       >["data"][number]["attributes"];
   currencies: AppStaticProps["currencies"];
-};
+}
 
-export default function LibraryItemsPreview(
-  props: LibraryItemsPreviewProps
-): JSX.Element {
+export default function LibraryItemsPreview(props: Props): JSX.Element {
   const { item } = props;
   const appLayout = useAppLayout();
 

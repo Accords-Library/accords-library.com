@@ -1,12 +1,12 @@
 import HorizontalLine from "components/HorizontalLine";
 
-type PanelHeaderProps = {
+interface Props {
   icon?: string;
   title: string | null | undefined;
   description?: string | null | undefined;
-};
+}
 
-export default function PanelHeader(props: PanelHeaderProps): JSX.Element {
+export default function PanelHeader(props: Props): JSX.Element {
   return (
     <>
       <div className="w-full grid place-items-center">

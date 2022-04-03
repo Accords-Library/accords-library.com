@@ -6,9 +6,9 @@ import ContentPanel from "components/Panels/ContentPanel";
 import { GetStaticPropsContext } from "next";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 
-interface FourOhFourProps extends AppStaticProps {}
+interface Props extends AppStaticProps {}
 
-export default function FourOhFour(props: FourOhFourProps): JSX.Element {
+export default function FourOhFour(props: Props): JSX.Element {
   const { langui } = props;
   const contentPanel = (
     <ContentPanel>
@@ -26,8 +26,8 @@ export default function FourOhFour(props: FourOhFourProps): JSX.Element {
 
 export async function getStaticProps(
   context: GetStaticPropsContext
-): Promise<{ notFound: boolean } | { props: FourOhFourProps }> {
-  const props: FourOhFourProps = {
+): Promise<{ notFound: boolean } | { props: Props }> {
+  const props: Props = {
     ...(await getAppStaticProps(context)),
   };
   return {

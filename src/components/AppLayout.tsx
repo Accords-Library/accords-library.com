@@ -18,7 +18,7 @@ import MainPanel from "./Panels/MainPanel";
 import Popup from "./Popup";
 import Select from "./Select";
 
-interface AppLayoutProps extends AppStaticProps {
+interface Props extends AppStaticProps {
   subPanel?: React.ReactNode;
   subPanelIcon?: string;
   contentPanel?: React.ReactNode;
@@ -28,7 +28,7 @@ interface AppLayoutProps extends AppStaticProps {
   description?: string;
 }
 
-export default function AppLayout(props: AppLayoutProps): JSX.Element {
+export default function AppLayout(props: Props): JSX.Element {
   const { langui, currencies, languages, subPanel, contentPanel } = props;
   const router = useRouter();
   const isMobile = useMediaMobile();

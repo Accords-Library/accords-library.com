@@ -4,9 +4,9 @@ import SubPanel from "components/Panels/SubPanel";
 import { GetStaticPropsContext } from "next";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 
-interface ChroniclesProps extends AppStaticProps {}
+interface Props extends AppStaticProps {}
 
-export default function Chronicles(props: ChroniclesProps): JSX.Element {
+export default function Chronicles(props: Props): JSX.Element {
   const { langui } = props;
   const subPanel = (
     <SubPanel>
@@ -24,8 +24,8 @@ export default function Chronicles(props: ChroniclesProps): JSX.Element {
 
 export async function getStaticProps(
   context: GetStaticPropsContext
-): Promise<{ notFound: boolean } | { props: ChroniclesProps }> {
-  const props: ChroniclesProps = {
+): Promise<{ notFound: boolean } | { props: Props }> {
+  const props: Props = {
     ...(await getAppStaticProps(context)),
   };
   return {

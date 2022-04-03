@@ -2,7 +2,7 @@ import { useMediaMobile } from "hooks/useMediaQuery";
 import { Dispatch, SetStateAction } from "react";
 import Lightbox from "react-image-lightbox";
 
-export type LightBoxProps = {
+interface Props {
   setState:
     | Dispatch<SetStateAction<boolean | undefined>>
     | Dispatch<SetStateAction<boolean>>;
@@ -10,9 +10,9 @@ export type LightBoxProps = {
   images: string[];
   index: number;
   setIndex: Dispatch<SetStateAction<number>>;
-};
+}
 
-export default function LightBox(props: LightBoxProps): JSX.Element {
+export default function LightBox(props: Props): JSX.Element {
   const { state, setState, images, index, setIndex } = props;
   const mobile = useMediaMobile();
 

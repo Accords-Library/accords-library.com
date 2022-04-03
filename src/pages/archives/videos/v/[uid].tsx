@@ -146,7 +146,9 @@ export default function Video(props: Props): JSX.Element {
             <div className="w-[clamp(0px,100%,42rem)] grid place-items-center gap-4 text-center">
               <h2 className="text-2xl">{"Channel"}</h2>
               <div>
-                <Button href={`/archives/videos/c/${video.channel.data.attributes.uid}`}>
+                <Button
+                  href={`/archives/videos/c/${video.channel.data.attributes.uid}`}
+                >
                   <h3>{video.channel.data.attributes.title}</h3>
                 </Button>
 

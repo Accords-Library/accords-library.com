@@ -72,7 +72,7 @@ export default function Videos(props: Props): JSX.Element {
         className="mb-12"
       />
 
-      <div className="grid gap-8 items-start mobile:grid-cols-2 desktop:grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] pb-12 border-b-[3px] border-dotted last-of-type:border-0">
+      <div className="grid gap-8 items-start thin:grid-cols-1 mobile:grid-cols-2 desktop:grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] pb-12 border-b-[3px] border-dotted last-of-type:border-0">
         {paginatedVideos[page].map((video) => (
           <>
             {video.attributes && (

@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { MouseEventHandler } from "react";
 
-type ButtonProps = {
+interface Props {
   id?: string;
   className?: string;
   href?: string;
@@ -9,9 +9,9 @@ type ButtonProps = {
   active?: boolean;
   locale?: string;
   onClick?: MouseEventHandler<HTMLDivElement>;
-};
+}
 
-export default function Button(props: ButtonProps): JSX.Element {
+export default function Button(props: Props): JSX.Element {
   const router = useRouter();
 
   const button = (

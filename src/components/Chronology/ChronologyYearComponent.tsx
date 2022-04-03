@@ -2,18 +2,16 @@ import ChronologyItemComponent from "components/Chronology/ChronologyItemCompone
 import { GetChronologyItemsQuery } from "graphql/generated";
 import { AppStaticProps } from "queries/getAppStaticProps";
 
-type ChronologyYearComponentProps = {
+interface Props {
   year: number;
   items: Exclude<
     GetChronologyItemsQuery["chronologyItems"],
     null | undefined
   >["data"][number][];
   langui: AppStaticProps["langui"];
-};
+}
 
-export default function ChronologyYearComponent(
-  props: ChronologyYearComponentProps
-): JSX.Element {
+export default function ChronologyYearComponent(props: Props): JSX.Element {
   const { langui } = props;
 
   return (

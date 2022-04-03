@@ -3,13 +3,13 @@ import { AppStaticProps } from "queries/getAppStaticProps";
 import { prettyLanguage } from "queries/helpers";
 import Button from "./Button";
 
-type Props = {
+interface Props {
   className?: string;
   locales: (string | undefined)[];
   languages: AppStaticProps["languages"];
   langui: AppStaticProps["langui"];
   href?: string;
-};
+}
 
 export default function LanguageSwitcher(props: Props): JSX.Element {
   const { locales, langui, href } = props;

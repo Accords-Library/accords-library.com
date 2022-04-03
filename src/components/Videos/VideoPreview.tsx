@@ -8,7 +8,7 @@ import {
   prettyShortenNumber,
 } from "queries/helpers";
 
-export type Props = {
+interface Props {
   video: Exclude<
     Exclude<
       GetVideosPreviewQuery["videos"],
@@ -16,7 +16,7 @@ export type Props = {
     >["data"][number]["attributes"],
     null | undefined
   >;
-};
+}
 
 export default function PostPreview(props: Props): JSX.Element {
   const { video } = props;

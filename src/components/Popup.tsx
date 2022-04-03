@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
 import Button from "./Button";
 
-export type PopupProps = {
+interface Props {
   setState:
     | Dispatch<SetStateAction<boolean | undefined>>
     | Dispatch<SetStateAction<boolean>>;
@@ -9,9 +9,9 @@ export type PopupProps = {
   children: React.ReactNode;
   fillViewport?: boolean;
   hideBackground?: boolean;
-};
+}
 
-export default function Popup(props: PopupProps): JSX.Element {
+export default function Popup(props: Props): JSX.Element {
   return (
     <div
       className={`fixed inset-0 z-50 grid place-content-center transition-[backdrop-filter] duration-500 ${

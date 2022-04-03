@@ -2,7 +2,7 @@ import ToolTip from "components/ToolTip";
 import { useRouter } from "next/router";
 import { MouseEventHandler } from "react";
 
-type NavOptionProps = {
+interface Props {
   url: string;
   icon?: string;
   title: string | null | undefined;
@@ -10,9 +10,9 @@ type NavOptionProps = {
   border?: boolean;
   reduced?: boolean;
   onClick?: MouseEventHandler<HTMLDivElement>;
-};
+}
 
-export default function NavOption(props: NavOptionProps): JSX.Element {
+export default function NavOption(props: Props): JSX.Element {
   const router = useRouter();
   const isActive = router.asPath.startsWith(props.url);
   const divActive = "bg-mid shadow-inner-sm shadow-shade";

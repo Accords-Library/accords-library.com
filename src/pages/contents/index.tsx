@@ -14,13 +14,13 @@ import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 import { prettyinlineTitle, prettySlug } from "queries/helpers";
 import { useEffect, useState } from "react";
 
-interface ContentsProps extends AppStaticProps {
+interface Props extends AppStaticProps {
   contents: Exclude<GetContentsQuery["contents"], null | undefined>["data"];
 }
 
-type GroupContentItems = Map<string, ContentsProps["contents"]>;
+type GroupContentItems = Map<string, Props["contents"]>;
 
-export default function Contents(props: ContentsProps): JSX.Element {
+export default function Contents(props: Props): JSX.Element {
   const { langui, contents } = props;
 
   const [groupingMethod, setGroupingMethod] = useState<number>(-1);
@@ -105,7 +105,7 @@ export default function Contents(props: ContentsProps): JSX.Element {
 
 export async function getStaticProps(
   context: GetStaticPropsContext
-): Promise<{ notFound: boolean } | { props: ContentsProps }> {
+): Promise<{ notFound: boolean } | { props: Props }> {
   const sdk = getReadySdk();
   const contents = await sdk.getContents({
     language_code: context.locale ?? "en",
@@ -129,7 +129,7 @@ export async function getStaticProps(
     return titleA.localeCompare(titleB);
   });
 
-  const props: ContentsProps = {
+  const props: Props = {
     ...(await getAppStaticProps(context)),
     contents: contents.contents.data,
   };
@@ -141,7 +141,7 @@ export async function getStaticProps(
 function getGroups(
   langui: AppStaticProps["langui"],
   groupByType: number,
-  items: ContentsProps["contents"]
+  items: Props["contents"]
 ): GroupContentItems {
   switch (groupByType) {
     case 0: {

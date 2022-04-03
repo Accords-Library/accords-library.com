@@ -4,8 +4,8 @@ import SubPanel from "components/Panels/SubPanel";
 import { GetStaticPropsContext } from "next";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 
-interface MerchProps extends AppStaticProps {}
-export default function Merch(props: MerchProps): JSX.Element {
+interface Props extends AppStaticProps {}
+export default function Merch(props: Props): JSX.Element {
   const { langui } = props;
   const subPanel = (
     <SubPanel>
@@ -22,8 +22,8 @@ export default function Merch(props: MerchProps): JSX.Element {
 
 export async function getStaticProps(
   context: GetStaticPropsContext
-): Promise<{ notFound: boolean } | { props: MerchProps }> {
-  const props: MerchProps = {
+): Promise<{ notFound: boolean } | { props: Props }> {
+  const props: Props = {
     ...(await getAppStaticProps(context)),
   };
   return {

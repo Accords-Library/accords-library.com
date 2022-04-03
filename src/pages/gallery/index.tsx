@@ -2,9 +2,9 @@ import AppLayout from "components/AppLayout";
 import { GetStaticPropsContext } from "next";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 
-interface GalleryProps extends AppStaticProps {}
+interface Props extends AppStaticProps {}
 
-export default function Gallery(props: GalleryProps): JSX.Element {
+export default function Gallery(props: Props): JSX.Element {
   const { langui } = props;
   const contentPanel = (
     <iframe
@@ -24,8 +24,8 @@ export default function Gallery(props: GalleryProps): JSX.Element {
 
 export async function getStaticProps(
   context: GetStaticPropsContext
-): Promise<{ notFound: boolean } | { props: GalleryProps }> {
-  const props: GalleryProps = {
+): Promise<{ notFound: boolean } | { props: Props }> {
+  const props: Props = {
     ...(await getAppStaticProps(context)),
   };
   return {

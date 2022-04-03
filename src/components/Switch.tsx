@@ -1,12 +1,12 @@
 import { Dispatch, SetStateAction } from "react";
 
-export type SwitchProps = {
+interface Props {
   setState: Dispatch<SetStateAction<boolean>>;
   state: boolean;
   className?: string;
-};
+}
 
-export default function Switch(props: SwitchProps): JSX.Element {
+export default function Switch(props: Props): JSX.Element {
   return (
     <div
       className={`h-6 w-12 rounded-full border-2 border-mid grid transition-colors relative cursor-pointer ${

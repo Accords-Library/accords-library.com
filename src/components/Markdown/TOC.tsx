@@ -2,12 +2,12 @@ import { useRouter } from "next/router";
 import { slugify } from "queries/helpers";
 import { preprocessMarkDawn } from "./Markdawn";
 
-type TOCProps = {
+interface Props {
   text: string;
   title?: string;
-};
+}
 
-export default function TOCComponent(props: TOCProps): JSX.Element {
+export default function TOCComponent(props: Props): JSX.Element {
   const { text, title } = props;
   const toc = getTocFromMarkdawn(preprocessMarkDawn(text), title);
   const router = useRouter();
@@ -27,12 +27,12 @@ export default function TOCComponent(props: TOCProps): JSX.Element {
   );
 }
 
-type TOCLevelProps = {
+interface LevelProps {
   tocchildren: TOC[];
   parentNumbering: string;
-};
+}
 
-function TOCLevel(props: TOCLevelProps): JSX.Element {
+function TOCLevel(props: LevelProps): JSX.Element {
   const router = useRouter();
   const { tocchildren, parentNumbering } = props;
   return (
@@ -60,11 +60,11 @@ function TOCLevel(props: TOCLevelProps): JSX.Element {
   );
 }
 
-export type TOC = {
+interface TOC {
   title: string;
   slug: string;
   children: TOC[];
-};
+}
 
 export function getTocFromMarkdawn(text: string, title?: string): TOC {
   const toc: TOC = {

@@ -1,15 +1,15 @@
 import { Dispatch, SetStateAction, useState } from "react";
 
-export type SelectProps = {
+interface Props {
   setState: Dispatch<SetStateAction<number>>;
   state: number;
   options: string[];
   selected?: number;
   allowEmpty?: boolean;
   className?: string;
-};
+}
 
-export default function Select(props: SelectProps): JSX.Element {
+export default function Select(props: Props): JSX.Element {
   const [opened, setOpened] = useState(false);
 
   return (

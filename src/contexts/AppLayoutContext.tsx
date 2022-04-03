@@ -2,7 +2,7 @@ import useDarkMode from "hooks/useDarkMode";
 import useStateWithLocalStorage from "hooks/useStateWithLocalStorage";
 import React, { ReactNode, useContext } from "react";
 
-export interface AppLayoutState {
+interface AppLayoutState {
   subPanelOpen: boolean | undefined;
   languagePanelOpen: boolean | undefined;
   configPanelOpen: boolean | undefined;
@@ -68,9 +68,9 @@ export function useAppLayout(): AppLayoutState {
   return useContext(AppContext);
 }
 
-type Props = {
+interface Props {
   children: ReactNode;
-};
+}
 
 export function AppContextProvider(props: Props): JSX.Element {
   const [subPanelOpen, setSubPanelOpen] = useStateWithLocalStorage<

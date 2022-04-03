@@ -1,6 +1,60 @@
 import { UploadImageFragment } from "graphql/generated";
 import Image, { ImageProps } from "next/image";
 
+interface Props {
+  className?: string;
+  image?: UploadImageFragment;
+  quality?: ImageQuality;
+  alt?: ImageProps["alt"];
+  layout?: ImageProps["layout"];
+  objectFit?: ImageProps["objectFit"];
+  priority?: ImageProps["priority"];
+  rawImg?: boolean;
+}
+
+export default function Img(props: Props): JSX.Element {
+  if (props.image?.width && props.image?.height) {
+    const imgSize = getImgSizesByQuality(
+      props.image.width,
+      props.image.height,
+      props.quality ?? ImageQuality.Small
+    );
+
+    if (props.rawImg) {
+      return (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          className={props.className}
+          src={getAssetURL(
+            props.image.url,
+            props.quality ?? ImageQuality.Small
+          )}
+          alt={props.alt ?? props.image.alternativeText ?? ""}
+          width={imgSize.width}
+          height={imgSize.height}
+        />
+      );
+    }
+    return (
+      <Image
+        className={props.className}
+        src={getAssetURL(
+          props.image.url,
+          props.quality ? props.quality : ImageQuality.Small
+        )}
+        alt={props.alt ?? props.image.alternativeText ?? ""}
+        width={props.layout === "fill" ? undefined : imgSize.width}
+        height={props.layout === "fill" ? undefined : imgSize.height}
+        layout={props.layout}
+        objectFit={props.objectFit}
+        priority={props.priority}
+        unoptimized
+      />
+    );
+  }
+  return <></>;
+}
+
 export enum ImageQuality {
   Small = "small",
   Medium = "medium",
@@ -47,58 +101,4 @@ export function getImgSizesByQuality(
     default:
       return { width: 0, height: 0 };
   }
-}
-
-type ImgProps = {
-  className?: string;
-  image?: UploadImageFragment;
-  quality?: ImageQuality;
-  alt?: ImageProps["alt"];
-  layout?: ImageProps["layout"];
-  objectFit?: ImageProps["objectFit"];
-  priority?: ImageProps["priority"];
-  rawImg?: boolean;
-};
-
-export default function Img(props: ImgProps): JSX.Element {
-  if (props.image?.width && props.image?.height) {
-    const imgSize = getImgSizesByQuality(
-      props.image.width,
-      props.image.height,
-      props.quality ?? ImageQuality.Small
-    );
-
-    if (props.rawImg) {
-      return (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          className={props.className}
-          src={getAssetURL(
-            props.image.url,
-            props.quality ?? ImageQuality.Small
-          )}
-          alt={props.alt ?? props.image.alternativeText ?? ""}
-          width={imgSize.width}
-          height={imgSize.height}
-        />
-      );
-    }
-    return (
-      <Image
-        className={props.className}
-        src={getAssetURL(
-          props.image.url,
-          props.quality ? props.quality : ImageQuality.Small
-        )}
-        alt={props.alt ?? props.image.alternativeText ?? ""}
-        width={props.layout === "fill" ? undefined : imgSize.width}
-        height={props.layout === "fill" ? undefined : imgSize.height}
-        layout={props.layout}
-        objectFit={props.objectFit}
-        priority={props.priority}
-        unoptimized
-      />
-    );
-  }
-  return <></>;
 }

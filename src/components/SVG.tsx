@@ -1,12 +1,12 @@
 import Image from "next/image";
 
-export type SVGProps = {
+interface Props {
   src: string;
   alt: string;
   className?: string;
-};
+}
 
-export default function SVG(props: SVGProps): JSX.Element {
+export default function SVG(props: Props): JSX.Element {
   return (
     <div className={props.className}>
       <Image

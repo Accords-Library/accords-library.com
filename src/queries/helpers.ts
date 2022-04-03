@@ -336,12 +336,12 @@ export function convertMmToInch(mm: number | null | undefined): string {
   return mm ? (mm * 0.03937008).toPrecision(3) : "";
 }
 
-export type OgImage = {
+export interface OgImage {
   image: string;
   width: number;
   height: number;
   alt: string;
-};
+}
 
 export function getOgImage(
   quality: ImageQuality,

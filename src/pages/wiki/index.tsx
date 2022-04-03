@@ -5,9 +5,9 @@ import SubPanel from "components/Panels/SubPanel";
 import { GetStaticPropsContext } from "next";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 
-interface WikiProps extends AppStaticProps {}
+interface Props extends AppStaticProps {}
 
-export default function Wiki(props: WikiProps): JSX.Element {
+export default function Wiki(props: Props): JSX.Element {
   const { langui } = props;
   const subPanel = (
     <SubPanel>
@@ -25,8 +25,8 @@ export default function Wiki(props: WikiProps): JSX.Element {
 
 export async function getStaticProps(
   context: GetStaticPropsContext
-): Promise<{ notFound: boolean } | { props: WikiProps }> {
-  const props: WikiProps = {
+): Promise<{ notFound: boolean } | { props: Props }> {
+  const props: Props = {
     ...(await getAppStaticProps(context)),
   };
   return {

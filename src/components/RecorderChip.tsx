@@ -5,13 +5,13 @@ import Button from "./Button";
 import Img, { ImageQuality } from "./Img";
 import ToolTip from "./ToolTip";
 
-type RecorderChipProps = {
+interface Props {
   className?: string;
   recorder: RecorderChipFragment;
   langui: AppStaticProps["langui"];
-};
+}
 
-export default function RecorderChip(props: RecorderChipProps): JSX.Element {
+export default function RecorderChip(props: Props): JSX.Element {
   const { recorder, langui } = props;
   return (
     <ToolTip

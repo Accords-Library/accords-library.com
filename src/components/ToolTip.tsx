@@ -1,9 +1,9 @@
 import Tippy, { TippyProps } from "@tippyjs/react";
 import "tippy.js/animations/scale-subtle.css";
 
-interface ToolTipProps extends TippyProps {}
+interface Props extends TippyProps {}
 
-export default function ToolTip(props: ToolTipProps): JSX.Element {
+export default function ToolTip(props: Props): JSX.Element {
   const newProps = { ...props };
 
   // Set defaults

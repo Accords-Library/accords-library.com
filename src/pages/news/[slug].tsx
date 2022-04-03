@@ -27,7 +27,7 @@ import {
   prettySlug,
 } from "queries/helpers";
 
-interface PostProps extends AppStaticProps {
+interface Props extends AppStaticProps {
   post: Exclude<
     GetPostQuery["posts"],
     null | undefined
@@ -38,7 +38,7 @@ interface PostProps extends AppStaticProps {
   >["data"][number]["id"];
 }
 
-export default function LibrarySlug(props: PostProps): JSX.Element {
+export default function LibrarySlug(props: Props): JSX.Element {
   const { post, langui } = props;
   const locales = getLocalesFromLanguages(post?.translations_languages);
   const router = useRouter();
@@ -145,7 +145,7 @@ export default function LibrarySlug(props: PostProps): JSX.Element {
 
 export async function getStaticProps(
   context: GetStaticPropsContext
-): Promise<{ notFound: boolean } | { props: PostProps }> {
+): Promise<{ notFound: boolean } | { props: Props }> {
   const sdk = getReadySdk();
   const slug = context.params?.slug ? context.params.slug.toString() : "";
   const post = await sdk.getPost({
@@ -153,7 +153,7 @@ export async function getStaticProps(
     language_code: context.locale ?? "en",
   });
   if (!post.posts?.data[0]) return { notFound: true };
-  const props: PostProps = {
+  const props: Props = {
     ...(await getAppStaticProps(context)),
     post: post.posts.data[0].attributes,
     postId: post.posts.data[0].id,

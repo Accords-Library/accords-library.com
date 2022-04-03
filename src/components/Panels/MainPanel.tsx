@@ -9,11 +9,11 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { AppStaticProps } from "queries/getAppStaticProps";
 
-type MainPanelProps = {
+interface Props {
   langui: AppStaticProps["langui"];
-};
+}
 
-export default function MainPanel(props: MainPanelProps): JSX.Element {
+export default function MainPanel(props: Props): JSX.Element {
   const { langui } = props;
   const router = useRouter();
   const isDesktop = useMediaDesktop();

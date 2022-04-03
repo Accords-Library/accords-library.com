@@ -1,10 +1,10 @@
-type InsetBoxProps = {
+interface Props {
   className?: string;
   children: React.ReactNode;
   id?: string;
-};
+}
 
-export default function InsetBox(props: InsetBoxProps): JSX.Element {
+export default function InsetBox(props: Props): JSX.Element {
   return (
     <div
       id={props.id}

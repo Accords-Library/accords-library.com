@@ -1,12 +1,12 @@
 import { Dispatch, SetStateAction } from "react";
 import Button from "./Button";
 
-type Props = {
+interface Props {
   className?: string;
   maxPage: number;
   page: number;
   setPage: Dispatch<SetStateAction<number>>;
-};
+}
 
 export default function PageSelector(props: Props): JSX.Element {
   const { page, setPage, maxPage } = props;

@@ -1,15 +1,15 @@
-type ContentPanelProps = {
+interface Props {
   children: React.ReactNode;
   autoformat?: boolean;
   width?: ContentPanelWidthSizes;
-};
+}
 
 export enum ContentPanelWidthSizes {
   default = "default",
   large = "large",
 }
 
-export default function ContentPanel(props: ContentPanelProps): JSX.Element {
+export default function ContentPanel(props: Props): JSX.Element {
   const width = props.width ? props.width : ContentPanelWidthSizes.default;
   const widthCSS =
     width === ContentPanelWidthSizes.default ? "max-w-2xl" : "w-full";

@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import getConfig from "next/config";
 
-export type RequestProps =
+type RequestProps =
   | HookRangedContent
   | HookPostContent
   | HookLibraryItem
@@ -9,7 +9,7 @@ export type RequestProps =
   | HookContent
   | HookCustom;
 
-export type HookRangedContent = {
+type HookRangedContent = {
   event: "entry.update" | "entry.delete" | "entry.create";
   model: "ranged-content";
   entry: {
@@ -22,19 +22,19 @@ export type HookRangedContent = {
   };
 };
 
-export type HookCustom = {
+type HookCustom = {
   model: "custom";
   url: string;
 };
 
-export type HookContent = {
+type HookContent = {
   model: "content";
   entry: {
     slug: string;
   };
 };
 
-export type HookPostContent = {
+type HookPostContent = {
   event: "entry.update" | "entry.delete" | "entry.create";
   model: "post";
   entry: {
@@ -42,7 +42,7 @@ export type HookPostContent = {
   };
 };
 
-export type HookLibraryItem = {
+type HookLibraryItem = {
   event: "entry.update" | "entry.delete" | "entry.create";
   model: "library-item";
   entry: {
@@ -50,12 +50,12 @@ export type HookLibraryItem = {
   };
 };
 
-export type HookChronology = {
+type HookChronology = {
   event: "entry.update" | "entry.delete" | "entry.create";
   model: "chronology-era" | "chronology-item";
 };
 
-export type ResponseMailProps = {
+type ResponseMailProps = {
   message: string;
   revalidated: boolean;
 };

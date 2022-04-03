@@ -10,12 +10,12 @@ import { slugify } from "queries/helpers";
 import React, { useState } from "react";
 import ReactDOMServer from "react-dom/server";
 
-type MarkdawnProps = {
+interface Props {
   className?: string;
   text: string;
-};
+}
 
-export default function Markdawn(props: MarkdawnProps): JSX.Element {
+export default function Markdawn(props: Props): JSX.Element {
   const appLayout = useAppLayout();
   const text = preprocessMarkDawn(props.text);
 

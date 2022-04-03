@@ -7,18 +7,16 @@ import {
 import { AppStaticProps } from "queries/getAppStaticProps";
 import { getStatusDescription } from "queries/helpers";
 
-export type ChronologyItemComponentProps = {
+interface Props {
   item: Exclude<
     GetChronologyItemsQuery["chronologyItems"],
     null | undefined
   >["data"][number];
   displayYear: boolean;
   langui: AppStaticProps["langui"];
-};
+}
 
-export default function ChronologyItemComponent(
-  props: ChronologyItemComponentProps
-): JSX.Element {
+export default function ChronologyItemComponent(props: Props): JSX.Element {
   const { langui } = props;
 
   function generateAnchor(

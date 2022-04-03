@@ -5,7 +5,7 @@ import { AppStaticProps } from "queries/getAppStaticProps";
 import { prettyinlineTitle, prettySlug } from "queries/helpers";
 import { useState } from "react";
 
-type ContentTOCLineProps = {
+interface Props {
   content: Exclude<
     Exclude<
       Exclude<
@@ -18,11 +18,9 @@ type ContentTOCLineProps = {
   >["data"][number];
   parentSlug: string;
   langui: AppStaticProps["langui"];
-};
+}
 
-export default function ContentTOCLine(
-  props: ContentTOCLineProps
-): JSX.Element {
+export default function ContentTOCLine(props: Props): JSX.Element {
   const { content, langui, parentSlug } = props;
 
   const [opened, setOpened] = useState(false);

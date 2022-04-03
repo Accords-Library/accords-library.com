@@ -5,7 +5,7 @@ import { GetContentQuery, UploadImageFragment } from "graphql/generated";
 import { AppStaticProps } from "queries/getAppStaticProps";
 import { prettyinlineTitle, prettySlug, slugify } from "queries/helpers";
 
-export type ThumbnailHeaderProps = {
+interface Props {
   pre_title?: string | null | undefined;
   title: string | null | undefined;
   subtitle?: string | null | undefined;
@@ -26,11 +26,9 @@ export type ThumbnailHeaderProps = {
   >["categories"];
   thumbnail?: UploadImageFragment | null | undefined;
   langui: AppStaticProps["langui"];
-};
+}
 
-export default function ThumbnailHeader(
-  props: ThumbnailHeaderProps
-): JSX.Element {
+export default function ThumbnailHeader(props: Props): JSX.Element {
   const {
     langui,
     pre_title,

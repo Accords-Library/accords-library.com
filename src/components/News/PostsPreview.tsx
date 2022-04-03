@@ -4,14 +4,14 @@ import { GetPostsPreviewQuery } from "graphql/generated";
 import Link from "next/link";
 import { prettyDate, prettySlug } from "queries/helpers";
 
-export type PostPreviewProps = {
+interface Props {
   post: Exclude<
     GetPostsPreviewQuery["posts"],
     null | undefined
   >["data"][number]["attributes"];
-};
+}
 
-export default function PostPreview(props: PostPreviewProps): JSX.Element {
+export default function PostPreview(props: Props): JSX.Element {
   const { post } = props;
 
   return (

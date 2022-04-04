@@ -133,7 +133,7 @@ export default function Editor(props: Props): JSX.Element {
               const { value, selectionStart, selectionEnd } = textarea;
               textarea.value = insert(
                 value,
-                "<Line name=\"speaker\">",
+                '<Line name="speaker">',
                 "</Line>\n",
                 selectionStart,
                 selectionEnd

@@ -8,6 +8,7 @@ interface Props {
   children: React.ReactNode;
   active?: boolean;
   locale?: string;
+  target?: "_blank";
   onClick?: MouseEventHandler<HTMLDivElement>;
 }
 
@@ -29,6 +30,14 @@ export default function Button(props: Props): JSX.Element {
       {props.children}
     </div>
   );
+
+  if (props.target) {
+    return (
+      <a href={props.href} target={props.target} rel="noreferrer">
+        <div>{button}</div>
+      </a>
+    );
+  }
 
   return (
     <div

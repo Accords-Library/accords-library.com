@@ -37,6 +37,7 @@ import {
   prettyPrice,
   prettyTestError,
   prettyTestWarning,
+  prettyURL,
   sortContent,
 } from "queries/helpers";
 import { useState } from "react";
@@ -190,6 +191,37 @@ export default function LibrarySlug(props: Props): JSX.Element {
             </div>
             {item?.descriptions?.[0] && (
               <p className="text-justify">{item.descriptions[0].description}</p>
+            )}
+            {!(
+              item?.metadata &&
+              item.metadata[0]?.__typename === "ComponentMetadataGroup" &&
+              (item.metadata[0].subtype?.data?.attributes?.slug ===
+                "variant-set" ||
+                item.metadata[0].subtype?.data?.attributes?.slug ===
+                  "relation-set")
+            ) && (
+              <>
+                {item?.urls && item?.urls?.length ? (
+                  <div className="flex flex-row place-items-center gap-3">
+                    <p>Available at</p>
+                    {item?.urls?.map((url) => (
+                      <>
+                        {url?.url && (
+                          <Button
+                            href={url.url}
+                            key={url.url}
+                            target={"_blank"}
+                          >
+                            {prettyURL(url.url)}
+                          </Button>
+                        )}
+                      </>
+                    ))}
+                  </div>
+                ) : (
+                  <p>This item is not for sale or is no longer available</p>
+                )}
+              </>
             )}
           </div>
         </InsetBox>
@@ -433,7 +465,7 @@ export async function getStaticProps(
     slug: context.params?.slug ? context.params.slug.toString() : "",
     language_code: context.locale ?? "en",
   });
-  if (!item.libraryItems) return { notFound: true };
+  if (!item.libraryItems?.data[0]?.attributes) return { notFound: true };
   const props: Props = {
     ...(await getAppStaticProps(context)),
     item: item.libraryItems.data[0].attributes,

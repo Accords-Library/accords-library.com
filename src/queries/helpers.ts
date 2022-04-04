@@ -322,6 +322,11 @@ function prettyTestWritter(
   }
 }
 
+export function prettyURL(url: string): string {
+  let domain = new URL(url);
+  return domain.hostname.replace("www.", "");
+}
+
 export function capitalizeString(string: string): string {
   function capitalizeWord(word: string): string {
     return word.charAt(0).toUpperCase() + word.substring(1);

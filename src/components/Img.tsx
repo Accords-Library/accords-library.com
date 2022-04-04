@@ -66,6 +66,7 @@ export function getAssetURL(url: string, quality: ImageQuality): string {
   let newUrl = url;
   newUrl = newUrl.replace(/^\/uploads/u, `/${quality}`);
   newUrl = newUrl.replace(/.jpg$/u, ".webp");
+  newUrl = newUrl.replace(/.jpeg$/u, ".webp");
   newUrl = newUrl.replace(/.png$/u, ".webp");
   if (quality === ImageQuality.Og) newUrl = newUrl.replace(/.webp$/u, ".jpg");
   return process.env.NEXT_PUBLIC_URL_IMG + newUrl;

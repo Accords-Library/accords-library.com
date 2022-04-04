@@ -39,6 +39,9 @@ query getLibraryItem($slug: String, $language_code: String) {
             }
           }
         }
+        urls {
+          url
+        }
         size {
           width
           height

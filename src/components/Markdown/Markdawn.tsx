@@ -128,7 +128,7 @@ export default function Markdawn(props: Props): JSX.Element {
                 ),
               },
               Sep: {
-                component: () => <div className="my-24"></div>,
+                component: () => <div className="my-18"></div>,
               },
               SceneBreak: {
                 component: (compProps: { id: string }) => (

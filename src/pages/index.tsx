@@ -30,7 +30,7 @@ export default function Home(props: Props): JSX.Element {
         <div className="[mask:url('/icons/accords.svg')] [mask-size:contain] [mask-repeat:no-repeat] [mask-position:center] w-32 aspect-square mobile:w-[50vw] bg-black" />
         <h1 className="text-5xl mb-0">Accord&rsquo;s Library</h1>
         <h2 className="text-xl -mt-5">
-          Discover • Analyse • Translate • Archive
+          Discover • Analyze • Translate • Archive
         </h2>
       </div>
       {locales.includes(router.locale ?? "en") ? (

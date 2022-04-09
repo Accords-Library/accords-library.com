@@ -47,6 +47,11 @@ type HookLibraryItem = {
   model: "library-item";
   entry: {
     slug: string;
+    subitem_of: [
+      {
+        slug: string;
+      }
+    ];
   };
 };
 
@@ -94,6 +99,9 @@ export default async function Mail(
       paths.push(`/library/${body.entry.slug}`);
       serverRuntimeConfig.locales?.map((locale: string) => {
         paths.push(`/${locale}/library/${body.entry.slug}`);
+        body.entry.subitem_of.map((parentItem) => {
+          paths.push(`/${locale}/library/${parentItem.slug}`);
+        });
         paths.push(`/${locale}/library`);
       });
       break;
@@ -147,7 +155,7 @@ export default async function Mail(
       break;
   }
 
-  console.table(paths);
+  //console.table(paths);
 
   try {
     Promise.all(

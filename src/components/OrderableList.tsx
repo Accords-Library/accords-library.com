@@ -14,6 +14,11 @@ export default function LanguageSwitcher(props: Props): JSX.Element {
     props.onChange?.(items);
   }, [items]);
 
+  function updateOrder(sourceIndex: number, targetIndex: number) {
+    const newItems = arrayMove([...items], sourceIndex, targetIndex);
+    setItems(new Map(newItems));
+  }
+
   return (
     <div className="grid gap-2">
       {[...items].map(([key, value], index) => (
@@ -50,16 +55,37 @@ export default function LanguageSwitcher(props: Props): JSX.Element {
                 event.dataTransfer.getData("text"),
                 10
               );
-              const newItems = arrayMove([...items], sourceIndex, targetIndex);
-              setItems(new Map(newItems));
+              updateOrder(sourceIndex, targetIndex);
             }}
-            className="grid place-content-center place-items-center 
+            className="grid grid-cols-[auto_1fr] place-content-center 
             border-[1px] transition-all hover:text-light hover:bg-dark 
             hover:drop-shadow-shade-lg border-dark bg-light text-dark 
-            rounded-full px-4 pt-[0.4rem] pb-[0.5rem] cursor-grab select-none"
+            rounded-full cursor-grab select-none px-1 py-2 pr-4 gap-2"
             key={key}
             draggable
           >
+            <div className="grid grid-rows-[.8em_.8em] place-items-center">
+              {index > 0 && (
+                <span
+                  className="material-icons cursor-pointer row-start-1"
+                  onClick={() => {
+                    updateOrder(index, index - 1);
+                  }}
+                >
+                  arrow_drop_up
+                </span>
+              )}
+              {index < items.size - 1 && (
+                <span
+                  className="material-icons cursor-pointer row-start-2"
+                  onClick={() => {
+                    updateOrder(index, index + 1);
+                  }}
+                >
+                  arrow_drop_down
+                </span>
+              )}
+            </div>
             {value}
           </div>
         </>

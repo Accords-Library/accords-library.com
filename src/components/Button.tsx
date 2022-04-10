@@ -10,7 +10,7 @@ interface Props {
   locale?: string;
   target?: "_blank";
   onClick?: MouseEventHandler<HTMLDivElement>;
-  draggable?: boolean
+  draggable?: boolean;
 }
 
 export default function Button(props: Props): JSX.Element {

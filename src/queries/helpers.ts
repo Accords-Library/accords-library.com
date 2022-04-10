@@ -274,6 +274,18 @@ export function prettyLanguage(
   return result;
 }
 
+export function prettyLanguageToCode(
+  prettyLanguage: string,
+  languages: AppStaticProps["languages"]
+): string {
+  let result = prettyLanguage;
+  languages.forEach((language) => {
+    if (language?.attributes?.localized_name === prettyLanguage)
+      result = language.attributes.code;
+  });
+  return result;
+}
+
 export function prettyTestWarning(
   router: NextRouter,
   message: string,
@@ -462,4 +474,9 @@ export function getVideoThumbnailURL(uid: string): string {
 
 export function getVideoFile(uid: string): string {
   return `${process.env.NEXT_PUBLIC_URL_WATCH}/videos/${uid}.mp4`;
+}
+
+export function arrayMove<T>(arr: T[], old_index: number, new_index: number) {
+  arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
+  return arr;
 }

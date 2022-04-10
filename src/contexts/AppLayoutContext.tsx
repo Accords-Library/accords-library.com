@@ -4,7 +4,6 @@ import React, { ReactNode, useContext } from "react";
 
 interface AppLayoutState {
   subPanelOpen: boolean | undefined;
-  languagePanelOpen: boolean | undefined;
   configPanelOpen: boolean | undefined;
   mainPanelReduced: boolean | undefined;
   mainPanelOpen: boolean | undefined;
@@ -14,10 +13,8 @@ interface AppLayoutState {
   dyslexic: boolean | undefined;
   currency: string | undefined;
   playerName: string | undefined;
+  preferredLanguages: string[] | undefined;
   setSubPanelOpen: React.Dispatch<React.SetStateAction<boolean | undefined>>;
-  setLanguagePanelOpen: React.Dispatch<
-    React.SetStateAction<boolean | undefined>
-  >;
   setConfigPanelOpen: React.Dispatch<React.SetStateAction<boolean | undefined>>;
   setMainPanelReduced: React.Dispatch<
     React.SetStateAction<boolean | undefined>
@@ -31,12 +28,14 @@ interface AppLayoutState {
   setDyslexic: React.Dispatch<React.SetStateAction<boolean | undefined>>;
   setCurrency: React.Dispatch<React.SetStateAction<string | undefined>>;
   setPlayerName: React.Dispatch<React.SetStateAction<string | undefined>>;
+  setPreferredLanguages: React.Dispatch<
+    React.SetStateAction<string[] | undefined>
+  >;
 }
 
 /* eslint-disable @typescript-eslint/no-empty-function */
 const initialState: AppLayoutState = {
   subPanelOpen: false,
-  languagePanelOpen: false,
   configPanelOpen: false,
   mainPanelReduced: false,
   mainPanelOpen: false,
@@ -46,8 +45,8 @@ const initialState: AppLayoutState = {
   dyslexic: false,
   currency: "USD",
   playerName: "",
+  preferredLanguages: [],
   setSubPanelOpen: () => {},
-  setLanguagePanelOpen: () => {},
   setMainPanelReduced: () => {},
   setMainPanelOpen: () => {},
   setDarkMode: () => {},
@@ -57,6 +56,7 @@ const initialState: AppLayoutState = {
   setDyslexic: () => {},
   setCurrency: () => {},
   setPlayerName: () => {},
+  setPreferredLanguages: () => {},
 };
 /* eslint-enable @typescript-eslint/no-empty-function */
 
@@ -76,10 +76,6 @@ export function AppContextProvider(props: Props): JSX.Element {
   const [subPanelOpen, setSubPanelOpen] = useStateWithLocalStorage<
     boolean | undefined
   >("subPanelOpen", initialState.subPanelOpen);
-
-  const [languagePanelOpen, setLanguagePanelOpen] = useStateWithLocalStorage<
-    boolean | undefined
-  >("languagePanelOpen", initialState.languagePanelOpen);
 
   const [configPanelOpen, setConfigPanelOpen] = useStateWithLocalStorage<
     boolean | undefined
@@ -115,11 +111,14 @@ export function AppContextProvider(props: Props): JSX.Element {
     string | undefined
   >("playerName", initialState.playerName);
 
+  const [preferredLanguages, setPreferredLanguages] = useStateWithLocalStorage<
+    string[] | undefined
+  >("preferredLanguages", initialState.preferredLanguages);
+
   return (
     <AppContext.Provider
       value={{
         subPanelOpen,
-        languagePanelOpen,
         configPanelOpen,
         mainPanelReduced,
         mainPanelOpen,
@@ -129,8 +128,8 @@ export function AppContextProvider(props: Props): JSX.Element {
         dyslexic,
         currency,
         playerName,
+        preferredLanguages,
         setSubPanelOpen,
-        setLanguagePanelOpen,
         setConfigPanelOpen,
         setMainPanelReduced,
         setMainPanelOpen,
@@ -140,6 +139,7 @@ export function AppContextProvider(props: Props): JSX.Element {
         setDyslexic,
         setCurrency,
         setPlayerName,
+        setPreferredLanguages,
       }}
     >
       {props.children}

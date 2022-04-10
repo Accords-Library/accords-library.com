@@ -14,6 +14,7 @@ import {
 import { useEffect, useState } from "react";
 import { useSwipeable } from "react-swipeable";
 import { ImageQuality } from "./Img";
+import OrderableList from "./OrderableList";
 import MainPanel from "./Panels/MainPanel";
 import Popup from "./Popup";
 import Select from "./Select";
@@ -251,152 +252,175 @@ export default function AppLayout(props: Props): JSX.Element {
         </div>
 
         <Popup
-          state={appLayout.languagePanelOpen}
-          setState={appLayout.setLanguagePanelOpen}
-        >
-          <h2 className="text-2xl">{langui.select_language}</h2>
-          <div className="flex flex-wrap flex-row gap-2 mobile:flex-col">
-            {router.locales?.map((locale) => (
-              <Button
-                key={locale}
-                active={locale === router.locale}
-                href={router.asPath}
-                locale={locale}
-                onClick={() => appLayout.setLanguagePanelOpen(false)}
-              >
-                {prettyLanguage(locale, languages)}
-              </Button>
-            ))}
-          </div>
-        </Popup>
-
-        <Popup
           state={appLayout.configPanelOpen}
           setState={appLayout.setConfigPanelOpen}
         >
           <h2 className="text-2xl">{langui.settings}</h2>
 
-          <div className="mt-4 grid gap-8 place-items-center text-center desktop:grid-cols-2">
-            <div>
-              <h3 className="text-xl">{langui.theme}</h3>
-              <div className="flex flex-row">
-                <Button
-                  onClick={() => {
-                    appLayout.setDarkMode(false);
-                    appLayout.setSelectedThemeMode(true);
-                  }}
-                  active={
-                    appLayout.selectedThemeMode === true &&
-                    appLayout.darkMode === false
-                  }
-                  className="rounded-r-none"
-                >
-                  {langui.light}
-                </Button>
-                <Button
-                  onClick={() => {
-                    appLayout.setSelectedThemeMode(false);
-                  }}
-                  active={appLayout.selectedThemeMode === false}
-                  className="rounded-l-none rounded-r-none border-x-0"
-                >
-                  {langui.auto}
-                </Button>
-                <Button
-                  onClick={() => {
-                    appLayout.setDarkMode(true);
-                    appLayout.setSelectedThemeMode(true);
-                  }}
-                  active={
-                    appLayout.selectedThemeMode === true &&
-                    appLayout.darkMode === true
-                  }
-                  className="rounded-l-none"
-                >
-                  {langui.dark}
-                </Button>
-              </div>
-            </div>
-
-            <div>
-              <h3 className="text-xl">{langui.currency}</h3>
+          <div className="mt-4 grid gap-16 justify-items-center text-center desktop:grid-cols-[auto_auto]">
+            {router.locales && (
               <div>
-                <Select
-                  options={currencyOptions}
-                  state={currencySelect}
-                  setState={setCurrencySelect}
-                  className="w-28"
+                <h3 className="text-xl">{langui.languages}</h3>
+                {appLayout.preferredLanguages && (
+                  <OrderableList
+                    items={
+                      appLayout.preferredLanguages.length > 0
+                        ? new Map(
+                            appLayout.preferredLanguages.map((locale) => [
+                              locale,
+                              prettyLanguage(locale, languages),
+                            ])
+                          )
+                        : new Map(
+                            router.locales.map((locale) => [
+                              locale,
+                              prettyLanguage(locale, languages),
+                            ])
+                          )
+                    }
+                    onChange={(items) => {
+                      const preferredLanguages = [...items].map(
+                        ([code]) => code
+                      );
+                      console.log(router.asPath);
+                      appLayout.setPreferredLanguages(preferredLanguages);
+                      router.push(router.asPath, router.asPath, {
+                        locale: preferredLanguages[0],
+                      });
+                    }}
+                  />
+                )}
+              </div>
+            )}
+            <div className="grid gap-8 place-items-center text-center desktop:grid-cols-2">
+              <div>
+                <h3 className="text-xl">{langui.theme}</h3>
+                <div className="flex flex-row">
+                  <Button
+                    onClick={() => {
+                      appLayout.setDarkMode(false);
+                      appLayout.setSelectedThemeMode(true);
+                    }}
+                    active={
+                      appLayout.selectedThemeMode === true &&
+                      appLayout.darkMode === false
+                    }
+                    className="rounded-r-none"
+                  >
+                    {langui.light}
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      appLayout.setSelectedThemeMode(false);
+                    }}
+                    active={appLayout.selectedThemeMode === false}
+                    className="rounded-l-none rounded-r-none border-x-0"
+                  >
+                    {langui.auto}
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      appLayout.setDarkMode(true);
+                      appLayout.setSelectedThemeMode(true);
+                    }}
+                    active={
+                      appLayout.selectedThemeMode === true &&
+                      appLayout.darkMode === true
+                    }
+                    className="rounded-l-none"
+                  >
+                    {langui.dark}
+                  </Button>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-xl">{langui.currency}</h3>
+                <div>
+                  <Select
+                    options={currencyOptions}
+                    state={currencySelect}
+                    setState={setCurrencySelect}
+                    className="w-28"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-xl">{langui.font_size}</h3>
+                <div className="flex flex-row">
+                  <Button
+                    className="rounded-r-none"
+                    onClick={() =>
+                      appLayout.setFontSize(
+                        appLayout.fontSize
+                          ? appLayout.fontSize / 1.05
+                          : 1 / 1.05
+                      )
+                    }
+                  >
+                    <span className="material-icons">text_decrease</span>
+                  </Button>
+                  <Button
+                    className="rounded-l-none rounded-r-none border-x-0"
+                    onClick={() => appLayout.setFontSize(1)}
+                  >
+                    {((appLayout.fontSize ?? 1) * 100).toLocaleString(
+                      undefined,
+                      {
+                        maximumFractionDigits: 0,
+                      }
+                    )}
+                    %
+                  </Button>
+                  <Button
+                    className="rounded-l-none"
+                    onClick={() =>
+                      appLayout.setFontSize(
+                        appLayout.fontSize
+                          ? appLayout.fontSize * 1.05
+                          : 1 * 1.05
+                      )
+                    }
+                  >
+                    <span className="material-icons">text_increase</span>
+                  </Button>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-xl">{langui.font}</h3>
+                <div className="grid gap-2">
+                  <Button
+                    active={appLayout.dyslexic === false}
+                    onClick={() => appLayout.setDyslexic(false)}
+                    className="font-zenMaruGothic"
+                  >
+                    Zen Maru Gothic
+                  </Button>
+                  <Button
+                    active={appLayout.dyslexic === true}
+                    onClick={() => appLayout.setDyslexic(true)}
+                    className="font-openDyslexic"
+                  >
+                    OpenDyslexic
+                  </Button>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-xl">{langui.player_name}</h3>
+                <input
+                  type="text"
+                  placeholder="<player>"
+                  className="w-48"
+                  onInput={(event) =>
+                    appLayout.setPlayerName(
+                      (event.target as HTMLInputElement).value
+                    )
+                  }
                 />
               </div>
-            </div>
-
-            <div>
-              <h3 className="text-xl">{langui.font_size}</h3>
-              <div className="flex flex-row">
-                <Button
-                  className="rounded-r-none"
-                  onClick={() =>
-                    appLayout.setFontSize(
-                      appLayout.fontSize ? appLayout.fontSize / 1.05 : 1 / 1.05
-                    )
-                  }
-                >
-                  <span className="material-icons">text_decrease</span>
-                </Button>
-                <Button
-                  className="rounded-l-none rounded-r-none border-x-0"
-                  onClick={() => appLayout.setFontSize(1)}
-                >
-                  {((appLayout.fontSize ?? 1) * 100).toLocaleString(undefined, {
-                    maximumFractionDigits: 0,
-                  })}
-                  %
-                </Button>
-                <Button
-                  className="rounded-l-none"
-                  onClick={() =>
-                    appLayout.setFontSize(
-                      appLayout.fontSize ? appLayout.fontSize * 1.05 : 1 * 1.05
-                    )
-                  }
-                >
-                  <span className="material-icons">text_increase</span>
-                </Button>
-              </div>
-            </div>
-
-            <div>
-              <h3 className="text-xl">{langui.font}</h3>
-              <div className="grid gap-2">
-                <Button
-                  active={appLayout.dyslexic === false}
-                  onClick={() => appLayout.setDyslexic(false)}
-                  className="font-zenMaruGothic"
-                >
-                  Zen Maru Gothic
-                </Button>
-                <Button
-                  active={appLayout.dyslexic === true}
-                  onClick={() => appLayout.setDyslexic(true)}
-                  className="font-openDyslexic"
-                >
-                  OpenDyslexic
-                </Button>
-              </div>
-            </div>
-
-            <div>
-              <h3 className="text-xl">{langui.player_name}</h3>
-              <input
-                type="text"
-                placeholder="<player>"
-                className="w-48"
-                onInput={(event) =>
-                  appLayout.setPlayerName(
-                    (event.target as HTMLInputElement).value
-                  )
-                }
-              />
             </div>
           </div>
         </Popup>

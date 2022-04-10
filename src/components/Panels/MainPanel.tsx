@@ -89,26 +89,6 @@ export default function MainPanel(props: Props): JSX.Element {
               </Button>
             </ToolTip>
 
-            {router.locale && (
-              <ToolTip
-                content={<h3 className="text-2xl">{langui.change_language}</h3>}
-                placement="right"
-                className="text-left"
-                disabled={!appLayout.mainPanelReduced}
-              >
-                <Button
-                  onClick={() => appLayout.setLanguagePanelOpen(true)}
-                  className={
-                    appLayout.mainPanelReduced && isDesktop
-                      ? ""
-                      : "!py-0.5 !px-2.5 !text-sm"
-                  }
-                >
-                  {router.locale.toUpperCase()}
-                </Button>
-              </ToolTip>
-            )}
-
             {/* <ToolTip
               content={<h3 className="text-2xl">{langui.open_search}</h3>}
               placement="right"

@@ -10,6 +10,7 @@ interface Props {
   locale?: string;
   target?: "_blank";
   onClick?: MouseEventHandler<HTMLDivElement>;
+  draggable?: boolean
 }
 
 export default function Button(props: Props): JSX.Element {
@@ -17,9 +18,10 @@ export default function Button(props: Props): JSX.Element {
 
   const button = (
     <div
+      draggable={props.draggable}
       id={props.id}
       onClick={props.onClick}
-      className={`grid place-content-center place-items-center border-[1px] border-dark text-dark rounded-full px-4 pt-[0.4rem] pb-[0.5rem] transition-all  ${
+      className={`grid place-content-center place-items-center border-[1px] border-dark text-dark rounded-full px-4 pt-[0.4rem] pb-[0.5rem] transition-all select-none ${
         props.className
       } ${
         props.active

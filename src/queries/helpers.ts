@@ -480,3 +480,15 @@ export function arrayMove<T>(arr: T[], old_index: number, new_index: number) {
   arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
   return arr;
 }
+
+export function getPreferredLanguage(
+  preferredLanguages: (string | undefined)[],
+  availableLanguages: Map<string, number>
+): number | undefined {
+  for (const locale of preferredLanguages) {
+    if (locale && availableLanguages.has(locale)) {
+      return availableLanguages.get(locale);
+    }
+  }
+  return undefined;
+}

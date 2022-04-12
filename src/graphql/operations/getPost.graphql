@@ -33,7 +33,7 @@ query getPost($slug: String, $language_code: String) {
             }
           }
         }
-        translations_languages: translations {
+        translations {
           language {
             data {
               attributes {
@@ -41,8 +41,6 @@ query getPost($slug: String, $language_code: String) {
               }
             }
           }
-        }
-        translations(filters: { language: { code: { eq: $language_code } } }) {
           status
           title
           excerpt

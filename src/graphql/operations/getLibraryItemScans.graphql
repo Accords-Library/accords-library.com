@@ -29,7 +29,8 @@ query getLibraryItemScans($slug: String, $language_code: String) {
                   ending_time
                 }
               }
-              scan_set_languages: scan_set {
+              scan_set {
+                status
                 language {
                   data {
                     attributes {
@@ -37,16 +38,6 @@ query getLibraryItemScans($slug: String, $language_code: String) {
                     }
                   }
                 }
-              }
-              scan_set(
-                filters: {
-                  or: [
-                    { language: { code: { eq: "xx" } } }
-                    { language: { code: { eq: $language_code } } }
-                  ]
-                }
-              ) {
-                status
                 source_language {
                   data {
                     attributes {

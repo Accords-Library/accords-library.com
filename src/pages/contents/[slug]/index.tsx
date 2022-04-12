@@ -13,6 +13,7 @@ import ContentPanel from "components/Panels/ContentPanel";
 import SubPanel from "components/Panels/SubPanel";
 import RecorderChip from "components/RecorderChip";
 import ToolTip from "components/ToolTip";
+import { useAppLayout } from "contexts/AppLayoutContext";
 import { GetContentTextQuery } from "graphql/generated";
 import { getReadySdk } from "graphql/sdk";
 import {
@@ -23,7 +24,7 @@ import {
 import { useRouter } from "next/router";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 import {
-  getLocalesFromLanguages,
+  getPreferredLanguage,
   getStatusDescription,
   prettyinlineTitle,
   prettyLanguage,
@@ -31,6 +32,7 @@ import {
   prettyTestError,
   prettyTestWarning,
 } from "queries/helpers";
+import { useEffect, useMemo, useState } from "react";
 
 interface Props extends AppStaticProps {
   content: Exclude<
@@ -47,7 +49,49 @@ export default function Content(props: Props): JSX.Element {
   useTesting(props);
   const { langui, content, languages } = props;
   const router = useRouter();
-  const locales = getLocalesFromLanguages(content?.text_set_languages);
+  const appLayout = useAppLayout();
+
+  const [selectedTextSet, setSelectedTextSet] = useState<
+    | Exclude<
+        Exclude<Props["content"], null | undefined>["text_set"],
+        null | undefined
+      >[number]
+  >();
+  const [selectedTitle, setSelectedTitle] = useState<
+    | Exclude<
+        Exclude<Props["content"], null | undefined>["titles"],
+        null | undefined
+      >[number]
+  >();
+  const textSetLocales: Map<string, number> = new Map();
+
+  const [selectedTextSetIndex, setSelectedTextSetIndex] = useState<
+    number | undefined
+  >();
+
+  if (content?.text_set) {
+    content.text_set.map((textSet, index) => {
+      if (textSet?.language?.data?.attributes?.code && textSet.text) {
+        textSetLocales.set(textSet.language.data.attributes.code, index);
+      }
+    });
+  }
+
+  useMemo(() => {
+    setSelectedTextSetIndex(
+      getPreferredLanguage(
+        appLayout.preferredLanguages ?? [router.locale],
+        textSetLocales
+      )
+    );
+  }, [appLayout.preferredLanguages]);
+
+  useEffect(() => {
+    if (selectedTextSetIndex !== undefined)
+      setSelectedTextSet(content?.text_set?.[selectedTextSetIndex]);
+    if (selectedTextSetIndex !== undefined)
+      setSelectedTitle(content?.titles?.[selectedTextSetIndex]);
+  }, [selectedTextSetIndex]);
 
   const subPanel = (
     <SubPanel>
@@ -59,27 +103,25 @@ export default function Content(props: Props): JSX.Element {
         horizontalLine
       />
 
-      {content?.text_set?.[0]?.source_language?.data?.attributes && (
+      {selectedTextSet?.source_language?.data?.attributes && (
         <div className="grid gap-5">
           <h2 className="text-xl">
-            {content.text_set[0].source_language.data.attributes.code ===
-            router.locale
+            {selectedTextSet.source_language.data.attributes.code ===
+            selectedTextSet.language?.data?.attributes?.code
               ? langui.transcript_notice
               : langui.translation_notice}
           </h2>
 
-          {content.text_set[0].source_language.data.attributes.code !==
-            router.locale && (
+          {selectedTextSet.source_language.data.attributes.code !==
+            selectedTextSet.language?.data?.attributes?.code && (
             <div className="grid place-items-center gap-2">
               <p className="font-headers">{langui.source_language}:</p>
               <Button
                 href={router.asPath}
-                locale={
-                  content.text_set[0].source_language.data.attributes.code
-                }
+                locale={selectedTextSet.source_language.data.attributes.code}
               >
                 {prettyLanguage(
-                  content.text_set[0].source_language.data.attributes.code,
+                  selectedTextSet.source_language.data.attributes.code,
                   languages
                 )}
               </Button>
@@ -90,19 +132,19 @@ export default function Content(props: Props): JSX.Element {
             <p className="font-headers">{langui.status}:</p>
 
             <ToolTip
-              content={getStatusDescription(content.text_set[0].status, langui)}
+              content={getStatusDescription(selectedTextSet.status, langui)}
               maxWidth={"20rem"}
             >
-              <Chip>{content.text_set[0].status}</Chip>
+              <Chip>{selectedTextSet.status}</Chip>
             </ToolTip>
           </div>
 
-          {content.text_set[0].transcribers &&
-            content.text_set[0].transcribers.data.length > 0 && (
+          {selectedTextSet.transcribers &&
+            selectedTextSet.transcribers.data.length > 0 && (
               <div>
                 <p className="font-headers">{langui.transcribers}:</p>
                 <div className="grid place-items-center place-content-center gap-2">
-                  {content.text_set[0].transcribers.data.map((recorder) => (
+                  {selectedTextSet.transcribers.data.map((recorder) => (
                     <>
                       {recorder.attributes && (
                         <RecorderChip
@@ -117,12 +159,12 @@ export default function Content(props: Props): JSX.Element {
               </div>
             )}
 
-          {content.text_set[0].translators &&
-            content.text_set[0].translators.data.length > 0 && (
+          {selectedTextSet.translators &&
+            selectedTextSet.translators.data.length > 0 && (
               <div>
                 <p className="font-headers">{langui.translators}:</p>
                 <div className="grid place-items-center place-content-center gap-2">
-                  {content.text_set[0].translators.data.map((recorder) => (
+                  {selectedTextSet.translators.data.map((recorder) => (
                     <>
                       {recorder.attributes && (
                         <RecorderChip
@@ -137,12 +179,12 @@ export default function Content(props: Props): JSX.Element {
               </div>
             )}
 
-          {content.text_set[0].proofreaders &&
-            content.text_set[0].proofreaders.data.length > 0 && (
+          {selectedTextSet.proofreaders &&
+            selectedTextSet.proofreaders.data.length > 0 && (
               <div>
                 <p className="font-headers">{langui.proofreaders}:</p>
                 <div className="grid place-items-center place-content-center gap-2">
-                  {content.text_set[0].proofreaders.data.map((recorder) => (
+                  {selectedTextSet.proofreaders.data.map((recorder) => (
                     <>
                       {recorder.attributes && (
                         <RecorderChip
@@ -159,25 +201,23 @@ export default function Content(props: Props): JSX.Element {
         </div>
       )}
 
-      {content?.text_set &&
-        content.text_set.length > 0 &&
-        content.text_set[0]?.text && (
-          <>
-            <HorizontalLine />
-            <TOC
-              text={content.text_set[0].text}
-              title={
-                content.titles && content.titles.length > 0 && content.titles[0]
-                  ? prettyinlineTitle(
-                      content.titles[0].pre_title,
-                      content.titles[0].title,
-                      content.titles[0].subtitle
-                    )
-                  : prettySlug(content.slug)
-              }
-            />
-          </>
-        )}
+      {selectedTextSet && content?.text_set && selectedTextSet.text && (
+        <>
+          <HorizontalLine />
+          <TOC
+            text={selectedTextSet.text}
+            title={
+              content.titles && content.titles.length > 0 && selectedTitle
+                ? prettyinlineTitle(
+                    selectedTitle.pre_title,
+                    selectedTitle.title,
+                    selectedTitle.subtitle
+                  )
+                : prettySlug(content.slug)
+            }
+          />
+        </>
+      )}
     </SubPanel>
   );
   const contentPanel = (
@@ -189,46 +229,37 @@ export default function Content(props: Props): JSX.Element {
         displayOn={ReturnButtonType.mobile}
         className="mb-10"
       />
+
       {content && (
         <div className="grid place-items-center">
           <ThumbnailHeader
             thumbnail={content.thumbnail?.data?.attributes}
             pre_title={
-              content.titles && content.titles.length > 0
-                ? content.titles[0]?.pre_title
-                : undefined
+              selectedTitle?.pre_title ?? content.titles?.[0]?.pre_title
             }
-            title={
-              content.titles && content.titles.length > 0
-                ? content.titles[0]?.title
-                : prettySlug(content.slug)
-            }
-            subtitle={
-              content.titles && content.titles.length > 0
-                ? content.titles[0]?.subtitle
-                : undefined
-            }
+            title={selectedTitle?.title ?? content.titles?.[0]?.title}
+            subtitle={selectedTitle?.subtitle ?? content.titles?.[0]?.subtitle}
             description={
-              content.titles && content.titles.length > 0
-                ? content.titles[0]?.description
-                : undefined
+              selectedTitle?.description ?? content.titles?.[0]?.description
             }
             type={content.type}
             categories={content.categories}
             langui={langui}
+            languageSwitcher={
+              selectedTextSet ? (
+                <LanguageSwitcher
+                  locales={textSetLocales}
+                  languages={props.languages}
+                  localesIndex={selectedTextSetIndex}
+                  setLocalesIndex={setSelectedTextSetIndex}
+                />
+              ) : undefined
+            }
           />
 
           <HorizontalLine />
 
-          {locales.includes(router.locale ?? "en") ? (
-            <Markdawn text={content.text_set?.[0]?.text ?? ""} />
-          ) : (
-            <LanguageSwitcher
-              locales={locales}
-              languages={props.languages}
-              langui={props.langui}
-            />
-          )}
+          <Markdawn text={selectedTextSet?.text ?? ""} />
         </div>
       )}
     </ContentPanel>
@@ -276,7 +307,7 @@ export async function getStaticProps(
   context: GetStaticPropsContext
 ): Promise<{ notFound: boolean } | { props: Props }> {
   const sdk = getReadySdk();
-  const slug = context.params?.slug?.toString() ?? "";
+  const slug = context.params?.slug.toString() ?? "";
   const content = await sdk.getContentText({
     slug: slug,
     language_code: context.locale ?? "en",

@@ -26,6 +26,7 @@ interface Props {
   >["categories"];
   thumbnail?: UploadImageFragment | null | undefined;
   langui: AppStaticProps["langui"];
+  languageSwitcher?: JSX.Element;
 }
 
 export default function ThumbnailHeader(props: Props): JSX.Element {
@@ -38,6 +39,7 @@ export default function ThumbnailHeader(props: Props): JSX.Element {
     type,
     categories,
     description,
+    languageSwitcher,
   } = props;
 
   return (
@@ -67,7 +69,7 @@ export default function ThumbnailHeader(props: Props): JSX.Element {
         </div>
       </div>
 
-      <div className="grid grid-flow-col gap-8">
+      <div className="flex place-content-center flex-row flew-wrap gap-8">
         {type?.data?.attributes && (
           <div className="flex flex-col place-items-center gap-2">
             <h3 className="text-xl">{langui.type}</h3>
@@ -92,6 +94,7 @@ export default function ThumbnailHeader(props: Props): JSX.Element {
             </div>
           </div>
         )}
+        {languageSwitcher}
       </div>
       {description && <InsetBox className="mt-8">{description}</InsetBox>}
     </>

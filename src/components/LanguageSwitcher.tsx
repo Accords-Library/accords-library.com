@@ -1,33 +1,31 @@
-import { useRouter } from "next/router";
 import { AppStaticProps } from "queries/getAppStaticProps";
 import { prettyLanguage } from "queries/helpers";
+import { Dispatch, SetStateAction } from "react";
 import Button from "./Button";
+import ToolTip from "./ToolTip";
 
 interface Props {
   className?: string;
-  locales: (string | undefined)[];
   languages: AppStaticProps["languages"];
-  langui: AppStaticProps["langui"];
-  href?: string;
+  locales: Map<string, number>;
+  localesIndex: number | undefined;
+  setLocalesIndex: Dispatch<SetStateAction<number | undefined>>;
 }
 
 export default function LanguageSwitcher(props: Props): JSX.Element {
-  const { locales, langui, href } = props;
-  const router = useRouter();
+  const { locales, localesIndex, setLocalesIndex } = props;
 
   return (
-    <div className="w-full grid place-content-center">
-      <div className="flex flex-col place-items-center text-center gap-4 my-12 border-2 border-mid rounded-xl p-8 max-w-lg">
-        <p>{langui.language_switch_message}</p>
-        <div className="flex flex-wrap flex-row gap-2">
-          {locales.map((locale, index) => (
+    <ToolTip
+      content={
+        <div className="flex flex-col gap-2">
+          {[...locales].map(([locale, value], index) => (
             <>
               {locale && (
                 <Button
                   key={index}
-                  active={locale === router.locale}
-                  href={href}
-                  locale={locale}
+                  active={value === localesIndex}
+                  onClick={() => setLocalesIndex(value)}
                 >
                   {prettyLanguage(locale, props.languages)}
                 </Button>
@@ -35,7 +33,11 @@ export default function LanguageSwitcher(props: Props): JSX.Element {
             </>
           ))}
         </div>
-      </div>
-    </div>
+      }
+    >
+      <Button badgeNumber={locales.size}>
+        <span className="material-icons">translate</span>
+      </Button>
+    </ToolTip>
   );
 }

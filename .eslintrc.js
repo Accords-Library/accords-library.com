@@ -171,7 +171,7 @@ module.exports = {
     "@typescript-eslint/no-require-imports": "error",
     // "@typescript-eslint/no-type-alias": "warn",
     "@typescript-eslint/no-unnecessary-boolean-literal-compare": "warn",
-    // "@typescript-eslint/no-unnecessary-condition": "warn",
+    "@typescript-eslint/no-unnecessary-condition": "warn",
     "@typescript-eslint/no-unnecessary-qualifier": "warn",
     "@typescript-eslint/no-unnecessary-type-arguments": "warn",
     "@typescript-eslint/prefer-enum-initializers": "error",

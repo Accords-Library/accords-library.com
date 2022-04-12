@@ -13,12 +13,12 @@ interface Props {
 }
 
 export default function LanguageSwitcher(props: Props): JSX.Element {
-  const { locales, localesIndex, setLocalesIndex } = props;
+  const { locales, className, localesIndex, setLocalesIndex } = props;
 
   return (
     <ToolTip
       content={
-        <div className="flex flex-col gap-2">
+        <div className={`flex flex-col gap-2 ${className}`}>
           {[...locales].map(([locale, value], index) => (
             <>
               {locale && (
@@ -35,7 +35,7 @@ export default function LanguageSwitcher(props: Props): JSX.Element {
         </div>
       }
     >
-      <Button badgeNumber={locales.size}>
+      <Button badgeNumber={locales.size > 1 ? locales.size : undefined}>
         <span className="material-icons">translate</span>
       </Button>
     </ToolTip>

@@ -1,6 +1,5 @@
 import AppLayout from "components/AppLayout";
-import Img, { getAssetURL, ImageQuality } from "components/Img";
-import LanguageSwitcher from "components/LanguageSwitcher";
+import ScanSet from "components/Library/ScanSet";
 import LightBox from "components/LightBox";
 import NavOption from "components/PanelComponents/NavOption";
 import ReturnButton, {
@@ -34,7 +33,7 @@ interface Props extends AppStaticProps {
 }
 
 export default function LibrarySlug(props: Props): JSX.Element {
-  const { item, langui } = props;
+  const { item, langui, languages } = props;
   const appLayout = useAppLayout();
 
   sortContent(item?.contents);
@@ -90,61 +89,16 @@ export default function LibrarySlug(props: Props): JSX.Element {
       />
       {item?.contents?.data.map((content) => (
         <>
-          <h2
-            id={content.attributes?.slug}
-            key={`h2${content.id}`}
-            className="text-2xl pb-2 pt-10 first-of-type:pt-0 flex flex-row place-items-center gap-2"
-          >
-            {prettySlug(content.attributes?.slug, item.slug)}
-          </h2>
-
-          {content.attributes?.scan_set?.[0] ? (
-            <div
-              key={`items${content.id}`}
-              className="grid gap-8 items-end mobile:grid-cols-2 desktop:grid-cols-[repeat(auto-fill,_minmax(10rem,1fr))] pb-12 border-b-[3px] border-dotted last-of-type:border-0"
-            >
-              {content.attributes.scan_set[0].pages?.data.map((page, index) => (
-                <div
-                  key={page.id}
-                  className="drop-shadow-shade-lg hover:scale-[1.02] cursor-pointer transition-transform"
-                  onClick={() => {
-                    setLightboxOpen(true);
-                    if (content.attributes?.scan_set?.[0]?.pages) {
-                      const images: string[] = [];
-                      content.attributes.scan_set[0].pages.data.map((image) => {
-                        if (image.attributes?.url)
-                          images.push(
-                            getAssetURL(
-                              image.attributes.url,
-                              ImageQuality.Large
-                            )
-                          );
-                      });
-                      setLightboxImages(images);
-                    }
-
-                    setLightboxIndex(index);
-                  }}
-                >
-                  {page.attributes && (
-                    <Img image={page.attributes} quality={ImageQuality.Small} />
-                  )}
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="pb-12 border-b-[3px] border-dotted last-of-type:border-0">
-              {content.attributes?.scan_set_languages && (
-                <LanguageSwitcher
-                  locales={content.attributes.scan_set_languages.map(
-                    (language) => language?.language?.data?.attributes?.code
-                  )}
-                  languages={props.languages}
-                  langui={props.langui}
-                  href={`#${content.attributes.slug}`}
-                />
-              )}
-            </div>
+          {content.attributes?.scan_set?.[0] && (
+            <ScanSet
+              scanSet={content.attributes.scan_set}
+              setLightboxImages={setLightboxImages}
+              setLightboxIndex={setLightboxIndex}
+              setLightboxOpen={setLightboxOpen}
+              slug={content.attributes.slug}
+              title={prettySlug(content.attributes.slug, item.slug)}
+              languages={languages}
+            />
           )}
         </>
       ))}

@@ -6,6 +6,63 @@ query getLibraryItemScans($slug: String, $language_code: String) {
         slug
         title
         subtitle
+        images {
+          cover {
+            full {
+              data {
+                attributes {
+                  ...uploadImage
+                }
+              }
+            }
+            inside_full {
+              data {
+                attributes {
+                  ...uploadImage
+                }
+              }
+            }
+          }
+          dust_jacket {
+            full {
+              data {
+                attributes {
+                  ...uploadImage
+                }
+              }
+            }
+            inside_full {
+              data {
+                attributes {
+                  ...uploadImage
+                }
+              }
+            }
+          }
+          obi_belt {
+            full {
+              data {
+                attributes {
+                  ...uploadImage
+                }
+              }
+            }
+            inside_full {
+              data {
+                attributes {
+                  ...uploadImage
+                }
+              }
+            }
+          }
+          language {
+            data {
+              attributes {
+                code
+              }
+            }
+          }
+        }
         thumbnail {
           data {
             attributes {
@@ -27,6 +84,13 @@ query getLibraryItemScans($slug: String, $language_code: String) {
                 ... on ComponentRangeTimeRange {
                   starting_time
                   ending_time
+                }
+              }
+              content {
+                data {
+                  attributes {
+                    slug
+                  }
                 }
               }
               scan_set {

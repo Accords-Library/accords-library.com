@@ -1,5 +1,6 @@
 import AppLayout from "components/AppLayout";
 import ScanSet from "components/Library/ScanSet";
+import ScanSetCover from "components/Library/ScanSetCover";
 import LightBox from "components/LightBox";
 import NavOption from "components/PanelComponents/NavOption";
 import ReturnButton, {
@@ -87,10 +88,23 @@ export default function LibrarySlug(props: Props): JSX.Element {
         displayOn={ReturnButtonType.mobile}
         className="mb-10"
       />
+
+      {item?.images && (
+        <ScanSetCover
+          images={item.images}
+          setLightboxImages={setLightboxImages}
+          setLightboxIndex={setLightboxIndex}
+          setLightboxOpen={setLightboxOpen}
+          languages={languages}
+          langui={langui}
+        />
+      )}
+
       {item?.contents?.data.map((content) => (
         <>
           {content.attributes?.scan_set?.[0] && (
             <ScanSet
+              key={content.id}
               scanSet={content.attributes.scan_set}
               setLightboxImages={setLightboxImages}
               setLightboxIndex={setLightboxIndex}
@@ -98,6 +112,8 @@ export default function LibrarySlug(props: Props): JSX.Element {
               slug={content.attributes.slug}
               title={prettySlug(content.attributes.slug, item.slug)}
               languages={languages}
+              langui={langui}
+              content={content.attributes.content}
             />
           )}
         </>

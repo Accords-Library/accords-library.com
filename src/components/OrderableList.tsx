@@ -7,7 +7,7 @@ interface Props {
   onChange?: (items: Map<string, string>) => void;
 }
 
-export default function LanguageSwitcher(props: Props): JSX.Element {
+export default function OrderableList(props: Props): JSX.Element {
   const [items, setItems] = useState<Map<string, string>>(props.items);
 
   useEffect(() => {

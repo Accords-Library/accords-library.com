@@ -7,6 +7,45 @@ query getLibraryItemScans($slug: String, $language_code: String) {
         title
         subtitle
         images {
+          status
+          language {
+            data {
+              attributes {
+                code
+              }
+            }
+          }
+          source_language {
+            data {
+              attributes {
+                code
+              }
+            }
+          }
+          scanners {
+            data {
+              id
+              attributes {
+                ...recorderChip
+              }
+            }
+          }
+          cleaners {
+            data {
+              id
+              attributes {
+                ...recorderChip
+              }
+            }
+          }
+          typesetters {
+            data {
+              id
+              attributes {
+                ...recorderChip
+              }
+            }
+          }
           cover {
             full {
               data {
@@ -52,13 +91,6 @@ query getLibraryItemScans($slug: String, $language_code: String) {
                 attributes {
                   ...uploadImage
                 }
-              }
-            }
-          }
-          language {
-            data {
-              attributes {
-                code
               }
             }
           }

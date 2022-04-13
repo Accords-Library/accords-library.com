@@ -68,6 +68,16 @@ export default function LibrarySlug(props: Props): JSX.Element {
   const [lightboxImages, setLightboxImages] = useState([""]);
   const [lightboxIndex, setLightboxIndex] = useState(0);
 
+  let displayOpenScans = false;
+  if (item?.contents?.data)
+    for (const content of item.contents.data) {
+      if (
+        content.attributes?.scan_set &&
+        content.attributes.scan_set.length > 0
+      )
+        displayOpenScans = true;
+    }
+
   const subPanel = (
     <SubPanel>
       <ReturnButton
@@ -201,10 +211,10 @@ export default function LibrarySlug(props: Props): JSX.Element {
                   "relation-set")
             ) && (
               <>
-                {item?.urls && item?.urls?.length ? (
+                {item?.urls && item.urls.length ? (
                   <div className="flex flex-row place-items-center gap-3">
                     <p>Available at</p>
-                    {item?.urls?.map((url) => (
+                    {item.urls.map((url) => (
                       <>
                         {url?.url && (
                           <Button
@@ -428,7 +438,12 @@ export default function LibrarySlug(props: Props): JSX.Element {
 
         {item?.contents && item.contents.data.length > 0 && (
           <div id="contents" className="w-full grid place-items-center gap-8">
-            <h2 className="text-2xl">{langui.contents}</h2>
+            <h2 className="text-2xl -mb-6">{langui.contents}</h2>
+            {displayOpenScans && (
+              <Button href={`/library/${item.slug}/scans`}>
+                {langui.view_scans}
+              </Button>
+            )}
             <div className="grid gap-4 w-full">
               {item.contents.data.map((content) => (
                 <ContentTOCLine

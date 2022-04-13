@@ -12,7 +12,7 @@
   - GraphQL endpoint
   - Multilanguage support
   - Markdown format for the rich text fields
-  - Use webhooks to notify the front-end of updates
+  - Use webhooks to notify the front-end and image processor of updates
 
 #### [Image Processor](https://github.com/Accords-Library/img.accords-library.com)
 

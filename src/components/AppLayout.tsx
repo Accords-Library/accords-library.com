@@ -85,6 +85,23 @@ export default function AppLayout(props: Props): JSX.Element {
   });
   const [currencySelect, setCurrencySelect] = useState<number>(-1);
 
+  let defaultPreferredLanguages: string[] = [];
+
+  if (router.locale && router.locales) {
+    if (router.locale === "en") {
+      defaultPreferredLanguages = [router.locale];
+      router.locales.map((locale) => {
+        if (locale !== router.locale) defaultPreferredLanguages.push(locale);
+      });
+    } else {
+      defaultPreferredLanguages = [router.locale, "en"];
+      router.locales.map((locale) => {
+        if (locale !== router.locale && locale !== "en")
+          defaultPreferredLanguages.push(locale);
+      });
+    }
+  }
+
   useEffect(() => {
     if (appLayout.currency)
       setCurrencySelect(currencyOptions.indexOf(appLayout.currency));
@@ -272,7 +289,7 @@ export default function AppLayout(props: Props): JSX.Element {
                             ])
                           )
                         : new Map(
-                            router.locales.map((locale) => [
+                            defaultPreferredLanguages.map((locale) => [
                               locale,
                               prettyLanguage(locale, languages),
                             ])

@@ -2,7 +2,7 @@
 
 /* CONFIG */
 
-const locales = ["en", "fr", "ja", "es", "pt-br"];
+const locales = ["en", "es", "fr", "pt-br", "ja"];
 
 /* END CONFIG */
 

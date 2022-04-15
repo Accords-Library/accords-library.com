@@ -99,6 +99,7 @@ export default async function Mail(
       paths.push(`/library/${body.entry.slug}`);
       serverRuntimeConfig.locales?.map((locale: string) => {
         paths.push(`/${locale}/library/${body.entry.slug}`);
+        paths.push(`/${locale}/library/${body.entry.slug}/scans`);
         body.entry.subitem_of.map((parentItem) => {
           paths.push(`/${locale}/library/${parentItem.slug}`);
         });

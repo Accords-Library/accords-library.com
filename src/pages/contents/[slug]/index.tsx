@@ -307,7 +307,7 @@ export async function getStaticProps(
   context: GetStaticPropsContext
 ): Promise<{ notFound: boolean } | { props: Props }> {
   const sdk = getReadySdk();
-  const slug = context.params?.slug.toString() ?? "";
+  const slug = context.params?.slug?.toString() ?? "";
   const content = await sdk.getContentText({
     slug: slug,
     language_code: context.locale ?? "en",

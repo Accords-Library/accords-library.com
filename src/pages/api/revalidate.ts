@@ -31,6 +31,11 @@ type HookContent = {
   model: "content";
   entry: {
     slug: string;
+    ranged_contents: [
+      {
+        slug: string;
+      }
+    ];
   };
 };
 
@@ -97,6 +102,7 @@ export default async function Mail(
     case "library-item": {
       paths.push(`/library`);
       paths.push(`/library/${body.entry.slug}`);
+      paths.push(`/library/${body.entry.slug}/scans`);
       serverRuntimeConfig.locales?.map((locale: string) => {
         paths.push(`/${locale}/library/${body.entry.slug}`);
         paths.push(`/${locale}/library/${body.entry.slug}/scans`);
@@ -109,12 +115,27 @@ export default async function Mail(
     }
 
     case "content": {
+      console.log(body.entry.ranged_contents);
       paths.push(`/contents`);
       paths.push(`/contents/${body.entry.slug}`);
       serverRuntimeConfig.locales?.map((locale: string) => {
         paths.push(`/${locale}/contents/${body.entry.slug}`);
         paths.push(`/${locale}/contents`);
       });
+      if (body.entry.ranged_contents.length > 0) {
+        body.entry.ranged_contents.map((ranged_content) => {
+          const parentSlug = ranged_content.slug.slice(
+            0,
+            ranged_content.slug.length - body.entry.slug.length - 1
+          );
+          paths.push(`/library/${parentSlug}`);
+          paths.push(`/library/${parentSlug}/scans`);
+          serverRuntimeConfig.locales?.map((locale: string) => {
+            paths.push(`/${locale}/library/${parentSlug}`);
+            paths.push(`/${locale}/library/${parentSlug}/scans`);
+          });
+        });
+      }
       break;
     }
 
@@ -156,7 +177,7 @@ export default async function Mail(
       break;
   }
 
-  //console.table(paths);
+  console.table(paths);
 
   try {
     Promise.all(

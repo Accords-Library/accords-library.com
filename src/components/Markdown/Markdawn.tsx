@@ -52,7 +52,11 @@ export default function Markdawn(props: Props): JSX.Element {
                       </a>
                     );
                   }
-                  return <a href={compProps.href}>{compProps.children}</a>;
+                  return (
+                    <a href={compProps.href} target="_blank" rel="noreferrer">
+                      {compProps.children}
+                    </a>
+                  );
                 },
               },
               h1: {

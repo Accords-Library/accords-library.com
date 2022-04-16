@@ -198,6 +198,15 @@ export default function Content(props: Props): JSX.Element {
                 </div>
               </div>
             )}
+
+          {selectedTextSet.notes && (
+            <div>
+              <p className="font-headers">{"Notes"}:</p>
+              <div className="grid place-items-center place-content-center gap-2">
+                <Markdawn text={selectedTextSet.notes} />
+              </div>
+            </div>
+          )}
         </div>
       )}
 

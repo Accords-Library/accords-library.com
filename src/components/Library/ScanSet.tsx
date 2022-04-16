@@ -88,8 +88,33 @@ export default function ScanSet(props: Props): JSX.Element {
   }, [appLayout.preferredLanguages]);
 
   useEffect(() => {
-    if (selectedScanIndex !== undefined)
-      setSelectedScan(scanSet[selectedScanIndex]);
+    if (selectedScanIndex !== undefined) {
+      const selectedScanSet = scanSet[selectedScanIndex];
+      selectedScanSet?.pages?.data.sort((a, b) => {
+        function isInteger(value: string): boolean {
+          return /^\d+$/.test(value);
+        }
+        function getFileName(path: string): string {
+          let result = path.split("/");
+          result = result[result.length - 1].split(".");
+          result = result
+            .splice(0, result.length - 1)
+            .join(".")
+            .split("_");
+          return result[0];
+        }
+        if (a.attributes?.url && b.attributes?.url) {
+          const aName = getFileName(a.attributes.url);
+          const bName = getFileName(b.attributes.url);
+          if (isInteger(aName) && isInteger(bName)) {
+            return parseInt(aName, 10) - parseInt(bName, 10);
+          }
+          return a.attributes.url.localeCompare(b.attributes.url);
+        }
+        return 0;
+      });
+      setSelectedScan(selectedScanSet);
+    }
   }, [selectedScanIndex]);
 
   return (

@@ -1,6 +1,7 @@
 import Chip from "components/Chip";
 import Img, { ImageQuality } from "components/Img";
 import InsetBox from "components/InsetBox";
+import Markdawn from "components/Markdown/Markdawn";
 import { GetContentQuery, UploadImageFragment } from "graphql/generated";
 import { AppStaticProps } from "queries/getAppStaticProps";
 import { prettyinlineTitle, prettySlug, slugify } from "queries/helpers";
@@ -96,7 +97,11 @@ export default function ThumbnailHeader(props: Props): JSX.Element {
         )}
         {languageSwitcher}
       </div>
-      {description && <InsetBox className="mt-8">{description}</InsetBox>}
+      {description && (
+        <InsetBox className="mt-8">
+          {<Markdawn text={description}></Markdawn>}
+        </InsetBox>
+      )}
     </>
   );
 }

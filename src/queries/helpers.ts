@@ -12,7 +12,6 @@ import {
   PricePickerFragment,
   UploadImageFragment,
 } from "graphql/generated";
-import { NextRouter } from "next/router";
 import { AppStaticProps } from "./getAppStaticProps";
 
 export function prettyDate(datePicker: DatePickerFragment): string {

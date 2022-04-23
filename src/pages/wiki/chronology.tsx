@@ -11,13 +11,8 @@ import { useAppLayout } from "contexts/AppLayoutContext";
 import { GetChronologyItemsQuery, GetErasQuery } from "graphql/generated";
 import { getReadySdk } from "graphql/sdk";
 import { GetStaticPropsContext } from "next";
-import { useRouter } from "next/router";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
-import {
-  prettySlug,
-  prettyTestError,
-  prettyTestWarning,
-} from "queries/helpers";
+import { prettySlug } from "queries/helpers";
 
 interface Props extends AppStaticProps {
   chronologyItems: Exclude<
@@ -31,7 +26,6 @@ interface Props extends AppStaticProps {
 }
 
 export default function Chronology(props: Props): JSX.Element {
-  useTesting(props);
   const { chronologyItems, chronologyEras, langui } = props;
   const appLayout = useAppLayout();
 
@@ -176,77 +170,4 @@ export async function getStaticProps(
   return {
     props: props,
   };
-}
-
-function useTesting(props: Props) {
-  const router = useRouter();
-  const { chronologyItems, chronologyEras } = props;
-  chronologyEras.map((era) => {
-    const chronologyErasURL = `/admin/content-manager/collectionType/api::chronology-era.chronology-era/${chronologyItems[0].id}`;
-
-    if (era.attributes?.title?.length === 0) {
-      prettyTestError(
-        router,
-        "Missing translation for title and description, using slug instead",
-        ["chronologyEras", era.attributes.slug],
-        chronologyErasURL
-      );
-    } else if (era.attributes?.title && era.attributes.title.length > 1) {
-      prettyTestError(
-        router,
-        "More than one title and description",
-        ["chronologyEras", era.attributes.slug],
-        chronologyErasURL
-      );
-    } else {
-      if (!era.attributes?.title?.[0]?.title)
-        prettyTestError(
-          router,
-          "Missing title, using slug instead",
-          ["chronologyEras", era.attributes?.slug ?? ""],
-          chronologyErasURL
-        );
-      if (!era.attributes?.title?.[0]?.description)
-        prettyTestError(
-          router,
-          "Missing description",
-          ["chronologyEras", era.attributes?.slug ?? ""],
-          chronologyErasURL
-        );
-    }
-  });
-
-  chronologyItems.map((item) => {
-    const chronologyItemsURL = `/admin/content-manager/collectionType/api::chronology-item.chronology-item/${chronologyItems[0].id}`;
-
-    const date = `${item.attributes?.year}/${item.attributes?.month}/${item.attributes?.day}`;
-
-    if (item.attributes?.events && item.attributes.events.length > 0) {
-      item.attributes.events.map((event) => {
-        if (!event?.source?.data) {
-          prettyTestError(
-            router,
-            "No source for this event",
-            ["chronologyItems", date, event?.id ?? ""],
-            chronologyItemsURL
-          );
-        }
-        if (!(event?.translations && event.translations.length > 0)) {
-          prettyTestWarning(
-            router,
-            "No translation for this event",
-            ["chronologyItems", date, event?.id ?? ""],
-            chronologyItemsURL
-          );
-        }
-      });
-    } else {
-      prettyTestError(
-        router,
-        "No events for this date",
-        ["chronologyItems", date],
-        chronologyItemsURL
-      );
-    }
-  });
 }

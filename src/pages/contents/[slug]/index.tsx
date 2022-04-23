@@ -29,8 +29,6 @@ import {
   prettyinlineTitle,
   prettyLanguage,
   prettySlug,
-  prettyTestError,
-  prettyTestWarning,
 } from "queries/helpers";
 import { useEffect, useMemo, useState } from "react";
 
@@ -46,7 +44,6 @@ interface Props extends AppStaticProps {
 }
 
 export default function Content(props: Props): JSX.Element {
-  useTesting(props);
   const { langui, content, languages } = props;
   const router = useRouter();
   const appLayout = useAppLayout();
@@ -316,7 +313,7 @@ export async function getStaticProps(
   context: GetStaticPropsContext
 ): Promise<{ notFound: boolean } | { props: Props }> {
   const sdk = getReadySdk();
-  const slug = context.params?.slug?.toString() ?? "";
+  const slug = context.params?.slug ? context.params.slug.toString() : "";
   const content = await sdk.getContentText({
     slug: slug,
     language_code: context.locale ?? "en",
@@ -350,103 +347,4 @@ export async function getStaticPaths(
     paths,
     fallback: "blocking",
   };
-}
-
-function useTesting(props: Props) {
-  const router = useRouter();
-  const { content, contentId } = props;
-
-  const contentURL = `/admin/content-manager/collectionType/api::content.content/${contentId}`;
-
-  if (router.locale === "en") {
-    if (content?.categories?.data.length === 0) {
-      prettyTestError(router, "Missing categories", ["content"], contentURL);
-    }
-  }
-
-  if (content?.ranged_contents?.data.length === 0) {
-    prettyTestWarning(
-      router,
-      "Unconnected to any source",
-      ["content"],
-      contentURL
-    );
-  }
-
-  if (content?.text_set?.length === 0) {
-    prettyTestWarning(
-      router,
-      "Has no textset, nor audioset, nor videoset",
-      ["content"],
-      contentURL
-    );
-  }
-
-  if (content?.text_set && content.text_set.length > 1) {
-    prettyTestError(
-      router,
-      "More than one textset for this language",
-      ["content", "text_set"],
-      contentURL
-    );
-  }
-
-  if (content?.text_set?.length === 1) {
-    const textset = content.text_set[0];
-
-    if (!textset?.text) {
-      prettyTestError(
-        router,
-        "Missing text",
-        ["content", "text_set"],
-        contentURL
-      );
-    }
-    if (!textset?.source_language?.data) {
-      prettyTestError(
-        router,
-        "Missing source language",
-        ["content", "text_set"],
-        contentURL
-      );
-    } else if (
-      textset.source_language.data.attributes?.code === router.locale
-    ) {
-      // This is a transcript
-      if (textset.transcribers?.data.length === 0) {
-        prettyTestError(
-          router,
-          "Missing transcribers attribution",
-          ["content", "text_set"],
-          contentURL
-        );
-      }
-      if (textset.translators && textset.translators.data.length > 0) {
-        prettyTestError(
-          router,
-          "Transcripts shouldn't have translators",
-          ["content", "text_set"],
-          contentURL
-        );
-      }
-    } else {
-      // This is a translation
-      if (textset.translators?.data.length === 0) {
-        prettyTestError(
-          router,
-          "Missing translators attribution",
-          ["content", "text_set"],
-          contentURL
-        );
-      }
-      if (textset.transcribers && textset.transcribers.data.length > 0) {
-        prettyTestError(
-          router,
-          "Translations shouldn't have transcribers",
-          ["content", "text_set"],
-          contentURL
-        );
-      }
-    }
-  }
 }

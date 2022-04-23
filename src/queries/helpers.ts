@@ -286,54 +286,6 @@ export function prettyLanguageToCode(
   return result;
 }
 
-export function prettyTestWarning(
-  router: NextRouter,
-  message: string,
-  subCategory: string[],
-  url: string
-): void {
-  prettyTestWritter(TestingLevel.Warning, router, message, subCategory, url);
-}
-
-export function prettyTestError(
-  router: NextRouter,
-  message: string,
-  subCategory: string[],
-  url: string
-): void {
-  prettyTestWritter(TestingLevel.Error, router, message, subCategory, url);
-}
-
-enum TestingLevel {
-  Warning = "warn",
-  Error = "error",
-}
-
-function prettyTestWritter(
-  level: TestingLevel,
-  { asPath, locale }: NextRouter,
-  message: string,
-  subCategory: string[],
-  url: string
-): void {
-  const line = [
-    level,
-    `${process.env.NEXT_PUBLIC_URL_SELF}/${locale}${asPath}`,
-    locale,
-    subCategory?.join(" -> "),
-    message,
-    process.env.NEXT_PUBLIC_URL_CMS + url,
-  ];
-
-  if (process.env.ENABLE_TESTING_LOG) {
-    if (level === TestingLevel.Warning) {
-      console.warn(line.join("\t"));
-    } else {
-      console.error(line.join("\t"));
-    }
-  }
-}
-
 export function prettyURL(url: string): string {
   let domain = new URL(url);
   return domain.hostname.replace("www.", "");

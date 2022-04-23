@@ -10,7 +10,6 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import AppLayout from "./AppLayout";
 import Chip from "./Chip";
-import ThumbnailHeader from "./Content/ThumbnailHeader";
 import HorizontalLine from "./HorizontalLine";
 import LanguageSwitcher from "./LanguageSwitcher";
 import Markdawn from "./Markdown/Markdawn";
@@ -19,6 +18,7 @@ import ReturnButton, { ReturnButtonType } from "./PanelComponents/ReturnButton";
 import ContentPanel from "./Panels/ContentPanel";
 import SubPanel from "./Panels/SubPanel";
 import RecorderChip from "./RecorderChip";
+import ThumbnailHeader from "./ThumbnailHeader";
 import ToolTip from "./ToolTip";
 
 interface Props {
@@ -164,13 +164,15 @@ export default function Post(props: Props): JSX.Element {
 
   const contentPanel = (
     <ContentPanel>
-      <ReturnButton
-        href="/news"
-        title={langui.news}
-        langui={langui}
-        displayOn={ReturnButtonType.mobile}
-        className="mb-10"
-      />
+      {returnHref && returnTitle && (
+        <ReturnButton
+          href={returnHref}
+          title={returnTitle}
+          langui={langui}
+          displayOn={ReturnButtonType.mobile}
+          horizontalLine
+        />
+      )}
 
       {displayThumbnailHeader ? (
         <>

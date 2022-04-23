@@ -148,7 +148,8 @@ export default function ThumbnailPreview(props: Props): JSX.Element {
           </div>
         ) : (
           <div
-            className={`w-full aspect-[${thumbnailAspectRatio}] bg-light ${
+            style={{ aspectRatio: thumbnailAspectRatio }}
+            className={`w-full bg-light ${
               keepInfoVisible
                 ? "rounded-t-md"
                 : "rounded-md coarse:rounded-b-none"

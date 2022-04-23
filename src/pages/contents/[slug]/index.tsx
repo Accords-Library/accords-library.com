@@ -1,5 +1,4 @@
 import AppLayout from "components/AppLayout";
-import Button from "components/Button";
 import Chip from "components/Chip";
 import HorizontalLine from "components/HorizontalLine";
 import LanguageSwitcher from "components/LanguageSwitcher";
@@ -115,15 +114,12 @@ export default function Content(props: Props): JSX.Element {
             selectedTextSet.language?.data?.attributes?.code && (
             <div className="grid place-items-center gap-2">
               <p className="font-headers">{langui.source_language}:</p>
-              <Button
-                href={router.asPath}
-                locale={selectedTextSet.source_language.data.attributes.code}
-              >
+              <Chip>
                 {prettyLanguage(
                   selectedTextSet.source_language.data.attributes.code,
                   languages
                 )}
-              </Button>
+              </Chip>
             </div>
           )}
 

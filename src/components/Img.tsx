@@ -3,38 +3,29 @@ import Image, { ImageProps } from "next/image";
 
 interface Props {
   className?: string;
-  image?: UploadImageFragment;
+  image?: UploadImageFragment | string;
   quality?: ImageQuality;
   alt?: ImageProps["alt"];
   layout?: ImageProps["layout"];
   objectFit?: ImageProps["objectFit"];
   priority?: ImageProps["priority"];
-  rawImg?: boolean;
 }
 
 export default function Img(props: Props): JSX.Element {
-  if (props.image?.width && props.image?.height) {
+  if (typeof props.image === "string") {
+    return (
+      <img
+        className={props.className}
+        src={props.image}
+        alt={props.alt ?? ""}
+      />
+    );
+  } else if (props.image?.width && props.image.height) {
     const imgSize = getImgSizesByQuality(
       props.image.width,
       props.image.height,
       props.quality ?? ImageQuality.Small
     );
-
-    if (props.rawImg) {
-      return (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          className={props.className}
-          src={getAssetURL(
-            props.image.url,
-            props.quality ?? ImageQuality.Small
-          )}
-          alt={props.alt ?? props.image.alternativeText ?? ""}
-          width={imgSize.width}
-          height={imgSize.height}
-        />
-      );
-    }
     return (
       <Image
         className={props.className}

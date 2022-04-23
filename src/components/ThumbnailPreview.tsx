@@ -34,10 +34,12 @@ interface Props {
     author?: string;
     position: "Bottom" | "Top";
   };
-  hoverlay?: {
-    __typename: "Video";
-    duration: number;
-  };
+  hoverlay?:
+    | {
+        __typename: "Video";
+        duration: number;
+      }
+    | { __typename: "anotherHoverlayName" };
 }
 
 export default function ThumbnailPreview(props: Props): JSX.Element {

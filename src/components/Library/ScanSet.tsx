@@ -85,6 +85,7 @@ export default function ScanSet(props: Props): JSX.Element {
         scanLocales
       )
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [appLayout.preferredLanguages]);
 
   useEffect(() => {
@@ -92,6 +93,7 @@ export default function ScanSet(props: Props): JSX.Element {
       const selectedScanSet = scanSet[selectedScanIndex];
       selectedScanSet?.pages?.data.sort((a, b) => {
         function isInteger(value: string): boolean {
+          // eslint-disable-next-line require-unicode-regexp
           return /^\d+$/.test(value);
         }
         function getFileName(path: string): string {
@@ -115,6 +117,7 @@ export default function ScanSet(props: Props): JSX.Element {
       });
       setSelectedScan(selectedScanSet);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedScanIndex]);
 
   return (
@@ -136,7 +139,7 @@ export default function ScanSet(props: Props): JSX.Element {
 
           <div className="flex flex-row flex-wrap gap-4 pb-6 place-items-center">
             {content?.data?.attributes?.slug && (
-              <Button href={`/contents/${content?.data?.attributes?.slug}`}>
+              <Button href={`/contents/${content.data.attributes.slug}`}>
                 {langui.open_content}
               </Button>
             )}

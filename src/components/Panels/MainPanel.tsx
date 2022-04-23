@@ -6,7 +6,6 @@ import { useAppLayout } from "contexts/AppLayoutContext";
 import { useMediaDesktop } from "hooks/useMediaQuery";
 import Markdown from "markdown-to-jsx";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { AppStaticProps } from "queries/getAppStaticProps";
 
 interface Props {
@@ -15,7 +14,6 @@ interface Props {
 
 export default function MainPanel(props: Props): JSX.Element {
   const { langui } = props;
-  const router = useRouter();
   const isDesktop = useMediaDesktop();
   const appLayout = useAppLayout();
 

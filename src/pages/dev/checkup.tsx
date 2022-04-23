@@ -61,7 +61,7 @@ function prettyTestWritter(
     level,
     `${process.env.NEXT_PUBLIC_URL_SELF}/${locale}${asPath}`,
     locale,
-    subCategory?.join(" -> "),
+    subCategory.join(" -> "),
     message,
     process.env.NEXT_PUBLIC_URL_CMS + url,
   ];
@@ -75,6 +75,7 @@ function prettyTestWritter(
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function useTestingContent(props: {
   content: Exclude<
     GetContentTextQuery["contents"],
@@ -183,6 +184,7 @@ function useTestingContent(props: {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function useTestingLibrary(props: {
   item: Exclude<
     GetLibraryItemQuery["libraryItems"],
@@ -509,6 +511,7 @@ function useTestingLibrary(props: {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function useTestingChronology(props: {
   chronologyItems: Exclude<
     GetChronologyItemsQuery["chronologyItems"],

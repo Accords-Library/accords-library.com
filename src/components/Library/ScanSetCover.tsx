@@ -63,26 +63,28 @@ export default function ScanSetCover(props: Props): JSX.Element {
         scanLocales
       )
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [appLayout.preferredLanguages]);
 
   useEffect(() => {
     if (selectedScanIndex !== undefined)
       setSelectedScan(images[selectedScanIndex]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedScanIndex]);
 
   const coverImages: UploadImageFragment[] = [];
   if (selectedScan?.obi_belt?.full?.data?.attributes)
-    coverImages.push(selectedScan.obi_belt?.full?.data?.attributes);
+    coverImages.push(selectedScan.obi_belt.full.data.attributes);
   if (selectedScan?.obi_belt?.inside_full?.data?.attributes)
-    coverImages.push(selectedScan.obi_belt?.inside_full?.data?.attributes);
+    coverImages.push(selectedScan.obi_belt.inside_full.data.attributes);
   if (selectedScan?.dust_jacket?.full?.data?.attributes)
-    coverImages.push(selectedScan.dust_jacket?.full?.data?.attributes);
+    coverImages.push(selectedScan.dust_jacket.full.data.attributes);
   if (selectedScan?.dust_jacket?.inside_full?.data?.attributes)
-    coverImages.push(selectedScan.dust_jacket?.inside_full?.data?.attributes);
+    coverImages.push(selectedScan.dust_jacket.inside_full.data.attributes);
   if (selectedScan?.cover?.full?.data?.attributes)
-    coverImages.push(selectedScan.cover?.full?.data?.attributes);
+    coverImages.push(selectedScan.cover.full.data.attributes);
   if (selectedScan?.cover?.inside_full?.data?.attributes)
-    coverImages.push(selectedScan.cover?.inside_full?.data?.attributes);
+    coverImages.push(selectedScan.cover.inside_full.data.attributes);
 
   if (coverImages.length > 0) {
     return (

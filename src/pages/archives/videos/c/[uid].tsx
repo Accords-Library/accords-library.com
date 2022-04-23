@@ -103,12 +103,12 @@ export async function getStaticProps(
 ): Promise<{ notFound: boolean } | { props: Props }> {
   const sdk = getReadySdk();
   const channel = await sdk.getVideoChannel({
-    channel: context.params?.uid?.toString() ?? "",
+    channel: context.params?.uid ? context.params.uid.toString() : "",
   });
   if (!channel.videoChannels?.data[0].attributes) return { notFound: true };
   const props: Props = {
     ...(await getAppStaticProps(context)),
-    channel: channel.videoChannels?.data[0].attributes,
+    channel: channel.videoChannels.data[0].attributes,
   };
   return {
     props: props,

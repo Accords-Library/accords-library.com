@@ -81,6 +81,7 @@ export default function Content(props: Props): JSX.Element {
         textSetLocales
       )
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [appLayout.preferredLanguages]);
 
   useEffect(() => {
@@ -88,6 +89,7 @@ export default function Content(props: Props): JSX.Element {
       setSelectedTextSet(content?.text_set?.[selectedTextSetIndex]);
     if (selectedTextSetIndex !== undefined)
       setSelectedTitle(content?.titles?.[selectedTextSetIndex]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedTextSetIndex]);
 
   const subPanel = (

@@ -89,11 +89,13 @@ export default function Post(props: Props): JSX.Element {
         translationLocales
       )
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [appLayout.preferredLanguages]);
 
   useEffect(() => {
     if (selectedTranslationIndex !== undefined)
       setSelectedTranslation(post?.translations?.[selectedTranslationIndex]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedTranslationIndex]);
 
   const thumbnail =

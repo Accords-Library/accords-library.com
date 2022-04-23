@@ -12,6 +12,7 @@ export default function OrderableList(props: Props): JSX.Element {
 
   useEffect(() => {
     props.onChange?.(items);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [items]);
 
   function updateOrder(sourceIndex: number, targetIndex: number) {

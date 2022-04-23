@@ -137,7 +137,7 @@ export async function getStaticProps(
 ): Promise<{ notFound: boolean } | { props: Props }> {
   const sdk = getReadySdk();
   const item = await sdk.getLibraryItemScans({
-    slug: context.params?.slug?.toString() ?? "",
+    slug: context.params?.slug ? context.params.slug.toString() : "",
     language_code: context.locale ?? "en",
   });
   if (!item.libraryItems) return { notFound: true };

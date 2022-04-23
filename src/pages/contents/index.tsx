@@ -1,12 +1,13 @@
 import AppLayout from "components/AppLayout";
 import Chip from "components/Chip";
-import LibraryContentPreview from "components/Library/LibraryContentPreview";
 import PanelHeader from "components/PanelComponents/PanelHeader";
 import ContentPanel, {
   ContentPanelWidthSizes,
 } from "components/Panels/ContentPanel";
 import SubPanel from "components/Panels/SubPanel";
 import Select from "components/Select";
+import Switch from "components/Switch";
+import ThumbnailPreview from "components/ThumbnailPreview";
 import { GetContentsQuery } from "graphql/generated";
 import { getReadySdk } from "graphql/sdk";
 import { GetStaticPropsContext } from "next";
@@ -24,6 +25,7 @@ export default function Contents(props: Props): JSX.Element {
   const { langui, contents } = props;
 
   const [groupingMethod, setGroupingMethod] = useState<number>(-1);
+  const [keepInfoVisible, setKeepInfoVisible] = useState(false);
 
   const [groups, setGroups] = useState<GroupContentItems>(
     getGroups(langui, groupingMethod, contents)
@@ -50,6 +52,11 @@ export default function Contents(props: Props): JSX.Element {
           setState={setGroupingMethod}
           allowEmpty
         />
+      </div>
+
+      <div className="flex flex-row gap-2 place-items-center coarse:hidden">
+        <p className="flex-shrink-0">{"Always show info"}:</p>
+        <Switch setState={setKeepInfoVisible} state={keepInfoVisible} />
       </div>
     </SubPanel>
   );
@@ -79,9 +86,33 @@ export default function Contents(props: Props): JSX.Element {
                 {items.map((item) => (
                   <>
                     {item.attributes && (
-                      <LibraryContentPreview
+                      <ThumbnailPreview
                         key={item.id}
-                        item={item.attributes}
+                        href={`/contents/${item.attributes.slug}`}
+                        pre_title={item.attributes.titles?.[0]?.pre_title}
+                        title={
+                          item.attributes.titles?.[0]?.title ??
+                          prettySlug(item.attributes.slug)
+                        }
+                        subtitle={item.attributes.titles?.[0]?.subtitle}
+                        thumbnail={item.attributes.thumbnail?.data?.attributes}
+                        thumbnailAspectRatio="3/2"
+                        topChips={
+                          item.attributes.type?.data?.attributes
+                            ? [
+                                item.attributes.type.data.attributes.titles?.[0]
+                                  ? item.attributes.type.data.attributes
+                                      .titles[0]?.title
+                                  : prettySlug(
+                                      item.attributes.type.data.attributes.slug
+                                    ),
+                              ]
+                            : undefined
+                        }
+                        bottomChips={item.attributes.categories?.data.map(
+                          (category) => category.attributes?.short ?? ""
+                        )}
+                        keepInfoVisible={keepInfoVisible}
                       />
                     )}
                   </>

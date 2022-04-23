@@ -7,7 +7,8 @@ import ContentPanel, {
   ContentPanelWidthSizes,
 } from "components/Panels/ContentPanel";
 import SubPanel from "components/Panels/SubPanel";
-import VideoPreview from "components/Videos/VideoPreview";
+import Switch from "components/Switch";
+import ThumbnailPreview from "components/ThumbnailPreview";
 import { GetVideoChannelQuery } from "graphql/generated";
 import { getReadySdk } from "graphql/sdk";
 import {
@@ -16,6 +17,8 @@ import {
   GetStaticPropsContext,
 } from "next";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
+import { getVideoThumbnailURL } from "queries/helpers";
+import { useState } from "react";
 
 interface Props extends AppStaticProps {
   channel: Exclude<
@@ -26,6 +29,8 @@ interface Props extends AppStaticProps {
 
 export default function Channel(props: Props): JSX.Element {
   const { langui, channel } = props;
+  const [keepInfoVisible, setKeepInfoVisible] = useState(true);
+
   const subPanel = (
     <SubPanel>
       <ReturnButton
@@ -41,6 +46,11 @@ export default function Channel(props: Props): JSX.Element {
         title="Videos"
         description={langui.archives_description}
       />
+
+      <div className="flex flex-row gap-2 place-items-center coarse:hidden">
+        <p className="flex-shrink-0">{"Always show info"}:</p>
+        <Switch setState={setKeepInfoVisible} state={keepInfoVisible} />
+      </div>
     </SubPanel>
   );
 
@@ -52,7 +62,28 @@ export default function Channel(props: Props): JSX.Element {
       </div>
       <div className="grid gap-8 items-start mobile:grid-cols-2 desktop:grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] pb-12 border-b-[3px] border-dotted last-of-type:border-0">
         {channel?.videos?.data.map((video) => (
-          <>{video.attributes && <VideoPreview video={video.attributes} />}</>
+          <>
+            {video.attributes && (
+              <ThumbnailPreview
+                key={video.id}
+                href={`/archives/videos/v/${video.attributes.uid}`}
+                title={video.attributes.title}
+                thumbnail={getVideoThumbnailURL(video.attributes.uid)}
+                thumbnailAspectRatio="16/9"
+                keepInfoVisible={keepInfoVisible}
+                metadata={{
+                  release_date: video.attributes.published_date,
+                  views: video.attributes.views,
+                  author: channel.title,
+                  position: "Top",
+                }}
+                hoverlay={{
+                  __typename: "Video",
+                  duration: video.attributes.duration,
+                }}
+              />
+            )}
+          </>
         ))}
       </div>
     </ContentPanel>

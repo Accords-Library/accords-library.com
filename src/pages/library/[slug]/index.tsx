@@ -3,8 +3,7 @@ import Button from "components/Button";
 import Chip from "components/Chip";
 import Img, { getAssetURL, ImageQuality } from "components/Img";
 import InsetBox from "components/InsetBox";
-import ContentTOCLine from "components/Library/ContentTOCLine";
-import LibraryItemsPreview from "components/Library/LibraryItemsPreview";
+import ContentLine from "components/Library/ContentLine";
 import LightBox from "components/LightBox";
 import NavOption from "components/PanelComponents/NavOption";
 import ReturnButton, {
@@ -14,6 +13,8 @@ import ContentPanel, {
   ContentPanelWidthSizes,
 } from "components/Panels/ContentPanel";
 import SubPanel from "components/Panels/SubPanel";
+import Switch from "components/Switch";
+import ThumbnailPreview from "components/ThumbnailPreview";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import {
   Enum_Componentmetadatabooks_Binding_Type,
@@ -67,6 +68,8 @@ export default function LibrarySlug(props: Props): JSX.Element {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxImages, setLightboxImages] = useState([""]);
   const [lightboxIndex, setLightboxIndex] = useState(0);
+
+  const [keepInfoVisible, setKeepInfoVisible] = useState(false);
 
   let displayOpenScans = false;
   if (item?.contents?.data)
@@ -424,13 +427,42 @@ export default function LibrarySlug(props: Props): JSX.Element {
             <h2 className="text-2xl">
               {isVariantSet ? langui.variants : langui.subitems}
             </h2>
+
+            <div className="-mt-6 mb-8 flex flex-row gap-2 place-items-center coarse:hidden">
+              <p className="flex-shrink-0">{"Always show info"}:</p>
+              <Switch setState={setKeepInfoVisible} state={keepInfoVisible} />
+            </div>
             <div className="grid gap-8 items-end mobile:grid-cols-2 grid-cols-[repeat(auto-fill,minmax(15rem,1fr))] w-full">
               {item.subitems.data.map((subitem) => (
-                <LibraryItemsPreview
-                  key={subitem.id}
-                  item={subitem.attributes}
-                  currencies={props.currencies}
-                />
+                <>
+                  {subitem.attributes && (
+                    <ThumbnailPreview
+                      key={subitem.id}
+                      href={`/library/${subitem.attributes.slug}`}
+                      title={subitem.attributes.title}
+                      subtitle={subitem.attributes.subtitle}
+                      thumbnail={subitem.attributes.thumbnail?.data?.attributes}
+                      thumbnailAspectRatio="21/29.7"
+                      keepInfoVisible={keepInfoVisible}
+                      topChips={
+                        subitem.attributes.metadata &&
+                        subitem.attributes.metadata.length > 0 &&
+                        subitem.attributes.metadata[0]
+                          ? [prettyItemSubType(subitem.attributes.metadata[0])]
+                          : []
+                      }
+                      bottomChips={subitem.attributes.categories?.data.map(
+                        (category) => category.attributes?.short ?? ""
+                      )}
+                      metadata={{
+                        currencies: currencies,
+                        release_date: subitem.attributes.release_date,
+                        price: subitem.attributes.price,
+                        position: "Bottom",
+                      }}
+                    />
+                  )}
+                </>
               ))}
             </div>
           </div>
@@ -446,7 +478,7 @@ export default function LibrarySlug(props: Props): JSX.Element {
             )}
             <div className="grid gap-4 w-full">
               {item.contents.data.map((content) => (
-                <ContentTOCLine
+                <ContentLine
                   langui={langui}
                   content={content}
                   parentSlug={item.slug}

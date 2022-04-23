@@ -1,15 +1,17 @@
 import AppLayout from "components/AppLayout";
-import PostsPreview from "components/News/PostsPreview";
 import PanelHeader from "components/PanelComponents/PanelHeader";
 import ContentPanel, {
   ContentPanelWidthSizes,
 } from "components/Panels/ContentPanel";
 import SubPanel from "components/Panels/SubPanel";
+import Switch from "components/Switch";
+import ThumbnailPreview from "components/ThumbnailPreview";
 import { GetPostsPreviewQuery } from "graphql/generated";
 import { getReadySdk } from "graphql/sdk";
 import { GetStaticPropsContext } from "next";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
-import { prettyDate } from "queries/helpers";
+import { prettyDate, prettySlug } from "queries/helpers";
+import { useState } from "react";
 
 interface Props extends AppStaticProps {
   posts: Exclude<GetPostsPreviewQuery["posts"], null | undefined>["data"];
@@ -17,6 +19,8 @@ interface Props extends AppStaticProps {
 
 export default function News(props: Props): JSX.Element {
   const { langui, posts } = props;
+
+  const [keepInfoVisible, setKeepInfoVisible] = useState(true);
 
   posts
     .sort((a, b) => {
@@ -33,6 +37,11 @@ export default function News(props: Props): JSX.Element {
         title={langui.news}
         description={langui.news_description}
       />
+
+      <div className="flex flex-row gap-2 place-items-center coarse:hidden">
+        <p className="flex-shrink-0">{"Always show info"}:</p>
+        <Switch setState={setKeepInfoVisible} state={keepInfoVisible} />
+      </div>
     </SubPanel>
   );
 
@@ -40,7 +49,29 @@ export default function News(props: Props): JSX.Element {
     <ContentPanel width={ContentPanelWidthSizes.large}>
       <div className="grid gap-8 items-end grid-cols-1 desktop:grid-cols-[repeat(auto-fill,_minmax(20rem,1fr))]">
         {posts.map((post) => (
-          <PostsPreview key={post.id} post={post.attributes} />
+          <>
+            {post.attributes && (
+              <ThumbnailPreview
+                key={post.id}
+                href={`/news/${post.attributes.slug}`}
+                title={
+                  post.attributes.translations?.[0]?.title ??
+                  prettySlug(post.attributes.slug)
+                }
+                description={post.attributes.translations?.[0]?.excerpt}
+                thumbnail={post.attributes.thumbnail?.data?.attributes}
+                bottomChips={post.attributes.categories?.data.map(
+                  (category) => category.attributes?.short ?? ""
+                )}
+                thumbnailAspectRatio="3/2"
+                keepInfoVisible={keepInfoVisible}
+                metadata={{
+                  release_date: post.attributes.date,
+                  position: "Top",
+                }}
+              />
+            )}
+          </>
         ))}
       </div>
     </ContentPanel>

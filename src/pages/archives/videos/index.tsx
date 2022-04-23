@@ -8,12 +8,13 @@ import ContentPanel, {
   ContentPanelWidthSizes,
 } from "components/Panels/ContentPanel";
 import SubPanel from "components/Panels/SubPanel";
-import VideoPreview from "components/Videos/VideoPreview";
+import Switch from "components/Switch";
+import ThumbnailPreview from "components/ThumbnailPreview";
 import { GetVideosPreviewQuery } from "graphql/generated";
 import { getReadySdk } from "graphql/sdk";
 import { GetStaticPropsContext } from "next";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
-import { prettyDate } from "queries/helpers";
+import { getVideoThumbnailURL, prettyDate } from "queries/helpers";
 import { useState } from "react";
 
 interface Props extends AppStaticProps {
@@ -44,6 +45,7 @@ export default function Videos(props: Props): JSX.Element {
   }
 
   const [page, setPage] = useState(0);
+  const [keepInfoVisible, setKeepInfoVisible] = useState(true);
 
   const subPanel = (
     <SubPanel>
@@ -60,6 +62,11 @@ export default function Videos(props: Props): JSX.Element {
         title="Videos"
         description={langui.archives_description}
       />
+
+      <div className="flex flex-row gap-2 place-items-center coarse:hidden">
+        <p className="flex-shrink-0">{"Always show info"}:</p>
+        <Switch setState={setKeepInfoVisible} state={keepInfoVisible} />
+      </div>
     </SubPanel>
   );
 
@@ -76,7 +83,24 @@ export default function Videos(props: Props): JSX.Element {
         {paginatedVideos[page].map((video) => (
           <>
             {video.attributes && (
-              <VideoPreview key={video.id} video={video.attributes} />
+              <ThumbnailPreview
+                key={video.id}
+                href={`/archives/videos/v/${video.attributes.uid}`}
+                title={video.attributes.title}
+                thumbnail={getVideoThumbnailURL(video.attributes.uid)}
+                thumbnailAspectRatio="16/9"
+                keepInfoVisible={keepInfoVisible}
+                metadata={{
+                  release_date: video.attributes.published_date,
+                  views: video.attributes.views,
+                  author: video.attributes.channel?.data?.attributes?.title,
+                  position: "Top",
+                }}
+                hoverlay={{
+                  __typename: "Video",
+                  duration: video.attributes.duration,
+                }}
+              />
             )}
           </>
         ))}

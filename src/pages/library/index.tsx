@@ -1,6 +1,5 @@
 import AppLayout from "components/AppLayout";
 import Chip from "components/Chip";
-import LibraryItemsPreview from "components/Library/LibraryItemsPreview";
 import PanelHeader from "components/PanelComponents/PanelHeader";
 import ContentPanel, {
   ContentPanelWidthSizes,
@@ -8,11 +7,17 @@ import ContentPanel, {
 import SubPanel from "components/Panels/SubPanel";
 import Select from "components/Select";
 import Switch from "components/Switch";
+import ThumbnailPreview from "components/ThumbnailPreview";
 import { GetLibraryItemsPreviewQuery } from "graphql/generated";
 import { getReadySdk } from "graphql/sdk";
 import { GetStaticPropsContext } from "next";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
-import { convertPrice, prettyDate, prettyinlineTitle } from "queries/helpers";
+import {
+  convertPrice,
+  prettyDate,
+  prettyinlineTitle,
+  prettyItemSubType,
+} from "queries/helpers";
 import { useEffect, useState } from "react";
 
 interface Props extends AppStaticProps {
@@ -32,6 +37,7 @@ export default function Library(props: Props): JSX.Element {
   const [showSecondaryItems, setShowSecondaryItems] = useState<boolean>(false);
   const [sortingMethod, setSortingMethod] = useState<number>(0);
   const [groupingMethod, setGroupingMethod] = useState<number>(-1);
+  const [keepInfoVisible, setKeepInfoVisible] = useState(false);
 
   const [filteredItems, setFilteredItems] = useState<Props["items"]>(
     filterItems(
@@ -120,6 +126,11 @@ export default function Library(props: Props): JSX.Element {
         <p className="flex-shrink-0">{langui.show_secondary_items}:</p>
         <Switch state={showSecondaryItems} setState={setShowSecondaryItems} />
       </div>
+
+      <div className="flex flex-row gap-2 place-items-center coarse:hidden">
+        <p className="flex-shrink-0">{"Always show info"}:</p>
+        <Switch setState={setKeepInfoVisible} state={keepInfoVisible} />
+      </div>
     </SubPanel>
   );
   const contentPanel = (
@@ -146,11 +157,35 @@ export default function Library(props: Props): JSX.Element {
                 className="grid gap-8 items-end mobile:grid-cols-2 desktop:grid-cols-[repeat(auto-fill,_minmax(13rem,1fr))] pb-12 border-b-[3px] border-dotted last-of-type:border-0"
               >
                 {items.map((item) => (
-                  <LibraryItemsPreview
-                    key={item.id}
-                    item={item.attributes}
-                    currencies={props.currencies}
-                  />
+                  <>
+                    {item.attributes && (
+                      <ThumbnailPreview
+                        key={item.id}
+                        href={`/library/${item.attributes.slug}`}
+                        title={item.attributes.title}
+                        subtitle={item.attributes.subtitle}
+                        thumbnail={item.attributes.thumbnail?.data?.attributes}
+                        thumbnailAspectRatio="21/29.7"
+                        keepInfoVisible={keepInfoVisible}
+                        topChips={
+                          item.attributes.metadata &&
+                          item.attributes.metadata.length > 0 &&
+                          item.attributes.metadata[0]
+                            ? [prettyItemSubType(item.attributes.metadata[0])]
+                            : []
+                        }
+                        bottomChips={item.attributes.categories?.data.map(
+                          (category) => category.attributes?.short ?? ""
+                        )}
+                        metadata={{
+                          currencies: currencies,
+                          release_date: item.attributes.release_date,
+                          price: item.attributes.price,
+                          position: "Bottom",
+                        }}
+                      />
+                    )}
+                  </>
                 ))}
               </div>
             </>

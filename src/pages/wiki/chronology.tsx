@@ -1,5 +1,4 @@
 import AppLayout from "components/AppLayout";
-import ChronologyYearComponent from "components/Chronology/ChronologyYearComponent";
 import InsetBox from "components/InsetBox";
 import NavOption from "components/PanelComponents/NavOption";
 import ReturnButton, {
@@ -7,6 +6,7 @@ import ReturnButton, {
 } from "components/PanelComponents/ReturnButton";
 import ContentPanel from "components/Panels/ContentPanel";
 import SubPanel from "components/Panels/SubPanel";
+import ChronologyYearComponent from "components/Wiki/Chronology/ChronologyYearComponent";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { GetChronologyItemsQuery, GetErasQuery } from "graphql/generated";
 import { getReadySdk } from "graphql/sdk";

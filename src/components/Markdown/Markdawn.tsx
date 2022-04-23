@@ -251,7 +251,7 @@ export default function Markdawn(props: Props): JSX.Element {
                   name?: string;
                 }) => (
                   <div
-                    className="my-8 cursor-pointer"
+                    className="my-8 cursor-pointer place-content-center grid"
                     onClick={() => {
                       setLightboxOpen(true);
                       setLightboxImages([
@@ -262,29 +262,16 @@ export default function Markdawn(props: Props): JSX.Element {
                       setLightboxIndex(0);
                     }}
                   >
-                    {compProps.src.startsWith("/uploads/") ? (
-                      <div className="relative w-full aspect-video">
-                        <Img
-                          image={{
-                            __typename: "UploadFile",
-                            alternativeText: compProps.alt,
-                            url: compProps.src,
-                            width: compProps.width ?? 1500,
-                            height: compProps.height ?? 1000,
-                            caption: compProps.caption ?? "",
-                            name: compProps.name ?? "",
-                          }}
-                          layout="fill"
-                          objectFit="contain"
-                          quality={ImageQuality.Medium}
-                        ></Img>
-                      </div>
-                    ) : (
-                      <div className="grid place-content-center">
-                        {/* eslint-disable-next-line jsx-a11y/alt-text */}
-                        <img {...compProps} className="max-h-[50vh] " />
-                      </div>
-                    )}
+                    <Img
+                      image={
+                        compProps.src.startsWith("/uploads/")
+                          ? getAssetURL(compProps.src, ImageQuality.Small)
+                          : compProps.src
+                      }
+                      layout="fill"
+                      objectFit="contain"
+                      quality={ImageQuality.Medium}
+                    ></Img>
                   </div>
                 ),
               },

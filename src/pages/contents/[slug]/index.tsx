@@ -1,7 +1,6 @@
 import AppLayout from "components/AppLayout";
 import Button from "components/Button";
 import Chip from "components/Chip";
-import ThumbnailHeader from "components/ThumbnailHeader";
 import HorizontalLine from "components/HorizontalLine";
 import LanguageSwitcher from "components/LanguageSwitcher";
 import Markdawn from "components/Markdown/Markdawn";
@@ -12,6 +11,7 @@ import ReturnButton, {
 import ContentPanel from "components/Panels/ContentPanel";
 import SubPanel from "components/Panels/SubPanel";
 import RecorderChip from "components/RecorderChip";
+import ThumbnailHeader from "components/ThumbnailHeader";
 import ToolTip from "components/ToolTip";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { GetContentTextQuery } from "graphql/generated";

@@ -20,7 +20,7 @@ interface Props {
   langui: AppStaticProps["langui"];
 }
 
-export default function ContentTOCLine(props: Props): JSX.Element {
+export default function ContentLine(props: Props): JSX.Element {
   const { content, langui, parentSlug } = props;
 
   const [opened, setOpened] = useState(false);

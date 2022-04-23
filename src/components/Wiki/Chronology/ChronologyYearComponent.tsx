@@ -1,4 +1,4 @@
-import ChronologyItemComponent from "components/Chronology/ChronologyItemComponent";
+import ChronologyItemComponent from "components/Wiki/Chronology/ChronologyItemComponent";
 import { GetChronologyItemsQuery } from "graphql/generated";
 import { AppStaticProps } from "queries/getAppStaticProps";
 

@@ -47,10 +47,12 @@ export default function PreviewLine(props: Props): JSX.Element {
               ))}
             </div>
           )}
-          <div className="flex flex-col">
-            {pre_title && <p>{pre_title}</p>}
-            {title && <h1 className="text-lg">{title}</h1>}
-            {subtitle && <h2>{subtitle}</h2>}
+          <div className="flex flex-col my-1">
+            {pre_title && <p className="leading-none mb-1">{pre_title}</p>}
+            {title && (
+              <p className="font-headers text-lg leading-none">{title}</p>
+            )}
+            {subtitle && <p className="leading-none">{subtitle}</p>}
           </div>
           {bottomChips && bottomChips.length > 0 && (
             <div className="grid grid-flow-col gap-1 overflow-hidden place-content-start">

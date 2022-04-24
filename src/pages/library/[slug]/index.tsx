@@ -14,7 +14,7 @@ import ContentPanel, {
 } from "components/Panels/ContentPanel";
 import SubPanel from "components/Panels/SubPanel";
 import Switch from "components/Switch";
-import ThumbnailPreview from "components/ThumbnailPreview";
+import ThumbnailPreview from "components/PreviewCard";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import {
   Enum_Componentmetadatabooks_Binding_Type,

@@ -7,7 +7,7 @@ import ContentPanel, {
 import SubPanel from "components/Panels/SubPanel";
 import Select from "components/Select";
 import Switch from "components/Switch";
-import ThumbnailPreview from "components/ThumbnailPreview";
+import ThumbnailPreview from "components/PreviewCard";
 import { GetLibraryItemsPreviewQuery } from "graphql/generated";
 import { getReadySdk } from "graphql/sdk";
 import { GetStaticPropsContext } from "next";

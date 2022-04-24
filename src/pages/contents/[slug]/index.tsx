@@ -320,10 +320,9 @@ export default function Content(props: Props): JSX.Element {
 
           <Markdawn text={selectedTextSet?.text ?? ""} />
 
-          <HorizontalLine />
-
           {content.next_recommended?.data?.attributes && (
             <>
+              <HorizontalLine />
               <h2 className="text-center text-2xl mb-4">Follow-up content</h2>
               <PreviewLine
                 href={`/contents/${content.next_recommended.data.attributes.slug}`}

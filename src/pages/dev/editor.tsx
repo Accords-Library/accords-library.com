@@ -1,5 +1,5 @@
 import AppLayout from "components/AppLayout";
-import Button from "components/Button";
+import Button from "components/Inputs/Button";
 import Markdawn from "components/Markdown/Markdawn";
 import ContentPanel, {
   ContentPanelWidthSizes,

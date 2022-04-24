@@ -1,4 +1,4 @@
-import Button from "components/Button";
+import Button from "components/Inputs/Button";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { UploadImageFragment } from "graphql/generated";
 import { useMediaMobile } from "hooks/useMediaQuery";
@@ -14,10 +14,10 @@ import {
 import { useEffect, useState } from "react";
 import { useSwipeable } from "react-swipeable";
 import { ImageQuality } from "./Img";
-import OrderableList from "./OrderableList";
+import OrderableList from "./Inputs/OrderableList";
 import MainPanel from "./Panels/MainPanel";
 import Popup from "./Popup";
-import Select from "./Select";
+import Select from "./Inputs/Select";
 
 interface Props extends AppStaticProps {
   subPanel?: React.ReactNode;

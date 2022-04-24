@@ -1,4 +1,4 @@
-import Button from "components/Button";
+import Button from "components/Inputs/Button";
 import Chip from "components/Chip";
 import { GetLibraryItemQuery } from "graphql/generated";
 import { AppStaticProps } from "queries/getAppStaticProps";

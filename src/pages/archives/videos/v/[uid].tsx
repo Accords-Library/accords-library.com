@@ -1,5 +1,5 @@
 import AppLayout from "components/AppLayout";
-import Button from "components/Button";
+import Button from "components/Inputs/Button";
 import HorizontalLine from "components/HorizontalLine";
 import InsetBox from "components/InsetBox";
 import NavOption from "components/PanelComponents/NavOption";

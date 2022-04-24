@@ -1,4 +1,4 @@
-import Button from "components/Button";
+import Button from "components/Inputs/Button";
 import HorizontalLine from "components/HorizontalLine";
 import NavOption from "components/PanelComponents/NavOption";
 import ToolTip from "components/ToolTip";

@@ -1,7 +1,7 @@
 import AppLayout from "components/AppLayout";
 import Chip from "components/Chip";
 import HorizontalLine from "components/HorizontalLine";
-import LanguageSwitcher from "components/LanguageSwitcher";
+import LanguageSwitcher from "components/Inputs/LanguageSwitcher";
 import Markdawn from "components/Markdown/Markdawn";
 import TOC from "components/Markdown/TOC";
 import ReturnButton, {

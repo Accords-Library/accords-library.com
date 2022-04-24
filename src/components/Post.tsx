@@ -11,7 +11,7 @@ import { useEffect, useMemo, useState } from "react";
 import AppLayout from "./AppLayout";
 import Chip from "./Chip";
 import HorizontalLine from "./HorizontalLine";
-import LanguageSwitcher from "./LanguageSwitcher";
+import LanguageSwitcher from "./Inputs/LanguageSwitcher";
 import Markdawn from "./Markdown/Markdawn";
 import TOC from "./Markdown/TOC";
 import ReturnButton, { ReturnButtonType } from "./PanelComponents/ReturnButton";

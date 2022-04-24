@@ -1,6 +1,6 @@
 import Chip from "components/Chip";
 import Img, { getAssetURL, ImageQuality } from "components/Img";
-import LanguageSwitcher from "components/LanguageSwitcher";
+import LanguageSwitcher from "components/Inputs/LanguageSwitcher";
 import RecorderChip from "components/RecorderChip";
 import ToolTip from "components/ToolTip";
 import { useAppLayout } from "contexts/AppLayoutContext";

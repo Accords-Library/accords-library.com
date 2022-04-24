@@ -2,7 +2,7 @@ import { AppStaticProps } from "queries/getAppStaticProps";
 import { prettyLanguage } from "queries/helpers";
 import { Dispatch, SetStateAction } from "react";
 import Button from "./Button";
-import ToolTip from "./ToolTip";
+import ToolTip from "../ToolTip";
 
 interface Props {
   className?: string;

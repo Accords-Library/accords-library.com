@@ -1,7 +1,7 @@
 import Chip from "components/Chip";
 import { RecorderChipFragment } from "graphql/generated";
 import { AppStaticProps } from "queries/getAppStaticProps";
-import Button from "./Button";
+import Button from "./Inputs/Button";
 import Img, { ImageQuality } from "./Img";
 import ToolTip from "./ToolTip";
 

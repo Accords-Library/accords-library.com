@@ -9,12 +9,14 @@ import ReturnButton, {
 } from "components/PanelComponents/ReturnButton";
 import ContentPanel from "components/Panels/ContentPanel";
 import SubPanel from "components/Panels/SubPanel";
+import PreviewLine from "components/PreviewLine";
 import RecorderChip from "components/RecorderChip";
 import ThumbnailHeader from "components/ThumbnailHeader";
 import ToolTip from "components/ToolTip";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { GetContentTextQuery } from "graphql/generated";
 import { getReadySdk } from "graphql/sdk";
+import { useMediaMobile } from "hooks/useMediaQuery";
 import {
   GetStaticPathsContext,
   GetStaticPathsResult,
@@ -46,6 +48,8 @@ export default function Content(props: Props): JSX.Element {
   const { langui, content, languages } = props;
   const router = useRouter();
   const appLayout = useAppLayout();
+
+  const isMobile = useMediaMobile();
 
   const [selectedTextSet, setSelectedTextSet] = useState<
     | Exclude<
@@ -261,9 +265,111 @@ export default function Content(props: Props): JSX.Element {
             }
           />
 
+          {content.previous_recommended?.data?.attributes && (
+            <div className="mt-12 mb-8 w-full">
+              <h2 className="text-center text-2xl mb-4">Previous content</h2>
+              <PreviewLine
+                href={`/contents/${content.previous_recommended.data.attributes.slug}`}
+                pre_title={
+                  content.previous_recommended.data.attributes.titles?.[0]
+                    ?.pre_title
+                }
+                title={
+                  content.previous_recommended.data.attributes.titles?.[0]
+                    ?.title ??
+                  prettySlug(content.previous_recommended.data.attributes.slug)
+                }
+                subtitle={
+                  content.previous_recommended.data.attributes.titles?.[0]
+                    ?.subtitle
+                }
+                thumbnail={
+                  content.previous_recommended.data.attributes.thumbnail?.data
+                    ?.attributes
+                }
+                thumbnailAspectRatio="3/2"
+                topChips={
+                  isMobile
+                    ? undefined
+                    : content.previous_recommended.data.attributes.type?.data
+                        ?.attributes
+                    ? [
+                        content.previous_recommended.data.attributes.type.data
+                          .attributes.titles?.[0]
+                          ? content.previous_recommended.data.attributes.type
+                              .data.attributes.titles[0]?.title
+                          : prettySlug(
+                              content.previous_recommended.data.attributes.type
+                                .data.attributes.slug
+                            ),
+                      ]
+                    : undefined
+                }
+                bottomChips={
+                  isMobile
+                    ? undefined
+                    : content.previous_recommended.data.attributes.categories?.data.map(
+                        (category) => category.attributes?.short ?? ""
+                      )
+                }
+              />
+            </div>
+          )}
+
           <HorizontalLine />
 
           <Markdawn text={selectedTextSet?.text ?? ""} />
+
+          <HorizontalLine />
+
+          {content.next_recommended?.data?.attributes && (
+            <>
+              <h2 className="text-center text-2xl mb-4">Follow-up content</h2>
+              <PreviewLine
+                href={`/contents/${content.next_recommended.data.attributes.slug}`}
+                pre_title={
+                  content.next_recommended.data.attributes.titles?.[0]
+                    ?.pre_title
+                }
+                title={
+                  content.next_recommended.data.attributes.titles?.[0]?.title ??
+                  prettySlug(content.next_recommended.data.attributes.slug)
+                }
+                subtitle={
+                  content.next_recommended.data.attributes.titles?.[0]?.subtitle
+                }
+                thumbnail={
+                  content.next_recommended.data.attributes.thumbnail?.data
+                    ?.attributes
+                }
+                thumbnailAspectRatio="3/2"
+                topChips={
+                  isMobile
+                    ? undefined
+                    : content.next_recommended.data.attributes.type?.data
+                        ?.attributes
+                    ? [
+                        content.next_recommended.data.attributes.type.data
+                          .attributes.titles?.[0]
+                          ? content.next_recommended.data.attributes.type.data
+                              .attributes.titles[0]?.title
+                          : prettySlug(
+                              content.next_recommended.data.attributes.type.data
+                                .attributes.slug
+                            ),
+                      ]
+                    : undefined
+                }
+                bottomChips={
+                  isMobile
+                    ? undefined
+                    : content.next_recommended.data.attributes.categories?.data.map(
+                        (category) => category.attributes?.short ?? ""
+                      )
+                }
+              />
+            </>
+          )}
         </div>
       )}
     </ContentPanel>
@@ -338,7 +444,10 @@ export async function getStaticPaths(
   contents.contents?.data.map((item) => {
     context.locales?.map((local) => {
       if (item.attributes)
-        paths.push({ params: { slug: item.attributes.slug }, locale: local });
+        paths.push({
+          params: { slug: item.attributes.slug },
+          locale: local,
+        });
     });
   });
   return {

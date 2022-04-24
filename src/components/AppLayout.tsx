@@ -299,11 +299,12 @@ export default function AppLayout(props: Props): JSX.Element {
                       const preferredLanguages = [...items].map(
                         ([code]) => code
                       );
-                      console.log(router.asPath);
                       appLayout.setPreferredLanguages(preferredLanguages);
-                      router.push(router.asPath, router.asPath, {
-                        locale: preferredLanguages[0],
-                      });
+                      if (router.locale !== preferredLanguages[0]) {
+                        router.push(router.asPath, router.asPath, {
+                          locale: preferredLanguages[0],
+                        });
+                      }
                     }}
                   />
                 )}

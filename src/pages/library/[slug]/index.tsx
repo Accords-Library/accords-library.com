@@ -1,7 +1,8 @@
 import AppLayout from "components/AppLayout";
-import Button from "components/Inputs/Button";
 import Chip from "components/Chip";
 import Img, { getAssetURL, ImageQuality } from "components/Img";
+import Button from "components/Inputs/Button";
+import Switch from "components/Inputs/Switch";
 import InsetBox from "components/InsetBox";
 import ContentLine from "components/Library/ContentLine";
 import LightBox from "components/LightBox";
@@ -13,7 +14,6 @@ import ContentPanel, {
   ContentPanelWidthSizes,
 } from "components/Panels/ContentPanel";
 import SubPanel from "components/Panels/SubPanel";
-import Switch from "components/Inputs/Switch";
 import ThumbnailPreview from "components/PreviewCard";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import {

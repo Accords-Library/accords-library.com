@@ -1,190 +1,190 @@
 query getContentText($slug: String, $language_code: String) {
-	contents(filters: { slug: { eq: $slug } }) {
-		data {
-			id
-			attributes {
-				slug
-				titles {
-					pre_title
-					title
-					subtitle
-					description
-				}
-				categories {
-					data {
-						id
-						attributes {
-							name
-							short
-						}
-					}
-				}
-				type {
-					data {
-						attributes {
-							slug
-							titles(filters: { language: { code: { eq: $language_code } } }) {
-								title
-							}
-						}
-					}
-				}
-				ranged_contents {
-					data {
-						id
-						attributes {
-							slug
-							scan_set {
-								id
-							}
-							library_item {
-								data {
-									attributes {
-										slug
-										title
-										subtitle
-										thumbnail {
-											data {
-												attributes {
-													...uploadImage
-												}
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-				text_set {
-					status
-					text
-					language {
-						data {
-							attributes {
-								code
-							}
-						}
-					}
-					source_language {
-						data {
-							attributes {
-								code
-							}
-						}
-					}
-					transcribers {
-						data {
-							id
-							attributes {
-								...recorderChip
-							}
-						}
-					}
-					translators {
-						data {
-							id
-							attributes {
-								...recorderChip
-							}
-						}
-					}
-					proofreaders {
-						data {
-							id
-							attributes {
-								...recorderChip
-							}
-						}
-					}
-					notes
-				}
-				thumbnail {
-					data {
-						attributes {
-							...uploadImage
-						}
-					}
-				}
-				previous_recommended {
-					data {
-						attributes {
-							slug
-							titles(filters: { language: { code: { eq: $language_code } } }) {
-								pre_title
-								title
-								subtitle
-							}
-							categories {
-								data {
-									id
-									attributes {
-										short
-									}
-								}
-							}
-							type {
-								data {
-									attributes {
-										slug
-										titles(
-											filters: { language: { code: { eq: $language_code } } }
-										) {
-											title
-										}
-									}
-								}
-							}
-							thumbnail {
-								data {
-									attributes {
-										...uploadImage
-									}
-								}
-							}
-						}
-					}
-				}
-				next_recommended {
-					data {
-						attributes {
-							slug
-							titles(filters: { language: { code: { eq: $language_code } } }) {
-								pre_title
-								title
-								subtitle
-							}
-							categories {
-								data {
-									id
-									attributes {
-										short
-									}
-								}
-							}
-							type {
-								data {
-									attributes {
-										slug
-										titles(
-											filters: { language: { code: { eq: $language_code } } }
-										) {
-											title
-										}
-									}
-								}
-							}
-							thumbnail {
-								data {
-									attributes {
-										...uploadImage
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
+  contents(filters: { slug: { eq: $slug } }) {
+    data {
+      id
+      attributes {
+        slug
+        titles {
+          pre_title
+          title
+          subtitle
+          description
+        }
+        categories {
+          data {
+            id
+            attributes {
+              name
+              short
+            }
+          }
+        }
+        type {
+          data {
+            attributes {
+              slug
+              titles(filters: { language: { code: { eq: $language_code } } }) {
+                title
+              }
+            }
+          }
+        }
+        ranged_contents {
+          data {
+            id
+            attributes {
+              slug
+              scan_set {
+                id
+              }
+              library_item {
+                data {
+                  attributes {
+                    slug
+                    title
+                    subtitle
+                    thumbnail {
+                      data {
+                        attributes {
+                          ...uploadImage
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+        text_set {
+          status
+          text
+          language {
+            data {
+              attributes {
+                code
+              }
+            }
+          }
+          source_language {
+            data {
+              attributes {
+                code
+              }
+            }
+          }
+          transcribers {
+            data {
+              id
+              attributes {
+                ...recorderChip
+              }
+            }
+          }
+          translators {
+            data {
+              id
+              attributes {
+                ...recorderChip
+              }
+            }
+          }
+          proofreaders {
+            data {
+              id
+              attributes {
+                ...recorderChip
+              }
+            }
+          }
+          notes
+        }
+        thumbnail {
+          data {
+            attributes {
+              ...uploadImage
+            }
+          }
+        }
+        previous_recommended {
+          data {
+            attributes {
+              slug
+              titles(filters: { language: { code: { eq: $language_code } } }) {
+                pre_title
+                title
+                subtitle
+              }
+              categories {
+                data {
+                  id
+                  attributes {
+                    short
+                  }
+                }
+              }
+              type {
+                data {
+                  attributes {
+                    slug
+                    titles(
+                      filters: { language: { code: { eq: $language_code } } }
+                    ) {
+                      title
+                    }
+                  }
+                }
+              }
+              thumbnail {
+                data {
+                  attributes {
+                    ...uploadImage
+                  }
+                }
+              }
+            }
+          }
+        }
+        next_recommended {
+          data {
+            attributes {
+              slug
+              titles(filters: { language: { code: { eq: $language_code } } }) {
+                pre_title
+                title
+                subtitle
+              }
+              categories {
+                data {
+                  id
+                  attributes {
+                    short
+                  }
+                }
+              }
+              type {
+                data {
+                  attributes {
+                    slug
+                    titles(
+                      filters: { language: { code: { eq: $language_code } } }
+                    ) {
+                      title
+                    }
+                  }
+                }
+              }
+              thumbnail {
+                data {
+                  attributes {
+                    ...uploadImage
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }

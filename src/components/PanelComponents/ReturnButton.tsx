@@ -1,5 +1,5 @@
-import Button from "components/Inputs/Button";
 import HorizontalLine from "components/HorizontalLine";
+import Button from "components/Inputs/Button";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { AppStaticProps } from "queries/getAppStaticProps";
 

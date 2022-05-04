@@ -1,12 +1,12 @@
 import AppLayout from "components/AppLayout";
 import Chip from "components/Chip";
+import Select from "components/Inputs/Select";
+import Switch from "components/Inputs/Switch";
 import PanelHeader from "components/PanelComponents/PanelHeader";
 import ContentPanel, {
   ContentPanelWidthSizes,
 } from "components/Panels/ContentPanel";
 import SubPanel from "components/Panels/SubPanel";
-import Select from "components/Inputs/Select";
-import Switch from "components/Inputs/Switch";
 import ThumbnailPreview from "components/PreviewCard";
 import { GetContentsQuery } from "graphql/generated";
 import { getReadySdk } from "graphql/sdk";

@@ -1,10 +1,10 @@
 import AppLayout from "components/AppLayout";
+import Switch from "components/Inputs/Switch";
 import PanelHeader from "components/PanelComponents/PanelHeader";
 import ContentPanel, {
   ContentPanelWidthSizes,
 } from "components/Panels/ContentPanel";
 import SubPanel from "components/Panels/SubPanel";
-import Switch from "components/Inputs/Switch";
 import ThumbnailPreview from "components/PreviewCard";
 import { GetPostsPreviewQuery } from "graphql/generated";
 import { getReadySdk } from "graphql/sdk";

@@ -174,7 +174,9 @@ export default function ThumbnailPreview(props: Props): JSX.Element {
           )}
           <div className="my-1">
             {pre_title && <p className="leading-none mb-1">{pre_title}</p>}
-            {title && <p className="font-headers text-lg leading-none">{title}</p>}
+            {title && (
+              <p className="font-headers text-lg leading-none">{title}</p>
+            )}
             {subtitle && <p className="leading-none">{subtitle}</p>}
           </div>
           {description && <p>{description}</p>}

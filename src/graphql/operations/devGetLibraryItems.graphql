@@ -1,183 +1,183 @@
 query devGetLibraryItems {
-	libraryItems(pagination: { limit: -1 }) {
-		data {
-			id
-			attributes {
-				slug
-				thumbnail {
-					data {
-						id
-					}
-				}
-				subitems {
-					data {
-						id
-					}
-				}
-				subitem_of {
-					data {
-						id
-					}
-				}
-				root_item
-				price {
-					amount
-					currency {
-						data {
-							id
-						}
-					}
-				}
-				metadata {
-					__typename
-				}
-				size {
-					width
-					height
-					thickness
-				}
-				release_date {
-					year
-					month
-					day
-				}
-				descriptions {
-					description
-					language {
-						data {
-							id
-						}
-					}
-				}
-				contents {
-					data {
-						id
-					}
-				}
-				digital
-				categories {
-					data {
-						id
-					}
-				}
-				urls {
-					url
-				}
-				images {
-					language {
-						data {
-							id
-						}
-					}
-					source_language {
-						data {
-							id
-						}
-					}
-					status
-					scanners {
-						data {
-							id
-						}
-					}
-					cleaners {
-						data {
-							id
-						}
-					}
-					typesetters {
-						data {
-							id
-						}
-					}
-					cover {
-						front {
-							data {
-								id
-							}
-						}
-						spine {
-							data {
-								id
-							}
-						}
-						back {
-							data {
-								id
-							}
-						}
-						full {
-							data {
-								id
-							}
-						}
-					}
-					dust_jacket {
-						front {
-							data {
-								id
-							}
-						}
-						spine {
-							data {
-								id
-							}
-						}
-						back {
-							data {
-								id
-							}
-						}
-						flap_front {
-							data {
-								id
-							}
-						}
-						flap_back {
-							data {
-								id
-							}
-						}
-						full {
-							data {
-								id
-							}
-						}
-					}
-					obi_belt {
-						front {
-							data {
-								id
-							}
-						}
-						spine {
-							data {
-								id
-							}
-						}
-						back {
-							data {
-								id
-							}
-						}
-						flap_front {
-							data {
-								id
-							}
-						}
-						flap_back {
-							data {
-								id
-							}
-						}
-						full {
-							data {
-								id
-							}
-						}
-					}
-				}
-			}
-		}
-	}
+  libraryItems(pagination: { limit: -1 }) {
+    data {
+      id
+      attributes {
+        slug
+        thumbnail {
+          data {
+            id
+          }
+        }
+        subitems {
+          data {
+            id
+          }
+        }
+        subitem_of {
+          data {
+            id
+          }
+        }
+        root_item
+        price {
+          amount
+          currency {
+            data {
+              id
+            }
+          }
+        }
+        metadata {
+          __typename
+        }
+        size {
+          width
+          height
+          thickness
+        }
+        release_date {
+          year
+          month
+          day
+        }
+        descriptions {
+          description
+          language {
+            data {
+              id
+            }
+          }
+        }
+        contents {
+          data {
+            id
+          }
+        }
+        digital
+        categories {
+          data {
+            id
+          }
+        }
+        urls {
+          url
+        }
+        images {
+          language {
+            data {
+              id
+            }
+          }
+          source_language {
+            data {
+              id
+            }
+          }
+          status
+          scanners {
+            data {
+              id
+            }
+          }
+          cleaners {
+            data {
+              id
+            }
+          }
+          typesetters {
+            data {
+              id
+            }
+          }
+          cover {
+            front {
+              data {
+                id
+              }
+            }
+            spine {
+              data {
+                id
+              }
+            }
+            back {
+              data {
+                id
+              }
+            }
+            full {
+              data {
+                id
+              }
+            }
+          }
+          dust_jacket {
+            front {
+              data {
+                id
+              }
+            }
+            spine {
+              data {
+                id
+              }
+            }
+            back {
+              data {
+                id
+              }
+            }
+            flap_front {
+              data {
+                id
+              }
+            }
+            flap_back {
+              data {
+                id
+              }
+            }
+            full {
+              data {
+                id
+              }
+            }
+          }
+          obi_belt {
+            front {
+              data {
+                id
+              }
+            }
+            spine {
+              data {
+                id
+              }
+            }
+            back {
+              data {
+                id
+              }
+            }
+            flap_front {
+              data {
+                id
+              }
+            }
+            flap_back {
+              data {
+                id
+              }
+            }
+            full {
+              data {
+                id
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }

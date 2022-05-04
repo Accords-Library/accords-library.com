@@ -670,9 +670,9 @@ function testingLibraryItem(libraryItems: Props["libraryItems"]): Report {
       ) {
         const descriptionLanguages: string[] = [];
 
-        item.attributes.descriptions?.map((description, descriptionIndex) => {
+        item.attributes.descriptions.map((description, descriptionIndex) => {
           if (description && item.attributes) {
-            if (description?.description.length < 10) {
+            if (description.description.length < 10) {
               report.lines.push({
                 subitems: [
                   item.attributes.slug,
@@ -748,8 +748,6 @@ function testingLibraryItem(libraryItems: Props["libraryItems"]): Report {
           frontendUrl: frontendUrl,
         });
       }
-
-      
     }
   });
 

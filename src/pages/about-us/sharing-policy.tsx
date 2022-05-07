@@ -1,19 +1,15 @@
-import Post from "components/Post";
-import { GetPostQuery } from "graphql/generated";
+import PostPage, { Post } from "components/PostPage";
 import { getReadySdk } from "graphql/sdk";
 import { GetStaticPropsContext } from "next";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 
 interface Props extends AppStaticProps {
-  post: Exclude<
-    GetPostQuery["posts"],
-    null | undefined
-  >["data"][number]["attributes"];
+  post: Post;
 }
 export default function SharingPolicy(props: Props): JSX.Element {
   const { post, langui, languages, currencies } = props;
   return (
-    <Post
+    <PostPage
       currencies={currencies}
       languages={languages}
       langui={langui}
@@ -35,7 +31,7 @@ export async function getStaticProps(
     slug: slug,
     language_code: context.locale ?? "en",
   });
-  if (!post.posts) return { notFound: true };
+  if (!post.posts?.data[0].attributes) return { notFound: true };
   const props: Props = {
     ...(await getAppStaticProps(context)),
     post: post.posts.data[0].attributes,

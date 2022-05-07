@@ -1,4 +1,4 @@
-import Post from "components/Post";
+import PostPage, { Post } from "components/PostPage";
 import { GetPostQuery } from "graphql/generated";
 import { getReadySdk } from "graphql/sdk";
 import {
@@ -9,13 +9,7 @@ import {
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 
 interface Props extends AppStaticProps {
-  post: Exclude<
-    Exclude<
-      GetPostQuery["posts"],
-      null | undefined
-    >["data"][number]["attributes"],
-    null | undefined
-  >;
+  post: Post;
   postId: Exclude<
     GetPostQuery["posts"],
     null | undefined
@@ -25,7 +19,7 @@ interface Props extends AppStaticProps {
 export default function LibrarySlug(props: Props): JSX.Element {
   const { post, langui, languages, currencies } = props;
   return (
-    <Post
+    <PostPage
       currencies={currencies}
       languages={languages}
       langui={langui}

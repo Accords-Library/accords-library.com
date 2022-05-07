@@ -1,6 +1,8 @@
-import { useMediaMobile } from "hooks/useMediaQuery";
-import { Dispatch, SetStateAction } from "react";
-import Lightbox from "react-image-lightbox";
+import { Dispatch, SetStateAction, useCallback } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
+import Img from "./Img";
+import Button from "./Inputs/Button";
+import Popup from "./Popup";
 
 interface Props {
   setState:
@@ -14,25 +16,46 @@ interface Props {
 
 export default function LightBox(props: Props): JSX.Element {
   const { state, setState, images, index, setIndex } = props;
-  const mobile = useMediaMobile();
+  const handlePrevious = useCallback(() => {
+    setIndex((previousIndex) => (previousIndex > 0 ? previousIndex - 1 : 0));
+  }, [setIndex]);
+
+  const handleNext = useCallback(() => {
+    setIndex((previousIndex) =>
+      previousIndex < images.length - 1 ? previousIndex + 1 : images.length - 1
+    );
+  }, [images.length, setIndex]);
+
+  useHotkeys("left", handlePrevious);
+  useHotkeys("right", handleNext);
 
   return (
     <>
       {state && (
-        <Lightbox
-          reactModalProps={{
-            parentSelector: () => document.getElementById("MyAppLayout"),
-          }}
-          mainSrc={images[index]}
-          prevSrc={index > 0 ? images[index - 1] : undefined}
-          nextSrc={index < images.length ? images[index + 1] : undefined}
-          onMovePrevRequest={() => setIndex(index - 1)}
-          onMoveNextRequest={() => setIndex(index + 1)}
-          imageCaption=""
-          imageTitle=""
-          onCloseRequest={() => setState(false)}
-          imagePadding={mobile ? 0 : 70}
-        />
+        <Popup setState={setState} state={state} fillViewport>
+          <div
+            className="grid grid-cols-[4em,1fr,4em] place-items-center
+            gap-4 w-full h-full overflow-hidden"
+          >
+            <div>
+              {index > 0 && (
+                <Button onClick={handlePrevious}>
+                  <span className="material-icons">chevron_left</span>
+                </Button>
+              )}
+            </div>
+
+            <Img className="max-h-full" image={images[index]} />
+
+            <div>
+              {index < images.length - 1 && (
+                <Button onClick={handleNext}>
+                  <span className="material-icons">chevron_right</span>
+                </Button>
+              )}
+            </div>
+          </div>
+        </Popup>
       )}
     </>
   );

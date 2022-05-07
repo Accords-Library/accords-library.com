@@ -34,7 +34,7 @@ export default function Popup(props: Props): JSX.Element {
           props.state ? "scale-100" : "scale-0"
         } ${
           props.fillViewport
-            ? "absolute inset-10 top-20"
+            ? "absolute inset-10"
             : "relative max-h-[80vh] overflow-y-auto mobile:w-[85vw]"
         } ${
           props.hideBackground

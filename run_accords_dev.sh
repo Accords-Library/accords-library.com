@@ -1,1 +1,1 @@
-npx next dev -p 12499
+npm run dev

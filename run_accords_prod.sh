@@ -1,1 +1,1 @@
-npx next start -p 12500
+npm run start

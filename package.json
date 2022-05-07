@@ -2,13 +2,14 @@
   "name": "accords-library.com",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "next dev -p 12499",
+    "build": "npm run generate && next build",
     "postbuild": "next-sitemap",
-    "start": "next start",
+    "start": "next start -p 12500",
     "lint": "next lint",
     "generate": "graphql-codegen --config graphql-codegen.js",
-    "tsc": "tsc"
+    "tsc": "tsc",
+    "prettier": "prettier --end-of-line auto --write ."
   },
   "dependencies": {
     "@fontsource/material-icons": "^4.5.4",
@@ -44,6 +45,7 @@
     "eslint-config-next": "12.1.5",
     "graphql": "^14.7.0",
     "next-sitemap": "^2.5.20",
+    "prettier": "^2.6.2",
     "prettier-plugin-organize-imports": "^2.3.4",
     "tailwindcss": "^3.0.24",
     "typescript": "^4.6.3"

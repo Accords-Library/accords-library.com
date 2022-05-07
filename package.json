@@ -3,7 +3,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev -p 12499",
-    "build": "npm run generate && next build",
+    "prebuild": "npm run generate",
+    "build": "next build",
     "postbuild": "next-sitemap",
     "start": "next start -p 12500",
     "lint": "next lint",

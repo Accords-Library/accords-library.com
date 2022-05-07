@@ -53,6 +53,16 @@ export enum ImageQuality {
   Og = "og",
 }
 
+export function getAssetFilename(path: string): string {
+  let result = path.split("/");
+  result = result[result.length - 1].split(".");
+  result = result
+    .splice(0, result.length - 1)
+    .join(".")
+    .split("_");
+  return result[0];
+}
+
 export function getAssetURL(url: string, quality: ImageQuality): string {
   let newUrl = url;
   newUrl = newUrl.replace(/^\/uploads/u, `/${quality}`);

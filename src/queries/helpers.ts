@@ -443,3 +443,8 @@ export function getPreferredLanguage(
   }
   return undefined;
 }
+
+export function isInteger(value: string): boolean {
+  // eslint-disable-next-line require-unicode-regexp
+  return /^[+-]?[0-9]+$/.test(value);
+}

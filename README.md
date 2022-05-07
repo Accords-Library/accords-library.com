@@ -25,6 +25,7 @@
 #### [Front](https://github.com/Accords-Library/accords-library.com) (this repository)
 
 - Language: [TypeScript](https://www.typescriptlang.org/)
+- Framework: [Next.js](https://nextjs.org/) (React)
 - Queries: [GraphQL Code Generator](https://www.graphql-code-generator.com/)
   - Fetch the GraphQL schema from the GraphQL back-end endpoint
   - Read the operations and fragments stored as graphql files in the `src/graphql` folder
@@ -37,26 +38,30 @@
   - Support for [Material Icons](https://fonts.google.com/icons)
   - Support for creating any arbitrary theming mode by swapping CSS variables
   - Support for many screen sizes and resolutions
+- State Management: [React Context](https://reactjs.org/docs/context.html)
+  - Persistent app state using LocalStorage
 - Accessibility
   - Gestures using [react-swipeable](https://www.npmjs.com/package/react-swipeable)
   - Keyboard hotkeys using [react-hot-keys](https://www.npmjs.com/package/react-hot-keys)
   - Support for light and dark mode with a manual switch and system's selected theme by default
-  - All fonts can be swaped to [OpenDyslexic](https://www.npmjs.com/package/@fontsource/opendyslexic)
-- Framework: [Next.js](https://nextjs.org/) (React)
-  - Multilanguage support
-- State Management: [React Context](https://reactjs.org/docs/context.html)
-  - Persistent app state using LocalStorage
+  - Fonts can be swaped to [OpenDyslexic](https://www.npmjs.com/package/@fontsource/opendyslexic)
+- Multilingual
+  - By default, use the browser's language as the main language
+  - Fallback languages are used for content which are not available in the main language
+  - Main and fallback languages can be ordered manually by the user
+  - At the content level, the user can know which language is available
+  - Furthermore, the user can temporary select another language then the one that was automatically selected
 - SSG + ISR (Static Site Generation + Incremental Static Regeneration):
   - The website is built before running in production
   - Performances are great, and possibility to deploy the app using a CDN
-  - On-Demand ISR to continuously update the website when new content is added or existing content is modified/deleted.
+  - On-Demand ISR to continuously update the website when new content is added or existing content is modified/deleted
 - SEO
   - Good defaults for the metadate and OpenGraph properties
   - Each page can provide the thumbnail, title, description to be used
   - Automatic generation of the sitemap using [next-sitemap](https://www.npmjs.com/package/next-sitemap)
 - Data quality testing
   - Data from the CMS is subject to a battery of tests (about 20 warning types and 40 error types) at build time
-  - Each warning/error comes with a front-end link to the incriminating element, as well as a link to the CMS to fix it.
+  - Each warning/error comes with a front-end link to the incriminating element, as well as a link to the CMS to fix it
   - Check for completeness, conformity, and integrity
 
 ## Installation

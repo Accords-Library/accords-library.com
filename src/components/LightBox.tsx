@@ -1,5 +1,6 @@
-import { Dispatch, SetStateAction, useCallback } from "react";
-import { useHotkeys } from "react-hotkeys-hook";
+import { Dispatch, SetStateAction } from "react";
+import Hotkeys from "react-hot-keys";
+import { useSwipeable } from "react-swipeable";
 import Img from "./Img";
 import Button from "./Inputs/Button";
 import Popup from "./Popup";
@@ -16,46 +17,73 @@ interface Props {
 
 export default function LightBox(props: Props): JSX.Element {
   const { state, setState, images, index, setIndex } = props;
-  const handlePrevious = useCallback(() => {
-    setIndex((previousIndex) => (previousIndex > 0 ? previousIndex - 1 : 0));
-  }, [setIndex]);
 
-  const handleNext = useCallback(() => {
-    setIndex((previousIndex) =>
-      previousIndex < images.length - 1 ? previousIndex + 1 : images.length - 1
-    );
-  }, [images.length, setIndex]);
+  function handlePrevious() {
+    if (index > 0) setIndex(index - 1);
+  }
 
-  useHotkeys("left", handlePrevious);
-  useHotkeys("right", handleNext);
+  function handleNext() {
+    if (index < images.length - 1) setIndex(index + 1);
+  }
+
+  const sensibilitySwipe = 0.5;
+
+  const handlers = useSwipeable({
+    onSwipedLeft: (SwipeEventData) => {
+      if (SwipeEventData.velocity < sensibilitySwipe) return;
+      handleNext();
+    },
+    onSwipedRight: (SwipeEventData) => {
+      if (SwipeEventData.velocity < sensibilitySwipe) return;
+      handlePrevious();
+    },
+  });
 
   return (
     <>
       {state && (
-        <Popup setState={setState} state={state} fillViewport>
-          <div
-            className="grid grid-cols-[4em,1fr,4em] place-items-center
-            gap-4 w-full h-full overflow-hidden"
-          >
-            <div>
-              {index > 0 && (
-                <Button onClick={handlePrevious}>
-                  <span className="material-icons">chevron_left</span>
-                </Button>
-              )}
-            </div>
+        <Hotkeys
+          keyName="left,right"
+          allowRepeat
+          onKeyDown={(keyName) => {
+            if (keyName === "left") {
+              handlePrevious();
+            } else {
+              handleNext();
+            }
+          }}
+        >
+          <Popup setState={setState} state={state} padding={false} fillViewport>
+            <div
+              {...handlers}
+              className={`grid grid-cols-[4em,1fr,4em] mobile:grid-cols-2
+              [grid-template-areas:"left_image_right"]
+              mobile:[grid-template-areas:"image_image""left_right"]
+              place-items-center first-letter:gap-4 w-full h-full overflow-hidden`}
+            >
+              <div className="[grid-area:left]">
+                {index > 0 && (
+                  <Button onClick={handlePrevious}>
+                    <span className="material-icons">chevron_left</span>
+                  </Button>
+                )}
+              </div>
 
-            <Img className="max-h-full" image={images[index]} />
+              <Img
+                className="max-h-full [grid-area:image]"
+                image={images[index]}
+              />
 
-            <div>
-              {index < images.length - 1 && (
-                <Button onClick={handleNext}>
-                  <span className="material-icons">chevron_right</span>
-                </Button>
-              )}
+              <div className="[grid-area:right]">
+                {index < images.length - 1 && (
+                  <Button onClick={handleNext}>
+                    <span className="material-icons">chevron_right</span>
+                  </Button>
+                )}
+              </div>
             </div>
-          </div>
-        </Popup>
+          </Popup>
+        </Hotkeys>
       )}
     </>
   );

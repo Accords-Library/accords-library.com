@@ -39,19 +39,23 @@ export default function AppLayout(props: Props): JSX.Element {
 
   const handlers = useSwipeable({
     onSwipedLeft: (SwipeEventData) => {
-      if (SwipeEventData.velocity < sensibilitySwipe) return;
-      if (appLayout.mainPanelOpen) {
-        appLayout.setMainPanelOpen(false);
-      } else if (subPanel && contentPanel) {
-        appLayout.setSubPanelOpen(true);
+      if (appLayout.menuGestures) {
+        if (SwipeEventData.velocity < sensibilitySwipe) return;
+        if (appLayout.mainPanelOpen) {
+          appLayout.setMainPanelOpen(false);
+        } else if (subPanel && contentPanel) {
+          appLayout.setSubPanelOpen(true);
+        }
       }
     },
     onSwipedRight: (SwipeEventData) => {
-      if (SwipeEventData.velocity < sensibilitySwipe) return;
-      if (appLayout.subPanelOpen) {
-        appLayout.setSubPanelOpen(false);
-      } else {
-        appLayout.setMainPanelOpen(true);
+      if (appLayout.menuGestures) {
+        if (SwipeEventData.velocity < sensibilitySwipe) return;
+        if (appLayout.subPanelOpen) {
+          appLayout.setSubPanelOpen(false);
+        } else {
+          appLayout.setMainPanelOpen(true);
+        }
       }
     },
   });

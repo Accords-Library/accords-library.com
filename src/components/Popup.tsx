@@ -1,4 +1,6 @@
-import { Dispatch, SetStateAction } from "react";
+import { useAppLayout } from "contexts/AppLayoutContext";
+import { Dispatch, SetStateAction, useEffect } from "react";
+import Hotkeys from "react-hot-keys";
 
 interface Props {
   setState:
@@ -8,42 +10,65 @@ interface Props {
   children: React.ReactNode;
   fillViewport?: boolean;
   hideBackground?: boolean;
+  padding?: boolean;
 }
 
 export default function Popup(props: Props): JSX.Element {
+  const {
+    setState,
+    state,
+    children,
+    fillViewport,
+    hideBackground,
+    padding = true,
+  } = props;
+
+  const appLayout = useAppLayout();
+
+  useEffect(() => {
+    appLayout.setMenuGestures(!state);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state]);
+
   return (
-    <div
-      className={`fixed inset-0 z-50 grid place-content-center
-      transition-[backdrop-filter] duration-500 ${
-        props.state
-          ? "[backdrop-filter:blur(2px)]"
-          : "pointer-events-none touch-none"
-      }`}
+    <Hotkeys
+      keyName="escape"
+      allowRepeat
+      onKeyDown={() => {
+        setState(false);
+      }}
     >
       <div
-        className={`fixed bg-shade inset-0 transition-all duration-500 ${
-          props.state ? "bg-opacity-50" : "bg-opacity-0"
-        }`}
-        onClick={() => {
-          props.setState(false);
-        }}
-      />
-
-      <div
-        className={`p-10 grid gap-4 place-items-center transition-transform ${
-          props.state ? "scale-100" : "scale-0"
-        } ${
-          props.fillViewport
-            ? "absolute inset-10"
-            : "relative max-h-[80vh] overflow-y-auto mobile:w-[85vw]"
-        } ${
-          props.hideBackground
-            ? ""
-            : "bg-light rounded-lg shadow-2xl shadow-shade"
-        }`}
+        className={`fixed inset-0 z-50 grid place-content-center
+      transition-[backdrop-filter] duration-500 ${
+        state ? "[backdrop-filter:blur(2px)]" : "pointer-events-none touch-none"
+      }`}
       >
-        {props.children}
+        <div
+          className={`fixed bg-shade inset-0 transition-all duration-500 ${
+            state ? "bg-opacity-50" : "bg-opacity-0"
+          }`}
+          onClick={() => {
+            setState(false);
+          }}
+        />
+
+        <div
+          className={`${
+            padding && "p-10 mobile:p-6"
+          } grid gap-4 place-items-center transition-transform ${
+            state ? "scale-100" : "scale-0"
+          } ${
+            fillViewport
+              ? "absolute inset-10"
+              : "relative max-h-[80vh] overflow-y-auto mobile:w-[85vw]"
+          } ${
+            hideBackground ? "" : "bg-light rounded-lg shadow-2xl shadow-shade"
+          }`}
+        >
+          {children}
+        </div>
       </div>
-    </div>
+    </Hotkeys>
   );
 }

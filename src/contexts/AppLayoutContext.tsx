@@ -1,6 +1,6 @@
 import useDarkMode from "hooks/useDarkMode";
 import useStateWithLocalStorage from "hooks/useStateWithLocalStorage";
-import React, { ReactNode, useContext } from "react";
+import React, { ReactNode, useContext, useState } from "react";
 
 interface AppLayoutState {
   subPanelOpen: boolean | undefined;
@@ -14,6 +14,7 @@ interface AppLayoutState {
   currency: string | undefined;
   playerName: string | undefined;
   preferredLanguages: string[] | undefined;
+  menuGestures: boolean;
   setSubPanelOpen: React.Dispatch<React.SetStateAction<boolean | undefined>>;
   setConfigPanelOpen: React.Dispatch<React.SetStateAction<boolean | undefined>>;
   setMainPanelReduced: React.Dispatch<
@@ -31,6 +32,7 @@ interface AppLayoutState {
   setPreferredLanguages: React.Dispatch<
     React.SetStateAction<string[] | undefined>
   >;
+  setMenuGestures: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 /* eslint-disable @typescript-eslint/no-empty-function */
@@ -46,6 +48,7 @@ const initialState: AppLayoutState = {
   currency: "USD",
   playerName: "",
   preferredLanguages: [],
+  menuGestures: true,
   setSubPanelOpen: () => {},
   setMainPanelReduced: () => {},
   setMainPanelOpen: () => {},
@@ -57,6 +60,7 @@ const initialState: AppLayoutState = {
   setCurrency: () => {},
   setPlayerName: () => {},
   setPreferredLanguages: () => {},
+  setMenuGestures: () => {},
 };
 /* eslint-enable @typescript-eslint/no-empty-function */
 
@@ -115,6 +119,8 @@ export function AppContextProvider(props: Props): JSX.Element {
     string[] | undefined
   >("preferredLanguages", initialState.preferredLanguages);
 
+  const [menuGestures, setMenuGestures] = useState(false);
+
   return (
     <AppContext.Provider
       value={{
@@ -129,6 +135,7 @@ export function AppContextProvider(props: Props): JSX.Element {
         currency,
         playerName,
         preferredLanguages,
+        menuGestures,
         setSubPanelOpen,
         setConfigPanelOpen,
         setMainPanelReduced,
@@ -140,6 +147,7 @@ export function AppContextProvider(props: Props): JSX.Element {
         setCurrency,
         setPlayerName,
         setPreferredLanguages,
+        setMenuGestures,
       }}
     >
       {props.children}

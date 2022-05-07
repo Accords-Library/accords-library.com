@@ -1,15 +1,17 @@
 import Chip from "components/Chip";
-import Img, { getAssetURL, ImageQuality } from "components/Img";
+import Img, {
+  getAssetFilename,
+  getAssetURL,
+  ImageQuality,
+} from "components/Img";
 import Button from "components/Inputs/Button";
-import LanguageSwitcher from "components/Inputs/LanguageSwitcher";
 import RecorderChip from "components/RecorderChip";
 import ToolTip from "components/ToolTip";
-import { useAppLayout } from "contexts/AppLayoutContext";
 import { GetLibraryItemScansQuery } from "graphql/generated";
-import { useRouter } from "next/router";
+import useSmartLanguage from "hooks/useSmartLanguage";
 import { AppStaticProps } from "queries/getAppStaticProps";
-import { getPreferredLanguage, getStatusDescription } from "queries/helpers";
-import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
+import { getStatusDescription, isInteger } from "queries/helpers";
+import { Dispatch, SetStateAction } from "react";
 
 interface Props {
   setLightboxOpen: Dispatch<SetStateAction<boolean>>;
@@ -62,52 +64,28 @@ export default function ScanSet(props: Props): JSX.Element {
     langui,
     content,
   } = props;
-  const appLayout = useAppLayout();
-  const router = useRouter();
 
-  const [selectedScan, setSelectedScan] = useState<Props["scanSet"][number]>();
-  const scanLocales: Map<string, number> = new Map();
-
-  const [selectedScanIndex, setSelectedScanIndex] = useState<
-    number | undefined
-  >();
-
-  scanSet.map((scan, index) => {
-    if (scan?.language?.data?.attributes?.code) {
-      scanLocales.set(scan.language.data.attributes.code, index);
-    }
-  });
-
-  useMemo(() => {
-    setSelectedScanIndex(
-      getPreferredLanguage(
-        appLayout.preferredLanguages ?? [router.locale],
-        scanLocales
-      )
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [appLayout.preferredLanguages]);
-
-  useEffect(() => {
-    if (selectedScanIndex !== undefined) {
-      const selectedScanSet = scanSet[selectedScanIndex];
-      selectedScanSet?.pages?.data.sort((a, b) => {
-        function isInteger(value: string): boolean {
-          // eslint-disable-next-line require-unicode-regexp
-          return /^\d+$/.test(value);
-        }
-        function getFileName(path: string): string {
-          let result = path.split("/");
-          result = result[result.length - 1].split(".");
-          result = result
-            .splice(0, result.length - 1)
-            .join(".")
-            .split("_");
-          return result[0];
-        }
+  const [selectedScan, LanguageSwitcher] = useSmartLanguage({
+    items: scanSet,
+    languages: languages,
+    languageExtractor: (item) => item?.language?.data?.attributes?.code,
+    transform: (item) => {
+      item?.pages?.data.sort((a, b) => {
         if (a.attributes?.url && b.attributes?.url) {
-          const aName = getFileName(a.attributes.url);
-          const bName = getFileName(b.attributes.url);
+          let aName = getAssetFilename(a.attributes.url);
+          let bName = getAssetFilename(b.attributes.url);
+
+          /*
+           * If the number is a succession of 0s, make the number
+           * incrementally smaller than 0 (i.e: 00 becomes -1)
+           */
+          if (aName.replaceAll("0", "").length === 0) {
+            aName = (1 - aName.length).toString(10);
+          }
+          if (bName.replaceAll("0", "").length === 0) {
+            bName = (1 - bName.length).toString(10);
+          }
+
           if (isInteger(aName) && isInteger(bName)) {
             return parseInt(aName, 10) - parseInt(bName, 10);
           }
@@ -115,10 +93,9 @@ export default function ScanSet(props: Props): JSX.Element {
         }
         return 0;
       });
-      setSelectedScan(selectedScanSet);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedScanIndex]);
+      return item;
+    },
+  });
 
   return (
     <>
@@ -144,12 +121,7 @@ export default function ScanSet(props: Props): JSX.Element {
               </Button>
             )}
 
-            <LanguageSwitcher
-              languages={languages}
-              locales={scanLocales}
-              localesIndex={selectedScanIndex}
-              setLocalesIndex={setSelectedScanIndex}
-            />
+            <LanguageSwitcher />
 
             <div className="grid place-items-center place-content-center">
               <p className="font-headers">{langui.status}:</p>

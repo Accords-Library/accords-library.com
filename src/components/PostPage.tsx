@@ -14,14 +14,16 @@ import RecorderChip from "./RecorderChip";
 import ThumbnailHeader from "./ThumbnailHeader";
 import ToolTip from "./ToolTip";
 
-interface Props {
-  post: Exclude<
-    Exclude<
-      GetPostQuery["posts"],
-      null | undefined
-    >["data"][number]["attributes"],
+export type Post = Exclude<
+  Exclude<
+    GetPostQuery["posts"],
     null | undefined
-  >;
+  >["data"][number]["attributes"],
+  null | undefined
+>;
+
+interface Props {
+  post: Post;
   langui: AppStaticProps["langui"];
   languages: AppStaticProps["languages"];
   currencies: AppStaticProps["currencies"];
@@ -36,7 +38,7 @@ interface Props {
   appendBody?: JSX.Element;
 }
 
-export default function Post(props: Props): JSX.Element {
+export default function PostPage(props: Props): JSX.Element {
   const {
     post,
     langui,

@@ -1,7 +1,6 @@
 import AppLayout from "components/AppLayout";
 import Chip from "components/Chip";
 import HorizontalLine from "components/HorizontalLine";
-import LanguageSwitcher from "components/Inputs/LanguageSwitcher";
 import Markdawn from "components/Markdown/Markdawn";
 import TOC from "components/Markdown/TOC";
 import ReturnButton, {
@@ -13,25 +12,22 @@ import PreviewLine from "components/PreviewLine";
 import RecorderChip from "components/RecorderChip";
 import ThumbnailHeader from "components/ThumbnailHeader";
 import ToolTip from "components/ToolTip";
-import { useAppLayout } from "contexts/AppLayoutContext";
 import { GetContentTextQuery } from "graphql/generated";
 import { getReadySdk } from "graphql/sdk";
 import { useMediaMobile } from "hooks/useMediaQuery";
+import useSmartLanguage from "hooks/useSmartLanguage";
 import {
   GetStaticPathsContext,
   GetStaticPathsResult,
   GetStaticPropsContext,
 } from "next";
-import { useRouter } from "next/router";
 import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 import {
-  getPreferredLanguage,
   getStatusDescription,
   prettyinlineTitle,
   prettyLanguage,
   prettySlug,
 } from "queries/helpers";
-import { useEffect, useMemo, useState } from "react";
 
 interface Props extends AppStaticProps {
   content: Exclude<
@@ -46,53 +42,15 @@ interface Props extends AppStaticProps {
 
 export default function Content(props: Props): JSX.Element {
   const { langui, content, languages } = props;
-  const router = useRouter();
-  const appLayout = useAppLayout();
-
   const isMobile = useMediaMobile();
 
-  const [selectedTextSet, setSelectedTextSet] = useState<
-    | Exclude<
-        Exclude<Props["content"], null | undefined>["text_set"],
-        null | undefined
-      >[number]
-  >();
-  const [selectedTitle, setSelectedTitle] = useState<
-    | Exclude<
-        Exclude<Props["content"], null | undefined>["titles"],
-        null | undefined
-      >[number]
-  >();
-  const textSetLocales: Map<string, number> = new Map();
+  const [selectedTextSet, LanguageSwitcher] = useSmartLanguage({
+    items: content?.text_set,
+    languages: languages,
+    languageExtractor: (item) => item?.language?.data?.attributes?.code,
+  });
 
-  const [selectedTextSetIndex, setSelectedTextSetIndex] = useState<
-    number | undefined
-  >();
-
-  if (content?.text_set) {
-    content.text_set.map((textSet, index) => {
-      if (textSet?.language?.data?.attributes?.code && textSet.text) {
-        textSetLocales.set(textSet.language.data.attributes.code, index);
-      }
-    });
-  }
-
-  useMemo(() => {
-    setSelectedTextSetIndex(
-      getPreferredLanguage(
-        appLayout.preferredLanguages ?? [router.locale],
-        textSetLocales
-      )
-    );
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [appLayout.preferredLanguages]);
-
-  useEffect(() => {
-    if (selectedTextSetIndex !== undefined) {
-      setSelectedTextSet(content?.text_set?.[selectedTextSetIndex]);
-      setSelectedTitle(content?.titles?.[selectedTextSetIndex]);
-    }
-  }, [content?.text_set, content?.titles, selectedTextSetIndex]);
+  const selectedTitle = content?.titles?.[0];
 
   const subPanel = (
     <SubPanel>
@@ -252,16 +210,7 @@ export default function Content(props: Props): JSX.Element {
             type={content.type}
             categories={content.categories}
             langui={langui}
-            languageSwitcher={
-              selectedTextSet ? (
-                <LanguageSwitcher
-                  locales={textSetLocales}
-                  languages={props.languages}
-                  localesIndex={selectedTextSetIndex}
-                  setLocalesIndex={setSelectedTextSetIndex}
-                />
-              ) : undefined
-            }
+            languageSwitcher={<LanguageSwitcher />}
           />
 
           {content.previous_recommended?.data?.attributes && (

@@ -1,17 +1,15 @@
 import Chip from "components/Chip";
 import Img, { getAssetURL, ImageQuality } from "components/Img";
-import LanguageSwitcher from "components/Inputs/LanguageSwitcher";
 import RecorderChip from "components/RecorderChip";
 import ToolTip from "components/ToolTip";
-import { useAppLayout } from "contexts/AppLayoutContext";
 import {
   GetLibraryItemScansQuery,
   UploadImageFragment,
 } from "graphql/generated";
-import { useRouter } from "next/router";
+import useSmartLanguage from "hooks/useSmartLanguage";
 import { AppStaticProps } from "queries/getAppStaticProps";
-import { getPreferredLanguage, getStatusDescription } from "queries/helpers";
-import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
+import { getStatusDescription } from "queries/helpers";
+import { Dispatch, SetStateAction } from "react";
 
 interface Props {
   setLightboxOpen: Dispatch<SetStateAction<boolean>>;
@@ -40,37 +38,12 @@ export default function ScanSetCover(props: Props): JSX.Element {
     languages,
     langui,
   } = props;
-  const appLayout = useAppLayout();
-  const router = useRouter();
 
-  const [selectedScan, setSelectedScan] = useState<Props["images"][number]>();
-  const scanLocales: Map<string, number> = new Map();
-
-  const [selectedScanIndex, setSelectedScanIndex] = useState<
-    number | undefined
-  >();
-
-  images.map((scan, index) => {
-    if (scan?.language?.data?.attributes?.code) {
-      scanLocales.set(scan.language.data.attributes.code, index);
-    }
+  const [selectedScan, LanguageSwitcher] = useSmartLanguage({
+    items: images,
+    languages: languages,
+    languageExtractor: (item) => item?.language?.data?.attributes?.code,
   });
-
-  useMemo(() => {
-    setSelectedScanIndex(
-      getPreferredLanguage(
-        appLayout.preferredLanguages ?? [router.locale],
-        scanLocales
-      )
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [appLayout.preferredLanguages]);
-
-  useEffect(() => {
-    if (selectedScanIndex !== undefined)
-      setSelectedScan(images[selectedScanIndex]);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedScanIndex]);
 
   const coverImages: UploadImageFragment[] = [];
   if (selectedScan?.obi_belt?.full?.data?.attributes)
@@ -105,12 +78,7 @@ export default function ScanSetCover(props: Props): JSX.Element {
             </div>
 
             <div className="flex flex-row flex-wrap gap-4 pb-6 place-items-center">
-              <LanguageSwitcher
-                languages={languages}
-                locales={scanLocales}
-                localesIndex={selectedScanIndex}
-                setLocalesIndex={setSelectedScanIndex}
-              />
+              <LanguageSwitcher />
 
               <div className="grid place-items-center place-content-center">
                 <p className="font-headers">{langui.status}:</p>

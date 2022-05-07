@@ -10,9 +10,12 @@ import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 
 interface Props extends AppStaticProps {
   post: Exclude<
-    GetPostQuery["posts"],
+    Exclude<
+      GetPostQuery["posts"],
+      null | undefined
+    >["data"][number]["attributes"],
     null | undefined
-  >["data"][number]["attributes"];
+  >;
   postId: Exclude<
     GetPostQuery["posts"],
     null | undefined
@@ -45,7 +48,7 @@ export async function getStaticProps(
     slug: slug,
     language_code: context.locale ?? "en",
   });
-  if (!post.posts?.data[0]) return { notFound: true };
+  if (!post.posts?.data[0].attributes) return { notFound: true };
   const props: Props = {
     ...(await getAppStaticProps(context)),
     post: post.posts.data[0].attributes,

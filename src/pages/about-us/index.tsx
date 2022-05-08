@@ -2,12 +2,13 @@ import AppLayout from "components/AppLayout";
 import NavOption from "components/PanelComponents/NavOption";
 import PanelHeader from "components/PanelComponents/PanelHeader";
 import SubPanel from "components/Panels/SubPanel";
-import { GetStaticPropsContext } from "next";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
+import { Immutable } from "helpers/types";
+import { GetStaticPropsContext } from "next";
 
 interface Props extends AppStaticProps {}
 
-export default function AboutUs(props: Props): JSX.Element {
+export default function AboutUs(props: Immutable<Props>): JSX.Element {
   const { langui } = props;
   const subPanel = (
     <SubPanel>

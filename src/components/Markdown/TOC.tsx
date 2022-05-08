@@ -1,4 +1,5 @@
 import { slugify } from "helpers/formatters";
+import { Immutable } from "helpers/types";
 import { useRouter } from "next/router";
 import { preprocessMarkDawn } from "./Markdawn";
 
@@ -7,7 +8,7 @@ interface Props {
   title?: string;
 }
 
-export default function TOCComponent(props: Props): JSX.Element {
+export default function TOCComponent(props: Immutable<Props>): JSX.Element {
   const { text, title } = props;
   const toc = getTocFromMarkdawn(preprocessMarkDawn(text), title);
   const router = useRouter();

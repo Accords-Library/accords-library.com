@@ -1,23 +1,20 @@
 import PostPage from "components/PostPage";
-import { GetPostQuery } from "graphql/generated";
+import { AppStaticProps } from "graphql/getAppStaticProps";
+import {
+  getPostStaticProps,
+  PostStaticProps,
+} from "graphql/getPostStaticProps";
 import { getReadySdk } from "graphql/sdk";
-import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
-import { Post } from "helpers/types";
+import { Immutable } from "helpers/types";
 import {
   GetStaticPathsContext,
   GetStaticPathsResult,
   GetStaticPropsContext,
 } from "next";
 
-interface Props extends AppStaticProps {
-  post: Post;
-  postId: Exclude<
-    GetPostQuery["posts"],
-    null | undefined
-  >["data"][number]["id"];
-}
+interface Props extends AppStaticProps, PostStaticProps {}
 
-export default function LibrarySlug(props: Props): JSX.Element {
+export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
   const { post, langui, languages, currencies } = props;
   return (
     <PostPage
@@ -37,21 +34,8 @@ export default function LibrarySlug(props: Props): JSX.Element {
 export async function getStaticProps(
   context: GetStaticPropsContext
 ): Promise<{ notFound: boolean } | { props: Props }> {
-  const sdk = getReadySdk();
   const slug = context.params?.slug ? context.params.slug.toString() : "";
-  const post = await sdk.getPost({
-    slug: slug,
-    language_code: context.locale ?? "en",
-  });
-  if (!post.posts?.data[0].attributes) return { notFound: true };
-  const props: Props = {
-    ...(await getAppStaticProps(context)),
-    post: post.posts.data[0].attributes,
-    postId: post.posts.data[0].id,
-  };
-  return {
-    props: props,
-  };
+  return await getPostStaticProps(slug)(context);
 }
 
 export async function getStaticPaths(

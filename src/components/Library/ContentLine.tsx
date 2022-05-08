@@ -1,8 +1,9 @@
 import Chip from "components/Chip";
 import Button from "components/Inputs/Button";
 import { GetLibraryItemQuery } from "graphql/generated";
-import { prettyinlineTitle, prettySlug } from "helpers/formatters";
 import { AppStaticProps } from "graphql/getAppStaticProps";
+import { prettyinlineTitle, prettySlug } from "helpers/formatters";
+import { Immutable } from "helpers/types";
 import { useState } from "react";
 
 interface Props {
@@ -20,7 +21,7 @@ interface Props {
   langui: AppStaticProps["langui"];
 }
 
-export default function ContentLine(props: Props): JSX.Element {
+export default function ContentLine(props: Immutable<Props>): JSX.Element {
   const { content, langui, parentSlug } = props;
 
   const [opened, setOpened] = useState(false);

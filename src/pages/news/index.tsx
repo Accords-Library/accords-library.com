@@ -7,9 +7,10 @@ import ContentPanel, {
 import SubPanel from "components/Panels/SubPanel";
 import ThumbnailPreview from "components/PreviewCard";
 import { GetPostsPreviewQuery } from "graphql/generated";
+import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import { prettyDate, prettySlug } from "helpers/formatters";
-import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
+import { Immutable } from "helpers/types";
 import { GetStaticPropsContext } from "next";
 import { useState } from "react";
 
@@ -17,18 +18,11 @@ interface Props extends AppStaticProps {
   posts: Exclude<GetPostsPreviewQuery["posts"], null | undefined>["data"];
 }
 
-export default function News(props: Props): JSX.Element {
-  const { langui, posts } = props;
+export default function News(props: Immutable<Props>): JSX.Element {
+  const { langui } = props;
+  const posts = sortPosts(props.posts);
 
   const [keepInfoVisible, setKeepInfoVisible] = useState(true);
-
-  posts
-    .sort((a, b) => {
-      const dateA = a.attributes?.date ? prettyDate(a.attributes.date) : "9999";
-      const dateB = b.attributes?.date ? prettyDate(b.attributes.date) : "9999";
-      return dateA.localeCompare(dateB);
-    })
-    .reverse();
 
   const subPanel = (
     <SubPanel>
@@ -102,4 +96,18 @@ export async function getStaticProps(
   return {
     props: props,
   };
+}
+
+function sortPosts(
+  posts: Immutable<Props["posts"]>
+): Immutable<Props["posts"]> {
+  const sortedPosts = [...posts] as Props["posts"];
+  sortedPosts
+    .sort((a, b) => {
+      const dateA = a.attributes?.date ? prettyDate(a.attributes.date) : "9999";
+      const dateB = b.attributes?.date ? prettyDate(b.attributes.date) : "9999";
+      return dateA.localeCompare(dateB);
+    })
+    .reverse();
+  return sortedPosts as Immutable<Props["posts"]>;
 }

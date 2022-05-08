@@ -4,9 +4,10 @@ import {
   GetWebsiteInterfaceQuery,
 } from "graphql/generated";
 import { getReadySdk } from "graphql/sdk";
+import { Immutable } from "helpers/types";
 import { GetStaticPropsContext } from "next";
 
-export interface AppStaticProps {
+export type AppStaticProps = Immutable<{
   langui: Exclude<
     Exclude<
       GetWebsiteInterfaceQuery["websiteInterfaces"],
@@ -19,7 +20,7 @@ export interface AppStaticProps {
     null | undefined
   >["data"];
   languages: Exclude<GetLanguagesQuery["languages"], null | undefined>["data"];
-}
+}>;
 
 export async function getAppStaticProps(
   context: GetStaticPropsContext
@@ -50,9 +51,11 @@ export async function getAppStaticProps(
     })
   ).websiteInterfaces?.data[0].attributes;
 
-  return {
-    langui: langui ?? ({} as AppStaticProps["langui"]),
-    currencies: currencies?.data ?? ({} as AppStaticProps["currencies"]),
-    languages: languages?.data ?? ({} as AppStaticProps["languages"]),
+  const appStaticProps: AppStaticProps = {
+    langui: langui ?? {},
+    currencies: currencies?.data ?? [],
+    languages: languages?.data ?? [],
   };
+
+  return appStaticProps;
 }

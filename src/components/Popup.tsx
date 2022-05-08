@@ -1,4 +1,5 @@
 import { useAppLayout } from "contexts/AppLayoutContext";
+import { Immutable } from "helpers/types";
 import { Dispatch, SetStateAction, useEffect } from "react";
 import Hotkeys from "react-hot-keys";
 
@@ -13,7 +14,7 @@ interface Props {
   padding?: boolean;
 }
 
-export default function Popup(props: Props): JSX.Element {
+export default function Popup(props: Immutable<Props>): JSX.Element {
   const {
     setState,
     state,

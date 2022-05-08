@@ -1,10 +1,12 @@
+import { Immutable } from "helpers/types";
+
 interface Props {
   className?: string;
   children: React.ReactNode;
   id?: string;
 }
 
-export default function InsetBox(props: Props): JSX.Element {
+export default function InsetBox(props: Immutable<Props>): JSX.Element {
   return (
     <div
       id={props.id}

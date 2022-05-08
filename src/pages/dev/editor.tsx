@@ -6,14 +6,15 @@ import ContentPanel, {
 } from "components/Panels/ContentPanel";
 import Popup from "components/Popup";
 import ToolTip from "components/ToolTip";
-import { GetStaticPropsContext } from "next";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
+import { Immutable } from "helpers/types";
+import { GetStaticPropsContext } from "next";
 import { useCallback, useState } from "react";
 import TurndownService from "turndown";
 
 interface Props extends AppStaticProps {}
 
-export default function Editor(props: Props): JSX.Element {
+export default function Editor(props: Immutable<Props>): JSX.Element {
   const handleInput = useCallback((text: string) => {
     setMarkdown(text);
   }, []);

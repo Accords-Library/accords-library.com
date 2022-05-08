@@ -1,3 +1,4 @@
+import { Immutable } from "helpers/types";
 import { Dispatch, SetStateAction } from "react";
 
 interface Props {
@@ -6,7 +7,7 @@ interface Props {
   className?: string;
 }
 
-export default function Switch(props: Props): JSX.Element {
+export default function Switch(props: Immutable<Props>): JSX.Element {
   return (
     <div
       className={`h-6 w-12 rounded-full border-2 border-mid grid transition-colors relative cursor-pointer ${

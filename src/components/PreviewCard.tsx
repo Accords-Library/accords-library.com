@@ -4,14 +4,15 @@ import {
   PricePickerFragment,
   UploadImageFragment,
 } from "graphql/generated";
+import { AppStaticProps } from "graphql/getAppStaticProps";
 import {
   prettyDate,
   prettyDuration,
   prettyPrice,
   prettyShortenNumber,
 } from "helpers/formatters";
-import { AppStaticProps } from "graphql/getAppStaticProps";
 import { ImageQuality } from "helpers/img";
+import { Immutable } from "helpers/types";
 import Link from "next/link";
 import Chip from "./Chip";
 import Img from "./Img";
@@ -43,7 +44,7 @@ interface Props {
     | { __typename: "anotherHoverlayName" };
 }
 
-export default function ThumbnailPreview(props: Props): JSX.Element {
+export default function ThumbnailPreview(props: Immutable<Props>): JSX.Element {
   const {
     href,
     thumbnail,

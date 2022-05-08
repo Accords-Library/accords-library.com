@@ -5,9 +5,10 @@ import RecorderChip from "components/RecorderChip";
 import ToolTip from "components/ToolTip";
 import { GetLibraryItemScansQuery } from "graphql/generated";
 import { AppStaticProps } from "graphql/getAppStaticProps";
-import { getStatusDescription } from "helpers/others";
 import { getAssetFilename, getAssetURL, ImageQuality } from "helpers/img";
 import { isInteger } from "helpers/numbers";
+import { getStatusDescription } from "helpers/others";
+import { Immutable } from "helpers/types";
 import useSmartLanguage from "hooks/useSmartLanguage";
 import { Dispatch, SetStateAction } from "react";
 
@@ -50,7 +51,7 @@ interface Props {
   >["content"];
 }
 
-export default function ScanSet(props: Props): JSX.Element {
+export default function ScanSet(props: Immutable<Props>): JSX.Element {
   const {
     setLightboxOpen,
     setLightboxImages,
@@ -68,7 +69,8 @@ export default function ScanSet(props: Props): JSX.Element {
     languages: languages,
     languageExtractor: (item) => item?.language?.data?.attributes?.code,
     transform: (item) => {
-      item?.pages?.data.sort((a, b) => {
+      const newItem = { ...item } as Props["scanSet"][number];
+      newItem?.pages?.data.sort((a, b) => {
         if (a.attributes?.url && b.attributes?.url) {
           let aName = getAssetFilename(a.attributes.url);
           let bName = getAssetFilename(b.attributes.url);
@@ -91,7 +93,7 @@ export default function ScanSet(props: Props): JSX.Element {
         }
         return 0;
       });
-      return item;
+      return newItem;
     },
   });
 

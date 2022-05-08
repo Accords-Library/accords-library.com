@@ -22,6 +22,7 @@ import {
   GetStaticPropsContext,
 } from "next";
 import { useState } from "react";
+import { Immutable } from "helpers/types";
 
 interface Props extends AppStaticProps {
   item: Exclude<
@@ -34,7 +35,7 @@ interface Props extends AppStaticProps {
   >["data"][number]["id"];
 }
 
-export default function LibrarySlug(props: Props): JSX.Element {
+export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
   const { item, langui, languages } = props;
   const appLayout = useAppLayout();
 

@@ -1,4 +1,5 @@
 import HorizontalLine from "components/HorizontalLine";
+import { Immutable } from "helpers/types";
 
 interface Props {
   icon?: string;
@@ -6,7 +7,7 @@ interface Props {
   description?: string | null | undefined;
 }
 
-export default function PanelHeader(props: Props): JSX.Element {
+export default function PanelHeader(props: Immutable<Props>): JSX.Element {
   return (
     <>
       <div className="w-full grid place-items-center">

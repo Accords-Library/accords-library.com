@@ -4,36 +4,42 @@ import {
   GetLibraryItemScansQuery,
 } from "graphql/generated";
 import { AppStaticProps } from "../graphql/getAppStaticProps";
+import { Immutable } from "./types";
 
-export function sortContent(
-  contents:
-    | Exclude<
-        Exclude<
-          GetLibraryItemQuery["libraryItems"],
-          null | undefined
-        >["data"][number]["attributes"],
+type SortContentProps =
+  | Exclude<
+      Exclude<
+        GetLibraryItemQuery["libraryItems"],
         null | undefined
-      >["contents"]
-    | Exclude<
-        Exclude<
-          GetLibraryItemScansQuery["libraryItems"],
-          null | undefined
-        >["data"][number]["attributes"],
+      >["data"][number]["attributes"],
+      null | undefined
+    >["contents"]
+  | Exclude<
+      Exclude<
+        GetLibraryItemScansQuery["libraryItems"],
         null | undefined
-      >["contents"]
-) {
-  contents?.data.sort((a, b) => {
-    if (
-      a.attributes?.range[0]?.__typename === "ComponentRangePageRange" &&
-      b.attributes?.range[0]?.__typename === "ComponentRangePageRange"
-    ) {
-      return (
-        a.attributes.range[0].starting_page -
-        b.attributes.range[0].starting_page
-      );
-    }
-    return 0;
-  });
+      >["data"][number]["attributes"],
+      null | undefined
+    >["contents"];
+
+export function sortContent(contents: Immutable<SortContentProps>) {
+  if (contents) {
+    const newContent = { ...contents } as SortContentProps;
+    newContent?.data.sort((a, b) => {
+      if (
+        a.attributes?.range[0]?.__typename === "ComponentRangePageRange" &&
+        b.attributes?.range[0]?.__typename === "ComponentRangePageRange"
+      ) {
+        return (
+          a.attributes.range[0].starting_page -
+          b.attributes.range[0].starting_page
+        );
+      }
+      return 0;
+    });
+    return newContent as Immutable<SortContentProps>;
+  }
+  return contents;
 }
 
 export function getStatusDescription(

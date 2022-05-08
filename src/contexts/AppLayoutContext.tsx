@@ -1,3 +1,4 @@
+import { Immutable } from "helpers/types";
 import useDarkMode from "hooks/useDarkMode";
 import useStateWithLocalStorage from "hooks/useStateWithLocalStorage";
 import React, { ReactNode, useContext, useState } from "react";
@@ -76,7 +77,7 @@ interface Props {
   children: ReactNode;
 }
 
-export function AppContextProvider(props: Props): JSX.Element {
+export function AppContextProvider(props: Immutable<Props>): JSX.Element {
   const [subPanelOpen, setSubPanelOpen] = useStateWithLocalStorage<
     boolean | undefined
   >("subPanelOpen", initialState.subPanelOpen);

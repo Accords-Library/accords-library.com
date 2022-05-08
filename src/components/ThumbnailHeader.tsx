@@ -3,9 +3,10 @@ import Img from "components/Img";
 import InsetBox from "components/InsetBox";
 import Markdawn from "components/Markdown/Markdawn";
 import { GetContentQuery, UploadImageFragment } from "graphql/generated";
-import { prettyinlineTitle, prettySlug, slugify } from "helpers/formatters";
 import { AppStaticProps } from "graphql/getAppStaticProps";
+import { prettyinlineTitle, prettySlug, slugify } from "helpers/formatters";
 import { ImageQuality } from "helpers/img";
+import { Immutable } from "helpers/types";
 
 interface Props {
   pre_title?: string | null | undefined;
@@ -31,7 +32,7 @@ interface Props {
   languageSwitcher?: JSX.Element;
 }
 
-export default function ThumbnailHeader(props: Props): JSX.Element {
+export default function ThumbnailHeader(props: Immutable<Props>): JSX.Element {
   const {
     langui,
     pre_title,

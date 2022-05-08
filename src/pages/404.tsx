@@ -3,12 +3,13 @@ import ReturnButton, {
   ReturnButtonType,
 } from "components/PanelComponents/ReturnButton";
 import ContentPanel from "components/Panels/ContentPanel";
-import { GetStaticPropsContext } from "next";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
+import { Immutable } from "helpers/types";
+import { GetStaticPropsContext } from "next";
 
 interface Props extends AppStaticProps {}
 
-export default function FourOhFour(props: Props): JSX.Element {
+export default function FourOhFour(props: Immutable<Props>): JSX.Element {
   const { langui } = props;
   const contentPanel = (
     <ContentPanel>

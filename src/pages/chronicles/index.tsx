@@ -3,10 +3,11 @@ import PanelHeader from "components/PanelComponents/PanelHeader";
 import SubPanel from "components/Panels/SubPanel";
 import { GetStaticPropsContext } from "next";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
+import { Immutable } from "helpers/types";
 
 interface Props extends AppStaticProps {}
 
-export default function Chronicles(props: Props): JSX.Element {
+export default function Chronicles(props: Immutable<Props>): JSX.Element {
   const { langui } = props;
   const subPanel = (
     <SubPanel>

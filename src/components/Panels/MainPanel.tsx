@@ -7,12 +7,13 @@ import { useMediaDesktop } from "hooks/useMediaQuery";
 import Markdown from "markdown-to-jsx";
 import Link from "next/link";
 import { AppStaticProps } from "graphql/getAppStaticProps";
+import { Immutable } from "helpers/types";
 
 interface Props {
   langui: AppStaticProps["langui"];
 }
 
-export default function MainPanel(props: Props): JSX.Element {
+export default function MainPanel(props: Immutable<Props>): JSX.Element {
   const { langui } = props;
   const isDesktop = useMediaDesktop();
   const appLayout = useAppLayout();

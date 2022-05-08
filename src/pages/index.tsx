@@ -1,14 +1,11 @@
 import PostPage from "components/PostPage";
-import { getReadySdk } from "graphql/sdk";
-import { GetStaticPropsContext } from "next";
-import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
-import { Post } from "helpers/types";
+import {
+  getPostStaticProps,
+  PostStaticProps,
+} from "graphql/getPostStaticProps";
+import { Immutable } from "helpers/types";
 
-interface Props extends AppStaticProps {
-  post: Post;
-}
-
-export default function Home(props: Props): JSX.Element {
+export default function Home(props: Immutable<PostStaticProps>): JSX.Element {
   const { post, langui, languages, currencies } = props;
   return (
     <PostPage
@@ -31,21 +28,4 @@ export default function Home(props: Props): JSX.Element {
   );
 }
 
-export async function getStaticProps(
-  context: GetStaticPropsContext
-): Promise<{ notFound: boolean } | { props: Props }> {
-  const sdk = getReadySdk();
-  const slug = "home";
-  const post = await sdk.getPost({
-    slug: slug,
-    language_code: context.locale ?? "en",
-  });
-  if (!post.posts?.data[0].attributes) return { notFound: true };
-  const props: Props = {
-    ...(await getAppStaticProps(context)),
-    post: post.posts.data[0].attributes,
-  };
-  return {
-    props: props,
-  };
-}
+export const getStaticProps = getPostStaticProps("home");

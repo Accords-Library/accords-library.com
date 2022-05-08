@@ -6,6 +6,7 @@ import {
 } from "graphql/generated";
 import { AppStaticProps } from "graphql/getAppStaticProps";
 import { getStatusDescription } from "helpers/others";
+import { Immutable } from "helpers/types";
 
 interface Props {
   item: Exclude<
@@ -16,7 +17,9 @@ interface Props {
   langui: AppStaticProps["langui"];
 }
 
-export default function ChronologyItemComponent(props: Props): JSX.Element {
+export default function ChronologyItemComponent(
+  props: Immutable<Props>
+): JSX.Element {
   const { langui } = props;
 
   function generateAnchor(

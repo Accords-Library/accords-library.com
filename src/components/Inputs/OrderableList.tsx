@@ -1,4 +1,5 @@
 import { arrayMove } from "helpers/others";
+import { Immutable } from "helpers/types";
 import { useEffect, useState } from "react";
 
 interface Props {
@@ -7,7 +8,7 @@ interface Props {
   onChange?: (items: Map<string, string>) => void;
 }
 
-export default function OrderableList(props: Props): JSX.Element {
+export default function OrderableList(props: Immutable<Props>): JSX.Element {
   const [items, setItems] = useState<Map<string, string>>(props.items);
 
   useEffect(() => {

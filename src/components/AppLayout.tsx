@@ -1,9 +1,10 @@
 import Button from "components/Inputs/Button";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { UploadImageFragment } from "graphql/generated";
-import { prettyLanguage, prettySlug } from "helpers/formatters";
 import { AppStaticProps } from "graphql/getAppStaticProps";
+import { prettyLanguage, prettySlug } from "helpers/formatters";
 import { getOgImage, ImageQuality, OgImage } from "helpers/img";
+import { Immutable } from "helpers/types";
 import { useMediaMobile } from "hooks/useMediaQuery";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -24,8 +25,19 @@ interface Props extends AppStaticProps {
   description?: string;
 }
 
-export default function AppLayout(props: Props): JSX.Element {
-  const { langui, currencies, languages, subPanel, contentPanel } = props;
+export default function AppLayout(props: Immutable<Props>): JSX.Element {
+  const {
+    langui,
+    currencies,
+    languages,
+    subPanel,
+    contentPanel,
+    thumbnail,
+    title,
+    navTitle,
+    description,
+    subPanelIcon,
+  } = props;
   const router = useRouter();
   const isMobile = useMediaMobile();
   const appLayout = useAppLayout();
@@ -58,8 +70,8 @@ export default function AppLayout(props: Props): JSX.Element {
   const turnSubIntoContent = subPanel && !contentPanel;
 
   const titlePrefix = "Accord’s Library";
-  const metaImage: OgImage = props.thumbnail
-    ? getOgImage(ImageQuality.Og, props.thumbnail)
+  const metaImage: OgImage = thumbnail
+    ? getOgImage(ImageQuality.Og, thumbnail)
     : {
         image: "/default_og.jpg",
         width: 1200,
@@ -67,9 +79,9 @@ export default function AppLayout(props: Props): JSX.Element {
         alt: "Accord's Library Logo",
       };
   const ogTitle =
-    props.title ?? props.navTitle ?? prettySlug(router.asPath.split("/").pop());
+    title ?? navTitle ?? prettySlug(router.asPath.split("/").pop());
 
-  const metaDescription = props.description ?? langui.default_description ?? "";
+  const metaDescription = description ?? langui.default_description ?? "";
 
   useEffect(() => {
     document.getElementsByTagName("html")[0].style.fontSize = `${
@@ -114,7 +126,7 @@ export default function AppLayout(props: Props): JSX.Element {
   }, [currencySelect]);
 
   let gridCol = "";
-  if (props.subPanel) {
+  if (subPanel) {
     if (appLayout.mainPanelReduced) {
       gridCol = "grid-cols-[6rem_20rem_1fr]";
     } else {
@@ -260,8 +272,8 @@ export default function AppLayout(props: Props): JSX.Element {
             {subPanel && !turnSubIntoContent
               ? appLayout.subPanelOpen
                 ? "close"
-                : props.subPanelIcon
-                ? props.subPanelIcon
+                : subPanelIcon
+                ? subPanelIcon
                 : "tune"
               : ""}
           </span>

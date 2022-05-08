@@ -9,15 +9,16 @@ import {
   DevGetContentsQuery,
   Enum_Componentsetstextset_Status,
 } from "graphql/generated";
-import { getReadySdk } from "graphql/sdk";
-import { GetStaticPropsContext } from "next";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
+import { getReadySdk } from "graphql/sdk";
+import { Immutable } from "helpers/types";
+import { GetStaticPropsContext } from "next";
 
 interface Props extends AppStaticProps {
   contents: DevGetContentsQuery;
 }
 
-export default function CheckupContents(props: Props): JSX.Element {
+export default function CheckupContents(props: Immutable<Props>): JSX.Element {
   const { contents } = props;
   const testReport = testingContent(contents);
 
@@ -112,7 +113,7 @@ type ReportLine = {
   frontendUrl: string;
 };
 
-function testingContent(contents: Props["contents"]): Report {
+function testingContent(contents: Immutable<Props["contents"]>): Report {
   const report: Report = {
     title: "Contents",
     lines: [],

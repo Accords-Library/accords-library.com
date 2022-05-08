@@ -1,7 +1,7 @@
-import { prettySlug } from "helpers/formatters";
 import { AppStaticProps } from "graphql/getAppStaticProps";
+import { prettySlug } from "helpers/formatters";
 import { getStatusDescription } from "helpers/others";
-import { Post } from "helpers/types";
+import { Immutable, PostWithTranslations } from "helpers/types";
 import useSmartLanguage from "hooks/useSmartLanguage";
 import AppLayout from "./AppLayout";
 import Chip from "./Chip";
@@ -16,7 +16,7 @@ import ThumbnailHeader from "./ThumbnailHeader";
 import ToolTip from "./ToolTip";
 
 interface Props {
-  post: Post;
+  post: PostWithTranslations;
   langui: AppStaticProps["langui"];
   languages: AppStaticProps["languages"];
   currencies: AppStaticProps["currencies"];
@@ -31,7 +31,7 @@ interface Props {
   appendBody?: JSX.Element;
 }
 
-export default function PostPage(props: Props): JSX.Element {
+export default function PostPage(props: Immutable<Props>): JSX.Element {
   const {
     post,
     langui,

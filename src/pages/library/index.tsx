@@ -9,14 +9,15 @@ import ContentPanel, {
 import SubPanel from "components/Panels/SubPanel";
 import ThumbnailPreview from "components/PreviewCard";
 import { GetLibraryItemsPreviewQuery } from "graphql/generated";
+import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import {
   prettyDate,
   prettyinlineTitle,
   prettyItemSubType,
 } from "helpers/formatters";
-import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { convertPrice } from "helpers/numbers";
+import { Immutable } from "helpers/types";
 import { GetStaticPropsContext } from "next";
 import { useEffect, useState } from "react";
 
@@ -27,9 +28,9 @@ interface Props extends AppStaticProps {
   >["data"];
 }
 
-type GroupLibraryItems = Map<string, Props["items"]>;
+type GroupLibraryItems = Map<string, Immutable<Props["items"]>>;
 
-export default function Library(props: Props): JSX.Element {
+export default function Library(props: Immutable<Props>): JSX.Element {
   const { langui, items: libraryItems, currencies } = props;
 
   const [showSubitems, setShowSubitems] = useState<boolean>(false);
@@ -39,7 +40,7 @@ export default function Library(props: Props): JSX.Element {
   const [groupingMethod, setGroupingMethod] = useState<number>(-1);
   const [keepInfoVisible, setKeepInfoVisible] = useState(false);
 
-  const [filteredItems, setFilteredItems] = useState<Props["items"]>(
+  const [filteredItems, setFilteredItems] = useState(
     filterItems(
       showSubitems,
       showPrimaryItems,
@@ -48,11 +49,11 @@ export default function Library(props: Props): JSX.Element {
     )
   );
 
-  const [sortedItems, setSortedItem] = useState<Props["items"]>(
+  const [sortedItems, setSortedItem] = useState(
     sortBy(groupingMethod, filteredItems, currencies)
   );
 
-  const [groups, setGroups] = useState<GroupLibraryItems>(
+  const [groups, setGroups] = useState(
     getGroups(langui, groupingMethod, sortedItems)
   );
 
@@ -224,7 +225,7 @@ export async function getStaticProps(
 function getGroups(
   langui: AppStaticProps["langui"],
   groupByType: number,
-  items: Props["items"]
+  items: Immutable<Props["items"]>
 ): GroupLibraryItems {
   switch (groupByType) {
     case 0: {
@@ -262,7 +263,7 @@ function getGroups(
     }
 
     case 1: {
-      const group: GroupLibraryItems = new Map();
+      const group = new Map();
       group.set(langui.audio ?? "Audio", []);
       group.set(langui.game ?? "Game", []);
       group.set(langui.textual ?? "Textual", []);
@@ -334,7 +335,7 @@ function getGroups(
             years.push(item.attributes.release_date.year);
         }
       });
-      const group: GroupLibraryItems = new Map();
+      const group = new Map();
       years.sort((a, b) => a - b);
       years.map((year) => {
         group.set(year.toString(), []);
@@ -352,7 +353,7 @@ function getGroups(
     }
 
     default: {
-      const group: GroupLibraryItems = new Map();
+      const group = new Map();
       group.set("", items);
       return group;
     }
@@ -363,9 +364,10 @@ function filterItems(
   showSubitems: boolean,
   showPrimaryItems: boolean,
   showSecondaryItems: boolean,
-  items: Props["items"]
-): Props["items"] {
-  return [...items].filter((item) => {
+  items: Immutable<Props["items"]>
+): Immutable<Props["items"]> {
+  const fileredItems = [...items] as Props["items"];
+  fileredItems.filter((item) => {
     if (!showSubitems && !item.attributes?.root_item) return false;
     if (
       showSubitems &&
@@ -380,13 +382,14 @@ function filterItems(
     if (!item.attributes?.primary && !showSecondaryItems) return false;
     return true;
   });
+  return fileredItems as Immutable<Props["items"]>;
 }
 
 function sortBy(
   orderByType: number,
-  items: Props["items"],
+  items: Immutable<Props["items"]>,
   currencies: AppStaticProps["currencies"]
-): Props["items"] {
+): Immutable<Props["items"]> {
   switch (orderByType) {
     case 0:
       return [...items].sort((a, b) => {

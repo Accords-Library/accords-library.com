@@ -6,6 +6,7 @@ import ToolTip from "components/ToolTip";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { slugify } from "helpers/formatters";
 import { getAssetURL, ImageQuality } from "helpers/img";
+import { Immutable } from "helpers/types";
 import Markdown from "markdown-to-jsx";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
@@ -16,7 +17,7 @@ interface Props {
   text: string;
 }
 
-export default function Markdawn(props: Props): JSX.Element {
+export default function Markdawn(props: Immutable<Props>): JSX.Element {
   const appLayout = useAppLayout();
   const text = preprocessMarkDawn(props.text);
 

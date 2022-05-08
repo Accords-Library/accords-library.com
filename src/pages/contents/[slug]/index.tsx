@@ -13,14 +13,15 @@ import RecorderChip from "components/RecorderChip";
 import ThumbnailHeader from "components/ThumbnailHeader";
 import ToolTip from "components/ToolTip";
 import { GetContentTextQuery } from "graphql/generated";
+import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import {
   prettyinlineTitle,
   prettyLanguage,
   prettySlug,
 } from "helpers/formatters";
-import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getStatusDescription } from "helpers/others";
+import { Immutable } from "helpers/types";
 import { useMediaMobile } from "hooks/useMediaQuery";
 import useSmartLanguage from "hooks/useSmartLanguage";
 import {
@@ -40,7 +41,7 @@ interface Props extends AppStaticProps {
   >["data"][number]["id"];
 }
 
-export default function Content(props: Props): JSX.Element {
+export default function Content(props: Immutable<Props>): JSX.Element {
   const { langui, content, languages } = props;
   const isMobile = useMediaMobile();
 

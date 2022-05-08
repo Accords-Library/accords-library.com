@@ -9,19 +9,20 @@ import ContentPanel, {
 import SubPanel from "components/Panels/SubPanel";
 import ThumbnailPreview from "components/PreviewCard";
 import { GetContentsQuery } from "graphql/generated";
-import { getReadySdk } from "graphql/sdk";
-import { GetStaticPropsContext } from "next";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
+import { getReadySdk } from "graphql/sdk";
+import { prettyinlineTitle, prettySlug } from "helpers/formatters";
+import { Immutable } from "helpers/types";
+import { GetStaticPropsContext } from "next";
 import { useEffect, useState } from "react";
-import { prettySlug, prettyinlineTitle } from "helpers/formatters";
 
 interface Props extends AppStaticProps {
   contents: Exclude<GetContentsQuery["contents"], null | undefined>["data"];
 }
 
-type GroupContentItems = Map<string, Props["contents"]>;
+type GroupContentItems = Map<string, Immutable<Props["contents"]>>;
 
-export default function Contents(props: Props): JSX.Element {
+export default function Contents(props: Immutable<Props>): JSX.Element {
   const { langui, contents } = props;
 
   const [groupingMethod, setGroupingMethod] = useState<number>(-1);
@@ -172,7 +173,7 @@ export async function getStaticProps(
 function getGroups(
   langui: AppStaticProps["langui"],
   groupByType: number,
-  items: Props["contents"]
+  items: Immutable<Props["contents"]>
 ): GroupContentItems {
   switch (groupByType) {
     case 0: {
@@ -209,7 +210,7 @@ function getGroups(
     }
 
     case 1: {
-      const group: GroupContentItems = new Map();
+      const group = new Map();
       items.map((item) => {
         const type =
           item.attributes?.type?.data?.attributes?.titles?.[0]?.title ??

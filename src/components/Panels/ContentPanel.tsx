@@ -1,3 +1,5 @@
+import { Immutable } from "helpers/types";
+
 interface Props {
   children: React.ReactNode;
   autoformat?: boolean;
@@ -9,7 +11,7 @@ export enum ContentPanelWidthSizes {
   large = "large",
 }
 
-export default function ContentPanel(props: Props): JSX.Element {
+export default function ContentPanel(props: Immutable<Props>): JSX.Element {
   const width = props.width ? props.width : ContentPanelWidthSizes.default;
   const widthCSS =
     width === ContentPanelWidthSizes.default ? "max-w-2xl" : "w-full";

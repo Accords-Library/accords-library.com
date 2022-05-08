@@ -1,14 +1,15 @@
 import LanguageSwitcher from "components/Inputs/LanguageSwitcher";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { AppStaticProps } from "graphql/getAppStaticProps";
+import { Immutable } from "helpers/types";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
 
 interface Props<T> {
-  items: T[];
+  items: Immutable<T[]>;
   languages: AppStaticProps["languages"];
-  languageExtractor: (item: T) => string | undefined;
-  transform?: (item: T) => T;
+  languageExtractor: (item: Immutable<T>) => string | undefined;
+  transform?: (item: Immutable<T>) => Immutable<T>;
 }
 
 function getPreferredLanguage(
@@ -25,7 +26,7 @@ function getPreferredLanguage(
 
 export default function useSmartLanguage<T>(
   props: Props<T>
-): [T | undefined, () => JSX.Element] {
+): [Immutable<T | undefined>, () => JSX.Element] {
   const {
     items,
     languageExtractor,
@@ -39,7 +40,8 @@ export default function useSmartLanguage<T>(
   const [selectedTranslationIndex, setSelectedTranslationIndex] = useState<
     number | undefined
   >();
-  const [selectedTranslation, setSelectedTranslation] = useState<T>();
+  const [selectedTranslation, setSelectedTranslation] =
+    useState<Immutable<T>>();
 
   useEffect(() => {
     items.map((elem, index) => {
@@ -58,8 +60,9 @@ export default function useSmartLanguage<T>(
   }, [appLayout.preferredLanguages, availableLocales, router.locale]);
 
   useEffect(() => {
-    if (selectedTranslationIndex !== undefined)
+    if (selectedTranslationIndex !== undefined) {
       setSelectedTranslation(transform(items[selectedTranslationIndex]));
+    }
   }, [items, selectedTranslationIndex, transform]);
 
   return [

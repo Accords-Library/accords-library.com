@@ -1,8 +1,9 @@
 import { DatePickerFragment, PricePickerFragment } from "graphql/generated";
 import { AppStaticProps } from "../graphql/getAppStaticProps";
 import { convertPrice } from "./numbers";
+import { Immutable } from "./types";
 
-export function prettyDate(datePicker: DatePickerFragment): string {
+export function prettyDate(datePicker: Immutable<DatePickerFragment>): string {
   let result = "";
   if (datePicker.year) result += datePicker.year.toString();
   if (datePicker.month)
@@ -13,7 +14,7 @@ export function prettyDate(datePicker: DatePickerFragment): string {
 }
 
 export function prettyPrice(
-  pricePicker: PricePickerFragment,
+  pricePicker: Immutable<PricePickerFragment>,
   currencies: AppStaticProps["currencies"],
   targetCurrencyCode?: string
 ): string {
@@ -57,7 +58,7 @@ export function prettyinlineTitle(
 }
 
 export function prettyItemType(
-  metadata: any,
+  metadata: Immutable<any>,
   langui: AppStaticProps["langui"]
 ): string | undefined | null {
   switch (metadata.__typename) {
@@ -79,7 +80,7 @@ export function prettyItemType(
 }
 
 export function prettyItemSubType(
-  metadata:
+  metadata: Immutable<
     | {
         __typename: "ComponentMetadataAudio";
         subtype?: {
@@ -156,6 +157,7 @@ export function prettyItemSubType(
       }
     | { __typename: "Error" }
     | null
+  >
 ): string {
   if (metadata) {
     switch (metadata.__typename) {

@@ -1,3 +1,4 @@
+import { Immutable } from "helpers/types";
 import { Dispatch, SetStateAction } from "react";
 import Hotkeys from "react-hot-keys";
 import { useSwipeable } from "react-swipeable";
@@ -15,7 +16,7 @@ interface Props {
   setIndex: Dispatch<SetStateAction<number>>;
 }
 
-export default function LightBox(props: Props): JSX.Element {
+export default function LightBox(props: Immutable<Props>): JSX.Element {
   const { state, setState, images, index, setIndex } = props;
 
   function handlePrevious() {

@@ -1,5 +1,6 @@
 import { UploadImageFragment } from "graphql/generated";
-import { ImageQuality, getImgSizesByQuality, getAssetURL } from "helpers/img";
+import { getAssetURL, getImgSizesByQuality, ImageQuality } from "helpers/img";
+import { Immutable } from "helpers/types";
 import Image, { ImageProps } from "next/image";
 
 interface Props {
@@ -12,7 +13,7 @@ interface Props {
   priority?: ImageProps["priority"];
 }
 
-export default function Img(props: Props): JSX.Element {
+export default function Img(props: Immutable<Props>): JSX.Element {
   if (typeof props.image === "string") {
     return (
       <img

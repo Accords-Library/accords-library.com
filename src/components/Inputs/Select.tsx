@@ -1,3 +1,4 @@
+import { Immutable } from "helpers/types";
 import { Dispatch, SetStateAction, useState } from "react";
 
 interface Props {
@@ -9,7 +10,7 @@ interface Props {
   className?: string;
 }
 
-export default function Select(props: Props): JSX.Element {
+export default function Select(props: Immutable<Props>): JSX.Element {
   const [opened, setOpened] = useState(false);
 
   return (

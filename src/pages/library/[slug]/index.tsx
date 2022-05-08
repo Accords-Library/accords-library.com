@@ -21,6 +21,7 @@ import {
   Enum_Componentmetadatabooks_Page_Order,
   GetLibraryItemQuery,
 } from "graphql/generated";
+import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import {
   prettyDate,
@@ -30,10 +31,10 @@ import {
   prettyPrice,
   prettyURL,
 } from "helpers/formatters";
-import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
-import { sortContent } from "helpers/others";
 import { getAssetURL, ImageQuality } from "helpers/img";
 import { convertMmToInch } from "helpers/numbers";
+import { sortContent } from "helpers/others";
+import { Immutable } from "helpers/types";
 import {
   GetStaticPathsContext,
   GetStaticPathsResult,
@@ -52,7 +53,7 @@ interface Props extends AppStaticProps {
   >["data"][number]["id"];
 }
 
-export default function LibrarySlug(props: Props): JSX.Element {
+export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
   const { item, langui, currencies } = props;
   const appLayout = useAppLayout();
 

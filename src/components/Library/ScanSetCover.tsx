@@ -7,8 +7,9 @@ import {
   UploadImageFragment,
 } from "graphql/generated";
 import { AppStaticProps } from "graphql/getAppStaticProps";
-import { getStatusDescription } from "helpers/others";
 import { getAssetURL, ImageQuality } from "helpers/img";
+import { getStatusDescription } from "helpers/others";
+import { Immutable } from "helpers/types";
 import useSmartLanguage from "hooks/useSmartLanguage";
 import { Dispatch, SetStateAction } from "react";
 
@@ -30,7 +31,7 @@ interface Props {
   langui: AppStaticProps["langui"];
 }
 
-export default function ScanSetCover(props: Props): JSX.Element {
+export default function ScanSetCover(props: Immutable<Props>): JSX.Element {
   const {
     setLightboxOpen,
     setLightboxImages,

@@ -1,7 +1,7 @@
 import HorizontalLine from "components/HorizontalLine";
 import Button from "components/Inputs/Button";
 import { useAppLayout } from "contexts/AppLayoutContext";
-import { AppStaticProps } from "helpers/getAppStaticProps";
+import { AppStaticProps } from "graphql/getAppStaticProps";
 
 interface Props {
   href: string;

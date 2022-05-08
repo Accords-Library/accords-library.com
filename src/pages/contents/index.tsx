@@ -11,7 +11,7 @@ import ThumbnailPreview from "components/PreviewCard";
 import { GetContentsQuery } from "graphql/generated";
 import { getReadySdk } from "graphql/sdk";
 import { GetStaticPropsContext } from "next";
-import { AppStaticProps, getAppStaticProps } from "helpers/getAppStaticProps";
+import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { useEffect, useState } from "react";
 import { prettySlug, prettyinlineTitle } from "helpers/formatters";
 

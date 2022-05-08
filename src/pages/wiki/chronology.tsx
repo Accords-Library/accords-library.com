@@ -11,7 +11,7 @@ import { useAppLayout } from "contexts/AppLayoutContext";
 import { GetChronologyItemsQuery, GetErasQuery } from "graphql/generated";
 import { getReadySdk } from "graphql/sdk";
 import { prettySlug } from "helpers/formatters";
-import { AppStaticProps, getAppStaticProps } from "helpers/getAppStaticProps";
+import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { GetStaticPropsContext } from "next";
 
 interface Props extends AppStaticProps {

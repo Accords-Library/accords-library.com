@@ -2,7 +2,7 @@ import InsetBox from "components/InsetBox";
 import PostPage from "components/PostPage";
 import { randomInt } from "crypto";
 import { getReadySdk } from "graphql/sdk";
-import { AppStaticProps, getAppStaticProps } from "helpers/getAppStaticProps";
+import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { Post } from "helpers/types";
 import { GetStaticPropsContext } from "next";
 import { useRouter } from "next/router";

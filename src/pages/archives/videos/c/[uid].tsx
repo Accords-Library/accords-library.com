@@ -11,7 +11,7 @@ import SubPanel from "components/Panels/SubPanel";
 import ThumbnailPreview from "components/PreviewCard";
 import { GetVideoChannelQuery } from "graphql/generated";
 import { getReadySdk } from "graphql/sdk";
-import { AppStaticProps, getAppStaticProps } from "helpers/getAppStaticProps";
+import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getVideoThumbnailURL } from "helpers/videos";
 import {
   GetStaticPathsContext,

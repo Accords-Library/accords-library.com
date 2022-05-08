@@ -10,7 +10,7 @@ import {
   prettyPrice,
   prettyShortenNumber,
 } from "helpers/formatters";
-import { AppStaticProps } from "helpers/getAppStaticProps";
+import { AppStaticProps } from "graphql/getAppStaticProps";
 import { ImageQuality } from "helpers/img";
 import Link from "next/link";
 import Chip from "./Chip";

@@ -1,5 +1,5 @@
 import { prettyLanguage } from "helpers/formatters";
-import { AppStaticProps } from "helpers/getAppStaticProps";
+import { AppStaticProps } from "graphql/getAppStaticProps";
 import { Dispatch, SetStateAction } from "react";
 import ToolTip from "../ToolTip";
 import Button from "./Button";

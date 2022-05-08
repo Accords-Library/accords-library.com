@@ -2,7 +2,7 @@ import Button from "components/Inputs/Button";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { UploadImageFragment } from "graphql/generated";
 import { prettyLanguage, prettySlug } from "helpers/formatters";
-import { AppStaticProps } from "helpers/getAppStaticProps";
+import { AppStaticProps } from "graphql/getAppStaticProps";
 import { getOgImage, ImageQuality, OgImage } from "helpers/img";
 import { useMediaMobile } from "hooks/useMediaQuery";
 import Head from "next/head";

@@ -6,7 +6,7 @@ import {
   GetLibraryItemScansQuery,
   UploadImageFragment,
 } from "graphql/generated";
-import { AppStaticProps } from "helpers/getAppStaticProps";
+import { AppStaticProps } from "graphql/getAppStaticProps";
 import { getStatusDescription } from "helpers/others";
 import { getAssetURL, ImageQuality } from "helpers/img";
 import useSmartLanguage from "hooks/useSmartLanguage";

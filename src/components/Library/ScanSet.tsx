@@ -4,7 +4,7 @@ import Button from "components/Inputs/Button";
 import RecorderChip from "components/RecorderChip";
 import ToolTip from "components/ToolTip";
 import { GetLibraryItemScansQuery } from "graphql/generated";
-import { AppStaticProps } from "helpers/getAppStaticProps";
+import { AppStaticProps } from "graphql/getAppStaticProps";
 import { getStatusDescription } from "helpers/others";
 import { getAssetFilename, getAssetURL, ImageQuality } from "helpers/img";
 import { isInteger } from "helpers/numbers";

@@ -1,7 +1,7 @@
 import PostPage from "components/PostPage";
 import { GetPostQuery } from "graphql/generated";
 import { getReadySdk } from "graphql/sdk";
-import { AppStaticProps, getAppStaticProps } from "helpers/getAppStaticProps";
+import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { Post } from "helpers/types";
 import {
   GetStaticPathsContext,

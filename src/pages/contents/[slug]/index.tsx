@@ -19,7 +19,7 @@ import {
   prettyLanguage,
   prettySlug,
 } from "helpers/formatters";
-import { AppStaticProps, getAppStaticProps } from "helpers/getAppStaticProps";
+import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getStatusDescription } from "helpers/others";
 import { useMediaMobile } from "hooks/useMediaQuery";
 import useSmartLanguage from "hooks/useSmartLanguage";

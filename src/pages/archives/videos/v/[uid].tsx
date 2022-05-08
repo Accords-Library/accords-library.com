@@ -19,7 +19,7 @@ import {
   GetStaticPathsResult,
   GetStaticPropsContext,
 } from "next";
-import { AppStaticProps, getAppStaticProps } from "helpers/getAppStaticProps";
+import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { prettyDate, prettyShortenNumber } from "helpers/formatters";
 import { getVideoFile } from "helpers/videos";
 

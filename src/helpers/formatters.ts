@@ -1,5 +1,5 @@
 import { DatePickerFragment, PricePickerFragment } from "graphql/generated";
-import { AppStaticProps } from "./getAppStaticProps";
+import { AppStaticProps } from "../graphql/getAppStaticProps";
 import { convertPrice } from "./numbers";
 
 export function prettyDate(datePicker: DatePickerFragment): string {

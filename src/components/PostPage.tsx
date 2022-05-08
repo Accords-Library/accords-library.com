@@ -1,5 +1,5 @@
 import { prettySlug } from "helpers/formatters";
-import { AppStaticProps } from "helpers/getAppStaticProps";
+import { AppStaticProps } from "graphql/getAppStaticProps";
 import { getStatusDescription } from "helpers/others";
 import { Post } from "helpers/types";
 import useSmartLanguage from "hooks/useSmartLanguage";

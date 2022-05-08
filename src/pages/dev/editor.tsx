@@ -7,7 +7,7 @@ import ContentPanel, {
 import Popup from "components/Popup";
 import ToolTip from "components/ToolTip";
 import { GetStaticPropsContext } from "next";
-import { AppStaticProps, getAppStaticProps } from "helpers/getAppStaticProps";
+import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { useCallback, useState } from "react";
 import TurndownService from "turndown";
 

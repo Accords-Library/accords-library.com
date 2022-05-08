@@ -14,7 +14,7 @@ import { useAppLayout } from "contexts/AppLayoutContext";
 import { GetLibraryItemScansQuery } from "graphql/generated";
 import { getReadySdk } from "graphql/sdk";
 import { prettyinlineTitle, prettySlug } from "helpers/formatters";
-import { AppStaticProps, getAppStaticProps } from "helpers/getAppStaticProps";
+import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { sortContent } from "helpers/others";
 import {
   GetStaticPathsContext,

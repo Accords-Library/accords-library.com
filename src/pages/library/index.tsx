@@ -15,7 +15,7 @@ import {
   prettyinlineTitle,
   prettyItemSubType,
 } from "helpers/formatters";
-import { AppStaticProps, getAppStaticProps } from "helpers/getAppStaticProps";
+import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { convertPrice } from "helpers/numbers";
 import { GetStaticPropsContext } from "next";
 import { useEffect, useState } from "react";

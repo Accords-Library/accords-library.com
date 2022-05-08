@@ -4,7 +4,7 @@ import {
   Enum_Componenttranslationschronologyitem_Status,
   GetChronologyItemsQuery,
 } from "graphql/generated";
-import { AppStaticProps } from "helpers/getAppStaticProps";
+import { AppStaticProps } from "graphql/getAppStaticProps";
 import { getStatusDescription } from "helpers/others";
 
 interface Props {

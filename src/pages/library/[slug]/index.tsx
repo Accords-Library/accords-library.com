@@ -30,7 +30,7 @@ import {
   prettyPrice,
   prettyURL,
 } from "helpers/formatters";
-import { AppStaticProps, getAppStaticProps } from "helpers/getAppStaticProps";
+import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { sortContent } from "helpers/others";
 import { getAssetURL, ImageQuality } from "helpers/img";
 import { convertMmToInch } from "helpers/numbers";

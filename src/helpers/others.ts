@@ -3,7 +3,7 @@ import {
   GetLibraryItemQuery,
   GetLibraryItemScansQuery,
 } from "graphql/generated";
-import { AppStaticProps } from "./getAppStaticProps";
+import { AppStaticProps } from "../graphql/getAppStaticProps";
 
 export function sortContent(
   contents:

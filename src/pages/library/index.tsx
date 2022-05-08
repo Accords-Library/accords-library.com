@@ -11,13 +11,13 @@ import ThumbnailPreview from "components/PreviewCard";
 import { GetLibraryItemsPreviewQuery } from "graphql/generated";
 import { getReadySdk } from "graphql/sdk";
 import { GetStaticPropsContext } from "next";
-import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
+import { AppStaticProps, getAppStaticProps } from "helpers/getAppStaticProps";
 import {
   convertPrice,
   prettyDate,
   prettyinlineTitle,
   prettyItemSubType,
-} from "queries/helpers";
+} from "helpers/helpers";
 import { useEffect, useState } from "react";
 
 interface Props extends AppStaticProps {

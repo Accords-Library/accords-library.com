@@ -4,8 +4,8 @@ import { getReadySdk } from "graphql/sdk";
 import { GetStaticPropsContext } from "next";
 import { useRouter } from "next/router";
 import { RequestMailProps, ResponseMailProps } from "pages/api/mail";
-import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
-import { randomInt } from "queries/helpers";
+import { AppStaticProps, getAppStaticProps } from "helpers/getAppStaticProps";
+import { randomInt } from "helpers/helpers";
 import { useState } from "react";
 
 interface Props extends AppStaticProps {

@@ -11,8 +11,8 @@ import { useAppLayout } from "contexts/AppLayoutContext";
 import { GetChronologyItemsQuery, GetErasQuery } from "graphql/generated";
 import { getReadySdk } from "graphql/sdk";
 import { GetStaticPropsContext } from "next";
-import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
-import { prettySlug } from "queries/helpers";
+import { AppStaticProps, getAppStaticProps } from "helpers/getAppStaticProps";
+import { prettySlug } from "helpers/helpers";
 
 interface Props extends AppStaticProps {
   chronologyItems: Exclude<

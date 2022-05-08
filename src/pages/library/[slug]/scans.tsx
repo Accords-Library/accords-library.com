@@ -18,8 +18,8 @@ import {
   GetStaticPathsResult,
   GetStaticPropsContext,
 } from "next";
-import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
-import { prettyinlineTitle, prettySlug, sortContent } from "queries/helpers";
+import { AppStaticProps, getAppStaticProps } from "helpers/getAppStaticProps";
+import { prettyinlineTitle, prettySlug, sortContent } from "helpers/helpers";
 import { useState } from "react";
 
 interface Props extends AppStaticProps {

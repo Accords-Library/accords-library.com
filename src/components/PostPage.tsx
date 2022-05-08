@@ -1,7 +1,7 @@
 import { GetPostQuery } from "graphql/generated";
 import useSmartLanguage from "hooks/useSmartLanguage";
-import { AppStaticProps } from "queries/getAppStaticProps";
-import { getStatusDescription, prettySlug } from "queries/helpers";
+import { AppStaticProps } from "helpers/getAppStaticProps";
+import { getStatusDescription, prettySlug } from "helpers/helpers";
 import AppLayout from "./AppLayout";
 import Chip from "./Chip";
 import HorizontalLine from "./HorizontalLine";

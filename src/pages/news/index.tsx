@@ -9,8 +9,8 @@ import ThumbnailPreview from "components/PreviewCard";
 import { GetPostsPreviewQuery } from "graphql/generated";
 import { getReadySdk } from "graphql/sdk";
 import { GetStaticPropsContext } from "next";
-import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
-import { prettyDate, prettySlug } from "queries/helpers";
+import { AppStaticProps, getAppStaticProps } from "helpers/getAppStaticProps";
+import { prettyDate, prettySlug } from "helpers/helpers";
 import { useState } from "react";
 
 interface Props extends AppStaticProps {

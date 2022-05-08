@@ -3,7 +3,7 @@ import NavOption from "components/PanelComponents/NavOption";
 import PanelHeader from "components/PanelComponents/PanelHeader";
 import SubPanel from "components/Panels/SubPanel";
 import { GetStaticPropsContext } from "next";
-import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
+import { AppStaticProps, getAppStaticProps } from "helpers/getAppStaticProps";
 
 interface Props extends AppStaticProps {}
 

@@ -13,8 +13,8 @@ import ThumbnailPreview from "components/PreviewCard";
 import { GetVideosPreviewQuery } from "graphql/generated";
 import { getReadySdk } from "graphql/sdk";
 import { GetStaticPropsContext } from "next";
-import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
-import { getVideoThumbnailURL, prettyDate } from "queries/helpers";
+import { AppStaticProps, getAppStaticProps } from "helpers/getAppStaticProps";
+import { getVideoThumbnailURL, prettyDate } from "helpers/helpers";
 import { useState } from "react";
 
 interface Props extends AppStaticProps {

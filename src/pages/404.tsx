@@ -4,7 +4,7 @@ import ReturnButton, {
 } from "components/PanelComponents/ReturnButton";
 import ContentPanel from "components/Panels/ContentPanel";
 import { GetStaticPropsContext } from "next";
-import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
+import { AppStaticProps, getAppStaticProps } from "helpers/getAppStaticProps";
 
 interface Props extends AppStaticProps {}
 

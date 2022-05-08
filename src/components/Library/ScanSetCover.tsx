@@ -7,8 +7,8 @@ import {
   UploadImageFragment,
 } from "graphql/generated";
 import useSmartLanguage from "hooks/useSmartLanguage";
-import { AppStaticProps } from "queries/getAppStaticProps";
-import { getStatusDescription } from "queries/helpers";
+import { AppStaticProps } from "helpers/getAppStaticProps";
+import { getStatusDescription } from "helpers/helpers";
 import { Dispatch, SetStateAction } from "react";
 
 interface Props {

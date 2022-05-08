@@ -6,7 +6,7 @@ import { useAppLayout } from "contexts/AppLayoutContext";
 import { useMediaDesktop } from "hooks/useMediaQuery";
 import Markdown from "markdown-to-jsx";
 import Link from "next/link";
-import { AppStaticProps } from "queries/getAppStaticProps";
+import { AppStaticProps } from "helpers/getAppStaticProps";
 
 interface Props {
   langui: AppStaticProps["langui"];

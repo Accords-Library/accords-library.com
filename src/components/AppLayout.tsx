@@ -4,13 +4,13 @@ import { UploadImageFragment } from "graphql/generated";
 import { useMediaMobile } from "hooks/useMediaQuery";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { AppStaticProps } from "queries/getAppStaticProps";
+import { AppStaticProps } from "helpers/getAppStaticProps";
 import {
   getOgImage,
   OgImage,
   prettyLanguage,
   prettySlug,
-} from "queries/helpers";
+} from "helpers/helpers";
 import { useEffect, useState } from "react";
 import { useSwipeable } from "react-swipeable";
 import { ImageQuality } from "./Img";

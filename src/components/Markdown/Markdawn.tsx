@@ -6,7 +6,7 @@ import ToolTip from "components/ToolTip";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import Markdown from "markdown-to-jsx";
 import { useRouter } from "next/router";
-import { slugify } from "queries/helpers";
+import { slugify } from "helpers/helpers";
 import React, { useState } from "react";
 import ReactDOMServer from "react-dom/server";
 

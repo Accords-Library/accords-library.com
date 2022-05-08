@@ -21,13 +21,13 @@ import {
   GetStaticPathsResult,
   GetStaticPropsContext,
 } from "next";
-import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
+import { AppStaticProps, getAppStaticProps } from "helpers/getAppStaticProps";
 import {
   getStatusDescription,
   prettyinlineTitle,
   prettyLanguage,
   prettySlug,
-} from "queries/helpers";
+} from "helpers/helpers";
 
 interface Props extends AppStaticProps {
   content: Exclude<

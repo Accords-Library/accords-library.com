@@ -1,6 +1,6 @@
 import ChronologyItemComponent from "components/Wiki/Chronology/ChronologyItemComponent";
 import { GetChronologyItemsQuery } from "graphql/generated";
-import { AppStaticProps } from "queries/getAppStaticProps";
+import { AppStaticProps } from "helpers/getAppStaticProps";
 
 interface Props {
   year: number;

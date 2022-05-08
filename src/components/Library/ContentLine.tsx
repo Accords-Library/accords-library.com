@@ -1,8 +1,8 @@
 import Chip from "components/Chip";
 import Button from "components/Inputs/Button";
 import { GetLibraryItemQuery } from "graphql/generated";
-import { AppStaticProps } from "queries/getAppStaticProps";
-import { prettyinlineTitle, prettySlug } from "queries/helpers";
+import { AppStaticProps } from "helpers/getAppStaticProps";
+import { prettyinlineTitle, prettySlug } from "helpers/helpers";
 import { useState } from "react";
 
 interface Props {

@@ -6,7 +6,7 @@ import {
   GetStaticPathsResult,
   GetStaticPropsContext,
 } from "next";
-import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
+import { AppStaticProps, getAppStaticProps } from "helpers/getAppStaticProps";
 
 interface Props extends AppStaticProps {
   post: Post;

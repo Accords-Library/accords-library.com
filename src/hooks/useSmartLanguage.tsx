@@ -1,8 +1,8 @@
 import LanguageSwitcher from "components/Inputs/LanguageSwitcher";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { useRouter } from "next/router";
-import { AppStaticProps } from "queries/getAppStaticProps";
-import { getPreferredLanguage } from "queries/helpers";
+import { AppStaticProps } from "helpers/getAppStaticProps";
+import { getPreferredLanguage } from "helpers/helpers";
 import { useEffect, useMemo, useState } from "react";
 
 interface Props<T> {

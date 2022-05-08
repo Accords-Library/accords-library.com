@@ -27,7 +27,7 @@ import {
   GetStaticPathsResult,
   GetStaticPropsContext,
 } from "next";
-import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
+import { AppStaticProps, getAppStaticProps } from "helpers/getAppStaticProps";
 import {
   convertMmToInch,
   prettyDate,
@@ -37,7 +37,7 @@ import {
   prettyPrice,
   prettyURL,
   sortContent,
-} from "queries/helpers";
+} from "helpers/helpers";
 import { useState } from "react";
 
 interface Props extends AppStaticProps {

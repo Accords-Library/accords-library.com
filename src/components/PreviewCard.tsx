@@ -5,13 +5,13 @@ import {
   UploadImageFragment,
 } from "graphql/generated";
 import Link from "next/link";
-import { AppStaticProps } from "queries/getAppStaticProps";
+import { AppStaticProps } from "helpers/getAppStaticProps";
 import {
   prettyDate,
   prettyDuration,
   prettyPrice,
   prettyShortenNumber,
-} from "queries/helpers";
+} from "helpers/helpers";
 import Chip from "./Chip";
 import Img, { ImageQuality } from "./Img";
 

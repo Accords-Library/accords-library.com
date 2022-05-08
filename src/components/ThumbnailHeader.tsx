@@ -3,8 +3,8 @@ import Img, { ImageQuality } from "components/Img";
 import InsetBox from "components/InsetBox";
 import Markdawn from "components/Markdown/Markdawn";
 import { GetContentQuery, UploadImageFragment } from "graphql/generated";
-import { AppStaticProps } from "queries/getAppStaticProps";
-import { prettyinlineTitle, prettySlug, slugify } from "queries/helpers";
+import { AppStaticProps } from "helpers/getAppStaticProps";
+import { prettyinlineTitle, prettySlug, slugify } from "helpers/helpers";
 
 interface Props {
   pre_title?: string | null | undefined;

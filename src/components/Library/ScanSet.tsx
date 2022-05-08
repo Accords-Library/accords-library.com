@@ -9,8 +9,8 @@ import RecorderChip from "components/RecorderChip";
 import ToolTip from "components/ToolTip";
 import { GetLibraryItemScansQuery } from "graphql/generated";
 import useSmartLanguage from "hooks/useSmartLanguage";
-import { AppStaticProps } from "queries/getAppStaticProps";
-import { getStatusDescription, isInteger } from "queries/helpers";
+import { AppStaticProps } from "helpers/getAppStaticProps";
+import { getStatusDescription, isInteger } from "helpers/helpers";
 import { Dispatch, SetStateAction } from "react";
 
 interface Props {

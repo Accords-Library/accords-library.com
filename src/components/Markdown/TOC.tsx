@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { slugify } from "queries/helpers";
+import { slugify } from "helpers/helpers";
 import { preprocessMarkDawn } from "./Markdawn";
 
 interface Props {

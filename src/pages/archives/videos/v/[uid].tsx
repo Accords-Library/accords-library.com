@@ -19,8 +19,8 @@ import {
   GetStaticPathsResult,
   GetStaticPropsContext,
 } from "next";
-import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
-import { getVideoFile, prettyDate, prettyShortenNumber } from "queries/helpers";
+import { AppStaticProps, getAppStaticProps } from "helpers/getAppStaticProps";
+import { getVideoFile, prettyDate, prettyShortenNumber } from "helpers/helpers";
 
 interface Props extends AppStaticProps {
   video: Exclude<

@@ -16,8 +16,8 @@ import {
   GetStaticPathsResult,
   GetStaticPropsContext,
 } from "next";
-import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
-import { getVideoThumbnailURL } from "queries/helpers";
+import { AppStaticProps, getAppStaticProps } from "helpers/getAppStaticProps";
+import { getVideoThumbnailURL } from "helpers/helpers";
 import { useState } from "react";
 
 interface Props extends AppStaticProps {

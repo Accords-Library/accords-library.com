@@ -1,19 +1,14 @@
 import Button from "components/Inputs/Button";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { UploadImageFragment } from "graphql/generated";
+import { prettyLanguage, prettySlug } from "helpers/formatters";
+import { AppStaticProps } from "helpers/getAppStaticProps";
+import { getOgImage, ImageQuality, OgImage } from "helpers/img";
 import { useMediaMobile } from "hooks/useMediaQuery";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { AppStaticProps } from "helpers/getAppStaticProps";
-import {
-  getOgImage,
-  OgImage,
-  prettyLanguage,
-  prettySlug,
-} from "helpers/helpers";
 import { useEffect, useState } from "react";
 import { useSwipeable } from "react-swipeable";
-import { ImageQuality } from "./Img";
 import OrderableList from "./Inputs/OrderableList";
 import Select from "./Inputs/Select";
 import MainPanel from "./Panels/MainPanel";

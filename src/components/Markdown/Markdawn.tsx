@@ -1,12 +1,13 @@
 import HorizontalLine from "components/HorizontalLine";
-import Img, { getAssetURL, ImageQuality } from "components/Img";
+import Img from "components/Img";
 import InsetBox from "components/InsetBox";
 import LightBox from "components/LightBox";
 import ToolTip from "components/ToolTip";
 import { useAppLayout } from "contexts/AppLayoutContext";
+import { slugify } from "helpers/formatters";
+import { getAssetURL, ImageQuality } from "helpers/img";
 import Markdown from "markdown-to-jsx";
 import { useRouter } from "next/router";
-import { slugify } from "helpers/helpers";
 import React, { useState } from "react";
 import ReactDOMServer from "react-dom/server";
 

@@ -5,7 +5,7 @@ import {
   GetChronologyItemsQuery,
 } from "graphql/generated";
 import { AppStaticProps } from "helpers/getAppStaticProps";
-import { getStatusDescription } from "helpers/helpers";
+import { getStatusDescription } from "helpers/others";
 
 interface Props {
   item: Exclude<

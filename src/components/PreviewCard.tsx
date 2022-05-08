@@ -4,16 +4,17 @@ import {
   PricePickerFragment,
   UploadImageFragment,
 } from "graphql/generated";
-import Link from "next/link";
-import { AppStaticProps } from "helpers/getAppStaticProps";
 import {
   prettyDate,
   prettyDuration,
   prettyPrice,
   prettyShortenNumber,
-} from "helpers/helpers";
+} from "helpers/formatters";
+import { AppStaticProps } from "helpers/getAppStaticProps";
+import { ImageQuality } from "helpers/img";
+import Link from "next/link";
 import Chip from "./Chip";
-import Img, { ImageQuality } from "./Img";
+import Img from "./Img";
 
 interface Props {
   thumbnail?: UploadImageFragment | string | null | undefined;

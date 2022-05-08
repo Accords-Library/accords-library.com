@@ -1,5 +1,5 @@
+import { prettyLanguage } from "helpers/formatters";
 import { AppStaticProps } from "helpers/getAppStaticProps";
-import { prettyLanguage } from "helpers/helpers";
 import { Dispatch, SetStateAction } from "react";
 import ToolTip from "../ToolTip";
 import Button from "./Button";

@@ -10,9 +10,9 @@ import ChronologyYearComponent from "components/Wiki/Chronology/ChronologyYearCo
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { GetChronologyItemsQuery, GetErasQuery } from "graphql/generated";
 import { getReadySdk } from "graphql/sdk";
-import { GetStaticPropsContext } from "next";
+import { prettySlug } from "helpers/formatters";
 import { AppStaticProps, getAppStaticProps } from "helpers/getAppStaticProps";
-import { prettySlug } from "helpers/helpers";
+import { GetStaticPropsContext } from "next";
 
 interface Props extends AppStaticProps {
   chronologyItems: Exclude<

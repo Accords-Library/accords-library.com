@@ -12,9 +12,10 @@ import SubPanel from "components/Panels/SubPanel";
 import ThumbnailPreview from "components/PreviewCard";
 import { GetVideosPreviewQuery } from "graphql/generated";
 import { getReadySdk } from "graphql/sdk";
-import { GetStaticPropsContext } from "next";
+import { prettyDate } from "helpers/formatters";
 import { AppStaticProps, getAppStaticProps } from "helpers/getAppStaticProps";
-import { getVideoThumbnailURL, prettyDate } from "helpers/helpers";
+import { getVideoThumbnailURL } from "helpers/videos";
+import { GetStaticPropsContext } from "next";
 import { useState } from "react";
 
 interface Props extends AppStaticProps {

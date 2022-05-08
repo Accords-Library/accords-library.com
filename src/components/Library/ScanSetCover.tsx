@@ -1,14 +1,15 @@
 import Chip from "components/Chip";
-import Img, { getAssetURL, ImageQuality } from "components/Img";
+import Img from "components/Img";
 import RecorderChip from "components/RecorderChip";
 import ToolTip from "components/ToolTip";
 import {
   GetLibraryItemScansQuery,
   UploadImageFragment,
 } from "graphql/generated";
-import useSmartLanguage from "hooks/useSmartLanguage";
 import { AppStaticProps } from "helpers/getAppStaticProps";
-import { getStatusDescription } from "helpers/helpers";
+import { getStatusDescription } from "helpers/others";
+import { getAssetURL, ImageQuality } from "helpers/img";
+import useSmartLanguage from "hooks/useSmartLanguage";
 import { Dispatch, SetStateAction } from "react";
 
 interface Props {

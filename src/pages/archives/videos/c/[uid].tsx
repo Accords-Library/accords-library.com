@@ -11,13 +11,13 @@ import SubPanel from "components/Panels/SubPanel";
 import ThumbnailPreview from "components/PreviewCard";
 import { GetVideoChannelQuery } from "graphql/generated";
 import { getReadySdk } from "graphql/sdk";
+import { AppStaticProps, getAppStaticProps } from "helpers/getAppStaticProps";
+import { getVideoThumbnailURL } from "helpers/videos";
 import {
   GetStaticPathsContext,
   GetStaticPathsResult,
   GetStaticPropsContext,
 } from "next";
-import { AppStaticProps, getAppStaticProps } from "helpers/getAppStaticProps";
-import { getVideoThumbnailURL } from "helpers/helpers";
 import { useState } from "react";
 
 interface Props extends AppStaticProps {

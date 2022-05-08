@@ -14,6 +14,13 @@ import ThumbnailHeader from "components/ThumbnailHeader";
 import ToolTip from "components/ToolTip";
 import { GetContentTextQuery } from "graphql/generated";
 import { getReadySdk } from "graphql/sdk";
+import {
+  prettyinlineTitle,
+  prettyLanguage,
+  prettySlug,
+} from "helpers/formatters";
+import { AppStaticProps, getAppStaticProps } from "helpers/getAppStaticProps";
+import { getStatusDescription } from "helpers/others";
 import { useMediaMobile } from "hooks/useMediaQuery";
 import useSmartLanguage from "hooks/useSmartLanguage";
 import {
@@ -21,13 +28,6 @@ import {
   GetStaticPathsResult,
   GetStaticPropsContext,
 } from "next";
-import { AppStaticProps, getAppStaticProps } from "helpers/getAppStaticProps";
-import {
-  getStatusDescription,
-  prettyinlineTitle,
-  prettyLanguage,
-  prettySlug,
-} from "helpers/helpers";
 
 interface Props extends AppStaticProps {
   content: Exclude<

@@ -1,7 +1,8 @@
 import Chip from "components/Chip";
 import { RecorderChipFragment } from "graphql/generated";
 import { AppStaticProps } from "helpers/getAppStaticProps";
-import Img, { ImageQuality } from "./Img";
+import { ImageQuality } from "helpers/img";
+import Img from "./Img";
 import Markdawn from "./Markdown/Markdawn";
 import ToolTip from "./ToolTip";
 

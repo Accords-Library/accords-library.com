@@ -1,7 +1,8 @@
 import { UploadImageFragment } from "graphql/generated";
+import { ImageQuality } from "helpers/img";
 import Link from "next/link";
 import Chip from "./Chip";
-import Img, { ImageQuality } from "./Img";
+import Img from "./Img";
 
 interface Props {
   thumbnail?: UploadImageFragment | string | null | undefined;

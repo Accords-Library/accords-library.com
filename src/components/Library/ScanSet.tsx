@@ -1,16 +1,14 @@
 import Chip from "components/Chip";
-import Img, {
-  getAssetFilename,
-  getAssetURL,
-  ImageQuality,
-} from "components/Img";
+import Img from "components/Img";
 import Button from "components/Inputs/Button";
 import RecorderChip from "components/RecorderChip";
 import ToolTip from "components/ToolTip";
 import { GetLibraryItemScansQuery } from "graphql/generated";
-import useSmartLanguage from "hooks/useSmartLanguage";
 import { AppStaticProps } from "helpers/getAppStaticProps";
-import { getStatusDescription, isInteger } from "helpers/helpers";
+import { getStatusDescription } from "helpers/others";
+import { getAssetFilename, getAssetURL, ImageQuality } from "helpers/img";
+import { isInteger } from "helpers/numbers";
+import useSmartLanguage from "hooks/useSmartLanguage";
 import { Dispatch, SetStateAction } from "react";
 
 interface Props {

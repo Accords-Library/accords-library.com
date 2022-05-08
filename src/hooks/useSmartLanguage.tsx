@@ -1,8 +1,7 @@
 import LanguageSwitcher from "components/Inputs/LanguageSwitcher";
 import { useAppLayout } from "contexts/AppLayoutContext";
-import { useRouter } from "next/router";
 import { AppStaticProps } from "helpers/getAppStaticProps";
-import { getPreferredLanguage } from "helpers/helpers";
+import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
 
 interface Props<T> {
@@ -10,6 +9,18 @@ interface Props<T> {
   languages: AppStaticProps["languages"];
   languageExtractor: (item: T) => string | undefined;
   transform?: (item: T) => T;
+}
+
+function getPreferredLanguage(
+  preferredLanguages: (string | undefined)[],
+  availableLanguages: Map<string, number>
+): number | undefined {
+  for (const locale of preferredLanguages) {
+    if (locale && availableLanguages.has(locale)) {
+      return availableLanguages.get(locale);
+    }
+  }
+  return undefined;
 }
 
 export default function useSmartLanguage<T>(

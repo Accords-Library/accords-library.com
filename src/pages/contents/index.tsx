@@ -12,8 +12,8 @@ import { GetContentsQuery } from "graphql/generated";
 import { getReadySdk } from "graphql/sdk";
 import { GetStaticPropsContext } from "next";
 import { AppStaticProps, getAppStaticProps } from "helpers/getAppStaticProps";
-import { prettyinlineTitle, prettySlug } from "helpers/helpers";
 import { useEffect, useState } from "react";
+import { prettySlug, prettyinlineTitle } from "helpers/formatters";
 
 interface Props extends AppStaticProps {
   contents: Exclude<GetContentsQuery["contents"], null | undefined>["data"];

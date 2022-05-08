@@ -13,13 +13,14 @@ import SubPanel from "components/Panels/SubPanel";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { GetLibraryItemScansQuery } from "graphql/generated";
 import { getReadySdk } from "graphql/sdk";
+import { prettyinlineTitle, prettySlug } from "helpers/formatters";
+import { AppStaticProps, getAppStaticProps } from "helpers/getAppStaticProps";
+import { sortContent } from "helpers/others";
 import {
   GetStaticPathsContext,
   GetStaticPathsResult,
   GetStaticPropsContext,
 } from "next";
-import { AppStaticProps, getAppStaticProps } from "helpers/getAppStaticProps";
-import { prettyinlineTitle, prettySlug, sortContent } from "helpers/helpers";
 import { useState } from "react";
 
 interface Props extends AppStaticProps {

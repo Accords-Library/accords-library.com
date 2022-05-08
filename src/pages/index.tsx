@@ -1,7 +1,8 @@
-import PostPage, { Post } from "components/PostPage";
+import PostPage from "components/PostPage";
 import { getReadySdk } from "graphql/sdk";
 import { GetStaticPropsContext } from "next";
 import { AppStaticProps, getAppStaticProps } from "helpers/getAppStaticProps";
+import { Post } from "helpers/types";
 
 interface Props extends AppStaticProps {
   post: Post;

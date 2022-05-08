@@ -8,9 +8,9 @@ import SubPanel from "components/Panels/SubPanel";
 import ThumbnailPreview from "components/PreviewCard";
 import { GetPostsPreviewQuery } from "graphql/generated";
 import { getReadySdk } from "graphql/sdk";
-import { GetStaticPropsContext } from "next";
+import { prettyDate, prettySlug } from "helpers/formatters";
 import { AppStaticProps, getAppStaticProps } from "helpers/getAppStaticProps";
-import { prettyDate, prettySlug } from "helpers/helpers";
+import { GetStaticPropsContext } from "next";
 import { useState } from "react";
 
 interface Props extends AppStaticProps {

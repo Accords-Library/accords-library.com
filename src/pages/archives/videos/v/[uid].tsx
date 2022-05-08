@@ -20,7 +20,8 @@ import {
   GetStaticPropsContext,
 } from "next";
 import { AppStaticProps, getAppStaticProps } from "helpers/getAppStaticProps";
-import { getVideoFile, prettyDate, prettyShortenNumber } from "helpers/helpers";
+import { prettyDate, prettyShortenNumber } from "helpers/formatters";
+import { getVideoFile } from "helpers/videos";
 
 interface Props extends AppStaticProps {
   video: Exclude<

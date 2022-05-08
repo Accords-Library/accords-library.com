@@ -1,7 +1,8 @@
-import { GetPostQuery } from "graphql/generated";
-import useSmartLanguage from "hooks/useSmartLanguage";
+import { prettySlug } from "helpers/formatters";
 import { AppStaticProps } from "helpers/getAppStaticProps";
-import { getStatusDescription, prettySlug } from "helpers/helpers";
+import { getStatusDescription } from "helpers/others";
+import { Post } from "helpers/types";
+import useSmartLanguage from "hooks/useSmartLanguage";
 import AppLayout from "./AppLayout";
 import Chip from "./Chip";
 import HorizontalLine from "./HorizontalLine";
@@ -13,14 +14,6 @@ import SubPanel from "./Panels/SubPanel";
 import RecorderChip from "./RecorderChip";
 import ThumbnailHeader from "./ThumbnailHeader";
 import ToolTip from "./ToolTip";
-
-export type Post = Exclude<
-  Exclude<
-    GetPostQuery["posts"],
-    null | undefined
-  >["data"][number]["attributes"],
-  null | undefined
->;
 
 interface Props {
   post: Post;

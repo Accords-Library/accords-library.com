@@ -1,4 +1,4 @@
-import { arrayMove } from "helpers/helpers";
+import { arrayMove } from "helpers/others";
 import { useEffect, useState } from "react";
 
 interface Props {

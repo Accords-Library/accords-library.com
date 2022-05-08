@@ -441,6 +441,7 @@ export default function AppLayout(props: Props): JSX.Element {
                       (event.target as HTMLInputElement).value
                     )
                   }
+                  value={appLayout.playerName}
                 />
               </div>
             </div>

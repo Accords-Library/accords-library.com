@@ -12,16 +12,16 @@ import ContentPanel, {
 import SubPanel from "components/Panels/SubPanel";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { GetVideoQuery } from "graphql/generated";
+import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
+import { prettyDate, prettyShortenNumber } from "helpers/formatters";
+import { getVideoFile } from "helpers/videos";
 import { useMediaMobile } from "hooks/useMediaQuery";
 import {
   GetStaticPathsContext,
   GetStaticPathsResult,
   GetStaticPropsContext,
 } from "next";
-import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
-import { prettyDate, prettyShortenNumber } from "helpers/formatters";
-import { getVideoFile } from "helpers/videos";
 
 interface Props extends AppStaticProps {
   video: Exclude<
@@ -99,7 +99,8 @@ export default function Video(props: Props): JSX.Element {
               className="w-full aspect-video"
               title="YouTube video player"
               frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allow="accelerometer; autoplay; clipboard-write;
+              encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
             ></iframe>
           )}

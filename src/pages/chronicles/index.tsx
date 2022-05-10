@@ -1,9 +1,9 @@
 import AppLayout from "components/AppLayout";
 import PanelHeader from "components/PanelComponents/PanelHeader";
 import SubPanel from "components/Panels/SubPanel";
-import { GetStaticPropsContext } from "next";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { Immutable } from "helpers/types";
+import { GetStaticPropsContext } from "next";
 
 interface Props extends AppStaticProps {}
 

@@ -9,9 +9,9 @@ import SubPanel from "components/Panels/SubPanel";
 import ChronologyYearComponent from "components/Wiki/Chronology/ChronologyYearComponent";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { GetChronologyItemsQuery, GetErasQuery } from "graphql/generated";
+import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import { prettySlug } from "helpers/formatters";
-import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { GetStaticPropsContext } from "next";
 
 interface Props extends AppStaticProps {

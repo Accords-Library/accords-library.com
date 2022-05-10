@@ -20,7 +20,9 @@ export default function Select(props: Immutable<Props>): JSX.Element {
       } ${props.className}`}
     >
       <div
-        className={`outline outline-mid outline-2 outline-offset-[-2px] hover:outline-[transparent] bg-light rounded-[1em] p-1 grid grid-flow-col grid-cols-[1fr_auto_auto] place-items-center cursor-pointer hover:bg-mid transition-all ${
+        className={`outline outline-mid outline-2 outline-offset-[-2px] hover:outline-[transparent]
+        bg-light rounded-[1em] p-1 grid grid-flow-col grid-cols-[1fr_auto_auto] place-items-center
+        cursor-pointer hover:bg-mid transition-all ${
           opened && "outline-[transparent] rounded-b-none"
         }`}
       >
@@ -48,7 +50,8 @@ export default function Select(props: Immutable<Props>): JSX.Element {
           <>
             {index !== props.state && (
               <div
-                className="bg-light hover:bg-mid transition-colors cursor-pointer p-1 last-of-type:rounded-b-[1em]"
+                className="bg-light hover:bg-mid transition-colors
+                cursor-pointer p-1 last-of-type:rounded-b-[1em]"
                 key={index}
                 id={option}
                 onClick={() => {

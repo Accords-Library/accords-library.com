@@ -50,6 +50,7 @@ module.exports = {
     "max-classes-per-file": ["error", 1],
     // "max-depth": ["warn", 4],
     // "max-lines": "warn",
+    "max-len": ["warn", { "code": 100 }],
     // "max-lines-per-function": "warn",
     // "max-nested-callbacks": "warn",
     // "max-params": "warn",

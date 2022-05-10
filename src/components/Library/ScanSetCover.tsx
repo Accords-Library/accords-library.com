@@ -66,7 +66,10 @@ export default function ScanSetCover(props: Immutable<Props>): JSX.Element {
       <>
         {selectedScan && (
           <div>
-            <div className="flex flex-row flex-wrap place-items-center gap-6 text-base pt-10 first-of-type:pt-0">
+            <div
+              className="flex flex-row flex-wrap place-items-center
+              gap-6 text-base pt-10 first-of-type:pt-0"
+            >
               <h2 id={"cover"} className="text-2xl">
                 {"Cover"}
               </h2>
@@ -151,11 +154,16 @@ export default function ScanSetCover(props: Immutable<Props>): JSX.Element {
                 )}
             </div>
 
-            <div className="grid gap-8 items-end mobile:grid-cols-2 desktop:grid-cols-[repeat(auto-fill,_minmax(10rem,1fr))] pb-12 border-b-[3px] border-dotted last-of-type:border-0">
+            <div
+              className="grid gap-8 items-end mobile:grid-cols-2
+              desktop:grid-cols-[repeat(auto-fill,_minmax(10rem,1fr))]
+              pb-12 border-b-[3px] border-dotted last-of-type:border-0"
+            >
               {coverImages.map((image, index) => (
                 <div
                   key={image.url}
-                  className="drop-shadow-shade-lg hover:scale-[1.02] cursor-pointer transition-transform"
+                  className="drop-shadow-shade-lg hover:scale-[1.02]
+                  cursor-pointer transition-transform"
                   onClick={() => {
                     const imgs: string[] = [];
                     coverImages.map((img) => {

@@ -10,8 +10,8 @@ import ContentPanel, {
 import SubPanel from "components/Panels/SubPanel";
 import ThumbnailPreview from "components/PreviewCard";
 import { GetVideoChannelQuery } from "graphql/generated";
-import { getReadySdk } from "graphql/sdk";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
+import { getReadySdk } from "graphql/sdk";
 import { getVideoThumbnailURL } from "helpers/videos";
 import {
   GetStaticPathsContext,
@@ -60,7 +60,11 @@ export default function Channel(props: Props): JSX.Element {
         <h1 className="text-3xl">{channel?.title}</h1>
         <p>{channel?.subscribers.toLocaleString()} subscribers</p>
       </div>
-      <div className="grid gap-8 items-start mobile:grid-cols-2 desktop:grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] pb-12 border-b-[3px] border-dotted last-of-type:border-0">
+      <div
+        className="grid gap-8 items-start mobile:grid-cols-2
+        desktop:grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))]
+        pb-12 border-b-[3px] border-dotted last-of-type:border-0"
+      >
         {channel?.videos?.data.map((video) => (
           <>
             {video.attributes && (

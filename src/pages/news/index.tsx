@@ -41,7 +41,10 @@ export default function News(props: Immutable<Props>): JSX.Element {
 
   const contentPanel = (
     <ContentPanel width={ContentPanelWidthSizes.large}>
-      <div className="grid gap-8 items-end grid-cols-1 desktop:grid-cols-[repeat(auto-fill,_minmax(20rem,1fr))]">
+      <div
+        className="grid gap-8 items-end grid-cols-1
+        desktop:grid-cols-[repeat(auto-fill,_minmax(20rem,1fr))]"
+      >
         {posts.map((post) => (
           <>
             {post.attributes && (

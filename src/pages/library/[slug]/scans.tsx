@@ -12,17 +12,17 @@ import ContentPanel, {
 import SubPanel from "components/Panels/SubPanel";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { GetLibraryItemScansQuery } from "graphql/generated";
+import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import { prettyinlineTitle, prettySlug } from "helpers/formatters";
-import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { sortContent } from "helpers/others";
+import { Immutable } from "helpers/types";
 import {
   GetStaticPathsContext,
   GetStaticPathsResult,
   GetStaticPropsContext,
 } from "next";
 import { useState } from "react";
-import { Immutable } from "helpers/types";
 
 interface Props extends AppStaticProps {
   item: Exclude<
@@ -63,7 +63,9 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
           subtitle={
             content.attributes?.range[0]?.__typename ===
             "ComponentRangePageRange"
-              ? `${content.attributes.range[0].starting_page} → ${content.attributes.range[0].ending_page}`
+              ? `${content.attributes.range[0].starting_page}` +
+                `→` +
+                `${content.attributes.range[0].ending_page}`
               : undefined
           }
           onClick={() => appLayout.setSubPanelOpen(false)}

@@ -33,7 +33,8 @@ export default function ContentLine(props: Immutable<Props>): JSX.Element {
           opened && "bg-mid shadow-inner-sm shadow-shade h-auto py-3 my-2"
         }`}
       >
-        <div className="grid gap-4 place-items-center grid-cols-[auto_auto_1fr_auto_12ch] thin:grid-cols-[auto_auto_1fr_auto]">
+        <div className="grid gap-4 place-items-center
+        grid-cols-[auto_auto_1fr_auto_12ch] thin:grid-cols-[auto_auto_1fr_auto]">
           <a>
             <h3 className="cursor-pointer" onClick={() => setOpened(!opened)}>
               {content.attributes.content?.data?.attributes?.titles?.[0]

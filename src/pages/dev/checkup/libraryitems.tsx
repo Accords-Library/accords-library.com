@@ -41,7 +41,8 @@ export default function CheckupLibraryItems(
       {testReport.lines.map((line, index) => (
         <div
           key={index}
-          className="grid grid-cols-[2em,3em,2fr,1fr,0.5fr,0.5fr,2fr] gap-2 items-center mb-2 justify-items-start"
+          className="grid grid-cols-[2em,3em,2fr,1fr,0.5fr,0.5fr,2fr]
+          gap-2 items-center mb-2 justify-items-start"
         >
           <Button
             href={line.frontendUrl}

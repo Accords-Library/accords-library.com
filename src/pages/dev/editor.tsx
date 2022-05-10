@@ -338,7 +338,8 @@ export default function Editor(props: Immutable<Props>): JSX.Element {
               const textarea = event.target as HTMLTextAreaElement;
               handleInput(textarea.value);
             }}
-            className="bg-mid !bg-opacity-40 rounded-xl outline-none p-8 w-full text-black font-monospace h-[70vh]"
+            className="bg-mid !bg-opacity-40 rounded-xl
+            outline-none p-8 w-full text-black font-monospace h-[70vh]"
             value={markdown}
             title="Input textarea"
           />

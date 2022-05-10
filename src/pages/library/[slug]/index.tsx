@@ -153,7 +153,8 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
       />
       <div className="grid place-items-center gap-12">
         <div
-          className="drop-shadow-shade-xl w-full h-[50vh] mobile:h-[60vh] desktop:mb-16 relative cursor-pointer"
+          className="drop-shadow-shade-xl w-full h-[50vh]
+          mobile:h-[60vh] desktop:mb-16 relative cursor-pointer"
           onClick={() => {
             if (item?.thumbnail?.data?.attributes) {
               setLightboxOpen(true);
@@ -240,13 +241,17 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
         {item?.gallery && item.gallery.data.length > 0 && (
           <div id="gallery" className="grid place-items-center gap-8  w-full">
             <h2 className="text-2xl">{langui.gallery}</h2>
-            <div className="grid w-full gap-8 items-end grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))]">
+            <div
+              className="grid w-full gap-8 items-end
+              grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))]"
+            >
               {item.gallery.data.map((galleryItem, index) => (
                 <>
                   {galleryItem.attributes && (
                     <div
                       key={galleryItem.id}
-                      className="relative aspect-square hover:scale-[1.02] transition-transform cursor-pointer"
+                      className="relative aspect-square hover:scale-[1.02]
+                      transition-transform cursor-pointer"
                       onClick={() => {
                         if (item.gallery?.data) {
                           const images: string[] = [];
@@ -265,7 +270,10 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
                         }
                       }}
                     >
-                      <div className="bg-light absolute inset-0 rounded-lg drop-shadow-shade-md"></div>
+                      <div
+                        className="bg-light absolute inset-0
+                        rounded-lg drop-shadow-shade-md"
+                      ></div>
                       <Img
                         className="rounded-lg"
                         image={galleryItem.attributes}
@@ -430,7 +438,10 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
               <p className="flex-shrink-0">{"Always show info"}:</p>
               <Switch setState={setKeepInfoVisible} state={keepInfoVisible} />
             </div>
-            <div className="grid gap-8 items-end mobile:grid-cols-2 grid-cols-[repeat(auto-fill,minmax(15rem,1fr))] w-full">
+            <div
+              className="grid gap-8 items-end mobile:grid-cols-2
+              grid-cols-[repeat(auto-fill,minmax(15rem,1fr))] w-full"
+            >
               {item.subitems.data.map((subitem) => (
                 <>
                   {subitem.attributes && (

@@ -143,7 +143,8 @@ export default function Library(props: Immutable<Props>): JSX.Element {
               {name && (
                 <h2
                   key={`h2${name}`}
-                  className="text-2xl pb-2 pt-10 first-of-type:pt-0 flex flex-row place-items-center gap-2"
+                  className="text-2xl pb-2 pt-10 first-of-type:pt-0
+                  flex flex-row place-items-center gap-2"
                 >
                   {name}
                   <Chip>{`${items.length} ${
@@ -155,7 +156,9 @@ export default function Library(props: Immutable<Props>): JSX.Element {
               )}
               <div
                 key={`items${name}`}
-                className="grid gap-8 items-end mobile:grid-cols-2 desktop:grid-cols-[repeat(auto-fill,_minmax(13rem,1fr))] pb-12 border-b-[3px] border-dotted last-of-type:border-0"
+                className="grid gap-8 items-end mobile:grid-cols-2
+                desktop:grid-cols-[repeat(auto-fill,_minmax(13rem,1fr))]
+                pb-12 border-b-[3px] border-dotted last-of-type:border-0"
               >
                 {items.map((item) => (
                   <>

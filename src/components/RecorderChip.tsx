@@ -51,10 +51,7 @@ export default function RecorderChip(props: Immutable<Props>): JSX.Element {
               )}
             </div>
           </div>
-
           {recorder.bio?.[0] && <Markdawn text={recorder.bio[0].bio ?? ""} />}
-
-          {/* <Button className="cursor-not-allowed">View profile</Button> */}
         </div>
       }
       placement="top"

@@ -72,22 +72,11 @@ export default function MainPanel(props: Immutable<Props>): JSX.Element {
               disabled={!appLayout.mainPanelReduced}
             >
               <Button
-                className={
-                  appLayout.mainPanelReduced && isDesktop
-                    ? ""
-                    : "!py-0.5 !px-2.5"
-                }
                 onClick={() => {
                   appLayout.setConfigPanelOpen(true);
                 }}
               >
-                <span
-                  className={`material-icons ${
-                    !(appLayout.mainPanelReduced && isDesktop) && "!text-sm"
-                  } `}
-                >
-                  settings
-                </span>
+                <span className={"material-icons"}>settings</span>
               </Button>
             </ToolTip>
 

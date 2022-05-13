@@ -5,7 +5,7 @@ import ContentPanel, {
   ContentPanelWidthSizes,
 } from "components/Panels/ContentPanel";
 import SubPanel from "components/Panels/SubPanel";
-import ThumbnailPreview from "components/PreviewCard";
+import PreviewCard from "components/PreviewCard";
 import { GetPostsPreviewQuery } from "graphql/generated";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
@@ -48,7 +48,7 @@ export default function News(props: Immutable<Props>): JSX.Element {
         {posts.map((post) => (
           <>
             {post.attributes && (
-              <ThumbnailPreview
+              <PreviewCard
                 key={post.id}
                 href={`/news/${post.attributes.slug}`}
                 title={

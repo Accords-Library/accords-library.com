@@ -7,7 +7,7 @@ import ContentPanel, {
   ContentPanelWidthSizes,
 } from "components/Panels/ContentPanel";
 import SubPanel from "components/Panels/SubPanel";
-import ThumbnailPreview from "components/PreviewCard";
+import PreviewCard from "components/PreviewCard";
 import { GetContentsQuery } from "graphql/generated";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
@@ -89,7 +89,7 @@ export default function Contents(props: Immutable<Props>): JSX.Element {
                 {items.map((item) => (
                   <>
                     {item.attributes && (
-                      <ThumbnailPreview
+                      <PreviewCard
                         key={item.id}
                         href={`/contents/${item.attributes.slug}`}
                         pre_title={item.attributes.titles?.[0]?.pre_title}

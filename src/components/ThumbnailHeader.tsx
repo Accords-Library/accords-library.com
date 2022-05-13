@@ -54,7 +54,6 @@ export default function ThumbnailHeader(props: Immutable<Props>): JSX.Element {
               className=" rounded-xl"
               image={thumbnail}
               quality={ImageQuality.Medium}
-              priority
             />
           ) : (
             <div className="w-96 aspect-[4/3] bg-light rounded-xl"></div>

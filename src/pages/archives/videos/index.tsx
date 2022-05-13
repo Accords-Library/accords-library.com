@@ -9,7 +9,7 @@ import ContentPanel, {
   ContentPanelWidthSizes,
 } from "components/Panels/ContentPanel";
 import SubPanel from "components/Panels/SubPanel";
-import ThumbnailPreview from "components/PreviewCard";
+import PreviewCard from "components/PreviewCard";
 import { GetVideosPreviewQuery } from "graphql/generated";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
@@ -88,7 +88,7 @@ export default function Videos(props: Props): JSX.Element {
         {paginatedVideos[page].map((video) => (
           <>
             {video.attributes && (
-              <ThumbnailPreview
+              <PreviewCard
                 key={video.id}
                 href={`/archives/videos/v/${video.attributes.uid}`}
                 title={video.attributes.title}

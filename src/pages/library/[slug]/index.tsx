@@ -14,7 +14,7 @@ import ContentPanel, {
   ContentPanelWidthSizes,
 } from "components/Panels/ContentPanel";
 import SubPanel from "components/Panels/SubPanel";
-import ThumbnailPreview from "components/PreviewCard";
+import PreviewCard from "components/PreviewCard";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import {
   Enum_Componentmetadatabooks_Binding_Type,
@@ -172,9 +172,7 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
             <Img
               image={item.thumbnail.data.attributes}
               quality={ImageQuality.Large}
-              layout="fill"
-              objectFit="contain"
-              priority
+              className="w-full h-full object-contain"
             />
           ) : (
             <div className="w-full aspect-[21/29.7] bg-light rounded-xl"></div>
@@ -270,15 +268,10 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
                         }
                       }}
                     >
-                      <div
-                        className="bg-light absolute inset-0
-                        rounded-lg drop-shadow-shade-md"
-                      ></div>
                       <Img
-                        className="rounded-lg"
+                        className="bg-light rounded-lg drop-shadow-shade-md
+                        w-full h-full object-cover"
                         image={galleryItem.attributes}
-                        layout="fill"
-                        objectFit="cover"
                       />
                     </div>
                   )}
@@ -445,7 +438,7 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
               {item.subitems.data.map((subitem) => (
                 <>
                   {subitem.attributes && (
-                    <ThumbnailPreview
+                    <PreviewCard
                       key={subitem.id}
                       href={`/library/${subitem.attributes.slug}`}
                       title={subitem.attributes.title}

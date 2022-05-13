@@ -270,8 +270,6 @@ export default function Markdawn(props: Immutable<Props>): JSX.Element {
                           ? getAssetURL(compProps.src, ImageQuality.Small)
                           : compProps.src
                       }
-                      layout="fill"
-                      objectFit="contain"
                       quality={ImageQuality.Medium}
                     ></Img>
                   </div>

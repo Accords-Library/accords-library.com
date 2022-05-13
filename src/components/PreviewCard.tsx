@@ -44,7 +44,7 @@ interface Props {
     | { __typename: "anotherHoverlayName" };
 }
 
-export default function ThumbnailPreview(props: Immutable<Props>): JSX.Element {
+export default function PreviewCard(props: Immutable<Props>): JSX.Element {
   const {
     href,
     thumbnail,
@@ -160,9 +160,8 @@ export default function ThumbnailPreview(props: Immutable<Props>): JSX.Element {
         )}
         <div
           className={`linearbg-obi ${
-            keepInfoVisible
-              ? "-mt-[0.3333em]"
-              : `fine:drop-shadow-shade-lg fine:absolute coarse:rounded-b-md
+            !keepInfoVisible &&
+            `fine:drop-shadow-shade-lg fine:absolute coarse:rounded-b-md
               bottom-2 -inset-x-0.5 opacity-[var(--cover-opacity)]`
           } transition-opacity z-20 grid p-4 gap-2`}
         >

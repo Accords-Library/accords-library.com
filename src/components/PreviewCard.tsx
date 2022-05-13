@@ -174,11 +174,11 @@ export default function PreviewCard(props: Immutable<Props>): JSX.Element {
             </div>
           )}
           <div className="my-1">
-            {pre_title && <p className="leading-none mb-1">{pre_title}</p>}
+            {pre_title && <p className="leading-none mb-1 break-words">{pre_title}</p>}
             {title && (
-              <p className="font-headers text-lg leading-none">{title}</p>
+              <p className="font-headers text-lg leading-none break-words">{title}</p>
             )}
-            {subtitle && <p className="leading-none">{subtitle}</p>}
+            {subtitle && <p className="leading-none break-words">{subtitle}</p>}
           </div>
           {description && <p>{description}</p>}
           {bottomChips && bottomChips.length > 0 && (

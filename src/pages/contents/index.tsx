@@ -83,7 +83,7 @@ export default function Contents(props: Immutable<Props>): JSX.Element {
               )}
               <div
                 key={`items${name}`}
-                className="grid gap-8 items-end grid-cols-2
+                className="grid gap-8 mobile:gap-4 items-end grid-cols-2
                 desktop:grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))]"
               >
                 {items.map((item) => (

@@ -156,7 +156,7 @@ export default function Library(props: Immutable<Props>): JSX.Element {
               )}
               <div
                 key={`items${name}`}
-                className="grid gap-8 items-end mobile:grid-cols-2
+                className="grid gap-8 mobile:gap-4 items-end mobile:grid-cols-2
                 desktop:grid-cols-[repeat(auto-fill,_minmax(13rem,1fr))]
                 pb-12 border-b-[3px] border-dotted last-of-type:border-0"
               >

@@ -369,8 +369,7 @@ function filterItems(
   showSecondaryItems: boolean,
   items: Immutable<Props["items"]>
 ): Immutable<Props["items"]> {
-  const fileredItems = [...items] as Props["items"];
-  fileredItems.filter((item) => {
+  return [...items].filter((item) => {
     if (!showSubitems && !item.attributes?.root_item) return false;
     if (
       showSubitems &&
@@ -385,7 +384,6 @@ function filterItems(
     if (!item.attributes?.primary && !showSecondaryItems) return false;
     return true;
   });
-  return fileredItems as Immutable<Props["items"]>;
 }
 
 function sortBy(

@@ -9,13 +9,10 @@ import { getAssetFilename, getAssetURL, ImageQuality } from "helpers/img";
 import { isInteger } from "helpers/numbers";
 import { getStatusDescription } from "helpers/others";
 import { Immutable } from "helpers/types";
-import useSmartLanguage from "hooks/useSmartLanguage";
-import { Dispatch, SetStateAction } from "react";
+import { useSmartLanguage } from "hooks/useSmartLanguage";
 
 interface Props {
-  setLightboxOpen: Dispatch<SetStateAction<boolean>>;
-  setLightboxImages: Dispatch<SetStateAction<string[]>>;
-  setLightboxIndex: Dispatch<SetStateAction<number>>;
+  openLightBox: (images: string[], index?: number) => void;
   scanSet: Exclude<
     Exclude<
       Exclude<
@@ -52,17 +49,8 @@ interface Props {
 }
 
 export default function ScanSet(props: Immutable<Props>): JSX.Element {
-  const {
-    setLightboxOpen,
-    setLightboxImages,
-    setLightboxIndex,
-    scanSet,
-    slug,
-    title,
-    languages,
-    langui,
-    content,
-  } = props;
+  const { openLightBox, scanSet, slug, title, languages, langui, content } =
+    props;
 
   const [selectedScan, LanguageSwitcher] = useSmartLanguage({
     items: scanSet,
@@ -219,9 +207,7 @@ export default function ScanSet(props: Immutable<Props>): JSX.Element {
                         getAssetURL(image.attributes.url, ImageQuality.Large)
                       );
                   });
-                  setLightboxOpen(true);
-                  setLightboxImages(images);
-                  setLightboxIndex(index);
+                  openLightBox(images, index);
                 }}
               >
                 {page.attributes && (

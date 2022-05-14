@@ -10,13 +10,10 @@ import { AppStaticProps } from "graphql/getAppStaticProps";
 import { getAssetURL, ImageQuality } from "helpers/img";
 import { getStatusDescription } from "helpers/others";
 import { Immutable } from "helpers/types";
-import useSmartLanguage from "hooks/useSmartLanguage";
-import { Dispatch, SetStateAction } from "react";
+import { useSmartLanguage } from "hooks/useSmartLanguage";
 
 interface Props {
-  setLightboxOpen: Dispatch<SetStateAction<boolean>>;
-  setLightboxImages: Dispatch<SetStateAction<string[]>>;
-  setLightboxIndex: Dispatch<SetStateAction<number>>;
+  openLightBox: (images: string[], index?: number) => void;
   images: Exclude<
     Exclude<
       Exclude<
@@ -32,14 +29,7 @@ interface Props {
 }
 
 export default function ScanSetCover(props: Immutable<Props>): JSX.Element {
-  const {
-    setLightboxOpen,
-    setLightboxImages,
-    setLightboxIndex,
-    images,
-    languages,
-    langui,
-  } = props;
+  const { openLightBox, images, languages, langui } = props;
 
   const [selectedScan, LanguageSwitcher] = useSmartLanguage({
     items: images,
@@ -170,9 +160,7 @@ export default function ScanSetCover(props: Immutable<Props>): JSX.Element {
                       if (img.url)
                         imgs.push(getAssetURL(img.url, ImageQuality.Large));
                     });
-                    setLightboxOpen(true);
-                    setLightboxImages(imgs);
-                    setLightboxIndex(index);
+                    openLightBox(imgs, index);
                   }}
                 >
                   <Img image={image} quality={ImageQuality.Small} />

@@ -23,7 +23,7 @@ import {
 import { getStatusDescription } from "helpers/others";
 import { Immutable } from "helpers/types";
 import { useMediaMobile } from "hooks/useMediaQuery";
-import useSmartLanguage from "hooks/useSmartLanguage";
+import { useSmartLanguage } from "hooks/useSmartLanguage";
 import {
   GetStaticPathsContext,
   GetStaticPathsResult,

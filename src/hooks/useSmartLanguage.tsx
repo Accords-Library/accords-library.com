@@ -24,7 +24,7 @@ function getPreferredLanguage(
   return undefined;
 }
 
-export default function useSmartLanguage<T>(
+export function useSmartLanguage<T>(
   props: Props<T>
 ): [Immutable<T | undefined>, () => JSX.Element] {
   const {

@@ -1,7 +1,6 @@
 import AppLayout from "components/AppLayout";
 import ScanSet from "components/Library/ScanSet";
 import ScanSetCover from "components/Library/ScanSetCover";
-import LightBox from "components/LightBox";
 import NavOption from "components/PanelComponents/NavOption";
 import ReturnButton, {
   ReturnButtonType,
@@ -17,12 +16,12 @@ import { getReadySdk } from "graphql/sdk";
 import { prettyinlineTitle, prettySlug } from "helpers/formatters";
 import { sortContent } from "helpers/others";
 import { Immutable } from "helpers/types";
+import { useLightBox } from "hooks/useLightBox";
 import {
   GetStaticPathsContext,
   GetStaticPathsResult,
   GetStaticPropsContext,
 } from "next";
-import { useState } from "react";
 
 interface Props extends AppStaticProps {
   item: Exclude<
@@ -41,9 +40,7 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
 
   sortContent(item?.contents);
 
-  const [lightboxOpen, setLightboxOpen] = useState(false);
-  const [lightboxImages, setLightboxImages] = useState([""]);
-  const [lightboxIndex, setLightboxIndex] = useState(0);
+  const [openLightBox, LightBox] = useLightBox();
 
   const subPanel = (
     <SubPanel>
@@ -77,13 +74,7 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
 
   const contentPanel = (
     <ContentPanel width={ContentPanelWidthSizes.large}>
-      <LightBox
-        state={lightboxOpen}
-        setState={setLightboxOpen}
-        images={lightboxImages}
-        index={lightboxIndex}
-        setIndex={setLightboxIndex}
-      />
+      <LightBox />
 
       <ReturnButton
         href={`/library/${item?.slug}`}
@@ -96,9 +87,7 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
       {item?.images && (
         <ScanSetCover
           images={item.images}
-          setLightboxImages={setLightboxImages}
-          setLightboxIndex={setLightboxIndex}
-          setLightboxOpen={setLightboxOpen}
+          openLightBox={openLightBox}
           languages={languages}
           langui={langui}
         />
@@ -110,9 +99,7 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
             <ScanSet
               key={content.id}
               scanSet={content.attributes.scan_set}
-              setLightboxImages={setLightboxImages}
-              setLightboxIndex={setLightboxIndex}
-              setLightboxOpen={setLightboxOpen}
+              openLightBox={openLightBox}
               slug={content.attributes.slug}
               title={prettySlug(content.attributes.slug, item.slug)}
               languages={languages}

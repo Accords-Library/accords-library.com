@@ -2,7 +2,7 @@ import { AppStaticProps } from "graphql/getAppStaticProps";
 import { prettySlug } from "helpers/formatters";
 import { getStatusDescription } from "helpers/others";
 import { Immutable, PostWithTranslations } from "helpers/types";
-import useSmartLanguage from "hooks/useSmartLanguage";
+import { useSmartLanguage } from "hooks/useSmartLanguage";
 import AppLayout from "./AppLayout";
 import Chip from "./Chip";
 import HorizontalLine from "./HorizontalLine";

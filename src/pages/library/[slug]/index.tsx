@@ -5,7 +5,6 @@ import Button from "components/Inputs/Button";
 import Switch from "components/Inputs/Switch";
 import InsetBox from "components/InsetBox";
 import ContentLine from "components/Library/ContentLine";
-import LightBox from "components/LightBox";
 import NavOption from "components/PanelComponents/NavOption";
 import ReturnButton, {
   ReturnButtonType,
@@ -35,6 +34,7 @@ import { getAssetURL, ImageQuality } from "helpers/img";
 import { convertMmToInch } from "helpers/numbers";
 import { sortContent } from "helpers/others";
 import { Immutable } from "helpers/types";
+import { useLightBox } from "hooks/useLightBox";
 import {
   GetStaticPathsContext,
   GetStaticPathsResult,
@@ -63,10 +63,7 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
 
   sortContent(item?.contents);
 
-  const [lightboxOpen, setLightboxOpen] = useState(false);
-  const [lightboxImages, setLightboxImages] = useState([""]);
-  const [lightboxIndex, setLightboxIndex] = useState(0);
-
+  const [openLightBox, LightBox] = useLightBox();
   const [keepInfoVisible, setKeepInfoVisible] = useState(false);
 
   let displayOpenScans = false;
@@ -136,13 +133,7 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
 
   const contentPanel = (
     <ContentPanel width={ContentPanelWidthSizes.large}>
-      <LightBox
-        state={lightboxOpen}
-        setState={setLightboxOpen}
-        images={lightboxImages}
-        index={lightboxIndex}
-        setIndex={setLightboxIndex}
-      />
+      <LightBox />
 
       <ReturnButton
         href="/library/"
@@ -157,14 +148,12 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
           mobile:h-[60vh] desktop:mb-16 relative cursor-pointer"
           onClick={() => {
             if (item?.thumbnail?.data?.attributes) {
-              setLightboxOpen(true);
-              setLightboxImages([
+              openLightBox([
                 getAssetURL(
                   item.thumbnail.data.attributes.url,
                   ImageQuality.Large
                 ),
               ]);
-              setLightboxIndex(0);
             }
           }}
         >
@@ -262,9 +251,7 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
                                 )
                               );
                           });
-                          setLightboxOpen(true);
-                          setLightboxImages(images);
-                          setLightboxIndex(index);
+                          openLightBox(images, index);
                         }
                       }}
                     >

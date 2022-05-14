@@ -45,13 +45,11 @@ import {
 import { useState } from "react";
 
 interface Props extends AppStaticProps {
-  item: Exclude<
-    GetLibraryItemQuery["libraryItems"],
-    null | undefined
+  item: NonNullable<
+    GetLibraryItemQuery["libraryItems"]
   >["data"][number]["attributes"];
-  itemId: Exclude<
-    GetLibraryItemQuery["libraryItems"],
-    null | undefined
+  itemId: NonNullable<
+    GetLibraryItemQuery["libraryItems"]
   >["data"][number]["id"];
 }
 

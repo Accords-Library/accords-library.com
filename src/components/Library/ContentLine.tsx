@@ -7,15 +7,12 @@ import { Immutable } from "helpers/types";
 import { useState } from "react";
 
 interface Props {
-  content: Exclude<
-    Exclude<
-      Exclude<
-        GetLibraryItemQuery["libraryItems"],
-        null | undefined
-      >["data"][number]["attributes"],
-      null | undefined
-    >["contents"],
-    null | undefined
+  content: NonNullable<
+    NonNullable<
+      NonNullable<
+        GetLibraryItemQuery["libraryItems"]
+      >["data"][number]["attributes"]
+    >["contents"]
   >["data"][number];
   parentSlug: string;
   langui: AppStaticProps["langui"];
@@ -43,7 +40,8 @@ export function ContentLine(props: Immutable<Props>): JSX.Element {
                 ? prettyinlineTitle(
                     content.attributes.content.data.attributes.translations[0]
                       ?.pre_title,
-                    content.attributes.content.data.attributes.translations[0]?.title,
+                    content.attributes.content.data.attributes.translations[0]
+                      ?.title,
                     content.attributes.content.data.attributes.translations[0]
                       ?.subtitle
                   )

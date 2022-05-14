@@ -9,10 +9,7 @@ import { getStatusDescription } from "helpers/others";
 import { Immutable } from "helpers/types";
 
 interface Props {
-  item: Exclude<
-    GetChronologyItemsQuery["chronologyItems"],
-    null | undefined
-  >["data"][number];
+  item: NonNullable<GetChronologyItemsQuery["chronologyItems"]>["data"][number];
   displayYear: boolean;
   langui: AppStaticProps["langui"];
 }

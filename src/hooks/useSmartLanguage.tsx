@@ -8,12 +8,8 @@ import { useEffect, useMemo, useState } from "react";
 interface Props<T> {
   items: Immutable<T[]>;
   languages: AppStaticProps["languages"];
-  languageExtractor: (
-    item: Exclude<Immutable<T>, null | undefined>
-  ) => string | undefined;
-  transform?: (
-    item: Exclude<Immutable<T>, null | undefined>
-  ) => Exclude<Immutable<T>, null | undefined>;
+  languageExtractor: (item: NonNullable<Immutable<T>>) => string | undefined;
+  transform?: (item: NonNullable<Immutable<T>>) => NonNullable<Immutable<T>>;
 }
 
 function getPreferredLanguage(

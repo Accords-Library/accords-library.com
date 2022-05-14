@@ -13,38 +13,29 @@ import { useSmartLanguage } from "hooks/useSmartLanguage";
 
 interface Props {
   openLightBox: (images: string[], index?: number) => void;
-  scanSet: Exclude<
-    Exclude<
-      Exclude<
-        Exclude<
-          Exclude<
-            GetLibraryItemScansQuery["libraryItems"],
-            null | undefined
-          >["data"][number]["attributes"],
-          null | undefined
-        >["contents"],
-        null | undefined
-      >["data"][number]["attributes"],
-      null | undefined
-    >["scan_set"],
-    null | undefined
+  scanSet: NonNullable<
+    NonNullable<
+      NonNullable<
+        NonNullable<
+          NonNullable<
+            GetLibraryItemScansQuery["libraryItems"]
+          >["data"][number]["attributes"]
+        >["contents"]
+      >["data"][number]["attributes"]
+    >["scan_set"]
   >;
   slug: string;
   title: string;
   languages: AppStaticProps["languages"];
   langui: AppStaticProps["langui"];
-  content: Exclude<
-    Exclude<
-      Exclude<
-        Exclude<
-          GetLibraryItemScansQuery["libraryItems"],
-          null | undefined
-        >["data"][number]["attributes"],
-        null | undefined
-      >["contents"],
-      null | undefined
-    >["data"][number]["attributes"],
-    null | undefined
+  content: NonNullable<
+    NonNullable<
+      NonNullable<
+        NonNullable<
+          GetLibraryItemScansQuery["libraryItems"]
+        >["data"][number]["attributes"]
+      >["contents"]
+    >["data"][number]["attributes"]
   >["content"];
 }
 
@@ -57,7 +48,7 @@ export function ScanSet(props: Immutable<Props>): JSX.Element {
     languages: languages,
     languageExtractor: (item) => item.language?.data?.attributes?.code,
     transform: (item) => {
-      const newItem = { ...item } as Exclude<Props["scanSet"][number], null>;
+      const newItem = { ...item } as NonNullable<Props["scanSet"][number]>;
       newItem.pages?.data.sort((a, b) => {
         if (a.attributes?.url && b.attributes?.url) {
           let aName = getAssetFilename(a.attributes.url);

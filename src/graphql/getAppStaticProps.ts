@@ -8,18 +8,13 @@ import { Immutable } from "helpers/types";
 import { GetStaticPropsContext } from "next";
 
 export type AppStaticProps = Immutable<{
-  langui: Exclude<
-    Exclude<
-      GetWebsiteInterfaceQuery["websiteInterfaces"],
-      null | undefined
-    >["data"][number]["attributes"],
-    null | undefined
+  langui: NonNullable<
+    NonNullable<
+      GetWebsiteInterfaceQuery["websiteInterfaces"]
+    >["data"][number]["attributes"]
   >;
-  currencies: Exclude<
-    GetCurrenciesQuery["currencies"],
-    null | undefined
-  >["data"];
-  languages: Exclude<GetLanguagesQuery["languages"], null | undefined>["data"];
+  currencies: NonNullable<GetCurrenciesQuery["currencies"]>["data"];
+  languages: NonNullable<GetLanguagesQuery["languages"]>["data"];
 }>;
 
 export async function getAppStaticProps(

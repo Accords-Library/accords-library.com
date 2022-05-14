@@ -14,15 +14,12 @@ import { useSmartLanguage } from "hooks/useSmartLanguage";
 
 interface Props {
   openLightBox: (images: string[], index?: number) => void;
-  images: Exclude<
-    Exclude<
-      Exclude<
-        GetLibraryItemScansQuery["libraryItems"],
-        null | undefined
-      >["data"][number]["attributes"],
-      null | undefined
-    >["images"],
-    null | undefined
+  images: NonNullable<
+    NonNullable<
+      NonNullable<
+        GetLibraryItemScansQuery["libraryItems"]
+      >["data"][number]["attributes"]
+    >["images"]
   >;
   languages: AppStaticProps["languages"];
   langui: AppStaticProps["langui"];

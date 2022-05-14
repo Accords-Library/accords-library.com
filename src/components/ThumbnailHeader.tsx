@@ -14,19 +14,11 @@ interface Props {
   title: string | null | undefined;
   subtitle?: string | null | undefined;
   description?: string | null | undefined;
-  type?: Exclude<
-    Exclude<
-      GetContentTextQuery["contents"],
-      null | undefined
-    >["data"][number]["attributes"],
-    null | undefined
+  type?: NonNullable<
+    NonNullable<GetContentTextQuery["contents"]>["data"][number]["attributes"]
   >["type"];
-  categories?: Exclude<
-    Exclude<
-      GetContentTextQuery["contents"],
-      null | undefined
-    >["data"][number]["attributes"],
-    null | undefined
+  categories?: NonNullable<
+    NonNullable<GetContentTextQuery["contents"]>["data"][number]["attributes"]
   >["categories"];
   thumbnail?: UploadImageFragment | null | undefined;
   langui: AppStaticProps["langui"];

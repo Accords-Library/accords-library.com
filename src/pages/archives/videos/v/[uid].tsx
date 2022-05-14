@@ -26,12 +26,8 @@ import {
 } from "next";
 
 interface Props extends AppStaticProps {
-  video: Exclude<
-    Exclude<
-      GetVideoQuery["videos"],
-      null | undefined
-    >["data"][number]["attributes"],
-    null | undefined
+  video: NonNullable<
+    NonNullable<GetVideoQuery["videos"]>["data"][number]["attributes"]
   >;
 }
 

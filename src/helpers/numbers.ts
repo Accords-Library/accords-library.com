@@ -4,7 +4,7 @@ import { Immutable } from "./types";
 export function convertPrice(
   pricePicker: Immutable<PricePickerFragment>,
   targetCurrency: Immutable<
-    Exclude<GetCurrenciesQuery["currencies"], null | undefined>["data"][number]
+    NonNullable<GetCurrenciesQuery["currencies"]>["data"][number]
   >
 ): number {
   if (

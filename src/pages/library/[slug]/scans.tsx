@@ -26,13 +26,11 @@ import {
 } from "next";
 
 interface Props extends AppStaticProps {
-  item: Exclude<
-    GetLibraryItemScansQuery["libraryItems"],
-    null | undefined
+  item: NonNullable<
+    GetLibraryItemScansQuery["libraryItems"]
   >["data"][number]["attributes"];
-  itemId: Exclude<
-    GetLibraryItemScansQuery["libraryItems"],
-    null | undefined
+  itemId: NonNullable<
+    GetLibraryItemScansQuery["libraryItems"]
   >["data"][number]["id"];
 }
 

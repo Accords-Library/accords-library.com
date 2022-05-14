@@ -23,10 +23,7 @@ import { GetStaticPropsContext } from "next";
 import { useEffect, useState } from "react";
 
 interface Props extends AppStaticProps {
-  items: Exclude<
-    GetLibraryItemsPreviewQuery["libraryItems"],
-    null | undefined
-  >["data"];
+  items: NonNullable<GetLibraryItemsPreviewQuery["libraryItems"]>["data"];
 }
 
 type GroupLibraryItems = Map<string, Immutable<Props["items"]>>;

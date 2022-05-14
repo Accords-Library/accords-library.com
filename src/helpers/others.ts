@@ -7,19 +7,15 @@ import { AppStaticProps } from "../graphql/getAppStaticProps";
 import { Immutable } from "./types";
 
 type SortContentProps =
-  | Exclude<
-      Exclude<
-        GetLibraryItemQuery["libraryItems"],
-        null | undefined
-      >["data"][number]["attributes"],
-      null | undefined
+  | NonNullable<
+      NonNullable<
+        GetLibraryItemQuery["libraryItems"]
+      >["data"][number]["attributes"]
     >["contents"]
-  | Exclude<
-      Exclude<
-        GetLibraryItemScansQuery["libraryItems"],
-        null | undefined
-      >["data"][number]["attributes"],
-      null | undefined
+  | NonNullable<
+      NonNullable<
+        GetLibraryItemScansQuery["libraryItems"]
+      >["data"][number]["attributes"]
     >["contents"];
 
 export function sortContent(contents: Immutable<SortContentProps>) {

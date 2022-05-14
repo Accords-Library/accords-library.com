@@ -16,14 +16,10 @@ import { prettySlug } from "helpers/formatters";
 import { GetStaticPropsContext } from "next";
 
 interface Props extends AppStaticProps {
-  chronologyItems: Exclude<
-    GetChronologyItemsQuery["chronologyItems"],
-    null | undefined
+  chronologyItems: NonNullable<
+    GetChronologyItemsQuery["chronologyItems"]
   >["data"];
-  chronologyEras: Exclude<
-    GetErasQuery["chronologyEras"],
-    null | undefined
-  >["data"];
+  chronologyEras: NonNullable<GetErasQuery["chronologyEras"]>["data"];
 }
 
 export default function Chronology(props: Props): JSX.Element {

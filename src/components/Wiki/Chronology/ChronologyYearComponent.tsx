@@ -5,9 +5,8 @@ import { Immutable } from "helpers/types";
 
 interface Props {
   year: number;
-  items: Exclude<
-    GetChronologyItemsQuery["chronologyItems"],
-    null | undefined
+  items: NonNullable<
+    GetChronologyItemsQuery["chronologyItems"]
   >["data"][number][];
   langui: AppStaticProps["langui"];
 }

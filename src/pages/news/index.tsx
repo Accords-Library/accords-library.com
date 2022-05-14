@@ -16,7 +16,7 @@ import { GetStaticPropsContext } from "next";
 import { useState } from "react";
 
 interface Props extends AppStaticProps {
-  posts: Exclude<GetPostsPreviewQuery["posts"], null | undefined>["data"];
+  posts: NonNullable<GetPostsPreviewQuery["posts"]>["data"];
 }
 
 export default function News(props: Immutable<Props>): JSX.Element {

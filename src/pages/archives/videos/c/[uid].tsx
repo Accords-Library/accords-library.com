@@ -23,9 +23,8 @@ import {
 import { useState } from "react";
 
 interface Props extends AppStaticProps {
-  channel: Exclude<
-    GetVideoChannelQuery["videoChannels"],
-    null | undefined
+  channel: NonNullable<
+    GetVideoChannelQuery["videoChannels"]
   >["data"][number]["attributes"];
 }
 

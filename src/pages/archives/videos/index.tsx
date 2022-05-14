@@ -21,7 +21,7 @@ import { GetStaticPropsContext } from "next";
 import { useState } from "react";
 
 interface Props extends AppStaticProps {
-  videos: Exclude<GetVideosPreviewQuery["videos"], null | undefined>["data"];
+  videos: NonNullable<GetVideosPreviewQuery["videos"]>["data"];
 }
 
 export default function Videos(props: Props): JSX.Element {

@@ -1,28 +1,20 @@
 import { GetContentTextQuery, GetPostQuery } from "graphql/generated";
 import React from "react";
 
-type Post = Exclude<
-  Exclude<
-    GetPostQuery["posts"],
-    null | undefined
-  >["data"][number]["attributes"],
-  null | undefined
+type Post = NonNullable<
+  NonNullable<GetPostQuery["posts"]>["data"][number]["attributes"]
 >;
 
 export interface PostWithTranslations extends Omit<Post, "translations"> {
-  translations: Exclude<Post["translations"], null | undefined>;
+  translations: NonNullable<Post["translations"]>;
 }
 
-type Content = Exclude<
-  Exclude<
-    GetContentTextQuery["contents"],
-    null | undefined
-  >["data"][number]["attributes"],
-  null | undefined
+type Content = NonNullable<
+  NonNullable<GetContentTextQuery["contents"]>["data"][number]["attributes"]
 >;
 
 export interface ContentWithTranslations extends Omit<Content, "translations"> {
-  translations: Exclude<Content["translations"], null | undefined>;
+  translations: NonNullable<Content["translations"]>;
 }
 
 type ImmutableBlackList<T> = JSX.Element | React.ReactNode | Function;

@@ -15,6 +15,7 @@ import { ThumbnailHeader } from "components/ThumbnailHeader";
 import { ToolTip } from "components/ToolTip";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
+import { getNextContent, getPreviousContent } from "helpers/contents";
 import {
   prettyinlineTitle,
   prettyLanguage,
@@ -32,48 +33,6 @@ import {
 
 interface Props extends AppStaticProps {
   content: ContentWithTranslations;
-}
-
-function getPreviousContent(
-  group: Immutable<
-    NonNullable<
-      NonNullable<
-        NonNullable<
-          NonNullable<ContentWithTranslations["group"]>["data"]
-        >["attributes"]
-      >["contents"]
-    >["data"]
-  >,
-  currentSlug: string
-) {
-  for (let index = 0; index < group.length; index += 1) {
-    const content = group[index];
-    if (content.attributes?.slug === currentSlug && index > 0) {
-      return group[index - 1];
-    }
-  }
-  return undefined;
-}
-
-function getNextContent(
-  group: Immutable<
-    NonNullable<
-      NonNullable<
-        NonNullable<
-          NonNullable<ContentWithTranslations["group"]>["data"]
-        >["attributes"]
-      >["contents"]
-    >["data"]
-  >,
-  currentSlug: string
-) {
-  for (let index = 0; index < group.length; index += 1) {
-    const content = group[index];
-    if (content.attributes?.slug === currentSlug && index < group.length - 1) {
-      return group[index + 1];
-    }
-  }
-  return undefined;
 }
 
 export default function Content(props: Immutable<Props>): JSX.Element {

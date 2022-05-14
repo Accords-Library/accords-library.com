@@ -242,11 +242,12 @@ function getGroups(
       items.map((item) => {
         const type =
           item.attributes?.type?.data?.attributes?.titles?.[0]?.title ??
-          prettySlug(item.attributes?.type?.data?.attributes?.slug);
+          item.attributes?.type?.data?.attributes?.slug
+            ? prettySlug(item.attributes.type.data.attributes.slug)
+            : langui.no_type;
         if (!group.has(type)) group.set(type, []);
         group.get(type)?.push(item);
       });
-
       return group;
     }
 

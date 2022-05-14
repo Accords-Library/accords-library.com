@@ -120,7 +120,7 @@ export function PreviewCard(props: Immutable<Props>): JSX.Element {
         {thumbnail && stackNumber > 0 && (
           <>
             <Img
-              className="opacity-30 rounded-t-md overflow-hidden absolute transition-[top_transform]
+              className="opacity-30 rounded-md overflow-hidden absolute transition-[top_transform]
                 -top-[var(--stacked-top)*1.5rem]
                 scale-[calc(1-0.15*var(--stacked-top))]"
               image={thumbnail}
@@ -128,7 +128,7 @@ export function PreviewCard(props: Immutable<Props>): JSX.Element {
             />
 
             <div
-              className="bg-light rounded-t-md overflow-hidden absolute transition-[top_transform]
+              className="bg-light rounded-md overflow-hidden absolute transition-[top_transform]
               -top-[var(--stacked-top)*0.7rem]
               scale-[calc(1-0.06*var(--stacked-top))]"
             >

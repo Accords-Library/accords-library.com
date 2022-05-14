@@ -1,14 +1,16 @@
-import AppLayout from "components/AppLayout";
-import ScanSet from "components/Library/ScanSet";
-import ScanSetCover from "components/Library/ScanSetCover";
-import NavOption from "components/PanelComponents/NavOption";
-import ReturnButton, {
+import { AppLayout } from "components/AppLayout";
+import { ScanSet } from "components/Library/ScanSet";
+import { ScanSetCover } from "components/Library/ScanSetCover";
+import { NavOption } from "components/PanelComponents/NavOption";
+import {
+  ReturnButton,
   ReturnButtonType,
 } from "components/PanelComponents/ReturnButton";
-import ContentPanel, {
+import {
+  ContentPanel,
   ContentPanelWidthSizes,
 } from "components/Panels/ContentPanel";
-import SubPanel from "components/Panels/SubPanel";
+import { SubPanel } from "components/Panels/SubPanel";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { GetLibraryItemScansQuery } from "graphql/generated";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";

@@ -14,8 +14,8 @@ import {
 import { ImageQuality } from "helpers/img";
 import { Immutable } from "helpers/types";
 import Link from "next/link";
-import Chip from "./Chip";
-import Img from "./Img";
+import { Chip } from "./Chip";
+import { Img } from "./Img";
 
 interface Props {
   thumbnail?: UploadImageFragment | string | null | undefined;
@@ -45,7 +45,7 @@ interface Props {
     | { __typename: "anotherHoverlayName" };
 }
 
-export default function PreviewCard(props: Immutable<Props>): JSX.Element {
+export function PreviewCard(props: Immutable<Props>): JSX.Element {
   const {
     href,
     thumbnail,

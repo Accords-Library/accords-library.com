@@ -1,11 +1,12 @@
-import AppLayout from "components/AppLayout";
-import Button from "components/Inputs/Button";
-import Markdawn from "components/Markdown/Markdawn";
-import ContentPanel, {
+import { AppLayout } from "components/AppLayout";
+import { Button } from "components/Inputs/Button";
+import { Markdawn } from "components/Markdown/Markdawn";
+import {
+  ContentPanel,
   ContentPanelWidthSizes,
 } from "components/Panels/ContentPanel";
-import Popup from "components/Popup";
-import ToolTip from "components/ToolTip";
+import { Popup } from "components/Popup";
+import { ToolTip } from "components/ToolTip";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { Immutable } from "helpers/types";
 import { GetStaticPropsContext } from "next";

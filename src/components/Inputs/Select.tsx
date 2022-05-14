@@ -10,7 +10,7 @@ interface Props {
   className?: string;
 }
 
-export default function Select(props: Immutable<Props>): JSX.Element {
+export function Select(props: Immutable<Props>): JSX.Element {
   const [opened, setOpened] = useState(false);
 
   return (

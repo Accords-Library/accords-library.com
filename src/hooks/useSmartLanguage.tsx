@@ -1,4 +1,4 @@
-import LanguageSwitcher from "components/Inputs/LanguageSwitcher";
+import { LanguageSwitcher } from "components/Inputs/LanguageSwitcher";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { AppStaticProps } from "graphql/getAppStaticProps";
 import { Immutable } from "helpers/types";

@@ -15,7 +15,7 @@ interface Props {
   badgeNumber?: number;
 }
 
-export default function Button(props: Immutable<Props>): JSX.Element {
+export function Button(props: Immutable<Props>): JSX.Element {
   const {
     draggable,
     id,

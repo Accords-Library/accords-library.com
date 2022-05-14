@@ -1,7 +1,7 @@
-import Chip from "components/Chip";
-import Img from "components/Img";
-import InsetBox from "components/InsetBox";
-import Markdawn from "components/Markdown/Markdawn";
+import { Chip } from "components/Chip";
+import { Img } from "components/Img";
+import { InsetBox } from "components/InsetBox";
+import { Markdawn } from "components/Markdown/Markdawn";
 import { GetContentQuery, UploadImageFragment } from "graphql/generated";
 import { AppStaticProps } from "graphql/getAppStaticProps";
 import { prettyinlineTitle, prettySlug, slugify } from "helpers/formatters";
@@ -33,7 +33,7 @@ interface Props {
   languageSwitcher?: JSX.Element;
 }
 
-export default function ThumbnailHeader(props: Immutable<Props>): JSX.Element {
+export function ThumbnailHeader(props: Immutable<Props>): JSX.Element {
   const {
     langui,
     pre_title,

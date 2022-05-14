@@ -1,5 +1,5 @@
-import Chip from "components/Chip";
-import ToolTip from "components/ToolTip";
+import { Chip } from "components/Chip";
+import { ToolTip } from "components/ToolTip";
 import {
   Enum_Componenttranslationschronologyitem_Status,
   GetChronologyItemsQuery,
@@ -17,9 +17,7 @@ interface Props {
   langui: AppStaticProps["langui"];
 }
 
-export default function ChronologyItemComponent(
-  props: Immutable<Props>
-): JSX.Element {
+export function ChronologyItemComponent(props: Immutable<Props>): JSX.Element {
   const { langui } = props;
 
   function generateAnchor(

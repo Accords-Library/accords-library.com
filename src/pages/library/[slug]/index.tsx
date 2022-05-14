@@ -1,19 +1,21 @@
-import AppLayout from "components/AppLayout";
-import Chip from "components/Chip";
-import Img from "components/Img";
-import Button from "components/Inputs/Button";
-import Switch from "components/Inputs/Switch";
-import InsetBox from "components/InsetBox";
-import ContentLine from "components/Library/ContentLine";
-import NavOption from "components/PanelComponents/NavOption";
-import ReturnButton, {
+import { AppLayout } from "components/AppLayout";
+import { Chip } from "components/Chip";
+import { Img } from "components/Img";
+import { Button } from "components/Inputs/Button";
+import { Switch } from "components/Inputs/Switch";
+import { InsetBox } from "components/InsetBox";
+import { ContentLine } from "components/Library/ContentLine";
+import { NavOption } from "components/PanelComponents/NavOption";
+import {
+  ReturnButton,
   ReturnButtonType,
 } from "components/PanelComponents/ReturnButton";
-import ContentPanel, {
+import {
+  ContentPanel,
   ContentPanelWidthSizes,
 } from "components/Panels/ContentPanel";
-import SubPanel from "components/Panels/SubPanel";
-import PreviewCard from "components/PreviewCard";
+import { SubPanel } from "components/Panels/SubPanel";
+import { PreviewCard } from "components/PreviewCard";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import {
   Enum_Componentmetadatabooks_Binding_Type,

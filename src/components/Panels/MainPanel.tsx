@@ -1,7 +1,7 @@
-import HorizontalLine from "components/HorizontalLine";
-import Button from "components/Inputs/Button";
-import NavOption from "components/PanelComponents/NavOption";
-import ToolTip from "components/ToolTip";
+import { HorizontalLine } from "components/HorizontalLine";
+import { Button } from "components/Inputs/Button";
+import { NavOption } from "components/PanelComponents/NavOption";
+import { ToolTip } from "components/ToolTip";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { AppStaticProps } from "graphql/getAppStaticProps";
 import { Immutable } from "helpers/types";
@@ -13,7 +13,7 @@ interface Props {
   langui: AppStaticProps["langui"];
 }
 
-export default function MainPanel(props: Immutable<Props>): JSX.Element {
+export function MainPanel(props: Immutable<Props>): JSX.Element {
   const { langui } = props;
   const isDesktop = useMediaDesktop();
   const appLayout = useAppLayout();

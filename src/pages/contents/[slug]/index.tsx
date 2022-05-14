@@ -1,17 +1,18 @@
-import AppLayout from "components/AppLayout";
-import Chip from "components/Chip";
-import HorizontalLine from "components/HorizontalLine";
-import Markdawn from "components/Markdown/Markdawn";
-import TOC from "components/Markdown/TOC";
-import ReturnButton, {
+import { AppLayout } from "components/AppLayout";
+import { Chip } from "components/Chip";
+import { HorizontalLine } from "components/HorizontalLine";
+import { Markdawn } from "components/Markdown/Markdawn";
+import { TOC } from "components/Markdown/TOC";
+import {
+  ReturnButton,
   ReturnButtonType,
 } from "components/PanelComponents/ReturnButton";
-import ContentPanel from "components/Panels/ContentPanel";
-import SubPanel from "components/Panels/SubPanel";
-import PreviewLine from "components/PreviewLine";
-import RecorderChip from "components/RecorderChip";
-import ThumbnailHeader from "components/ThumbnailHeader";
-import ToolTip from "components/ToolTip";
+import { ContentPanel } from "components/Panels/ContentPanel";
+import { SubPanel } from "components/Panels/SubPanel";
+import { PreviewLine } from "components/PreviewLine";
+import { RecorderChip } from "components/RecorderChip";
+import { ThumbnailHeader } from "components/ThumbnailHeader";
+import { ToolTip } from "components/ToolTip";
 import { GetContentTextQuery } from "graphql/generated";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";

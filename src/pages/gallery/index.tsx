@@ -1,4 +1,4 @@
-import AppLayout from "components/AppLayout";
+import { AppLayout } from "components/AppLayout";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { Immutable } from "helpers/types";
 import { GetStaticPropsContext } from "next";

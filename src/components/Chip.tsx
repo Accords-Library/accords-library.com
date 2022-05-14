@@ -5,7 +5,7 @@ interface Props {
   children: React.ReactNode;
 }
 
-export default function Chip(props: Immutable<Props>): JSX.Element {
+export function Chip(props: Immutable<Props>): JSX.Element {
   return (
     <div
       className={`grid place-content-center place-items-center text-xs pb-[0.14rem]

@@ -6,7 +6,7 @@ interface Props {
   id?: string;
 }
 
-export default function InsetBox(props: Immutable<Props>): JSX.Element {
+export function InsetBox(props: Immutable<Props>): JSX.Element {
   return (
     <div
       id={props.id}

@@ -1,4 +1,4 @@
-import PostPage from "components/PostPage";
+import { PostPage } from "components/PostPage";
 import {
   getPostStaticProps,
   PostStaticProps,

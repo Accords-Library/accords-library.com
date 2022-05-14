@@ -1,4 +1,4 @@
-import ToolTip from "components/ToolTip";
+import { ToolTip } from "components/ToolTip";
 import { Immutable } from "helpers/types";
 import { useRouter } from "next/router";
 import { MouseEventHandler } from "react";
@@ -13,7 +13,7 @@ interface Props {
   onClick?: MouseEventHandler<HTMLDivElement>;
 }
 
-export default function NavOption(props: Immutable<Props>): JSX.Element {
+export function NavOption(props: Immutable<Props>): JSX.Element {
   const router = useRouter();
   const isActive = router.asPath.startsWith(props.url);
   const divActive = "bg-mid shadow-inner-sm shadow-shade";

@@ -12,7 +12,7 @@ interface Props {
   onClick?: MouseEventHandler<HTMLImageElement>;
 }
 
-export default function Img(props: Immutable<Props>): JSX.Element {
+export function Img(props: Immutable<Props>): JSX.Element {
   const {
     className,
     image,

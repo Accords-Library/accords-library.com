@@ -1,11 +1,12 @@
-import AppLayout from "components/AppLayout";
-import Switch from "components/Inputs/Switch";
-import PanelHeader from "components/PanelComponents/PanelHeader";
-import ContentPanel, {
+import { AppLayout } from "components/AppLayout";
+import { Switch } from "components/Inputs/Switch";
+import { PanelHeader } from "components/PanelComponents/PanelHeader";
+import {
+  ContentPanel,
   ContentPanelWidthSizes,
 } from "components/Panels/ContentPanel";
-import SubPanel from "components/Panels/SubPanel";
-import PreviewCard from "components/PreviewCard";
+import { SubPanel } from "components/Panels/SubPanel";
+import { PreviewCard } from "components/PreviewCard";
 import { GetPostsPreviewQuery } from "graphql/generated";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";

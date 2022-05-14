@@ -3,17 +3,17 @@ import { prettySlug } from "helpers/formatters";
 import { getStatusDescription } from "helpers/others";
 import { Immutable, PostWithTranslations } from "helpers/types";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
-import AppLayout from "./AppLayout";
-import Chip from "./Chip";
-import HorizontalLine from "./HorizontalLine";
-import Markdawn from "./Markdown/Markdawn";
-import TOC from "./Markdown/TOC";
-import ReturnButton, { ReturnButtonType } from "./PanelComponents/ReturnButton";
-import ContentPanel from "./Panels/ContentPanel";
-import SubPanel from "./Panels/SubPanel";
-import RecorderChip from "./RecorderChip";
-import ThumbnailHeader from "./ThumbnailHeader";
-import ToolTip from "./ToolTip";
+import { AppLayout } from "./AppLayout";
+import { Chip } from "./Chip";
+import { HorizontalLine } from "./HorizontalLine";
+import { Markdawn } from "./Markdown/Markdawn";
+import { TOC } from "./Markdown/TOC";
+import { ReturnButton, ReturnButtonType } from "./PanelComponents/ReturnButton";
+import { ContentPanel } from "./Panels/ContentPanel";
+import { SubPanel } from "./Panels/SubPanel";
+import { RecorderChip } from "./RecorderChip";
+import { ThumbnailHeader } from "./ThumbnailHeader";
+import { ToolTip } from "./ToolTip";
 
 interface Props {
   post: PostWithTranslations;
@@ -31,7 +31,7 @@ interface Props {
   appendBody?: JSX.Element;
 }
 
-export default function PostPage(props: Immutable<Props>): JSX.Element {
+export function PostPage(props: Immutable<Props>): JSX.Element {
   const {
     post,
     langui,

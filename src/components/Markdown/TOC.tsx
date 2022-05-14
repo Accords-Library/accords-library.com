@@ -8,7 +8,7 @@ interface Props {
   title?: string;
 }
 
-export default function TOCComponent(props: Immutable<Props>): JSX.Element {
+export function TOC(props: Immutable<Props>): JSX.Element {
   const { text, title } = props;
   const toc = getTocFromMarkdawn(preprocessMarkDawn(text), title);
   const router = useRouter();
@@ -29,7 +29,7 @@ export default function TOCComponent(props: Immutable<Props>): JSX.Element {
 }
 
 interface LevelProps {
-  tocchildren: TOC[];
+  tocchildren: TOCInterface[];
   parentNumbering: string;
 }
 
@@ -61,14 +61,14 @@ function TOCLevel(props: LevelProps): JSX.Element {
   );
 }
 
-interface TOC {
+interface TOCInterface {
   title: string;
   slug: string;
-  children: TOC[];
+  children: TOCInterface[];
 }
 
-export function getTocFromMarkdawn(text: string, title?: string): TOC {
-  const toc: TOC = {
+export function getTocFromMarkdawn(text: string, title?: string): TOCInterface {
+  const toc: TOCInterface = {
     title: title ?? "Return to top",
     slug: slugify(title),
     children: [],

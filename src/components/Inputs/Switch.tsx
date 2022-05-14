@@ -7,7 +7,7 @@ interface Props {
   className?: string;
 }
 
-export default function Switch(props: Immutable<Props>): JSX.Element {
+export function Switch(props: Immutable<Props>): JSX.Element {
   return (
     <div
       className={`h-6 w-12 rounded-full border-2 border-mid grid

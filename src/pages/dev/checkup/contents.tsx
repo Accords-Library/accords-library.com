@@ -1,10 +1,11 @@
-import AppLayout from "components/AppLayout";
-import Chip from "components/Chip";
-import Button from "components/Inputs/Button";
-import ContentPanel, {
+import { AppLayout } from "components/AppLayout";
+import { Chip } from "components/Chip";
+import { Button } from "components/Inputs/Button";
+import {
+  ContentPanel,
   ContentPanelWidthSizes,
 } from "components/Panels/ContentPanel";
-import ToolTip from "components/ToolTip";
+import { ToolTip } from "components/ToolTip";
 import {
   DevGetContentsQuery,
   Enum_Componentsetstextset_Status,
@@ -39,7 +40,8 @@ export default function CheckupContents(props: Immutable<Props>): JSX.Element {
       {testReport.lines.map((line, index) => (
         <div
           key={index}
-          className="grid grid-cols-[2em,3em,2fr,1fr,0.5fr,0.5fr,2fr] gap-2 items-center mb-2 justify-items-start"
+          className="grid grid-cols-[2em,3em,2fr,1fr,0.5fr,0.5fr,2fr]
+          gap-2 items-center mb-2 justify-items-start"
         >
           <Button
             href={line.frontendUrl}

@@ -1,7 +1,7 @@
-import HorizontalLine from "components/HorizontalLine";
-import Img from "components/Img";
-import InsetBox from "components/InsetBox";
-import ToolTip from "components/ToolTip";
+import { HorizontalLine } from "components/HorizontalLine";
+import { Img } from "components/Img";
+import { InsetBox } from "components/InsetBox";
+import { ToolTip } from "components/ToolTip";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { slugify } from "helpers/formatters";
 import { getAssetURL, ImageQuality } from "helpers/img";
@@ -17,7 +17,7 @@ interface Props {
   text: string;
 }
 
-export default function Markdawn(props: Immutable<Props>): JSX.Element {
+export function Markdawn(props: Immutable<Props>): JSX.Element {
   const appLayout = useAppLayout();
   const text = preprocessMarkDawn(props.text);
 

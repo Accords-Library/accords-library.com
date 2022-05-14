@@ -1,13 +1,14 @@
-import AppLayout from "components/AppLayout";
-import Chip from "components/Chip";
-import Select from "components/Inputs/Select";
-import Switch from "components/Inputs/Switch";
-import PanelHeader from "components/PanelComponents/PanelHeader";
-import ContentPanel, {
+import { AppLayout } from "components/AppLayout";
+import { Chip } from "components/Chip";
+import { Select } from "components/Inputs/Select";
+import { Switch } from "components/Inputs/Switch";
+import { PanelHeader } from "components/PanelComponents/PanelHeader";
+import {
+  ContentPanel,
   ContentPanelWidthSizes,
 } from "components/Panels/ContentPanel";
-import SubPanel from "components/Panels/SubPanel";
-import ThumbnailPreview from "components/PreviewCard";
+import { SubPanel } from "components/Panels/SubPanel";
+import { PreviewCard } from "components/PreviewCard";
 import { GetLibraryItemsPreviewQuery } from "graphql/generated";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
@@ -163,7 +164,7 @@ export default function Library(props: Immutable<Props>): JSX.Element {
                 {items.map((item) => (
                   <>
                     {item.attributes && (
-                      <ThumbnailPreview
+                      <PreviewCard
                         key={item.id}
                         href={`/library/${item.attributes.slug}`}
                         title={item.attributes.title}

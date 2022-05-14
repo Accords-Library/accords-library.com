@@ -1,7 +1,7 @@
-import Chip from "components/Chip";
-import Img from "components/Img";
-import RecorderChip from "components/RecorderChip";
-import ToolTip from "components/ToolTip";
+import { Chip } from "components/Chip";
+import { Img } from "components/Img";
+import { RecorderChip } from "components/RecorderChip";
+import { ToolTip } from "components/ToolTip";
 import {
   GetLibraryItemScansQuery,
   UploadImageFragment,
@@ -28,7 +28,7 @@ interface Props {
   langui: AppStaticProps["langui"];
 }
 
-export default function ScanSetCover(props: Immutable<Props>): JSX.Element {
+export function ScanSetCover(props: Immutable<Props>): JSX.Element {
   const { openLightBox, images, languages, langui } = props;
 
   const [selectedScan, LanguageSwitcher] = useSmartLanguage({

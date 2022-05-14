@@ -1,15 +1,17 @@
-import AppLayout from "components/AppLayout";
-import HorizontalLine from "components/HorizontalLine";
-import Button from "components/Inputs/Button";
-import InsetBox from "components/InsetBox";
-import NavOption from "components/PanelComponents/NavOption";
-import ReturnButton, {
+import { AppLayout } from "components/AppLayout";
+import { HorizontalLine } from "components/HorizontalLine";
+import { Button } from "components/Inputs/Button";
+import { InsetBox } from "components/InsetBox";
+import { NavOption } from "components/PanelComponents/NavOption";
+import {
+  ReturnButton,
   ReturnButtonType,
 } from "components/PanelComponents/ReturnButton";
-import ContentPanel, {
+import {
+  ContentPanel,
   ContentPanelWidthSizes,
 } from "components/Panels/ContentPanel";
-import SubPanel from "components/Panels/SubPanel";
+import { SubPanel } from "components/Panels/SubPanel";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { GetVideoQuery } from "graphql/generated";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";

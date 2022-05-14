@@ -1,4 +1,4 @@
-import Button from "components/Inputs/Button";
+import { Button } from "components/Inputs/Button";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { UploadImageFragment } from "graphql/generated";
 import { AppStaticProps } from "graphql/getAppStaticProps";
@@ -10,10 +10,10 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useSwipeable } from "react-swipeable";
-import OrderableList from "./Inputs/OrderableList";
-import Select from "./Inputs/Select";
-import MainPanel from "./Panels/MainPanel";
-import Popup from "./Popup";
+import { OrderableList } from "./Inputs/OrderableList";
+import { Select } from "./Inputs/Select";
+import { MainPanel } from "./Panels/MainPanel";
+import { Popup } from "./Popup";
 
 interface Props extends AppStaticProps {
   subPanel?: React.ReactNode;
@@ -25,7 +25,7 @@ interface Props extends AppStaticProps {
   description?: string;
 }
 
-export default function AppLayout(props: Immutable<Props>): JSX.Element {
+export function AppLayout(props: Immutable<Props>): JSX.Element {
   const {
     langui,
     currencies,

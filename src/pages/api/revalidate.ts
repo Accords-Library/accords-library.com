@@ -70,7 +70,7 @@ type ResponseMailProps = {
   revalidated: boolean;
 };
 
-export default async function Mail(
+export async function Mail(
   req: NextApiRequest,
   res: NextApiResponse<ResponseMailProps>
 ) {

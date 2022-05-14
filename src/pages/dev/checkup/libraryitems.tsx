@@ -1,10 +1,11 @@
-import AppLayout from "components/AppLayout";
-import Chip from "components/Chip";
-import Button from "components/Inputs/Button";
-import ContentPanel, {
+import { AppLayout } from "components/AppLayout";
+import { Chip } from "components/Chip";
+import { Button } from "components/Inputs/Button";
+import {
+  ContentPanel,
   ContentPanelWidthSizes,
 } from "components/Panels/ContentPanel";
-import ToolTip from "components/ToolTip";
+import { ToolTip } from "components/ToolTip";
 import {
   DevGetLibraryItemsQuery,
   Enum_Componentcollectionscomponentlibraryimages_Status,
@@ -18,9 +19,7 @@ interface Props extends AppStaticProps {
   libraryItems: DevGetLibraryItemsQuery;
 }
 
-export default function CheckupLibraryItems(
-  props: Immutable<Props>
-): JSX.Element {
+export default function CheckupLibraryItems(props: Immutable<Props>): JSX.Element {
   const { libraryItems } = props;
   const testReport = testingLibraryItem(libraryItems);
 

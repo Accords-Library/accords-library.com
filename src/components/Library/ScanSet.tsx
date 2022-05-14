@@ -1,8 +1,8 @@
-import Chip from "components/Chip";
-import Img from "components/Img";
-import Button from "components/Inputs/Button";
-import RecorderChip from "components/RecorderChip";
-import ToolTip from "components/ToolTip";
+import { Chip } from "components/Chip";
+import { Img } from "components/Img";
+import { Button } from "components/Inputs/Button";
+import { RecorderChip } from "components/RecorderChip";
+import { ToolTip } from "components/ToolTip";
 import { GetLibraryItemScansQuery } from "graphql/generated";
 import { AppStaticProps } from "graphql/getAppStaticProps";
 import { getAssetFilename, getAssetURL, ImageQuality } from "helpers/img";
@@ -48,7 +48,7 @@ interface Props {
   >["content"];
 }
 
-export default function ScanSet(props: Immutable<Props>): JSX.Element {
+export function ScanSet(props: Immutable<Props>): JSX.Element {
   const { openLightBox, scanSet, slug, title, languages, langui, content } =
     props;
 

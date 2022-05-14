@@ -7,7 +7,7 @@ interface Props {
   className?: string;
 }
 
-export default function SVG(props: Immutable<Props>): JSX.Element {
+export function SVG(props: Immutable<Props>): JSX.Element {
   return (
     <div className={props.className}>
       <Image

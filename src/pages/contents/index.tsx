@@ -1,13 +1,14 @@
-import AppLayout from "components/AppLayout";
-import Chip from "components/Chip";
-import Select from "components/Inputs/Select";
-import Switch from "components/Inputs/Switch";
-import PanelHeader from "components/PanelComponents/PanelHeader";
-import ContentPanel, {
+import { AppLayout } from "components/AppLayout";
+import { Chip } from "components/Chip";
+import { Select } from "components/Inputs/Select";
+import { Switch } from "components/Inputs/Switch";
+import { PanelHeader } from "components/PanelComponents/PanelHeader";
+import {
+  ContentPanel,
   ContentPanelWidthSizes,
 } from "components/Panels/ContentPanel";
-import SubPanel from "components/Panels/SubPanel";
-import PreviewCard from "components/PreviewCard";
+import { SubPanel } from "components/Panels/SubPanel";
+import { PreviewCard } from "components/PreviewCard";
 import { GetContentsQuery } from "graphql/generated";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
@@ -120,7 +121,8 @@ export default function Contents(props: Immutable<Props>): JSX.Element {
                         thumbnailAspectRatio="3/2"
                         stackEffect={
                           item.attributes.next_recommended?.data?.id !== null &&
-                          item.attributes.next_recommended?.data?.id !== undefined &&
+                          item.attributes.next_recommended?.data?.id !==
+                            undefined &&
                           combineRelatedContent
                         }
                         topChips={

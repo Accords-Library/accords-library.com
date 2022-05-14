@@ -2,8 +2,8 @@ import { UploadImageFragment } from "graphql/generated";
 import { ImageQuality } from "helpers/img";
 import { Immutable } from "helpers/types";
 import Link from "next/link";
-import Chip from "./Chip";
-import Img from "./Img";
+import { Chip } from "./Chip";
+import { Img } from "./Img";
 
 interface Props {
   thumbnail?: UploadImageFragment | string | null | undefined;
@@ -16,7 +16,7 @@ interface Props {
   bottomChips?: string[];
 }
 
-export default function PreviewLine(props: Immutable<Props>): JSX.Element {
+export function PreviewLine(props: Immutable<Props>): JSX.Element {
   const {
     href,
     thumbnail,

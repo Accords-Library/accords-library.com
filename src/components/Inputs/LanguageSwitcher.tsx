@@ -2,8 +2,8 @@ import { AppStaticProps } from "graphql/getAppStaticProps";
 import { prettyLanguage } from "helpers/formatters";
 import { Immutable } from "helpers/types";
 import { Dispatch, SetStateAction } from "react";
-import ToolTip from "../ToolTip";
-import Button from "./Button";
+import { ToolTip } from "../ToolTip";
+import { Button } from "./Button";
 
 interface Props {
   className?: string;
@@ -13,7 +13,7 @@ interface Props {
   setLocalesIndex: Dispatch<SetStateAction<number | undefined>>;
 }
 
-export default function LanguageSwitcher(props: Immutable<Props>): JSX.Element {
+export function LanguageSwitcher(props: Immutable<Props>): JSX.Element {
   const { locales, className, localesIndex, setLocalesIndex } = props;
 
   return (

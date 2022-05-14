@@ -14,7 +14,7 @@ interface Props {
   padding?: boolean;
 }
 
-export default function Popup(props: Immutable<Props>): JSX.Element {
+export function Popup(props: Immutable<Props>): JSX.Element {
   const {
     setState,
     state,

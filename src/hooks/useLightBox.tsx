@@ -1,4 +1,4 @@
-import LightBox from "components/LightBox";
+import { LightBox } from "components/LightBox";
 import { useState } from "react";
 
 export function useLightBox(): [

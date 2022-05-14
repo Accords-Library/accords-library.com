@@ -1,6 +1,6 @@
 import { Immutable } from "helpers/types";
-import useDarkMode from "hooks/useDarkMode";
-import useStateWithLocalStorage from "hooks/useStateWithLocalStorage";
+import { useDarkMode } from "hooks/useDarkMode";
+import { useStateWithLocalStorage } from "hooks/useStateWithLocalStorage";
 import React, { ReactNode, useContext, useState } from "react";
 
 interface AppLayoutState {

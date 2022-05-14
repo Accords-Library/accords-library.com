@@ -28,6 +28,7 @@ interface Props {
   topChips?: string[];
   bottomChips?: string[];
   keepInfoVisible?: boolean;
+  stackEffect?: boolean;
   metadata?: {
     currencies?: AppStaticProps["currencies"];
     release_date?: DatePickerFragment | null;
@@ -52,6 +53,7 @@ export default function PreviewCard(props: Immutable<Props>): JSX.Element {
     title,
     subtitle,
     description,
+    stackEffect = false,
     topChips,
     bottomChips,
     keepInfoVisible,
@@ -112,8 +114,26 @@ export default function PreviewCard(props: Immutable<Props>): JSX.Element {
         className="drop-shadow-shade-xl cursor-pointer grid items-end
         fine:[--cover-opacity:0] hover:[--cover-opacity:1] hover:scale-[1.02]
         [--bg-opacity:0] hover:[--bg-opacity:0.5] [--play-opacity:0]
-        hover:[--play-opacity:100] transition-transform"
+        hover:[--play-opacity:100] transition-transform
+        [--stacked-top:0] hover:[--stacked-top:1]"
       >
+        {thumbnail && stackEffect && (
+          <>
+            <Img
+              className={`rounded-t-md absolute -top-[var(--stacked-top)*1.3rem]
+                opacity-30 scale-[0.88] transition-[top]`}
+              image={thumbnail}
+              quality={ImageQuality.Medium}
+            />
+            <Img
+              className={`rounded-t-md absolute -top-[var(--stacked-top)*0.6rem]
+                opacity-60 scale-95 transition-[top]`}
+              image={thumbnail}
+              quality={ImageQuality.Medium}
+            />
+          </>
+        )}
+
         {thumbnail ? (
           <div className="relative">
             <Img
@@ -174,9 +194,13 @@ export default function PreviewCard(props: Immutable<Props>): JSX.Element {
             </div>
           )}
           <div className="my-1">
-            {pre_title && <p className="leading-none mb-1 break-words">{pre_title}</p>}
+            {pre_title && (
+              <p className="leading-none mb-1 break-words">{pre_title}</p>
+            )}
             {title && (
-              <p className="font-headers text-lg leading-none break-words">{title}</p>
+              <p className="font-headers text-lg leading-none break-words">
+                {title}
+              </p>
             )}
             {subtitle && <p className="leading-none break-words">{subtitle}</p>}
           </div>

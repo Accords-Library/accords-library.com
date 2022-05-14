@@ -28,13 +28,23 @@ export default function Contents(props: Immutable<Props>): JSX.Element {
   const [groupingMethod, setGroupingMethod] = useState<number>(-1);
   const [keepInfoVisible, setKeepInfoVisible] = useState(false);
 
+  const [combineRelatedContent, setCombineRelatedContent] = useState(true);
+
+  const [filteredItems, setFilteredItems] = useState(
+    filterContents(combineRelatedContent, contents)
+  );
+
   const [groups, setGroups] = useState<GroupContentItems>(
-    getGroups(langui, groupingMethod, contents)
+    getGroups(langui, groupingMethod, filteredItems)
   );
 
   useEffect(() => {
-    setGroups(getGroups(langui, groupingMethod, contents));
-  }, [langui, groupingMethod, contents]);
+    setFilteredItems(filterContents(combineRelatedContent, contents));
+  }, [combineRelatedContent, contents]);
+
+  useEffect(() => {
+    setGroups(getGroups(langui, groupingMethod, filteredItems));
+  }, [langui, groupingMethod, filteredItems]);
 
   const subPanel = (
     <SubPanel>
@@ -52,6 +62,14 @@ export default function Contents(props: Immutable<Props>): JSX.Element {
           state={groupingMethod}
           setState={setGroupingMethod}
           allowEmpty
+        />
+      </div>
+
+      <div className="flex flex-row gap-2 place-items-center coarse:hidden">
+        <p className="flex-shrink-0">{"Combine related contents"}:</p>
+        <Switch
+          setState={setCombineRelatedContent}
+          state={combineRelatedContent}
         />
       </div>
 
@@ -100,6 +118,11 @@ export default function Contents(props: Immutable<Props>): JSX.Element {
                         subtitle={item.attributes.titles?.[0]?.subtitle}
                         thumbnail={item.attributes.thumbnail?.data?.attributes}
                         thumbnailAspectRatio="3/2"
+                        stackEffect={
+                          item.attributes.next_recommended?.data?.id !== null &&
+                          item.attributes.next_recommended?.data?.id !== undefined &&
+                          combineRelatedContent
+                        }
                         topChips={
                           item.attributes.type?.data?.attributes
                             ? [
@@ -230,4 +253,16 @@ function getGroups(
       return group;
     }
   }
+}
+
+function filterContents(
+  combineRelatedContent: boolean,
+  contents: Immutable<Props["contents"]>
+): Immutable<Props["contents"]> {
+  if (combineRelatedContent) {
+    return [...contents].filter(
+      (content) => !content.attributes?.previous_recommended?.data?.id
+    );
+  }
+  return contents;
 }

@@ -4,7 +4,7 @@ query getContents($language_code: String) {
       id
       attributes {
         slug
-        titles(filters: { language: { code: { eq: $language_code } } }) {
+        titles {
           pre_title
           title
           subtitle
@@ -53,6 +53,16 @@ query getContents($language_code: String) {
                 }
               }
             }
+          }
+        }
+        next_recommended {
+          data {
+            id
+          }
+        }
+        previous_recommended {
+          data {
+            id
           }
         }
         text_set {

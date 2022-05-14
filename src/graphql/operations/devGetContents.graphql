@@ -1,84 +1,75 @@
 query devGetContents {
-  contents(pagination: { limit: -1 }) {
-    data {
-      id
-      attributes {
-        slug
-        categories {
-          data {
-            id
-          }
-        }
-        type {
-          data {
-            id
-          }
-        }
-        titles {
-          language {
-            data {
-              id
-            }
-          }
-          title
-          description
-        }
-        ranged_contents {
-          data {
-            id
-          }
-        }
-        text_set {
-          language {
-            data {
-              id
-            }
-          }
-          source_language {
-            data {
-              id
-            }
-          }
-          status
-          transcribers {
-            data {
-              id
-            }
-          }
-          translators {
-            data {
-              id
-            }
-          }
-          proofreaders {
-            data {
-              id
-            }
-          }
-          text
-        }
-        video_set {
-          id
-        }
-        audio_set {
-          id
-        }
-        thumbnail {
-          data {
-            id
-          }
-        }
-        next_recommended {
-          data {
-            id
-          }
-        }
-        previous_recommended {
-          data {
-            id
-          }
-        }
-      }
-    }
-  }
+	contents(pagination: { limit: -1 }) {
+		data {
+			id
+			attributes {
+				slug
+				categories {
+					data {
+						id
+					}
+				}
+				type {
+					data {
+						id
+					}
+				}
+
+				ranged_contents {
+					data {
+						id
+					}
+				}
+				translations {
+					language {
+						data {
+							id
+						}
+					}
+					title
+					description
+					text_set {
+						source_language {
+							data {
+								id
+							}
+						}
+						status
+						transcribers {
+							data {
+								id
+							}
+						}
+						translators {
+							data {
+								id
+							}
+						}
+						proofreaders {
+							data {
+								id
+							}
+						}
+						text
+					}
+				}
+
+				thumbnail {
+					data {
+						id
+					}
+				}
+				next_recommended {
+					data {
+						id
+					}
+				}
+				previous_recommended {
+					data {
+						id
+					}
+				}
+			}
+		}
+	}
 }

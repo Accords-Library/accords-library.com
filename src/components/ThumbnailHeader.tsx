@@ -2,7 +2,7 @@ import { Chip } from "components/Chip";
 import { Img } from "components/Img";
 import { InsetBox } from "components/InsetBox";
 import { Markdawn } from "components/Markdown/Markdawn";
-import { GetContentQuery, UploadImageFragment } from "graphql/generated";
+import { GetContentTextQuery, UploadImageFragment } from "graphql/generated";
 import { AppStaticProps } from "graphql/getAppStaticProps";
 import { prettyinlineTitle, prettySlug, slugify } from "helpers/formatters";
 import { getAssetURL, ImageQuality } from "helpers/img";
@@ -16,14 +16,14 @@ interface Props {
   description?: string | null | undefined;
   type?: Exclude<
     Exclude<
-      GetContentQuery["contents"],
+      GetContentTextQuery["contents"],
       null | undefined
     >["data"][number]["attributes"],
     null | undefined
   >["type"];
   categories?: Exclude<
     Exclude<
-      GetContentQuery["contents"],
+      GetContentTextQuery["contents"],
       null | undefined
     >["data"][number]["attributes"],
     null | undefined

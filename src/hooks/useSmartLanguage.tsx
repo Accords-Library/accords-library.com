@@ -8,8 +8,12 @@ import { useEffect, useMemo, useState } from "react";
 interface Props<T> {
   items: Immutable<T[]>;
   languages: AppStaticProps["languages"];
-  languageExtractor: (item: Immutable<T>) => string | undefined;
-  transform?: (item: Immutable<T>) => Immutable<T>;
+  languageExtractor: (
+    item: Exclude<Immutable<T>, null | undefined>
+  ) => string | undefined;
+  transform?: (
+    item: Exclude<Immutable<T>, null | undefined>
+  ) => Exclude<Immutable<T>, null | undefined>;
 }
 
 function getPreferredLanguage(
@@ -45,8 +49,10 @@ export function useSmartLanguage<T>(
 
   useEffect(() => {
     items.map((elem, index) => {
-      const result = languageExtractor(elem);
-      if (result !== undefined) availableLocales.set(result, index);
+      if (elem !== null && elem !== undefined) {
+        const result = languageExtractor(elem);
+        if (result !== undefined) availableLocales.set(result, index);
+      }
     });
   }, [availableLocales, items, languageExtractor]);
 

@@ -4,7 +4,14 @@ query getContents($language_code: String) {
       id
       attributes {
         slug
-        titles {
+        translations {
+          language {
+            data {
+              attributes {
+                code
+              }
+            }
+          }
           pre_title
           title
           subtitle
@@ -64,15 +71,6 @@ query getContents($language_code: String) {
           data {
             id
           }
-        }
-        text_set {
-          id
-        }
-        video_set {
-          id
-        }
-        audio_set {
-          id
         }
         thumbnail {
           data {

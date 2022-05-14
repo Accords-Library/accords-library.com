@@ -55,10 +55,10 @@ export function ScanSet(props: Immutable<Props>): JSX.Element {
   const [selectedScan, LanguageSwitcher] = useSmartLanguage({
     items: scanSet,
     languages: languages,
-    languageExtractor: (item) => item?.language?.data?.attributes?.code,
+    languageExtractor: (item) => item.language?.data?.attributes?.code,
     transform: (item) => {
-      const newItem = { ...item } as Props["scanSet"][number];
-      newItem?.pages?.data.sort((a, b) => {
+      const newItem = { ...item } as Exclude<Props["scanSet"][number], null>;
+      newItem.pages?.data.sort((a, b) => {
         if (a.attributes?.url && b.attributes?.url) {
           let aName = getAssetFilename(a.attributes.url);
           let bName = getAssetFilename(b.attributes.url);

@@ -39,12 +39,12 @@ export function ContentLine(props: Immutable<Props>): JSX.Element {
         >
           <a>
             <h3 className="cursor-pointer" onClick={() => setOpened(!opened)}>
-              {content.attributes.content?.data?.attributes?.titles?.[0]
+              {content.attributes.content?.data?.attributes?.translations?.[0]
                 ? prettyinlineTitle(
-                    content.attributes.content.data.attributes.titles[0]
+                    content.attributes.content.data.attributes.translations[0]
                       ?.pre_title,
-                    content.attributes.content.data.attributes.titles[0]?.title,
-                    content.attributes.content.data.attributes.titles[0]
+                    content.attributes.content.data.attributes.translations[0]?.title,
+                    content.attributes.content.data.attributes.translations[0]
                       ?.subtitle
                   )
                 : prettySlug(content.attributes.slug, props.parentSlug)}

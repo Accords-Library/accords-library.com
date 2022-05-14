@@ -6,10 +6,7 @@ import {
   ContentPanelWidthSizes,
 } from "components/Panels/ContentPanel";
 import { ToolTip } from "components/ToolTip";
-import {
-  DevGetContentsQuery,
-  Enum_Componentsetstextset_Status,
-} from "graphql/generated";
+import { DevGetContentsQuery } from "graphql/generated";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import { Immutable } from "helpers/types";
@@ -196,7 +193,7 @@ function testingContent(contents: Immutable<Props["contents"]>): Report {
         });
       }
 
-      if (content.attributes.titles?.length === 0) {
+      if (content.attributes.translations?.length === 0) {
         report.lines.push({
           subitems: [content.attributes.slug],
           name: "No Titles",
@@ -210,10 +207,10 @@ function testingContent(contents: Immutable<Props["contents"]>): Report {
       } else {
         const titleLanguages: string[] = [];
 
-        content.attributes.titles?.map((title, titleIndex) => {
-          if (title && content.attributes) {
-            if (title.language?.data?.id) {
-              if (title.language.data.id in titleLanguages) {
+        content.attributes.translations?.map((translation, titleIndex) => {
+          if (translation && content.attributes) {
+            if (translation.language?.data?.id) {
+              if (translation.language.data.id in titleLanguages) {
                 report.lines.push({
                   subitems: [
                     content.attributes.slug,
@@ -228,7 +225,7 @@ function testingContent(contents: Immutable<Props["contents"]>): Report {
                   frontendUrl: frontendUrl,
                 });
               } else {
-                titleLanguages.push(title.language.data.id);
+                titleLanguages.push(translation.language.data.id);
               }
             } else {
               report.lines.push({
@@ -245,7 +242,7 @@ function testingContent(contents: Immutable<Props["contents"]>): Report {
                 frontendUrl: frontendUrl,
               });
             }
-            if (!title.description) {
+            if (!translation.description) {
               report.lines.push({
                 subitems: [
                   content.attributes.slug,
@@ -260,74 +257,64 @@ function testingContent(contents: Immutable<Props["contents"]>): Report {
                 frontendUrl: frontendUrl,
               });
             }
-          }
-        });
-      }
 
-      if (
-        content.attributes.text_set?.length === 0 &&
-        content.attributes.audio_set?.length === 0 &&
-        content.attributes.video_set?.length === 0
-      ) {
-        report.lines.push({
-          subitems: [content.attributes.slug],
-          name: "No Sets",
-          type: "Missing",
-          severity: "Medium",
-          description: "The Content has no Sets.",
-          recommandation: "",
-          backendUrl: backendUrl,
-          frontendUrl: frontendUrl,
-        });
-      } else {
-        if (content.attributes.video_set?.length === 0) {
-          report.lines.push({
-            subitems: [content.attributes.slug],
-            name: "No Video Sets",
-            type: "Missing",
-            severity: "Very Low",
-            description: "The Content has no Video Sets.",
-            recommandation: "",
-            backendUrl: backendUrl,
-            frontendUrl: frontendUrl,
-          });
-        }
-        if (content.attributes.audio_set?.length === 0) {
-          report.lines.push({
-            subitems: [content.attributes.slug],
-            name: "No Audio Sets",
-            type: "Missing",
-            severity: "Very Low",
-            description: "The Content has no Audio Sets.",
-            recommandation: "",
-            backendUrl: backendUrl,
-            frontendUrl: frontendUrl,
-          });
-        }
-        if (content.attributes.text_set?.length === 0) {
-          report.lines.push({
-            subitems: [content.attributes.slug],
-            name: "No Text Set",
-            type: "Missing",
-            severity: "Medium",
-            description: "The Content has no Text Set.",
-            recommandation: "",
-            backendUrl: backendUrl,
-            frontendUrl: frontendUrl,
-          });
-        } else {
-          const textSetLanguages: string[] = [];
+            if (translation.text_set) {
+              report.lines.push({
+                subitems: [content.attributes.slug],
+                name: "No Text Set",
+                type: "Missing",
+                severity: "Medium",
+                description: "The Content has no Text Set.",
+                recommandation: "",
+                backendUrl: backendUrl,
+                frontendUrl: frontendUrl,
+              });
+            } else {
+              const textSetLanguages: string[] = [];
 
-          content.attributes.text_set?.map((textSet, textSetIndex) => {
-            if (content.attributes && textSet) {
-              if (textSet.language?.data?.id) {
-                if (textSet.language.data.id in textSetLanguages) {
+              /*
+              if (content.attributes && textSet) {
+                if (textSet.language?.data?.id) {
+                  if (textSet.language.data.id in textSetLanguages) {
+                    report.lines.push({
+                      subitems: [
+                        content.attributes.slug,
+                        `TextSet ${textSetIndex.toString()}`,
+                      ],
+                      name: "Duplicate Language",
+                      type: "Error",
+                      severity: "High",
+                      description: "",
+                      recommandation: "",
+                      backendUrl: backendUrl,
+                      frontendUrl: frontendUrl,
+                    });
+                  } else {
+                    textSetLanguages.push(textSet.language.data.id);
+                  }
+                } else {
                   report.lines.push({
                     subitems: [
                       content.attributes.slug,
                       `TextSet ${textSetIndex.toString()}`,
                     ],
-                    name: "Duplicate Language",
+                    name: "No Language",
+                    type: "Error",
+                    severity: "Very High",
+                    description: "",
+                    recommandation: "",
+                    backendUrl: backendUrl,
+                    frontendUrl: frontendUrl,
+                  });
+                }
+
+                if (!textSet.source_language?.data?.id) {
+                  report.lines.push({
+                    subitems: [
+                      content.attributes.slug,
+                      `TextSet ${textSetIndex.toString()}`,
+                    ],
+                    name: "No Source Language",
                     type: "Error",
                     severity: "High",
                     description: "",
@@ -335,153 +322,134 @@ function testingContent(contents: Immutable<Props["contents"]>): Report {
                     backendUrl: backendUrl,
                     frontendUrl: frontendUrl,
                   });
+                }
+
+                if (textSet.status !== Enum_Componentsetstextset_Status.Done) {
+                  report.lines.push({
+                    subitems: [
+                      content.attributes.slug,
+                      `TextSet ${textSetIndex.toString()}`,
+                    ],
+                    name: "Not Done Status",
+                    type: "Improvement",
+                    severity: "Low",
+                    description: "",
+                    recommandation: "",
+                    backendUrl: backendUrl,
+                    frontendUrl: frontendUrl,
+                  });
+                }
+
+                if (!textSet.text || textSet.text.length < 10) {
+                  report.lines.push({
+                    subitems: [
+                      content.attributes.slug,
+                      `TextSet ${textSetIndex.toString()}`,
+                    ],
+                    name: "No Text",
+                    type: "Missing",
+                    severity: "Medium",
+                    description: "",
+                    recommandation: "",
+                    backendUrl: backendUrl,
+                    frontendUrl: frontendUrl,
+                  });
+                }
+
+                if (
+                  textSet.source_language?.data?.id ===
+                  textSet.language?.data?.id
+                ) {
+                  if (textSet.transcribers?.data.length === 0) {
+                    report.lines.push({
+                      subitems: [
+                        content.attributes.slug,
+                        `TextSet ${textSetIndex.toString()}`,
+                      ],
+                      name: "No Transcribers",
+                      type: "Missing",
+                      severity: "High",
+                      description:
+                        "The Content is a Transcription but doesn't credit any Transcribers.",
+                      recommandation: "Add the appropriate Transcribers.",
+                      backendUrl: backendUrl,
+                      frontendUrl: frontendUrl,
+                    });
+                  }
+                  if (
+                    textSet.translators?.data &&
+                    textSet.translators.data.length > 0
+                  ) {
+                    report.lines.push({
+                      subitems: [
+                        content.attributes.slug,
+                        `TextSet ${textSetIndex.toString()}`,
+                      ],
+                      name: "Credited Translators",
+                      type: "Error",
+                      severity: "High",
+                      description:
+                        "The Content is a Transcription but credits one or more Translators.",
+                      recommandation:
+                        "If appropriate, create a Translation Text Set with the Translator credited there.",
+                      backendUrl: backendUrl,
+                      frontendUrl: frontendUrl,
+                    });
+                  }
                 } else {
-                  textSetLanguages.push(textSet.language.data.id);
-                }
-              } else {
-                report.lines.push({
-                  subitems: [
-                    content.attributes.slug,
-                    `TextSet ${textSetIndex.toString()}`,
-                  ],
-                  name: "No Language",
-                  type: "Error",
-                  severity: "Very High",
-                  description: "",
-                  recommandation: "",
-                  backendUrl: backendUrl,
-                  frontendUrl: frontendUrl,
-                });
-              }
-
-              if (!textSet.source_language?.data?.id) {
-                report.lines.push({
-                  subitems: [
-                    content.attributes.slug,
-                    `TextSet ${textSetIndex.toString()}`,
-                  ],
-                  name: "No Source Language",
-                  type: "Error",
-                  severity: "High",
-                  description: "",
-                  recommandation: "",
-                  backendUrl: backendUrl,
-                  frontendUrl: frontendUrl,
-                });
-              }
-
-              if (textSet.status !== Enum_Componentsetstextset_Status.Done) {
-                report.lines.push({
-                  subitems: [
-                    content.attributes.slug,
-                    `TextSet ${textSetIndex.toString()}`,
-                  ],
-                  name: "Not Done Status",
-                  type: "Improvement",
-                  severity: "Low",
-                  description: "",
-                  recommandation: "",
-                  backendUrl: backendUrl,
-                  frontendUrl: frontendUrl,
-                });
-              }
-
-              if (!textSet.text || textSet.text.length < 10) {
-                report.lines.push({
-                  subitems: [
-                    content.attributes.slug,
-                    `TextSet ${textSetIndex.toString()}`,
-                  ],
-                  name: "No Text",
-                  type: "Missing",
-                  severity: "Medium",
-                  description: "",
-                  recommandation: "",
-                  backendUrl: backendUrl,
-                  frontendUrl: frontendUrl,
-                });
-              }
-
-              if (
-                textSet.source_language?.data?.id === textSet.language?.data?.id
-              ) {
-                if (textSet.transcribers?.data.length === 0) {
-                  report.lines.push({
-                    subitems: [
-                      content.attributes.slug,
-                      `TextSet ${textSetIndex.toString()}`,
-                    ],
-                    name: "No Transcribers",
-                    type: "Missing",
-                    severity: "High",
-                    description:
-                      "The Content is a Transcription but doesn't credit any Transcribers.",
-                    recommandation: "Add the appropriate Transcribers.",
-                    backendUrl: backendUrl,
-                    frontendUrl: frontendUrl,
-                  });
-                }
-                if (
-                  textSet.translators?.data &&
-                  textSet.translators.data.length > 0
-                ) {
-                  report.lines.push({
-                    subitems: [
-                      content.attributes.slug,
-                      `TextSet ${textSetIndex.toString()}`,
-                    ],
-                    name: "Credited Translators",
-                    type: "Error",
-                    severity: "High",
-                    description:
-                      "The Content is a Transcription but credits one or more Translators.",
-                    recommandation:
-                      "If appropriate, create a Translation Text Set with the Translator credited there.",
-                    backendUrl: backendUrl,
-                    frontendUrl: frontendUrl,
-                  });
-                }
-              } else {
-                if (textSet.translators?.data.length === 0) {
-                  report.lines.push({
-                    subitems: [
-                      content.attributes.slug,
-                      `TextSet ${textSetIndex.toString()}`,
-                    ],
-                    name: "No Translators",
-                    type: "Missing",
-                    severity: "High",
-                    description:
-                      "The Content is a Transcription but doesn't credit any Translators.",
-                    recommandation: "Add the appropriate Translators.",
-                    backendUrl: backendUrl,
-                    frontendUrl: frontendUrl,
-                  });
-                }
-                if (
-                  textSet.transcribers?.data &&
-                  textSet.transcribers.data.length > 0
-                ) {
-                  report.lines.push({
-                    subitems: [
-                      content.attributes.slug,
-                      `TextSet ${textSetIndex.toString()}`,
-                    ],
-                    name: "Credited Transcribers",
-                    type: "Error",
-                    severity: "High",
-                    description:
-                      "The Content is a Translation but credits one or more Transcribers.",
-                    recommandation:
-                      "If appropriate, create a Transcription Text Set with the Transcribers credited there.",
-                    backendUrl: backendUrl,
-                    frontendUrl: frontendUrl,
-                  });
+                  if (textSet.translators?.data.length === 0) {
+                    report.lines.push({
+                      subitems: [
+                        content.attributes.slug,
+                        `TextSet ${textSetIndex.toString()}`,
+                      ],
+                      name: "No Translators",
+                      type: "Missing",
+                      severity: "High",
+                      description:
+                        "The Content is a Transcription but doesn't credit any Translators.",
+                      recommandation: "Add the appropriate Translators.",
+                      backendUrl: backendUrl,
+                      frontendUrl: frontendUrl,
+                    });
+                  }
+                  if (
+                    textSet.transcribers?.data &&
+                    textSet.transcribers.data.length > 0
+                  ) {
+                    report.lines.push({
+                      subitems: [
+                        content.attributes.slug,
+                        `TextSet ${textSetIndex.toString()}`,
+                      ],
+                      name: "Credited Transcribers",
+                      type: "Error",
+                      severity: "High",
+                      description:
+                        "The Content is a Translation but credits one or more Transcribers.",
+                      recommandation:
+                        "If appropriate, create a Transcription Text Set with the Transcribers credited there.",
+                      backendUrl: backendUrl,
+                      frontendUrl: frontendUrl,
+                    });
+                  }
                 }
               }
+              */
             }
-          });
-        }
+
+            report.lines.push({
+              subitems: [content.attributes.slug],
+              name: "No Sets",
+              type: "Missing",
+              severity: "Medium",
+              description: "The Content has no Sets.",
+              recommandation: "",
+              backendUrl: backendUrl,
+              frontendUrl: frontendUrl,
+            });
+          }
+        });
       }
     }
   });

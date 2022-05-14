@@ -111,12 +111,12 @@ export default function Contents(props: Immutable<Props>): JSX.Element {
                       <PreviewCard
                         key={item.id}
                         href={`/contents/${item.attributes.slug}`}
-                        pre_title={item.attributes.titles?.[0]?.pre_title}
+                        pre_title={item.attributes.translations?.[0]?.pre_title}
                         title={
-                          item.attributes.titles?.[0]?.title ??
+                          item.attributes.translations?.[0]?.title ??
                           prettySlug(item.attributes.slug)
                         }
-                        subtitle={item.attributes.titles?.[0]?.subtitle}
+                        subtitle={item.attributes.translations?.[0]?.subtitle}
                         thumbnail={item.attributes.thumbnail?.data?.attributes}
                         thumbnailAspectRatio="3/2"
                         stackEffect={
@@ -171,18 +171,18 @@ export async function getStaticProps(
   });
   if (!contents.contents) return { notFound: true };
   contents.contents.data.sort((a, b) => {
-    const titleA = a.attributes?.titles?.[0]
+    const titleA = a.attributes?.translations?.[0]
       ? prettyinlineTitle(
-          a.attributes.titles[0].pre_title,
-          a.attributes.titles[0].title,
-          a.attributes.titles[0].subtitle
+          a.attributes.translations[0].pre_title,
+          a.attributes.translations[0].title,
+          a.attributes.translations[0].subtitle
         )
       : a.attributes?.slug ?? "";
-    const titleB = b.attributes?.titles?.[0]
+    const titleB = b.attributes?.translations?.[0]
       ? prettyinlineTitle(
-          b.attributes.titles[0].pre_title,
-          b.attributes.titles[0].title,
-          b.attributes.titles[0].subtitle
+          b.attributes.translations[0].pre_title,
+          b.attributes.translations[0].title,
+          b.attributes.translations[0].subtitle
         )
       : b.attributes?.slug ?? "";
     return titleA.localeCompare(titleB);

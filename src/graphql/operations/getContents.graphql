@@ -5,13 +5,6 @@ query getContents($language_code: String) {
       attributes {
         slug
         translations {
-          language {
-            data {
-              attributes {
-                code
-              }
-            }
-          }
           pre_title
           title
           subtitle
@@ -62,14 +55,16 @@ query getContents($language_code: String) {
             }
           }
         }
-        next_recommended {
+        group {
           data {
-            id
-          }
-        }
-        previous_recommended {
-          data {
-            id
+            attributes {
+              combine
+              contents {
+                data {
+                  id
+                }
+              }
+            }
           }
         }
         thumbnail {

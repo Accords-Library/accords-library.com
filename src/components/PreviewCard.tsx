@@ -28,7 +28,7 @@ interface Props {
   topChips?: string[];
   bottomChips?: string[];
   keepInfoVisible?: boolean;
-  stackEffect?: boolean;
+  stackNumber?: number;
   metadata?: {
     currencies?: AppStaticProps["currencies"];
     release_date?: DatePickerFragment | null;
@@ -53,7 +53,7 @@ export function PreviewCard(props: Immutable<Props>): JSX.Element {
     title,
     subtitle,
     description,
-    stackEffect = false,
+    stackNumber = 0,
     topChips,
     bottomChips,
     keepInfoVisible,
@@ -117,20 +117,27 @@ export function PreviewCard(props: Immutable<Props>): JSX.Element {
         hover:[--play-opacity:100] transition-transform
         [--stacked-top:0] hover:[--stacked-top:1]"
       >
-        {thumbnail && stackEffect && (
+        {thumbnail && stackNumber > 0 && (
           <>
             <Img
-              className={`rounded-t-md absolute -top-[var(--stacked-top)*1.3rem]
-                opacity-30 scale-[0.88] transition-[top]`}
+              className="opacity-30 rounded-t-md overflow-hidden absolute transition-[top_transform]
+                -top-[var(--stacked-top)*1.5rem]
+                scale-[calc(1-0.15*var(--stacked-top))]"
               image={thumbnail}
               quality={ImageQuality.Medium}
             />
-            <Img
-              className={`rounded-t-md absolute -top-[var(--stacked-top)*0.6rem]
-                opacity-60 scale-95 transition-[top]`}
-              image={thumbnail}
-              quality={ImageQuality.Medium}
-            />
+
+            <div
+              className="bg-light rounded-t-md overflow-hidden absolute transition-[top_transform]
+              -top-[var(--stacked-top)*0.7rem]
+              scale-[calc(1-0.06*var(--stacked-top))]"
+            >
+              <Img
+                className="opacity-70"
+                image={thumbnail}
+                quality={ImageQuality.Medium}
+              />
+            </div>
           </>
         )}
 
@@ -145,6 +152,14 @@ export function PreviewCard(props: Immutable<Props>): JSX.Element {
               image={thumbnail}
               quality={ImageQuality.Medium}
             />
+            {stackNumber > 0 && (
+              <div
+                className="absolute right-2 top-2 text-light bg-black
+                  bg-opacity-60 px-2 rounded-full"
+              >
+                {stackNumber}
+              </div>
+            )}
             {hoverlay && hoverlay.__typename === "Video" && (
               <>
                 <div

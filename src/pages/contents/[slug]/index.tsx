@@ -34,6 +34,48 @@ interface Props extends AppStaticProps {
   content: ContentWithTranslations;
 }
 
+function getPreviousContent(
+  group: Immutable<
+    NonNullable<
+      NonNullable<
+        NonNullable<
+          NonNullable<ContentWithTranslations["group"]>["data"]
+        >["attributes"]
+      >["contents"]
+    >["data"]
+  >,
+  currentSlug: string
+) {
+  for (let index = 0; index < group.length; index += 1) {
+    const content = group[index];
+    if (content.attributes?.slug === currentSlug && index > 0) {
+      return group[index - 1];
+    }
+  }
+  return undefined;
+}
+
+function getNextContent(
+  group: Immutable<
+    NonNullable<
+      NonNullable<
+        NonNullable<
+          NonNullable<ContentWithTranslations["group"]>["data"]
+        >["attributes"]
+      >["contents"]
+    >["data"]
+  >,
+  currentSlug: string
+) {
+  for (let index = 0; index < group.length; index += 1) {
+    const content = group[index];
+    if (content.attributes?.slug === currentSlug && index < group.length - 1) {
+      return group[index + 1];
+    }
+  }
+  return undefined;
+}
+
 export default function Content(props: Immutable<Props>): JSX.Element {
   const { langui, content, languages } = props;
   const isMobile = useMediaMobile();
@@ -43,6 +85,17 @@ export default function Content(props: Immutable<Props>): JSX.Element {
     languages: languages,
     languageExtractor: (item) => item.language?.data?.attributes?.code,
   });
+
+  const previousContent = content.group?.data?.attributes?.contents
+    ? getPreviousContent(
+        content.group.data.attributes.contents.data,
+        content.slug
+      )
+    : undefined;
+
+  const nextContent = content.group?.data?.attributes?.contents
+    ? getNextContent(content.group.data.attributes.contents.data, content.slug)
+    : undefined;
 
   const subPanel = (
     <SubPanel>
@@ -210,42 +263,37 @@ export default function Content(props: Immutable<Props>): JSX.Element {
             languageSwitcher={<LanguageSwitcher />}
           />
 
-          {content.previous_recommended?.data?.attributes && (
+          {previousContent?.attributes && (
             <div className="mt-12 mb-8 w-full">
               <h2 className="text-center text-2xl mb-4">Previous content</h2>
               <PreviewLine
-                href={`/contents/${content.previous_recommended.data.attributes.slug}`}
+                href={`/contents/${previousContent.attributes.slug}`}
                 pre_title={
-                  content.previous_recommended.data.attributes.translations?.[0]
-                    ?.pre_title
+                  previousContent.attributes.translations?.[0]?.pre_title
                 }
                 title={
-                  content.previous_recommended.data.attributes.translations?.[0]
-                    ?.title ??
-                  prettySlug(content.previous_recommended.data.attributes.slug)
+                  previousContent.attributes.translations?.[0]?.title ??
+                  prettySlug(previousContent.attributes.slug)
                 }
                 subtitle={
-                  content.previous_recommended.data.attributes.translations?.[0]
-                    ?.subtitle
+                  previousContent.attributes.translations?.[0]?.subtitle
                 }
                 thumbnail={
-                  content.previous_recommended.data.attributes.thumbnail?.data
-                    ?.attributes
+                  previousContent.attributes.thumbnail?.data?.attributes
                 }
                 thumbnailAspectRatio="3/2"
                 topChips={
                   isMobile
                     ? undefined
-                    : content.previous_recommended.data.attributes.type?.data
-                        ?.attributes
+                    : previousContent.attributes.type?.data?.attributes
                     ? [
-                        content.previous_recommended.data.attributes.type.data
-                          .attributes.titles?.[0]
-                          ? content.previous_recommended.data.attributes.type
-                              .data.attributes.titles[0]?.title
+                        previousContent.attributes.type.data.attributes
+                          .titles?.[0]
+                          ? previousContent.attributes.type.data.attributes
+                              .titles[0]?.title
                           : prettySlug(
-                              content.previous_recommended.data.attributes.type
-                                .data.attributes.slug
+                              previousContent.attributes.type.data.attributes
+                                .slug
                             ),
                       ]
                     : undefined
@@ -253,7 +301,7 @@ export default function Content(props: Immutable<Props>): JSX.Element {
                 bottomChips={
                   isMobile
                     ? undefined
-                    : content.previous_recommended.data.attributes.categories?.data.map(
+                    : previousContent.attributes.categories?.data.map(
                         (category) => category.attributes?.short ?? ""
                       )
                 }
@@ -265,43 +313,30 @@ export default function Content(props: Immutable<Props>): JSX.Element {
 
           <Markdawn text={selectedTranslation?.text_set?.text ?? ""} />
 
-          {content.next_recommended?.data?.attributes && (
+          {nextContent?.attributes && (
             <>
               <HorizontalLine />
               <h2 className="text-center text-2xl mb-4">Follow-up content</h2>
               <PreviewLine
-                href={`/contents/${content.next_recommended.data.attributes.slug}`}
-                pre_title={
-                  content.next_recommended.data.attributes.translations?.[0]
-                    ?.pre_title
-                }
+                href={`/contents/${nextContent.attributes.slug}`}
+                pre_title={nextContent.attributes.translations?.[0]?.pre_title}
                 title={
-                  content.next_recommended.data.attributes.translations?.[0]
-                    ?.title ??
-                  prettySlug(content.next_recommended.data.attributes.slug)
+                  nextContent.attributes.translations?.[0]?.title ??
+                  prettySlug(nextContent.attributes.slug)
                 }
-                subtitle={
-                  content.next_recommended.data.attributes.translations?.[0]
-                    ?.subtitle
-                }
-                thumbnail={
-                  content.next_recommended.data.attributes.thumbnail?.data
-                    ?.attributes
-                }
+                subtitle={nextContent.attributes.translations?.[0]?.subtitle}
+                thumbnail={nextContent.attributes.thumbnail?.data?.attributes}
                 thumbnailAspectRatio="3/2"
                 topChips={
                   isMobile
                     ? undefined
-                    : content.next_recommended.data.attributes.type?.data
-                        ?.attributes
+                    : nextContent.attributes.type?.data?.attributes
                     ? [
-                        content.next_recommended.data.attributes.type.data
-                          .attributes.titles?.[0]
-                          ? content.next_recommended.data.attributes.type.data
-                              .attributes.titles[0]?.title
+                        nextContent.attributes.type.data.attributes.titles?.[0]
+                          ? nextContent.attributes.type.data.attributes
+                              .titles[0]?.title
                           : prettySlug(
-                              content.next_recommended.data.attributes.type.data
-                                .attributes.slug
+                              nextContent.attributes.type.data.attributes.slug
                             ),
                       ]
                     : undefined
@@ -309,7 +344,7 @@ export default function Content(props: Immutable<Props>): JSX.Element {
                 bottomChips={
                   isMobile
                     ? undefined
-                    : content.next_recommended.data.attributes.categories?.data.map(
+                    : nextContent.attributes.categories?.data.map(
                         (category) => category.attributes?.short ?? ""
                       )
                 }

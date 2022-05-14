@@ -1,75 +1,64 @@
 query devGetContents {
-	contents(pagination: { limit: -1 }) {
-		data {
-			id
-			attributes {
-				slug
-				categories {
-					data {
-						id
-					}
-				}
-				type {
-					data {
-						id
-					}
-				}
+  contents(pagination: { limit: -1 }) {
+    data {
+      id
+      attributes {
+        slug
+        categories {
+          data {
+            id
+          }
+        }
+        type {
+          data {
+            id
+          }
+        }
 
-				ranged_contents {
-					data {
-						id
-					}
-				}
-				translations {
-					language {
-						data {
-							id
-						}
-					}
-					title
-					description
-					text_set {
-						source_language {
-							data {
-								id
-							}
-						}
-						status
-						transcribers {
-							data {
-								id
-							}
-						}
-						translators {
-							data {
-								id
-							}
-						}
-						proofreaders {
-							data {
-								id
-							}
-						}
-						text
-					}
-				}
-
-				thumbnail {
-					data {
-						id
-					}
-				}
-				next_recommended {
-					data {
-						id
-					}
-				}
-				previous_recommended {
-					data {
-						id
-					}
-				}
-			}
-		}
-	}
+        ranged_contents {
+          data {
+            id
+          }
+        }
+        translations {
+          language {
+            data {
+              id
+            }
+          }
+          title
+          description
+          text_set {
+            source_language {
+              data {
+                id
+              }
+            }
+            status
+            transcribers {
+              data {
+                id
+              }
+            }
+            translators {
+              data {
+                id
+              }
+            }
+            proofreaders {
+              data {
+                id
+              }
+            }
+            text
+          }
+        }
+        thumbnail {
+          data {
+            id
+          }
+        }
+      }
+    }
+  }
 }

@@ -18,7 +18,7 @@ import { GetStaticPropsContext } from "next";
 import { useEffect, useState } from "react";
 
 interface Props extends AppStaticProps {
-  contents: Exclude<GetContentsQuery["contents"], null | undefined>["data"];
+  contents: NonNullable<GetContentsQuery["contents"]>["data"];
 }
 
 type GroupContentItems = Map<string, Immutable<Props["contents"]>>;
@@ -119,11 +119,12 @@ export default function Contents(props: Immutable<Props>): JSX.Element {
                         subtitle={item.attributes.translations?.[0]?.subtitle}
                         thumbnail={item.attributes.thumbnail?.data?.attributes}
                         thumbnailAspectRatio="3/2"
-                        stackEffect={
-                          item.attributes.next_recommended?.data?.id !== null &&
-                          item.attributes.next_recommended?.data?.id !==
-                            undefined &&
-                          combineRelatedContent
+                        stackNumber={
+                          combineRelatedContent &&
+                          item.attributes.group?.data?.attributes?.combine
+                            ? item.attributes.group?.data?.attributes.contents
+                                ?.data.length
+                            : 0
                         }
                         topChips={
                           item.attributes.type?.data?.attributes
@@ -263,7 +264,11 @@ function filterContents(
 ): Immutable<Props["contents"]> {
   if (combineRelatedContent) {
     return [...contents].filter(
-      (content) => !content.attributes?.previous_recommended?.data?.id
+      (content) =>
+        !content.attributes?.group?.data?.attributes ||
+        !content.attributes.group.data.attributes.combine ||
+        content.attributes.group.data.attributes.contents?.data?.[0].id ===
+          content.id
     );
   }
   return contents;

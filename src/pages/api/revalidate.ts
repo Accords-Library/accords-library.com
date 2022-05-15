@@ -7,6 +7,7 @@ type RequestProps =
   | HookLibraryItem
   | HookChronology
   | HookContent
+  | HookContentGroup
   | HookCustom;
 
 type HookRangedContent = {
@@ -60,6 +61,16 @@ type HookLibraryItem = {
   };
 };
 
+type HookContentGroup = {
+  event: "entry.update" | "entry.delete" | "entry.create";
+  model: "contents-group";
+  entry: {
+    contents: {
+      slug: string;
+    }[];
+  };
+};
+
 type HookChronology = {
   event: "entry.update" | "entry.delete" | "entry.create";
   model: "chronology-era" | "chronology-item";
@@ -70,7 +81,7 @@ type ResponseMailProps = {
   revalidated: boolean;
 };
 
-export async function Mail(
+export default async function Revalidate(
   req: NextApiRequest,
   res: NextApiResponse<ResponseMailProps>
 ) {
@@ -93,8 +104,8 @@ export async function Mail(
       paths.push(`/news`);
       paths.push(`/news/${body.entry.slug}`);
       serverRuntimeConfig.locales?.map((locale: string) => {
-        paths.push(`/${locale}/news/${body.entry.slug}`);
         paths.push(`/${locale}/news`);
+        paths.push(`/${locale}/news/${body.entry.slug}`);
       });
       break;
     }
@@ -103,24 +114,26 @@ export async function Mail(
       paths.push(`/library`);
       paths.push(`/library/${body.entry.slug}`);
       paths.push(`/library/${body.entry.slug}/scans`);
+      body.entry.subitem_of.map((parentItem) => {
+        paths.push(`/library/${parentItem.slug}`);
+      });
       serverRuntimeConfig.locales?.map((locale: string) => {
+        paths.push(`/${locale}/library`);
         paths.push(`/${locale}/library/${body.entry.slug}`);
         paths.push(`/${locale}/library/${body.entry.slug}/scans`);
         body.entry.subitem_of.map((parentItem) => {
           paths.push(`/${locale}/library/${parentItem.slug}`);
         });
-        paths.push(`/${locale}/library`);
       });
       break;
     }
 
     case "content": {
-      console.log(body.entry.ranged_contents);
       paths.push(`/contents`);
       paths.push(`/contents/${body.entry.slug}`);
       serverRuntimeConfig.locales?.map((locale: string) => {
-        paths.push(`/${locale}/contents/${body.entry.slug}`);
         paths.push(`/${locale}/contents`);
+        paths.push(`/${locale}/contents/${body.entry.slug}`);
       });
       if (body.entry.ranged_contents.length > 0) {
         body.entry.ranged_contents.map((ranged_content) => {
@@ -164,16 +177,27 @@ export async function Mail(
       break;
     }
 
+    case "contents-group": {
+      paths.push(`/contents`);
+      serverRuntimeConfig.locales?.map((locale: string) => {
+        paths.push(`/${locale}/contents`);
+      });
+      body.entry.contents.map((content) => {
+        paths.push(`/contents/${content.slug}`);
+        serverRuntimeConfig.locales?.map((locale: string) => {
+          paths.push(`/${locale}/contents/${content.slug}`);
+        });
+      });
+      break;
+    }
+
     case "custom": {
       paths.push(`${body.url}`);
       break;
     }
 
-    case "content": {
-      break;
-    }
-
     default:
+      console.log(body);
       break;
   }
 

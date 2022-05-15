@@ -14,7 +14,7 @@ export interface RequestMailProps {
   formName: string;
 }
 
-export async function Mail(
+export default async function Mail(
   req: NextApiRequest,
   res: NextApiResponse<ResponseMailProps>
 ) {

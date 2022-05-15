@@ -50,7 +50,7 @@ export function PostPage(props: Immutable<Props>): JSX.Element {
   const [selectedTranslation, LanguageSwitcher] = useSmartLanguage({
     items: post.translations,
     languages: languages,
-    languageExtractor: (item) => item?.language?.data?.attributes?.code,
+    languageExtractor: (item) => item.language?.data?.attributes?.code,
   });
 
   const thumbnail =

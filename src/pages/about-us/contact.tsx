@@ -10,7 +10,9 @@ import { useRouter } from "next/router";
 import { RequestMailProps, ResponseMailProps } from "pages/api/mail";
 import { useState } from "react";
 
-export default function AboutUs(props: Immutable<PostStaticProps>): JSX.Element {
+export default function AboutUs(
+  props: Immutable<PostStaticProps>
+): JSX.Element {
   const { post, langui, languages, currencies } = props;
 
   const router = useRouter();

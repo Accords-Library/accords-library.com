@@ -19,7 +19,9 @@ interface Props extends AppStaticProps {
   libraryItems: DevGetLibraryItemsQuery;
 }
 
-export default function CheckupLibraryItems(props: Immutable<Props>): JSX.Element {
+export default function CheckupLibraryItems(
+  props: Immutable<Props>
+): JSX.Element {
   const { libraryItems } = props;
   const testReport = testingLibraryItem(libraryItems);
 

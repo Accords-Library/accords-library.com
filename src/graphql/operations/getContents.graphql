@@ -59,7 +59,7 @@ query getContents($language_code: String) {
           data {
             attributes {
               combine
-              contents {
+              contents(pagination: { limit: -1 }) {
                 data {
                   id
                 }

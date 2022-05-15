@@ -67,7 +67,7 @@ export default function Contents(props: Immutable<Props>): JSX.Element {
       </div>
 
       <div className="flex flex-row gap-2 place-items-center coarse:hidden">
-        <p className="flex-shrink-0">{"Combine related contents"}:</p>
+        <p className="flex-shrink-0">{langui.combine_related_contents}:</p>
         <Switch
           setState={setCombineRelatedContent}
           state={combineRelatedContent}
@@ -75,7 +75,7 @@ export default function Contents(props: Immutable<Props>): JSX.Element {
       </div>
 
       <div className="flex flex-row gap-2 place-items-center coarse:hidden">
-        <p className="flex-shrink-0">{"Always show info"}:</p>
+        <p className="flex-shrink-0">{langui.always_show_info}:</p>
         <Switch setState={setKeepInfoVisible} state={keepInfoVisible} />
       </div>
     </SubPanel>
@@ -122,7 +122,7 @@ export default function Contents(props: Immutable<Props>): JSX.Element {
                         stackNumber={
                           combineRelatedContent &&
                           item.attributes.group?.data?.attributes?.combine
-                            ? item.attributes.group?.data?.attributes.contents
+                            ? item.attributes.group.data.attributes.contents
                                 ?.data.length
                             : 0
                         }
@@ -268,7 +268,7 @@ function filterContents(
       (content) =>
         !content.attributes?.group?.data?.attributes ||
         !content.attributes.group.data.attributes.combine ||
-        content.attributes.group.data.attributes.contents?.data?.[0].id ===
+        content.attributes.group.data.attributes.contents?.data[0].id ===
           content.id
     );
   }

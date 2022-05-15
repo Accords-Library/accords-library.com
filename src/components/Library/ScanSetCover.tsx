@@ -31,7 +31,7 @@ export function ScanSetCover(props: Immutable<Props>): JSX.Element {
   const [selectedScan, LanguageSwitcher] = useSmartLanguage({
     items: images,
     languages: languages,
-    languageExtractor: (item) => item?.language?.data?.attributes?.code,
+    languageExtractor: (item) => item.language?.data?.attributes?.code,
   });
 
   const coverImages: UploadImageFragment[] = [];

@@ -36,7 +36,7 @@ export default function Channel(props: Props): JSX.Element {
     <SubPanel>
       <ReturnButton
         href="/archives/videos/"
-        title={"Videos"}
+        title={langui.videos}
         langui={langui}
         displayOn={ReturnButtonType.desktop}
         className="mb-10"
@@ -44,12 +44,12 @@ export default function Channel(props: Props): JSX.Element {
 
       <PanelHeader
         icon="movie"
-        title="Videos"
+        title={langui.videos}
         description={langui.archives_description}
       />
 
       <div className="flex flex-row gap-2 place-items-center coarse:hidden">
-        <p className="flex-shrink-0">{"Always show info"}:</p>
+        <p className="flex-shrink-0">{langui.always_show_info}:</p>
         <Switch setState={setKeepInfoVisible} state={keepInfoVisible} />
       </div>
     </SubPanel>

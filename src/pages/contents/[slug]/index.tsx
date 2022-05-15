@@ -208,110 +208,107 @@ export default function Content(props: Immutable<Props>): JSX.Element {
         className="mb-10"
       />
 
-      {content && (
-        <div className="grid place-items-center">
-          <ThumbnailHeader
-            thumbnail={content.thumbnail?.data?.attributes}
-            pre_title={selectedTranslation?.pre_title}
-            title={selectedTranslation?.title}
-            subtitle={selectedTranslation?.subtitle}
-            description={selectedTranslation?.description}
-            type={content.type}
-            categories={content.categories}
-            langui={langui}
-            languageSwitcher={<LanguageSwitcher />}
-          />
+      <div className="grid place-items-center">
+        <ThumbnailHeader
+          thumbnail={content.thumbnail?.data?.attributes}
+          pre_title={selectedTranslation?.pre_title}
+          title={selectedTranslation?.title}
+          subtitle={selectedTranslation?.subtitle}
+          description={selectedTranslation?.description}
+          type={content.type}
+          categories={content.categories}
+          langui={langui}
+          languageSwitcher={<LanguageSwitcher />}
+        />
 
-          {previousContent?.attributes && (
-            <div className="mt-12 mb-8 w-full">
-              <h2 className="text-center text-2xl mb-4">Previous content</h2>
-              <PreviewLine
-                href={`/contents/${previousContent.attributes.slug}`}
-                pre_title={
-                  previousContent.attributes.translations?.[0]?.pre_title
-                }
-                title={
-                  previousContent.attributes.translations?.[0]?.title ??
-                  prettySlug(previousContent.attributes.slug)
-                }
-                subtitle={
-                  previousContent.attributes.translations?.[0]?.subtitle
-                }
-                thumbnail={
-                  previousContent.attributes.thumbnail?.data?.attributes
-                }
-                thumbnailAspectRatio="3/2"
-                topChips={
-                  isMobile
-                    ? undefined
-                    : previousContent.attributes.type?.data?.attributes
-                    ? [
-                        previousContent.attributes.type.data.attributes
-                          .titles?.[0]
-                          ? previousContent.attributes.type.data.attributes
-                              .titles[0]?.title
-                          : prettySlug(
-                              previousContent.attributes.type.data.attributes
-                                .slug
-                            ),
-                      ]
-                    : undefined
-                }
-                bottomChips={
-                  isMobile
-                    ? undefined
-                    : previousContent.attributes.categories?.data.map(
-                        (category) => category.attributes?.short ?? ""
-                      )
-                }
-              />
-            </div>
-          )}
+        {previousContent?.attributes && (
+          <div className="mt-12 mb-8 w-full">
+            <h2 className="text-center text-2xl mb-4">
+              {langui.previous_content}
+            </h2>
+            <PreviewLine
+              href={`/contents/${previousContent.attributes.slug}`}
+              pre_title={
+                previousContent.attributes.translations?.[0]?.pre_title
+              }
+              title={
+                previousContent.attributes.translations?.[0]?.title ??
+                prettySlug(previousContent.attributes.slug)
+              }
+              subtitle={previousContent.attributes.translations?.[0]?.subtitle}
+              thumbnail={previousContent.attributes.thumbnail?.data?.attributes}
+              thumbnailAspectRatio="3/2"
+              topChips={
+                isMobile
+                  ? undefined
+                  : previousContent.attributes.type?.data?.attributes
+                  ? [
+                      previousContent.attributes.type.data.attributes
+                        .titles?.[0]
+                        ? previousContent.attributes.type.data.attributes
+                            .titles[0]?.title
+                        : prettySlug(
+                            previousContent.attributes.type.data.attributes.slug
+                          ),
+                    ]
+                  : undefined
+              }
+              bottomChips={
+                isMobile
+                  ? undefined
+                  : previousContent.attributes.categories?.data.map(
+                      (category) => category.attributes?.short ?? ""
+                    )
+              }
+            />
+          </div>
+        )}
 
-          <HorizontalLine />
+        <HorizontalLine />
 
-          <Markdawn text={selectedTranslation?.text_set?.text ?? ""} />
+        <Markdawn text={selectedTranslation?.text_set?.text ?? ""} />
 
-          {nextContent?.attributes && (
-            <>
-              <HorizontalLine />
-              <h2 className="text-center text-2xl mb-4">Follow-up content</h2>
-              <PreviewLine
-                href={`/contents/${nextContent.attributes.slug}`}
-                pre_title={nextContent.attributes.translations?.[0]?.pre_title}
-                title={
-                  nextContent.attributes.translations?.[0]?.title ??
-                  prettySlug(nextContent.attributes.slug)
-                }
-                subtitle={nextContent.attributes.translations?.[0]?.subtitle}
-                thumbnail={nextContent.attributes.thumbnail?.data?.attributes}
-                thumbnailAspectRatio="3/2"
-                topChips={
-                  isMobile
-                    ? undefined
-                    : nextContent.attributes.type?.data?.attributes
-                    ? [
-                        nextContent.attributes.type.data.attributes.titles?.[0]
-                          ? nextContent.attributes.type.data.attributes
-                              .titles[0]?.title
-                          : prettySlug(
-                              nextContent.attributes.type.data.attributes.slug
-                            ),
-                      ]
-                    : undefined
-                }
-                bottomChips={
-                  isMobile
-                    ? undefined
-                    : nextContent.attributes.categories?.data.map(
-                        (category) => category.attributes?.short ?? ""
-                      )
-                }
-              />
-            </>
-          )}
-        </div>
-      )}
+        {nextContent?.attributes && (
+          <>
+            <HorizontalLine />
+            <h2 className="text-center text-2xl mb-4">
+              {langui.followup_content}
+            </h2>
+            <PreviewLine
+              href={`/contents/${nextContent.attributes.slug}`}
+              pre_title={nextContent.attributes.translations?.[0]?.pre_title}
+              title={
+                nextContent.attributes.translations?.[0]?.title ??
+                prettySlug(nextContent.attributes.slug)
+              }
+              subtitle={nextContent.attributes.translations?.[0]?.subtitle}
+              thumbnail={nextContent.attributes.thumbnail?.data?.attributes}
+              thumbnailAspectRatio="3/2"
+              topChips={
+                isMobile
+                  ? undefined
+                  : nextContent.attributes.type?.data?.attributes
+                  ? [
+                      nextContent.attributes.type.data.attributes.titles?.[0]
+                        ? nextContent.attributes.type.data.attributes.titles[0]
+                            ?.title
+                        : prettySlug(
+                            nextContent.attributes.type.data.attributes.slug
+                          ),
+                    ]
+                  : undefined
+              }
+              bottomChips={
+                isMobile
+                  ? undefined
+                  : nextContent.attributes.categories?.data.map(
+                      (category) => category.attributes?.short ?? ""
+                    )
+              }
+            />
+          </>
+        )}
+      </div>
     </ContentPanel>
   );
 

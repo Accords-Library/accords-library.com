@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 interface Props {
   className?: string;
   items: Map<string, string>;
+  insertLabels?: Map<number, string | null | undefined>;
   onChange?: (items: Map<string, string>) => void;
 }
 
@@ -25,12 +26,8 @@ export function OrderableList(props: Immutable<Props>): JSX.Element {
     <div className="grid gap-2">
       {[...items].map(([key, value], index) => (
         <>
-          {index === 0 ? (
-            <p>Primary language</p>
-          ) : index === 1 ? (
-            <p>Secondary languages</p>
-          ) : (
-            ""
+          {props.insertLabels?.get(index) && (
+            <p>{props.insertLabels.get(index)}</p>
           )}
           <div
             onDragStart={(event) => {

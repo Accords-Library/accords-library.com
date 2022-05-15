@@ -202,7 +202,7 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
               <>
                 {item?.urls && item.urls.length ? (
                   <div className="flex flex-row place-items-center gap-3">
-                    <p>Available at</p>
+                    <p>{langui.available_at}</p>
                     {item.urls.map((url) => (
                       <>
                         {url?.url && (
@@ -218,7 +218,7 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
                     ))}
                   </div>
                 ) : (
-                  <p>This item is not for sale or is no longer available</p>
+                  <p>{langui.item_not_available}</p>
                 )}
               </>
             )}
@@ -415,7 +415,7 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
             </h2>
 
             <div className="-mt-6 mb-8 flex flex-row gap-2 place-items-center coarse:hidden">
-              <p className="flex-shrink-0">{"Always show info"}:</p>
+              <p className="flex-shrink-0">{langui.always_show_info}:</p>
               <Switch setState={setKeepInfoVisible} state={keepInfoVisible} />
             </div>
             <div

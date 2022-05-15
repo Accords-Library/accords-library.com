@@ -325,6 +325,12 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
                             ])
                           )
                     }
+                    insertLabels={
+                      new Map([
+                        [0, langui.primary_language],
+                        [1, langui.secondary_language],
+                      ])
+                    }
                     onChange={(items) => {
                       const preferredLanguages = [...items].map(
                         ([code]) => code

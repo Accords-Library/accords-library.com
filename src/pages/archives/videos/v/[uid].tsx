@@ -39,7 +39,7 @@ export default function Video(props: Props): JSX.Element {
     <SubPanel>
       <ReturnButton
         href="/archives/videos/"
-        title={"Videos"}
+        title={langui.videos}
         langui={langui}
         displayOn={ReturnButtonType.desktop}
         className="mb-10"
@@ -55,14 +55,14 @@ export default function Video(props: Props): JSX.Element {
       />
 
       <NavOption
-        title={"Channel"}
+        title={langui.channel}
         url="#channel"
         border
         onClick={() => appLayout.setSubPanelOpen(false)}
       />
 
       <NavOption
-        title={"Description"}
+        title={langui.description}
         url="#description"
         border
         onClick={() => appLayout.setSubPanelOpen(false)}
@@ -135,7 +135,7 @@ export default function Video(props: Props): JSX.Element {
                 target="_blank"
                 rel="noreferrer"
               >
-                <Button className="!py-0 !px-3">{`View on ${video.source}`}</Button>
+                <Button className="!py-0 !px-3">{`${langui.view_on} ${video.source}`}</Button>
               </a>
             </div>
           </div>
@@ -144,7 +144,7 @@ export default function Video(props: Props): JSX.Element {
         {video.channel?.data?.attributes && (
           <InsetBox id="channel" className="grid place-items-center">
             <div className="w-[clamp(0px,100%,42rem)] grid place-items-center gap-4 text-center">
-              <h2 className="text-2xl">{"Channel"}</h2>
+              <h2 className="text-2xl">{langui.channel}</h2>
               <div>
                 <Button
                   href={`/archives/videos/c/${video.channel.data.attributes.uid}`}
@@ -153,8 +153,7 @@ export default function Video(props: Props): JSX.Element {
                 </Button>
 
                 <p>
-                  {video.channel.data.attributes.subscribers.toLocaleString()}{" "}
-                  subscribers
+                  {`${video.channel.data.attributes.subscribers.toLocaleString()} ${langui.subscribers?.toLowerCase()}`}
                 </p>
               </div>
             </div>
@@ -163,7 +162,7 @@ export default function Video(props: Props): JSX.Element {
 
         <InsetBox id="description" className="grid place-items-center">
           <div className="w-[clamp(0px,100%,42rem)] grid place-items-center gap-8">
-            <h2 className="text-2xl">{"Description"}</h2>
+            <h2 className="text-2xl">{langui.description}</h2>
             <p className="whitespace-pre-line">{video.description}</p>
           </div>
         </InsetBox>

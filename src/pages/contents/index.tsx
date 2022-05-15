@@ -93,7 +93,18 @@ export default function Contents(props: Immutable<Props>): JSX.Element {
                   flex flex-row place-items-center gap-2"
                 >
                   {name}
-                  <Chip>{`${items.length} ${
+                  <Chip>{`${items.reduce((currentSum, item) => {
+                    if (combineRelatedContent) {
+                      if (item.attributes?.group?.data?.attributes?.combine) {
+                        return (
+                          currentSum +
+                          (item.attributes.group.data.attributes.contents?.data
+                            .length ?? 1)
+                        );
+                      }
+                    }
+                    return currentSum + 1;
+                  }, 0)} ${
                     items.length <= 1
                       ? langui.result?.toLowerCase() ?? ""
                       : langui.results?.toLowerCase() ?? ""

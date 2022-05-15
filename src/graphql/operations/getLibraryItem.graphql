@@ -362,21 +362,17 @@ query getLibraryItem($slug: String, $language_code: String) {
                         }
                       }
                     }
-                    titles(
-                      filters: { language: { code: { eq: $language_code } } }
-                    ) {
+                    translations {
+                      language {
+                        data {
+                          attributes {
+                            code
+                          }
+                        }
+                      }
                       pre_title
                       title
                       subtitle
-                    }
-                    text_set {
-                      id
-                    }
-                    video_set {
-                      id
-                    }
-                    audio_set {
-                      id
                     }
                   }
                 }

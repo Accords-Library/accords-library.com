@@ -1,5 +1,6 @@
+import { Immutable } from "helpers/types";
 import { Dispatch, SetStateAction } from "react";
-import Button from "./Button";
+import { Button } from "./Button";
 
 interface Props {
   className?: string;
@@ -8,7 +9,7 @@ interface Props {
   setPage: Dispatch<SetStateAction<number>>;
 }
 
-export default function PageSelector(props: Props): JSX.Element {
+export function PageSelector(props: Immutable<Props>): JSX.Element {
   const { page, setPage, maxPage } = props;
 
   return (

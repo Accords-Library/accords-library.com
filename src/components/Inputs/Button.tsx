@@ -1,3 +1,4 @@
+import { Immutable } from "helpers/types";
 import { useRouter } from "next/router";
 import { MouseEventHandler } from "react";
 
@@ -14,7 +15,7 @@ interface Props {
   badgeNumber?: number;
 }
 
-export default function Button(props: Props): JSX.Element {
+export function Button(props: Immutable<Props>): JSX.Element {
   const {
     draggable,
     id,
@@ -39,11 +40,15 @@ export default function Button(props: Props): JSX.Element {
       transition-all select-none hover:[--opacityBadge:0] --opacityBadge:100 ${className} ${
         active
           ? "text-light bg-black drop-shadow-black-lg !border-black cursor-not-allowed"
-          : "cursor-pointer hover:text-light hover:bg-dark hover:drop-shadow-shade-lg active:bg-black active:text-light active:drop-shadow-black-lg active:border-black"
+          : `cursor-pointer hover:text-light hover:bg-dark hover:drop-shadow-shade-lg
+          active:bg-black active:text-light active:drop-shadow-black-lg active:border-black`
       }`}
     >
       {badgeNumber && (
-        <div className="opacity-[var(--opacityBadge)] transition-opacity grid place-items-center absolute -top-3 -right-2 bg-dark w-8 h-8 text-light font-bold rounded-full">
+        <div
+          className="opacity-[var(--opacityBadge)] transition-opacity grid place-items-center
+          absolute -top-3 -right-2 bg-dark w-8 h-8 text-light font-bold rounded-full"
+        >
           {badgeNumber}
         </div>
       )}

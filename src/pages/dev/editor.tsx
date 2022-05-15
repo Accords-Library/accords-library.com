@@ -1,19 +1,21 @@
-import AppLayout from "components/AppLayout";
-import Button from "components/Inputs/Button";
-import Markdawn from "components/Markdown/Markdawn";
-import ContentPanel, {
+import { AppLayout } from "components/AppLayout";
+import { Button } from "components/Inputs/Button";
+import { Markdawn } from "components/Markdown/Markdawn";
+import {
+  ContentPanel,
   ContentPanelWidthSizes,
 } from "components/Panels/ContentPanel";
-import Popup from "components/Popup";
-import ToolTip from "components/ToolTip";
+import { Popup } from "components/Popup";
+import { ToolTip } from "components/ToolTip";
+import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
+import { Immutable } from "helpers/types";
 import { GetStaticPropsContext } from "next";
-import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 import { useCallback, useState } from "react";
 import TurndownService from "turndown";
 
 interface Props extends AppStaticProps {}
 
-export default function Editor(props: Props): JSX.Element {
+export default function Editor(props: Immutable<Props>): JSX.Element {
   const handleInput = useCallback((text: string) => {
     setMarkdown(text);
   }, []);
@@ -337,7 +339,8 @@ export default function Editor(props: Props): JSX.Element {
               const textarea = event.target as HTMLTextAreaElement;
               handleInput(textarea.value);
             }}
-            className="bg-mid !bg-opacity-40 rounded-xl outline-none p-8 w-full text-black font-monospace h-[70vh]"
+            className="bg-mid !bg-opacity-40 rounded-xl
+            outline-none p-8 w-full text-black font-monospace h-[70vh]"
             value={markdown}
             title="Input textarea"
           />

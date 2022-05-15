@@ -1,20 +1,9 @@
-import {
-  getAssetURL,
-  getImgSizesByQuality,
-  ImageQuality,
-} from "components/Img";
-import {
-  DatePickerFragment,
-  Enum_Componentsetstextset_Status,
-  GetCurrenciesQuery,
-  GetLibraryItemQuery,
-  GetLibraryItemScansQuery,
-  PricePickerFragment,
-  UploadImageFragment,
-} from "graphql/generated";
-import { AppStaticProps } from "./getAppStaticProps";
+import { DatePickerFragment, PricePickerFragment } from "graphql/generated";
+import { AppStaticProps } from "../graphql/getAppStaticProps";
+import { convertPrice } from "./numbers";
+import { Immutable } from "./types";
 
-export function prettyDate(datePicker: DatePickerFragment): string {
+export function prettyDate(datePicker: Immutable<DatePickerFragment>): string {
   let result = "";
   if (datePicker.year) result += datePicker.year.toString();
   if (datePicker.month)
@@ -25,7 +14,7 @@ export function prettyDate(datePicker: DatePickerFragment): string {
 }
 
 export function prettyPrice(
-  pricePicker: PricePickerFragment,
+  pricePicker: Immutable<PricePickerFragment>,
   currencies: AppStaticProps["currencies"],
   targetCurrencyCode?: string
 ): string {
@@ -43,25 +32,6 @@ export function prettyPrice(
     }
   });
   return result;
-}
-
-export function convertPrice(
-  pricePicker: PricePickerFragment,
-  targetCurrency: Exclude<
-    GetCurrenciesQuery["currencies"],
-    null | undefined
-  >["data"][number]
-): number {
-  if (
-    pricePicker.amount &&
-    pricePicker.currency?.data?.attributes &&
-    targetCurrency.attributes
-  )
-    return (
-      (pricePicker.amount * pricePicker.currency.data.attributes.rate_to_usd) /
-      targetCurrency.attributes.rate_to_usd
-    );
-  return 0;
 }
 
 export function prettySlug(slug?: string, parentSlug?: string): string {
@@ -88,7 +58,7 @@ export function prettyinlineTitle(
 }
 
 export function prettyItemType(
-  metadata: any,
+  metadata: Immutable<any>,
   langui: AppStaticProps["langui"]
 ): string | undefined | null {
   switch (metadata.__typename) {
@@ -110,7 +80,7 @@ export function prettyItemType(
 }
 
 export function prettyItemSubType(
-  metadata:
+  metadata: Immutable<
     | {
         __typename: "ComponentMetadataAudio";
         subtype?: {
@@ -187,6 +157,7 @@ export function prettyItemSubType(
       }
     | { __typename: "Error" }
     | null
+  >
 ): string {
   if (metadata) {
     switch (metadata.__typename) {
@@ -300,87 +271,6 @@ export function capitalizeString(string: string): string {
   return words.join(" ");
 }
 
-export function convertMmToInch(mm: number | null | undefined): string {
-  return mm ? (mm * 0.03937008).toPrecision(3) : "";
-}
-
-export interface OgImage {
-  image: string;
-  width: number;
-  height: number;
-  alt: string;
-}
-
-export function getOgImage(
-  quality: ImageQuality,
-  image: UploadImageFragment
-): OgImage {
-  const imgSize = getImgSizesByQuality(
-    image.width ?? 0,
-    image.height ?? 0,
-    quality ? quality : ImageQuality.Small
-  );
-  return {
-    image: getAssetURL(image.url, quality),
-    width: imgSize.width,
-    height: imgSize.height,
-    alt: image.alternativeText || "",
-  };
-}
-
-export function sortContent(
-  contents:
-    | Exclude<
-        Exclude<
-          GetLibraryItemQuery["libraryItems"],
-          null | undefined
-        >["data"][number]["attributes"],
-        null | undefined
-      >["contents"]
-    | Exclude<
-        Exclude<
-          GetLibraryItemScansQuery["libraryItems"],
-          null | undefined
-        >["data"][number]["attributes"],
-        null | undefined
-      >["contents"]
-) {
-  contents?.data.sort((a, b) => {
-    if (
-      a.attributes?.range[0]?.__typename === "ComponentRangePageRange" &&
-      b.attributes?.range[0]?.__typename === "ComponentRangePageRange"
-    ) {
-      return (
-        a.attributes.range[0].starting_page -
-        b.attributes.range[0].starting_page
-      );
-    }
-    return 0;
-  });
-}
-
-export function getStatusDescription(
-  status: string,
-  langui: AppStaticProps["langui"]
-): string | null | undefined {
-  switch (status) {
-    case Enum_Componentsetstextset_Status.Incomplete:
-      return langui.status_incomplete;
-
-    case Enum_Componentsetstextset_Status.Draft:
-      return langui.status_draft;
-
-    case Enum_Componentsetstextset_Status.Review:
-      return langui.status_review;
-
-    case Enum_Componentsetstextset_Status.Done:
-      return langui.status_done;
-
-    default:
-      return "";
-  }
-}
-
 export function slugify(string: string | undefined): string {
   if (!string) {
     return "";
@@ -399,52 +289,4 @@ export function slugify(string: string | undefined): string {
     .replace(/[^a-z0-9- ]/gu, "")
     .trim()
     .replace(/ /gu, "-");
-}
-
-export function randomInt(min: number, max: number) {
-  return Math.floor(Math.random() * (max - min)) + min;
-}
-
-export function getLocalesFromLanguages(
-  languages?: Array<{
-    language?: {
-      data?: {
-        attributes?: { code: string } | null;
-      } | null;
-    } | null;
-  } | null> | null
-) {
-  return languages
-    ? languages.map((language) => language?.language?.data?.attributes?.code)
-    : [];
-}
-
-export function getVideoThumbnailURL(uid: string): string {
-  return `${process.env.NEXT_PUBLIC_URL_WATCH}/videos/${uid}.webp`;
-}
-
-export function getVideoFile(uid: string): string {
-  return `${process.env.NEXT_PUBLIC_URL_WATCH}/videos/${uid}.mp4`;
-}
-
-export function arrayMove<T>(arr: T[], old_index: number, new_index: number) {
-  arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
-  return arr;
-}
-
-export function getPreferredLanguage(
-  preferredLanguages: (string | undefined)[],
-  availableLanguages: Map<string, number>
-): number | undefined {
-  for (const locale of preferredLanguages) {
-    if (locale && availableLanguages.has(locale)) {
-      return availableLanguages.get(locale);
-    }
-  }
-  return undefined;
-}
-
-export function isInteger(value: string): boolean {
-  // eslint-disable-next-line require-unicode-regexp
-  return /^[+-]?[0-9]+$/.test(value);
 }

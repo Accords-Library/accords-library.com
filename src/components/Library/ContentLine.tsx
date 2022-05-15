@@ -1,26 +1,24 @@
-import Chip from "components/Chip";
-import Button from "components/Inputs/Button";
+import { Chip } from "components/Chip";
+import { Button } from "components/Inputs/Button";
 import { GetLibraryItemQuery } from "graphql/generated";
-import { AppStaticProps } from "queries/getAppStaticProps";
-import { prettyinlineTitle, prettySlug } from "queries/helpers";
+import { AppStaticProps } from "graphql/getAppStaticProps";
+import { prettyinlineTitle, prettySlug } from "helpers/formatters";
+import { Immutable } from "helpers/types";
 import { useState } from "react";
 
 interface Props {
-  content: Exclude<
-    Exclude<
-      Exclude<
-        GetLibraryItemQuery["libraryItems"],
-        null | undefined
-      >["data"][number]["attributes"],
-      null | undefined
-    >["contents"],
-    null | undefined
+  content: NonNullable<
+    NonNullable<
+      NonNullable<
+        GetLibraryItemQuery["libraryItems"]
+      >["data"][number]["attributes"]
+    >["contents"]
   >["data"][number];
   parentSlug: string;
   langui: AppStaticProps["langui"];
 }
 
-export default function ContentLine(props: Props): JSX.Element {
+export function ContentLine(props: Immutable<Props>): JSX.Element {
   const { content, langui, parentSlug } = props;
 
   const [opened, setOpened] = useState(false);
@@ -32,15 +30,19 @@ export default function ContentLine(props: Props): JSX.Element {
           opened && "bg-mid shadow-inner-sm shadow-shade h-auto py-3 my-2"
         }`}
       >
-        <div className="grid gap-4 place-items-center grid-cols-[auto_auto_1fr_auto_12ch] thin:grid-cols-[auto_auto_1fr_auto]">
+        <div
+          className="grid gap-4 place-items-center
+        grid-cols-[auto_auto_1fr_auto_12ch] thin:grid-cols-[auto_auto_1fr_auto]"
+        >
           <a>
             <h3 className="cursor-pointer" onClick={() => setOpened(!opened)}>
-              {content.attributes.content?.data?.attributes?.titles?.[0]
+              {content.attributes.content?.data?.attributes?.translations?.[0]
                 ? prettyinlineTitle(
-                    content.attributes.content.data.attributes.titles[0]
+                    content.attributes.content.data.attributes.translations[0]
                       ?.pre_title,
-                    content.attributes.content.data.attributes.titles[0]?.title,
-                    content.attributes.content.data.attributes.titles[0]
+                    content.attributes.content.data.attributes.translations[0]
+                      ?.title,
+                    content.attributes.content.data.attributes.translations[0]
                       ?.subtitle
                   )
                 : prettySlug(content.attributes.slug, props.parentSlug)}

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-export default function useStateWithLocalStorage<T>(
+export function useStateWithLocalStorage<T>(
   key: string,
   initialValue: T
 ): [T | undefined, React.Dispatch<React.SetStateAction<T | undefined>>] {

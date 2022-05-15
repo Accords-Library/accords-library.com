@@ -1,13 +1,15 @@
-import HorizontalLine from "components/HorizontalLine";
-import Img, { getAssetURL, ImageQuality } from "components/Img";
-import InsetBox from "components/InsetBox";
-import LightBox from "components/LightBox";
-import ToolTip from "components/ToolTip";
+import { HorizontalLine } from "components/HorizontalLine";
+import { Img } from "components/Img";
+import { InsetBox } from "components/InsetBox";
+import { ToolTip } from "components/ToolTip";
 import { useAppLayout } from "contexts/AppLayoutContext";
+import { slugify } from "helpers/formatters";
+import { getAssetURL, ImageQuality } from "helpers/img";
+import { Immutable } from "helpers/types";
+import { useLightBox } from "hooks/useLightBox";
 import Markdown from "markdown-to-jsx";
 import { useRouter } from "next/router";
-import { slugify } from "queries/helpers";
-import React, { useState } from "react";
+import React from "react";
 import ReactDOMServer from "react-dom/server";
 
 interface Props {
@@ -15,26 +17,18 @@ interface Props {
   text: string;
 }
 
-export default function Markdawn(props: Props): JSX.Element {
+export function Markdawn(props: Immutable<Props>): JSX.Element {
   const appLayout = useAppLayout();
   const text = preprocessMarkDawn(props.text);
 
   const router = useRouter();
 
-  const [lightboxOpen, setLightboxOpen] = useState(false);
-  const [lightboxImages, setLightboxImages] = useState([""]);
-  const [lightboxIndex, setLightboxIndex] = useState(0);
+  const [openLightBox, LightBox] = useLightBox();
 
   if (text) {
     return (
       <>
-        <LightBox
-          state={lightboxOpen}
-          setState={setLightboxOpen}
-          images={lightboxImages}
-          index={lightboxIndex}
-          setIndex={setLightboxIndex}
-        />
+        <LightBox />
         <Markdown
           className={`formatted ${props.className}`}
           options={{
@@ -253,13 +247,11 @@ export default function Markdawn(props: Props): JSX.Element {
                   <div
                     className="my-8 cursor-pointer place-content-center grid"
                     onClick={() => {
-                      setLightboxOpen(true);
-                      setLightboxImages([
+                      openLightBox([
                         compProps.src.startsWith("/uploads/")
                           ? getAssetURL(compProps.src, ImageQuality.Large)
                           : compProps.src,
                       ]);
-                      setLightboxIndex(0);
                     }}
                   >
                     <Img
@@ -268,8 +260,6 @@ export default function Markdawn(props: Props): JSX.Element {
                           ? getAssetURL(compProps.src, ImageQuality.Small)
                           : compProps.src
                       }
-                      layout="fill"
-                      objectFit="contain"
                       quality={ImageQuality.Medium}
                     ></Img>
                   </div>

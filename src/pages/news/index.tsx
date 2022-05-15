@@ -1,34 +1,29 @@
-import AppLayout from "components/AppLayout";
-import Switch from "components/Inputs/Switch";
-import PanelHeader from "components/PanelComponents/PanelHeader";
-import ContentPanel, {
+import { AppLayout } from "components/AppLayout";
+import { Switch } from "components/Inputs/Switch";
+import { PanelHeader } from "components/PanelComponents/PanelHeader";
+import {
+  ContentPanel,
   ContentPanelWidthSizes,
 } from "components/Panels/ContentPanel";
-import SubPanel from "components/Panels/SubPanel";
-import ThumbnailPreview from "components/PreviewCard";
+import { SubPanel } from "components/Panels/SubPanel";
+import { PreviewCard } from "components/PreviewCard";
 import { GetPostsPreviewQuery } from "graphql/generated";
+import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
+import { prettyDate, prettySlug } from "helpers/formatters";
+import { Immutable } from "helpers/types";
 import { GetStaticPropsContext } from "next";
-import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
-import { prettyDate, prettySlug } from "queries/helpers";
 import { useState } from "react";
 
 interface Props extends AppStaticProps {
-  posts: Exclude<GetPostsPreviewQuery["posts"], null | undefined>["data"];
+  posts: NonNullable<GetPostsPreviewQuery["posts"]>["data"];
 }
 
-export default function News(props: Props): JSX.Element {
-  const { langui, posts } = props;
+export default function News(props: Immutable<Props>): JSX.Element {
+  const { langui } = props;
+  const posts = sortPosts(props.posts);
 
   const [keepInfoVisible, setKeepInfoVisible] = useState(true);
-
-  posts
-    .sort((a, b) => {
-      const dateA = a.attributes?.date ? prettyDate(a.attributes.date) : "9999";
-      const dateB = b.attributes?.date ? prettyDate(b.attributes.date) : "9999";
-      return dateA.localeCompare(dateB);
-    })
-    .reverse();
 
   const subPanel = (
     <SubPanel>
@@ -39,7 +34,7 @@ export default function News(props: Props): JSX.Element {
       />
 
       <div className="flex flex-row gap-2 place-items-center coarse:hidden">
-        <p className="flex-shrink-0">{"Always show info"}:</p>
+        <p className="flex-shrink-0">{langui.always_show_info}:</p>
         <Switch setState={setKeepInfoVisible} state={keepInfoVisible} />
       </div>
     </SubPanel>
@@ -47,11 +42,14 @@ export default function News(props: Props): JSX.Element {
 
   const contentPanel = (
     <ContentPanel width={ContentPanelWidthSizes.large}>
-      <div className="grid gap-8 items-end grid-cols-1 desktop:grid-cols-[repeat(auto-fill,_minmax(20rem,1fr))]">
+      <div
+        className="grid gap-8 items-end grid-cols-1
+        desktop:grid-cols-[repeat(auto-fill,_minmax(20rem,1fr))]"
+      >
         {posts.map((post) => (
           <>
             {post.attributes && (
-              <ThumbnailPreview
+              <PreviewCard
                 key={post.id}
                 href={`/news/${post.attributes.slug}`}
                 title={
@@ -102,4 +100,18 @@ export async function getStaticProps(
   return {
     props: props,
   };
+}
+
+function sortPosts(
+  posts: Immutable<Props["posts"]>
+): Immutable<Props["posts"]> {
+  const sortedPosts = [...posts] as Props["posts"];
+  sortedPosts
+    .sort((a, b) => {
+      const dateA = a.attributes?.date ? prettyDate(a.attributes.date) : "9999";
+      const dateB = b.attributes?.date ? prettyDate(b.attributes.date) : "9999";
+      return dateA.localeCompare(dateB);
+    })
+    .reverse();
+  return sortedPosts as Immutable<Props["posts"]>;
 }

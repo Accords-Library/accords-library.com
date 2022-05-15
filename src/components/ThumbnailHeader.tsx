@@ -1,36 +1,31 @@
-import Chip from "components/Chip";
-import Img, { ImageQuality } from "components/Img";
-import InsetBox from "components/InsetBox";
-import Markdawn from "components/Markdown/Markdawn";
-import { GetContentQuery, UploadImageFragment } from "graphql/generated";
-import { AppStaticProps } from "queries/getAppStaticProps";
-import { prettyinlineTitle, prettySlug, slugify } from "queries/helpers";
+import { Chip } from "components/Chip";
+import { Img } from "components/Img";
+import { InsetBox } from "components/InsetBox";
+import { Markdawn } from "components/Markdown/Markdawn";
+import { GetContentTextQuery, UploadImageFragment } from "graphql/generated";
+import { AppStaticProps } from "graphql/getAppStaticProps";
+import { prettyinlineTitle, prettySlug, slugify } from "helpers/formatters";
+import { getAssetURL, ImageQuality } from "helpers/img";
+import { Immutable } from "helpers/types";
+import { useLightBox } from "hooks/useLightBox";
 
 interface Props {
   pre_title?: string | null | undefined;
   title: string | null | undefined;
   subtitle?: string | null | undefined;
   description?: string | null | undefined;
-  type?: Exclude<
-    Exclude<
-      GetContentQuery["contents"],
-      null | undefined
-    >["data"][number]["attributes"],
-    null | undefined
+  type?: NonNullable<
+    NonNullable<GetContentTextQuery["contents"]>["data"][number]["attributes"]
   >["type"];
-  categories?: Exclude<
-    Exclude<
-      GetContentQuery["contents"],
-      null | undefined
-    >["data"][number]["attributes"],
-    null | undefined
+  categories?: NonNullable<
+    NonNullable<GetContentTextQuery["contents"]>["data"][number]["attributes"]
   >["categories"];
   thumbnail?: UploadImageFragment | null | undefined;
   langui: AppStaticProps["langui"];
   languageSwitcher?: JSX.Element;
 }
 
-export default function ThumbnailHeader(props: Props): JSX.Element {
+export function ThumbnailHeader(props: Immutable<Props>): JSX.Element {
   const {
     langui,
     pre_title,
@@ -43,16 +38,21 @@ export default function ThumbnailHeader(props: Props): JSX.Element {
     languageSwitcher,
   } = props;
 
+  const [openLightBox, LightBox] = useLightBox();
+
   return (
     <>
+      <LightBox />
       <div className="grid place-items-center gap-12 mb-12">
         <div className="drop-shadow-shade-lg">
           {thumbnail ? (
             <Img
-              className=" rounded-xl"
+              className="rounded-xl cursor-pointer"
               image={thumbnail}
               quality={ImageQuality.Medium}
-              priority
+              onClick={() => {
+                openLightBox([getAssetURL(thumbnail.url, ImageQuality.Large)]);
+              }}
             />
           ) : (
             <div className="w-96 aspect-[4/3] bg-light rounded-xl"></div>

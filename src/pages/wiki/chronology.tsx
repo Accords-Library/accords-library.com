@@ -1,28 +1,25 @@
-import AppLayout from "components/AppLayout";
-import InsetBox from "components/InsetBox";
-import NavOption from "components/PanelComponents/NavOption";
-import ReturnButton, {
+import { AppLayout } from "components/AppLayout";
+import { InsetBox } from "components/InsetBox";
+import { NavOption } from "components/PanelComponents/NavOption";
+import {
+  ReturnButton,
   ReturnButtonType,
 } from "components/PanelComponents/ReturnButton";
-import ContentPanel from "components/Panels/ContentPanel";
-import SubPanel from "components/Panels/SubPanel";
-import ChronologyYearComponent from "components/Wiki/Chronology/ChronologyYearComponent";
+import { ContentPanel } from "components/Panels/ContentPanel";
+import { SubPanel } from "components/Panels/SubPanel";
+import { ChronologyYearComponent } from "components/Wiki/Chronology/ChronologyYearComponent";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { GetChronologyItemsQuery, GetErasQuery } from "graphql/generated";
+import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
+import { prettySlug } from "helpers/formatters";
 import { GetStaticPropsContext } from "next";
-import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
-import { prettySlug } from "queries/helpers";
 
 interface Props extends AppStaticProps {
-  chronologyItems: Exclude<
-    GetChronologyItemsQuery["chronologyItems"],
-    null | undefined
+  chronologyItems: NonNullable<
+    GetChronologyItemsQuery["chronologyItems"]
   >["data"];
-  chronologyEras: Exclude<
-    GetErasQuery["chronologyEras"],
-    null | undefined
-  >["data"];
+  chronologyEras: NonNullable<GetErasQuery["chronologyEras"]>["data"];
 }
 
 export default function Chronology(props: Props): JSX.Element {

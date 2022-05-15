@@ -1,23 +1,27 @@
-import AppLayout from "components/AppLayout";
-import Chip from "components/Chip";
-import Button from "components/Inputs/Button";
-import ContentPanel, {
+import { AppLayout } from "components/AppLayout";
+import { Chip } from "components/Chip";
+import { Button } from "components/Inputs/Button";
+import {
+  ContentPanel,
   ContentPanelWidthSizes,
 } from "components/Panels/ContentPanel";
-import ToolTip from "components/ToolTip";
+import { ToolTip } from "components/ToolTip";
 import {
   DevGetLibraryItemsQuery,
   Enum_Componentcollectionscomponentlibraryimages_Status,
 } from "graphql/generated";
+import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
+import { Immutable } from "helpers/types";
 import { GetStaticPropsContext } from "next";
-import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 
 interface Props extends AppStaticProps {
   libraryItems: DevGetLibraryItemsQuery;
 }
 
-export default function CheckupLibraryItems(props: Props): JSX.Element {
+export default function CheckupLibraryItems(
+  props: Immutable<Props>
+): JSX.Element {
   const { libraryItems } = props;
   const testReport = testingLibraryItem(libraryItems);
 
@@ -38,7 +42,8 @@ export default function CheckupLibraryItems(props: Props): JSX.Element {
       {testReport.lines.map((line, index) => (
         <div
           key={index}
-          className="grid grid-cols-[2em,3em,2fr,1fr,0.5fr,0.5fr,2fr] gap-2 items-center mb-2 justify-items-start"
+          className="grid grid-cols-[2em,3em,2fr,1fr,0.5fr,0.5fr,2fr]
+          gap-2 items-center mb-2 justify-items-start"
         >
           <Button
             href={line.frontendUrl}
@@ -113,7 +118,9 @@ type ReportLine = {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-function testingLibraryItem(libraryItems: Props["libraryItems"]): Report {
+function testingLibraryItem(
+  libraryItems: Immutable<Props["libraryItems"]>
+): Report {
   const report: Report = {
     title: "Contents",
     lines: [],

@@ -1,48 +1,37 @@
-import Chip from "components/Chip";
-import Img, { getAssetURL, ImageQuality } from "components/Img";
-import RecorderChip from "components/RecorderChip";
-import ToolTip from "components/ToolTip";
+import { Chip } from "components/Chip";
+import { Img } from "components/Img";
+import { RecorderChip } from "components/RecorderChip";
+import { ToolTip } from "components/ToolTip";
 import {
   GetLibraryItemScansQuery,
   UploadImageFragment,
 } from "graphql/generated";
-import useSmartLanguage from "hooks/useSmartLanguage";
-import { AppStaticProps } from "queries/getAppStaticProps";
-import { getStatusDescription } from "queries/helpers";
-import { Dispatch, SetStateAction } from "react";
+import { AppStaticProps } from "graphql/getAppStaticProps";
+import { getAssetURL, ImageQuality } from "helpers/img";
+import { getStatusDescription } from "helpers/others";
+import { Immutable } from "helpers/types";
+import { useSmartLanguage } from "hooks/useSmartLanguage";
 
 interface Props {
-  setLightboxOpen: Dispatch<SetStateAction<boolean>>;
-  setLightboxImages: Dispatch<SetStateAction<string[]>>;
-  setLightboxIndex: Dispatch<SetStateAction<number>>;
-  images: Exclude<
-    Exclude<
-      Exclude<
-        GetLibraryItemScansQuery["libraryItems"],
-        null | undefined
-      >["data"][number]["attributes"],
-      null | undefined
-    >["images"],
-    null | undefined
+  openLightBox: (images: string[], index?: number) => void;
+  images: NonNullable<
+    NonNullable<
+      NonNullable<
+        GetLibraryItemScansQuery["libraryItems"]
+      >["data"][number]["attributes"]
+    >["images"]
   >;
   languages: AppStaticProps["languages"];
   langui: AppStaticProps["langui"];
 }
 
-export default function ScanSetCover(props: Props): JSX.Element {
-  const {
-    setLightboxOpen,
-    setLightboxImages,
-    setLightboxIndex,
-    images,
-    languages,
-    langui,
-  } = props;
+export function ScanSetCover(props: Immutable<Props>): JSX.Element {
+  const { openLightBox, images, languages, langui } = props;
 
   const [selectedScan, LanguageSwitcher] = useSmartLanguage({
     items: images,
     languages: languages,
-    languageExtractor: (item) => item?.language?.data?.attributes?.code,
+    languageExtractor: (item) => item.language?.data?.attributes?.code,
   });
 
   const coverImages: UploadImageFragment[] = [];
@@ -64,7 +53,10 @@ export default function ScanSetCover(props: Props): JSX.Element {
       <>
         {selectedScan && (
           <div>
-            <div className="flex flex-row flex-wrap place-items-center gap-6 text-base pt-10 first-of-type:pt-0">
+            <div
+              className="flex flex-row flex-wrap place-items-center
+              gap-6 text-base pt-10 first-of-type:pt-0"
+            >
               <h2 id={"cover"} className="text-2xl">
                 {"Cover"}
               </h2>
@@ -149,20 +141,23 @@ export default function ScanSetCover(props: Props): JSX.Element {
                 )}
             </div>
 
-            <div className="grid gap-8 items-end mobile:grid-cols-2 desktop:grid-cols-[repeat(auto-fill,_minmax(10rem,1fr))] pb-12 border-b-[3px] border-dotted last-of-type:border-0">
+            <div
+              className="grid gap-8 items-end mobile:grid-cols-2
+              desktop:grid-cols-[repeat(auto-fill,_minmax(10rem,1fr))]
+              pb-12 border-b-[3px] border-dotted last-of-type:border-0"
+            >
               {coverImages.map((image, index) => (
                 <div
                   key={image.url}
-                  className="drop-shadow-shade-lg hover:scale-[1.02] cursor-pointer transition-transform"
+                  className="drop-shadow-shade-lg hover:scale-[1.02]
+                  cursor-pointer transition-transform"
                   onClick={() => {
                     const imgs: string[] = [];
                     coverImages.map((img) => {
                       if (img.url)
                         imgs.push(getAssetURL(img.url, ImageQuality.Large));
                     });
-                    setLightboxOpen(true);
-                    setLightboxImages(imgs);
-                    setLightboxIndex(index);
+                    openLightBox(imgs, index);
                   }}
                 >
                   <Img image={image} quality={ImageQuality.Small} />

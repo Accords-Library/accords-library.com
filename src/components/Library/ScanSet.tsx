@@ -1,76 +1,55 @@
-import Chip from "components/Chip";
-import Img, {
-  getAssetFilename,
-  getAssetURL,
-  ImageQuality,
-} from "components/Img";
-import Button from "components/Inputs/Button";
-import RecorderChip from "components/RecorderChip";
-import ToolTip from "components/ToolTip";
+import { Chip } from "components/Chip";
+import { Img } from "components/Img";
+import { Button } from "components/Inputs/Button";
+import { RecorderChip } from "components/RecorderChip";
+import { ToolTip } from "components/ToolTip";
 import { GetLibraryItemScansQuery } from "graphql/generated";
-import useSmartLanguage from "hooks/useSmartLanguage";
-import { AppStaticProps } from "queries/getAppStaticProps";
-import { getStatusDescription, isInteger } from "queries/helpers";
-import { Dispatch, SetStateAction } from "react";
+import { AppStaticProps } from "graphql/getAppStaticProps";
+import { getAssetFilename, getAssetURL, ImageQuality } from "helpers/img";
+import { isInteger } from "helpers/numbers";
+import { getStatusDescription } from "helpers/others";
+import { Immutable } from "helpers/types";
+import { useSmartLanguage } from "hooks/useSmartLanguage";
 
 interface Props {
-  setLightboxOpen: Dispatch<SetStateAction<boolean>>;
-  setLightboxImages: Dispatch<SetStateAction<string[]>>;
-  setLightboxIndex: Dispatch<SetStateAction<number>>;
-  scanSet: Exclude<
-    Exclude<
-      Exclude<
-        Exclude<
-          Exclude<
-            GetLibraryItemScansQuery["libraryItems"],
-            null | undefined
-          >["data"][number]["attributes"],
-          null | undefined
-        >["contents"],
-        null | undefined
-      >["data"][number]["attributes"],
-      null | undefined
-    >["scan_set"],
-    null | undefined
+  openLightBox: (images: string[], index?: number) => void;
+  scanSet: NonNullable<
+    NonNullable<
+      NonNullable<
+        NonNullable<
+          NonNullable<
+            GetLibraryItemScansQuery["libraryItems"]
+          >["data"][number]["attributes"]
+        >["contents"]
+      >["data"][number]["attributes"]
+    >["scan_set"]
   >;
   slug: string;
   title: string;
   languages: AppStaticProps["languages"];
   langui: AppStaticProps["langui"];
-  content: Exclude<
-    Exclude<
-      Exclude<
-        Exclude<
-          GetLibraryItemScansQuery["libraryItems"],
-          null | undefined
-        >["data"][number]["attributes"],
-        null | undefined
-      >["contents"],
-      null | undefined
-    >["data"][number]["attributes"],
-    null | undefined
+  content: NonNullable<
+    NonNullable<
+      NonNullable<
+        NonNullable<
+          GetLibraryItemScansQuery["libraryItems"]
+        >["data"][number]["attributes"]
+      >["contents"]
+    >["data"][number]["attributes"]
   >["content"];
 }
 
-export default function ScanSet(props: Props): JSX.Element {
-  const {
-    setLightboxOpen,
-    setLightboxImages,
-    setLightboxIndex,
-    scanSet,
-    slug,
-    title,
-    languages,
-    langui,
-    content,
-  } = props;
+export function ScanSet(props: Immutable<Props>): JSX.Element {
+  const { openLightBox, scanSet, slug, title, languages, langui, content } =
+    props;
 
   const [selectedScan, LanguageSwitcher] = useSmartLanguage({
     items: scanSet,
     languages: languages,
-    languageExtractor: (item) => item?.language?.data?.attributes?.code,
+    languageExtractor: (item) => item.language?.data?.attributes?.code,
     transform: (item) => {
-      item?.pages?.data.sort((a, b) => {
+      const newItem = { ...item } as NonNullable<Props["scanSet"][number]>;
+      newItem.pages?.data.sort((a, b) => {
         if (a.attributes?.url && b.attributes?.url) {
           let aName = getAssetFilename(a.attributes.url);
           let bName = getAssetFilename(b.attributes.url);
@@ -93,7 +72,7 @@ export default function ScanSet(props: Props): JSX.Element {
         }
         return 0;
       });
-      return item;
+      return newItem;
     },
   });
 
@@ -101,7 +80,10 @@ export default function ScanSet(props: Props): JSX.Element {
     <>
       {selectedScan && (
         <div>
-          <div className="flex flex-row flex-wrap place-items-center gap-6 text-base pt-10 first-of-type:pt-0">
+          <div
+            className="flex flex-row flex-wrap place-items-center
+          gap-6 text-base pt-10 first-of-type:pt-0"
+          >
             <h2 id={slug} className="text-2xl">
               {title}
             </h2>
@@ -198,11 +180,16 @@ export default function ScanSet(props: Props): JSX.Element {
             )}
           </div>
 
-          <div className="grid gap-8 items-end mobile:grid-cols-2 desktop:grid-cols-[repeat(auto-fill,_minmax(10rem,1fr))] pb-12 border-b-[3px] border-dotted last-of-type:border-0">
+          <div
+            className="grid gap-8 items-end mobile:grid-cols-2
+            desktop:grid-cols-[repeat(auto-fill,_minmax(10rem,1fr))]
+            pb-12 border-b-[3px] border-dotted last-of-type:border-0"
+          >
             {selectedScan.pages?.data.map((page, index) => (
               <div
                 key={page.id}
-                className="drop-shadow-shade-lg hover:scale-[1.02] cursor-pointer transition-transform"
+                className="drop-shadow-shade-lg hover:scale-[1.02]
+                cursor-pointer transition-transform"
                 onClick={() => {
                   const images: string[] = [];
                   selectedScan.pages?.data.map((image) => {
@@ -211,9 +198,7 @@ export default function ScanSet(props: Props): JSX.Element {
                         getAssetURL(image.attributes.url, ImageQuality.Large)
                       );
                   });
-                  setLightboxOpen(true);
-                  setLightboxImages(images);
-                  setLightboxIndex(index);
+                  openLightBox(images, index);
                 }}
               >
                 {page.attributes && (

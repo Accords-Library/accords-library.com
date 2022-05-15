@@ -1,35 +1,34 @@
-import AppLayout from "components/AppLayout";
-import Chip from "components/Chip";
-import Select from "components/Inputs/Select";
-import Switch from "components/Inputs/Switch";
-import PanelHeader from "components/PanelComponents/PanelHeader";
-import ContentPanel, {
+import { AppLayout } from "components/AppLayout";
+import { Chip } from "components/Chip";
+import { Select } from "components/Inputs/Select";
+import { Switch } from "components/Inputs/Switch";
+import { PanelHeader } from "components/PanelComponents/PanelHeader";
+import {
+  ContentPanel,
   ContentPanelWidthSizes,
 } from "components/Panels/ContentPanel";
-import SubPanel from "components/Panels/SubPanel";
-import ThumbnailPreview from "components/PreviewCard";
+import { SubPanel } from "components/Panels/SubPanel";
+import { PreviewCard } from "components/PreviewCard";
 import { GetLibraryItemsPreviewQuery } from "graphql/generated";
+import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
-import { GetStaticPropsContext } from "next";
-import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 import {
-  convertPrice,
   prettyDate,
   prettyinlineTitle,
   prettyItemSubType,
-} from "queries/helpers";
+} from "helpers/formatters";
+import { convertPrice } from "helpers/numbers";
+import { Immutable } from "helpers/types";
+import { GetStaticPropsContext } from "next";
 import { useEffect, useState } from "react";
 
 interface Props extends AppStaticProps {
-  items: Exclude<
-    GetLibraryItemsPreviewQuery["libraryItems"],
-    null | undefined
-  >["data"];
+  items: NonNullable<GetLibraryItemsPreviewQuery["libraryItems"]>["data"];
 }
 
-type GroupLibraryItems = Map<string, Props["items"]>;
+type GroupLibraryItems = Map<string, Immutable<Props["items"]>>;
 
-export default function Library(props: Props): JSX.Element {
+export default function Library(props: Immutable<Props>): JSX.Element {
   const { langui, items: libraryItems, currencies } = props;
 
   const [showSubitems, setShowSubitems] = useState<boolean>(false);
@@ -39,7 +38,7 @@ export default function Library(props: Props): JSX.Element {
   const [groupingMethod, setGroupingMethod] = useState<number>(-1);
   const [keepInfoVisible, setKeepInfoVisible] = useState(false);
 
-  const [filteredItems, setFilteredItems] = useState<Props["items"]>(
+  const [filteredItems, setFilteredItems] = useState(
     filterItems(
       showSubitems,
       showPrimaryItems,
@@ -48,11 +47,11 @@ export default function Library(props: Props): JSX.Element {
     )
   );
 
-  const [sortedItems, setSortedItem] = useState<Props["items"]>(
+  const [sortedItems, setSortedItem] = useState(
     sortBy(groupingMethod, filteredItems, currencies)
   );
 
-  const [groups, setGroups] = useState<GroupLibraryItems>(
+  const [groups, setGroups] = useState(
     getGroups(langui, groupingMethod, sortedItems)
   );
 
@@ -128,7 +127,7 @@ export default function Library(props: Props): JSX.Element {
       </div>
 
       <div className="flex flex-row gap-2 place-items-center coarse:hidden">
-        <p className="flex-shrink-0">{"Always show info"}:</p>
+        <p className="flex-shrink-0">{langui.always_show_info}:</p>
         <Switch setState={setKeepInfoVisible} state={keepInfoVisible} />
       </div>
     </SubPanel>
@@ -142,7 +141,8 @@ export default function Library(props: Props): JSX.Element {
               {name && (
                 <h2
                   key={`h2${name}`}
-                  className="text-2xl pb-2 pt-10 first-of-type:pt-0 flex flex-row place-items-center gap-2"
+                  className="text-2xl pb-2 pt-10 first-of-type:pt-0
+                  flex flex-row place-items-center gap-2"
                 >
                   {name}
                   <Chip>{`${items.length} ${
@@ -154,12 +154,14 @@ export default function Library(props: Props): JSX.Element {
               )}
               <div
                 key={`items${name}`}
-                className="grid gap-8 items-end mobile:grid-cols-2 desktop:grid-cols-[repeat(auto-fill,_minmax(13rem,1fr))] pb-12 border-b-[3px] border-dotted last-of-type:border-0"
+                className="grid gap-8 mobile:gap-4 items-end mobile:grid-cols-2
+                desktop:grid-cols-[repeat(auto-fill,_minmax(13rem,1fr))]
+                pb-12 border-b-[3px] border-dotted last-of-type:border-0"
               >
                 {items.map((item) => (
                   <>
                     {item.attributes && (
-                      <ThumbnailPreview
+                      <PreviewCard
                         key={item.id}
                         href={`/library/${item.attributes.slug}`}
                         title={item.attributes.title}
@@ -224,7 +226,7 @@ export async function getStaticProps(
 function getGroups(
   langui: AppStaticProps["langui"],
   groupByType: number,
-  items: Props["items"]
+  items: Immutable<Props["items"]>
 ): GroupLibraryItems {
   switch (groupByType) {
     case 0: {
@@ -262,7 +264,7 @@ function getGroups(
     }
 
     case 1: {
-      const group: GroupLibraryItems = new Map();
+      const group = new Map();
       group.set(langui.audio ?? "Audio", []);
       group.set(langui.game ?? "Game", []);
       group.set(langui.textual ?? "Textual", []);
@@ -334,7 +336,7 @@ function getGroups(
             years.push(item.attributes.release_date.year);
         }
       });
-      const group: GroupLibraryItems = new Map();
+      const group = new Map();
       years.sort((a, b) => a - b);
       years.map((year) => {
         group.set(year.toString(), []);
@@ -352,7 +354,7 @@ function getGroups(
     }
 
     default: {
-      const group: GroupLibraryItems = new Map();
+      const group = new Map();
       group.set("", items);
       return group;
     }
@@ -363,8 +365,8 @@ function filterItems(
   showSubitems: boolean,
   showPrimaryItems: boolean,
   showSecondaryItems: boolean,
-  items: Props["items"]
-): Props["items"] {
+  items: Immutable<Props["items"]>
+): Immutable<Props["items"]> {
   return [...items].filter((item) => {
     if (!showSubitems && !item.attributes?.root_item) return false;
     if (
@@ -384,9 +386,9 @@ function filterItems(
 
 function sortBy(
   orderByType: number,
-  items: Props["items"],
+  items: Immutable<Props["items"]>,
   currencies: AppStaticProps["currencies"]
-): Props["items"] {
+): Immutable<Props["items"]> {
   switch (orderByType) {
     case 0:
       return [...items].sort((a, b) => {

@@ -1,3 +1,4 @@
+import { Immutable } from "helpers/types";
 import Image from "next/image";
 
 interface Props {
@@ -6,7 +7,7 @@ interface Props {
   className?: string;
 }
 
-export default function SVG(props: Props): JSX.Element {
+export function SVG(props: Immutable<Props>): JSX.Element {
   return (
     <div className={props.className}>
       <Image

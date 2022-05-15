@@ -1,22 +1,20 @@
-import Chip from "components/Chip";
-import ToolTip from "components/ToolTip";
+import { Chip } from "components/Chip";
+import { ToolTip } from "components/ToolTip";
 import {
   Enum_Componenttranslationschronologyitem_Status,
   GetChronologyItemsQuery,
 } from "graphql/generated";
-import { AppStaticProps } from "queries/getAppStaticProps";
-import { getStatusDescription } from "queries/helpers";
+import { AppStaticProps } from "graphql/getAppStaticProps";
+import { getStatusDescription } from "helpers/others";
+import { Immutable } from "helpers/types";
 
 interface Props {
-  item: Exclude<
-    GetChronologyItemsQuery["chronologyItems"],
-    null | undefined
-  >["data"][number];
+  item: NonNullable<GetChronologyItemsQuery["chronologyItems"]>["data"][number];
   displayYear: boolean;
   langui: AppStaticProps["langui"];
 }
 
-export default function ChronologyItemComponent(props: Props): JSX.Element {
+export function ChronologyItemComponent(props: Immutable<Props>): JSX.Element {
   const { langui } = props;
 
   function generateAnchor(
@@ -71,7 +69,8 @@ export default function ChronologyItemComponent(props: Props): JSX.Element {
   if (props.item.attributes) {
     return (
       <div
-        className="grid place-content-start grid-rows-[auto_1fr] grid-cols-[4em] py-4 px-8 rounded-2xl target:bg-mid target:py-8 target:my-4"
+        className="grid place-content-start grid-rows-[auto_1fr] grid-cols-[4em]
+        py-4 px-8 rounded-2xl target:bg-mid target:py-8 target:my-4"
         id={generateAnchor(
           props.item.attributes.year,
           props.item.attributes.month,
@@ -100,7 +99,10 @@ export default function ChronologyItemComponent(props: Props): JSX.Element {
                     <>
                       {translation && (
                         <>
-                          <div className="place-items-start place-content-start grid grid-flow-col gap-2">
+                          <div
+                            className="place-items-start
+                            place-content-start grid grid-flow-col gap-2"
+                          >
                             {translation.status !==
                               Enum_Componenttranslationschronologyitem_Status.Done && (
                               <ToolTip
@@ -125,7 +127,8 @@ export default function ChronologyItemComponent(props: Props): JSX.Element {
                               className={
                                 event.translations &&
                                 event.translations.length > 1
-                                  ? "before:content-['-'] before:text-dark before:inline-block before:w-4 before:ml-[-1em] mt-2 whitespace-pre-line"
+                                  ? `before:content-['-'] before:text-dark before:inline-block
+                                    before:w-4 before:ml-[-1em] mt-2 whitespace-pre-line`
                                   : "whitespace-pre-line"
                               }
                             >

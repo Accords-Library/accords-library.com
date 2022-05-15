@@ -1,29 +1,30 @@
-import AppLayout from "components/AppLayout";
-import Switch from "components/Inputs/Switch";
-import PanelHeader from "components/PanelComponents/PanelHeader";
-import ReturnButton, {
+import { AppLayout } from "components/AppLayout";
+import { Switch } from "components/Inputs/Switch";
+import { PanelHeader } from "components/PanelComponents/PanelHeader";
+import {
+  ReturnButton,
   ReturnButtonType,
 } from "components/PanelComponents/ReturnButton";
-import ContentPanel, {
+import {
+  ContentPanel,
   ContentPanelWidthSizes,
 } from "components/Panels/ContentPanel";
-import SubPanel from "components/Panels/SubPanel";
-import ThumbnailPreview from "components/PreviewCard";
+import { SubPanel } from "components/Panels/SubPanel";
+import { PreviewCard } from "components/PreviewCard";
 import { GetVideoChannelQuery } from "graphql/generated";
+import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
+import { getVideoThumbnailURL } from "helpers/videos";
 import {
   GetStaticPathsContext,
   GetStaticPathsResult,
   GetStaticPropsContext,
 } from "next";
-import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
-import { getVideoThumbnailURL } from "queries/helpers";
 import { useState } from "react";
 
 interface Props extends AppStaticProps {
-  channel: Exclude<
-    GetVideoChannelQuery["videoChannels"],
-    null | undefined
+  channel: NonNullable<
+    GetVideoChannelQuery["videoChannels"]
   >["data"][number]["attributes"];
 }
 
@@ -35,7 +36,7 @@ export default function Channel(props: Props): JSX.Element {
     <SubPanel>
       <ReturnButton
         href="/archives/videos/"
-        title={"Videos"}
+        title={langui.videos}
         langui={langui}
         displayOn={ReturnButtonType.desktop}
         className="mb-10"
@@ -43,12 +44,12 @@ export default function Channel(props: Props): JSX.Element {
 
       <PanelHeader
         icon="movie"
-        title="Videos"
+        title={langui.videos}
         description={langui.archives_description}
       />
 
       <div className="flex flex-row gap-2 place-items-center coarse:hidden">
-        <p className="flex-shrink-0">{"Always show info"}:</p>
+        <p className="flex-shrink-0">{langui.always_show_info}:</p>
         <Switch setState={setKeepInfoVisible} state={keepInfoVisible} />
       </div>
     </SubPanel>
@@ -60,11 +61,15 @@ export default function Channel(props: Props): JSX.Element {
         <h1 className="text-3xl">{channel?.title}</h1>
         <p>{channel?.subscribers.toLocaleString()} subscribers</p>
       </div>
-      <div className="grid gap-8 items-start mobile:grid-cols-2 desktop:grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] pb-12 border-b-[3px] border-dotted last-of-type:border-0">
+      <div
+        className="grid gap-8 items-start mobile:grid-cols-2
+        desktop:grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))]
+        pb-12 border-b-[3px] border-dotted last-of-type:border-0"
+      >
         {channel?.videos?.data.map((video) => (
           <>
             {video.attributes && (
-              <ThumbnailPreview
+              <PreviewCard
                 key={video.id}
                 href={`/archives/videos/v/${video.attributes.uid}`}
                 title={video.attributes.title}

@@ -1,20 +1,32 @@
-import LanguageSwitcher from "components/Inputs/LanguageSwitcher";
+import { LanguageSwitcher } from "components/Inputs/LanguageSwitcher";
 import { useAppLayout } from "contexts/AppLayoutContext";
+import { AppStaticProps } from "graphql/getAppStaticProps";
+import { Immutable } from "helpers/types";
 import { useRouter } from "next/router";
-import { AppStaticProps } from "queries/getAppStaticProps";
-import { getPreferredLanguage } from "queries/helpers";
 import { useEffect, useMemo, useState } from "react";
 
 interface Props<T> {
-  items: T[];
+  items: Immutable<T[]>;
   languages: AppStaticProps["languages"];
-  languageExtractor: (item: T) => string | undefined;
-  transform?: (item: T) => T;
+  languageExtractor: (item: NonNullable<Immutable<T>>) => string | undefined;
+  transform?: (item: NonNullable<Immutable<T>>) => NonNullable<Immutable<T>>;
 }
 
-export default function useSmartLanguage<T>(
+function getPreferredLanguage(
+  preferredLanguages: (string | undefined)[],
+  availableLanguages: Map<string, number>
+): number | undefined {
+  for (const locale of preferredLanguages) {
+    if (locale && availableLanguages.has(locale)) {
+      return availableLanguages.get(locale);
+    }
+  }
+  return undefined;
+}
+
+export function useSmartLanguage<T>(
   props: Props<T>
-): [T | undefined, () => JSX.Element] {
+): [Immutable<T | undefined>, () => JSX.Element] {
   const {
     items,
     languageExtractor,
@@ -28,12 +40,15 @@ export default function useSmartLanguage<T>(
   const [selectedTranslationIndex, setSelectedTranslationIndex] = useState<
     number | undefined
   >();
-  const [selectedTranslation, setSelectedTranslation] = useState<T>();
+  const [selectedTranslation, setSelectedTranslation] =
+    useState<Immutable<T>>();
 
   useEffect(() => {
     items.map((elem, index) => {
-      const result = languageExtractor(elem);
-      if (result !== undefined) availableLocales.set(result, index);
+      if (elem !== null && elem !== undefined) {
+        const result = languageExtractor(elem);
+        if (result !== undefined) availableLocales.set(result, index);
+      }
     });
   }, [availableLocales, items, languageExtractor]);
 
@@ -47,8 +62,9 @@ export default function useSmartLanguage<T>(
   }, [appLayout.preferredLanguages, availableLocales, router.locale]);
 
   useEffect(() => {
-    if (selectedTranslationIndex !== undefined)
+    if (selectedTranslationIndex !== undefined) {
       setSelectedTranslation(transform(items[selectedTranslationIndex]));
+    }
   }, [items, selectedTranslationIndex, transform]);
 
   return [

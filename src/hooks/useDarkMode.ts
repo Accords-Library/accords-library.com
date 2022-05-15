@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import { usePrefersDarkMode } from "./useMediaQuery";
-import useStateWithLocalStorage from "./useStateWithLocalStorage";
+import { useStateWithLocalStorage } from "./useStateWithLocalStorage";
 
-export default function useDarkMode(
+export function useDarkMode(
   key: string,
   initialValue: boolean | undefined
 ): [

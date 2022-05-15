@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-export default function useMediaQuery(query: string): boolean {
+export function useMediaQuery(query: string): boolean {
   function getMatches(query: string): boolean {
     // Prevents SSR issues
     if (typeof window !== "undefined") {

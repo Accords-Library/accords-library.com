@@ -132,6 +132,19 @@ query getWebsiteInterface($language_code: String) {
         response_invalid_code
         response_invalid_email
         response_email_success
+        always_show_info
+        item_not_available
+        primary_language
+        secondary_language
+        combine_related_contents
+        previous_content
+        followup_content
+        videos
+        view_on
+        channel
+        subscribers
+        description
+        available_at
       }
     }
   }

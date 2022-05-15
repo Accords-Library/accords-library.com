@@ -4,22 +4,18 @@ import {
   GetWebsiteInterfaceQuery,
 } from "graphql/generated";
 import { getReadySdk } from "graphql/sdk";
+import { Immutable } from "helpers/types";
 import { GetStaticPropsContext } from "next";
 
-export interface AppStaticProps {
-  langui: Exclude<
-    Exclude<
-      GetWebsiteInterfaceQuery["websiteInterfaces"],
-      null | undefined
-    >["data"][number]["attributes"],
-    null | undefined
+export type AppStaticProps = Immutable<{
+  langui: NonNullable<
+    NonNullable<
+      GetWebsiteInterfaceQuery["websiteInterfaces"]
+    >["data"][number]["attributes"]
   >;
-  currencies: Exclude<
-    GetCurrenciesQuery["currencies"],
-    null | undefined
-  >["data"];
-  languages: Exclude<GetLanguagesQuery["languages"], null | undefined>["data"];
-}
+  currencies: NonNullable<GetCurrenciesQuery["currencies"]>["data"];
+  languages: NonNullable<GetLanguagesQuery["languages"]>["data"];
+}>;
 
 export async function getAppStaticProps(
   context: GetStaticPropsContext
@@ -50,9 +46,11 @@ export async function getAppStaticProps(
     })
   ).websiteInterfaces?.data[0].attributes;
 
-  return {
-    langui: langui ?? ({} as AppStaticProps["langui"]),
-    currencies: currencies?.data ?? ({} as AppStaticProps["currencies"]),
-    languages: languages?.data ?? ({} as AppStaticProps["languages"]),
+  const appStaticProps: AppStaticProps = {
+    langui: langui ?? {},
+    currencies: currencies?.data ?? [],
+    languages: languages?.data ?? [],
   };
+
+  return appStaticProps;
 }

@@ -4,12 +4,7 @@ query getContentText($slug: String, $language_code: String) {
       id
       attributes {
         slug
-        titles {
-          pre_title
-          title
-          subtitle
-          description
-        }
+
         categories {
           data {
             id
@@ -56,9 +51,7 @@ query getContentText($slug: String, $language_code: String) {
             }
           }
         }
-        text_set {
-          status
-          text
+        translations {
           language {
             data {
               attributes {
@@ -66,39 +59,48 @@ query getContentText($slug: String, $language_code: String) {
               }
             }
           }
-          source_language {
-            data {
-              attributes {
-                code
+          pre_title
+          title
+          subtitle
+          description
+          text_set {
+            status
+            text
+            source_language {
+              data {
+                attributes {
+                  code
+                }
               }
             }
-          }
-          transcribers {
-            data {
-              id
-              attributes {
-                ...recorderChip
+            transcribers {
+              data {
+                id
+                attributes {
+                  ...recorderChip
+                }
               }
             }
-          }
-          translators {
-            data {
-              id
-              attributes {
-                ...recorderChip
+            translators {
+              data {
+                id
+                attributes {
+                  ...recorderChip
+                }
               }
             }
-          }
-          proofreaders {
-            data {
-              id
-              attributes {
-                ...recorderChip
+            proofreaders {
+              data {
+                id
+                attributes {
+                  ...recorderChip
+                }
               }
             }
+            notes
           }
-          notes
         }
+
         thumbnail {
           data {
             attributes {
@@ -106,78 +108,47 @@ query getContentText($slug: String, $language_code: String) {
             }
           }
         }
-        previous_recommended {
+        group {
           data {
             attributes {
-              slug
-              titles(filters: { language: { code: { eq: $language_code } } }) {
-                pre_title
-                title
-                subtitle
-              }
-              categories {
-                data {
-                  id
-                  attributes {
-                    short
-                  }
-                }
-              }
-              type {
+              contents {
                 data {
                   attributes {
                     slug
-                    titles(
-                      filters: { language: { code: { eq: $language_code } } }
-                    ) {
+                    translations {
+                      pre_title
                       title
+                      subtitle
                     }
-                  }
-                }
-              }
-              thumbnail {
-                data {
-                  attributes {
-                    ...uploadImage
-                  }
-                }
-              }
-            }
-          }
-        }
-        next_recommended {
-          data {
-            attributes {
-              slug
-              titles(filters: { language: { code: { eq: $language_code } } }) {
-                pre_title
-                title
-                subtitle
-              }
-              categories {
-                data {
-                  id
-                  attributes {
-                    short
-                  }
-                }
-              }
-              type {
-                data {
-                  attributes {
-                    slug
-                    titles(
-                      filters: { language: { code: { eq: $language_code } } }
-                    ) {
-                      title
+                    categories {
+                      data {
+                        id
+                        attributes {
+                          short
+                        }
+                      }
                     }
-                  }
-                }
-              }
-              thumbnail {
-                data {
-                  attributes {
-                    ...uploadImage
+                    type {
+                      data {
+                        attributes {
+                          slug
+                          titles(
+                            filters: {
+                              language: { code: { eq: $language_code } }
+                            }
+                          ) {
+                            title
+                          }
+                        }
+                      }
+                    }
+                    thumbnail {
+                      data {
+                        attributes {
+                          ...uploadImage
+                        }
+                      }
+                    }
                   }
                 }
               }

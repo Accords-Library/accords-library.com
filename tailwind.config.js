@@ -159,5 +159,13 @@ module.exports = {
         },
       });
     }),
+
+    plugin(function ({ addUtilities }) {
+      addUtilities({
+        ".break-words": {
+          "word-break": "break-word",
+        },
+      });
+    }),
   ],
 };

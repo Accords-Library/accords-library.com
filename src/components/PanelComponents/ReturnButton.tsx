@@ -1,7 +1,8 @@
-import HorizontalLine from "components/HorizontalLine";
-import Button from "components/Inputs/Button";
+import { HorizontalLine } from "components/HorizontalLine";
+import { Button } from "components/Inputs/Button";
 import { useAppLayout } from "contexts/AppLayoutContext";
-import { AppStaticProps } from "queries/getAppStaticProps";
+import { AppStaticProps } from "graphql/getAppStaticProps";
+import { Immutable } from "helpers/types";
 
 interface Props {
   href: string;
@@ -18,7 +19,7 @@ export enum ReturnButtonType {
   both = "both",
 }
 
-export default function ReturnButton(props: Props): JSX.Element {
+export function ReturnButton(props: Immutable<Props>): JSX.Element {
   const appLayout = useAppLayout();
 
   return (

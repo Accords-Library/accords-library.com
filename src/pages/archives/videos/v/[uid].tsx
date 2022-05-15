@@ -1,34 +1,33 @@
-import AppLayout from "components/AppLayout";
-import HorizontalLine from "components/HorizontalLine";
-import Button from "components/Inputs/Button";
-import InsetBox from "components/InsetBox";
-import NavOption from "components/PanelComponents/NavOption";
-import ReturnButton, {
+import { AppLayout } from "components/AppLayout";
+import { HorizontalLine } from "components/HorizontalLine";
+import { Button } from "components/Inputs/Button";
+import { InsetBox } from "components/InsetBox";
+import { NavOption } from "components/PanelComponents/NavOption";
+import {
+  ReturnButton,
   ReturnButtonType,
 } from "components/PanelComponents/ReturnButton";
-import ContentPanel, {
+import {
+  ContentPanel,
   ContentPanelWidthSizes,
 } from "components/Panels/ContentPanel";
-import SubPanel from "components/Panels/SubPanel";
+import { SubPanel } from "components/Panels/SubPanel";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { GetVideoQuery } from "graphql/generated";
+import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
+import { prettyDate, prettyShortenNumber } from "helpers/formatters";
+import { getVideoFile } from "helpers/videos";
 import { useMediaMobile } from "hooks/useMediaQuery";
 import {
   GetStaticPathsContext,
   GetStaticPathsResult,
   GetStaticPropsContext,
 } from "next";
-import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
-import { getVideoFile, prettyDate, prettyShortenNumber } from "queries/helpers";
 
 interface Props extends AppStaticProps {
-  video: Exclude<
-    Exclude<
-      GetVideoQuery["videos"],
-      null | undefined
-    >["data"][number]["attributes"],
-    null | undefined
+  video: NonNullable<
+    NonNullable<GetVideoQuery["videos"]>["data"][number]["attributes"]
   >;
 }
 
@@ -40,7 +39,7 @@ export default function Video(props: Props): JSX.Element {
     <SubPanel>
       <ReturnButton
         href="/archives/videos/"
-        title={"Videos"}
+        title={langui.videos}
         langui={langui}
         displayOn={ReturnButtonType.desktop}
         className="mb-10"
@@ -56,14 +55,14 @@ export default function Video(props: Props): JSX.Element {
       />
 
       <NavOption
-        title={"Channel"}
+        title={langui.channel}
         url="#channel"
         border
         onClick={() => appLayout.setSubPanelOpen(false)}
       />
 
       <NavOption
-        title={"Description"}
+        title={langui.description}
         url="#description"
         border
         onClick={() => appLayout.setSubPanelOpen(false)}
@@ -98,7 +97,8 @@ export default function Video(props: Props): JSX.Element {
               className="w-full aspect-video"
               title="YouTube video player"
               frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allow="accelerometer; autoplay; clipboard-write;
+              encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
             ></iframe>
           )}
@@ -135,7 +135,7 @@ export default function Video(props: Props): JSX.Element {
                 target="_blank"
                 rel="noreferrer"
               >
-                <Button className="!py-0 !px-3">{`View on ${video.source}`}</Button>
+                <Button className="!py-0 !px-3">{`${langui.view_on} ${video.source}`}</Button>
               </a>
             </div>
           </div>
@@ -144,7 +144,7 @@ export default function Video(props: Props): JSX.Element {
         {video.channel?.data?.attributes && (
           <InsetBox id="channel" className="grid place-items-center">
             <div className="w-[clamp(0px,100%,42rem)] grid place-items-center gap-4 text-center">
-              <h2 className="text-2xl">{"Channel"}</h2>
+              <h2 className="text-2xl">{langui.channel}</h2>
               <div>
                 <Button
                   href={`/archives/videos/c/${video.channel.data.attributes.uid}`}
@@ -153,8 +153,7 @@ export default function Video(props: Props): JSX.Element {
                 </Button>
 
                 <p>
-                  {video.channel.data.attributes.subscribers.toLocaleString()}{" "}
-                  subscribers
+                  {`${video.channel.data.attributes.subscribers.toLocaleString()} ${langui.subscribers?.toLowerCase()}`}
                 </p>
               </div>
             </div>
@@ -163,7 +162,7 @@ export default function Video(props: Props): JSX.Element {
 
         <InsetBox id="description" className="grid place-items-center">
           <div className="w-[clamp(0px,100%,42rem)] grid place-items-center gap-8">
-            <h2 className="text-2xl">{"Description"}</h2>
+            <h2 className="text-2xl">{langui.description}</h2>
             <p className="whitespace-pre-line">{video.description}</p>
           </div>
         </InsetBox>

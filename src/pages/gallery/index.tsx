@@ -1,10 +1,11 @@
-import AppLayout from "components/AppLayout";
+import { AppLayout } from "components/AppLayout";
+import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
+import { Immutable } from "helpers/types";
 import { GetStaticPropsContext } from "next";
-import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
 
 interface Props extends AppStaticProps {}
 
-export default function Gallery(props: Props): JSX.Element {
+export default function Gallery(props: Immutable<Props>): JSX.Element {
   const { langui } = props;
   const contentPanel = (
     <iframe

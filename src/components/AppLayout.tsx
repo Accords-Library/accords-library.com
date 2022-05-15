@@ -1,23 +1,19 @@
-import Button from "components/Inputs/Button";
+import { Button } from "components/Inputs/Button";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { UploadImageFragment } from "graphql/generated";
+import { AppStaticProps } from "graphql/getAppStaticProps";
+import { prettyLanguage, prettySlug } from "helpers/formatters";
+import { getOgImage, ImageQuality, OgImage } from "helpers/img";
+import { Immutable } from "helpers/types";
 import { useMediaMobile } from "hooks/useMediaQuery";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { AppStaticProps } from "queries/getAppStaticProps";
-import {
-  getOgImage,
-  OgImage,
-  prettyLanguage,
-  prettySlug,
-} from "queries/helpers";
 import { useEffect, useState } from "react";
 import { useSwipeable } from "react-swipeable";
-import { ImageQuality } from "./Img";
-import OrderableList from "./Inputs/OrderableList";
-import Select from "./Inputs/Select";
-import MainPanel from "./Panels/MainPanel";
-import Popup from "./Popup";
+import { OrderableList } from "./Inputs/OrderableList";
+import { Select } from "./Inputs/Select";
+import { MainPanel } from "./Panels/MainPanel";
+import { Popup } from "./Popup";
 
 interface Props extends AppStaticProps {
   subPanel?: React.ReactNode;
@@ -29,8 +25,19 @@ interface Props extends AppStaticProps {
   description?: string;
 }
 
-export default function AppLayout(props: Props): JSX.Element {
-  const { langui, currencies, languages, subPanel, contentPanel } = props;
+export function AppLayout(props: Immutable<Props>): JSX.Element {
+  const {
+    langui,
+    currencies,
+    languages,
+    subPanel,
+    contentPanel,
+    thumbnail,
+    title,
+    navTitle,
+    description,
+    subPanelIcon,
+  } = props;
   const router = useRouter();
   const isMobile = useMediaMobile();
   const appLayout = useAppLayout();
@@ -39,19 +46,23 @@ export default function AppLayout(props: Props): JSX.Element {
 
   const handlers = useSwipeable({
     onSwipedLeft: (SwipeEventData) => {
-      if (SwipeEventData.velocity < sensibilitySwipe) return;
-      if (appLayout.mainPanelOpen) {
-        appLayout.setMainPanelOpen(false);
-      } else if (subPanel && contentPanel) {
-        appLayout.setSubPanelOpen(true);
+      if (appLayout.menuGestures) {
+        if (SwipeEventData.velocity < sensibilitySwipe) return;
+        if (appLayout.mainPanelOpen) {
+          appLayout.setMainPanelOpen(false);
+        } else if (subPanel && contentPanel) {
+          appLayout.setSubPanelOpen(true);
+        }
       }
     },
     onSwipedRight: (SwipeEventData) => {
-      if (SwipeEventData.velocity < sensibilitySwipe) return;
-      if (appLayout.subPanelOpen) {
-        appLayout.setSubPanelOpen(false);
-      } else {
-        appLayout.setMainPanelOpen(true);
+      if (appLayout.menuGestures) {
+        if (SwipeEventData.velocity < sensibilitySwipe) return;
+        if (appLayout.subPanelOpen) {
+          appLayout.setSubPanelOpen(false);
+        } else {
+          appLayout.setMainPanelOpen(true);
+        }
       }
     },
   });
@@ -59,8 +70,8 @@ export default function AppLayout(props: Props): JSX.Element {
   const turnSubIntoContent = subPanel && !contentPanel;
 
   const titlePrefix = "Accord’s Library";
-  const metaImage: OgImage = props.thumbnail
-    ? getOgImage(ImageQuality.Og, props.thumbnail)
+  const metaImage: OgImage = thumbnail
+    ? getOgImage(ImageQuality.Og, thumbnail)
     : {
         image: "/default_og.jpg",
         width: 1200,
@@ -68,9 +79,9 @@ export default function AppLayout(props: Props): JSX.Element {
         alt: "Accord's Library Logo",
       };
   const ogTitle =
-    props.title ?? props.navTitle ?? prettySlug(router.asPath.split("/").pop());
+    title ?? navTitle ?? prettySlug(router.asPath.split("/").pop());
 
-  const metaDescription = props.description ?? langui.default_description ?? "";
+  const metaDescription = description ?? langui.default_description ?? "";
 
   useEffect(() => {
     document.getElementsByTagName("html")[0].style.fontSize = `${
@@ -115,7 +126,7 @@ export default function AppLayout(props: Props): JSX.Element {
   }, [currencySelect]);
 
   let gridCol = "";
-  if (props.subPanel) {
+  if (subPanel) {
     if (appLayout.mainPanelReduced) {
       gridCol = "grid-cols-[6rem_20rem_1fr]";
     } else {
@@ -140,7 +151,9 @@ export default function AppLayout(props: Props): JSX.Element {
     >
       <div
         {...handlers}
-        className={`fixed inset-0 touch-pan-y p-0 m-0 bg-light text-black grid [grid-template-areas:'main_sub_content'] ${gridCol} mobile:grid-cols-[1fr] mobile:grid-rows-[1fr_5rem] mobile:[grid-template-areas:'content''navbar']`}
+        className={`fixed inset-0 touch-pan-y p-0 m-0 bg-light text-black grid
+        [grid-template-areas:'main_sub_content'] ${gridCol} mobile:grid-cols-[1fr]
+        mobile:grid-rows-[1fr_5rem] mobile:[grid-template-areas:'content''navbar']`}
       >
         <Head>
           <title>{`${titlePrefix} - ${ogTitle}`}</title>
@@ -172,7 +185,8 @@ export default function AppLayout(props: Props): JSX.Element {
 
         {/* Background when navbar is opened */}
         <div
-          className={`[grid-area:content] mobile:z-10 absolute inset-0 transition-[backdrop-filter] duration-500 ${
+          className={`[grid-area:content] mobile:z-10 absolute
+          inset-0 transition-[backdrop-filter] duration-500 ${
             (appLayout.mainPanelOpen || appLayout.subPanelOpen) && isMobile
               ? "[backdrop-filter:blur(2px)]"
               : "pointer-events-none touch-none "
@@ -201,7 +215,10 @@ export default function AppLayout(props: Props): JSX.Element {
             contentPanel
           ) : (
             <div className="grid place-content-center h-full">
-              <div className="text-dark border-dark border-2 border-dotted rounded-2xl p-8 grid grid-flow-col place-items-center gap-9 opacity-40">
+              <div
+                className="text-dark border-dark border-2 border-dotted rounded-2xl
+              p-8 grid grid-flow-col place-items-center gap-9 opacity-40"
+              >
                 <p className="text-4xl">❮</p>
                 <p className="text-2xl w-64">{langui.select_option_sidebar}</p>
               </div>
@@ -212,7 +229,10 @@ export default function AppLayout(props: Props): JSX.Element {
         {/* Sub panel */}
         {subPanel && (
           <div
-            className={`[grid-area:sub] mobile:[grid-area:content] mobile:z-10 mobile:w-[90%] mobile:justify-self-end border-r-[1px] mobile:border-r-0 mobile:border-l-[1px] border-black border-dotted overflow-y-scroll webkit-scrollbar:w-0 [scrollbar-width:none] transition-transform duration-300 bg-light texture-paper-dots
+            className={`[grid-area:sub] mobile:[grid-area:content] mobile:z-10 mobile:w-[90%]
+            mobile:justify-self-end border-r-[1px] mobile:border-r-0 mobile:border-l-[1px]
+            border-black border-dotted overflow-y-scroll webkit-scrollbar:w-0
+            [scrollbar-width:none] transition-transform duration-300 bg-light texture-paper-dots
           ${
             turnSubIntoContent
               ? "mobile:border-l-0 mobile:w-full"
@@ -225,14 +245,21 @@ export default function AppLayout(props: Props): JSX.Element {
 
         {/* Main panel */}
         <div
-          className={`[grid-area:main] mobile:[grid-area:content] mobile:z-10 mobile:w-[90%] mobile:justify-self-start border-r-[1px] border-black border-dotted overflow-y-scroll webkit-scrollbar:w-0 [scrollbar-width:none] transition-transform duration-300 bg-light texture-paper-dots
-        ${appLayout.mainPanelOpen ? "" : "mobile:-translate-x-full"}`}
+          className={`[grid-area:main] mobile:[grid-area:content] mobile:z-10 mobile:w-[90%]
+          mobile:justify-self-start border-r-[1px] border-black border-dotted overflow-y-scroll
+          webkit-scrollbar:w-0 [scrollbar-width:none] transition-transform duration-300 bg-light
+          texture-paper-dots ${
+            appLayout.mainPanelOpen ? "" : "mobile:-translate-x-full"
+          }`}
         >
           <MainPanel langui={langui} />
         </div>
 
         {/* Navbar */}
-        <div className="[grid-area:navbar] border-t-[1px] border-black border-dotted grid grid-cols-[5rem_1fr_5rem] place-items-center desktop:hidden bg-light texture-paper-dots">
+        <div
+          className="[grid-area:navbar] border-t-[1px] border-black border-dotted grid
+          grid-cols-[5rem_1fr_5rem] place-items-center desktop:hidden bg-light texture-paper-dots"
+        >
           <span
             className="material-icons mt-[.1em] cursor-pointer"
             onClick={() => {
@@ -261,8 +288,8 @@ export default function AppLayout(props: Props): JSX.Element {
             {subPanel && !turnSubIntoContent
               ? appLayout.subPanelOpen
                 ? "close"
-                : props.subPanelIcon
-                ? props.subPanelIcon
+                : subPanelIcon
+                ? subPanelIcon
                 : "tune"
               : ""}
           </span>
@@ -274,7 +301,10 @@ export default function AppLayout(props: Props): JSX.Element {
         >
           <h2 className="text-2xl">{langui.settings}</h2>
 
-          <div className="mt-4 grid gap-16 justify-items-center text-center desktop:grid-cols-[auto_auto]">
+          <div
+            className="mt-4 grid gap-16 justify-items-center
+            text-center desktop:grid-cols-[auto_auto]"
+          >
             {router.locales && (
               <div>
                 <h3 className="text-xl">{langui.languages}</h3>
@@ -294,6 +324,12 @@ export default function AppLayout(props: Props): JSX.Element {
                               prettyLanguage(locale, languages),
                             ])
                           )
+                    }
+                    insertLabels={
+                      new Map([
+                        [0, langui.primary_language],
+                        [1, langui.secondary_language],
+                      ])
                     }
                     onChange={(items) => {
                       const preferredLanguages = [...items].map(
@@ -437,6 +473,7 @@ export default function AppLayout(props: Props): JSX.Element {
                       (event.target as HTMLInputElement).value
                     )
                   }
+                  value={appLayout.playerName}
                 />
               </div>
             </div>

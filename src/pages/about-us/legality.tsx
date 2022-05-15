@@ -1,13 +1,10 @@
-import PostPage, { Post } from "components/PostPage";
-import { getReadySdk } from "graphql/sdk";
-import { GetStaticPropsContext } from "next";
-import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
+import { PostPage } from "components/PostPage";
+import {
+  getPostStaticProps,
+  PostStaticProps,
+} from "graphql/getPostStaticProps";
 
-interface Props extends AppStaticProps {
-  post: Post;
-}
-
-export default function SiteInformation(props: Props): JSX.Element {
+export default function Legality(props: PostStaticProps): JSX.Element {
   const { post, langui, languages, currencies } = props;
   return (
     <PostPage
@@ -23,21 +20,4 @@ export default function SiteInformation(props: Props): JSX.Element {
   );
 }
 
-export async function getStaticProps(
-  context: GetStaticPropsContext
-): Promise<{ notFound: boolean } | { props: Props }> {
-  const sdk = getReadySdk();
-  const slug = "legality";
-  const post = await sdk.getPost({
-    slug: slug,
-    language_code: context.locale ?? "en",
-  });
-  if (!post.posts?.data[0].attributes) return { notFound: true };
-  const props: Props = {
-    ...(await getAppStaticProps(context)),
-    post: post.posts.data[0].attributes,
-  };
-  return {
-    props: props,
-  };
-}
+export const getStaticProps = getPostStaticProps("legality");

@@ -1,24 +1,27 @@
-import AppLayout from "components/AppLayout";
-import PageSelector from "components/Inputs/PageSelector";
-import Switch from "components/Inputs/Switch";
-import PanelHeader from "components/PanelComponents/PanelHeader";
-import ReturnButton, {
+import { AppLayout } from "components/AppLayout";
+import { PageSelector } from "components/Inputs/PageSelector";
+import { Switch } from "components/Inputs/Switch";
+import { PanelHeader } from "components/PanelComponents/PanelHeader";
+import {
+  ReturnButton,
   ReturnButtonType,
 } from "components/PanelComponents/ReturnButton";
-import ContentPanel, {
+import {
+  ContentPanel,
   ContentPanelWidthSizes,
 } from "components/Panels/ContentPanel";
-import SubPanel from "components/Panels/SubPanel";
-import ThumbnailPreview from "components/PreviewCard";
+import { SubPanel } from "components/Panels/SubPanel";
+import { PreviewCard } from "components/PreviewCard";
 import { GetVideosPreviewQuery } from "graphql/generated";
+import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
+import { prettyDate } from "helpers/formatters";
+import { getVideoThumbnailURL } from "helpers/videos";
 import { GetStaticPropsContext } from "next";
-import { AppStaticProps, getAppStaticProps } from "queries/getAppStaticProps";
-import { getVideoThumbnailURL, prettyDate } from "queries/helpers";
 import { useState } from "react";
 
 interface Props extends AppStaticProps {
-  videos: Exclude<GetVideosPreviewQuery["videos"], null | undefined>["data"];
+  videos: NonNullable<GetVideosPreviewQuery["videos"]>["data"];
 }
 
 export default function Videos(props: Props): JSX.Element {
@@ -64,7 +67,7 @@ export default function Videos(props: Props): JSX.Element {
       />
 
       <div className="flex flex-row gap-2 place-items-center coarse:hidden">
-        <p className="flex-shrink-0">{"Always show info"}:</p>
+        <p className="flex-shrink-0">{langui.always_show_info}:</p>
         <Switch setState={setKeepInfoVisible} state={keepInfoVisible} />
       </div>
     </SubPanel>
@@ -79,11 +82,15 @@ export default function Videos(props: Props): JSX.Element {
         className="mb-12"
       />
 
-      <div className="grid gap-8 items-start thin:grid-cols-1 mobile:grid-cols-2 desktop:grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] pb-12 border-b-[3px] border-dotted last-of-type:border-0">
+      <div
+        className="grid gap-8 items-start thin:grid-cols-1 mobile:grid-cols-2
+        desktop:grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))]
+        pb-12 border-b-[3px] border-dotted last-of-type:border-0"
+      >
         {paginatedVideos[page].map((video) => (
           <>
             {video.attributes && (
-              <ThumbnailPreview
+              <PreviewCard
                 key={video.id}
                 href={`/archives/videos/v/${video.attributes.uid}`}
                 title={video.attributes.title}

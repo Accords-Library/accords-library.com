@@ -1,9 +1,11 @@
-import Chip from "components/Chip";
+import { Chip } from "components/Chip";
 import { RecorderChipFragment } from "graphql/generated";
-import { AppStaticProps } from "queries/getAppStaticProps";
-import Img, { ImageQuality } from "./Img";
-import Markdawn from "./Markdown/Markdawn";
-import ToolTip from "./ToolTip";
+import { AppStaticProps } from "graphql/getAppStaticProps";
+import { ImageQuality } from "helpers/img";
+import { Immutable } from "helpers/types";
+import { Img } from "./Img";
+import { Markdawn } from "./Markdown/Markdawn";
+import { ToolTip } from "./ToolTip";
 
 interface Props {
   className?: string;
@@ -11,7 +13,7 @@ interface Props {
   langui: AppStaticProps["langui"];
 }
 
-export default function RecorderChip(props: Props): JSX.Element {
+export function RecorderChip(props: Immutable<Props>): JSX.Element {
   const { recorder, langui } = props;
   return (
     <ToolTip
@@ -49,10 +51,7 @@ export default function RecorderChip(props: Props): JSX.Element {
               )}
             </div>
           </div>
-
           {recorder.bio?.[0] && <Markdawn text={recorder.bio[0].bio ?? ""} />}
-
-          {/* <Button className="cursor-not-allowed">View profile</Button> */}
         </div>
       }
       placement="top"

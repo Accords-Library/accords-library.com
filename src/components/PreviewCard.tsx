@@ -117,26 +117,34 @@ export function PreviewCard(props: Immutable<Props>): JSX.Element {
         hover:[--play-opacity:100] transition-transform
         [--stacked-top:0] hover:[--stacked-top:1]"
       >
-        {thumbnail && stackNumber > 0 && (
+        {stackNumber > 0 && (
           <>
-            <Img
-              className="opacity-30 rounded-md overflow-hidden absolute transition-[top_transform]
-                -top-[var(--stacked-top)*1.5rem]
-                scale-[calc(1-0.15*var(--stacked-top))]"
-              image={thumbnail}
-              quality={ImageQuality.Medium}
-            />
+            <div
+              className="bg-light rounded-md overflow-hidden absolute transition-[top_transform]
+              inset-0 -top-[var(--stacked-top)*2.1rem] brightness-[0.8] sepia-[0.5]
+              scale-[calc(1-0.15*var(--stacked-top))]"
+            >
+              {thumbnail && (
+                <Img
+                  className="opacity-30 "
+                  image={thumbnail}
+                  quality={ImageQuality.Medium}
+                />
+              )}
+            </div>
 
             <div
               className="bg-light rounded-md overflow-hidden absolute transition-[top_transform]
-              -top-[var(--stacked-top)*0.7rem]
+              -top-[var(--stacked-top)*1rem] inset-0 brightness-[0.9] sepia-[0.2]
               scale-[calc(1-0.06*var(--stacked-top))]"
             >
-              <Img
-                className="opacity-70"
-                image={thumbnail}
-                quality={ImageQuality.Medium}
-              />
+              {thumbnail && (
+                <Img
+                  className="opacity-70"
+                  image={thumbnail}
+                  quality={ImageQuality.Medium}
+                />
+              )}
             </div>
           </>
         )}
@@ -186,12 +194,21 @@ export function PreviewCard(props: Immutable<Props>): JSX.Element {
         ) : (
           <div
             style={{ aspectRatio: thumbnailAspectRatio }}
-            className={`w-full bg-light ${
+            className={`w-full bg-light relative ${
               keepInfoVisible
                 ? "rounded-t-md"
                 : "rounded-md coarse:rounded-b-none"
             }`}
-          ></div>
+          >
+            {stackNumber > 0 && (
+              <div
+                className="absolute right-2 top-2 text-light bg-black
+                bg-opacity-60 px-2 rounded-full"
+              >
+                {stackNumber}
+              </div>
+            )}
+          </div>
         )}
         <div
           className={`linearbg-obi ${

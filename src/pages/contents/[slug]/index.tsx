@@ -24,6 +24,7 @@ import {
 import { getStatusDescription } from "helpers/others";
 import { ContentWithTranslations, Immutable } from "helpers/types";
 import { useMediaMobile } from "hooks/useMediaQuery";
+import { AnchorIds, useScrollTopOnChange } from "hooks/useScrollTopOnChange";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 import {
   GetStaticPathsContext,
@@ -44,6 +45,8 @@ export default function Content(props: Immutable<Props>): JSX.Element {
     languages: languages,
     languageExtractor: (item) => item.language?.data?.attributes?.code,
   });
+
+  useScrollTopOnChange(AnchorIds.CONTENT_PANEL, [selectedTranslation]);
 
   const previousContent = content.group?.data?.attributes?.contents
     ? getPreviousContent(

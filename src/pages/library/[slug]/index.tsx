@@ -37,6 +37,7 @@ import { convertMmToInch } from "helpers/numbers";
 import { sortContent } from "helpers/others";
 import { Immutable } from "helpers/types";
 import { useLightBox } from "hooks/useLightBox";
+import { AnchorIds, useScrollTopOnChange } from "hooks/useScrollTopOnChange";
 import {
   GetStaticPathsContext,
   GetStaticPathsResult,
@@ -56,6 +57,8 @@ interface Props extends AppStaticProps {
 export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
   const { item, langui, currencies } = props;
   const appLayout = useAppLayout();
+
+  useScrollTopOnChange(AnchorIds.CONTENT_PANEL, [item]);
 
   const isVariantSet =
     item?.metadata?.[0]?.__typename === "ComponentMetadataGroup" &&

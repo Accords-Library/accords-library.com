@@ -6,6 +6,7 @@ import { prettyLanguage, prettySlug } from "helpers/formatters";
 import { getOgImage, ImageQuality, OgImage } from "helpers/img";
 import { Immutable } from "helpers/types";
 import { useMediaMobile } from "hooks/useMediaQuery";
+import { AnchorIds } from "hooks/useScrollTopOnChange";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -140,7 +141,6 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
 
   return (
     <div
-      id="MyAppLayout"
       className={`${
         appLayout.darkMode ? "set-theme-dark" : "set-theme-light"
       } ${
@@ -209,6 +209,7 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
 
         {/* Content panel */}
         <div
+          id={AnchorIds.CONTENT_PANEL}
           className={`[grid-area:content] overflow-y-scroll bg-light texture-paper-dots`}
         >
           {contentPanel ? (

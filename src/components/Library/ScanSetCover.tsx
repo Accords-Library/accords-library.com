@@ -57,7 +57,7 @@ export function ScanSetCover(props: Immutable<Props>): JSX.Element {
               className="flex flex-row flex-wrap place-items-center
               gap-6 text-base pt-10 first-of-type:pt-0"
             >
-              <h2 id={"cover"} className="text-2xl">
+              <h2 id="cover" className="text-2xl">
                 {"Cover"}
               </h2>
 

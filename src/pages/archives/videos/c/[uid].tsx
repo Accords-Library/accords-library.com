@@ -20,7 +20,7 @@ import {
   GetStaticPathsResult,
   GetStaticPropsContext,
 } from "next";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 
 interface Props extends AppStaticProps {
   channel: NonNullable<
@@ -67,10 +67,9 @@ export default function Channel(props: Props): JSX.Element {
         pb-12 border-b-[3px] border-dotted last-of-type:border-0"
       >
         {channel?.videos?.data.map((video) => (
-          <>
+          <Fragment key={video.id}>
             {video.attributes && (
               <PreviewCard
-                key={video.id}
                 href={`/archives/videos/v/${video.attributes.uid}`}
                 title={video.attributes.title}
                 thumbnail={getVideoThumbnailURL(video.attributes.uid)}
@@ -88,7 +87,7 @@ export default function Channel(props: Props): JSX.Element {
                 }}
               />
             )}
-          </>
+          </Fragment>
         ))}
       </div>
     </ContentPanel>

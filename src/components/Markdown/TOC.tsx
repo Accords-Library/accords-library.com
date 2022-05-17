@@ -1,6 +1,7 @@
 import { slugify } from "helpers/formatters";
 import { Immutable } from "helpers/types";
 import { useRouter } from "next/router";
+import { Fragment } from "react";
 import { preprocessMarkDawn } from "./Markdawn";
 
 interface Props {
@@ -39,11 +40,8 @@ function TOCLevel(props: LevelProps): JSX.Element {
   return (
     <ol className="pl-4 text-left">
       {tocchildren.map((child, childIndex) => (
-        <>
-          <li
-            key={child.slug}
-            className="my-2 overflow-x-hidden w-full text-ellipsis whitespace-nowrap"
-          >
+        <Fragment key={child.slug}>
+          <li className="my-2 overflow-x-hidden w-full text-ellipsis whitespace-nowrap">
             <span className="text-dark">{`${parentNumbering}${
               childIndex + 1
             }.`}</span>{" "}
@@ -55,7 +53,7 @@ function TOCLevel(props: LevelProps): JSX.Element {
             tocchildren={child.children}
             parentNumbering={`${parentNumbering}${childIndex + 1}.`}
           />
-        </>
+        </Fragment>
       ))}
     </ol>
   );

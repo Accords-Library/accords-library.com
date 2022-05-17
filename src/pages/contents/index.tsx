@@ -15,7 +15,7 @@ import { getReadySdk } from "graphql/sdk";
 import { prettyinlineTitle, prettySlug } from "helpers/formatters";
 import { Immutable } from "helpers/types";
 import { GetStaticPropsContext } from "next";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 
 interface Props extends AppStaticProps {
   contents: NonNullable<GetContentsQuery["contents"]>["data"];
@@ -30,9 +30,12 @@ export default function Contents(props: Immutable<Props>): JSX.Element {
   const [keepInfoVisible, setKeepInfoVisible] = useState(false);
 
   const [combineRelatedContent, setCombineRelatedContent] = useState(true);
+  const [effectiveCombineRelatedContent, setEffectiveCombineRelatedContent] =
+    useState(true);
+  const [searchName, setSearchName] = useState("");
 
   const [filteredItems, setFilteredItems] = useState(
-    filterContents(combineRelatedContent, contents)
+    filterContents(contents, combineRelatedContent, searchName)
   );
 
   const [groups, setGroups] = useState<GroupContentItems>(
@@ -40,8 +43,20 @@ export default function Contents(props: Immutable<Props>): JSX.Element {
   );
 
   useEffect(() => {
-    setFilteredItems(filterContents(combineRelatedContent, contents));
-  }, [combineRelatedContent, contents]);
+    if (searchName.length > 1) {
+      setEffectiveCombineRelatedContent(false);
+    } else {
+      setEffectiveCombineRelatedContent(combineRelatedContent);
+    }
+    setFilteredItems(
+      filterContents(contents, effectiveCombineRelatedContent, searchName)
+    );
+  }, [
+    effectiveCombineRelatedContent,
+    contents,
+    searchName,
+    combineRelatedContent,
+  ]);
 
   useEffect(() => {
     setGroups(getGroups(langui, groupingMethod, filteredItems));
@@ -55,6 +70,18 @@ export default function Contents(props: Immutable<Props>): JSX.Element {
         description={langui.contents_description}
       />
 
+      <input
+        className="w-full mb-6"
+        type="text"
+        name="name"
+        id="name"
+        placeholder="Search title..."
+        onChange={(event) => {
+          const input = event.target as HTMLInputElement;
+          setSearchName(input.value);
+        }}
+      />
+
       <div className="flex flex-row gap-2 place-items-center">
         <p className="flex-shrink-0">{langui.group_by}:</p>
         <Select
@@ -66,11 +93,18 @@ export default function Contents(props: Immutable<Props>): JSX.Element {
         />
       </div>
 
-      <div className="flex flex-row gap-2 place-items-center coarse:hidden">
+      <div
+        className={`flex flex-row gap-2 place-items-center coarse:hidden ${
+          searchName.length > 1
+            ? "text-dark grayscale contrast-75 brightness-150"
+            : ""
+        }`}
+      >
         <p className="flex-shrink-0">{langui.combine_related_contents}:</p>
         <Switch
           setState={setCombineRelatedContent}
           state={combineRelatedContent}
+          disabled={searchName.length > 1}
         />
       </div>
 
@@ -83,9 +117,9 @@ export default function Contents(props: Immutable<Props>): JSX.Element {
   const contentPanel = (
     <ContentPanel width={ContentPanelWidthSizes.large}>
       {[...groups].map(([name, items]) => (
-        <>
+        <Fragment key={name}>
           {items.length > 0 && (
-            <>
+            <Fragment>
               {name && (
                 <h2
                   key={`h2${name}`}
@@ -94,7 +128,7 @@ export default function Contents(props: Immutable<Props>): JSX.Element {
                 >
                   {name}
                   <Chip>{`${items.reduce((currentSum, item) => {
-                    if (combineRelatedContent) {
+                    if (effectiveCombineRelatedContent) {
                       if (item.attributes?.group?.data?.attributes?.combine) {
                         return (
                           currentSum +
@@ -117,10 +151,9 @@ export default function Contents(props: Immutable<Props>): JSX.Element {
                 desktop:grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))]"
               >
                 {items.map((item) => (
-                  <>
+                  <Fragment key={item.id}>
                     {item.attributes && (
                       <PreviewCard
-                        key={item.id}
                         href={`/contents/${item.attributes.slug}`}
                         pre_title={item.attributes.translations?.[0]?.pre_title}
                         title={
@@ -131,7 +164,7 @@ export default function Contents(props: Immutable<Props>): JSX.Element {
                         thumbnail={item.attributes.thumbnail?.data?.attributes}
                         thumbnailAspectRatio="3/2"
                         stackNumber={
-                          combineRelatedContent &&
+                          effectiveCombineRelatedContent &&
                           item.attributes.group?.data?.attributes?.combine
                             ? item.attributes.group.data.attributes.contents
                                 ?.data.length
@@ -155,12 +188,12 @@ export default function Contents(props: Immutable<Props>): JSX.Element {
                         keepInfoVisible={keepInfoVisible}
                       />
                     )}
-                  </>
+                  </Fragment>
                 ))}
               </div>
-            </>
+            </Fragment>
           )}
-        </>
+        </Fragment>
       ))}
     </ContentPanel>
   );
@@ -271,17 +304,33 @@ function getGroups(
 }
 
 function filterContents(
+  contents: Immutable<Props["contents"]>,
   combineRelatedContent: boolean,
-  contents: Immutable<Props["contents"]>
+  searchName: string
 ): Immutable<Props["contents"]> {
-  if (combineRelatedContent) {
-    return [...contents].filter(
-      (content) =>
-        !content.attributes?.group?.data?.attributes ||
-        !content.attributes.group.data.attributes.combine ||
-        content.attributes.group.data.attributes.contents?.data[0].id ===
-          content.id
-    );
-  }
-  return contents;
+  return contents.filter((content) => {
+    if (
+      combineRelatedContent &&
+      content.attributes?.group?.data?.attributes?.combine &&
+      content.attributes.group.data.attributes.contents?.data[0].id !==
+        content.id
+    ) {
+      return false;
+    }
+    if (searchName.length > 1) {
+      if (
+        prettyinlineTitle(
+          content.attributes?.translations?.[0]?.pre_title,
+          content.attributes?.translations?.[0]?.title,
+          content.attributes?.translations?.[0]?.subtitle
+        )
+          .toLowerCase()
+          .includes(searchName.toLowerCase())
+      ) {
+        return true;
+      }
+      return false;
+    }
+    return true;
+  });
 }

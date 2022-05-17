@@ -1,6 +1,6 @@
 import { arrayMove } from "helpers/others";
 import { Immutable } from "helpers/types";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 
 interface Props {
   className?: string;
@@ -25,7 +25,7 @@ export function OrderableList(props: Immutable<Props>): JSX.Element {
   return (
     <div className="grid gap-2">
       {[...items].map(([key, value], index) => (
-        <>
+        <Fragment key={key}>
           {props.insertLabels?.get(index) && (
             <p>{props.insertLabels.get(index)}</p>
           )}
@@ -60,7 +60,6 @@ export function OrderableList(props: Immutable<Props>): JSX.Element {
             border-[1px] transition-all hover:text-light hover:bg-dark 
             hover:drop-shadow-shade-lg border-dark bg-light text-dark 
             rounded-full cursor-grab select-none px-1 py-2 pr-4 gap-2"
-            key={key}
             draggable
           >
             <div className="grid grid-rows-[.8em_.8em] place-items-center">
@@ -87,7 +86,7 @@ export function OrderableList(props: Immutable<Props>): JSX.Element {
             </div>
             {value}
           </div>
-        </>
+        </Fragment>
       ))}
     </div>
   );

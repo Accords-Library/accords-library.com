@@ -18,7 +18,7 @@ import { getReadySdk } from "graphql/sdk";
 import { prettyDate } from "helpers/formatters";
 import { getVideoThumbnailURL } from "helpers/videos";
 import { GetStaticPropsContext } from "next";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 
 interface Props extends AppStaticProps {
   videos: NonNullable<GetVideosPreviewQuery["videos"]>["data"];
@@ -88,10 +88,9 @@ export default function Videos(props: Props): JSX.Element {
         pb-12 border-b-[3px] border-dotted last-of-type:border-0"
       >
         {paginatedVideos[page].map((video) => (
-          <>
+          <Fragment key={video.id}>
             {video.attributes && (
               <PreviewCard
-                key={video.id}
                 href={`/archives/videos/v/${video.attributes.uid}`}
                 title={video.attributes.title}
                 thumbnail={getVideoThumbnailURL(video.attributes.uid)}
@@ -109,7 +108,7 @@ export default function Videos(props: Props): JSX.Element {
                 }}
               />
             )}
-          </>
+          </Fragment>
         ))}
       </div>
 

@@ -20,7 +20,7 @@ import {
 import { convertPrice } from "helpers/numbers";
 import { Immutable } from "helpers/types";
 import { GetStaticPropsContext } from "next";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 
 interface Props extends AppStaticProps {
   items: NonNullable<GetLibraryItemsPreviewQuery["libraryItems"]>["data"];
@@ -31,6 +31,7 @@ type GroupLibraryItems = Map<string, Immutable<Props["items"]>>;
 export default function Library(props: Immutable<Props>): JSX.Element {
   const { langui, items: libraryItems, currencies } = props;
 
+  const [searchName, setSearchName] = useState("");
   const [showSubitems, setShowSubitems] = useState<boolean>(false);
   const [showPrimaryItems, setShowPrimaryItems] = useState<boolean>(true);
   const [showSecondaryItems, setShowSecondaryItems] = useState<boolean>(false);
@@ -40,10 +41,11 @@ export default function Library(props: Immutable<Props>): JSX.Element {
 
   const [filteredItems, setFilteredItems] = useState(
     filterItems(
+      libraryItems,
+      searchName,
       showSubitems,
       showPrimaryItems,
-      showSecondaryItems,
-      libraryItems
+      showSecondaryItems
     )
   );
 
@@ -58,13 +60,20 @@ export default function Library(props: Immutable<Props>): JSX.Element {
   useEffect(() => {
     setFilteredItems(
       filterItems(
+        libraryItems,
+        searchName,
         showSubitems,
         showPrimaryItems,
-        showSecondaryItems,
-        libraryItems
+        showSecondaryItems
       )
     );
-  }, [showSubitems, libraryItems, showPrimaryItems, showSecondaryItems]);
+  }, [
+    showSubitems,
+    libraryItems,
+    showPrimaryItems,
+    showSecondaryItems,
+    searchName,
+  ]);
 
   useEffect(() => {
     setSortedItem(sortBy(sortingMethod, filteredItems, currencies));
@@ -80,6 +89,18 @@ export default function Library(props: Immutable<Props>): JSX.Element {
         icon="library_books"
         title={langui.library}
         description={langui.library_description}
+      />
+
+      <input
+        className="w-full mb-6"
+        type="text"
+        name="name"
+        id="name"
+        placeholder="Search title..."
+        onChange={(event) => {
+          const input = event.target as HTMLInputElement;
+          setSearchName(input.value);
+        }}
       />
 
       <div className="flex flex-row gap-2 place-items-center">
@@ -135,12 +156,11 @@ export default function Library(props: Immutable<Props>): JSX.Element {
   const contentPanel = (
     <ContentPanel width={ContentPanelWidthSizes.large}>
       {[...groups].map(([name, items]) => (
-        <>
+        <Fragment key={name}>
           {items.length > 0 && (
             <>
               {name && (
                 <h2
-                  key={`h2${name}`}
                   className="text-2xl pb-2 pt-10 first-of-type:pt-0
                   flex flex-row place-items-center gap-2"
                 >
@@ -153,16 +173,14 @@ export default function Library(props: Immutable<Props>): JSX.Element {
                 </h2>
               )}
               <div
-                key={`items${name}`}
                 className="grid gap-8 mobile:gap-4 items-end mobile:grid-cols-2
                 desktop:grid-cols-[repeat(auto-fill,_minmax(13rem,1fr))]
                 pb-12 border-b-[3px] border-dotted last-of-type:border-0"
               >
                 {items.map((item) => (
-                  <>
+                  <Fragment key={item.id}>
                     {item.attributes && (
                       <PreviewCard
-                        key={item.id}
                         href={`/library/${item.attributes.slug}`}
                         title={item.attributes.title}
                         subtitle={item.attributes.subtitle}
@@ -187,12 +205,12 @@ export default function Library(props: Immutable<Props>): JSX.Element {
                         }}
                       />
                     )}
-                  </>
+                  </Fragment>
                 ))}
               </div>
             </>
           )}
-        </>
+        </Fragment>
       ))}
     </ContentPanel>
   );
@@ -362,10 +380,11 @@ function getGroups(
 }
 
 function filterItems(
+  items: Immutable<Props["items"]>,
+  searchName: string,
   showSubitems: boolean,
   showPrimaryItems: boolean,
-  showSecondaryItems: boolean,
-  items: Immutable<Props["items"]>
+  showSecondaryItems: boolean
 ): Immutable<Props["items"]> {
   return [...items].filter((item) => {
     if (!showSubitems && !item.attributes?.root_item) return false;
@@ -376,10 +395,21 @@ function filterItems(
         "variant-set" ||
         item.attributes.metadata[0].subtype?.data?.attributes?.slug ===
           "relation-set")
-    )
+    ) {
       return false;
+    }
     if (item.attributes?.primary && !showPrimaryItems) return false;
     if (!item.attributes?.primary && !showSecondaryItems) return false;
+    if (searchName.length > 1) {
+      if (
+        prettyinlineTitle("", item.attributes?.title, item.attributes?.subtitle)
+          .toLowerCase()
+          .includes(searchName.toLowerCase())
+      ) {
+        return true;
+      }
+      return false;
+    }
     return true;
   });
 }

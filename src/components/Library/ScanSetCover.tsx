@@ -11,6 +11,7 @@ import { getAssetURL, ImageQuality } from "helpers/img";
 import { getStatusDescription } from "helpers/others";
 import { Immutable } from "helpers/types";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
+import { Fragment } from "react";
 
 interface Props {
   openLightBox: (images: string[], index?: number) => void;
@@ -87,15 +88,14 @@ export function ScanSetCover(props: Immutable<Props>): JSX.Element {
                   <p className="font-headers">{"Scanners"}:</p>
                   <div className="grid place-items-center place-content-center gap-2">
                     {selectedScan.scanners.data.map((scanner) => (
-                      <>
+                      <Fragment key={scanner.id}>
                         {scanner.attributes && (
                           <RecorderChip
-                            key={scanner.id}
                             langui={langui}
                             recorder={scanner.attributes}
                           />
                         )}
-                      </>
+                      </Fragment>
                     ))}
                   </div>
                 </div>
@@ -106,15 +106,14 @@ export function ScanSetCover(props: Immutable<Props>): JSX.Element {
                   <p className="font-headers">{"Cleaners"}:</p>
                   <div className="grid place-items-center place-content-center gap-2">
                     {selectedScan.cleaners.data.map((cleaner) => (
-                      <>
+                      <Fragment key={cleaner.id}>
                         {cleaner.attributes && (
                           <RecorderChip
-                            key={cleaner.id}
                             langui={langui}
                             recorder={cleaner.attributes}
                           />
                         )}
-                      </>
+                      </Fragment>
                     ))}
                   </div>
                 </div>
@@ -126,15 +125,14 @@ export function ScanSetCover(props: Immutable<Props>): JSX.Element {
                     <p className="font-headers">{"Typesetters"}:</p>
                     <div className="grid place-items-center place-content-center gap-2">
                       {selectedScan.typesetters.data.map((typesetter) => (
-                        <>
+                        <Fragment key={typesetter.id}>
                           {typesetter.attributes && (
                             <RecorderChip
-                              key={typesetter.id}
                               langui={langui}
                               recorder={typesetter.attributes}
                             />
                           )}
-                        </>
+                        </Fragment>
                       ))}
                     </div>
                   </div>

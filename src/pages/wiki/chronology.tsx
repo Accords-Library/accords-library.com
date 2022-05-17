@@ -8,12 +8,12 @@ import {
 import { ContentPanel } from "components/Panels/ContentPanel";
 import { SubPanel } from "components/Panels/SubPanel";
 import { ChronologyYearComponent } from "components/Wiki/Chronology/ChronologyYearComponent";
-import { useAppLayout } from "contexts/AppLayoutContext";
 import { GetChronologyItemsQuery, GetErasQuery } from "graphql/generated";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import { prettySlug } from "helpers/formatters";
 import { GetStaticPropsContext } from "next";
+import { Fragment } from "react";
 
 interface Props extends AppStaticProps {
   chronologyItems: NonNullable<
@@ -24,7 +24,6 @@ interface Props extends AppStaticProps {
 
 export default function Chronology(props: Props): JSX.Element {
   const { chronologyItems, chronologyEras, langui } = props;
-  const appLayout = useAppLayout();
 
   // Group by year the Chronology items
   const chronologyItemYearGroups: Props["chronologyItems"][number][][][] = [];
@@ -71,10 +70,9 @@ export default function Chronology(props: Props): JSX.Element {
       />
 
       {chronologyEras.map((era) => (
-        <>
+        <Fragment key={era.id}>
           {era.attributes && (
             <NavOption
-              key={era.id}
               url={`#${era.attributes.slug}`}
               title={
                 era.attributes.title &&
@@ -87,7 +85,7 @@ export default function Chronology(props: Props): JSX.Element {
               border
             />
           )}
-        </>
+        </Fragment>
       ))}
     </SubPanel>
   );
@@ -103,7 +101,7 @@ export default function Chronology(props: Props): JSX.Element {
       />
 
       {chronologyItemYearGroups.map((era, eraIndex) => (
-        <>
+        <Fragment key={eraIndex}>
           <InsetBox
             id={chronologyEras[eraIndex].attributes?.slug}
             className="grid text-center my-8 gap-4"
@@ -120,18 +118,17 @@ export default function Chronology(props: Props): JSX.Element {
             </p>
           </InsetBox>
           {era.map((items, index) => (
-            <>
+            <Fragment key={index}>
               {items[0].attributes?.year && (
                 <ChronologyYearComponent
-                  key={`${eraIndex}-${index}`}
                   year={items[0].attributes.year}
                   items={items}
                   langui={langui}
                 />
               )}
-            </>
+            </Fragment>
           ))}
-        </>
+        </Fragment>
       ))}
     </ContentPanel>
   );

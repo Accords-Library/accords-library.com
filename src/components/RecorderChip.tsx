@@ -3,6 +3,7 @@ import { RecorderChipFragment } from "graphql/generated";
 import { AppStaticProps } from "graphql/getAppStaticProps";
 import { ImageQuality } from "helpers/img";
 import { Immutable } from "helpers/types";
+import { Fragment } from "react";
 import { Img } from "./Img";
 import { Markdawn } from "./Markdown/Markdawn";
 import { ToolTip } from "./ToolTip";
@@ -33,13 +34,11 @@ export function RecorderChip(props: Immutable<Props>): JSX.Element {
                 <div className="flex flex-row flex-wrap gap-1">
                   <p>{langui.languages}:</p>
                   {recorder.languages.data.map((language) => (
-                    <>
+                    <Fragment key={language.attributes?.code}>
                       {language.attributes && (
-                        <Chip key={language.attributes.code}>
-                          {language.attributes.code.toUpperCase()}
-                        </Chip>
+                        <Chip>{language.attributes.code.toUpperCase()}</Chip>
                       )}
-                    </>
+                    </Fragment>
                   ))}
                 </div>
               )}

@@ -23,6 +23,7 @@ import {
   GetStaticPathsResult,
   GetStaticPropsContext,
 } from "next";
+import { Fragment } from "react";
 
 interface Props extends AppStaticProps {
   item: NonNullable<
@@ -89,10 +90,9 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
       )}
 
       {item?.contents?.data.map((content) => (
-        <>
+        <Fragment key={content.id}>
           {content.attributes?.scan_set?.[0] && (
             <ScanSet
-              key={content.id}
               scanSet={content.attributes.scan_set}
               openLightBox={openLightBox}
               slug={content.attributes.slug}
@@ -102,7 +102,7 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
               content={content.attributes.content}
             />
           )}
-        </>
+        </Fragment>
       ))}
     </ContentPanel>
   );

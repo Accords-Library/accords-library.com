@@ -7,6 +7,7 @@ import {
 import { AppStaticProps } from "graphql/getAppStaticProps";
 import { getStatusDescription } from "helpers/others";
 import { Immutable } from "helpers/types";
+import { Fragment } from "react";
 
 interface Props {
   item: NonNullable<GetChronologyItemsQuery["chronologyItems"]>["data"][number];
@@ -92,13 +93,13 @@ export function ChronologyItemComponent(props: Immutable<Props>): JSX.Element {
 
         <div className="col-start-2 row-start-1 row-span-2 grid gap-4">
           {props.item.attributes.events?.map((event) => (
-            <>
+            <Fragment key={event?.id}>
               {event && (
-                <div className="m-0" key={event.id}>
-                  {event.translations?.map((translation) => (
-                    <>
+                <div className="m-0">
+                  {event.translations?.map((translation, translationIndex) => (
+                    <Fragment key={translationIndex}>
                       {translation && (
-                        <>
+                        <Fragment>
                           <div
                             className="place-items-start
                             place-content-start grid grid-flow-col gap-2"
@@ -140,9 +141,9 @@ export function ChronologyItemComponent(props: Immutable<Props>): JSX.Element {
                           ) : (
                             ""
                           )}
-                        </>
+                        </Fragment>
                       )}
-                    </>
+                    </Fragment>
                   ))}
 
                   <p className="text-dark text-xs grid place-self-start grid-flow-col gap-1 mt-1">
@@ -157,7 +158,7 @@ export function ChronologyItemComponent(props: Immutable<Props>): JSX.Element {
                   </p>
                 </div>
               )}
-            </>
+            </Fragment>
           ))}
         </div>
       </div>

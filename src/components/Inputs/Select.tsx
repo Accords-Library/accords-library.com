@@ -1,5 +1,5 @@
 import { Immutable } from "helpers/types";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, Fragment, SetStateAction, useState } from "react";
 
 interface Props {
   setState: Dispatch<SetStateAction<number>>;
@@ -47,12 +47,12 @@ export function Select(props: Immutable<Props>): JSX.Element {
         }`}
       >
         {props.options.map((option, index) => (
-          <>
+          <Fragment key={index}>
             {index !== props.state && (
               <div
                 className="bg-light hover:bg-mid transition-colors
                 cursor-pointer p-1 last-of-type:rounded-b-[1em]"
-                key={index}
+                
                 id={option}
                 onClick={() => {
                   setOpened(false);
@@ -62,7 +62,7 @@ export function Select(props: Immutable<Props>): JSX.Element {
                 {option}
               </div>
             )}
-          </>
+          </Fragment>
         ))}
       </div>
     </div>

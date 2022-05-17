@@ -3,6 +3,7 @@ import { prettySlug } from "helpers/formatters";
 import { getStatusDescription } from "helpers/others";
 import { Immutable, PostWithTranslations } from "helpers/types";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
+import { Fragment } from "react";
 import { AppLayout } from "./AppLayout";
 import { Chip } from "./Chip";
 import { HorizontalLine } from "./HorizontalLine";
@@ -97,15 +98,14 @@ export function PostPage(props: Immutable<Props>): JSX.Element {
                 <p className="font-headers">{"Authors"}:</p>
                 <div className="grid place-items-center place-content-center gap-2">
                   {post.authors.data.map((author) => (
-                    <>
+                    <Fragment key={author.id}>
                       {author.attributes && (
                         <RecorderChip
-                          key={author.id}
                           langui={langui}
                           recorder={author.attributes}
                         />
                       )}
-                    </>
+                    </Fragment>
                   ))}
                 </div>
               </div>

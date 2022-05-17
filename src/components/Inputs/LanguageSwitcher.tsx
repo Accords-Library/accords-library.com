@@ -1,7 +1,7 @@
 import { AppStaticProps } from "graphql/getAppStaticProps";
 import { prettyLanguage } from "helpers/formatters";
 import { Immutable } from "helpers/types";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, Fragment, SetStateAction } from "react";
 import { ToolTip } from "../ToolTip";
 import { Button } from "./Button";
 
@@ -21,17 +21,16 @@ export function LanguageSwitcher(props: Immutable<Props>): JSX.Element {
       content={
         <div className={`flex flex-col gap-2 ${className}`}>
           {[...locales].map(([locale, value], index) => (
-            <>
+            <Fragment key={index}>
               {locale && (
                 <Button
-                  key={index}
                   active={value === localesIndex}
                   onClick={() => setLocalesIndex(value)}
                 >
                   {prettyLanguage(locale, props.languages)}
                 </Button>
               )}
-            </>
+            </Fragment>
           ))}
         </div>
       }

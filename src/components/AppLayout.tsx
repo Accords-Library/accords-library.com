@@ -46,11 +46,13 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
   const sensibilitySwipe = 1.1;
 
   useMemo(() => {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     router.events?.on("routeChangeStart", () => {
       appLayout.setConfigPanelOpen(false);
       appLayout.setMainPanelOpen(false);
       appLayout.setSubPanelOpen(false);
     });
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     router.events?.on("hashChangeStart", () => {
       appLayout.setSubPanelOpen(false);
     });
@@ -425,7 +427,9 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
                       )
                     }
                   >
-                    <span className="material-icons !text-base">text_decrease</span>
+                    <span className="material-icons !text-base">
+                      text_decrease
+                    </span>
                   </Button>
                   <Button
                     className="rounded-l-none rounded-r-none border-x-0"
@@ -449,7 +453,9 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
                       )
                     }
                   >
-                    <span className="material-icons !text-base">text_increase</span>
+                    <span className="material-icons !text-base">
+                      text_increase
+                    </span>
                   </Button>
                 </div>
               </div>

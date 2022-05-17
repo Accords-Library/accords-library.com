@@ -43,7 +43,7 @@ import {
   GetStaticPathsResult,
   GetStaticPropsContext,
 } from "next";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 
 interface Props extends AppStaticProps {
   item: NonNullable<
@@ -185,18 +185,14 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
                 {item?.urls && item.urls.length ? (
                   <div className="flex flex-row place-items-center gap-3">
                     <p>{langui.available_at}</p>
-                    {item.urls.map((url) => (
-                      <>
+                    {item.urls.map((url, index) => (
+                      <Fragment key={index}>
                         {url?.url && (
-                          <Button
-                            href={url.url}
-                            key={url.url}
-                            target={"_blank"}
-                          >
+                          <Button href={url.url} target={"_blank"}>
                             {prettyURL(url.url)}
                           </Button>
                         )}
-                      </>
+                      </Fragment>
                     ))}
                   </div>
                 ) : (
@@ -215,10 +211,9 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
               grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))]"
             >
               {item.gallery.data.map((galleryItem, index) => (
-                <>
+                <Fragment key={galleryItem.id}>
                   {galleryItem.attributes && (
                     <div
-                      key={galleryItem.id}
                       className="relative aspect-square hover:scale-[1.02]
                       transition-transform cursor-pointer"
                       onClick={() => {
@@ -244,7 +239,7 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
                       />
                     </div>
                   )}
-                </>
+                </Fragment>
               ))}
             </div>
           </div>
@@ -405,10 +400,9 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
               grid-cols-[repeat(auto-fill,minmax(15rem,1fr))] w-full"
             >
               {item.subitems.data.map((subitem) => (
-                <>
+                <Fragment key={subitem.id}>
                   {subitem.attributes && (
                     <PreviewCard
-                      key={subitem.id}
                       href={`/library/${subitem.attributes.slug}`}
                       title={subitem.attributes.title}
                       subtitle={subitem.attributes.subtitle}
@@ -433,7 +427,7 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
                       }}
                     />
                   )}
-                </>
+                </Fragment>
               ))}
             </div>
           </div>

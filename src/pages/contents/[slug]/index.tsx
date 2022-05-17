@@ -31,6 +31,7 @@ import {
   GetStaticPathsResult,
   GetStaticPropsContext,
 } from "next";
+import { Fragment } from "react";
 
 interface Props extends AppStaticProps {
   content: ContentWithTranslations;
@@ -116,15 +117,14 @@ export default function Content(props: Immutable<Props>): JSX.Element {
                 <div className="grid place-items-center place-content-center gap-2">
                   {selectedTranslation.text_set.transcribers.data.map(
                     (recorder) => (
-                      <>
+                      <Fragment key={recorder.id}>
                         {recorder.attributes && (
                           <RecorderChip
-                            key={recorder.id}
                             langui={langui}
                             recorder={recorder.attributes}
                           />
                         )}
-                      </>
+                      </Fragment>
                     )
                   )}
                 </div>
@@ -138,15 +138,14 @@ export default function Content(props: Immutable<Props>): JSX.Element {
                 <div className="grid place-items-center place-content-center gap-2">
                   {selectedTranslation.text_set.translators.data.map(
                     (recorder) => (
-                      <>
+                      <Fragment key={recorder.id}>
                         {recorder.attributes && (
                           <RecorderChip
-                            key={recorder.id}
                             langui={langui}
                             recorder={recorder.attributes}
                           />
                         )}
-                      </>
+                      </Fragment>
                     )
                   )}
                 </div>
@@ -160,15 +159,14 @@ export default function Content(props: Immutable<Props>): JSX.Element {
                 <div className="grid place-items-center place-content-center gap-2">
                   {selectedTranslation.text_set.proofreaders.data.map(
                     (recorder) => (
-                      <>
+                      <Fragment key={recorder.id}>
                         {recorder.attributes && (
                           <RecorderChip
-                            key={recorder.id}
                             langui={langui}
                             recorder={recorder.attributes}
                           />
                         )}
-                      </>
+                      </Fragment>
                     )
                   )}
                 </div>

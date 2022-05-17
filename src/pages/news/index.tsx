@@ -13,7 +13,7 @@ import { getReadySdk } from "graphql/sdk";
 import { prettyDate, prettySlug } from "helpers/formatters";
 import { Immutable } from "helpers/types";
 import { GetStaticPropsContext } from "next";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 
 interface Props extends AppStaticProps {
   posts: NonNullable<GetPostsPreviewQuery["posts"]>["data"];
@@ -47,10 +47,9 @@ export default function News(props: Immutable<Props>): JSX.Element {
         desktop:grid-cols-[repeat(auto-fill,_minmax(20rem,1fr))]"
       >
         {posts.map((post) => (
-          <>
+          <Fragment key={post.id}>
             {post.attributes && (
               <PreviewCard
-                key={post.id}
                 href={`/news/${post.attributes.slug}`}
                 title={
                   post.attributes.translations?.[0]?.title ??
@@ -69,7 +68,7 @@ export default function News(props: Immutable<Props>): JSX.Element {
                 }}
               />
             )}
-          </>
+          </Fragment>
         ))}
       </div>
     </ContentPanel>

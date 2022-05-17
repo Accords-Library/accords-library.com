@@ -425,7 +425,7 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
                       )
                     }
                   >
-                    <span className="material-icons">text_decrease</span>
+                    <span className="material-icons !text-base">text_decrease</span>
                   </Button>
                   <Button
                     className="rounded-l-none rounded-r-none border-x-0"
@@ -449,7 +449,7 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
                       )
                     }
                   >
-                    <span className="material-icons">text_increase</span>
+                    <span className="material-icons !text-base">text_increase</span>
                   </Button>
                 </div>
               </div>

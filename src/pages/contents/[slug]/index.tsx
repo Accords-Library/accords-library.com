@@ -204,8 +204,8 @@ export default function Content(props: Immutable<Props>): JSX.Element {
   const contentPanel = (
     <ContentPanel>
       <ReturnButton
-        href={`/contents/${content.slug}`}
-        title={langui.content}
+        href={`/contents`}
+        title={langui.contents}
         langui={langui}
         displayOn={ReturnButtonType.mobile}
         className="mb-10"

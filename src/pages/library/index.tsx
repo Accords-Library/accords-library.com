@@ -111,23 +111,23 @@ export default function Library(props: Immutable<Props>): JSX.Element {
         />
       </div>
 
-      <div className="flex flex-row gap-2 place-items-center">
-        <p className="flex-shrink-0">{langui.show_subitems}:</p>
+      <div className="flex flex-row gap-2 place-items-center place-content-between">
+        <p className="text-left">{langui.show_subitems}:</p>
         <Switch state={showSubitems} setState={setShowSubitems} />
       </div>
 
-      <div className="flex flex-row gap-2 place-items-center">
-        <p className="flex-shrink-0">{langui.show_primary_items}:</p>
+      <div className="flex flex-row gap-2 place-items-center place-content-between">
+        <p className="text-left">{langui.show_primary_items}:</p>
         <Switch state={showPrimaryItems} setState={setShowPrimaryItems} />
       </div>
 
-      <div className="flex flex-row gap-2 place-items-center">
-        <p className="flex-shrink-0">{langui.show_secondary_items}:</p>
+      <div className="flex flex-row gap-2 place-items-center place-content-between">
+        <p className="text-left">{langui.show_secondary_items}:</p>
         <Switch state={showSecondaryItems} setState={setShowSecondaryItems} />
       </div>
 
-      <div className="flex flex-row gap-2 place-items-center coarse:hidden">
-        <p className="flex-shrink-0">{langui.always_show_info}:</p>
+      <div className="flex flex-row gap-2 place-items-center coarse:hidden place-content-between">
+        <p className="text-left">{langui.always_show_info}:</p>
         <Switch setState={setKeepInfoVisible} state={keepInfoVisible} />
       </div>
     </SubPanel>

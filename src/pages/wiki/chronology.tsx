@@ -85,7 +85,6 @@ export default function Chronology(props: Props): JSX.Element {
               }
               subtitle={`${era.attributes.starting_year} → ${era.attributes.ending_year}`}
               border
-              onClick={() => appLayout.setSubPanelOpen(false)}
             />
           )}
         </>

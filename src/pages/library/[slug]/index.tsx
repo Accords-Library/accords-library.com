@@ -90,45 +90,24 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
       />
 
       <div className="grid gap-4">
-        <NavOption
-          title={langui.summary}
-          url="#summary"
-          border
-          onClick={() => appLayout.setSubPanelOpen(false)}
-        />
+        <NavOption title={langui.summary} url="#summary" border />
 
         {item?.gallery && item.gallery.data.length > 0 && (
-          <NavOption
-            title={langui.gallery}
-            url="#gallery"
-            border
-            onClick={() => appLayout.setSubPanelOpen(false)}
-          />
+          <NavOption title={langui.gallery} url="#gallery" border />
         )}
 
-        <NavOption
-          title={langui.details}
-          url="#details"
-          border
-          onClick={() => appLayout.setSubPanelOpen(false)}
-        />
+        <NavOption title={langui.details} url="#details" border />
 
         {item?.subitems && item.subitems.data.length > 0 && (
           <NavOption
             title={isVariantSet ? langui.variants : langui.subitems}
             url={isVariantSet ? "#variants" : "#subitems"}
             border
-            onClick={() => appLayout.setSubPanelOpen(false)}
           />
         )}
 
         {item?.contents && item.contents.data.length > 0 && (
-          <NavOption
-            title={langui.contents}
-            url="#contents"
-            border
-            onClick={() => appLayout.setSubPanelOpen(false)}
-          />
+          <NavOption title={langui.contents} url="#contents" border />
         )}
       </div>
     </SubPanel>

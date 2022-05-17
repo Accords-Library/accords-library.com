@@ -9,7 +9,7 @@ import { useMediaMobile } from "hooks/useMediaQuery";
 import { AnchorIds } from "hooks/useScrollTopOnChange";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSwipeable } from "react-swipeable";
 import { OrderableList } from "./Inputs/OrderableList";
 import { Select } from "./Inputs/Select";
@@ -44,6 +44,17 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
   const appLayout = useAppLayout();
 
   const sensibilitySwipe = 1.1;
+
+  useMemo(() => {
+    router.events?.on("routeChangeStart", () => {
+      appLayout.setConfigPanelOpen(false);
+      appLayout.setMainPanelOpen(false);
+      appLayout.setSubPanelOpen(false);
+    });
+    router.events?.on("hashChangeStart", () => {
+      appLayout.setSubPanelOpen(false);
+    });
+  }, [appLayout, router.events]);
 
   const handlers = useSwipeable({
     onSwipedLeft: (SwipeEventData) => {

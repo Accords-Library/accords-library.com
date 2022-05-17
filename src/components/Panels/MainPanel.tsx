@@ -43,7 +43,6 @@ export function MainPanel(props: Immutable<Props>): JSX.Element {
         <div className="grid place-items-center">
           <Link href="/" passHref>
             <div
-              onClick={() => appLayout.setMainPanelOpen(false)}
               className={`${
                 appLayout.mainPanelReduced && isDesktop ? "w-12" : "w-1/2"
               } aspect-square cursor-pointer transition-colors [mask:url('/icons/accords.svg')]
@@ -114,7 +113,6 @@ export function MainPanel(props: Immutable<Props>): JSX.Element {
         title={langui.library}
         subtitle={langui.library_short_description}
         reduced={appLayout.mainPanelReduced && isDesktop}
-        onClick={() => appLayout.setMainPanelOpen(false)}
       />
 
       <NavOption
@@ -123,7 +121,6 @@ export function MainPanel(props: Immutable<Props>): JSX.Element {
         title={langui.contents}
         subtitle={langui.contents_short_description}
         reduced={appLayout.mainPanelReduced && isDesktop}
-        onClick={() => appLayout.setMainPanelOpen(false)}
       />
 
       <NavOption
@@ -132,7 +129,6 @@ export function MainPanel(props: Immutable<Props>): JSX.Element {
         title={langui.wiki}
         subtitle={langui.wiki_short_description}
         reduced={appLayout.mainPanelReduced && isDesktop}
-        onClick={() => appLayout.setMainPanelOpen(false)}
       />
 
       {/*
@@ -144,7 +140,7 @@ export function MainPanel(props: Immutable<Props>): JSX.Element {
         subtitle={langui.chronicles_short_description}
         
         reduced={appLayout.mainPanelReduced && isDesktop}
-        onClick={() => appLayout.setMainPanelOpen(false)}
+        
       />
       
       */}
@@ -156,7 +152,6 @@ export function MainPanel(props: Immutable<Props>): JSX.Element {
         icon="feed"
         title={langui.news}
         reduced={appLayout.mainPanelReduced && isDesktop}
-        onClick={() => appLayout.setMainPanelOpen(false)}
       />
       {/*
       <NavOption
@@ -165,7 +160,7 @@ export function MainPanel(props: Immutable<Props>): JSX.Element {
         title={langui.merch}
         
         reduced={appLayout.mainPanelReduced && isDesktop}
-        onClick={() => appLayout.setMainPanelOpen(false)}
+        
       />
       
       */}
@@ -175,7 +170,6 @@ export function MainPanel(props: Immutable<Props>): JSX.Element {
         icon="collections"
         title={langui.gallery}
         reduced={appLayout.mainPanelReduced && isDesktop}
-        onClick={() => appLayout.setMainPanelOpen(false)}
       />
 
       <NavOption
@@ -183,7 +177,6 @@ export function MainPanel(props: Immutable<Props>): JSX.Element {
         icon="inventory"
         title={langui.archives}
         reduced={appLayout.mainPanelReduced && isDesktop}
-        onClick={() => appLayout.setMainPanelOpen(false)}
       />
 
       <NavOption
@@ -191,7 +184,6 @@ export function MainPanel(props: Immutable<Props>): JSX.Element {
         icon="info"
         title={langui.about_us}
         reduced={appLayout.mainPanelReduced && isDesktop}
-        onClick={() => appLayout.setMainPanelOpen(false)}
       />
 
       {appLayout.mainPanelReduced && isDesktop ? "" : <HorizontalLine />}

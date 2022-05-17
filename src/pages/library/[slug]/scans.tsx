@@ -11,7 +11,6 @@ import {
   ContentPanelWidthSizes,
 } from "components/Panels/ContentPanel";
 import { SubPanel } from "components/Panels/SubPanel";
-import { useAppLayout } from "contexts/AppLayoutContext";
 import { GetLibraryItemScansQuery } from "graphql/generated";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
@@ -36,11 +35,8 @@ interface Props extends AppStaticProps {
 
 export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
   const { item, langui, languages } = props;
-  const appLayout = useAppLayout();
-
-  sortContent(item?.contents);
-
   const [openLightBox, LightBox] = useLightBox();
+  sortContent(item?.contents);
 
   const subPanel = (
     <SubPanel>
@@ -65,7 +61,6 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
                 `${content.attributes.range[0].ending_page}`
               : undefined
           }
-          onClick={() => appLayout.setSubPanelOpen(false)}
           border
         />
       ))}

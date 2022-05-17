@@ -96,7 +96,7 @@ export default function Library(props: Immutable<Props>): JSX.Element {
         type="text"
         name="name"
         id="name"
-        placeholder="Search title..."
+        placeholder={langui.search_title ?? undefined}
         onChange={(event) => {
           const input = event.target as HTMLInputElement;
           setSearchName(input.value);
@@ -219,6 +219,7 @@ export default function Library(props: Immutable<Props>): JSX.Element {
       navTitle={langui.library}
       subPanel={subPanel}
       contentPanel={contentPanel}
+      subPanelIcon="search"
       {...props}
     />
   );

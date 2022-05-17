@@ -37,7 +37,7 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
     title,
     navTitle,
     description,
-    subPanelIcon,
+    subPanelIcon = "tune",
   } = props;
   const router = useRouter();
   const isMobile = useMediaMobile();
@@ -303,8 +303,6 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
               ? appLayout.subPanelOpen
                 ? "close"
                 : subPanelIcon
-                ? subPanelIcon
-                : "tune"
               : ""}
           </span>
         </div>

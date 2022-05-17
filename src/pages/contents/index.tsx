@@ -75,7 +75,7 @@ export default function Contents(props: Immutable<Props>): JSX.Element {
         type="text"
         name="name"
         id="name"
-        placeholder="Search title..."
+        placeholder={langui.search_title ?? undefined}
         onChange={(event) => {
           const input = event.target as HTMLInputElement;
           setSearchName(input.value);
@@ -103,7 +103,7 @@ export default function Contents(props: Immutable<Props>): JSX.Element {
         <p className="flex-shrink-0">{langui.combine_related_contents}:</p>
         <Switch
           setState={setCombineRelatedContent}
-          state={combineRelatedContent}
+          state={effectiveCombineRelatedContent}
           disabled={searchName.length > 1}
         />
       </div>
@@ -202,6 +202,7 @@ export default function Contents(props: Immutable<Props>): JSX.Element {
       navTitle={langui.contents}
       subPanel={subPanel}
       contentPanel={contentPanel}
+      subPanelIcon="search"
       {...props}
     />
   );

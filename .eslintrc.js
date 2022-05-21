@@ -1,17 +1,12 @@
 module.exports = {
   parser: "@typescript-eslint/parser",
   parserOptions: {
-    project: `./tsconfig.json`,
+    project: `./tsconfig.json`
   },
   plugins: ["@typescript-eslint"],
-  extends: [
-    "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
-    "next/core-web-vitals",
-  ],
+  extends: ["eslint:recommended", "plugin:@typescript-eslint/recommended", "next/core-web-vitals", "plugin:storybook/recommended"],
   rules: {
     /* POSSIBLES PROBLEMS */
-
     // "array-callback-return": "error",
     "no-await-in-loop": "error",
     "no-constructor-return": "error",
@@ -25,7 +20,6 @@ module.exports = {
     "require-atomic-updates": "error",
 
     /* SUGGESTIONS */
-
     "accessor-pairs": "warn",
     "arrow-body-style": "warn",
     "block-scoped-var": "warn",
@@ -50,7 +44,9 @@ module.exports = {
     "max-classes-per-file": ["error", 1],
     // "max-depth": ["warn", 4],
     // "max-lines": "warn",
-    "max-len": ["warn", { code: 100 }],
+    "max-len": ["warn", {
+      code: 100
+    }],
     // "max-lines-per-function": "warn",
     // "max-nested-callbacks": "warn",
     // "max-params": "warn",
@@ -118,7 +114,10 @@ module.exports = {
     "operator-assignment": "warn",
     "prefer-arrow-callback": "warn",
     "prefer-const": "warn",
-    "prefer-destructuring": ["warn", { array: false, object: true }],
+    "prefer-destructuring": ["warn", {
+      array: false,
+      object: true
+    }],
     "prefer-exponentiation-operator": "warn",
     "prefer-named-capture-group": "warn",
     "prefer-numeric-literals": "warn",
@@ -142,29 +141,25 @@ module.exports = {
     yoda: "warn",
 
     /* TYPESCRIPT */
-
     "@typescript-eslint/array-type": "warn",
     "@typescript-eslint/ban-tslint-comment": "warn",
     "@typescript-eslint/class-literal-property-style": "warn",
     "@typescript-eslint/consistent-indexed-object-style": "warn",
-    "@typescript-eslint/consistent-type-assertions": [
-      "warn",
-      { assertionStyle: "as" },
-    ],
+    "@typescript-eslint/consistent-type-assertions": ["warn", {
+      assertionStyle: "as"
+    }],
     "@typescript-eslint/consistent-type-exports": "error",
     "@typescript-eslint/explicit-module-boundary-types": "warn",
     "@typescript-eslint/method-signature-style": ["error", "property"],
     "@typescript-eslint/no-base-to-string": "warn",
     "@typescript-eslint/no-confusing-non-null-assertion": "warn",
-    "@typescript-eslint/no-confusing-void-expression": [
-      "error",
-      { ignoreArrowShorthand: true },
-    ],
+    "@typescript-eslint/no-confusing-void-expression": ["error", {
+      ignoreArrowShorthand: true
+    }],
     "@typescript-eslint/no-dynamic-delete": "error",
-    "@typescript-eslint/no-empty-interface": [
-      "error",
-      { allowSingleExtends: true },
-    ],
+    "@typescript-eslint/no-empty-interface": ["error", {
+      allowSingleExtends: true
+    }],
     "@typescript-eslint/no-invalid-void-type": "error",
     "@typescript-eslint/no-meaningless-void-operator": "error",
     "@typescript-eslint/no-non-null-asserted-nullish-coalescing": "error",
@@ -210,6 +205,6 @@ module.exports = {
     "@typescript-eslint/require-await": "warn",
 
     /* NEXTJS */
-    "@next/next/no-img-element": "off",
-  },
+    "@next/next/no-img-element": "off"
+  }
 };

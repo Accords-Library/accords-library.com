@@ -11,27 +11,28 @@ interface Props {
 }
 
 export function Select(props: Immutable<Props>): JSX.Element {
+  const { className, state, options, allowEmpty, setState } = props;
   const [opened, setOpened] = useState(false);
 
   return (
     <div
       className={`relative text-center transition-[filter] ${
         opened && "drop-shadow-shade-lg z-10"
-      } ${props.className}`}
+      } ${className}`}
     >
       <div
         className={`outline outline-mid outline-2 outline-offset-[-2px] hover:outline-[transparent]
         bg-light rounded-[1em] p-1 grid grid-flow-col grid-cols-[1fr_auto_auto] place-items-center
         cursor-pointer hover:bg-mid transition-all ${
-          opened && "outline-[transparent] rounded-b-none"
+          opened && "outline-[transparent] rounded-b-none bg-highlight"
         }`}
       >
         <p onClick={() => setOpened(!opened)} className="w-full">
-          {props.state === -1 ? "—" : props.options[props.state]}
+          {state === -1 ? "—" : options[state]}
         </p>
-        {props.state >= 0 && props.allowEmpty && (
+        {state >= 0 && allowEmpty && (
           <span
-            onClick={() => props.setState(-1)}
+            onClick={() => setState(-1)}
             className="material-icons !text-xs"
           >
             close
@@ -46,17 +47,18 @@ export function Select(props: Immutable<Props>): JSX.Element {
           opened ? "absolute" : "hidden"
         }`}
       >
-        {props.options.map((option, index) => (
+        {options.map((option, index) => (
           <Fragment key={index}>
-            {index !== props.state && (
+            {index !== state && (
               <div
-                className="bg-light hover:bg-mid transition-colors
-                cursor-pointer p-1 last-of-type:rounded-b-[1em]"
-                
+                className={` ${
+                  opened ? "bg-highlight" : "bg-light"
+                } hover:bg-mid transition-colors
+                cursor-pointer p-1 last-of-type:rounded-b-[1em]`}
                 id={option}
                 onClick={() => {
                   setOpened(false);
-                  props.setState(index);
+                  setState(index);
                 }}
               >
                 {option}

@@ -2,16 +2,18 @@ const plugin = require("tailwindcss/plugin");
 
 /* CONFIG */
 
+const hightlight = { r: 255, g: 241, b: 224 };
 const light = { r: 255, g: 237, b: 216 };
 const mid = { r: 240, g: 209, b: 179 };
 const dark = { r: 156, g: 102, b: 68 };
 const shade = { r: 156, g: 102, b: 68 };
 const black = { r: 27, g: 24, b: 17 };
 
+const dark_highlight = { r: 44, g: 40, b: 37 };
 const dark_light = { r: 38, g: 34, b: 30 };
 const dark_mid = { r: 57, g: 45, b: 34 };
 const dark_dark = { r: 192, g: 132, b: 94 };
-const dark_shade = { r: 12, g: 6, b: 4 };
+const dark_shade = { r: 0, g: 0, b: 0 };
 const dark_black = { r: 235, g: 234, b: 231 };
 
 const breakDektop = { min: "60rem" };
@@ -45,6 +47,7 @@ module.exports = {
   content: ["./src/**/*.{tsx,ts}"],
   theme: {
     colors: {
+      highlight: withOpacity("--theme-color-highlight"),
       light: withOpacity("--theme-color-light"),
       mid: withOpacity("--theme-color-mid"),
       dark: withOpacity("--theme-color-dark"),
@@ -75,6 +78,7 @@ module.exports = {
     plugin(function ({ addUtilities }) {
       addUtilities({
         ".set-theme-light": {
+          "--theme-color-highlight": `${hightlight.r}, ${hightlight.g}, ${hightlight.b}`,
           "--theme-color-light": `${light.r}, ${light.g}, ${light.b}`,
           "--theme-color-mid": `${mid.r}, ${mid.g}, ${mid.b}`,
           "--theme-color-dark": `${dark.r}, ${dark.g}, ${dark.b}`,
@@ -84,6 +88,7 @@ module.exports = {
           "--theme-texture-dots-blend": `multiply`,
         },
         ".set-theme-dark": {
+          "--theme-color-highlight": `${dark_highlight.r}, ${dark_highlight.g}, ${dark_highlight.b}`,
           "--theme-color-light": `${dark_light.r}, ${dark_light.g}, ${dark_light.b}`,
           "--theme-color-mid": `${dark_mid.r}, ${dark_mid.g}, ${dark_mid.b}`,
           "--theme-color-dark": `${dark_dark.r}, ${dark_dark.g}, ${dark_dark.b}`,

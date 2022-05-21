@@ -31,12 +31,12 @@ export function PreviewLine(props: Immutable<Props>): JSX.Element {
   return (
     <Link href={href} passHref>
       <div
-        className="drop-shadow-shade-xl rounded-md bg-light cursor-pointer
-        hover:scale-[1.02] transition-transform flex flex-row gap-4
-        overflow-hidden place-items-center pr-4 w-full h-36"
+        className="flex h-36 w-full cursor-pointer
+        flex-row place-items-center gap-4 overflow-hidden rounded-md
+        bg-light pr-4 transition-transform drop-shadow-shade-xl hover:scale-[1.02]"
       >
         {thumbnail ? (
-          <div className="h-full aspect-[3/2]">
+          <div className="aspect-[3/2] h-full">
             <Img image={thumbnail} quality={ImageQuality.Medium} />
           </div>
         ) : (
@@ -44,21 +44,21 @@ export function PreviewLine(props: Immutable<Props>): JSX.Element {
         )}
         <div className="grid gap-2">
           {topChips && topChips.length > 0 && (
-            <div className="grid grid-flow-col gap-1 overflow-hidden place-content-start">
+            <div className="grid grid-flow-col place-content-start gap-1 overflow-hidden">
               {topChips.map((text, index) => (
                 <Chip key={index}>{text}</Chip>
               ))}
             </div>
           )}
-          <div className="flex flex-col my-1">
-            {pre_title && <p className="leading-none mb-1">{pre_title}</p>}
+          <div className="my-1 flex flex-col">
+            {pre_title && <p className="mb-1 leading-none">{pre_title}</p>}
             {title && (
               <p className="font-headers text-lg leading-none">{title}</p>
             )}
             {subtitle && <p className="leading-none">{subtitle}</p>}
           </div>
           {bottomChips && bottomChips.length > 0 && (
-            <div className="grid grid-flow-col gap-1 overflow-hidden place-content-start">
+            <div className="grid grid-flow-col place-content-start gap-1 overflow-hidden">
               {bottomChips.map((text, index) => (
                 <Chip key={index} className="text-sm">
                   {text}

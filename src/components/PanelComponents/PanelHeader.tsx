@@ -10,9 +10,9 @@ interface Props {
 export function PanelHeader(props: Immutable<Props>): JSX.Element {
   return (
     <>
-      <div className="w-full grid place-items-center">
+      <div className="grid w-full place-items-center">
         {props.icon && (
-          <span className="material-icons !text-4xl mb-3">{props.icon}</span>
+          <span className="material-icons mb-3 !text-4xl">{props.icon}</span>
         )}
         <h2 className="text-2xl">{props.title}</h2>
         {props.description ? <p>{props.description}</p> : ""}

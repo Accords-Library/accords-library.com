@@ -78,7 +78,7 @@ export function PostPage(props: Immutable<Props>): JSX.Element {
         {displayCredits && (
           <>
             {selectedTranslation && (
-              <div className="grid grid-flow-col place-items-center place-content-center gap-2">
+              <div className="grid grid-flow-col place-content-center place-items-center gap-2">
                 <p className="font-headers">{langui.status}:</p>
 
                 <ToolTip
@@ -96,7 +96,7 @@ export function PostPage(props: Immutable<Props>): JSX.Element {
             {post.authors && post.authors.data.length > 0 && (
               <div>
                 <p className="font-headers">{"Authors"}:</p>
-                <div className="grid place-items-center place-content-center gap-2">
+                <div className="grid place-content-center place-items-center gap-2">
                   {post.authors.data.map((author) => (
                     <Fragment key={author.id}>
                       {author.attributes && (
@@ -152,7 +152,7 @@ export function PostPage(props: Immutable<Props>): JSX.Element {
             </div>
           )}
           {displayTitle && (
-            <h1 className="text-center flex gap-3 justify-center text-4xl my-16">
+            <h1 className="my-16 flex justify-center gap-3 text-center text-4xl">
               {title}
             </h1>
           )}

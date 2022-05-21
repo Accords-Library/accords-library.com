@@ -92,7 +92,7 @@ export default function Library(props: Immutable<Props>): JSX.Element {
       />
 
       <input
-        className="w-full mb-6"
+        className="mb-6 w-full"
         type="text"
         name="name"
         id="name"
@@ -103,7 +103,7 @@ export default function Library(props: Immutable<Props>): JSX.Element {
         }}
       />
 
-      <div className="flex flex-row gap-2 place-items-center">
+      <div className="flex flex-row place-items-center gap-2">
         <p className="flex-shrink-0">{langui.group_by}:</p>
         <Select
           className="w-full"
@@ -118,7 +118,7 @@ export default function Library(props: Immutable<Props>): JSX.Element {
         />
       </div>
 
-      <div className="flex flex-row gap-2 place-items-center">
+      <div className="flex flex-row place-items-center gap-2">
         <p className="flex-shrink-0">{langui.order_by}:</p>
         <Select
           className="w-full"
@@ -132,22 +132,22 @@ export default function Library(props: Immutable<Props>): JSX.Element {
         />
       </div>
 
-      <div className="flex flex-row gap-2 place-items-center place-content-between">
+      <div className="flex flex-row place-content-between place-items-center gap-2">
         <p className="text-left">{langui.show_subitems}:</p>
         <Switch state={showSubitems} setState={setShowSubitems} />
       </div>
 
-      <div className="flex flex-row gap-2 place-items-center place-content-between">
+      <div className="flex flex-row place-content-between place-items-center gap-2">
         <p className="text-left">{langui.show_primary_items}:</p>
         <Switch state={showPrimaryItems} setState={setShowPrimaryItems} />
       </div>
 
-      <div className="flex flex-row gap-2 place-items-center place-content-between">
+      <div className="flex flex-row place-content-between place-items-center gap-2">
         <p className="text-left">{langui.show_secondary_items}:</p>
         <Switch state={showSecondaryItems} setState={setShowSecondaryItems} />
       </div>
 
-      <div className="flex flex-row gap-2 place-items-center coarse:hidden place-content-between">
+      <div className="flex flex-row place-content-between place-items-center gap-2 coarse:hidden">
         <p className="text-left">{langui.always_show_info}:</p>
         <Switch setState={setKeepInfoVisible} state={keepInfoVisible} />
       </div>
@@ -161,8 +161,8 @@ export default function Library(props: Immutable<Props>): JSX.Element {
             <>
               {name && (
                 <h2
-                  className="text-2xl pb-2 pt-10 first-of-type:pt-0
-                  flex flex-row place-items-center gap-2"
+                  className="flex flex-row place-items-center gap-2
+                  pb-2 pt-10 text-2xl first-of-type:pt-0"
                 >
                   {name}
                   <Chip>{`${items.length} ${
@@ -173,9 +173,9 @@ export default function Library(props: Immutable<Props>): JSX.Element {
                 </h2>
               )}
               <div
-                className="grid gap-8 mobile:gap-4 items-end mobile:grid-cols-2
-                desktop:grid-cols-[repeat(auto-fill,_minmax(13rem,1fr))]
-                pb-12 border-b-[3px] border-dotted last-of-type:border-0"
+                className="grid items-end gap-8 border-b-[3px] border-dotted pb-12
+                last-of-type:border-0 desktop:grid-cols-[repeat(auto-fill,_minmax(13rem,1fr))]
+                mobile:grid-cols-2 mobile:gap-4"
               >
                 {items.map((item) => (
                   <Fragment key={item.id}>

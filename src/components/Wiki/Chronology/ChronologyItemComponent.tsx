@@ -70,8 +70,8 @@ export function ChronologyItemComponent(props: Immutable<Props>): JSX.Element {
   if (props.item.attributes) {
     return (
       <div
-        className="grid place-content-start grid-rows-[auto_1fr] grid-cols-[4em]
-        py-4 px-8 rounded-2xl target:bg-mid target:py-8 target:my-4"
+        className="grid grid-cols-[4em] grid-rows-[auto_1fr] place-content-start
+        rounded-2xl py-4 px-8 target:my-4 target:bg-mid target:py-8"
         id={generateAnchor(
           props.item.attributes.year,
           props.item.attributes.month,
@@ -79,7 +79,7 @@ export function ChronologyItemComponent(props: Immutable<Props>): JSX.Element {
         )}
       >
         {props.displayYear && (
-          <p className="text-lg mt-[-.2em] font-bold">
+          <p className="mt-[-.2em] text-lg font-bold">
             {generateYear(
               props.item.attributes.displayed_date,
               props.item.attributes.year
@@ -87,11 +87,11 @@ export function ChronologyItemComponent(props: Immutable<Props>): JSX.Element {
           </p>
         )}
 
-        <p className="col-start-1 text-dark text-sm">
+        <p className="col-start-1 text-sm text-dark">
           {generateDate(props.item.attributes.month, props.item.attributes.day)}
         </p>
 
-        <div className="col-start-2 row-start-1 row-span-2 grid gap-4">
+        <div className="col-start-2 row-span-2 row-start-1 grid gap-4">
           {props.item.attributes.events?.map((event) => (
             <Fragment key={event?.id}>
               {event && (
@@ -101,8 +101,8 @@ export function ChronologyItemComponent(props: Immutable<Props>): JSX.Element {
                       {translation && (
                         <Fragment>
                           <div
-                            className="place-items-start
-                            place-content-start grid grid-flow-col gap-2"
+                            className="grid
+                            grid-flow-col place-content-start place-items-start gap-2"
                           >
                             {translation.status !==
                               Enum_Componenttranslationschronologyitem_Status.Done && (
@@ -128,8 +128,8 @@ export function ChronologyItemComponent(props: Immutable<Props>): JSX.Element {
                               className={
                                 event.translations &&
                                 event.translations.length > 1
-                                  ? `before:content-['-'] before:text-dark before:inline-block
-                                    before:w-4 before:ml-[-1em] mt-2 whitespace-pre-line`
+                                  ? `mt-2 whitespace-pre-line before:ml-[-1em] before:inline-block
+                                  before:w-4 before:text-dark before:content-['-']`
                                   : "whitespace-pre-line"
                               }
                             >
@@ -146,7 +146,7 @@ export function ChronologyItemComponent(props: Immutable<Props>): JSX.Element {
                     </Fragment>
                   ))}
 
-                  <p className="text-dark text-xs grid place-self-start grid-flow-col gap-1 mt-1">
+                  <p className="mt-1 grid grid-flow-col gap-1 place-self-start text-xs text-dark">
                     {event.source?.data ? (
                       `(${event.source.data.attributes?.name})`
                     ) : (

@@ -29,7 +29,7 @@ export default function CheckupLibraryItems(
     <ContentPanel width={ContentPanelWidthSizes.large}>
       {<h2 className="text-2xl">{testReport.title}</h2>}
 
-      <div className="grid grid-cols-[2em,3em,2fr,1fr,0.5fr,0.5fr,2fr] gap-2 items-center my-4">
+      <div className="my-4 grid grid-cols-[2em,3em,2fr,1fr,0.5fr,0.5fr,2fr] items-center gap-2">
         <p></p>
         <p></p>
         <p className="font-headers">Ref</p>
@@ -42,20 +42,20 @@ export default function CheckupLibraryItems(
       {testReport.lines.map((line, index) => (
         <div
           key={index}
-          className="grid grid-cols-[2em,3em,2fr,1fr,0.5fr,0.5fr,2fr]
-          gap-2 items-center mb-2 justify-items-start"
+          className="mb-2 grid
+          grid-cols-[2em,3em,2fr,1fr,0.5fr,0.5fr,2fr] items-center justify-items-start gap-2"
         >
           <Button
             href={line.frontendUrl}
             target="_blank"
-            className="text-xs w-4"
+            className="w-4 text-xs"
           >
             F
           </Button>
           <Button
             href={line.backendUrl}
             target="_blank"
-            className="text-xs w-4"
+            className="w-4 text-xs"
           >
             B
           </Button>
@@ -65,9 +65,9 @@ export default function CheckupLibraryItems(
           <Chip
             className={
               line.severity === "Very High"
-                ? "bg-[#f00] !opacity-100 font-bold"
+                ? "bg-[#f00] font-bold !opacity-100"
                 : line.severity === "High"
-                ? "bg-[#ff6600] !opacity-100 font-bold"
+                ? "bg-[#ff6600] font-bold !opacity-100"
                 : line.severity === "Medium"
                 ? "bg-[#fff344] !opacity-100"
                 : ""

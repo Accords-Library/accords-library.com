@@ -14,14 +14,14 @@ export default function Home(props: Immutable<PostStaticProps>): JSX.Element {
       langui={langui}
       post={post}
       prependBody={
-        <div className="grid place-items-center place-content-center w-full gap-5 text-center">
+        <div className="grid w-full place-content-center place-items-center gap-5 text-center">
           <div
-            className="[mask:url('/icons/accords.svg')] [mask-size:contain]
-            [mask-repeat:no-repeat] [mask-position:center] w-32 aspect-square
-            mobile:w-[50vw] bg-black"
+            className="aspect-square w-32
+            bg-black [mask:url('/icons/accords.svg')] [mask-size:contain] [mask-repeat:no-repeat]
+            [mask-position:center] mobile:w-[50vw]"
           />
-          <h1 className="text-5xl mb-0">Accord&rsquo;s Library</h1>
-          <h2 className="text-xl -mt-5">
+          <h1 className="mb-0 text-5xl">Accord&rsquo;s Library</h1>
+          <h2 className="-mt-5 text-xl">
             Discover • Analyze • Translate • Archive
           </h2>
         </div>

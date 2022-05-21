@@ -8,8 +8,8 @@ interface Props {
 export function Chip(props: Immutable<Props>): JSX.Element {
   return (
     <div
-      className={`grid place-content-center place-items-center text-xs pb-[0.14rem]
-      whitespace-nowrap px-1.5 border-[1px] rounded-full opacity-70
+      className={`grid place-content-center place-items-center whitespace-nowrap rounded-full
+      border-[1px] px-1.5 pb-[0.14rem] text-xs opacity-70
       transition-[color,_opacity,_border-color] hover:opacity-100 ${props.className}`}
     >
       {props.children}

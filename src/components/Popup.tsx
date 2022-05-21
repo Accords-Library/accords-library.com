@@ -46,7 +46,7 @@ export function Popup(props: Immutable<Props>): JSX.Element {
       }`}
       >
         <div
-          className={`fixed bg-shade inset-0 transition-all duration-500 ${
+          className={`fixed inset-0 bg-shade transition-all duration-500 ${
             state ? "bg-opacity-50" : "bg-opacity-0"
           }`}
           onClick={() => {
@@ -57,14 +57,14 @@ export function Popup(props: Immutable<Props>): JSX.Element {
         <div
           className={`${
             padding && "p-10 mobile:p-6"
-          } grid gap-4 place-items-center transition-transform ${
+          } grid place-items-center gap-4 transition-transform ${
             state ? "scale-100" : "scale-0"
           } ${
             fillViewport
               ? "absolute inset-10"
               : "relative max-h-[80vh] overflow-y-auto mobile:w-[85vw]"
           } ${
-            hideBackground ? "" : "bg-light rounded-lg shadow-2xl shadow-shade"
+            hideBackground ? "" : "rounded-lg bg-light shadow-2xl shadow-shade"
           }`}
         >
           {children}

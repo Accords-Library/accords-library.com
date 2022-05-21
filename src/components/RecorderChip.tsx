@@ -19,8 +19,8 @@ export function RecorderChip(props: Immutable<Props>): JSX.Element {
   return (
     <ToolTip
       content={
-        <div className="text-left p-2 py-5 grid gap-8">
-          <div className="grid grid-flow-col gap-6 place-items-center place-content-start">
+        <div className="grid gap-8 p-2 py-5 text-left">
+          <div className="grid grid-flow-col place-content-start place-items-center gap-6">
             {recorder.avatar?.data?.attributes && (
               <Img
                 className="w-20 rounded-full border-4 border-mid"

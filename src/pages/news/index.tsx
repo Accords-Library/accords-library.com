@@ -33,7 +33,7 @@ export default function News(props: Immutable<Props>): JSX.Element {
         description={langui.news_description}
       />
 
-      <div className="flex flex-row gap-2 place-items-center coarse:hidden">
+      <div className="flex flex-row place-items-center gap-2 coarse:hidden">
         <p className="flex-shrink-0">{langui.always_show_info}:</p>
         <Switch setState={setKeepInfoVisible} state={keepInfoVisible} />
       </div>
@@ -43,7 +43,7 @@ export default function News(props: Immutable<Props>): JSX.Element {
   const contentPanel = (
     <ContentPanel width={ContentPanelWidthSizes.large}>
       <div
-        className="grid gap-8 items-end grid-cols-1
+        className="grid grid-cols-1 items-end gap-8
         desktop:grid-cols-[repeat(auto-fill,_minmax(20rem,1fr))]"
       >
         {posts.map((post) => (

@@ -132,7 +132,7 @@ export function Markdawn(props: Immutable<Props>): JSX.Element {
                 component: (compProps: { id: string }) => (
                   <div
                     id={compProps.id}
-                    className={"h-0 text-center text-3xl text-dark mt-16 mb-20"}
+                    className={"mt-16 mb-20 h-0 text-center text-3xl text-dark"}
                   >
                     * * *
                   </div>
@@ -169,7 +169,7 @@ export function Markdawn(props: Immutable<Props>): JSX.Element {
               },
               Transcript: {
                 component: (compProps) => (
-                  <div className="grid grid-cols-[auto_1fr] mobile:grid-cols-1 gap-x-6 gap-y-2">
+                  <div className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 mobile:grid-cols-1">
                     {compProps.children}
                   </div>
                 ),
@@ -245,7 +245,7 @@ export function Markdawn(props: Immutable<Props>): JSX.Element {
                   name?: string;
                 }) => (
                   <div
-                    className="my-8 cursor-pointer place-content-center grid"
+                    className="my-8 grid cursor-pointer place-content-center"
                     onClick={() => {
                       openLightBox([
                         compProps.src.startsWith("/uploads/")
@@ -285,7 +285,7 @@ function HeaderToolTip(props: { id: string }) {
     >
       <ToolTip content={"Copied! 👍"} trigger="click" className="text-sm">
         <span
-          className="material-icons transition-color hover:text-dark cursor-pointer"
+          className="material-icons transition-color cursor-pointer hover:text-dark"
           onClick={() => {
             navigator.clipboard.writeText(
               `${process.env.NEXT_PUBLIC_URL_SELF + window.location.pathname}#${

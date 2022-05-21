@@ -71,7 +71,7 @@ export default function Contents(props: Immutable<Props>): JSX.Element {
       />
 
       <input
-        className="w-full mb-6"
+        className="mb-6 w-full"
         type="text"
         name="name"
         id="name"
@@ -82,7 +82,7 @@ export default function Contents(props: Immutable<Props>): JSX.Element {
         }}
       />
 
-      <div className="flex flex-row gap-2 place-items-center">
+      <div className="flex flex-row place-items-center gap-2">
         <p className="flex-shrink-0">{langui.group_by}:</p>
         <Select
           className="w-full"
@@ -94,9 +94,9 @@ export default function Contents(props: Immutable<Props>): JSX.Element {
       </div>
 
       <div
-        className={`flex flex-row gap-2 place-items-center coarse:hidden ${
+        className={`flex flex-row place-items-center gap-2 coarse:hidden ${
           searchName.length > 1
-            ? "text-dark grayscale contrast-75 brightness-150"
+            ? "text-dark brightness-150 contrast-75 grayscale"
             : ""
         }`}
       >
@@ -108,7 +108,7 @@ export default function Contents(props: Immutable<Props>): JSX.Element {
         />
       </div>
 
-      <div className="flex flex-row gap-2 place-items-center coarse:hidden">
+      <div className="flex flex-row place-items-center gap-2 coarse:hidden">
         <p className="flex-shrink-0">{langui.always_show_info}:</p>
         <Switch setState={setKeepInfoVisible} state={keepInfoVisible} />
       </div>
@@ -123,8 +123,8 @@ export default function Contents(props: Immutable<Props>): JSX.Element {
               {name && (
                 <h2
                   key={`h2${name}`}
-                  className="text-2xl pb-2 pt-10 first-of-type:pt-0
-                  flex flex-row place-items-center gap-2"
+                  className="flex flex-row place-items-center gap-2
+                  pb-2 pt-10 text-2xl first-of-type:pt-0"
                 >
                   {name}
                   <Chip>{`${items.reduce((currentSum, item) => {
@@ -147,8 +147,8 @@ export default function Contents(props: Immutable<Props>): JSX.Element {
               )}
               <div
                 key={`items${name}`}
-                className="grid gap-8 mobile:gap-4 items-end grid-cols-2
-                desktop:grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))]"
+                className="grid grid-cols-2 items-end gap-8
+                desktop:grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] mobile:gap-4"
               >
                 {items.map((item) => (
                   <Fragment key={item.id}>

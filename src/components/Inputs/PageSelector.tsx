@@ -13,7 +13,7 @@ export function PageSelector(props: Immutable<Props>): JSX.Element {
   const { page, setPage, maxPage } = props;
 
   return (
-    <div className={`flex place-content-center flex-row ${props.className}`}>
+    <div className={`flex flex-row place-content-center ${props.className}`}>
       <Button
         onClick={() => {
           if (page > 0) setPage(page - 1);

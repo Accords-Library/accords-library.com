@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 * {
-  @apply box-border font-body font-medium scroll-smooth scroll-m-8;
+  @apply box-border scroll-m-8 scroll-smooth font-body font-medium;
 }
 
 h1,
@@ -16,7 +16,7 @@ h6 {
 }
 
 a {
-  @apply transition-colors underline-offset-2 decoration-dotted underline decoration-dark hover:text-dark cursor-pointer;
+  @apply cursor-pointer underline decoration-dark decoration-dotted underline-offset-2 transition-colors hover:text-dark;
 }
 
 *::selection {
@@ -42,7 +42,7 @@ mark {
 }
 
 *::-webkit-scrollbar-thumb {
-  @apply bg-dark rounded-full border-[3px] border-solid border-light;
+  @apply rounded-full border-[3px] border-solid border-light bg-dark;
 }
 
 /* CHANGE FORMATTED DEFAULTS */
@@ -53,11 +53,11 @@ mark {
 .formatted h4,
 .formatted h5,
 .formatted h6 {
-  @apply text-center flex gap-3 justify-center;
+  @apply flex justify-center gap-3 text-center;
 }
 
 .formatted h1 {
-  @apply text-4xl my-16;
+  @apply my-16 text-4xl;
 }
 
 .formatted h1 + h2 {
@@ -65,7 +65,7 @@ mark {
 }
 
 .formatted h2 {
-  @apply text-3xl my-12;
+  @apply my-12 text-3xl;
 }
 
 .formatted h2 + h3 {
@@ -73,7 +73,7 @@ mark {
 }
 
 .formatted h3 {
-  @apply text-2xl my-8;
+  @apply my-8 text-2xl;
 }
 
 .formatted h3 + h4 {
@@ -81,11 +81,11 @@ mark {
 }
 
 .formatted h4 {
-  @apply text-xl my-6;
+  @apply my-6 text-xl;
 }
 
 .formatted h5 {
-  @apply text-lg my-4;
+  @apply my-4 text-lg;
 }
 
 .formatted p,
@@ -102,7 +102,7 @@ mark {
 }
 
 .formatted footer > div {
-  @apply my-2 px-6 py-4 rounded-xl;
+  @apply my-2 rounded-xl px-6 py-4;
 }
 
 .formatted footer > div:target {
@@ -126,18 +126,18 @@ mark {
 }
 
 .formatted blockquote {
-  @apply border-2 border-mid rounded-lg p-5 text-center my-8;
+  @apply my-8 rounded-lg border-2 border-mid p-5 text-center;
 }
 
 .formatted blockquote cite {
-  @apply text-dark block;
+  @apply block text-dark;
 }
 
 /* INPUT */
 
 input,
 textarea {
-  @apply rounded-full p-2 text-center bg-light outline outline-mid outline-2 outline-offset-[-2px] hover:outline-[transparent] text-dark hover:bg-mid transition-all placeholder:text-dark placeholder:opacity-60;
+  @apply rounded-full bg-light p-2 text-center text-dark outline outline-2 outline-offset-[-2px] outline-mid transition-all placeholder:text-dark placeholder:opacity-60 hover:bg-mid hover:outline-[transparent];
 }
 
 input::placeholder {
@@ -146,19 +146,19 @@ input::placeholder {
 
 input:focus-visible,
 textarea:focus-within {
-  @apply outline-none bg-mid shadow-inner-sm shadow-shade;
+  @apply bg-mid shadow-inner-sm shadow-shade outline-none;
 }
 
 textarea {
-  @apply rounded-2xl text-left p-6;
+  @apply rounded-2xl p-6 text-left;
 }
 
 input[type="submit"] {
-  @apply grid place-content-center place-items-center border-[1px] border-dark text-dark rounded-full px-4 pt-[0.4rem] pb-[0.5rem] transition-all cursor-pointer hover:text-light hover:bg-dark hover:drop-shadow-shade-lg active:bg-black active:text-light active:drop-shadow-black-lg active:border-black;
+  @apply grid cursor-pointer place-content-center place-items-center rounded-full border-[1px] border-dark px-4 pt-[0.4rem] pb-[0.5rem] text-dark transition-all hover:bg-dark hover:text-light hover:drop-shadow-shade-lg active:border-black active:bg-black active:text-light active:drop-shadow-black-lg;
 }
 
 .texture-paper-dots {
-  @apply [background-image:var(--theme-texture-dots)] [background-blend-mode:var(--theme-texture-dots-blend)] bg-local bg-[length:10cm];
+  @apply bg-[length:10cm] bg-local [background-image:var(--theme-texture-dots)] [background-blend-mode:var(--theme-texture-dots-blend)];
 }
 
 /* TIPPY */
@@ -170,7 +170,7 @@ input[type="submit"] {
   max-width: calc(100vw - 10px);
 }
 .tippy-box {
-  @apply relative bg-light drop-shadow-shade-xl rounded-lg transition-[transform,_visibility,_opacity];
+  @apply relative rounded-lg bg-light transition-[transform,_visibility,_opacity] drop-shadow-shade-xl;
 }
 .tippy-box[data-placement^="top"] > .tippy-arrow {
   @apply bottom-0;
@@ -223,7 +223,7 @@ input[type="submit"] {
   border-style: solid;
 }
 .tippy-content {
-  @apply relative px-6 py-4 z-10;
+  @apply relative z-10 px-6 py-4;
 }
 
 /* LIGHTBOX */
@@ -238,7 +238,7 @@ input[type="submit"] {
 }
 
 .ril__outer {
-  @apply h-full w-full touch-none outline-none bg-shade bg-opacity-50 [backdrop-filter:blur(2px)];
+  @apply h-full w-full touch-none bg-shade bg-opacity-50 outline-none [backdrop-filter:blur(2px)];
 }
 
 .ril__outerClosing {
@@ -260,7 +260,7 @@ input[type="submit"] {
 }
 
 .ril__navButtons {
-  @apply absolute inset-y-0 w-5 h-8 px-10 py-8 cursor-pointer m-auto;
+  @apply absolute inset-y-0 m-auto h-8 w-5 cursor-pointer px-10 py-8;
 }
 .ril__navButtons:hover {
   opacity: 1;
@@ -285,7 +285,7 @@ input[type="submit"] {
 
 .ril__caption,
 .ril__toolbar {
-  @apply bg-shade bg-opacity-50 absolute inset-x-0 flex justify-between;
+  @apply absolute inset-x-0 flex justify-between bg-shade bg-opacity-50;
 }
 
 .ril__caption {

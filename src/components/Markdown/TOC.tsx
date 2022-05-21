@@ -17,8 +17,8 @@ export function TOC(props: Immutable<Props>): JSX.Element {
   return (
     <>
       <h3 className="text-xl">Table of content</h3>
-      <div className="text-left max-w-[14.5rem]">
-        <p className="my-2 overflow-x-hidden relative text-ellipsis whitespace-nowrap text-left">
+      <div className="max-w-[14.5rem] text-left">
+        <p className="relative my-2 overflow-x-hidden text-ellipsis whitespace-nowrap text-left">
           <a className="" onClick={async () => router.replace(`#${toc.slug}`)}>
             {<abbr title={toc.title}>{toc.title}</abbr>}
           </a>
@@ -41,7 +41,7 @@ function TOCLevel(props: LevelProps): JSX.Element {
     <ol className="pl-4 text-left">
       {tocchildren.map((child, childIndex) => (
         <Fragment key={child.slug}>
-          <li className="my-2 overflow-x-hidden w-full text-ellipsis whitespace-nowrap">
+          <li className="my-2 w-full overflow-x-hidden text-ellipsis whitespace-nowrap">
             <span className="text-dark">{`${parentNumbering}${
               childIndex + 1
             }.`}</span>{" "}

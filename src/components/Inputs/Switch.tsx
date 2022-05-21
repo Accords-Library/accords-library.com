@@ -12,8 +12,8 @@ export function Switch(props: Immutable<Props>): JSX.Element {
   const { state, setState, className, disabled } = props;
   return (
     <div
-      className={`h-6 w-12 rounded-full border-2 border-mid grid
-      transition-colors relative ${
+      className={`relative grid h-6 w-12 rounded-full border-2
+      border-mid transition-colors ${
         disabled ? "cursor-not-allowed" : "cursor-pointer"
       } ${className} ${state ? "bg-mid" : "bg-light"}`}
       onClick={() => {
@@ -21,8 +21,8 @@ export function Switch(props: Immutable<Props>): JSX.Element {
       }}
     >
       <div
-        className={`bg-dark aspect-square rounded-full absolute
-        top-0 bottom-0 left-0 transition-transform ${
+        className={`absolute top-0 bottom-0 left-0
+        aspect-square rounded-full bg-dark transition-transform ${
           state && "translate-x-[115%]"
         }`}
       ></div>

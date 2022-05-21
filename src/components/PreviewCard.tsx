@@ -66,18 +66,18 @@ export function PreviewCard(props: Immutable<Props>): JSX.Element {
 
   const metadataJSX =
     metadata && (metadata.release_date || metadata.price) ? (
-      <div className="flex flex-row flex-wrap gap-x-3 w-full">
+      <div className="flex w-full flex-row flex-wrap gap-x-3">
         {metadata.release_date && (
-          <p className="mobile:text-xs text-sm">
-            <span className="material-icons !text-base translate-y-[.15em] mr-1">
+          <p className="text-sm mobile:text-xs">
+            <span className="material-icons mr-1 translate-y-[.15em] !text-base">
               event
             </span>
             {prettyDate(metadata.release_date)}
           </p>
         )}
         {metadata.price && metadata.currencies && (
-          <p className="mobile:text-xs text-sm justify-self-end">
-            <span className="material-icons !text-base translate-y-[.15em] mr-1">
+          <p className="justify-self-end text-sm mobile:text-xs">
+            <span className="material-icons mr-1 translate-y-[.15em] !text-base">
               shopping_cart
             </span>
             {prettyPrice(
@@ -88,16 +88,16 @@ export function PreviewCard(props: Immutable<Props>): JSX.Element {
           </p>
         )}
         {metadata.views && (
-          <p className="mobile:text-xs text-sm">
-            <span className="material-icons !text-base translate-y-[.15em] mr-1">
+          <p className="text-sm mobile:text-xs">
+            <span className="material-icons mr-1 translate-y-[.15em] !text-base">
               visibility
             </span>
             {prettyShortenNumber(metadata.views)}
           </p>
         )}
         {metadata.author && (
-          <p className="mobile:text-xs text-sm">
-            <span className="material-icons !text-base translate-y-[.15em] mr-1">
+          <p className="text-sm mobile:text-xs">
+            <span className="material-icons mr-1 translate-y-[.15em] !text-base">
               person
             </span>
             {metadata.author}
@@ -111,18 +111,18 @@ export function PreviewCard(props: Immutable<Props>): JSX.Element {
   return (
     <Link href={href} passHref>
       <div
-        className="drop-shadow-shade-xl cursor-pointer grid items-end
-        fine:[--cover-opacity:0] hover:[--cover-opacity:1] hover:scale-[1.02]
-        [--bg-opacity:0] hover:[--bg-opacity:0.5] [--play-opacity:0]
-        hover:[--play-opacity:100] transition-transform
-        [--stacked-top:0] hover:[--stacked-top:1]"
+        className="grid cursor-pointer items-end transition-transform
+        drop-shadow-shade-xl [--bg-opacity:0] [--play-opacity:0]
+        [--stacked-top:0] hover:scale-[1.02] hover:[--cover-opacity:1]
+        hover:[--bg-opacity:0.5] hover:[--play-opacity:100]
+        hover:[--stacked-top:1] fine:[--cover-opacity:0]"
       >
         {stackNumber > 0 && (
           <>
             <div
-              className="bg-light rounded-md overflow-hidden absolute transition-[top_transform]
-              inset-0 -top-[var(--stacked-top)*2.1rem] brightness-[0.8] sepia-[0.5]
-              scale-[calc(1-0.15*var(--stacked-top))]"
+              className="absolute inset-0 -top-[var(--stacked-top)*2.1rem]
+              scale-[calc(1-0.15*var(--stacked-top))] overflow-hidden rounded-md bg-light
+              brightness-[0.8] sepia-[0.5] transition-[top_transform]"
             >
               {thumbnail && (
                 <Img
@@ -134,9 +134,9 @@ export function PreviewCard(props: Immutable<Props>): JSX.Element {
             </div>
 
             <div
-              className="bg-light rounded-md overflow-hidden absolute transition-[top_transform]
-              -top-[var(--stacked-top)*1rem] inset-0 brightness-[0.9] sepia-[0.2]
-              scale-[calc(1-0.06*var(--stacked-top))]"
+              className="absolute inset-0 -top-[var(--stacked-top)*1rem]
+              scale-[calc(1-0.06*var(--stacked-top))] overflow-hidden rounded-md bg-light
+              brightness-[0.9] sepia-[0.2] transition-[top_transform]"
             >
               {thumbnail && (
                 <Img
@@ -162,8 +162,8 @@ export function PreviewCard(props: Immutable<Props>): JSX.Element {
             />
             {stackNumber > 0 && (
               <div
-                className="absolute right-2 top-2 text-light bg-black
-                  bg-opacity-60 px-2 rounded-full"
+                className="absolute right-2 top-2 rounded-full bg-black
+                  bg-opacity-60 px-2 text-light"
               >
                 {stackNumber}
               </div>
@@ -171,9 +171,9 @@ export function PreviewCard(props: Immutable<Props>): JSX.Element {
             {hoverlay && hoverlay.__typename === "Video" && (
               <>
                 <div
-                  className="absolute inset-0 text-light grid
-                  place-content-center drop-shadow-shade-lg bg-shade
-                  bg-opacity-[var(--bg-opacity)] transition-colors"
+                  className="absolute inset-0 grid place-content-center
+                  bg-shade bg-opacity-[var(--bg-opacity)] text-light
+                  transition-colors drop-shadow-shade-lg"
                 >
                   <span
                     className="material-icons text-6xl
@@ -183,8 +183,8 @@ export function PreviewCard(props: Immutable<Props>): JSX.Element {
                   </span>
                 </div>
                 <div
-                  className="absolute right-2 bottom-2 text-light bg-black
-                  bg-opacity-60 px-2 rounded-full"
+                  className="absolute right-2 bottom-2 rounded-full bg-black
+                  bg-opacity-60 px-2 text-light"
                 >
                   {prettyDuration(hoverlay.duration)}
                 </div>
@@ -194,7 +194,7 @@ export function PreviewCard(props: Immutable<Props>): JSX.Element {
         ) : (
           <div
             style={{ aspectRatio: thumbnailAspectRatio }}
-            className={`w-full bg-light relative ${
+            className={`relative w-full bg-light ${
               keepInfoVisible
                 ? "rounded-t-md"
                 : "rounded-md coarse:rounded-b-none"
@@ -202,8 +202,8 @@ export function PreviewCard(props: Immutable<Props>): JSX.Element {
           >
             {stackNumber > 0 && (
               <div
-                className="absolute right-2 top-2 text-light bg-black
-                bg-opacity-60 px-2 rounded-full"
+                className="absolute right-2 top-2 rounded-full bg-black
+                bg-opacity-60 px-2 text-light"
               >
                 {stackNumber}
               </div>
@@ -213,13 +213,13 @@ export function PreviewCard(props: Immutable<Props>): JSX.Element {
         <div
           className={`linearbg-obi ${
             !keepInfoVisible &&
-            `fine:drop-shadow-shade-lg fine:absolute coarse:rounded-b-md
-              bottom-2 -inset-x-0.5 opacity-[var(--cover-opacity)]`
-          } transition-opacity z-20 grid p-4 gap-2`}
+            `-inset-x-0.5 bottom-2 opacity-[var(--cover-opacity)]
+              coarse:rounded-b-md fine:absolute fine:drop-shadow-shade-lg`
+          } z-20 grid gap-2 p-4 transition-opacity`}
         >
           {metadata?.position === "Top" && metadataJSX}
           {topChips && topChips.length > 0 && (
-            <div className="grid grid-flow-col gap-1 overflow-hidden place-content-start">
+            <div className="grid grid-flow-col place-content-start gap-1 overflow-hidden">
               {topChips.map((text, index) => (
                 <Chip key={index}>{text}</Chip>
               ))}
@@ -227,18 +227,18 @@ export function PreviewCard(props: Immutable<Props>): JSX.Element {
           )}
           <div className="my-1">
             {pre_title && (
-              <p className="leading-none mb-1 break-words">{pre_title}</p>
+              <p className="mb-1 break-words leading-none">{pre_title}</p>
             )}
             {title && (
-              <p className="font-headers text-lg leading-none break-words">
+              <p className="break-words font-headers text-lg leading-none">
                 {title}
               </p>
             )}
-            {subtitle && <p className="leading-none break-words">{subtitle}</p>}
+            {subtitle && <p className="break-words leading-none">{subtitle}</p>}
           </div>
           {description && <p>{description}</p>}
           {bottomChips && bottomChips.length > 0 && (
-            <div className="grid grid-flow-col gap-1 overflow-hidden place-content-start">
+            <div className="grid grid-flow-col place-content-start gap-1 overflow-hidden">
               {bottomChips.map((text, index) => (
                 <Chip key={index} className="text-sm">
                   {text}

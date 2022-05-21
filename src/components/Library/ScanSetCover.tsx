@@ -56,7 +56,7 @@ export function ScanSetCover(props: Immutable<Props>): JSX.Element {
           <div>
             <div
               className="flex flex-row flex-wrap place-items-center
-              gap-6 text-base pt-10 first-of-type:pt-0"
+              gap-6 pt-10 text-base first-of-type:pt-0"
             >
               <h2 id="cover" className="text-2xl">
                 {"Cover"}
@@ -70,10 +70,10 @@ export function ScanSetCover(props: Immutable<Props>): JSX.Element {
               </Chip>
             </div>
 
-            <div className="flex flex-row flex-wrap gap-4 pb-6 place-items-center">
+            <div className="flex flex-row flex-wrap place-items-center gap-4 pb-6">
               <LanguageSwitcher />
 
-              <div className="grid place-items-center place-content-center">
+              <div className="grid place-content-center place-items-center">
                 <p className="font-headers">{langui.status}:</p>
                 <ToolTip
                   content={getStatusDescription(selectedScan.status, langui)}
@@ -86,7 +86,7 @@ export function ScanSetCover(props: Immutable<Props>): JSX.Element {
               {selectedScan.scanners && selectedScan.scanners.data.length > 0 && (
                 <div>
                   <p className="font-headers">{"Scanners"}:</p>
-                  <div className="grid place-items-center place-content-center gap-2">
+                  <div className="grid place-content-center place-items-center gap-2">
                     {selectedScan.scanners.data.map((scanner) => (
                       <Fragment key={scanner.id}>
                         {scanner.attributes && (
@@ -104,7 +104,7 @@ export function ScanSetCover(props: Immutable<Props>): JSX.Element {
               {selectedScan.cleaners && selectedScan.cleaners.data.length > 0 && (
                 <div>
                   <p className="font-headers">{"Cleaners"}:</p>
-                  <div className="grid place-items-center place-content-center gap-2">
+                  <div className="grid place-content-center place-items-center gap-2">
                     {selectedScan.cleaners.data.map((cleaner) => (
                       <Fragment key={cleaner.id}>
                         {cleaner.attributes && (
@@ -123,7 +123,7 @@ export function ScanSetCover(props: Immutable<Props>): JSX.Element {
                 selectedScan.typesetters.data.length > 0 && (
                   <div>
                     <p className="font-headers">{"Typesetters"}:</p>
-                    <div className="grid place-items-center place-content-center gap-2">
+                    <div className="grid place-content-center place-items-center gap-2">
                       {selectedScan.typesetters.data.map((typesetter) => (
                         <Fragment key={typesetter.id}>
                           {typesetter.attributes && (
@@ -140,15 +140,15 @@ export function ScanSetCover(props: Immutable<Props>): JSX.Element {
             </div>
 
             <div
-              className="grid gap-8 items-end mobile:grid-cols-2
-              desktop:grid-cols-[repeat(auto-fill,_minmax(10rem,1fr))]
-              pb-12 border-b-[3px] border-dotted last-of-type:border-0"
+              className="grid items-end gap-8 border-b-[3px] border-dotted pb-12
+              last-of-type:border-0 desktop:grid-cols-[repeat(auto-fill,_minmax(10rem,1fr))]
+              mobile:grid-cols-2"
             >
               {coverImages.map((image, index) => (
                 <div
                   key={image.url}
-                  className="drop-shadow-shade-lg hover:scale-[1.02]
-                  cursor-pointer transition-transform"
+                  className="cursor-pointer transition-transform
+                  drop-shadow-shade-lg hover:scale-[1.02]"
                   onClick={() => {
                     const imgs: string[] = [];
                     coverImages.map((img) => {

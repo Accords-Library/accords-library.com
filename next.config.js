@@ -26,6 +26,11 @@ module.exports = {
         destination: "https://discord.com/invite/5mcXcRAczj",
         permanent: false,
       },
+      {
+        source: "/gallery",
+        destination: "https://gallery.accords-library.com/",
+        permanent: false,
+      },
     ];
   },
 };

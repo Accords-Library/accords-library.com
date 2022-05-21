@@ -126,8 +126,8 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
       />
       <div className="grid place-items-center gap-12">
         <div
-          className="drop-shadow-shade-xl w-full h-[50vh]
-          mobile:h-[60vh] desktop:mb-16 relative cursor-pointer"
+          className="relative h-[50vh] w-full
+          cursor-pointer drop-shadow-shade-xl desktop:mb-16 mobile:h-[60vh]"
           onClick={() => {
             if (item?.thumbnail?.data?.attributes) {
               openLightBox([
@@ -143,15 +143,15 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
             <Img
               image={item.thumbnail.data.attributes}
               quality={ImageQuality.Large}
-              className="w-full h-full object-contain"
+              className="h-full w-full object-contain"
             />
           ) : (
-            <div className="w-full aspect-[21/29.7] bg-light rounded-xl"></div>
+            <div className="aspect-[21/29.7] w-full rounded-xl bg-light"></div>
           )}
         </div>
 
         <InsetBox id="summary" className="grid place-items-center">
-          <div className="w-[clamp(0px,100%,42rem)] grid place-items-center gap-8">
+          <div className="grid w-[clamp(0px,100%,42rem)] place-items-center gap-8">
             {item?.subitem_of?.data[0]?.attributes && (
               <div className="grid place-items-center">
                 <p>{langui.subitem_of}</p>
@@ -204,18 +204,18 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
         </InsetBox>
 
         {item?.gallery && item.gallery.data.length > 0 && (
-          <div id="gallery" className="grid place-items-center gap-8  w-full">
+          <div id="gallery" className="grid w-full place-items-center  gap-8">
             <h2 className="text-2xl">{langui.gallery}</h2>
             <div
-              className="grid w-full gap-8 items-end
-              grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))]"
+              className="grid w-full grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] items-end
+              gap-8"
             >
               {item.gallery.data.map((galleryItem, index) => (
                 <Fragment key={galleryItem.id}>
                   {galleryItem.attributes && (
                     <div
-                      className="relative aspect-square hover:scale-[1.02]
-                      transition-transform cursor-pointer"
+                      className="relative aspect-square cursor-pointer
+                      transition-transform hover:scale-[1.02]"
                       onClick={() => {
                         if (item.gallery?.data) {
                           const images: string[] = [];
@@ -233,8 +233,8 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
                       }}
                     >
                       <Img
-                        className="bg-light rounded-lg drop-shadow-shade-md
-                        w-full h-full object-cover"
+                        className="h-full w-full rounded-lg
+                        bg-light object-cover drop-shadow-shade-md"
                         image={galleryItem.attributes}
                       />
                     </div>
@@ -246,11 +246,11 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
         )}
 
         <InsetBox id="details" className="grid place-items-center">
-          <div className="w-[clamp(0px,100%,42rem)] grid place-items gap-8">
-            <h2 className="text-2xl text-center">{langui.details}</h2>
-            <div className="grid grid-flow-col w-full place-content-between">
+          <div className="place-items grid w-[clamp(0px,100%,42rem)] gap-8">
+            <h2 className="text-center text-2xl">{langui.details}</h2>
+            <div className="grid w-full grid-flow-col place-content-between">
               {item?.metadata?.[0] && (
-                <div className="grid place-items-center place-content-start">
+                <div className="grid place-content-start place-items-center">
                   <h3 className="text-xl">{langui.type}</h3>
                   <div className="grid grid-flow-col gap-1">
                     <Chip>{prettyItemType(item.metadata[0], langui)}</Chip>
@@ -261,14 +261,14 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
               )}
 
               {item?.release_date && (
-                <div className="grid place-items-center place-content-start">
+                <div className="grid place-content-start place-items-center">
                   <h3 className="text-xl">{langui.release_date}</h3>
                   <p>{prettyDate(item.release_date)}</p>
                 </div>
               )}
 
               {item?.price && (
-                <div className="grid place-items-center text-center place-content-start">
+                <div className="grid place-content-start place-items-center text-center">
                   <h3 className="text-xl">{langui.price}</h3>
                   <p>
                     {prettyPrice(
@@ -302,7 +302,7 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
             {item?.size && (
               <>
                 <h3 className="text-xl">{langui.size}</h3>
-                <div className="grid grid-flow-col w-full place-content-between">
+                <div className="grid w-full grid-flow-col place-content-between">
                   <div className="flex flex-row flex-wrap place-items-start gap-4">
                     <p className="font-bold">{langui.width}:</p>
                     <div>
@@ -334,7 +334,7 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
               item?.metadata?.[0]?.__typename !== "ComponentMetadataOther" && (
                 <>
                   <h3 className="text-xl">{langui.type_information}</h3>
-                  <div className="grid grid-cols-2 w-full place-content-between">
+                  <div className="grid w-full grid-cols-2 place-content-between">
                     {item?.metadata?.[0]?.__typename ===
                       "ComponentMetadataBooks" && (
                       <>
@@ -385,19 +385,19 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
         {item?.subitems && item.subitems.data.length > 0 && (
           <div
             id={isVariantSet ? "variants" : "subitems"}
-            className="grid place-items-center gap-8 w-full"
+            className="grid w-full place-items-center gap-8"
           >
             <h2 className="text-2xl">
               {isVariantSet ? langui.variants : langui.subitems}
             </h2>
 
-            <div className="-mt-6 mb-8 flex flex-row gap-2 place-items-center coarse:hidden">
+            <div className="-mt-6 mb-8 flex flex-row place-items-center gap-2 coarse:hidden">
               <p className="flex-shrink-0">{langui.always_show_info}:</p>
               <Switch setState={setKeepInfoVisible} state={keepInfoVisible} />
             </div>
             <div
-              className="grid gap-8 items-end mobile:grid-cols-2
-              grid-cols-[repeat(auto-fill,minmax(15rem,1fr))] w-full"
+              className="grid w-full grid-cols-[repeat(auto-fill,minmax(15rem,1fr))] items-end
+              gap-8 mobile:grid-cols-2"
             >
               {item.subitems.data.map((subitem) => (
                 <Fragment key={subitem.id}>
@@ -434,14 +434,14 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
         )}
 
         {item?.contents && item.contents.data.length > 0 && (
-          <div id="contents" className="w-full grid place-items-center gap-8">
-            <h2 className="text-2xl -mb-6">{langui.contents}</h2>
+          <div id="contents" className="grid w-full place-items-center gap-8">
+            <h2 className="-mb-6 text-2xl">{langui.contents}</h2>
             {displayOpenScans && (
               <Button href={`/library/${item.slug}/scans`}>
                 {langui.view_scans}
               </Button>
             )}
-            <div className="grid gap-4 w-full">
+            <div className="grid w-full gap-4">
               {item.contents.data.map((content) => (
                 <ContentLine
                   langui={langui}

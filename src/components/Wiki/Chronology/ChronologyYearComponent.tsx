@@ -16,7 +16,7 @@ export function ChronologyYearComponent(props: Immutable<Props>): JSX.Element {
 
   return (
     <div
-      className="target:bg-mid rounded-2xl target:py-4 target:my-4"
+      className="rounded-2xl target:my-4 target:bg-mid target:py-4"
       id={props.items.length > 1 ? props.year.toString() : undefined}
     >
       {props.items.map((item, index) => (

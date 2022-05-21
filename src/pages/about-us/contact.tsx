@@ -27,9 +27,9 @@ export default function AboutUs(
   const contactForm = (
     <div className="flex flex-col gap-8 text-center">
       <form
-        className={`gap-8 grid ${
+        className={`grid gap-8 ${
           formState !== "stale" &&
-          "opacity-60 cursor-not-allowed touch-none pointer-events-none"
+          "pointer-events-none cursor-not-allowed touch-none opacity-60"
         }`}
         onSubmit={(event) => {
           event.preventDefault();
@@ -114,12 +114,12 @@ export default function AboutUs(
             required
             disabled={formState !== "stale"}
           />
-          <p className="text-sm text-dark italic opacity-70">
+          <p className="text-sm italic text-dark opacity-70">
             {langui.email_gdpr_notice}
           </p>
         </div>
 
-        <div className="flex flex-col place-items-center gap-1 w-full">
+        <div className="flex w-full flex-col place-items-center gap-1">
           <label htmlFor="message">{langui.message}:</label>
           <textarea
             name="message"

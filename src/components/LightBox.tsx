@@ -57,10 +57,9 @@ export function LightBox(props: Immutable<Props>): JSX.Element {
           <Popup setState={setState} state={state} padding={false} fillViewport>
             <div
               {...handlers}
-              className={`grid grid-cols-[4em,1fr,4em] mobile:grid-cols-2
-              [grid-template-areas:"left_image_right"]
-              mobile:[grid-template-areas:"image_image""left_right"]
-              place-items-center first-letter:gap-4 w-full h-full overflow-hidden`}
+              className={`grid h-full w-full grid-cols-[4em,1fr,4em] place-items-center 
+              overflow-hidden [grid-template-areas:"left_image_right"] first-letter:gap-4 
+              mobile:grid-cols-2 mobile:[grid-template-areas:"image_image""left_right"]`}
             >
               <div className="[grid-area:left]">
                 {index > 0 && (

@@ -50,7 +50,7 @@ export function NavOption(props: Immutable<Props>): JSX.Element {
             }
           }
         }}
-        className={`relative grid grid-flow-col grid-cols-[auto] auto-cols-fr justify-center ${
+        className={`relative grid auto-cols-fr grid-flow-col grid-cols-[auto] justify-center ${
           props.icon ? "text-left" : "text-center"
         } ${divCommon}`}
       >

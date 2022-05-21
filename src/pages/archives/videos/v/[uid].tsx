@@ -80,10 +80,10 @@ export default function Video(props: Props): JSX.Element {
         className="mb-10"
       />
 
-      <div className="grid gap-12 place-items-center">
+      <div className="grid place-items-center gap-12">
         <div
           id="video"
-          className="w-full rounded-xl shadow-shade shadow-lg overflow-hidden"
+          className="w-full overflow-hidden rounded-xl shadow-lg shadow-shade"
         >
           {video.gone ? (
             <video
@@ -94,7 +94,7 @@ export default function Video(props: Props): JSX.Element {
           ) : (
             <iframe
               src={`https://www.youtube-nocookie.com/embed/${video.uid}`}
-              className="w-full aspect-video"
+              className="aspect-video w-full"
               title="YouTube video player"
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write;
@@ -103,17 +103,17 @@ export default function Video(props: Props): JSX.Element {
             ></iframe>
           )}
 
-          <div className="p-6 mt-2">
+          <div className="mt-2 p-6">
             <h1 className="text-2xl">{video.title}</h1>
-            <div className="flex flex-row flex-wrap gap-x-6 w-full">
+            <div className="flex w-full flex-row flex-wrap gap-x-6">
               <p>
-                <span className="material-icons !text-base translate-y-[.15em] mr-1">
+                <span className="material-icons mr-1 translate-y-[.15em] !text-base">
                   event
                 </span>
                 {prettyDate(video.published_date)}
               </p>
               <p>
-                <span className="material-icons !text-base translate-y-[.15em] mr-1">
+                <span className="material-icons mr-1 translate-y-[.15em] !text-base">
                   visibility
                 </span>
                 {isMobile
@@ -122,7 +122,7 @@ export default function Video(props: Props): JSX.Element {
               </p>
               {video.channel?.data?.attributes && (
                 <p>
-                  <span className="material-icons !text-base translate-y-[.15em] mr-1">
+                  <span className="material-icons mr-1 translate-y-[.15em] !text-base">
                     thumb_up
                   </span>
                   {isMobile
@@ -143,7 +143,7 @@ export default function Video(props: Props): JSX.Element {
 
         {video.channel?.data?.attributes && (
           <InsetBox id="channel" className="grid place-items-center">
-            <div className="w-[clamp(0px,100%,42rem)] grid place-items-center gap-4 text-center">
+            <div className="grid w-[clamp(0px,100%,42rem)] place-items-center gap-4 text-center">
               <h2 className="text-2xl">{langui.channel}</h2>
               <div>
                 <Button
@@ -153,7 +153,8 @@ export default function Video(props: Props): JSX.Element {
                 </Button>
 
                 <p>
-                  {`${video.channel.data.attributes.subscribers.toLocaleString()} ${langui.subscribers?.toLowerCase()}`}
+                  {`${video.channel.data.attributes.subscribers.toLocaleString()}
+                   ${langui.subscribers?.toLowerCase()}`}
                 </p>
               </div>
             </div>
@@ -161,7 +162,7 @@ export default function Video(props: Props): JSX.Element {
         )}
 
         <InsetBox id="description" className="grid place-items-center">
-          <div className="w-[clamp(0px,100%,42rem)] grid place-items-center gap-8">
+          <div className="grid w-[clamp(0px,100%,42rem)] place-items-center gap-8">
             <h2 className="text-2xl">{langui.description}</h2>
             <p className="whitespace-pre-line">{video.description}</p>
           </div>

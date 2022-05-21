@@ -17,7 +17,7 @@ export function ContentPanel(props: Immutable<Props>): JSX.Element {
     width === ContentPanelWidthSizes.default ? "max-w-2xl" : "w-full";
 
   return (
-    <div className={`grid pt-10 pb-20 px-4 desktop:py-20 desktop:px-10`}>
+    <div className={`grid px-4 pt-10 pb-20 desktop:py-20 desktop:px-10`}>
       <main
         className={`${
           props.autoformat && "formatted"

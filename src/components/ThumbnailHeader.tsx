@@ -43,11 +43,11 @@ export function ThumbnailHeader(props: Immutable<Props>): JSX.Element {
   return (
     <>
       <LightBox />
-      <div className="grid place-items-center gap-12 mb-12">
+      <div className="mb-12 grid place-items-center gap-12">
         <div className="drop-shadow-shade-lg">
           {thumbnail ? (
             <Img
-              className="rounded-xl cursor-pointer"
+              className="cursor-pointer rounded-xl"
               image={thumbnail}
               quality={ImageQuality.Medium}
               onClick={() => {
@@ -55,7 +55,7 @@ export function ThumbnailHeader(props: Immutable<Props>): JSX.Element {
               }}
             />
           ) : (
-            <div className="w-96 aspect-[4/3] bg-light rounded-xl"></div>
+            <div className="aspect-[4/3] w-96 rounded-xl bg-light"></div>
           )}
         </div>
         <div
@@ -70,7 +70,7 @@ export function ThumbnailHeader(props: Immutable<Props>): JSX.Element {
         </div>
       </div>
 
-      <div className="flex place-content-center flex-row flew-wrap gap-8">
+      <div className="flew-wrap flex flex-row place-content-center gap-8">
         {type?.data?.attributes && (
           <div className="flex flex-col place-items-center gap-2">
             <h3 className="text-xl">{langui.type}</h3>

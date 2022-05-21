@@ -104,7 +104,7 @@ export default function Chronology(props: Props): JSX.Element {
         <Fragment key={eraIndex}>
           <InsetBox
             id={chronologyEras[eraIndex].attributes?.slug}
-            className="grid text-center my-8 gap-4"
+            className="my-8 grid gap-4 text-center"
           >
             <h2 className="text-2xl">
               {chronologyEras[eraIndex].attributes?.title?.[0]

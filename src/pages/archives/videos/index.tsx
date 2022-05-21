@@ -66,7 +66,7 @@ export default function Videos(props: Props): JSX.Element {
         description={langui.archives_description}
       />
 
-      <div className="flex flex-row gap-2 place-items-center coarse:hidden">
+      <div className="flex flex-row place-items-center gap-2 coarse:hidden">
         <p className="flex-shrink-0">{langui.always_show_info}:</p>
         <Switch setState={setKeepInfoVisible} state={keepInfoVisible} />
       </div>
@@ -83,9 +83,9 @@ export default function Videos(props: Props): JSX.Element {
       />
 
       <div
-        className="grid gap-8 items-start thin:grid-cols-1 mobile:grid-cols-2
-        desktop:grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))]
-        pb-12 border-b-[3px] border-dotted last-of-type:border-0"
+        className="grid items-start gap-8 border-b-[3px] border-dotted pb-12 last-of-type:border-0
+        desktop:grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] mobile:grid-cols-2
+        thin:grid-cols-1"
       >
         {paginatedVideos[page].map((video) => (
           <Fragment key={video.id}>

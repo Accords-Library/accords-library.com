@@ -20,14 +20,14 @@ export function MainPanel(props: Immutable<Props>): JSX.Element {
 
   return (
     <div
-      className={`flex flex-col justify-center content-start
-      gap-y-2 justify-items-center text-center p-8 ${
+      className={`flex flex-col content-start justify-center
+      justify-items-center gap-y-2 p-8 text-center ${
         appLayout.mainPanelReduced && isDesktop && "px-4"
       }`}
     >
       {/* Reduce/expand main menu */}
       <div
-        className={`mobile:hidden top-1/2 fixed ${
+        className={`fixed top-1/2 mobile:hidden ${
           appLayout.mainPanelReduced ? "left-[4.65rem]" : "left-[18.65rem]"
         }`}
         onClick={() =>
@@ -45,9 +45,9 @@ export function MainPanel(props: Immutable<Props>): JSX.Element {
             <div
               className={`${
                 appLayout.mainPanelReduced && isDesktop ? "w-12" : "w-1/2"
-              } aspect-square cursor-pointer transition-colors [mask:url('/icons/accords.svg')]
-              ![mask-size:contain] ![mask-repeat:no-repeat]
-              ![mask-position:center] bg-black hover:bg-dark mb-4`}
+              } mb-4 aspect-square cursor-pointer bg-black
+              transition-colors [mask:url('/icons/accords.svg')]
+              ![mask-size:contain] ![mask-repeat:no-repeat] ![mask-position:center] hover:bg-dark`}
             ></div>
           </Link>
 
@@ -166,7 +166,7 @@ export function MainPanel(props: Immutable<Props>): JSX.Element {
       */}
 
       <NavOption
-        url="/gallery"
+        url="https://gallery.accords-library.com/"
         icon="collections"
         title={langui.gallery}
         reduced={appLayout.mainPanelReduced && isDesktop}
@@ -200,7 +200,7 @@ export function MainPanel(props: Immutable<Props>): JSX.Element {
         </p>
         <a
           aria-label="Read more about the license we use for this website"
-          className="transition-[filter] colorize-black hover:colorize-dark"
+          className="colorize-black hover:colorize-dark transition-[filter]"
           href="https://creativecommons.org/licenses/by-sa/4.0/"
         >
           <div
@@ -208,16 +208,18 @@ export function MainPanel(props: Immutable<Props>): JSX.Element {
             hover:[--theme-color-black:var(--theme-color-dark)]"
           >
             <div
-              className="w-6 aspect-square [mask:url('/icons/creative-commons-brands.svg')]
-              ![mask-size:contain] ![mask-repeat:no-repeat] ![mask-position:center] bg-black"
+              className="aspect-square w-6 bg-black [mask:url('/icons/creative-commons-brands.svg')]
+               ![mask-size:contain] ![mask-repeat:no-repeat] ![mask-position:center]"
             />
             <div
-              className="w-6 aspect-square [mask:url('/icons/creative-commons-by-brands.svg')]
-              ![mask-size:contain] ![mask-repeat:no-repeat] ![mask-position:center] bg-black"
+              className="aspect-square w-6 bg-black 
+              [mask:url('/icons/creative-commons-by-brands.svg')] ![mask-size:contain]
+              ![mask-repeat:no-repeat] ![mask-position:center]"
             />
             <div
-              className="w-6 aspect-square [mask:url('/icons/creative-commons-sa-brands.svg')]
-              ![mask-size:contain] ![mask-repeat:no-repeat] ![mask-position:center] bg-black"
+              className="aspect-square w-6 bg-black
+               [mask:url('/icons/creative-commons-sa-brands.svg')] ![mask-size:contain]
+               ![mask-repeat:no-repeat] ![mask-position:center]"
             />
           </div>
         </a>
@@ -229,18 +231,18 @@ export function MainPanel(props: Immutable<Props>): JSX.Element {
         <div className="mt-12 mb-4 grid h-4 grid-flow-col place-content-center gap-8">
           <a
             aria-label="Browse our GitHub repository, which include this website source code"
-            className="transition-colors [mask:url('/icons/github-brands.svg')]
-            ![mask-size:contain] ![mask-repeat:no-repeat] ![mask-position:center]
-            w-10 aspect-square bg-black hover:bg-dark"
+            className="aspect-square w-10
+            bg-black transition-colors [mask:url('/icons/github-brands.svg')]
+            ![mask-size:contain] ![mask-repeat:no-repeat] ![mask-position:center] hover:bg-dark"
             href="https://github.com/Accords-Library"
             target="_blank"
             rel="noopener noreferrer"
           ></a>
           <a
             aria-label="Join our Discord server!"
-            className="transition-colors [mask:url('/icons/discord-brands.svg')]
-            ![mask-size:contain] ![mask-repeat:no-repeat] ![mask-position:center]
-            w-10 aspect-square bg-black hover:bg-dark"
+            className="aspect-square w-10
+            bg-black transition-colors [mask:url('/icons/discord-brands.svg')]
+            ![mask-size:contain] ![mask-repeat:no-repeat] ![mask-position:center] hover:bg-dark"
             href="/discord"
             target="_blank"
             rel="noopener noreferrer"

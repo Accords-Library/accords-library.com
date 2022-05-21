@@ -164,7 +164,7 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
     >
       <div
         {...handlers}
-        className={`fixed inset-0 touch-pan-y p-0 m-0 bg-light text-black grid
+        className={`fixed inset-0 m-0 grid touch-pan-y bg-light p-0 text-black
         [grid-template-areas:'main_sub_content'] ${gridCol} mobile:grid-cols-[1fr]
         mobile:grid-rows-[1fr_5rem] mobile:[grid-template-areas:'content''navbar']`}
       >
@@ -198,15 +198,15 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
 
         {/* Background when navbar is opened */}
         <div
-          className={`[grid-area:content] mobile:z-10 absolute
-          inset-0 transition-[backdrop-filter] duration-500 ${
+          className={`absolute inset-0 transition-[backdrop-filter]
+          duration-500 [grid-area:content] mobile:z-10 ${
             (appLayout.mainPanelOpen || appLayout.subPanelOpen) && isMobile
               ? "[backdrop-filter:blur(2px)]"
               : "pointer-events-none touch-none "
           }`}
         >
           <div
-            className={`absolute bg-shade inset-0 transition-opacity duration-500 
+            className={`absolute inset-0 bg-shade transition-opacity duration-500 
         ${turnSubIntoContent ? "" : ""}
         ${
           (appLayout.mainPanelOpen || appLayout.subPanelOpen) && isMobile
@@ -223,18 +223,18 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
         {/* Content panel */}
         <div
           id={AnchorIds.CONTENT_PANEL}
-          className={`[grid-area:content] overflow-y-scroll bg-light texture-paper-dots`}
+          className={`texture-paper-dots overflow-y-scroll bg-light [grid-area:content]`}
         >
           {contentPanel ? (
             contentPanel
           ) : (
-            <div className="grid place-content-center h-full">
+            <div className="grid h-full place-content-center">
               <div
-                className="text-dark border-dark border-2 border-dotted rounded-2xl
-              p-8 grid grid-flow-col place-items-center gap-9 opacity-40"
+                className="grid grid-flow-col place-items-center gap-9 rounded-2xl
+              border-2 border-dotted border-dark p-8 text-dark opacity-40"
               >
                 <p className="text-4xl">❮</p>
-                <p className="text-2xl w-64">{langui.select_option_sidebar}</p>
+                <p className="w-64 text-2xl">{langui.select_option_sidebar}</p>
               </div>
             </div>
           )}
@@ -243,13 +243,14 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
         {/* Sub panel */}
         {subPanel && (
           <div
-            className={`[grid-area:sub] mobile:[grid-area:content] mobile:z-10 mobile:w-[90%]
-            mobile:justify-self-end border-r-[1px] mobile:border-r-0 mobile:border-l-[1px]
-            border-black border-dotted overflow-y-scroll webkit-scrollbar:w-0
-            [scrollbar-width:none] transition-transform duration-300 bg-light texture-paper-dots
+            className={`texture-paper-dots overflow-y-scroll border-r-[1px] border-dotted
+            border-black bg-light transition-transform duration-300 [grid-area:sub]
+            [scrollbar-width:none] webkit-scrollbar:w-0 mobile:z-10 mobile:w-[90%]
+            mobile:justify-self-end mobile:border-r-0 mobile:border-l-[1px]
+            mobile:[grid-area:content]
           ${
             turnSubIntoContent
-              ? "mobile:border-l-0 mobile:w-full"
+              ? "mobile:w-full mobile:border-l-0"
               : !appLayout.subPanelOpen && "mobile:translate-x-[100vw]"
           }`}
           >
@@ -259,10 +260,10 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
 
         {/* Main panel */}
         <div
-          className={`[grid-area:main] mobile:[grid-area:content] mobile:z-10 mobile:w-[90%]
-          mobile:justify-self-start border-r-[1px] border-black border-dotted overflow-y-scroll
-          webkit-scrollbar:w-0 [scrollbar-width:none] transition-transform duration-300 bg-light
-          texture-paper-dots ${
+          className={`texture-paper-dots overflow-y-scroll border-r-[1px] border-dotted
+          border-black bg-light transition-transform duration-300 [grid-area:main]
+          [scrollbar-width:none] webkit-scrollbar:w-0 mobile:z-10 mobile:w-[90%]
+          mobile:justify-self-start mobile:[grid-area:content] ${
             appLayout.mainPanelOpen ? "" : "mobile:-translate-x-full"
           }`}
         >
@@ -271,8 +272,8 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
 
         {/* Navbar */}
         <div
-          className="[grid-area:navbar] border-t-[1px] border-black border-dotted grid
-          grid-cols-[5rem_1fr_5rem] place-items-center desktop:hidden bg-light texture-paper-dots"
+          className="texture-paper-dots grid grid-cols-[5rem_1fr_5rem] place-items-center
+          border-t-[1px] border-dotted border-black bg-light [grid-area:navbar] desktop:hidden"
         >
           <span
             className="material-icons mt-[.1em] cursor-pointer"
@@ -284,10 +285,10 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
             {appLayout.mainPanelOpen ? "close" : "menu"}
           </span>
           <p
-            className={`font-black font-headers text-center overflow-hidden ${
+            className={`overflow-hidden text-center font-headers font-black ${
               ogTitle && ogTitle.length > 30
-                ? "text-xl max-h-14"
-                : "text-2xl max-h-16"
+                ? "max-h-14 text-xl"
+                : "max-h-16 text-2xl"
             }`}
           >
             {ogTitle}
@@ -314,7 +315,7 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
           <h2 className="text-2xl">{langui.settings}</h2>
 
           <div
-            className="mt-4 grid gap-16 justify-items-center
+            className="mt-4 grid justify-items-center gap-16
             text-center desktop:grid-cols-[auto_auto]"
           >
             {router.locales && (
@@ -358,7 +359,7 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
                 )}
               </div>
             )}
-            <div className="grid gap-8 place-items-center text-center desktop:grid-cols-2">
+            <div className="grid place-items-center gap-8 text-center desktop:grid-cols-2">
               <div>
                 <h3 className="text-xl">{langui.theme}</h3>
                 <div className="flex flex-row">

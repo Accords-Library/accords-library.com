@@ -56,16 +56,15 @@ export function OrderableList(props: Immutable<Props>): JSX.Element {
               );
               updateOrder(sourceIndex, targetIndex);
             }}
-            className="grid grid-cols-[auto_1fr] place-content-center 
-            border-[1px] transition-all hover:text-light hover:bg-dark 
-            hover:drop-shadow-shade-lg border-dark bg-light text-dark 
-            rounded-full cursor-grab select-none px-1 py-2 pr-4 gap-2"
+            className="grid cursor-grab select-none grid-cols-[auto_1fr] place-content-center gap-2
+            rounded-full border-[1px] border-dark bg-light px-1 py-2 pr-4 text-dark transition-all
+            hover:bg-dark hover:text-light hover:drop-shadow-shade-lg"
             draggable
           >
             <div className="grid grid-rows-[.8em_.8em] place-items-center">
               {index > 0 && (
                 <span
-                  className="material-icons cursor-pointer row-start-1"
+                  className="material-icons row-start-1 cursor-pointer"
                   onClick={() => {
                     updateOrder(index, index - 1);
                   }}
@@ -75,7 +74,7 @@ export function OrderableList(props: Immutable<Props>): JSX.Element {
               )}
               {index < items.size - 1 && (
                 <span
-                  className="material-icons cursor-pointer row-start-2"
+                  className="material-icons row-start-2 cursor-pointer"
                   onClick={() => {
                     updateOrder(index, index + 1);
                   }}

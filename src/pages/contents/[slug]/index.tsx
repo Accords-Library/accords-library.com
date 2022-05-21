@@ -96,7 +96,7 @@ export default function Content(props: Immutable<Props>): JSX.Element {
               </div>
             )}
 
-          <div className="grid grid-flow-col place-items-center place-content-center gap-2">
+          <div className="grid grid-flow-col place-content-center place-items-center gap-2">
             <p className="font-headers">{langui.status}:</p>
 
             <ToolTip
@@ -114,7 +114,7 @@ export default function Content(props: Immutable<Props>): JSX.Element {
             selectedTranslation.text_set.transcribers.data.length > 0 && (
               <div>
                 <p className="font-headers">{langui.transcribers}:</p>
-                <div className="grid place-items-center place-content-center gap-2">
+                <div className="grid place-content-center place-items-center gap-2">
                   {selectedTranslation.text_set.transcribers.data.map(
                     (recorder) => (
                       <Fragment key={recorder.id}>
@@ -135,7 +135,7 @@ export default function Content(props: Immutable<Props>): JSX.Element {
             selectedTranslation.text_set.translators.data.length > 0 && (
               <div>
                 <p className="font-headers">{langui.translators}:</p>
-                <div className="grid place-items-center place-content-center gap-2">
+                <div className="grid place-content-center place-items-center gap-2">
                   {selectedTranslation.text_set.translators.data.map(
                     (recorder) => (
                       <Fragment key={recorder.id}>
@@ -156,7 +156,7 @@ export default function Content(props: Immutable<Props>): JSX.Element {
             selectedTranslation.text_set.proofreaders.data.length > 0 && (
               <div>
                 <p className="font-headers">{langui.proofreaders}:</p>
-                <div className="grid place-items-center place-content-center gap-2">
+                <div className="grid place-content-center place-items-center gap-2">
                   {selectedTranslation.text_set.proofreaders.data.map(
                     (recorder) => (
                       <Fragment key={recorder.id}>
@@ -176,7 +176,7 @@ export default function Content(props: Immutable<Props>): JSX.Element {
           {selectedTranslation.text_set.notes && (
             <div>
               <p className="font-headers">{"Notes"}:</p>
-              <div className="grid place-items-center place-content-center gap-2">
+              <div className="grid place-content-center place-items-center gap-2">
                 <Markdawn text={selectedTranslation.text_set.notes} />
               </div>
             </div>
@@ -224,7 +224,7 @@ export default function Content(props: Immutable<Props>): JSX.Element {
 
         {previousContent?.attributes && (
           <div className="mt-12 mb-8 w-full">
-            <h2 className="text-center text-2xl mb-4">
+            <h2 className="mb-4 text-center text-2xl">
               {langui.previous_content}
             </h2>
             <PreviewLine
@@ -272,7 +272,7 @@ export default function Content(props: Immutable<Props>): JSX.Element {
         {nextContent?.attributes && (
           <>
             <HorizontalLine />
-            <h2 className="text-center text-2xl mb-4">
+            <h2 className="mb-4 text-center text-2xl">
               {langui.followup_content}
             </h2>
             <PreviewLine

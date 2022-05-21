@@ -26,13 +26,13 @@ export function ContentLine(props: Immutable<Props>): JSX.Element {
   if (content.attributes) {
     return (
       <div
-        className={`grid gap-2 px-4 rounded-lg ${
-          opened && "bg-mid shadow-inner-sm shadow-shade h-auto py-3 my-2"
+        className={`grid gap-2 rounded-lg px-4 ${
+          opened && "my-2 h-auto bg-mid py-3 shadow-inner-sm shadow-shade"
         }`}
       >
         <div
-          className="grid gap-4 place-items-center
-        grid-cols-[auto_auto_1fr_auto_12ch] thin:grid-cols-[auto_auto_1fr_auto]"
+          className="grid grid-cols-[auto_auto_1fr_auto_12ch] place-items-center
+        gap-4 thin:grid-cols-[auto_auto_1fr_auto]"
         >
           <a>
             <h3 className="cursor-pointer" onClick={() => setOpened(!opened)}>
@@ -55,7 +55,7 @@ export function ContentLine(props: Immutable<Props>): JSX.Element {
               )
             )}
           </div>
-          <p className="border-b-2 h-4 w-full border-black border-dotted opacity-30"></p>
+          <p className="h-4 w-full border-b-2 border-dotted border-black opacity-30"></p>
           <p>
             {content.attributes.range[0]?.__typename ===
             "ComponentRangePageRange"

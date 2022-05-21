@@ -6,7 +6,7 @@ interface Props {
 
 export function SubPanel(props: Immutable<Props>): JSX.Element {
   return (
-    <div className="grid pt-10 pb-20 px-6 desktop:py-8 desktop:px-10 gap-y-2 text-center">
+    <div className="grid gap-y-2 px-6 pt-10 pb-20 text-center desktop:py-8 desktop:px-10">
       {props.children}
     </div>
   );

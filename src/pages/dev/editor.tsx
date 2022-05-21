@@ -75,10 +75,10 @@ export default function Editor(props: Immutable<Props>): JSX.Element {
             target.select();
             event.preventDefault();
           }}
-          className="font-monospace w-[50vw] h-[50vh] mobile:w-[75vw]"
+          className="h-[50vh] w-[50vw] font-monospace mobile:w-[75vw]"
         />
       </Popup>
-      <div className="flex flex-row gap-2 mb-4">
+      <div className="mb-4 flex flex-row gap-2">
         <ToolTip
           placement="bottom"
           content={
@@ -339,15 +339,15 @@ export default function Editor(props: Immutable<Props>): JSX.Element {
               const textarea = event.target as HTMLTextAreaElement;
               handleInput(textarea.value);
             }}
-            className="bg-mid !bg-opacity-40 rounded-xl
-            outline-none p-8 w-full text-black font-monospace h-[70vh]"
+            className="h-[70vh] w-full rounded-xl
+            bg-mid !bg-opacity-40 p-8 font-monospace text-black outline-none"
             value={markdown}
             title="Input textarea"
           />
         </div>
         <div>
           <h2>Preview</h2>
-          <div className="bg-mid bg-opacity-40 rounded-xl p-8 h-[70vh] overflow-scroll">
+          <div className="h-[70vh] overflow-scroll rounded-xl bg-mid bg-opacity-40 p-8">
             <Markdawn className="w-full" text={markdown} />
           </div>
         </div>

@@ -17,14 +17,14 @@ export function Select(props: Immutable<Props>): JSX.Element {
   return (
     <div
       className={`relative text-center transition-[filter] ${
-        opened && "drop-shadow-shade-lg z-10"
+        opened && "z-10 drop-shadow-shade-lg"
       } ${className}`}
     >
       <div
-        className={`outline outline-mid outline-2 outline-offset-[-2px] hover:outline-[transparent]
-        bg-light rounded-[1em] p-1 grid grid-flow-col grid-cols-[1fr_auto_auto] place-items-center
-        cursor-pointer hover:bg-mid transition-all ${
-          opened && "outline-[transparent] rounded-b-none bg-highlight"
+        className={`grid cursor-pointer grid-flow-col grid-cols-[1fr_auto_auto] place-items-center
+        rounded-[1em] bg-light p-1 outline outline-2 outline-offset-[-2px] outline-mid
+        transition-all hover:bg-mid hover:outline-[transparent] ${
+          opened && "rounded-b-none bg-highlight outline-[transparent]"
         }`}
       >
         <p onClick={() => setOpened(!opened)} className="w-full">
@@ -53,8 +53,8 @@ export function Select(props: Immutable<Props>): JSX.Element {
               <div
                 className={` ${
                   opened ? "bg-highlight" : "bg-light"
-                } hover:bg-mid transition-colors
-                cursor-pointer p-1 last-of-type:rounded-b-[1em]`}
+                } cursor-pointer p-1
+                transition-colors last-of-type:rounded-b-[1em] hover:bg-mid`}
                 id={option}
                 onClick={() => {
                   setOpened(false);

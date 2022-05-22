@@ -22,6 +22,7 @@ import { Immutable } from "helpers/types";
 import { GetStaticPropsContext } from "next";
 import { Fragment, useEffect, useState } from "react";
 import { Icon } from "components/Ico";
+import { WithLabel } from "components/Inputs/WithLabel";
 
 interface Props extends AppStaticProps {
   items: NonNullable<GetLibraryItemsPreviewQuery["libraryItems"]>["data"];
@@ -104,54 +105,62 @@ export default function Library(props: Immutable<Props>): JSX.Element {
         }}
       />
 
-      <div className="flex flex-row place-items-center gap-2">
-        <p className="flex-shrink-0">{langui.group_by}:</p>
-        <Select
-          className="w-full"
-          options={[
-            langui.category ?? "Category",
-            langui.type ?? "Type",
-            langui.release_year ?? "Year",
-          ]}
-          state={groupingMethod}
-          setState={setGroupingMethod}
-          allowEmpty
-        />
-      </div>
+      <WithLabel
+        label={langui.group_by}
+        input={
+          <Select
+            className="w-full"
+            options={[
+              langui.category ?? "Category",
+              langui.type ?? "Type",
+              langui.release_year ?? "Year",
+            ]}
+            state={groupingMethod}
+            setState={setGroupingMethod}
+            allowEmpty
+          />
+        }
+      />
 
-      <div className="flex flex-row place-items-center gap-2">
-        <p className="flex-shrink-0">{langui.order_by}:</p>
-        <Select
-          className="w-full"
-          options={[
-            langui.name ?? "Name",
-            langui.price ?? "Price",
-            langui.release_date ?? "Release date",
-          ]}
-          state={sortingMethod}
-          setState={setSortingMethod}
-        />
-      </div>
+      <WithLabel
+        label={langui.order_by}
+        input={
+          <Select
+            className="w-full"
+            options={[
+              langui.name ?? "Name",
+              langui.price ?? "Price",
+              langui.release_date ?? "Release date",
+            ]}
+            state={sortingMethod}
+            setState={setSortingMethod}
+          />
+        }
+      />
 
-      <div className="flex flex-row place-content-between place-items-center gap-2">
-        <p className="text-left">{langui.show_subitems}:</p>
-        <Switch state={showSubitems} setState={setShowSubitems} />
-      </div>
+      <WithLabel
+        label={langui.show_subitems}
+        input={<Switch state={showSubitems} setState={setShowSubitems} />}
+      />
 
-      <div className="flex flex-row place-content-between place-items-center gap-2">
-        <p className="text-left">{langui.show_primary_items}:</p>
-        <Switch state={showPrimaryItems} setState={setShowPrimaryItems} />
-      </div>
+      <WithLabel
+        label={langui.show_primary_items}
+        input={
+          <Switch state={showPrimaryItems} setState={setShowPrimaryItems} />
+        }
+      />
 
-      <div className="flex flex-row place-content-between place-items-center gap-2">
-        <p className="text-left">{langui.show_secondary_items}:</p>
-        <Switch state={showSecondaryItems} setState={setShowSecondaryItems} />
-      </div>
+      <WithLabel
+        label={langui.show_secondary_items}
+        input={
+          <Switch state={showSecondaryItems} setState={setShowSecondaryItems} />
+        }
+      />
 
-      <div className="flex flex-row place-content-between place-items-center gap-2 coarse:hidden">
-        <p className="text-left">{langui.always_show_info}:</p>
-        <Switch setState={setKeepInfoVisible} state={keepInfoVisible} />
-      </div>
+      <WithLabel
+        label={langui.always_show_info}
+        input={<Switch state={keepInfoVisible} setState={setKeepInfoVisible} />}
+      />
     </SubPanel>
   );
   const contentPanel = (

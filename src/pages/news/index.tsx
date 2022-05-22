@@ -13,8 +13,9 @@ import { getReadySdk } from "graphql/sdk";
 import { prettyDate, prettySlug } from "helpers/formatters";
 import { Immutable } from "helpers/types";
 import { GetStaticPropsContext } from "next";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Icon } from "components/Ico";
+import { WithLabel } from "components/Inputs/WithLabel";
 
 interface Props extends AppStaticProps {
   posts: NonNullable<GetPostsPreviewQuery["posts"]>["data"];
@@ -25,6 +26,15 @@ export default function News(props: Immutable<Props>): JSX.Element {
   const posts = sortPosts(props.posts);
 
   const [keepInfoVisible, setKeepInfoVisible] = useState(true);
+  const [searchName, setSearchName] = useState("");
+
+  const [filteredItems, setFilteredItems] = useState(
+    filterItems(posts, searchName)
+  );
+
+  useEffect(() => {
+    setFilteredItems(filterItems(posts, searchName));
+  }, [posts, searchName]);
 
   const subPanel = (
     <SubPanel>
@@ -34,10 +44,22 @@ export default function News(props: Immutable<Props>): JSX.Element {
         description={langui.news_description}
       />
 
-      <div className="flex flex-row place-items-center gap-2 coarse:hidden">
-        <p className="flex-shrink-0">{langui.always_show_info}:</p>
-        <Switch setState={setKeepInfoVisible} state={keepInfoVisible} />
-      </div>
+      <input
+        className="mb-6 w-full"
+        type="text"
+        name="name"
+        id="name"
+        placeholder={langui.search_title ?? undefined}
+        onChange={(event) => {
+          const input = event.target as HTMLInputElement;
+          setSearchName(input.value);
+        }}
+      />
+
+      <WithLabel
+        label={langui.always_show_info}
+        input={<Switch setState={setKeepInfoVisible} state={keepInfoVisible} />}
+      />
     </SubPanel>
   );
 
@@ -47,7 +69,7 @@ export default function News(props: Immutable<Props>): JSX.Element {
         className="grid grid-cols-1 items-end gap-8
         desktop:grid-cols-[repeat(auto-fill,_minmax(20rem,1fr))]"
       >
-        {posts.map((post) => (
+        {filteredItems.map((post) => (
           <Fragment key={post.id}>
             {post.attributes && (
               <PreviewCard
@@ -80,6 +102,7 @@ export default function News(props: Immutable<Props>): JSX.Element {
       navTitle={langui.news}
       subPanel={subPanel}
       contentPanel={contentPanel}
+      subPanelIcon={Icon.Search}
       {...props}
     />
   );
@@ -114,4 +137,20 @@ function sortPosts(
     })
     .reverse();
   return sortedPosts as Immutable<Props["posts"]>;
+}
+
+function filterItems(posts: Immutable<Props["posts"]>, searchName: string) {
+  return [...posts].filter((post) => {
+    if (searchName.length > 1) {
+      if (
+        post.attributes?.translations?.[0]?.title
+          .toLowerCase()
+          .includes(searchName.toLowerCase())
+      ) {
+        return true;
+      }
+      return false;
+    }
+    return true;
+  });
 }

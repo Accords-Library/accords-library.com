@@ -17,6 +17,7 @@ import { Immutable } from "helpers/types";
 import { GetStaticPropsContext } from "next";
 import { Fragment, useEffect, useState } from "react";
 import { Icon } from "components/Ico";
+import { WithLabel } from "components/Inputs/WithLabel";
 
 interface Props extends AppStaticProps {
   contents: NonNullable<GetContentsQuery["contents"]>["data"];
@@ -83,36 +84,34 @@ export default function Contents(props: Immutable<Props>): JSX.Element {
         }}
       />
 
-      <div className="flex flex-row place-items-center gap-2">
-        <p className="flex-shrink-0">{langui.group_by}:</p>
-        <Select
-          className="w-full"
-          options={[langui.category ?? "", langui.type ?? ""]}
-          state={groupingMethod}
-          setState={setGroupingMethod}
-          allowEmpty
-        />
-      </div>
+      <WithLabel
+        label={langui.group_by}
+        input={
+          <Select
+            className="w-full"
+            options={[langui.category ?? "", langui.type ?? ""]}
+            state={groupingMethod}
+            setState={setGroupingMethod}
+            allowEmpty
+          />
+        }
+      />
 
-      <div
-        className={`flex flex-row place-items-center gap-2 coarse:hidden ${
-          searchName.length > 1
-            ? "text-dark brightness-150 contrast-75 grayscale"
-            : ""
-        }`}
-      >
-        <p className="flex-shrink-0">{langui.combine_related_contents}:</p>
-        <Switch
-          setState={setCombineRelatedContent}
-          state={effectiveCombineRelatedContent}
-          disabled={searchName.length > 1}
-        />
-      </div>
+      <WithLabel
+        label={langui.combine_related_contents}
+        disabled={searchName.length > 1}
+        input={
+          <Switch
+            setState={setCombineRelatedContent}
+            state={effectiveCombineRelatedContent}
+          />
+        }
+      />
 
-      <div className="flex flex-row place-items-center gap-2 coarse:hidden">
-        <p className="flex-shrink-0">{langui.always_show_info}:</p>
-        <Switch setState={setKeepInfoVisible} state={keepInfoVisible} />
-      </div>
+      <WithLabel
+        label={langui.always_show_info}
+        input={<Switch setState={setKeepInfoVisible} state={keepInfoVisible} />}
+      />
     </SubPanel>
   );
   const contentPanel = (

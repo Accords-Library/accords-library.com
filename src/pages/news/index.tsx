@@ -34,7 +34,8 @@ export default function News(props: Immutable<Props>): JSX.Element {
 
   useEffect(() => {
     setFilteredItems(filterItems(posts, searchName));
-  }, [posts, searchName]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchName]);
 
   const subPanel = (
     <SubPanel>

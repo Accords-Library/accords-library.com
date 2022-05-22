@@ -128,7 +128,7 @@ export function AppContextProvider(props: Immutable<Props>): JSX.Element {
 
   const [searchPanelOpen, setSearchPanelOpen] = useStateWithLocalStorage<
     boolean | undefined
-  >("mainPanelOpen", initialState.mainPanelOpen);
+  >("searchPanelOpen", initialState.searchPanelOpen);
 
   return (
     <AppContext.Provider

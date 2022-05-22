@@ -190,14 +190,12 @@ export function MainPanel(props: Immutable<Props>): JSX.Element {
             <Markdown>{langui.licensing_notice}</Markdown>
           )}
         </p>
-        <a
-          aria-label="Read more about the license we use for this website"
-          className="colorize-black hover:colorize-dark transition-[filter]"
-          href="https://creativecommons.org/licenses/by-sa/4.0/"
-        >
-          <div
-            className="mt-4 mb-8 grid grid-flow-col place-content-center gap-1
+        <div className="mt-4 mb-8 grid place-content-center">
+          <a
+            aria-label="Read more about the license we use for this website"
+            className="transition-[filter] grid grid-flow-col place-content-center gap-1
             hover:[--theme-color-black:var(--theme-color-dark)]"
+            href="https://creativecommons.org/licenses/by-sa/4.0/"
           >
             <div
               className="aspect-square w-6 bg-black [mask:url('/icons/creative-commons-brands.svg')]
@@ -213,8 +211,8 @@ export function MainPanel(props: Immutable<Props>): JSX.Element {
                [mask:url('/icons/creative-commons-sa-brands.svg')] ![mask-size:contain]
                ![mask-repeat:no-repeat] ![mask-position:center]"
             />
-          </div>
-        </a>
+          </a>
+        </div>
         <p>
           {langui.copyright_notice && (
             <Markdown>{langui.copyright_notice}</Markdown>

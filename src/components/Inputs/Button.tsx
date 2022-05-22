@@ -1,3 +1,4 @@
+import { Ico, Icon } from "components/Ico";
 import { Immutable } from "helpers/types";
 import { useRouter } from "next/router";
 import { MouseEventHandler } from "react";
@@ -6,8 +7,9 @@ interface Props {
   id?: string;
   className?: string;
   href?: string;
-  children: React.ReactNode;
   active?: boolean;
+  icon?: Icon;
+  text?: string | null | undefined;
   locale?: string;
   target?: "_blank";
   onClick?: MouseEventHandler<HTMLDivElement>;
@@ -22,7 +24,8 @@ export function Button(props: Immutable<Props>): JSX.Element {
     onClick,
     active,
     className,
-    children,
+    icon,
+    text,
     target,
     href,
     locale,
@@ -52,7 +55,8 @@ export function Button(props: Immutable<Props>): JSX.Element {
           {badgeNumber}
         </div>
       )}
-      {children}
+      {icon && <Ico icon={icon} />}
+      <p>{text}</p>
     </div>
   );
 

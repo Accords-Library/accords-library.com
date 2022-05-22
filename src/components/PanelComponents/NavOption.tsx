@@ -1,3 +1,4 @@
+import { Ico, Icon } from "components/Ico";
 import { ToolTip } from "components/ToolTip";
 import { Immutable } from "helpers/types";
 import { useRouter } from "next/router";
@@ -5,7 +6,7 @@ import { MouseEventHandler } from "react";
 
 interface Props {
   url: string;
-  icon?: string;
+  icon?: Icon;
   title: string | null | undefined;
   subtitle?: string | null | undefined;
   border?: boolean;
@@ -54,9 +55,7 @@ export function NavOption(props: Immutable<Props>): JSX.Element {
           props.icon ? "text-left" : "text-center"
         } ${divCommon}`}
       >
-        {props.icon && (
-          <span className="material-icons mt-[.1em]">{props.icon}</span>
-        )}
+        {props.icon && <Ico icon={props.icon} className="mt-[.1em]" />}
 
         {!props.reduced && (
           <div>

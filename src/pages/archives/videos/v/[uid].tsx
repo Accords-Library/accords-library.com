@@ -1,5 +1,6 @@
 import { AppLayout } from "components/AppLayout";
 import { HorizontalLine } from "components/HorizontalLine";
+import { Ico, Icon } from "components/Ico";
 import { Button } from "components/Inputs/Button";
 import { InsetBox } from "components/InsetBox";
 import { NavOption } from "components/PanelComponents/NavOption";
@@ -107,24 +108,27 @@ export default function Video(props: Props): JSX.Element {
             <h1 className="text-2xl">{video.title}</h1>
             <div className="flex w-full flex-row flex-wrap gap-x-6">
               <p>
-                <span className="material-icons mr-1 translate-y-[.15em] !text-base">
-                  event
-                </span>
+                <Ico
+                  icon={Icon.Event}
+                  className="mr-1 translate-y-[.15em] !text-base"
+                />
                 {prettyDate(video.published_date)}
               </p>
               <p>
-                <span className="material-icons mr-1 translate-y-[.15em] !text-base">
-                  visibility
-                </span>
+                <Ico
+                  icon={Icon.Visibility}
+                  className="mr-1 translate-y-[.15em] !text-base"
+                />
                 {isMobile
                   ? prettyShortenNumber(video.views)
                   : video.views.toLocaleString()}
               </p>
               {video.channel?.data?.attributes && (
                 <p>
-                  <span className="material-icons mr-1 translate-y-[.15em] !text-base">
-                    thumb_up
-                  </span>
+                  <Ico
+                    icon={Icon.ThumbUp}
+                    className="mr-1 translate-y-[.15em] !text-base"
+                  />
                   {isMobile
                     ? prettyShortenNumber(video.likes)
                     : video.likes.toLocaleString()}
@@ -135,7 +139,10 @@ export default function Video(props: Props): JSX.Element {
                 target="_blank"
                 rel="noreferrer"
               >
-                <Button className="!py-0 !px-3">{`${langui.view_on} ${video.source}`}</Button>
+                <Button
+                  className="!py-0 !px-3"
+                  text={`${langui.view_on} ${video.source}`}
+                />
               </a>
             </div>
           </div>
@@ -148,10 +155,8 @@ export default function Video(props: Props): JSX.Element {
               <div>
                 <Button
                   href={`/archives/videos/c/${video.channel.data.attributes.uid}`}
-                >
-                  <h3>{video.channel.data.attributes.title}</h3>
-                </Button>
-
+                  text={video.channel.data.attributes.title}
+                />
                 <p>
                   {`${video.channel.data.attributes.subscribers.toLocaleString()}
                    ${langui.subscribers?.toLowerCase()}`}

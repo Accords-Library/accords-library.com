@@ -100,9 +100,10 @@ export function ScanSet(props: Immutable<Props>): JSX.Element {
 
           <div className="flex flex-row flex-wrap place-items-center gap-4 pb-6">
             {content?.data?.attributes?.slug && (
-              <Button href={`/contents/${content.data.attributes.slug}`}>
-                {langui.open_content}
-              </Button>
+              <Button
+                href={`/contents/${content.data.attributes.slug}`}
+                text={langui.open_content}
+              />
             )}
 
             <LanguageSwitcher />

@@ -14,6 +14,7 @@ import { prettyDate, prettySlug } from "helpers/formatters";
 import { Immutable } from "helpers/types";
 import { GetStaticPropsContext } from "next";
 import { Fragment, useState } from "react";
+import { Icon } from "components/Ico";
 
 interface Props extends AppStaticProps {
   posts: NonNullable<GetPostsPreviewQuery["posts"]>["data"];
@@ -28,7 +29,7 @@ export default function News(props: Immutable<Props>): JSX.Element {
   const subPanel = (
     <SubPanel>
       <PanelHeader
-        icon="feed"
+        icon={Icon.Feed}
         title={langui.news}
         description={langui.news_description}
       />

@@ -1,4 +1,5 @@
 import { AppLayout } from "components/AppLayout";
+import { Icon } from "components/Ico";
 import { PageSelector } from "components/Inputs/PageSelector";
 import { Switch } from "components/Inputs/Switch";
 import { PanelHeader } from "components/PanelComponents/PanelHeader";
@@ -61,7 +62,7 @@ export default function Videos(props: Props): JSX.Element {
       />
 
       <PanelHeader
-        icon="movie"
+        icon={Icon.Movie}
         title="Videos"
         description={langui.archives_description}
       />

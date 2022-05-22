@@ -21,6 +21,7 @@ import { convertPrice } from "helpers/numbers";
 import { Immutable } from "helpers/types";
 import { GetStaticPropsContext } from "next";
 import { Fragment, useEffect, useState } from "react";
+import { Icon } from "components/Ico";
 
 interface Props extends AppStaticProps {
   items: NonNullable<GetLibraryItemsPreviewQuery["libraryItems"]>["data"];
@@ -86,7 +87,7 @@ export default function Library(props: Immutable<Props>): JSX.Element {
   const subPanel = (
     <SubPanel>
       <PanelHeader
-        icon="library_books"
+        icon={Icon.LibraryBooks}
         title={langui.library}
         description={langui.library_description}
       />
@@ -219,7 +220,7 @@ export default function Library(props: Immutable<Props>): JSX.Element {
       navTitle={langui.library}
       subPanel={subPanel}
       contentPanel={contentPanel}
-      subPanelIcon="search"
+      subPanelIcon={Icon.Search}
       {...props}
     />
   );

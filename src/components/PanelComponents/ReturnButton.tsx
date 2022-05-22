@@ -1,4 +1,5 @@
 import { HorizontalLine } from "components/HorizontalLine";
+import { Icon } from "components/Ico";
 import { Button } from "components/Inputs/Button";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { AppStaticProps } from "graphql/getAppStaticProps";
@@ -36,10 +37,9 @@ export function ReturnButton(props: Immutable<Props>): JSX.Element {
         onClick={() => appLayout.setSubPanelOpen(false)}
         href={props.href}
         className="grid grid-flow-col gap-2"
-      >
-        <span className="material-icons">navigate_before</span>
-        {props.langui.return_to} {props.title}
-      </Button>
+        text={`${props.langui.return_to} ${props.title}`}
+        icon={Icon.NavigateBefore}
+      />
       {props.horizontalLine && <HorizontalLine />}
     </div>
   );

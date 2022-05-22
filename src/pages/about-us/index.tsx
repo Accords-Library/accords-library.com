@@ -1,4 +1,5 @@
 import { AppLayout } from "components/AppLayout";
+import { Icon } from "components/Ico";
 import { NavOption } from "components/PanelComponents/NavOption";
 import { PanelHeader } from "components/PanelComponents/PanelHeader";
 import { SubPanel } from "components/Panels/SubPanel";
@@ -13,7 +14,7 @@ export default function AboutUs(props: Immutable<Props>): JSX.Element {
   const subPanel = (
     <SubPanel>
       <PanelHeader
-        icon="info"
+        icon={Icon.Info}
         title={langui.about_us}
         description={langui.about_us_description}
       />

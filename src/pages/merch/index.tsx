@@ -4,6 +4,7 @@ import { SubPanel } from "components/Panels/SubPanel";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { Immutable } from "helpers/types";
 import { GetStaticPropsContext } from "next";
+import { Icon } from "components/Ico";
 
 interface Props extends AppStaticProps {}
 export default function Merch(props: Immutable<Props>): JSX.Element {
@@ -11,7 +12,7 @@ export default function Merch(props: Immutable<Props>): JSX.Element {
   const subPanel = (
     <SubPanel>
       <PanelHeader
-        icon="store"
+        icon={Icon.Store}
         title={langui.merch}
         description={langui.merch_description}
       />

@@ -1,3 +1,4 @@
+import { Icon } from "components/Ico";
 import { AppStaticProps } from "graphql/getAppStaticProps";
 import { prettyLanguage } from "helpers/formatters";
 import { Immutable } from "helpers/types";
@@ -26,18 +27,18 @@ export function LanguageSwitcher(props: Immutable<Props>): JSX.Element {
                 <Button
                   active={value === localesIndex}
                   onClick={() => setLocalesIndex(value)}
-                >
-                  {prettyLanguage(locale, props.languages)}
-                </Button>
+                  text={prettyLanguage(locale, props.languages)}
+                />
               )}
             </Fragment>
           ))}
         </div>
       }
     >
-      <Button badgeNumber={locales.size > 1 ? locales.size : undefined}>
-        <span className="material-icons">translate</span>
-      </Button>
+      <Button
+        badgeNumber={locales.size > 1 ? locales.size : undefined}
+        icon={Icon.Translate}
+      />
     </ToolTip>
   );
 }

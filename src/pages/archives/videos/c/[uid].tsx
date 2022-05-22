@@ -21,6 +21,7 @@ import {
   GetStaticPropsContext,
 } from "next";
 import { Fragment, useState } from "react";
+import { Icon } from "components/Ico";
 
 interface Props extends AppStaticProps {
   channel: NonNullable<
@@ -43,7 +44,7 @@ export default function Channel(props: Props): JSX.Element {
       />
 
       <PanelHeader
-        icon="movie"
+        icon={Icon.Movie}
         title={langui.videos}
         description={langui.archives_description}
       />

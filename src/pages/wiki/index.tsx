@@ -5,6 +5,7 @@ import { SubPanel } from "components/Panels/SubPanel";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { Immutable } from "helpers/types";
 import { GetStaticPropsContext } from "next";
+import { Icon } from "components/Ico";
 
 interface Props extends AppStaticProps {}
 
@@ -13,7 +14,7 @@ export default function Wiki(props: Immutable<Props>): JSX.Element {
   const subPanel = (
     <SubPanel>
       <PanelHeader
-        icon="travel_explore"
+        icon={Icon.TravelExplore}
         title={langui.wiki}
         description={langui.wiki_description}
       />

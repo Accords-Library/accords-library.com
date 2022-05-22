@@ -8,6 +8,7 @@ import { Immutable } from "helpers/types";
 import { useMediaDesktop } from "hooks/useMediaQuery";
 import Markdown from "markdown-to-jsx";
 import Link from "next/link";
+import { Icon } from "components/Ico";
 
 interface Props {
   langui: AppStaticProps["langui"];
@@ -34,9 +35,12 @@ export function MainPanel(props: Immutable<Props>): JSX.Element {
           appLayout.setMainPanelReduced(!appLayout.mainPanelReduced)
         }
       >
-        <Button className="material-icons bg-light !px-2">
-          {appLayout.mainPanelReduced ? "chevron_right" : "chevron_left"}
-        </Button>
+        <Button
+          className="bg-light !px-2"
+          icon={
+            appLayout.mainPanelReduced ? Icon.ChevronRight : Icon.ChevronLeft
+          }
+        />
       </div>
 
       <div>
@@ -74,9 +78,8 @@ export function MainPanel(props: Immutable<Props>): JSX.Element {
                 onClick={() => {
                   appLayout.setConfigPanelOpen(true);
                 }}
-              >
-                <span className={"material-icons"}>settings</span>
-              </Button>
+                icon={Icon.Settings}
+              />
             </ToolTip>
 
             <ToolTip
@@ -89,9 +92,8 @@ export function MainPanel(props: Immutable<Props>): JSX.Element {
                 onClick={() => {
                   appLayout.setSearchPanelOpen(true);
                 }}
-              >
-                <span className={"material-icons"}>search</span>
-              </Button>
+                icon={Icon.Search}
+              />
             </ToolTip>
           </div>
         </div>
@@ -101,7 +103,7 @@ export function MainPanel(props: Immutable<Props>): JSX.Element {
 
       <NavOption
         url="/library"
-        icon="library_books"
+        icon={Icon.LibraryBooks}
         title={langui.library}
         subtitle={langui.library_short_description}
         reduced={appLayout.mainPanelReduced && isDesktop}
@@ -109,7 +111,7 @@ export function MainPanel(props: Immutable<Props>): JSX.Element {
 
       <NavOption
         url="/contents"
-        icon="workspaces"
+        icon={Icon.Workspaces}
         title={langui.contents}
         subtitle={langui.contents_short_description}
         reduced={appLayout.mainPanelReduced && isDesktop}
@@ -117,63 +119,61 @@ export function MainPanel(props: Immutable<Props>): JSX.Element {
 
       <NavOption
         url="/wiki"
-        icon="travel_explore"
+        icon={Icon.TravelExplore}
         title={langui.wiki}
         subtitle={langui.wiki_short_description}
         reduced={appLayout.mainPanelReduced && isDesktop}
       />
 
       {/*
-
       <NavOption
         url="/chronicles"
-        icon="watch_later"
+        icon={Icon.WatchLater}
         title={langui.chronicles}
         subtitle={langui.chronicles_short_description}
         
         reduced={appLayout.mainPanelReduced && isDesktop}
         
       />
-      
       */}
 
       <HorizontalLine />
 
       <NavOption
         url="/news"
-        icon="feed"
+        icon={Icon.Feed}
         title={langui.news}
         reduced={appLayout.mainPanelReduced && isDesktop}
       />
+
       {/*
       <NavOption
         url="/merch"
-        icon="store"
+        icon={Icon.Store}
         title={langui.merch}
         
         reduced={appLayout.mainPanelReduced && isDesktop}
         
       />
-      
       */}
 
       <NavOption
         url="https://gallery.accords-library.com/"
-        icon="collections"
+        icon={Icon.Collections}
         title={langui.gallery}
         reduced={appLayout.mainPanelReduced && isDesktop}
       />
 
       <NavOption
         url="/archives"
-        icon="inventory"
+        icon={Icon.Inventory}
         title={langui.archives}
         reduced={appLayout.mainPanelReduced && isDesktop}
       />
 
       <NavOption
         url="/about-us"
-        icon="info"
+        icon={Icon.Info}
         title={langui.about_us}
         reduced={appLayout.mainPanelReduced && isDesktop}
       />

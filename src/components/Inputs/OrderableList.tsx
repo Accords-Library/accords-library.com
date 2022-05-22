@@ -1,3 +1,4 @@
+import { Ico, Icon } from "components/Ico";
 import { arrayMove } from "helpers/others";
 import { Immutable } from "helpers/types";
 import { Fragment, useEffect, useState } from "react";
@@ -63,24 +64,22 @@ export function OrderableList(props: Immutable<Props>): JSX.Element {
           >
             <div className="grid grid-rows-[.8em_.8em] place-items-center">
               {index > 0 && (
-                <span
-                  className="material-icons row-start-1 cursor-pointer"
+                <Ico
+                  icon={Icon.ArrowDropUp}
+                  className="row-start-1 cursor-pointer"
                   onClick={() => {
                     updateOrder(index, index - 1);
                   }}
-                >
-                  arrow_drop_up
-                </span>
+                />
               )}
               {index < items.size - 1 && (
-                <span
-                  className="material-icons row-start-2 cursor-pointer"
+                <Ico
+                  icon={Icon.ArrowDropDown}
+                  className="row-start-2 cursor-pointer"
                   onClick={() => {
                     updateOrder(index, index + 1);
                   }}
-                >
-                  arrow_drop_down
-                </span>
+                />
               )}
             </div>
             {value}

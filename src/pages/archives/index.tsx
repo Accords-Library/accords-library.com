@@ -5,6 +5,7 @@ import { SubPanel } from "components/Panels/SubPanel";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { Immutable } from "helpers/types";
 import { GetStaticPropsContext } from "next";
+import { Icon } from "components/Ico";
 
 interface Props extends AppStaticProps {}
 
@@ -13,7 +14,7 @@ export default function Archives(props: Immutable<Props>): JSX.Element {
   const subPanel = (
     <SubPanel>
       <PanelHeader
-        icon="inventory"
+        icon={Icon.Inventory}
         title={langui.archives}
         description={langui.archives_description}
       />

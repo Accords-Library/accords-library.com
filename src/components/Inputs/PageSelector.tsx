@@ -1,3 +1,4 @@
+import { Icon } from "components/Ico";
 import { Immutable } from "helpers/types";
 import { Dispatch, SetStateAction } from "react";
 import { Button } from "./Button";
@@ -19,18 +20,19 @@ export function PageSelector(props: Immutable<Props>): JSX.Element {
           if (page > 0) setPage(page - 1);
         }}
         className="rounded-r-none"
-      >
-        <span className="material-icons">navigate_before</span>
-      </Button>
-      <Button className="rounded-none border-x-0">{page + 1}</Button>
+        icon={Icon.NavigateBefore}
+      />
+      <Button
+        className="rounded-none border-x-0"
+        text={(page + 1).toString()}
+      />
       <Button
         onClick={() => {
           if (page < maxPage) setPage(page + 1);
         }}
         className="rounded-l-none"
-      >
-        <span className="material-icons">navigate_next</span>
-      </Button>
+        icon={Icon.NavigateNext}
+      />
     </div>
   );
 }

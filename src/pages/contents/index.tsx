@@ -16,6 +16,7 @@ import { prettyinlineTitle, prettySlug } from "helpers/formatters";
 import { Immutable } from "helpers/types";
 import { GetStaticPropsContext } from "next";
 import { Fragment, useEffect, useState } from "react";
+import { Icon } from "components/Ico";
 
 interface Props extends AppStaticProps {
   contents: NonNullable<GetContentsQuery["contents"]>["data"];
@@ -65,7 +66,7 @@ export default function Contents(props: Immutable<Props>): JSX.Element {
   const subPanel = (
     <SubPanel>
       <PanelHeader
-        icon="workspaces"
+        icon={Icon.Workspaces}
         title={langui.contents}
         description={langui.contents_description}
       />
@@ -202,7 +203,7 @@ export default function Contents(props: Immutable<Props>): JSX.Element {
       navTitle={langui.contents}
       subPanel={subPanel}
       contentPanel={contentPanel}
-      subPanelIcon="search"
+      subPanelIcon={Icon.Search}
       {...props}
     />
   );

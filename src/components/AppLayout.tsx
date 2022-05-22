@@ -4,13 +4,7 @@ import { UploadImageFragment } from "graphql/generated";
 import { AppStaticProps } from "graphql/getAppStaticProps";
 import { prettyLanguage, prettySlug } from "helpers/formatters";
 import { getOgImage, ImageQuality, OgImage } from "helpers/img";
-import {
-  getClient,
-  getIndexes,
-  Indexes,
-  search,
-  SearchResult,
-} from "helpers/search";
+import { getClient, Indexes, search, SearchResult } from "helpers/search";
 import { Immutable } from "helpers/types";
 import { useMediaMobile } from "hooks/useMediaQuery";
 import { AnchorIds } from "hooks/useScrollTopOnChange";
@@ -18,6 +12,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
 import { useSwipeable } from "react-swipeable";
+import { Ico, Icon } from "./Ico";
 import { OrderableList } from "./Inputs/OrderableList";
 import { Select } from "./Inputs/Select";
 import { MainPanel } from "./Panels/MainPanel";
@@ -26,7 +21,7 @@ import { PreviewCard } from "./PreviewCard";
 
 interface Props extends AppStaticProps {
   subPanel?: React.ReactNode;
-  subPanelIcon?: string;
+  subPanelIcon?: Icon;
   contentPanel?: React.ReactNode;
   title?: string;
   navTitle: string | null | undefined;
@@ -45,7 +40,7 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
     title,
     navTitle,
     description,
-    subPanelIcon = "tune",
+    subPanelIcon = Icon.Tune,
   } = props;
   const router = useRouter();
   const isMobile = useMediaMobile();
@@ -300,15 +295,14 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
           className="texture-paper-dots grid grid-cols-[5rem_1fr_5rem] place-items-center
           border-t-[1px] border-dotted border-black bg-light [grid-area:navbar] desktop:hidden"
         >
-          <span
-            className="material-icons mt-[.1em] cursor-pointer"
+          <Ico
+            icon={appLayout.mainPanelOpen ? Icon.Close : Icon.Menu}
+            className="mt-[.1em] cursor-pointer"
             onClick={() => {
               appLayout.setMainPanelOpen(!appLayout.mainPanelOpen);
               appLayout.setSubPanelOpen(false);
             }}
-          >
-            {appLayout.mainPanelOpen ? "close" : "menu"}
-          </span>
+          />
           <p
             className={`overflow-hidden text-center font-headers font-black ${
               ogTitle && ogTitle.length > 30
@@ -318,19 +312,16 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
           >
             {ogTitle}
           </p>
-          <span
-            className="material-icons mt-[.1em] cursor-pointer"
-            onClick={() => {
-              appLayout.setSubPanelOpen(!appLayout.subPanelOpen);
-              appLayout.setMainPanelOpen(false);
-            }}
-          >
-            {subPanel && !turnSubIntoContent
-              ? appLayout.subPanelOpen
-                ? "close"
-                : subPanelIcon
-              : ""}
-          </span>
+          {subPanel && !turnSubIntoContent && (
+            <Ico
+              icon={appLayout.subPanelOpen ? Icon.Close : subPanelIcon}
+              className="mt-[.1em] cursor-pointer"
+              onClick={() => {
+                appLayout.setSubPanelOpen(!appLayout.subPanelOpen);
+                appLayout.setMainPanelOpen(false);
+              }}
+            />
+          )}
         </div>
 
         <Popup
@@ -398,18 +389,16 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
                       appLayout.darkMode === false
                     }
                     className="rounded-r-none"
-                  >
-                    {langui.light}
-                  </Button>
+                    text={langui.light}
+                  />
                   <Button
                     onClick={() => {
                       appLayout.setSelectedThemeMode(false);
                     }}
                     active={appLayout.selectedThemeMode === false}
                     className="rounded-l-none rounded-r-none border-x-0"
-                  >
-                    {langui.auto}
-                  </Button>
+                    text={langui.auto}
+                  />
                   <Button
                     onClick={() => {
                       appLayout.setDarkMode(true);
@@ -420,9 +409,8 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
                       appLayout.darkMode === true
                     }
                     className="rounded-l-none"
-                  >
-                    {langui.dark}
-                  </Button>
+                    text={langui.dark}
+                  />
                 </div>
               </div>
 
@@ -450,23 +438,18 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
                           : 1 / 1.05
                       )
                     }
-                  >
-                    <span className="material-icons !text-base">
-                      text_decrease
-                    </span>
-                  </Button>
+                    icon={Icon.TextDecrease}
+                  />
                   <Button
                     className="rounded-l-none rounded-r-none border-x-0"
                     onClick={() => appLayout.setFontSize(1)}
-                  >
-                    {((appLayout.fontSize ?? 1) * 100).toLocaleString(
+                    text={`${((appLayout.fontSize ?? 1) * 100).toLocaleString(
                       undefined,
                       {
                         maximumFractionDigits: 0,
                       }
-                    )}
-                    %
-                  </Button>
+                    )}%`}
+                  />
                   <Button
                     className="rounded-l-none"
                     onClick={() =>
@@ -476,11 +459,8 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
                           : 1 * 1.05
                       )
                     }
-                  >
-                    <span className="material-icons !text-base">
-                      text_increase
-                    </span>
-                  </Button>
+                    icon={Icon.TextIncrease}
+                  />
                 </div>
               </div>
 
@@ -491,16 +471,14 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
                     active={appLayout.dyslexic === false}
                     onClick={() => appLayout.setDyslexic(false)}
                     className="font-zenMaruGothic"
-                  >
-                    Zen Maru Gothic
-                  </Button>
+                    text="Zen Maru Gothic"
+                  />
                   <Button
                     active={appLayout.dyslexic === true}
                     onClick={() => appLayout.setDyslexic(true)}
                     className="font-openDyslexic"
-                  >
-                    OpenDyslexic
-                  </Button>
+                    text="OpenDyslexic"
+                  />
                 </div>
               </div>
 

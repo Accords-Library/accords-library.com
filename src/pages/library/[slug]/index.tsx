@@ -157,13 +157,12 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
                 <p>{langui.subitem_of}</p>
                 <Button
                   href={`/library/${item.subitem_of.data[0].attributes.slug}`}
-                >
-                  {prettyinlineTitle(
+                  text={prettyinlineTitle(
                     "",
                     item.subitem_of.data[0].attributes.title,
                     item.subitem_of.data[0].attributes.subtitle
                   )}
-                </Button>
+                />
               </div>
             )}
             <div className="grid place-items-center">
@@ -188,9 +187,11 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
                     {item.urls.map((url, index) => (
                       <Fragment key={index}>
                         {url?.url && (
-                          <Button href={url.url} target={"_blank"}>
-                            {prettyURL(url.url)}
-                          </Button>
+                          <Button
+                            href={url.url}
+                            target={"_blank"}
+                            text={prettyURL(url.url)}
+                          />
                         )}
                       </Fragment>
                     ))}
@@ -437,9 +438,7 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
           <div id="contents" className="grid w-full place-items-center gap-8">
             <h2 className="-mb-6 text-2xl">{langui.contents}</h2>
             {displayOpenScans && (
-              <Button href={`/library/${item.slug}/scans`}>
-                {langui.view_scans}
-              </Button>
+              <Button href={`/library/${item.slug}/scans`} text={langui.view_scans}/>
             )}
             <div className="grid w-full gap-4">
               {item.contents.data.map((content) => (

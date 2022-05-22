@@ -15,6 +15,7 @@ import { ImageQuality } from "helpers/img";
 import { Immutable } from "helpers/types";
 import Link from "next/link";
 import { Chip } from "./Chip";
+import { Ico, Icon } from "./Ico";
 import { Img } from "./Img";
 
 interface Props {
@@ -69,17 +70,19 @@ export function PreviewCard(props: Immutable<Props>): JSX.Element {
       <div className="flex w-full flex-row flex-wrap gap-x-3">
         {metadata.release_date && (
           <p className="text-sm mobile:text-xs">
-            <span className="material-icons mr-1 translate-y-[.15em] !text-base">
-              event
-            </span>
+            <Ico
+              icon={Icon.Event}
+              className="mr-1 translate-y-[.15em] !text-base"
+            />
             {prettyDate(metadata.release_date)}
           </p>
         )}
         {metadata.price && metadata.currencies && (
           <p className="justify-self-end text-sm mobile:text-xs">
-            <span className="material-icons mr-1 translate-y-[.15em] !text-base">
-              shopping_cart
-            </span>
+            <Ico
+              icon={Icon.ShoppingCart}
+              className="mr-1 translate-y-[.15em] !text-base"
+            />
             {prettyPrice(
               metadata.price,
               metadata.currencies,
@@ -89,17 +92,19 @@ export function PreviewCard(props: Immutable<Props>): JSX.Element {
         )}
         {metadata.views && (
           <p className="text-sm mobile:text-xs">
-            <span className="material-icons mr-1 translate-y-[.15em] !text-base">
-              visibility
-            </span>
+            <Ico
+              icon={Icon.Visibility}
+              className="mr-1 translate-y-[.15em] !text-base"
+            />
             {prettyShortenNumber(metadata.views)}
           </p>
         )}
         {metadata.author && (
           <p className="text-sm mobile:text-xs">
-            <span className="material-icons mr-1 translate-y-[.15em] !text-base">
-              person
-            </span>
+            <Ico
+              icon={Icon.Person}
+              className="mr-1 translate-y-[.15em] !text-base"
+            />
             {metadata.author}
           </p>
         )}
@@ -175,12 +180,10 @@ export function PreviewCard(props: Immutable<Props>): JSX.Element {
                   bg-shade bg-opacity-[var(--bg-opacity)] text-light
                   transition-colors drop-shadow-shade-lg"
                 >
-                  <span
-                    className="material-icons text-6xl
-                    opacity-[var(--play-opacity)] transition-opacity"
-                  >
-                    play_circle_outline
-                  </span>
+                  <Ico
+                    icon={Icon.PlayCircleOutline}
+                    className="text-6xl opacity-[var(--play-opacity)] transition-opacity"
+                  />
                 </div>
                 <div
                   className="absolute right-2 bottom-2 rounded-full bg-black

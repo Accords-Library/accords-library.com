@@ -12,6 +12,7 @@ import { Immutable } from "helpers/types";
 import { GetStaticPropsContext } from "next";
 import { useCallback, useState } from "react";
 import TurndownService from "turndown";
+import { Ico, Icon } from "components/Ico";
 
 interface Props extends AppStaticProps {}
 
@@ -87,10 +88,7 @@ export default function Editor(props: Immutable<Props>): JSX.Element {
               <p>
                 Use this to create dialogues and transcripts. You can then add
                 transcript speech line within (
-                <span className="material-icons text-xs">
-                  record_voice_over
-                </span>
-                )
+                <Ico className="text-xs" icon={Icon.RecordVoiceOver} />)
               </p>
             </>
           }
@@ -110,9 +108,8 @@ export default function Editor(props: Immutable<Props>): JSX.Element {
               );
               handleInput(textarea.value);
             }}
-          >
-            <span className="material-icons">question_answer</span>
-          </Button>
+            icon={Icon.QuestionAnswer}
+          />
         </ToolTip>
         <ToolTip
           placement="bottom"
@@ -142,9 +139,8 @@ export default function Editor(props: Immutable<Props>): JSX.Element {
               );
               handleInput(textarea.value);
             }}
-          >
-            <span className="material-icons">record_voice_over</span>
-          </Button>
+            icon={Icon.RecordVoiceOver}
+          />
         </ToolTip>
         <ToolTip
           placement="bottom"
@@ -165,9 +161,8 @@ export default function Editor(props: Immutable<Props>): JSX.Element {
               );
               handleInput(textarea.value);
             }}
-          >
-            <span className="material-icons">density_large</span>
-          </Button>
+            icon={Icon.DensityLarge}
+          />
         </ToolTip>
 
         <ToolTip
@@ -189,9 +184,8 @@ export default function Editor(props: Immutable<Props>): JSX.Element {
               );
               handleInput(textarea.value);
             }}
-          >
-            <span className="material-icons">check_box_outline_blank</span>
-          </Button>
+            icon={Icon.CheckBoxOutlineBlank}
+          />
         </ToolTip>
         <ToolTip
           placement="bottom"
@@ -212,9 +206,8 @@ export default function Editor(props: Immutable<Props>): JSX.Element {
               );
               handleInput(textarea.value);
             }}
-          >
-            <span className="material-icons">more_horiz</span>
-          </Button>
+            icon={Icon.MoreHoriz}
+          />
         </ToolTip>
         <ToolTip
           content={
@@ -247,9 +240,8 @@ export default function Editor(props: Immutable<Props>): JSX.Element {
                     );
                     handleInput(textarea.value);
                   }}
-                >
-                  <span className="material-icons">link</span>
-                </Button>
+                  icon={Icon.Link}
+                />
               </ToolTip>
               <ToolTip
                 placement="right"
@@ -278,18 +270,14 @@ export default function Editor(props: Immutable<Props>): JSX.Element {
                     );
                     handleInput(textarea.value);
                   }}
-                >
-                  <p className="flex place-items-center gap-1">
-                    <span className="material-icons">link</span>+ target
-                  </p>
-                </Button>
+                  icon={Icon.Link}
+                  text="+ target"
+                />
               </ToolTip>
             </div>
           }
         >
-          <Button>
-            <span className="material-icons">link</span>
-          </Button>
+          <Button icon={Icon.Link} />
         </ToolTip>
 
         <ToolTip
@@ -311,9 +299,8 @@ export default function Editor(props: Immutable<Props>): JSX.Element {
               );
               handleInput(textarea.value);
             }}
-          >
-            <span className="material-icons">person</span>
-          </Button>
+            icon={Icon.Person}
+          />
         </ToolTip>
 
         <ToolTip
@@ -324,9 +311,8 @@ export default function Editor(props: Immutable<Props>): JSX.Element {
             onClick={() => {
               setConverterOpened(true);
             }}
-          >
-            <span className="material-icons">html</span>
-          </Button>
+            icon={Icon.Html}
+          />
         </ToolTip>
       </div>
 

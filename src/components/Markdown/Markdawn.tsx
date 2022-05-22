@@ -1,4 +1,5 @@
 import { HorizontalLine } from "components/HorizontalLine";
+import { Ico, Icon } from "components/Ico";
 import { Img } from "components/Img";
 import { InsetBox } from "components/InsetBox";
 import { ToolTip } from "components/ToolTip";
@@ -284,8 +285,9 @@ function HeaderToolTip(props: { id: string }) {
       className="text-sm"
     >
       <ToolTip content={"Copied! 👍"} trigger="click" className="text-sm">
-        <span
-          className="material-icons transition-color cursor-pointer hover:text-dark"
+        <Ico
+          icon={Icon.Link}
+          className="transition-color cursor-pointer hover:text-dark"
           onClick={() => {
             navigator.clipboard.writeText(
               `${process.env.NEXT_PUBLIC_URL_SELF + window.location.pathname}#${
@@ -293,9 +295,7 @@ function HeaderToolTip(props: { id: string }) {
               }`
             );
           }}
-        >
-          link
-        </span>
+        />
       </ToolTip>
     </ToolTip>
   );

@@ -49,16 +49,14 @@ export default function CheckupLibraryItems(
             href={line.frontendUrl}
             target="_blank"
             className="w-4 text-xs"
-          >
-            F
-          </Button>
+            text="F"
+          />
           <Button
             href={line.backendUrl}
             target="_blank"
             className="w-4 text-xs"
-          >
-            B
-          </Button>
+            text="B"
+          />
           <p>{line.subitems.join(" -> ")}</p>
           <p>{line.name}</p>
           <Chip>{line.type}</Chip>

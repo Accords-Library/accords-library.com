@@ -1,3 +1,4 @@
+import { Ico, Icon } from "components/Ico";
 import { Immutable } from "helpers/types";
 import { Dispatch, Fragment, SetStateAction, useState } from "react";
 
@@ -31,16 +32,16 @@ export function Select(props: Immutable<Props>): JSX.Element {
           {state === -1 ? "—" : options[state]}
         </p>
         {state >= 0 && allowEmpty && (
-          <span
+          <Ico
+            icon={Icon.Close}
+            className="!text-xs"
             onClick={() => setState(-1)}
-            className="material-icons !text-xs"
-          >
-            close
-          </span>
+          />
         )}
-        <span onClick={() => setOpened(!opened)} className="material-icons">
-          {opened ? "arrow_drop_up" : "arrow_drop_down"}
-        </span>
+        <Ico
+          onClick={() => setOpened(!opened)}
+          icon={opened ? Icon.ArrowDropUp : Icon.ArrowDropDown}
+        />
       </div>
       <div
         className={`left-0 right-0 rounded-b-[1em] ${

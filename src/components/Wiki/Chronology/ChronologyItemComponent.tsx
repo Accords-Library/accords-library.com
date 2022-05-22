@@ -1,4 +1,5 @@
 import { Chip } from "components/Chip";
+import { Ico, Icon } from "components/Ico";
 import { ToolTip } from "components/ToolTip";
 import {
   Enum_Componenttranslationschronologyitem_Status,
@@ -150,10 +151,10 @@ export function ChronologyItemComponent(props: Immutable<Props>): JSX.Element {
                     {event.source?.data ? (
                       `(${event.source.data.attributes?.name})`
                     ) : (
-                      <>
-                        <span className="material-icons !text-sm">warning</span>
+                      <div className="flex items-center gap-1">
+                        <Ico icon={Icon.Warning} className="!text-sm" />
                         No sources!
-                      </>
+                      </div>
                     )}
                   </p>
                 </div>

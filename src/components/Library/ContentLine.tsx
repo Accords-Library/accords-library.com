@@ -1,4 +1,5 @@
 import { Chip } from "components/Chip";
+import { Ico, Icon } from "components/Ico";
 import { Button } from "components/Inputs/Button";
 import { GetLibraryItemQuery } from "graphql/generated";
 import { AppStaticProps } from "graphql/getAppStaticProps";
@@ -83,25 +84,21 @@ export function ContentLine(props: Immutable<Props>): JSX.Element {
             opened ? "grid" : "hidden"
           }`}
         >
-          <span className="material-icons text-dark">
-            subdirectory_arrow_right
-          </span>
+          <Ico icon={Icon.SubdirectoryArrowRight} className="text-dark" />
 
           {content.attributes.scan_set &&
             content.attributes.scan_set.length > 0 && (
               <Button
                 href={`/library/${parentSlug}/scans#${content.attributes.slug}`}
-              >
-                {langui.view_scans}
-              </Button>
+                text={langui.view_scans}
+              />
             )}
 
           {content.attributes.content?.data && (
             <Button
               href={`/contents/${content.attributes.content.data.attributes?.slug}`}
-            >
-              {langui.open_content}
-            </Button>
+              text={langui.open_content}
+            />
           )}
 
           {content.attributes.scan_set &&

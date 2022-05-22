@@ -4,6 +4,7 @@ import { SubPanel } from "components/Panels/SubPanel";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { Immutable } from "helpers/types";
 import { GetStaticPropsContext } from "next";
+import { Icon } from "components/Ico";
 
 interface Props extends AppStaticProps {}
 
@@ -12,7 +13,7 @@ export default function Chronicles(props: Immutable<Props>): JSX.Element {
   const subPanel = (
     <SubPanel>
       <PanelHeader
-        icon="watch_later"
+        icon={Icon.WatchLater}
         title={langui.chronicles}
         description={langui.chronicles_description}
       />

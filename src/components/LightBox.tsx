@@ -5,6 +5,7 @@ import { useSwipeable } from "react-swipeable";
 import { Img } from "./Img";
 import { Button } from "./Inputs/Button";
 import { Popup } from "./Popup";
+import { Icon } from "components/Ico";
 
 interface Props {
   setState:
@@ -63,9 +64,7 @@ export function LightBox(props: Immutable<Props>): JSX.Element {
             >
               <div className="[grid-area:left]">
                 {index > 0 && (
-                  <Button onClick={handlePrevious}>
-                    <span className="material-icons">chevron_left</span>
-                  </Button>
+                  <Button onClick={handlePrevious} icon={Icon.ChevronLeft} />
                 )}
               </div>
 
@@ -76,9 +75,7 @@ export function LightBox(props: Immutable<Props>): JSX.Element {
 
               <div className="[grid-area:right]">
                 {index < images.length - 1 && (
-                  <Button onClick={handleNext}>
-                    <span className="material-icons">chevron_right</span>
-                  </Button>
+                  <Button onClick={handleNext} icon={Icon.ChevronRight} />
                 )}
               </div>
             </div>

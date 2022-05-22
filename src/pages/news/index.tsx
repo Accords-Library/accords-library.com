@@ -42,7 +42,7 @@ export default function News(props: Immutable<Props>): JSX.Element {
   );
 
   const contentPanel = (
-    <ContentPanel width={ContentPanelWidthSizes.large}>
+    <ContentPanel width={ContentPanelWidthSizes.Large}>
       <div
         className="grid grid-cols-1 items-end gap-8
         desktop:grid-cols-[repeat(auto-fill,_minmax(20rem,1fr))]"

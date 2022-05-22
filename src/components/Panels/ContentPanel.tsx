@@ -7,14 +7,14 @@ interface Props {
 }
 
 export enum ContentPanelWidthSizes {
-  default = "default",
-  large = "large",
+  Default = "default",
+  Large = "large",
 }
 
 export function ContentPanel(props: Immutable<Props>): JSX.Element {
-  const width = props.width ? props.width : ContentPanelWidthSizes.default;
+  const width = props.width ? props.width : ContentPanelWidthSizes.Default;
   const widthCSS =
-    width === ContentPanelWidthSizes.default ? "max-w-2xl" : "w-full";
+    width === ContentPanelWidthSizes.Default ? "max-w-2xl" : "w-full";
 
   return (
     <div className={`grid px-4 pt-10 pb-20 desktop:py-20 desktop:px-10`}>

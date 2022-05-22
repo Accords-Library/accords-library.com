@@ -45,7 +45,7 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
         href={`/library/${item?.slug}`}
         title={langui.item}
         langui={langui}
-        displayOn={ReturnButtonType.desktop}
+        displayOn={ReturnButtonType.Desktop}
         horizontalLine
       />
 
@@ -69,14 +69,14 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
   );
 
   const contentPanel = (
-    <ContentPanel width={ContentPanelWidthSizes.large}>
+    <ContentPanel width={ContentPanelWidthSizes.Large}>
       <LightBox />
 
       <ReturnButton
         href={`/library/${item?.slug}`}
         title={langui.item}
         langui={langui}
-        displayOn={ReturnButtonType.mobile}
+        displayOn={ReturnButtonType.Mobile}
         className="mb-10"
       />
 

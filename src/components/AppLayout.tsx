@@ -242,7 +242,7 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
 
         {/* Content panel */}
         <div
-          id={AnchorIds.CONTENT_PANEL}
+          id={AnchorIds.ContentPanel}
           className={`texture-paper-dots overflow-y-scroll bg-light [grid-area:content]`}
         >
           {contentPanel ? (

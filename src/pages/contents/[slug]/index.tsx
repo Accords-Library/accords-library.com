@@ -47,7 +47,7 @@ export default function Content(props: Immutable<Props>): JSX.Element {
     languageExtractor: (item) => item.language?.data?.attributes?.code,
   });
 
-  useScrollTopOnChange(AnchorIds.CONTENT_PANEL, [selectedTranslation]);
+  useScrollTopOnChange(AnchorIds.ContentPanel, [selectedTranslation]);
 
   const previousContent = content.group?.data?.attributes?.contents
     ? getPreviousContent(
@@ -66,7 +66,7 @@ export default function Content(props: Immutable<Props>): JSX.Element {
         href={`/contents`}
         title={langui.contents}
         langui={langui}
-        displayOn={ReturnButtonType.desktop}
+        displayOn={ReturnButtonType.Desktop}
         horizontalLine
       />
 
@@ -205,7 +205,7 @@ export default function Content(props: Immutable<Props>): JSX.Element {
         href={`/contents`}
         title={langui.contents}
         langui={langui}
-        displayOn={ReturnButtonType.mobile}
+        displayOn={ReturnButtonType.Mobile}
         className="mb-10"
       />
 

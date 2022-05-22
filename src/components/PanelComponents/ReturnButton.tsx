@@ -15,9 +15,9 @@ interface Props {
 }
 
 export enum ReturnButtonType {
-  mobile = "mobile",
-  desktop = "desktop",
-  both = "both",
+  Mobile = "mobile",
+  Desktop = "desktop",
+  Both = "both",
 }
 
 export function ReturnButton(props: Immutable<Props>): JSX.Element {
@@ -26,9 +26,9 @@ export function ReturnButton(props: Immutable<Props>): JSX.Element {
   return (
     <div
       className={`${
-        props.displayOn === ReturnButtonType.mobile
+        props.displayOn === ReturnButtonType.Mobile
           ? "desktop:hidden"
-          : props.displayOn === ReturnButtonType.desktop
+          : props.displayOn === ReturnButtonType.Desktop
           ? "mobile:hidden"
           : ""
       } ${props.className}`}

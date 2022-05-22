@@ -42,7 +42,7 @@ export default function Video(props: Props): JSX.Element {
         href="/archives/videos/"
         title={langui.videos}
         langui={langui}
-        displayOn={ReturnButtonType.desktop}
+        displayOn={ReturnButtonType.Desktop}
         className="mb-10"
       />
 
@@ -72,12 +72,12 @@ export default function Video(props: Props): JSX.Element {
   );
 
   const contentPanel = (
-    <ContentPanel width={ContentPanelWidthSizes.large}>
+    <ContentPanel width={ContentPanelWidthSizes.Large}>
       <ReturnButton
         href="/library/"
         title={langui.library}
         langui={langui}
-        displayOn={ReturnButtonType.mobile}
+        displayOn={ReturnButtonType.Mobile}
         className="mb-10"
       />
 

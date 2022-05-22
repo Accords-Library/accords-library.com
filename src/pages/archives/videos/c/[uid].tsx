@@ -39,7 +39,7 @@ export default function Channel(props: Props): JSX.Element {
         href="/archives/videos/"
         title={langui.videos}
         langui={langui}
-        displayOn={ReturnButtonType.desktop}
+        displayOn={ReturnButtonType.Desktop}
         className="mb-10"
       />
 
@@ -57,7 +57,7 @@ export default function Channel(props: Props): JSX.Element {
   );
 
   const contentPanel = (
-    <ContentPanel width={ContentPanelWidthSizes.large}>
+    <ContentPanel width={ContentPanelWidthSizes.Large}>
       <div className="mb-8">
         <h1 className="text-3xl">{channel?.title}</h1>
         <p>{channel?.subscribers.toLocaleString()} subscribers</p>

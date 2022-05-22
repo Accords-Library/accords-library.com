@@ -65,7 +65,7 @@ export default function Chronology(props: Props): JSX.Element {
         href="/wiki"
         title={langui.wiki}
         langui={langui}
-        displayOn={ReturnButtonType.desktop}
+        displayOn={ReturnButtonType.Desktop}
         horizontalLine
       />
 
@@ -96,7 +96,7 @@ export default function Chronology(props: Props): JSX.Element {
         href="/wiki"
         title={langui.wiki}
         langui={langui}
-        displayOn={ReturnButtonType.mobile}
+        displayOn={ReturnButtonType.Mobile}
         className="mb-10"
       />
 

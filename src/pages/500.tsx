@@ -19,7 +19,7 @@ export default function FiveHundred(props: Immutable<Props>): JSX.Element {
         href="/"
         title="Home"
         langui={langui}
-        displayOn={ReturnButtonType.both}
+        displayOn={ReturnButtonType.Both}
       />
     </ContentPanel>
   );

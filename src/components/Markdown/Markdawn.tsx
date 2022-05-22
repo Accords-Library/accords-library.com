@@ -314,27 +314,27 @@ export function preprocessMarkDawn(text: string): string {
     }
 
     if (line.startsWith("# ")) {
-      return markdawnHeadersParser(headerLevels.h1, line, visitedSlugs);
+      return markdawnHeadersParser(HeaderLevels.H1, line, visitedSlugs);
     }
 
     if (line.startsWith("## ")) {
-      return markdawnHeadersParser(headerLevels.h2, line, visitedSlugs);
+      return markdawnHeadersParser(HeaderLevels.H2, line, visitedSlugs);
     }
 
     if (line.startsWith("### ")) {
-      return markdawnHeadersParser(headerLevels.h3, line, visitedSlugs);
+      return markdawnHeadersParser(HeaderLevels.H3, line, visitedSlugs);
     }
 
     if (line.startsWith("#### ")) {
-      return markdawnHeadersParser(headerLevels.h4, line, visitedSlugs);
+      return markdawnHeadersParser(HeaderLevels.H4, line, visitedSlugs);
     }
 
     if (line.startsWith("##### ")) {
-      return markdawnHeadersParser(headerLevels.h5, line, visitedSlugs);
+      return markdawnHeadersParser(HeaderLevels.H5, line, visitedSlugs);
     }
 
     if (line.startsWith("###### ")) {
-      return markdawnHeadersParser(headerLevels.h6, line, visitedSlugs);
+      return markdawnHeadersParser(HeaderLevels.H6, line, visitedSlugs);
     }
 
     return line;
@@ -342,17 +342,17 @@ export function preprocessMarkDawn(text: string): string {
   return result.join("\n");
 }
 
-enum headerLevels {
-  h1 = 1,
-  h2 = 2,
-  h3 = 3,
-  h4 = 4,
-  h5 = 5,
-  h6 = 6,
+enum HeaderLevels {
+  H1 = 1,
+  H2 = 2,
+  H3 = 3,
+  H4 = 4,
+  H5 = 5,
+  H6 = 6,
 }
 
 function markdawnHeadersParser(
-  headerLevel: headerLevels,
+  headerLevel: HeaderLevels,
   line: string,
   visitedSlugs: string[]
 ): string {
@@ -365,5 +365,5 @@ function markdawnHeadersParser(
     index += 1;
   }
   visitedSlugs.push(newSlug);
-  return `<${headerLevels[headerLevel]} id="${newSlug}">${lineText}</${headerLevels[headerLevel]}>`;
+  return `<${HeaderLevels[headerLevel]} id="${newSlug}">${lineText}</${HeaderLevels[headerLevel]}>`;
 }

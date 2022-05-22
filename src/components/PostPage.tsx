@@ -70,7 +70,7 @@ export function PostPage(props: Immutable<Props>): JSX.Element {
             href={returnHref}
             title={returnTitle}
             langui={langui}
-            displayOn={ReturnButtonType.desktop}
+            displayOn={ReturnButtonType.Desktop}
             horizontalLine
           />
         )}
@@ -126,7 +126,7 @@ export function PostPage(props: Immutable<Props>): JSX.Element {
           href={returnHref}
           title={returnTitle}
           langui={langui}
-          displayOn={ReturnButtonType.mobile}
+          displayOn={ReturnButtonType.Mobile}
           horizontalLine
         />
       )}

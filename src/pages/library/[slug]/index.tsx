@@ -58,7 +58,7 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
   const { item, langui, currencies } = props;
   const appLayout = useAppLayout();
 
-  useScrollTopOnChange(AnchorIds.CONTENT_PANEL, [item]);
+  useScrollTopOnChange(AnchorIds.ContentPanel, [item]);
 
   const isVariantSet =
     item?.metadata?.[0]?.__typename === "ComponentMetadataGroup" &&
@@ -85,7 +85,7 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
         href="/library/"
         title={langui.library}
         langui={langui}
-        displayOn={ReturnButtonType.desktop}
+        displayOn={ReturnButtonType.Desktop}
         horizontalLine
       />
 
@@ -114,14 +114,14 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
   );
 
   const contentPanel = (
-    <ContentPanel width={ContentPanelWidthSizes.large}>
+    <ContentPanel width={ContentPanelWidthSizes.Large}>
       <LightBox />
 
       <ReturnButton
         href="/library/"
         title={langui.library}
         langui={langui}
-        displayOn={ReturnButtonType.mobile}
+        displayOn={ReturnButtonType.Mobile}
         className="mb-10"
       />
       <div className="grid place-items-center gap-12">
@@ -438,7 +438,10 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
           <div id="contents" className="grid w-full place-items-center gap-8">
             <h2 className="-mb-6 text-2xl">{langui.contents}</h2>
             {displayOpenScans && (
-              <Button href={`/library/${item.slug}/scans`} text={langui.view_scans}/>
+              <Button
+                href={`/library/${item.slug}/scans`}
+                text={langui.view_scans}
+              />
             )}
             <div className="grid w-full gap-4">
               {item.contents.data.map((content) => (

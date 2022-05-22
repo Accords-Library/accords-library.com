@@ -57,7 +57,7 @@ export default function Videos(props: Props): JSX.Element {
         href="/archives/"
         title={"Archives"}
         langui={langui}
-        displayOn={ReturnButtonType.desktop}
+        displayOn={ReturnButtonType.Desktop}
         className="mb-10"
       />
 
@@ -75,7 +75,7 @@ export default function Videos(props: Props): JSX.Element {
   );
 
   const contentPanel = (
-    <ContentPanel width={ContentPanelWidthSizes.large}>
+    <ContentPanel width={ContentPanelWidthSizes.Large}>
       <PageSelector
         maxPage={Math.floor(videos.length / itemPerPage)}
         page={page}

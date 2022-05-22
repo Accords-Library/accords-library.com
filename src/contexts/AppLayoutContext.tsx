@@ -6,6 +6,7 @@ import React, { ReactNode, useContext, useState } from "react";
 interface AppLayoutState {
   subPanelOpen: boolean | undefined;
   configPanelOpen: boolean | undefined;
+  searchPanelOpen: boolean | undefined;
   mainPanelReduced: boolean | undefined;
   mainPanelOpen: boolean | undefined;
   darkMode: boolean | undefined;
@@ -18,6 +19,7 @@ interface AppLayoutState {
   menuGestures: boolean;
   setSubPanelOpen: React.Dispatch<React.SetStateAction<boolean | undefined>>;
   setConfigPanelOpen: React.Dispatch<React.SetStateAction<boolean | undefined>>;
+  setSearchPanelOpen: React.Dispatch<React.SetStateAction<boolean | undefined>>;
   setMainPanelReduced: React.Dispatch<
     React.SetStateAction<boolean | undefined>
   >;
@@ -40,6 +42,7 @@ interface AppLayoutState {
 const initialState: AppLayoutState = {
   subPanelOpen: false,
   configPanelOpen: false,
+  searchPanelOpen: false,
   mainPanelReduced: false,
   mainPanelOpen: false,
   darkMode: false,
@@ -56,6 +59,7 @@ const initialState: AppLayoutState = {
   setDarkMode: () => {},
   setSelectedThemeMode: () => {},
   setConfigPanelOpen: () => {},
+  setSearchPanelOpen: () => {},
   setFontSize: () => {},
   setDyslexic: () => {},
   setCurrency: () => {},
@@ -122,11 +126,16 @@ export function AppContextProvider(props: Immutable<Props>): JSX.Element {
 
   const [menuGestures, setMenuGestures] = useState(false);
 
+  const [searchPanelOpen, setSearchPanelOpen] = useStateWithLocalStorage<
+    boolean | undefined
+  >("mainPanelOpen", initialState.mainPanelOpen);
+
   return (
     <AppContext.Provider
       value={{
         subPanelOpen,
         configPanelOpen,
+        searchPanelOpen,
         mainPanelReduced,
         mainPanelOpen,
         darkMode,
@@ -139,6 +148,7 @@ export function AppContextProvider(props: Immutable<Props>): JSX.Element {
         menuGestures,
         setSubPanelOpen,
         setConfigPanelOpen,
+        setSearchPanelOpen,
         setMainPanelReduced,
         setMainPanelOpen,
         setDarkMode,

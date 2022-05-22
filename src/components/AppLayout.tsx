@@ -4,6 +4,13 @@ import { UploadImageFragment } from "graphql/generated";
 import { AppStaticProps } from "graphql/getAppStaticProps";
 import { prettyLanguage, prettySlug } from "helpers/formatters";
 import { getOgImage, ImageQuality, OgImage } from "helpers/img";
+import {
+  getClient,
+  getIndexes,
+  Indexes,
+  search,
+  SearchResult,
+} from "helpers/search";
 import { Immutable } from "helpers/types";
 import { useMediaMobile } from "hooks/useMediaQuery";
 import { AnchorIds } from "hooks/useScrollTopOnChange";
@@ -15,6 +22,7 @@ import { OrderableList } from "./Inputs/OrderableList";
 import { Select } from "./Inputs/Select";
 import { MainPanel } from "./Panels/MainPanel";
 import { Popup } from "./Popup";
+import { PreviewCard } from "./PreviewCard";
 
 interface Props extends AppStaticProps {
   subPanel?: React.ReactNode;
@@ -42,6 +50,9 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
   const router = useRouter();
   const isMobile = useMediaMobile();
   const appLayout = useAppLayout();
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResult, setSearchResult] = useState<SearchResult>();
 
   const sensibilitySwipe = 1.1;
 
@@ -80,6 +91,20 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
       }
     },
   });
+
+  const client = getClient();
+
+  useEffect(() => {
+    if (searchQuery.length > 1) {
+      search(client, Indexes.Post, searchQuery).then((result) => {
+        setSearchResult(result);
+      });
+    } else {
+      setSearchResult(undefined);
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchQuery]);
 
   const turnSubIntoContent = subPanel && !contentPanel;
 
@@ -493,6 +518,46 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
                   value={appLayout.playerName}
                 />
               </div>
+            </div>
+          </div>
+        </Popup>
+
+        <Popup
+          state={appLayout.searchPanelOpen}
+          setState={appLayout.setSearchPanelOpen}
+        >
+          <div className="grid place-items-center gap-2">
+            {/* TODO: add to langui */}
+            <h2 className="text-2xl">{"Search"}</h2>
+            <input
+              className="mb-6 w-full"
+              type="text"
+              name="name"
+              id="name"
+              placeholder={"Search query..."}
+              onChange={(event) => {
+                const input = event.target as HTMLInputElement;
+                setSearchQuery(input.value);
+              }}
+            />
+          </div>
+          {/* TODO: add to langui */}
+          <div className="grid gap-4">
+            <p className="font-headers text-xl">In news:</p>
+            <div
+              className="grid grid-cols-2 items-end gap-8
+                desktop:grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] mobile:gap-4"
+            >
+              {searchResult?.hits.map((hit) => (
+                <PreviewCard
+                  key={hit.id}
+                  href={hit.href}
+                  title={hit.title}
+                  thumbnailAspectRatio={"3/2"}
+                  thumbnail={hit.thumbnail}
+                  keepInfoVisible
+                />
+              ))}
             </div>
           </div>
         </Popup>

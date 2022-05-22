@@ -79,28 +79,20 @@ export function MainPanel(props: Immutable<Props>): JSX.Element {
               </Button>
             </ToolTip>
 
-            {/* <ToolTip
+            <ToolTip
               content={<h3 className="text-2xl">{langui.open_search}</h3>}
               placement="right"
               className="text-left"
               disabled={!appLayout.mainPanelReduced}
             >
               <Button
-                className={
-                  appLayout.mainPanelReduced && isDesktop
-                    ? ""
-                    : "!py-0.5 !px-2.5"
-                }
+                onClick={() => {
+                  appLayout.setSearchPanelOpen(true);
+                }}
               >
-                <span
-                  className={`material-icons ${
-                    !(appLayout.mainPanelReduced && isDesktop) && "!text-sm"
-                  } `}
-                >
-                  search
-                </span>
+                <span className={"material-icons"}>search</span>
               </Button>
-            </ToolTip> */}
+            </ToolTip>
           </div>
         </div>
       </div>

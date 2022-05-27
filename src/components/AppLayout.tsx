@@ -15,6 +15,7 @@ import { useSwipeable } from "react-swipeable";
 import { Ico, Icon } from "./Ico";
 import { OrderableList } from "./Inputs/OrderableList";
 import { Select } from "./Inputs/Select";
+import { TextInput } from "./Inputs/TextInput";
 import { MainPanel } from "./Panels/MainPanel";
 import { Popup } from "./Popup";
 import { PreviewCard } from "./PreviewCard";
@@ -484,16 +485,11 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
 
               <div>
                 <h3 className="text-xl">{langui.player_name}</h3>
-                <input
-                  type="text"
+                <TextInput
                   placeholder="<player>"
                   className="w-48"
-                  onInput={(event) =>
-                    appLayout.setPlayerName(
-                      (event.target as HTMLInputElement).value
-                    )
-                  }
-                  value={appLayout.playerName}
+                  state={appLayout.playerName}
+                  setState={appLayout.setPlayerName}
                 />
               </div>
             </div>
@@ -507,16 +503,11 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
           <div className="grid place-items-center gap-2">
             {/* TODO: add to langui */}
             <h2 className="text-2xl">{"Search"}</h2>
-            <input
+            <TextInput
               className="mb-6 w-full"
-              type="text"
-              name="name"
-              id="name"
               placeholder={"Search query..."}
-              onChange={(event) => {
-                const input = event.target as HTMLInputElement;
-                setSearchQuery(input.value);
-              }}
+              state={searchQuery}
+              setState={setSearchQuery}
             />
           </div>
           {/* TODO: add to langui */}

@@ -18,6 +18,8 @@ import { GetStaticPropsContext } from "next";
 import { Fragment, useEffect, useState } from "react";
 import { Icon } from "components/Ico";
 import { WithLabel } from "components/Inputs/WithLabel";
+import { Button } from "components/Inputs/Button";
+import { TextInput } from "components/Inputs/TextInput";
 
 interface Props extends AppStaticProps {
   contents: NonNullable<GetContentsQuery["contents"]>["data"];
@@ -25,16 +27,29 @@ interface Props extends AppStaticProps {
 
 type GroupContentItems = Map<string, Immutable<Props["contents"]>>;
 
+const defaultFiltersState = {
+  groupingMethod: -1,
+  keepInfoVisible: false,
+  combineRelatedContent: true,
+  searchName: "",
+};
+
 export default function Contents(props: Immutable<Props>): JSX.Element {
   const { langui, contents } = props;
 
-  const [groupingMethod, setGroupingMethod] = useState<number>(-1);
-  const [keepInfoVisible, setKeepInfoVisible] = useState(false);
+  const [groupingMethod, setGroupingMethod] = useState<number>(
+    defaultFiltersState.groupingMethod
+  );
+  const [keepInfoVisible, setKeepInfoVisible] = useState(
+    defaultFiltersState.keepInfoVisible
+  );
+  const [combineRelatedContent, setCombineRelatedContent] = useState(
+    defaultFiltersState.combineRelatedContent
+  );
+  const [searchName, setSearchName] = useState(defaultFiltersState.searchName);
 
-  const [combineRelatedContent, setCombineRelatedContent] = useState(true);
   const [effectiveCombineRelatedContent, setEffectiveCombineRelatedContent] =
     useState(true);
-  const [searchName, setSearchName] = useState("");
 
   const [filteredItems, setFilteredItems] = useState(
     filterContents(contents, combineRelatedContent, searchName)
@@ -72,16 +87,11 @@ export default function Contents(props: Immutable<Props>): JSX.Element {
         description={langui.contents_description}
       />
 
-      <input
+      <TextInput
         className="mb-6 w-full"
-        type="text"
-        name="name"
-        id="name"
         placeholder={langui.search_title ?? undefined}
-        onChange={(event) => {
-          const input = event.target as HTMLInputElement;
-          setSearchName(input.value);
-        }}
+        state={searchName}
+        setState={setSearchName}
       />
 
       <WithLabel
@@ -111,6 +121,19 @@ export default function Contents(props: Immutable<Props>): JSX.Element {
       <WithLabel
         label={langui.always_show_info}
         input={<Switch setState={setKeepInfoVisible} state={keepInfoVisible} />}
+      />
+
+      {/* TODO: Add to Langui */}
+      <Button
+        className="mt-8"
+        text={"Reset all filters"}
+        icon={Icon.Replay}
+        onClick={() => {
+          setSearchName(defaultFiltersState.searchName);
+          setGroupingMethod(defaultFiltersState.groupingMethod);
+          setKeepInfoVisible(defaultFiltersState.keepInfoVisible);
+          setCombineRelatedContent(defaultFiltersState.combineRelatedContent);
+        }}
       />
     </SubPanel>
   );

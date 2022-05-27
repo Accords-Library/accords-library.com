@@ -16,17 +16,26 @@ import { GetStaticPropsContext } from "next";
 import { Fragment, useEffect, useState } from "react";
 import { Icon } from "components/Ico";
 import { WithLabel } from "components/Inputs/WithLabel";
+import { TextInput } from "components/Inputs/TextInput";
+import { Button } from "components/Inputs/Button";
 
 interface Props extends AppStaticProps {
   posts: NonNullable<GetPostsPreviewQuery["posts"]>["data"];
 }
 
+const defaultFiltersState = {
+  searchName: "",
+  keepInfoVisible: true,
+};
+
 export default function News(props: Immutable<Props>): JSX.Element {
   const { langui } = props;
   const posts = sortPosts(props.posts);
 
-  const [keepInfoVisible, setKeepInfoVisible] = useState(true);
-  const [searchName, setSearchName] = useState("");
+  const [searchName, setSearchName] = useState(defaultFiltersState.searchName);
+  const [keepInfoVisible, setKeepInfoVisible] = useState(
+    defaultFiltersState.keepInfoVisible
+  );
 
   const [filteredItems, setFilteredItems] = useState(
     filterItems(posts, searchName)
@@ -45,21 +54,27 @@ export default function News(props: Immutable<Props>): JSX.Element {
         description={langui.news_description}
       />
 
-      <input
+      <TextInput
         className="mb-6 w-full"
-        type="text"
-        name="name"
-        id="name"
         placeholder={langui.search_title ?? undefined}
-        onChange={(event) => {
-          const input = event.target as HTMLInputElement;
-          setSearchName(input.value);
-        }}
+        state={searchName}
+        setState={setSearchName}
       />
 
       <WithLabel
         label={langui.always_show_info}
         input={<Switch setState={setKeepInfoVisible} state={keepInfoVisible} />}
+      />
+
+      {/* TODO: Add to Langui */}
+      <Button
+        className="mt-8"
+        text={"Reset all filters"}
+        icon={Icon.Replay}
+        onClick={() => {
+          setSearchName(defaultFiltersState.searchName);
+          setKeepInfoVisible(defaultFiltersState.keepInfoVisible);
+        }}
       />
     </SubPanel>
   );

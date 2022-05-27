@@ -23,6 +23,8 @@ import { GetStaticPropsContext } from "next";
 import { Fragment, useEffect, useState } from "react";
 import { Icon } from "components/Ico";
 import { WithLabel } from "components/Inputs/WithLabel";
+import { TextInput } from "components/Inputs/TextInput";
+import { Button } from "components/Inputs/Button";
 
 interface Props extends AppStaticProps {
   items: NonNullable<GetLibraryItemsPreviewQuery["libraryItems"]>["data"];
@@ -30,16 +32,38 @@ interface Props extends AppStaticProps {
 
 type GroupLibraryItems = Map<string, Immutable<Props["items"]>>;
 
+const defaultFiltersState = {
+  searchName: "",
+  showSubitems: false,
+  showPrimaryItems: true,
+  showSecondaryItems: false,
+  sortingMethod: 0,
+  groupingMethod: -1,
+  keepInfoVisible: false,
+};
+
 export default function Library(props: Immutable<Props>): JSX.Element {
   const { langui, items: libraryItems, currencies } = props;
 
-  const [searchName, setSearchName] = useState("");
-  const [showSubitems, setShowSubitems] = useState<boolean>(false);
-  const [showPrimaryItems, setShowPrimaryItems] = useState<boolean>(true);
-  const [showSecondaryItems, setShowSecondaryItems] = useState<boolean>(false);
-  const [sortingMethod, setSortingMethod] = useState<number>(0);
-  const [groupingMethod, setGroupingMethod] = useState<number>(-1);
-  const [keepInfoVisible, setKeepInfoVisible] = useState(false);
+  const [searchName, setSearchName] = useState(defaultFiltersState.searchName);
+  const [showSubitems, setShowSubitems] = useState<boolean>(
+    defaultFiltersState.showSubitems
+  );
+  const [showPrimaryItems, setShowPrimaryItems] = useState<boolean>(
+    defaultFiltersState.showPrimaryItems
+  );
+  const [showSecondaryItems, setShowSecondaryItems] = useState<boolean>(
+    defaultFiltersState.showSecondaryItems
+  );
+  const [sortingMethod, setSortingMethod] = useState<number>(
+    defaultFiltersState.sortingMethod
+  );
+  const [groupingMethod, setGroupingMethod] = useState<number>(
+    defaultFiltersState.groupingMethod
+  );
+  const [keepInfoVisible, setKeepInfoVisible] = useState(
+    defaultFiltersState.keepInfoVisible
+  );
 
   const [filteredItems, setFilteredItems] = useState(
     filterItems(
@@ -93,16 +117,11 @@ export default function Library(props: Immutable<Props>): JSX.Element {
         description={langui.library_description}
       />
 
-      <input
+      <TextInput
         className="mb-6 w-full"
-        type="text"
-        name="name"
-        id="name"
         placeholder={langui.search_title ?? undefined}
-        onChange={(event) => {
-          const input = event.target as HTMLInputElement;
-          setSearchName(input.value);
-        }}
+        state={searchName}
+        setState={setSearchName}
       />
 
       <WithLabel
@@ -160,6 +179,22 @@ export default function Library(props: Immutable<Props>): JSX.Element {
       <WithLabel
         label={langui.always_show_info}
         input={<Switch state={keepInfoVisible} setState={setKeepInfoVisible} />}
+      />
+
+      {/* TODO: Add to Langui */}
+      <Button
+        className="mt-8"
+        text={"Reset all filters"}
+        icon={Icon.Replay}
+        onClick={() => {
+          setSearchName(defaultFiltersState.searchName);
+          setShowSubitems(defaultFiltersState.showSubitems);
+          setShowPrimaryItems(defaultFiltersState.showPrimaryItems);
+          setShowSecondaryItems(defaultFiltersState.showSecondaryItems);
+          setSortingMethod(defaultFiltersState.sortingMethod);
+          setGroupingMethod(defaultFiltersState.groupingMethod);
+          setKeepInfoVisible(defaultFiltersState.keepInfoVisible);
+        }}
       />
     </SubPanel>
   );

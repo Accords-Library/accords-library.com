@@ -192,7 +192,7 @@ export async function getStaticProps(
   const videos = await sdk.getVideo({
     uid: context.params?.uid ? context.params.uid.toString() : "",
   });
-  if (!videos.videos?.data[0].attributes) return { notFound: true };
+  if (!videos.videos?.data[0]?.attributes) return { notFound: true };
   const props: Props = {
     ...(await getAppStaticProps(context)),
     video: videos.videos.data[0].attributes,

@@ -18,7 +18,7 @@ export function getPostStaticProps(
       slug: slug,
       language_code: context.locale ?? "en",
     });
-    if (post.posts?.data[0].attributes?.translations) {
+    if (post.posts?.data[0]?.attributes?.translations) {
       const props: PostStaticProps = {
         ...(await getAppStaticProps(context)),
         post: post.posts.data[0].attributes as PostWithTranslations,

@@ -126,7 +126,7 @@ export async function getStaticProps(
     slug: context.params?.slug ? context.params.slug.toString() : "",
     language_code: context.locale ?? "en",
   });
-  if (!item.libraryItems) return { notFound: true };
+  if (!item.libraryItems?.data[0]?.attributes) return { notFound: true };
   const props: Props = {
     ...(await getAppStaticProps(context)),
     item: item.libraryItems.data[0].attributes,

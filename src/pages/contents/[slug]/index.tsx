@@ -361,7 +361,7 @@ export async function getStaticProps(
     language_code: context.locale ?? "en",
   });
 
-  if (!content.contents || !content.contents.data[0].attributes?.translations) {
+  if (!content.contents || !content.contents.data[0]?.attributes?.translations) {
     return { notFound: true };
   }
   const props: Props = {

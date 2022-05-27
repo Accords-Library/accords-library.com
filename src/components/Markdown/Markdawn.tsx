@@ -20,7 +20,8 @@ interface Props {
 
 export function Markdawn(props: Immutable<Props>): JSX.Element {
   const appLayout = useAppLayout();
-  const text = preprocessMarkDawn(props.text);
+  // eslint-disable-next-line no-irregular-whitespace
+  const text = `${preprocessMarkDawn(props.text)}​`;
 
   const router = useRouter();
 
@@ -54,6 +55,7 @@ export function Markdawn(props: Immutable<Props>): JSX.Element {
                   );
                 },
               },
+
               h1: {
                 component: (compProps: {
                   id: string;
@@ -66,6 +68,7 @@ export function Markdawn(props: Immutable<Props>): JSX.Element {
                   </h1>
                 ),
               },
+
               h2: {
                 component: (compProps: {
                   id: string;
@@ -78,6 +81,7 @@ export function Markdawn(props: Immutable<Props>): JSX.Element {
                   </h2>
                 ),
               },
+
               h3: {
                 component: (compProps: {
                   id: string;
@@ -90,6 +94,7 @@ export function Markdawn(props: Immutable<Props>): JSX.Element {
                   </h3>
                 ),
               },
+
               h4: {
                 component: (compProps: {
                   id: string;
@@ -102,6 +107,7 @@ export function Markdawn(props: Immutable<Props>): JSX.Element {
                   </h4>
                 ),
               },
+
               h5: {
                 component: (compProps: {
                   id: string;
@@ -114,6 +120,7 @@ export function Markdawn(props: Immutable<Props>): JSX.Element {
                   </h5>
                 ),
               },
+
               h6: {
                 component: (compProps: {
                   id: string;
@@ -126,9 +133,7 @@ export function Markdawn(props: Immutable<Props>): JSX.Element {
                   </h6>
                 ),
               },
-              Sep: {
-                component: () => <div className="my-18"></div>,
-              },
+
               SceneBreak: {
                 component: (compProps: { id: string }) => (
                   <div
@@ -139,6 +144,7 @@ export function Markdawn(props: Immutable<Props>): JSX.Element {
                   </div>
                 ),
               },
+
               IntraLink: {
                 component: (compProps: {
                   children: React.ReactNode;
@@ -161,6 +167,7 @@ export function Markdawn(props: Immutable<Props>): JSX.Element {
                   );
                 },
               },
+
               player: {
                 component: () => (
                   <span className="text-dark opacity-70">
@@ -168,6 +175,7 @@ export function Markdawn(props: Immutable<Props>): JSX.Element {
                   </span>
                 ),
               },
+
               Transcript: {
                 component: (compProps) => (
                   <div className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 mobile:grid-cols-1">
@@ -175,6 +183,7 @@ export function Markdawn(props: Immutable<Props>): JSX.Element {
                   </div>
                 ),
               },
+
               Line: {
                 component: (compProps) => (
                   <>
@@ -185,11 +194,13 @@ export function Markdawn(props: Immutable<Props>): JSX.Element {
                   </>
                 ),
               },
+
               InsetBox: {
                 component: (compProps) => (
                   <InsetBox className="my-12">{compProps.children}</InsetBox>
                 ),
               },
+
               li: {
                 component: (compProps: { children: React.ReactNode }) => (
                   <li
@@ -206,11 +217,13 @@ export function Markdawn(props: Immutable<Props>): JSX.Element {
                   </li>
                 ),
               },
+
               Highlight: {
                 component: (compProps: { children: React.ReactNode }) => (
                   <mark>{compProps.children}</mark>
                 ),
               },
+
               footer: {
                 component: (compProps: { children: React.ReactNode }) => (
                   <>
@@ -219,6 +232,7 @@ export function Markdawn(props: Immutable<Props>): JSX.Element {
                   </>
                 ),
               },
+
               blockquote: {
                 component: (compProps: {
                   children: React.ReactNode;
@@ -236,6 +250,7 @@ export function Markdawn(props: Immutable<Props>): JSX.Element {
                   </blockquote>
                 ),
               },
+              
               img: {
                 component: (compProps: {
                   alt: string;
@@ -301,45 +316,64 @@ function HeaderToolTip(props: { id: string }) {
   );
 }
 
+function typographicRules(text: string): string {
+  let newText = text;
+  newText = newText.replace(/--/gu, "—");
+  /*
+   * newText = newText.replace(/\.\.\./gu, "…");
+   * newText = newText.replace(/(?:^|[\s{[(<'"\u2018\u201C])(")/gu, " “");
+   * newText = newText.replace(/"/gu, "”");
+   * newText = newText.replace(/(?:^|[\s{[(<'"\u2018\u201C])(')/gu, " ‘");
+   * newText = newText.replace(/'/gu, "’");
+   */
+  return newText;
+}
+
 export function preprocessMarkDawn(text: string): string {
   if (!text) return "";
+
+  let preprocessed = typographicRules(text);
 
   let scenebreakIndex = 0;
   const visitedSlugs: string[] = [];
 
-  const result = text.split("\n").map((line) => {
-    if (line === "* * *" || line === "---") {
-      scenebreakIndex += 1;
-      return `<SceneBreak id="scene-break-${scenebreakIndex}">`;
-    }
+  preprocessed = preprocessed
+    .split("\n")
+    .map((line) => {
+      if (line === "* * *" || line === "---") {
+        scenebreakIndex += 1;
+        return `<SceneBreak id="scene-break-${scenebreakIndex}">`;
+      }
 
-    if (line.startsWith("# ")) {
-      return markdawnHeadersParser(HeaderLevels.H1, line, visitedSlugs);
-    }
+      if (line.startsWith("# ")) {
+        return markdawnHeadersParser(HeaderLevels.H1, line, visitedSlugs);
+      }
 
-    if (line.startsWith("## ")) {
-      return markdawnHeadersParser(HeaderLevels.H2, line, visitedSlugs);
-    }
+      if (line.startsWith("## ")) {
+        return markdawnHeadersParser(HeaderLevels.H2, line, visitedSlugs);
+      }
 
-    if (line.startsWith("### ")) {
-      return markdawnHeadersParser(HeaderLevels.H3, line, visitedSlugs);
-    }
+      if (line.startsWith("### ")) {
+        return markdawnHeadersParser(HeaderLevels.H3, line, visitedSlugs);
+      }
 
-    if (line.startsWith("#### ")) {
-      return markdawnHeadersParser(HeaderLevels.H4, line, visitedSlugs);
-    }
+      if (line.startsWith("#### ")) {
+        return markdawnHeadersParser(HeaderLevels.H4, line, visitedSlugs);
+      }
 
-    if (line.startsWith("##### ")) {
-      return markdawnHeadersParser(HeaderLevels.H5, line, visitedSlugs);
-    }
+      if (line.startsWith("##### ")) {
+        return markdawnHeadersParser(HeaderLevels.H5, line, visitedSlugs);
+      }
 
-    if (line.startsWith("###### ")) {
-      return markdawnHeadersParser(HeaderLevels.H6, line, visitedSlugs);
-    }
+      if (line.startsWith("###### ")) {
+        return markdawnHeadersParser(HeaderLevels.H6, line, visitedSlugs);
+      }
 
-    return line;
-  });
-  return result.join("\n");
+      return line;
+    })
+    .join("\n");
+
+  return preprocessed;
 }
 
 enum HeaderLevels {
@@ -365,5 +399,5 @@ function markdawnHeadersParser(
     index += 1;
   }
   visitedSlugs.push(newSlug);
-  return `<${HeaderLevels[headerLevel]} id="${newSlug}">${lineText}</${HeaderLevels[headerLevel]}>`;
+  return `<h${headerLevel} id="${newSlug}">${lineText}</h${headerLevel}>`;
 }

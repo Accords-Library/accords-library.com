@@ -101,7 +101,7 @@ export function getTocFromMarkdawn(text: string, title?: string): TOCInterface {
       h4 = -1;
       h5 = -1;
       scenebreak = 0;
-    } else if (line.startsWith("<h3 id=")) {
+    } else if (h2 >= 0 && line.startsWith("<h3 id=")) {
       toc.children[h2].children.push({
         title: getTitle(line),
         slug: getSlug(line),
@@ -111,7 +111,7 @@ export function getTocFromMarkdawn(text: string, title?: string): TOCInterface {
       h4 = -1;
       h5 = -1;
       scenebreak = 0;
-    } else if (line.startsWith("<h4 id=")) {
+    } else if (h3 >= 0 && line.startsWith("<h4 id=")) {
       toc.children[h2].children[h3].children.push({
         title: getTitle(line),
         slug: getSlug(line),
@@ -120,7 +120,7 @@ export function getTocFromMarkdawn(text: string, title?: string): TOCInterface {
       h4 += 1;
       h5 = -1;
       scenebreak = 0;
-    } else if (line.startsWith("<h5 id=")) {
+    } else if (h4 >= 0 && line.startsWith("<h5 id=")) {
       toc.children[h2].children[h3].children[h4].children.push({
         title: getTitle(line),
         slug: getSlug(line),
@@ -128,7 +128,7 @@ export function getTocFromMarkdawn(text: string, title?: string): TOCInterface {
       });
       h5 += 1;
       scenebreak = 0;
-    } else if (line.startsWith("<h6 id=")) {
+    } else if (h5 >= 0 && line.startsWith("<h6 id=")) {
       toc.children[h2].children[h3].children[h4].children[h5].children.push({
         title: getTitle(line),
         slug: getSlug(line),

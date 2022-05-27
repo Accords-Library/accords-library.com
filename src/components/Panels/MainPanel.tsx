@@ -82,7 +82,7 @@ export function MainPanel(props: Immutable<Props>): JSX.Element {
               />
             </ToolTip>
 
-            <ToolTip
+            {/* <ToolTip
               content={<h3 className="text-2xl">{langui.open_search}</h3>}
               placement="right"
               className="text-left"
@@ -94,7 +94,7 @@ export function MainPanel(props: Immutable<Props>): JSX.Element {
                 }}
                 icon={Icon.Search}
               />
-            </ToolTip>
+            </ToolTip> */}
           </div>
         </div>
       </div>

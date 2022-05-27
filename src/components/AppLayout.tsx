@@ -496,12 +496,12 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
           </div>
         </Popup>
 
-        <Popup
+        {/* <Popup
           state={appLayout.searchPanelOpen}
           setState={appLayout.setSearchPanelOpen}
         >
           <div className="grid place-items-center gap-2">
-            {/* TODO: add to langui */}
+            TODO: add to langui
             <h2 className="text-2xl">{"Search"}</h2>
             <TextInput
               className="mb-6 w-full"
@@ -510,7 +510,7 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
               setState={setSearchQuery}
             />
           </div>
-          {/* TODO: add to langui */}
+          TODO: add to langui
           <div className="grid gap-4">
             <p className="font-headers text-xl">In news:</p>
             <div
@@ -529,7 +529,7 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
               ))}
             </div>
           </div>
-        </Popup>
+        </Popup> */}
       </div>
     </div>
   );

@@ -250,7 +250,7 @@ export function Markdawn(props: Immutable<Props>): JSX.Element {
                   </blockquote>
                 ),
               },
-              
+
               img: {
                 component: (compProps: {
                   alt: string;

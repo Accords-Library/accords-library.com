@@ -12,7 +12,7 @@ import { Immutable } from "helpers/types";
 import { GetStaticPropsContext } from "next";
 import { useCallback, useState } from "react";
 import TurndownService from "turndown";
-import { Ico, Icon } from "components/Ico";
+import { Icon } from "components/Ico";
 import { TOC } from "components/Markdown/TOC";
 
 interface Props extends AppStaticProps {}
@@ -114,7 +114,7 @@ export default function Editor(props: Immutable<Props>): JSX.Element {
 
   function appendDoc(append: string) {
     transformationWrapper((value) => {
-      let newValue = value + append;
+      const newValue = value + append;
       return { prependLength: 0, transformedValue: newValue };
     });
   }

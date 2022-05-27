@@ -193,7 +193,7 @@ export function MainPanel(props: Immutable<Props>): JSX.Element {
         <div className="mt-4 mb-8 grid place-content-center">
           <a
             aria-label="Read more about the license we use for this website"
-            className="transition-[filter] grid grid-flow-col place-content-center gap-1
+            className="grid grid-flow-col place-content-center gap-1 transition-[filter]
             hover:[--theme-color-black:var(--theme-color-dark)]"
             href="https://creativecommons.org/licenses/by-sa/4.0/"
           >

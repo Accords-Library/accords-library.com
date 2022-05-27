@@ -13,6 +13,7 @@ import { GetStaticPropsContext } from "next";
 import { useCallback, useState } from "react";
 import TurndownService from "turndown";
 import { Ico, Icon } from "components/Ico";
+import { TOC } from "components/Markdown/TOC";
 
 interface Props extends AppStaticProps {}
 
@@ -24,19 +25,124 @@ export default function Editor(props: Immutable<Props>): JSX.Element {
   const [markdown, setMarkdown] = useState("");
   const [converterOpened, setConverterOpened] = useState(false);
 
-  function insert(
-    text: string,
-    prepend: string,
-    append: string,
-    selectionStart: number,
-    selectionEnd: number
-  ): string {
-    let newText = text.slice(0, selectionStart);
-    newText += prepend;
-    newText += text.slice(selectionStart, selectionEnd);
-    newText += append;
-    newText += text.slice(selectionEnd);
-    return newText;
+  function wrap(
+    wrapper: string,
+    properties?: Record<string, string>,
+    addInnerNewLines?: boolean
+  ) {
+    transformationWrapper((value, selectionStart, selectionEnd) => {
+      let prepend = wrapper;
+      let append = wrapper;
+
+      if (properties) {
+        prepend = `<${wrapper}${Object.entries(properties).map(
+          ([propertyName, propertyValue]) =>
+            ` ${propertyName}="${propertyValue}"`
+        )}>`;
+        append = `</${wrapper}>`;
+      }
+
+      if (addInnerNewLines) {
+        prepend = `${prepend}\n`;
+        append = `\n${append}`;
+      }
+
+      let newValue = "";
+      newValue += value.slice(0, selectionStart);
+      newValue += prepend;
+      newValue += value.slice(selectionStart, selectionEnd);
+      newValue += append;
+      newValue += value.slice(selectionEnd);
+      return { prependLength: prepend.length, transformedValue: newValue };
+    });
+  }
+
+  function toggleWrap(
+    wrapper: string,
+    properties?: Record<string, string>,
+    addInnerNewLines?: boolean
+  ) {
+    const textarea = document.querySelector(
+      "#editorTextArea"
+    ) as HTMLTextAreaElement;
+    const { value, selectionStart, selectionEnd } = textarea;
+
+    if (
+      value.slice(selectionStart - wrapper.length, selectionStart) ===
+        wrapper &&
+      value.slice(selectionEnd, selectionEnd + wrapper.length) === wrapper
+    ) {
+      unwrap(wrapper);
+    } else {
+      wrap(wrapper, properties, addInnerNewLines);
+    }
+  }
+
+  function unwrap(wrapper: string) {
+    transformationWrapper((value, selectionStart, selectionEnd) => {
+      let newValue = "";
+      newValue += value.slice(0, selectionStart - wrapper.length);
+      newValue += value.slice(selectionStart, selectionEnd);
+      newValue += value.slice(wrapper.length + selectionEnd);
+      return { prependLength: -wrapper.length, transformedValue: newValue };
+    });
+  }
+
+  function preline(prepend: string) {
+    transformationWrapper((value, selectionStart) => {
+      const lastNewLine = value.slice(0, selectionStart).lastIndexOf("\n") + 1;
+
+      let newValue = "";
+      newValue += value.slice(0, lastNewLine);
+      newValue += prepend;
+      newValue += value.slice(lastNewLine);
+
+      return { prependLength: prepend.length, transformedValue: newValue };
+    });
+  }
+
+  function insert(prepend: string) {
+    transformationWrapper((value, selectionStart) => {
+      let newValue = "";
+      newValue += value.slice(0, selectionStart);
+      newValue += prepend;
+      newValue += value.slice(selectionStart);
+
+      return { prependLength: prepend.length, transformedValue: newValue };
+    });
+  }
+
+  function appendDoc(append: string) {
+    transformationWrapper((value) => {
+      let newValue = value + append;
+      return { prependLength: 0, transformedValue: newValue };
+    });
+  }
+
+  function transformationWrapper(
+    transformation: (
+      value: string,
+      selectionStart: number,
+      selectedEnd: number
+    ) => { prependLength: number; transformedValue: string }
+  ) {
+    const textarea = document.querySelector(
+      "#editorTextArea"
+    ) as HTMLTextAreaElement;
+    const { value, selectionStart, selectionEnd } = textarea;
+
+    const { prependLength, transformedValue } = transformation(
+      value,
+      selectionStart,
+      selectionEnd
+    );
+
+    textarea.value = transformedValue;
+    handleInput(textarea.value);
+
+    textarea.focus();
+    textarea.selectionStart = selectionStart + prependLength;
+    textarea.selectionEnd = selectionEnd + prependLength;
   }
 
   const contentPanel = (
@@ -79,90 +185,117 @@ export default function Editor(props: Immutable<Props>): JSX.Element {
           className="h-[50vh] w-[50vw] font-monospace mobile:w-[75vw]"
         />
       </Popup>
+
       <div className="mb-4 flex flex-row gap-2">
         <ToolTip
-          placement="bottom"
           content={
-            <>
-              <h3 className="text-lg">Transcript container</h3>
-              <p>
-                Use this to create dialogues and transcripts. You can then add
-                transcript speech line within (
-                <Ico className="text-xs" icon={Icon.RecordVoiceOver} />)
-              </p>
-            </>
+            <div className="grid gap-2">
+              <h3 className="text-lg">Headers</h3>
+              <Button onClick={() => preline("# ")} text={"H1"} />
+              <Button onClick={() => preline("## ")} text={"H2"} />
+              <Button onClick={() => preline("### ")} text={"H3"} />
+              <Button onClick={() => preline("#### ")} text={"H4"} />
+              <Button onClick={() => preline("##### ")} text={"H5"} />
+              <Button onClick={() => preline("###### ")} text={"H6"} />
+            </div>
           }
         >
-          <Button
-            onClick={() => {
-              const textarea = document.querySelector(
-                "#editorTextArea"
-              ) as HTMLTextAreaElement;
-              const { value, selectionStart, selectionEnd } = textarea;
-              textarea.value = insert(
-                value,
-                "\n<Transcript>\n",
-                "\n</Transcript>\n",
-                selectionStart,
-                selectionEnd
-              );
-              handleInput(textarea.value);
-            }}
-            icon={Icon.QuestionAnswer}
-          />
+          <Button icon={Icon.Title} />
         </ToolTip>
-        <ToolTip
-          placement="bottom"
-          content={
-            <>
-              <h3 className="text-lg">Transcript speech line</h3>
-              <p>
-                Use to add a dialogue/transcript line. Change the{" "}
-                <kbd>name</kbd> property to chang the name of the speaker
-              </p>
-            </>
-          }
-        >
-          <Button
-            onClick={() => {
-              const textarea = document.querySelector(
-                "#editorTextArea"
-              ) as HTMLTextAreaElement;
 
-              const { value, selectionStart, selectionEnd } = textarea;
-              textarea.value = insert(
-                value,
-                '<Line name="speaker">',
-                "</Line>\n",
-                selectionStart,
-                selectionEnd
-              );
-              handleInput(textarea.value);
-            }}
-            icon={Icon.RecordVoiceOver}
-          />
-        </ToolTip>
         <ToolTip
           placement="bottom"
-          content={<h3 className="text-lg">Vertical spacer</h3>}
+          content={<h3 className="text-lg">Toggle Bold</h3>}
+        >
+          <Button onClick={() => toggleWrap("**")} icon={Icon.FormatBold} />
+        </ToolTip>
+
+        <ToolTip
+          placement="bottom"
+          content={<h3 className="text-lg">Toggle Italic</h3>}
+        >
+          <Button onClick={() => toggleWrap("_")} icon={Icon.FormatItalic} />
+        </ToolTip>
+
+        <ToolTip
+          placement="bottom"
+          content={
+            <>
+              <h3 className="text-lg">Toggle Inline Code</h3>
+              <p>
+                Makes the text monospace (like text from a computer terminal).
+                Usually used for stylistic purposes in transcripts.
+              </p>
+            </>
+          }
+        >
+          <Button onClick={() => toggleWrap("`")} icon={Icon.Code} />
+        </ToolTip>
+
+        <ToolTip
+          placement="bottom"
+          content={
+            <>
+              <h3 className="text-lg">Insert footnote</h3>
+              <p>When inserted &ldquo;x&rdquo;</p>
+            </>
+          }
         >
           <Button
             onClick={() => {
-              const textarea = document.querySelector(
-                "#editorTextArea"
-              ) as HTMLTextAreaElement;
-              const { value, selectionStart, selectionEnd } = textarea;
-              textarea.value = insert(
-                value,
-                "<Sep />",
-                "",
-                selectionStart,
-                selectionEnd
-              );
-              handleInput(textarea.value);
+              insert("[^x]");
+              appendDoc("\n\n[^x]: This is a footnote.");
             }}
-            icon={Icon.DensityLarge}
+            icon={Icon.Superscript}
           />
+        </ToolTip>
+
+        <ToolTip
+          placement="bottom"
+          content={
+            <>
+              <h3 className="text-lg">Transcripts</h3>
+              <p>
+                Use this to create dialogues and transcripts. Start by adding a
+                container, then add transcript speech line within.
+              </p>
+              <div className="grid gap-2">
+                <ToolTip
+                  placement="right"
+                  content={
+                    <>
+                      <h3 className="text-lg">Transcript container</h3>
+                    </>
+                  }
+                >
+                  <Button
+                    onClick={() => wrap("Transcript", {}, true)}
+                    icon={Icon.AddBox}
+                  />
+                </ToolTip>
+                <ToolTip
+                  placement="right"
+                  content={
+                    <>
+                      <h3 className="text-lg">Transcript speech line</h3>
+                      <p>
+                        Use to add a dialogue/transcript line. Change the{" "}
+                        <kbd>name</kbd> property to chang the name of the
+                        speaker
+                      </p>
+                    </>
+                  }
+                >
+                  <Button
+                    onClick={() => wrap("Line", { name: "speaker" })}
+                    icon={Icon.RecordVoiceOver}
+                  />
+                </ToolTip>
+              </div>
+            </>
+          }
+        >
+          <Button icon={Icon.RecordVoiceOver} />
         </ToolTip>
 
         <ToolTip
@@ -170,20 +303,7 @@ export default function Editor(props: Immutable<Props>): JSX.Element {
           content={<h3 className="text-lg">Inset box</h3>}
         >
           <Button
-            onClick={() => {
-              const textarea = document.querySelector(
-                "#editorTextArea"
-              ) as HTMLTextAreaElement;
-              const { value, selectionStart, selectionEnd } = textarea;
-              textarea.value = insert(
-                value,
-                "\n<InsetBox>\n",
-                "\n</InsetBox>\n",
-                selectionStart,
-                selectionEnd
-              );
-              handleInput(textarea.value);
-            }}
+            onClick={() => wrap("InsetBox", {}, true)}
             icon={Icon.CheckBoxOutlineBlank}
           />
         </ToolTip>
@@ -191,28 +311,30 @@ export default function Editor(props: Immutable<Props>): JSX.Element {
           placement="bottom"
           content={<h3 className="text-lg">Scene break</h3>}
         >
-          <Button
-            onClick={() => {
-              const textarea = document.querySelector(
-                "#editorTextArea"
-              ) as HTMLTextAreaElement;
-              const { value, selectionStart, selectionEnd } = textarea;
-              textarea.value = insert(
-                value,
-                "\n\n<SceneBreak />\n\n",
-                "",
-                selectionStart,
-                selectionEnd
-              );
-              handleInput(textarea.value);
-            }}
-            icon={Icon.MoreHoriz}
-          />
+          <Button onClick={() => insert("\n* * *\n")} icon={Icon.MoreHoriz} />
         </ToolTip>
         <ToolTip
           content={
             <div className="flex flex-col place-items-center gap-2">
-              <h3 className="text-lg">Intralink</h3>
+              <h3 className="text-lg">Links</h3>
+              <ToolTip
+                placement="right"
+                content={
+                  <>
+                    <h3 className="text-lg">External Link</h3>
+                    <p className="text-xs">
+                      Provides a link to another webpage / website
+                    </p>
+                  </>
+                }
+              >
+                <Button
+                  onClick={() => insert("[Link name](https://domain.com)")}
+                  icon={Icon.Link}
+                  text={"External"}
+                />
+              </ToolTip>
+
               <ToolTip
                 placement="right"
                 content={
@@ -226,21 +348,9 @@ export default function Editor(props: Immutable<Props>): JSX.Element {
                 }
               >
                 <Button
-                  onClick={() => {
-                    const textarea = document.querySelector(
-                      "#editorTextArea"
-                    ) as HTMLTextAreaElement;
-                    const { value, selectionStart, selectionEnd } = textarea;
-                    textarea.value = insert(
-                      value,
-                      "<IntraLink>",
-                      "</IntraLink>",
-                      selectionStart,
-                      selectionEnd
-                    );
-                    handleInput(textarea.value);
-                  }}
+                  onClick={() => wrap("IntraLink", {})}
                   icon={Icon.Link}
+                  text={"Internal"}
                 />
               </ToolTip>
               <ToolTip
@@ -256,22 +366,9 @@ export default function Editor(props: Immutable<Props>): JSX.Element {
                 }
               >
                 <Button
-                  onClick={() => {
-                    const textarea = document.querySelector(
-                      "#editorTextArea"
-                    ) as HTMLTextAreaElement;
-                    const { value, selectionStart, selectionEnd } = textarea;
-                    textarea.value = insert(
-                      value,
-                      '<IntraLink target="target">',
-                      "</IntraLink>",
-                      selectionStart,
-                      selectionEnd
-                    );
-                    handleInput(textarea.value);
-                  }}
+                  onClick={() => wrap("IntraLink", { target: "target" })}
                   icon={Icon.Link}
-                  text="+ target"
+                  text="Internal (w/ target)"
                 />
               </ToolTip>
             </div>
@@ -284,23 +381,7 @@ export default function Editor(props: Immutable<Props>): JSX.Element {
           placement="bottom"
           content={<h3 className="text-lg">Player&rsquo;s name placeholder</h3>}
         >
-          <Button
-            onClick={() => {
-              const textarea = document.querySelector(
-                "#editorTextArea"
-              ) as HTMLTextAreaElement;
-              const { value, selectionStart, selectionEnd } = textarea;
-              textarea.value = insert(
-                value,
-                "<player>",
-                "",
-                selectionStart,
-                selectionEnd
-              );
-              handleInput(textarea.value);
-            }}
-            icon={Icon.Person}
-          />
+          <Button onClick={() => insert("<player>")} icon={Icon.Person} />
         </ToolTip>
 
         <ToolTip
@@ -325,8 +406,8 @@ export default function Editor(props: Immutable<Props>): JSX.Element {
               const textarea = event.target as HTMLTextAreaElement;
               handleInput(textarea.value);
             }}
-            className="h-[70vh] w-full rounded-xl
-            bg-mid !bg-opacity-40 p-8 font-monospace text-black outline-none"
+            className="h-[70vh] w-full rounded-xl bg-mid !bg-opacity-40 p-8 font-monospace
+            text-black outline-none"
             value={markdown}
             title="Input textarea"
           />
@@ -337,6 +418,10 @@ export default function Editor(props: Immutable<Props>): JSX.Element {
             <Markdawn className="w-full" text={markdown} />
           </div>
         </div>
+      </div>
+
+      <div className="mt-8">
+        <TOC text={markdown} />
       </div>
     </ContentPanel>
   );

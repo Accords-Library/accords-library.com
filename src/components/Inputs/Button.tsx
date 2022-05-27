@@ -38,8 +38,8 @@ export function Button(props: Immutable<Props>): JSX.Element {
       draggable={draggable}
       id={id}
       onClick={onClick}
-      className={`--opacityBadge:100 grid select-none place-content-center
-      place-items-center rounded-full border-[1px] border-dark px-4 pt-[0.4rem]
+      className={`--opacityBadge:100 grid select-none grid-flow-col place-content-center
+      place-items-center gap-2 rounded-full border-[1px] border-dark px-4 pt-[0.4rem]
       pb-[0.5rem] text-dark transition-all hover:[--opacityBadge:0] ${className} ${
         active
           ? "cursor-not-allowed !border-black bg-black text-light drop-shadow-black-lg"
@@ -56,7 +56,7 @@ export function Button(props: Immutable<Props>): JSX.Element {
         </div>
       )}
       {icon && <Ico icon={icon} />}
-      <p>{text}</p>
+      {text && <p>{text}</p>}
     </div>
   );
 

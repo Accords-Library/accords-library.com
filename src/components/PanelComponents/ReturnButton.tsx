@@ -36,7 +36,6 @@ export function ReturnButton(props: Immutable<Props>): JSX.Element {
       <Button
         onClick={() => appLayout.setSubPanelOpen(false)}
         href={props.href}
-        className="grid grid-flow-col gap-2"
         text={`${props.langui.return_to} ${props.title}`}
         icon={Icon.NavigateBefore}
       />

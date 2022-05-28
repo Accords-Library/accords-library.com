@@ -24,3 +24,9 @@ export type Immutable<T> = {
     ? T[K]
     : Immutable<T[K]>;
 };
+
+export enum LibraryItemUserStatus {
+  None = 0,
+  Want = 1,
+  Have = 2,
+}

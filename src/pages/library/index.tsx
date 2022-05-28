@@ -8,29 +8,31 @@ import {
   ContentPanelWidthSizes,
 } from "components/Panels/ContentPanel";
 import { SubPanel } from "components/Panels/SubPanel";
-import { PreviewCard } from "components/PreviewCard";
 import { GetLibraryItemsPreviewQuery } from "graphql/generated";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
-import {
-  prettyDate,
-  prettyinlineTitle,
-  prettyItemSubType,
-} from "helpers/formatters";
-import { convertPrice } from "helpers/numbers";
-import { Immutable } from "helpers/types";
+import { prettyItemSubType } from "helpers/formatters";
+import { Immutable, LibraryItemUserStatus } from "helpers/types";
 import { GetStaticPropsContext } from "next";
 import { Fragment, useEffect, useState } from "react";
 import { Icon } from "components/Ico";
 import { WithLabel } from "components/Inputs/WithLabel";
 import { TextInput } from "components/Inputs/TextInput";
 import { Button } from "components/Inputs/Button";
+import { PreviewCardCTAs } from "components/Library/PreviewCardCTAs";
+import { useAppLayout } from "contexts/AppLayoutContext";
+import { ToolTip } from "components/ToolTip";
+import {
+  filterItems,
+  getGroups,
+  sortBy,
+  isUntangibleGroupItem,
+} from "helpers/libraryItem";
+import { PreviewCard } from "components/PreviewCard";
 
 interface Props extends AppStaticProps {
   items: NonNullable<GetLibraryItemsPreviewQuery["libraryItems"]>["data"];
 }
-
-type GroupLibraryItems = Map<string, Immutable<Props["items"]>>;
 
 const defaultFiltersState = {
   searchName: "",
@@ -40,10 +42,12 @@ const defaultFiltersState = {
   sortingMethod: 0,
   groupingMethod: -1,
   keepInfoVisible: false,
+  filterUserStatus: undefined,
 };
 
 export default function Library(props: Immutable<Props>): JSX.Element {
   const { langui, items: libraryItems, currencies } = props;
+  const appLayout = useAppLayout();
 
   const [searchName, setSearchName] = useState(defaultFiltersState.searchName);
   const [showSubitems, setShowSubitems] = useState<boolean>(
@@ -64,14 +68,19 @@ export default function Library(props: Immutable<Props>): JSX.Element {
   const [keepInfoVisible, setKeepInfoVisible] = useState(
     defaultFiltersState.keepInfoVisible
   );
+  const [filterUserStatus, setFilterUserStatus] = useState<
+    LibraryItemUserStatus | undefined
+  >(defaultFiltersState.filterUserStatus);
 
   const [filteredItems, setFilteredItems] = useState(
     filterItems(
+      appLayout,
       libraryItems,
       searchName,
       showSubitems,
       showPrimaryItems,
-      showSecondaryItems
+      showSecondaryItems,
+      filterUserStatus
     )
   );
 
@@ -86,11 +95,13 @@ export default function Library(props: Immutable<Props>): JSX.Element {
   useEffect(() => {
     setFilteredItems(
       filterItems(
+        appLayout,
         libraryItems,
         searchName,
         showSubitems,
         showPrimaryItems,
-        showSecondaryItems
+        showSecondaryItems,
+        filterUserStatus
       )
     );
   }, [
@@ -99,6 +110,8 @@ export default function Library(props: Immutable<Props>): JSX.Element {
     showPrimaryItems,
     showSecondaryItems,
     searchName,
+    filterUserStatus,
+    appLayout,
   ]);
 
   useEffect(() => {
@@ -181,6 +194,42 @@ export default function Library(props: Immutable<Props>): JSX.Element {
         input={<Switch state={keepInfoVisible} setState={setKeepInfoVisible} />}
       />
 
+      <div className="mt-4 grid grid-flow-col">
+        {/* TODO: Add to Langui */}
+        <ToolTip content="Only display items marked as &ldquo;I want&rdquo;">
+          <Button
+            className="rounded-r-none"
+            icon={Icon.Favorite}
+            onClick={() => setFilterUserStatus(LibraryItemUserStatus.Want)}
+            active={filterUserStatus === LibraryItemUserStatus.Want}
+          />
+        </ToolTip>
+        <ToolTip content="Only display items marked as &ldquo;I have&rdquo;">
+          <Button
+            className="rounded-none border-l-0"
+            icon={Icon.BackHand}
+            onClick={() => setFilterUserStatus(LibraryItemUserStatus.Have)}
+            active={filterUserStatus === LibraryItemUserStatus.Have}
+          />
+        </ToolTip>
+        <ToolTip content="Only display unmarked items">
+          <Button
+            className="rounded-none border-l-0"
+            icon={Icon.RadioButtonUnchecked}
+            onClick={() => setFilterUserStatus(LibraryItemUserStatus.None)}
+            active={filterUserStatus === LibraryItemUserStatus.None}
+          />
+        </ToolTip>
+        <ToolTip content="Display all items">
+          <Button
+            className="rounded-l-none border-l-0"
+            text={"All"}
+            onClick={() => setFilterUserStatus(undefined)}
+            active={filterUserStatus === undefined}
+          />
+        </ToolTip>
+      </div>
+
       {/* TODO: Add to Langui */}
       <Button
         className="mt-8"
@@ -194,6 +243,7 @@ export default function Library(props: Immutable<Props>): JSX.Element {
           setSortingMethod(defaultFiltersState.sortingMethod);
           setGroupingMethod(defaultFiltersState.groupingMethod);
           setKeepInfoVisible(defaultFiltersState.keepInfoVisible);
+          setFilterUserStatus(defaultFiltersState.filterUserStatus);
         }}
       />
     </SubPanel>
@@ -224,7 +274,7 @@ export default function Library(props: Immutable<Props>): JSX.Element {
               >
                 {items.map((item) => (
                   <Fragment key={item.id}>
-                    {item.attributes && (
+                    {item.id && item.attributes && (
                       <PreviewCard
                         href={`/library/${item.attributes.slug}`}
                         title={item.attributes.title}
@@ -248,6 +298,16 @@ export default function Library(props: Immutable<Props>): JSX.Element {
                           price: item.attributes.price,
                           position: "Bottom",
                         }}
+                        infoAppend={
+                          <PreviewCardCTAs
+                            id={item.id}
+                            displayCTAs={
+                              !isUntangibleGroupItem(
+                                item.attributes.metadata?.[0]
+                              )
+                            }
+                          />
+                        }
                       />
                     )}
                   </Fragment>
@@ -285,222 +345,4 @@ export async function getStaticProps(
   return {
     props: props,
   };
-}
-
-function getGroups(
-  langui: AppStaticProps["langui"],
-  groupByType: number,
-  items: Immutable<Props["items"]>
-): GroupLibraryItems {
-  switch (groupByType) {
-    case 0: {
-      const typeGroup = new Map();
-      typeGroup.set("Drakengard 1", []);
-      typeGroup.set("Drakengard 1.3", []);
-      typeGroup.set("Drakengard 2", []);
-      typeGroup.set("Drakengard 3", []);
-      typeGroup.set("Drakengard 4", []);
-      typeGroup.set("NieR Gestalt", []);
-      typeGroup.set("NieR Replicant", []);
-      typeGroup.set("NieR Replicant ver.1.22474487139...", []);
-      typeGroup.set("NieR:Automata", []);
-      typeGroup.set("NieR Re[in]carnation", []);
-      typeGroup.set("SINoALICE", []);
-      typeGroup.set("Voice of Cards", []);
-      typeGroup.set("Final Fantasy XIV", []);
-      typeGroup.set("Thou Shalt Not Die", []);
-      typeGroup.set("Bakuken", []);
-      typeGroup.set("YoRHa", []);
-      typeGroup.set("YoRHa Boys", []);
-      typeGroup.set(langui.no_category, []);
-
-      items.map((item) => {
-        if (item.attributes?.categories?.data.length === 0) {
-          typeGroup.get(langui.no_category)?.push(item);
-        } else {
-          item.attributes?.categories?.data.map((category) => {
-            typeGroup.get(category.attributes?.name)?.push(item);
-          });
-        }
-      });
-
-      return typeGroup;
-    }
-
-    case 1: {
-      const group = new Map();
-      group.set(langui.audio ?? "Audio", []);
-      group.set(langui.game ?? "Game", []);
-      group.set(langui.textual ?? "Textual", []);
-      group.set(langui.video ?? "Video", []);
-      group.set(langui.other ?? "Other", []);
-      group.set(langui.group ?? "Group", []);
-      group.set(langui.no_type ?? "No type", []);
-      items.map((item) => {
-        if (item.attributes?.metadata && item.attributes.metadata.length > 0) {
-          switch (item.attributes.metadata[0]?.__typename) {
-            case "ComponentMetadataAudio":
-              group.get(langui.audio ?? "Audio")?.push(item);
-              break;
-            case "ComponentMetadataGame":
-              group.get(langui.game ?? "Game")?.push(item);
-              break;
-            case "ComponentMetadataBooks":
-              group.get(langui.textual ?? "Textual")?.push(item);
-              break;
-            case "ComponentMetadataVideo":
-              group.get(langui.video ?? "Video")?.push(item);
-              break;
-            case "ComponentMetadataOther":
-              group.get(langui.other ?? "Other")?.push(item);
-              break;
-            case "ComponentMetadataGroup":
-              switch (
-                item.attributes.metadata[0]?.subitems_type?.data?.attributes
-                  ?.slug
-              ) {
-                case "audio":
-                  group.get(langui.audio ?? "Audio")?.push(item);
-                  break;
-                case "video":
-                  group.get(langui.video ?? "Video")?.push(item);
-                  break;
-                case "game":
-                  group.get(langui.game ?? "Game")?.push(item);
-                  break;
-                case "textual":
-                  group.get(langui.textual ?? "Textual")?.push(item);
-                  break;
-                case "mixed":
-                  group.get(langui.group ?? "Group")?.push(item);
-                  break;
-                default: {
-                  throw new Error(
-                    "An unexpected subtype of group-metadata was given"
-                  );
-                }
-              }
-              break;
-            default: {
-              throw new Error("An unexpected type of metadata was given");
-            }
-          }
-        } else {
-          group.get(langui.no_type ?? "No type")?.push(item);
-        }
-      });
-      return group;
-    }
-
-    case 2: {
-      const years: number[] = [];
-      items.map((item) => {
-        if (item.attributes?.release_date?.year) {
-          if (!years.includes(item.attributes.release_date.year))
-            years.push(item.attributes.release_date.year);
-        }
-      });
-      const group = new Map();
-      years.sort((a, b) => a - b);
-      years.map((year) => {
-        group.set(year.toString(), []);
-      });
-      group.set(langui.no_year ?? "No year", []);
-      items.map((item) => {
-        if (item.attributes?.release_date?.year) {
-          group.get(item.attributes.release_date.year.toString())?.push(item);
-        } else {
-          group.get(langui.no_year ?? "No year")?.push(item);
-        }
-      });
-
-      return group;
-    }
-
-    default: {
-      const group = new Map();
-      group.set("", items);
-      return group;
-    }
-  }
-}
-
-function filterItems(
-  items: Immutable<Props["items"]>,
-  searchName: string,
-  showSubitems: boolean,
-  showPrimaryItems: boolean,
-  showSecondaryItems: boolean
-): Immutable<Props["items"]> {
-  return [...items].filter((item) => {
-    if (!showSubitems && !item.attributes?.root_item) return false;
-    if (
-      showSubitems &&
-      item.attributes?.metadata?.[0]?.__typename === "ComponentMetadataGroup" &&
-      (item.attributes.metadata[0].subtype?.data?.attributes?.slug ===
-        "variant-set" ||
-        item.attributes.metadata[0].subtype?.data?.attributes?.slug ===
-          "relation-set")
-    ) {
-      return false;
-    }
-    if (item.attributes?.primary && !showPrimaryItems) return false;
-    if (!item.attributes?.primary && !showSecondaryItems) return false;
-    if (searchName.length > 1) {
-      if (
-        prettyinlineTitle("", item.attributes?.title, item.attributes?.subtitle)
-          .toLowerCase()
-          .includes(searchName.toLowerCase())
-      ) {
-        return true;
-      }
-      return false;
-    }
-    return true;
-  });
-}
-
-function sortBy(
-  orderByType: number,
-  items: Immutable<Props["items"]>,
-  currencies: AppStaticProps["currencies"]
-): Immutable<Props["items"]> {
-  switch (orderByType) {
-    case 0:
-      return [...items].sort((a, b) => {
-        const titleA = prettyinlineTitle(
-          "",
-          a.attributes?.title,
-          a.attributes?.subtitle
-        );
-        const titleB = prettyinlineTitle(
-          "",
-          b.attributes?.title,
-          b.attributes?.subtitle
-        );
-        return titleA.localeCompare(titleB);
-      });
-    case 1:
-      return [...items].sort((a, b) => {
-        const priceA = a.attributes?.price
-          ? convertPrice(a.attributes.price, currencies[0])
-          : 99999;
-        const priceB = b.attributes?.price
-          ? convertPrice(b.attributes.price, currencies[0])
-          : 99999;
-        return priceA - priceB;
-      });
-    case 2:
-      return [...items].sort((a, b) => {
-        const dateA = a.attributes?.release_date
-          ? prettyDate(a.attributes.release_date)
-          : "9999";
-        const dateB = b.attributes?.release_date
-          ? prettyDate(b.attributes.release_date)
-          : "9999";
-        return dateA.localeCompare(dateB);
-      });
-    default:
-      return items;
-  }
 }

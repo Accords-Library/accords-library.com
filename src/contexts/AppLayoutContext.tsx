@@ -1,41 +1,57 @@
-import { Immutable } from "helpers/types";
+import { Immutable, LibraryItemUserStatus } from "helpers/types";
 import { useDarkMode } from "hooks/useDarkMode";
 import { useStateWithLocalStorage } from "hooks/useStateWithLocalStorage";
 import React, { ReactNode, useContext, useState } from "react";
 
-interface AppLayoutState {
+export interface AppLayoutState {
   subPanelOpen: boolean | undefined;
+  setSubPanelOpen: React.Dispatch<
+    React.SetStateAction<AppLayoutState["subPanelOpen"]>
+  >;
   configPanelOpen: boolean | undefined;
+  setConfigPanelOpen: React.Dispatch<
+    React.SetStateAction<AppLayoutState["configPanelOpen"]>
+  >;
   searchPanelOpen: boolean | undefined;
+  setSearchPanelOpen: React.Dispatch<
+    React.SetStateAction<AppLayoutState["searchPanelOpen"]>
+  >;
   mainPanelReduced: boolean | undefined;
-  mainPanelOpen: boolean | undefined;
-  darkMode: boolean | undefined;
-  selectedThemeMode: boolean | undefined;
-  fontSize: number | undefined;
-  dyslexic: boolean | undefined;
-  currency: string | undefined;
-  playerName: string | undefined;
-  preferredLanguages: string[] | undefined;
-  menuGestures: boolean;
-  setSubPanelOpen: React.Dispatch<React.SetStateAction<boolean | undefined>>;
-  setConfigPanelOpen: React.Dispatch<React.SetStateAction<boolean | undefined>>;
-  setSearchPanelOpen: React.Dispatch<React.SetStateAction<boolean | undefined>>;
   setMainPanelReduced: React.Dispatch<
-    React.SetStateAction<boolean | undefined>
+    React.SetStateAction<AppLayoutState["mainPanelReduced"]>
   >;
-  setMainPanelOpen: React.Dispatch<React.SetStateAction<boolean | undefined>>;
-  setDarkMode: React.Dispatch<React.SetStateAction<boolean | undefined>>;
+  mainPanelOpen: boolean | undefined;
+  setMainPanelOpen: React.Dispatch<
+    React.SetStateAction<AppLayoutState["mainPanelOpen"]>
+  >;
+  darkMode: boolean | undefined;
+  setDarkMode: React.Dispatch<React.SetStateAction<AppLayoutState["darkMode"]>>;
+  selectedThemeMode: boolean | undefined;
   setSelectedThemeMode: React.Dispatch<
-    React.SetStateAction<boolean | undefined>
+    React.SetStateAction<AppLayoutState["selectedThemeMode"]>
   >;
-  setFontSize: React.Dispatch<React.SetStateAction<number | undefined>>;
-  setDyslexic: React.Dispatch<React.SetStateAction<boolean | undefined>>;
-  setCurrency: React.Dispatch<React.SetStateAction<string | undefined>>;
-  setPlayerName: React.Dispatch<React.SetStateAction<string | undefined>>;
+  fontSize: number | undefined;
+  setFontSize: React.Dispatch<React.SetStateAction<AppLayoutState["fontSize"]>>;
+  dyslexic: boolean | undefined;
+  setDyslexic: React.Dispatch<React.SetStateAction<AppLayoutState["dyslexic"]>>;
+  currency: string | undefined;
+  setCurrency: React.Dispatch<React.SetStateAction<AppLayoutState["currency"]>>;
+  playerName: string | undefined;
+  setPlayerName: React.Dispatch<
+    React.SetStateAction<AppLayoutState["playerName"]>
+  >;
+  preferredLanguages: string[] | undefined;
   setPreferredLanguages: React.Dispatch<
-    React.SetStateAction<string[] | undefined>
+    React.SetStateAction<AppLayoutState["preferredLanguages"]>
   >;
-  setMenuGestures: React.Dispatch<React.SetStateAction<boolean>>;
+  menuGestures: boolean;
+  setMenuGestures: React.Dispatch<
+    React.SetStateAction<AppLayoutState["menuGestures"]>
+  >;
+  libraryItemUserStatus: Record<string, LibraryItemUserStatus> | undefined;
+  setLibraryItemUserStatus: React.Dispatch<
+    React.SetStateAction<AppLayoutState["libraryItemUserStatus"]>
+  >;
 }
 
 /* eslint-disable @typescript-eslint/no-empty-function */
@@ -53,6 +69,7 @@ const initialState: AppLayoutState = {
   playerName: "",
   preferredLanguages: [],
   menuGestures: true,
+  libraryItemUserStatus: {},
   setSubPanelOpen: () => {},
   setMainPanelReduced: () => {},
   setMainPanelOpen: () => {},
@@ -66,6 +83,7 @@ const initialState: AppLayoutState = {
   setPlayerName: () => {},
   setPreferredLanguages: () => {},
   setMenuGestures: () => {},
+  setLibraryItemUserStatus: () => {},
 };
 /* eslint-enable @typescript-eslint/no-empty-function */
 
@@ -82,53 +100,66 @@ interface Props {
 }
 
 export function AppContextProvider(props: Immutable<Props>): JSX.Element {
-  const [subPanelOpen, setSubPanelOpen] = useStateWithLocalStorage<
-    boolean | undefined
-  >("subPanelOpen", initialState.subPanelOpen);
+  const [subPanelOpen, setSubPanelOpen] = useStateWithLocalStorage(
+    "subPanelOpen",
+    initialState.subPanelOpen
+  );
 
-  const [configPanelOpen, setConfigPanelOpen] = useStateWithLocalStorage<
-    boolean | undefined
-  >("configPanelOpen", initialState.configPanelOpen);
+  const [configPanelOpen, setConfigPanelOpen] = useStateWithLocalStorage(
+    "configPanelOpen",
+    initialState.configPanelOpen
+  );
 
-  const [mainPanelReduced, setMainPanelReduced] = useStateWithLocalStorage<
-    boolean | undefined
-  >("mainPanelReduced", initialState.mainPanelReduced);
+  const [mainPanelReduced, setMainPanelReduced] = useStateWithLocalStorage(
+    "mainPanelReduced",
+    initialState.mainPanelReduced
+  );
 
-  const [mainPanelOpen, setMainPanelOpen] = useStateWithLocalStorage<
-    boolean | undefined
-  >("mainPanelOpen", initialState.mainPanelOpen);
+  const [mainPanelOpen, setMainPanelOpen] = useStateWithLocalStorage(
+    "mainPanelOpen",
+    initialState.mainPanelOpen
+  );
 
   const [darkMode, selectedThemeMode, setDarkMode, setSelectedThemeMode] =
     useDarkMode("darkMode", initialState.darkMode);
 
-  const [fontSize, setFontSize] = useStateWithLocalStorage<number | undefined>(
+  const [fontSize, setFontSize] = useStateWithLocalStorage(
     "fontSize",
     initialState.fontSize
   );
 
-  const [dyslexic, setDyslexic] = useStateWithLocalStorage<boolean | undefined>(
+  const [dyslexic, setDyslexic] = useStateWithLocalStorage(
     "dyslexic",
     initialState.dyslexic
   );
 
-  const [currency, setCurrency] = useStateWithLocalStorage<string | undefined>(
+  const [currency, setCurrency] = useStateWithLocalStorage(
     "currency",
     initialState.currency
   );
 
-  const [playerName, setPlayerName] = useStateWithLocalStorage<
-    string | undefined
-  >("playerName", initialState.playerName);
+  const [playerName, setPlayerName] = useStateWithLocalStorage(
+    "playerName",
+    initialState.playerName
+  );
 
-  const [preferredLanguages, setPreferredLanguages] = useStateWithLocalStorage<
-    string[] | undefined
-  >("preferredLanguages", initialState.preferredLanguages);
+  const [preferredLanguages, setPreferredLanguages] = useStateWithLocalStorage(
+    "preferredLanguages",
+    initialState.preferredLanguages
+  );
 
   const [menuGestures, setMenuGestures] = useState(false);
 
-  const [searchPanelOpen, setSearchPanelOpen] = useStateWithLocalStorage<
-    boolean | undefined
-  >("searchPanelOpen", initialState.searchPanelOpen);
+  const [searchPanelOpen, setSearchPanelOpen] = useStateWithLocalStorage(
+    "searchPanelOpen",
+    initialState.searchPanelOpen
+  );
+
+  const [libraryItemUserStatus, setLibraryItemUserStatus] =
+    useStateWithLocalStorage(
+      "libraryItemUserStatus",
+      initialState.libraryItemUserStatus
+    );
 
   return (
     <AppContext.Provider
@@ -146,6 +177,7 @@ export function AppContextProvider(props: Immutable<Props>): JSX.Element {
         playerName,
         preferredLanguages,
         menuGestures,
+        libraryItemUserStatus,
         setSubPanelOpen,
         setConfigPanelOpen,
         setSearchPanelOpen,
@@ -159,6 +191,7 @@ export function AppContextProvider(props: Immutable<Props>): JSX.Element {
         setPlayerName,
         setPreferredLanguages,
         setMenuGestures,
+        setLibraryItemUserStatus,
       }}
     >
       {props.children}

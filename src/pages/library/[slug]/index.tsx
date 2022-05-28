@@ -5,6 +5,7 @@ import { Button } from "components/Inputs/Button";
 import { Switch } from "components/Inputs/Switch";
 import { InsetBox } from "components/InsetBox";
 import { ContentLine } from "components/Library/ContentLine";
+import { PreviewCardCTAs } from "components/Library/PreviewCardCTAs";
 import { NavOption } from "components/PanelComponents/NavOption";
 import {
   ReturnButton,
@@ -44,6 +45,7 @@ import {
   GetStaticPropsContext,
 } from "next";
 import { Fragment, useState } from "react";
+import { isUntangibleGroupItem } from "helpers/libraryItem";
 
 interface Props extends AppStaticProps {
   item: NonNullable<
@@ -55,7 +57,7 @@ interface Props extends AppStaticProps {
 }
 
 export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
-  const { item, langui, currencies } = props;
+  const { item, itemId, langui, currencies } = props;
   const appLayout = useAppLayout();
 
   useScrollTopOnChange(AnchorIds.ContentPanel, [item]);
@@ -169,6 +171,12 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
               <h1 className="text-3xl">{item?.title}</h1>
               {item?.subtitle && <h2 className="text-2xl">{item.subtitle}</h2>}
             </div>
+
+            <PreviewCardCTAs
+              id={itemId}
+              displayCTAs={!isUntangibleGroupItem(item?.metadata?.[0])}
+              expand
+            />
             {item?.descriptions?.[0] && (
               <p className="text-justify">{item.descriptions[0].description}</p>
             )}
@@ -402,7 +410,7 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
             >
               {item.subitems.data.map((subitem) => (
                 <Fragment key={subitem.id}>
-                  {subitem.attributes && (
+                  {subitem.attributes && subitem.id && (
                     <PreviewCard
                       href={`/library/${subitem.attributes.slug}`}
                       title={subitem.attributes.title}
@@ -426,6 +434,16 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
                         price: subitem.attributes.price,
                         position: "Bottom",
                       }}
+                      infoAppend={
+                        <PreviewCardCTAs
+                          id={subitem.id}
+                          displayCTAs={
+                            !isUntangibleGroupItem(
+                              subitem.attributes.metadata?.[0]
+                            )
+                          }
+                        />
+                      }
                     />
                   )}
                 </Fragment>

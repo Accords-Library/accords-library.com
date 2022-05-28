@@ -38,6 +38,7 @@ interface Props {
     author?: string;
     position: "Bottom" | "Top";
   };
+  infoAppend?: React.ReactNode;
   hoverlay?:
     | {
         __typename: "Video";
@@ -61,6 +62,7 @@ export function PreviewCard(props: Immutable<Props>): JSX.Element {
     thumbnailAspectRatio,
     metadata,
     hoverlay,
+    infoAppend,
   } = props;
 
   const appLayout = useAppLayout();
@@ -251,6 +253,8 @@ export function PreviewCard(props: Immutable<Props>): JSX.Element {
           )}
 
           {metadata?.position === "Bottom" && metadataJSX}
+
+          {infoAppend}
         </div>
       </div>
     </Link>

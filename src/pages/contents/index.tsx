@@ -8,7 +8,7 @@ import {
   ContentPanelWidthSizes,
 } from "components/Panels/ContentPanel";
 import { SubPanel } from "components/Panels/SubPanel";
-import { PreviewCard } from "components/PreviewCard";
+import { PreviewCard, TranslatedPreviewCard } from "components/PreviewCard";
 import { GetContentsQuery } from "graphql/generated";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
@@ -35,7 +35,7 @@ const defaultFiltersState = {
 };
 
 export default function Contents(props: Immutable<Props>): JSX.Element {
-  const { langui, contents } = props;
+  const { langui, contents, languages } = props;
 
   const [groupingMethod, setGroupingMethod] = useState<number>(
     defaultFiltersState.groupingMethod
@@ -176,14 +176,19 @@ export default function Contents(props: Immutable<Props>): JSX.Element {
                 {items.map((item) => (
                   <Fragment key={item.id}>
                     {item.attributes && (
-                      <PreviewCard
+                      <TranslatedPreviewCard
                         href={`/contents/${item.attributes.slug}`}
-                        pre_title={item.attributes.translations?.[0]?.pre_title}
-                        title={
-                          item.attributes.translations?.[0]?.title ??
-                          prettySlug(item.attributes.slug)
-                        }
-                        subtitle={item.attributes.translations?.[0]?.subtitle}
+                        translations={item.attributes.translations?.map(
+                          (translation) => ({
+                            pre_title: translation?.pre_title,
+                            title: translation?.title,
+                            subtitle: translation?.subtitle,
+                            language:
+                              translation?.language?.data?.attributes?.code,
+                          })
+                        )}
+                        slug={item.attributes.slug}
+                        languages={languages}
                         thumbnail={item.attributes.thumbnail?.data?.attributes}
                         thumbnailAspectRatio="3/2"
                         stackNumber={
@@ -343,13 +348,15 @@ function filterContents(
     }
     if (searchName.length > 1) {
       if (
-        prettyinlineTitle(
-          content.attributes?.translations?.[0]?.pre_title,
-          content.attributes?.translations?.[0]?.title,
-          content.attributes?.translations?.[0]?.subtitle
+        content.attributes?.translations?.find((translation) =>
+          prettyinlineTitle(
+            translation?.pre_title,
+            translation?.title,
+            translation?.subtitle
+          )
+            .toLowerCase()
+            .includes(searchName.toLowerCase())
         )
-          .toLowerCase()
-          .includes(searchName.toLowerCase())
       ) {
         return true;
       }

@@ -9,7 +9,7 @@ import {
 } from "components/PanelComponents/ReturnButton";
 import { ContentPanel } from "components/Panels/ContentPanel";
 import { SubPanel } from "components/Panels/SubPanel";
-import { PreviewLine } from "components/PreviewLine";
+import { PreviewLine, TranslatedPreviewLine } from "components/PreviewLine";
 import { RecorderChip } from "components/RecorderChip";
 import { ThumbnailHeader } from "components/ThumbnailHeader";
 import { ToolTip } from "components/ToolTip";
@@ -227,16 +227,18 @@ export default function Content(props: Immutable<Props>): JSX.Element {
             <h2 className="mb-4 text-center text-2xl">
               {langui.previous_content}
             </h2>
-            <PreviewLine
+            <TranslatedPreviewLine
               href={`/contents/${previousContent.attributes.slug}`}
-              pre_title={
-                previousContent.attributes.translations?.[0]?.pre_title
-              }
-              title={
-                previousContent.attributes.translations?.[0]?.title ??
-                prettySlug(previousContent.attributes.slug)
-              }
-              subtitle={previousContent.attributes.translations?.[0]?.subtitle}
+              translations={previousContent.attributes.translations?.map(
+                (translation) => ({
+                  pre_title: translation?.pre_title,
+                  title: translation?.title,
+                  subtitle: translation?.subtitle,
+                  language: translation?.language?.data?.attributes?.code,
+                })
+              )}
+              slug={previousContent.attributes.slug}
+              languages={languages}
               thumbnail={previousContent.attributes.thumbnail?.data?.attributes}
               thumbnailAspectRatio="3/2"
               topChips={
@@ -275,14 +277,18 @@ export default function Content(props: Immutable<Props>): JSX.Element {
             <h2 className="mb-4 text-center text-2xl">
               {langui.followup_content}
             </h2>
-            <PreviewLine
+            <TranslatedPreviewLine
               href={`/contents/${nextContent.attributes.slug}`}
-              pre_title={nextContent.attributes.translations?.[0]?.pre_title}
-              title={
-                nextContent.attributes.translations?.[0]?.title ??
-                prettySlug(nextContent.attributes.slug)
-              }
-              subtitle={nextContent.attributes.translations?.[0]?.subtitle}
+              translations={nextContent.attributes.translations?.map(
+                (translation) => ({
+                  pre_title: translation?.pre_title,
+                  title: translation?.title,
+                  subtitle: translation?.subtitle,
+                  language: translation?.language?.data?.attributes?.code,
+                })
+              )}
+              slug={nextContent.attributes.slug}
+              languages={languages}
               thumbnail={nextContent.attributes.thumbnail?.data?.attributes}
               thumbnailAspectRatio="3/2"
               topChips={

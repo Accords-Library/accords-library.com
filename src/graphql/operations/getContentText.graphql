@@ -119,6 +119,13 @@ query getContentText($slug: String, $language_code: String) {
                       pre_title
                       title
                       subtitle
+                      language {
+                        data {
+                          attributes {
+                            code
+                          }
+                        }
+                      }
                     }
                     categories {
                       data {

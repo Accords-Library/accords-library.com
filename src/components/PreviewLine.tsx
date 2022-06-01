@@ -1,6 +1,9 @@
 import { UploadImageFragment } from "graphql/generated";
+import { AppStaticProps } from "graphql/getAppStaticProps";
+import { prettySlug } from "helpers/formatters";
 import { ImageQuality } from "helpers/img";
 import { Immutable } from "helpers/types";
+import { useSmartLanguage } from "hooks/useSmartLanguage";
 import Link from "next/link";
 import { Chip } from "./Chip";
 import { Img } from "./Img";
@@ -69,5 +72,44 @@ export function PreviewLine(props: Immutable<Props>): JSX.Element {
         </div>
       </div>
     </Link>
+  );
+}
+
+interface TranslatedProps
+  extends Omit<Props, "pre_title" | "subtitle" | "title"> {
+  translations:
+    | {
+        pre_title?: string | null | undefined;
+        title: string | null | undefined;
+        subtitle?: string | null | undefined;
+        language: string | undefined;
+      }[]
+    | undefined;
+  slug: string;
+  languages: AppStaticProps["languages"];
+}
+
+export function TranslatedPreviewLine(
+  props: Immutable<TranslatedProps>
+): JSX.Element {
+  const {
+    translations = [{ title: props.slug, language: "default" }],
+    slug,
+    languages,
+  } = props;
+
+  const [selectedTranslation] = useSmartLanguage({
+    items: translations,
+    languages: languages,
+    languageExtractor: (item) => item.language,
+  });
+
+  return (
+    <PreviewLine
+      pre_title={selectedTranslation?.pre_title}
+      title={selectedTranslation?.title ?? prettySlug(slug)}
+      subtitle={selectedTranslation?.subtitle}
+      {...props}
+    />
   );
 }

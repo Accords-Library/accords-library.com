@@ -1,6 +1,7 @@
 import { AppLayout } from "components/AppLayout";
 import { Chip } from "components/Chip";
 import { HorizontalLine } from "components/HorizontalLine";
+import { PreviewCardCTAs } from "components/Library/PreviewCardCTAs";
 import { Markdawn } from "components/Markdown/Markdawn";
 import { TOC } from "components/Markdown/TOC";
 import {
@@ -9,7 +10,8 @@ import {
 } from "components/PanelComponents/ReturnButton";
 import { ContentPanel } from "components/Panels/ContentPanel";
 import { SubPanel } from "components/Panels/SubPanel";
-import { PreviewLine, TranslatedPreviewLine } from "components/PreviewLine";
+import { PreviewCard } from "components/PreviewCard";
+import { TranslatedPreviewLine } from "components/PreviewLine";
 import { RecorderChip } from "components/RecorderChip";
 import { ThumbnailHeader } from "components/ThumbnailHeader";
 import { ToolTip } from "components/ToolTip";
@@ -19,8 +21,10 @@ import { getNextContent, getPreviousContent } from "helpers/contents";
 import {
   prettyinlineTitle,
   prettyLanguage,
+  prettyItemSubType,
   prettySlug,
 } from "helpers/formatters";
+import { isUntangibleGroupItem } from "helpers/libraryItem";
 import { getStatusDescription } from "helpers/others";
 import { ContentWithTranslations, Immutable } from "helpers/types";
 import { useMediaMobile } from "hooks/useMediaQuery";
@@ -38,7 +42,7 @@ interface Props extends AppStaticProps {
 }
 
 export default function Content(props: Immutable<Props>): JSX.Element {
-  const { langui, content, languages } = props;
+  const { langui, content, languages, currencies } = props;
   const isMobile = useMediaMobile();
 
   const [selectedTranslation, LanguageSwitcher] = useSmartLanguage({
@@ -183,6 +187,72 @@ export default function Content(props: Immutable<Props>): JSX.Element {
           )}
         </div>
       )}
+
+      {content.ranged_contents?.data &&
+        content.ranged_contents.data.length > 0 && (
+          <>
+            <HorizontalLine />
+            <div>
+              {/* TODO: Add to langui */}
+              <p className="font-headers text-2xl">Source</p>
+              <div className="mt-6 grid gap-6 place-items-center text-left">
+                {content.ranged_contents.data.map((rangedContent) => {
+                  const libraryItem =
+                    rangedContent.attributes?.library_item?.data;
+                  if (libraryItem?.attributes && libraryItem.id) {
+                    return (
+                      <div
+                        key={libraryItem.attributes.slug}
+                        className="mobile:w-[80%]"
+                      >
+                        <PreviewCard
+                          href={`/library/${libraryItem.attributes.slug}`}
+                          title={libraryItem.attributes.title}
+                          subtitle={libraryItem.attributes.subtitle}
+                          thumbnail={
+                            libraryItem.attributes.thumbnail?.data?.attributes
+                          }
+                          thumbnailAspectRatio="21/29.7"
+                          topChips={
+                            libraryItem.attributes.metadata &&
+                            libraryItem.attributes.metadata.length > 0 &&
+                            libraryItem.attributes.metadata[0]
+                              ? [
+                                  prettyItemSubType(
+                                    libraryItem.attributes.metadata[0]
+                                  ),
+                                ]
+                              : []
+                          }
+                          bottomChips={libraryItem.attributes.categories?.data.map(
+                            (category) => category.attributes?.short ?? ""
+                          )}
+                          metadata={{
+                            currencies: currencies,
+                            release_date: libraryItem.attributes.release_date,
+                            price: libraryItem.attributes.price,
+                            position: "Bottom",
+                          }}
+                          infoAppend={
+                            <PreviewCardCTAs
+                              id={libraryItem.id}
+                              displayCTAs={
+                                !isUntangibleGroupItem(
+                                  libraryItem.attributes.metadata?.[0]
+                                )
+                              }
+                            />
+                          }
+                        />
+                      </div>
+                    );
+                  }
+                  return <></>;
+                })}
+              </div>
+            </div>
+          </>
+        )}
 
       {selectedTranslation?.text_set?.text && (
         <>

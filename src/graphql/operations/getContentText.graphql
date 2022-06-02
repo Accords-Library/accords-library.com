@@ -34,14 +34,121 @@ query getContentText($slug: String, $language_code: String) {
               }
               library_item {
                 data {
+                  id
                   attributes {
-                    slug
                     title
                     subtitle
+                    slug
                     thumbnail {
                       data {
                         attributes {
                           ...uploadImage
+                        }
+                      }
+                    }
+                    release_date {
+                      ...datePicker
+                    }
+                    price {
+                      ...pricePicker
+                    }
+                    categories {
+                      data {
+                        id
+                        attributes {
+                          name
+                          short
+                        }
+                      }
+                    }
+                    metadata {
+                      __typename
+                      ... on ComponentMetadataBooks {
+                        subtype {
+                          data {
+                            attributes {
+                              slug
+                              titles(
+                                filters: {
+                                  language: { code: { eq: $language_code } }
+                                }
+                              ) {
+                                title
+                              }
+                            }
+                          }
+                        }
+                      }
+                      ... on ComponentMetadataGame {
+                        platforms {
+                          data {
+                            id
+                            attributes {
+                              short
+                            }
+                          }
+                        }
+                      }
+                      ... on ComponentMetadataVideo {
+                        subtype {
+                          data {
+                            attributes {
+                              slug
+                              titles(
+                                filters: {
+                                  language: { code: { eq: $language_code } }
+                                }
+                              ) {
+                                title
+                              }
+                            }
+                          }
+                        }
+                      }
+                      ... on ComponentMetadataAudio {
+                        subtype {
+                          data {
+                            attributes {
+                              slug
+                              titles(
+                                filters: {
+                                  language: { code: { eq: $language_code } }
+                                }
+                              ) {
+                                title
+                              }
+                            }
+                          }
+                        }
+                      }
+                      ... on ComponentMetadataGroup {
+                        subtype {
+                          data {
+                            attributes {
+                              slug
+                              titles(
+                                filters: {
+                                  language: { code: { eq: $language_code } }
+                                }
+                              ) {
+                                title
+                              }
+                            }
+                          }
+                        }
+                        subitems_type {
+                          data {
+                            attributes {
+                              slug
+                              titles(
+                                filters: {
+                                  language: { code: { eq: $language_code } }
+                                }
+                              ) {
+                                title
+                              }
+                            }
+                          }
                         }
                       }
                     }

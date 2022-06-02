@@ -231,7 +231,7 @@ export function Markdawn(props: Immutable<Props>): JSX.Element {
                 component: (compProps: { children: React.ReactNode }) => (
                   <>
                     <HorizontalLine />
-                    <div>{compProps.children}</div>
+                    <div className="grid gap-8">{compProps.children}</div>
                   </>
                 ),
               },

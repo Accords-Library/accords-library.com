@@ -41,7 +41,10 @@ export function Markdawn(props: Immutable<Props>): JSX.Element {
                   href: string;
                   children: React.ReactNode;
                 }) => {
-                  if (compProps.href.startsWith("/")) {
+                  if (
+                    compProps.href.startsWith("/") ||
+                    compProps.href.startsWith("#")
+                  ) {
                     return (
                       <a onClick={async () => router.push(compProps.href)}>
                         {compProps.children}

@@ -195,7 +195,7 @@ export default function Content(props: Immutable<Props>): JSX.Element {
             <div>
               {/* TODO: Add to langui */}
               <p className="font-headers text-2xl">Source</p>
-              <div className="mt-6 grid gap-6 place-items-center text-left">
+              <div className="mt-6 grid place-items-center gap-6 text-left">
                 {content.ranged_contents.data.map((rangedContent) => {
                   const libraryItem =
                     rangedContent.attributes?.library_item?.data;

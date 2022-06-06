@@ -23,7 +23,7 @@ export function PreviewCardCTAs(props: Props): JSX.Element {
           }`}
         >
           {/* TODO: Add to langui */}
-          <ToolTip content="I want it!">
+          <ToolTip content="I want it!" disabled={expand}>
             <Button
               icon={Icon.Favorite}
               text={expand ? "I want it!" : undefined}
@@ -46,7 +46,7 @@ export function PreviewCardCTAs(props: Props): JSX.Element {
               }}
             />
           </ToolTip>
-          <ToolTip content="I have it!">
+          <ToolTip content="I have it!" disabled={expand}>
             <Button
               icon={Icon.BackHand}
               text={expand ? "I have it!" : undefined}

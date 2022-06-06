@@ -281,6 +281,7 @@ export default function Library(props: Immutable<Props>): JSX.Element {
                         subtitle={item.attributes.subtitle}
                         thumbnail={item.attributes.thumbnail?.data?.attributes}
                         thumbnailAspectRatio="21/29.7"
+                        thumbnailRounded={false}
                         keepInfoVisible={keepInfoVisible}
                         topChips={
                           item.attributes.metadata &&

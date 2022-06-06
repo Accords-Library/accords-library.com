@@ -23,6 +23,7 @@ import { Img } from "./Img";
 interface Props {
   thumbnail?: UploadImageFragment | string | null | undefined;
   thumbnailAspectRatio?: string;
+  thumbnailRounded?: boolean;
   href: string;
   pre_title?: string | null | undefined;
   title: string | null | undefined;
@@ -53,6 +54,8 @@ export function PreviewCard(props: Immutable<Props>): JSX.Element {
   const {
     href,
     thumbnail,
+    thumbnailAspectRatio = "4/3",
+    thumbnailRounded = true,
     pre_title,
     title,
     subtitle,
@@ -61,7 +64,6 @@ export function PreviewCard(props: Immutable<Props>): JSX.Element {
     topChips,
     bottomChips,
     keepInfoVisible,
-    thumbnailAspectRatio,
     metadata,
     hoverlay,
     infoAppend,
@@ -129,9 +131,11 @@ export function PreviewCard(props: Immutable<Props>): JSX.Element {
         {stackNumber > 0 && (
           <>
             <div
-              className="absolute inset-0 -top-[var(--stacked-top)*2.1rem]
-              scale-[calc(1-0.15*var(--stacked-top))] overflow-hidden rounded-md bg-light
-              brightness-[0.8] sepia-[0.5] transition-[top_transform]"
+              className={`absolute inset-0 -top-[var(--stacked-top)*2.1rem]
+              scale-[calc(1-0.15*var(--stacked-top))] overflow-hidden ${
+                thumbnailRounded && "rounded-md"
+              } bg-light
+              brightness-[0.8] sepia-[0.5] transition-[top_transform]`}
             >
               {thumbnail && (
                 <Img
@@ -143,9 +147,11 @@ export function PreviewCard(props: Immutable<Props>): JSX.Element {
             </div>
 
             <div
-              className="absolute inset-0 -top-[var(--stacked-top)*1rem]
-              scale-[calc(1-0.06*var(--stacked-top))] overflow-hidden rounded-md bg-light
-              brightness-[0.9] sepia-[0.2] transition-[top_transform]"
+              className={`absolute inset-0 -top-[var(--stacked-top)*1rem]
+              scale-[calc(1-0.06*var(--stacked-top))] overflow-hidden ${
+                thumbnailRounded && "rounded-md"
+              } bg-light
+              brightness-[0.9] sepia-[0.2] transition-[top_transform]`}
             >
               {thumbnail && (
                 <Img
@@ -162,9 +168,11 @@ export function PreviewCard(props: Immutable<Props>): JSX.Element {
           <div className="relative">
             <Img
               className={
-                keepInfoVisible
-                  ? "rounded-t-md"
-                  : "rounded-md coarse:rounded-b-none"
+                thumbnailRounded
+                  ? keepInfoVisible
+                    ? "rounded-t-md"
+                    : "rounded-md coarse:rounded-b-none"
+                  : undefined
               }
               image={thumbnail}
               quality={ImageQuality.Medium}

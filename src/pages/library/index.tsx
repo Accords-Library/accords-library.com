@@ -195,8 +195,7 @@ export default function Library(props: Immutable<Props>): JSX.Element {
       />
 
       <div className="mt-4 grid grid-flow-col">
-        {/* TODO: Add to Langui */}
-        <ToolTip content="Only display items marked as &ldquo;I want&rdquo;">
+        <ToolTip content={langui.only_display_items_i_want}>
           <Button
             className="rounded-r-none"
             icon={Icon.Favorite}
@@ -204,7 +203,7 @@ export default function Library(props: Immutable<Props>): JSX.Element {
             active={filterUserStatus === LibraryItemUserStatus.Want}
           />
         </ToolTip>
-        <ToolTip content="Only display items marked as &ldquo;I have&rdquo;">
+        <ToolTip content={langui.only_display_items_i_have}>
           <Button
             className="rounded-none border-l-0"
             icon={Icon.BackHand}
@@ -212,7 +211,7 @@ export default function Library(props: Immutable<Props>): JSX.Element {
             active={filterUserStatus === LibraryItemUserStatus.Have}
           />
         </ToolTip>
-        <ToolTip content="Only display unmarked items">
+        <ToolTip content={langui.only_display_unmarked_items}>
           <Button
             className="rounded-none border-l-0"
             icon={Icon.RadioButtonUnchecked}
@@ -220,7 +219,7 @@ export default function Library(props: Immutable<Props>): JSX.Element {
             active={filterUserStatus === LibraryItemUserStatus.None}
           />
         </ToolTip>
-        <ToolTip content="Display all items">
+        <ToolTip content={langui.display_all_items}>
           <Button
             className="rounded-l-none border-l-0"
             text={"All"}
@@ -230,10 +229,9 @@ export default function Library(props: Immutable<Props>): JSX.Element {
         </ToolTip>
       </div>
 
-      {/* TODO: Add to Langui */}
       <Button
         className="mt-8"
-        text={"Reset all filters"}
+        text={langui.reset_all_filters}
         icon={Icon.Replay}
         onClick={() => {
           setSearchName(defaultFiltersState.searchName);
@@ -307,6 +305,7 @@ export default function Library(props: Immutable<Props>): JSX.Element {
                                 item.attributes.metadata?.[0]
                               )
                             }
+                            langui={langui}
                           />
                         }
                       />

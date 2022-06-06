@@ -8,7 +8,7 @@ import {
   ContentPanelWidthSizes,
 } from "components/Panels/ContentPanel";
 import { SubPanel } from "components/Panels/SubPanel";
-import { PreviewCard, TranslatedPreviewCard } from "components/PreviewCard";
+import { TranslatedPreviewCard } from "components/PreviewCard";
 import { GetContentsQuery } from "graphql/generated";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
@@ -123,10 +123,9 @@ export default function Contents(props: Immutable<Props>): JSX.Element {
         input={<Switch setState={setKeepInfoVisible} state={keepInfoVisible} />}
       />
 
-      {/* TODO: Add to Langui */}
       <Button
         className="mt-8"
-        text={"Reset all filters"}
+        text={langui.reset_all_filters}
         icon={Icon.Replay}
         onClick={() => {
           setSearchName(defaultFiltersState.searchName);

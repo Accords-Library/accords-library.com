@@ -146,6 +146,14 @@ query getWebsiteInterface($language_code: String) {
         description
         available_at
         search_title
+        want_it
+        have_it
+        source
+        reset_all_filters
+        only_display_items_i_have
+        only_display_items_i_want
+        only_display_unmarked_items
+        display_all_items
       }
     }
   }

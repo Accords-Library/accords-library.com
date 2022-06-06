@@ -193,8 +193,7 @@ export default function Content(props: Immutable<Props>): JSX.Element {
           <>
             <HorizontalLine />
             <div>
-              {/* TODO: Add to langui */}
-              <p className="font-headers text-2xl">Source</p>
+              <p className="font-headers text-2xl">{langui.source}</p>
               <div className="mt-6 grid place-items-center gap-6 text-left">
                 {content.ranged_contents.data.map((rangedContent) => {
                   const libraryItem =
@@ -241,6 +240,7 @@ export default function Content(props: Immutable<Props>): JSX.Element {
                                   libraryItem.attributes.metadata?.[0]
                                 )
                               }
+                              langui={langui}
                             />
                           }
                         />

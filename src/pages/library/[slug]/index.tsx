@@ -175,6 +175,7 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
             <PreviewCardCTAs
               id={itemId}
               displayCTAs={!isUntangibleGroupItem(item?.metadata?.[0])}
+              langui={langui}
               expand
             />
             {item?.descriptions?.[0] && (
@@ -437,6 +438,7 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
                       infoAppend={
                         <PreviewCardCTAs
                           id={subitem.id}
+                          langui={langui}
                           displayCTAs={
                             !isUntangibleGroupItem(
                               subitem.attributes.metadata?.[0]

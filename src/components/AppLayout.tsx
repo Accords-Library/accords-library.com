@@ -4,7 +4,7 @@ import { UploadImageFragment } from "graphql/generated";
 import { AppStaticProps } from "graphql/getAppStaticProps";
 import { prettyLanguage, prettySlug } from "helpers/formatters";
 import { getOgImage, ImageQuality, OgImage } from "helpers/img";
-import { getClient, Indexes, search, SearchResult } from "helpers/search";
+// import { getClient, Indexes, search, SearchResult } from "helpers/search";
 import { Immutable } from "helpers/types";
 import { useMediaMobile } from "hooks/useMediaQuery";
 import { AnchorIds } from "hooks/useScrollTopOnChange";
@@ -18,7 +18,6 @@ import { Select } from "./Inputs/Select";
 import { TextInput } from "./Inputs/TextInput";
 import { MainPanel } from "./Panels/MainPanel";
 import { Popup } from "./Popup";
-import { PreviewCard } from "./PreviewCard";
 
 interface Props extends AppStaticProps {
   subPanel?: React.ReactNode;
@@ -47,8 +46,10 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
   const isMobile = useMediaMobile();
   const appLayout = useAppLayout();
 
-  const [searchQuery, setSearchQuery] = useState("");
-  const [searchResult, setSearchResult] = useState<SearchResult>();
+  /*
+   * const [searchQuery, setSearchQuery] = useState("");
+   * const [searchResult, setSearchResult] = useState<SearchResult>();
+   */
 
   const sensibilitySwipe = 1.1;
 
@@ -88,19 +89,19 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
     },
   });
 
-  const client = getClient();
-
-  useEffect(() => {
-    if (searchQuery.length > 1) {
-      search(client, Indexes.Post, searchQuery).then((result) => {
-        setSearchResult(result);
-      });
-    } else {
-      setSearchResult(undefined);
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchQuery]);
+  /*
+   * const client = getClient();
+   * useEffect(() => {
+   *   if (searchQuery.length > 1) {
+   *     search(client, Indexes.Post, searchQuery).then((result) => {
+   *       setSearchResult(result);
+   *     });
+   *   } else {
+   *     setSearchResult(undefined);
+   *   }
+   *   // eslint-disable-next-line react-hooks/exhaustive-deps
+   * }, [searchQuery]);
+   */
 
   const turnSubIntoContent = subPanel && !contentPanel;
 

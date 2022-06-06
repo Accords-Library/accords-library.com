@@ -66,10 +66,9 @@ export default function News(props: Immutable<Props>): JSX.Element {
         input={<Switch setState={setKeepInfoVisible} state={keepInfoVisible} />}
       />
 
-      {/* TODO: Add to Langui */}
       <Button
         className="mt-8"
-        text={"Reset all filters"}
+        text={langui.reset_all_filters}
         icon={Icon.Replay}
         onClick={() => {
           setSearchName(defaultFiltersState.searchName);

@@ -2,16 +2,18 @@ import { Icon } from "components/Ico";
 import { Button } from "components/Inputs/Button";
 import { ToolTip } from "components/ToolTip";
 import { useAppLayout } from "contexts/AppLayoutContext";
+import { AppStaticProps } from "graphql/getAppStaticProps";
 import { LibraryItemUserStatus } from "helpers/types";
 
 interface Props {
   id: string | null | undefined;
   displayCTAs: boolean;
   expand?: boolean;
+  langui: AppStaticProps["langui"];
 }
 
 export function PreviewCardCTAs(props: Props): JSX.Element {
-  const { id, displayCTAs, expand = false } = props;
+  const { id, displayCTAs, expand = false, langui } = props;
   const appLayout = useAppLayout();
 
   return (
@@ -22,11 +24,10 @@ export function PreviewCardCTAs(props: Props): JSX.Element {
             expand ? "gap-4" : "gap-2"
           }`}
         >
-          {/* TODO: Add to langui */}
-          <ToolTip content="I want it!" disabled={expand}>
+          <ToolTip content={langui.want_it} disabled={expand}>
             <Button
               icon={Icon.Favorite}
-              text={expand ? "I want it!" : undefined}
+              text={expand ? langui.want_it : undefined}
               active={
                 appLayout.libraryItemUserStatus?.[id] ===
                 LibraryItemUserStatus.Want
@@ -46,10 +47,10 @@ export function PreviewCardCTAs(props: Props): JSX.Element {
               }}
             />
           </ToolTip>
-          <ToolTip content="I have it!" disabled={expand}>
+          <ToolTip content={langui.have_it} disabled={expand}>
             <Button
               icon={Icon.BackHand}
-              text={expand ? "I have it!" : undefined}
+              text={expand ? langui.have_it : undefined}
               active={
                 appLayout.libraryItemUserStatus?.[id] ===
                 LibraryItemUserStatus.Have

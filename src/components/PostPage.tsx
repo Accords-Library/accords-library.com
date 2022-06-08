@@ -1,4 +1,5 @@
 import { AppStaticProps } from "graphql/getAppStaticProps";
+import { getDescription } from "helpers/description";
 import { prettySlug } from "helpers/formatters";
 import { getStatusDescription } from "helpers/others";
 import { Immutable, PostWithTranslations } from "helpers/types";
@@ -168,6 +169,11 @@ export function PostPage(props: Immutable<Props>): JSX.Element {
   return (
     <AppLayout
       navTitle={title}
+      description={getDescription({
+        langui: langui,
+        description: selectedTranslation?.excerpt,
+        categories: post.categories,
+      })}
       contentPanel={contentPanel}
       subPanel={subPanel}
       thumbnail={thumbnail ?? undefined}

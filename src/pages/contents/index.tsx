@@ -244,20 +244,8 @@ export async function getStaticProps(
   });
   if (!contents.contents) return { notFound: true };
   contents.contents.data.sort((a, b) => {
-    const titleA = a.attributes?.translations?.[0]
-      ? prettyinlineTitle(
-          a.attributes.translations[0].pre_title,
-          a.attributes.translations[0].title,
-          a.attributes.translations[0].subtitle
-        )
-      : a.attributes?.slug ?? "";
-    const titleB = b.attributes?.translations?.[0]
-      ? prettyinlineTitle(
-          b.attributes.translations[0].pre_title,
-          b.attributes.translations[0].title,
-          b.attributes.translations[0].subtitle
-        )
-      : b.attributes?.slug ?? "";
+    const titleA = a.attributes?.slug ?? "";
+    const titleB = b.attributes?.slug ?? "";
     return titleA.localeCompare(titleB);
   });
 

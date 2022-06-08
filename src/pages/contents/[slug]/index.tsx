@@ -18,6 +18,7 @@ import { ToolTip } from "components/ToolTip";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import { getNextContent, getPreviousContent } from "helpers/contents";
+import { getDescription } from "helpers/description";
 import {
   prettyinlineTitle,
   prettyLanguage,
@@ -389,24 +390,6 @@ export default function Content(props: Immutable<Props>): JSX.Element {
     </ContentPanel>
   );
 
-  let description = "";
-  if (content.type?.data) {
-    description += `${langui.type}: `;
-
-    description +=
-      content.type.data.attributes?.titles?.[0]?.title ??
-      prettySlug(content.type.data.attributes?.slug);
-
-    description += "\n";
-  }
-  if (content.categories?.data && content.categories.data.length > 0) {
-    description += `${langui.categories}: `;
-    description += content.categories.data
-      .map((category) => category.attributes?.short)
-      .join(" | ");
-    description += "\n";
-  }
-
   return (
     <AppLayout
       navTitle={
@@ -418,10 +401,15 @@ export default function Content(props: Immutable<Props>): JSX.Element {
             )
           : prettySlug(content.slug)
       }
+      description={getDescription({
+        langui: langui,
+        description: selectedTranslation?.description,
+        type: content.type,
+        categories: content.categories,
+      })}
       thumbnail={content.thumbnail?.data?.attributes ?? undefined}
       contentPanel={contentPanel}
       subPanel={subPanel}
-      description={description}
       {...props}
     />
   );

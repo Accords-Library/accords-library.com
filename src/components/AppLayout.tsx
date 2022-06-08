@@ -117,6 +117,8 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
   const ogTitle =
     title ?? navTitle ?? prettySlug(router.asPath.split("/").pop());
 
+  const metaTitle = `${titlePrefix} - ${ogTitle}`;
+
   const metaDescription = description ?? langui.default_description ?? "";
 
   useEffect(() => {
@@ -191,16 +193,16 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
         mobile:grid-rows-[1fr_5rem] mobile:[grid-template-areas:'content''navbar']`}
       >
         <Head>
-          <title>{`${titlePrefix} - ${ogTitle}`}</title>
-
-          <meta
-            name="twitter:title"
-            content={`${titlePrefix} - ${ogTitle}`}
-          ></meta>
-
+          <title>{metaTitle}</title>
           <meta name="description" content={metaDescription} />
-          <meta name="twitter:description" content={metaDescription}></meta>
 
+          <meta name="twitter:title" content={metaTitle}></meta>
+          <meta name="twitter:description" content={metaDescription}></meta>
+          <meta name="twitter:card" content="summary_large_image"></meta>
+          <meta name="twitter:image" content={metaImage.image}></meta>
+
+          <meta property="og:title" content={metaTitle} />
+          <meta property="og:description" content={metaDescription} />
           <meta property="og:image" content={metaImage.image}></meta>
           <meta property="og:image:secure_url" content={metaImage.image}></meta>
           <meta
@@ -213,9 +215,6 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
           ></meta>
           <meta property="og:image:alt" content={metaImage.alt}></meta>
           <meta property="og:image:type" content="image/jpeg"></meta>
-          <meta name="twitter:card" content="summary_large_image"></meta>
-
-          <meta name="twitter:image" content={metaImage.image}></meta>
         </Head>
 
         {/* Background when navbar is opened */}

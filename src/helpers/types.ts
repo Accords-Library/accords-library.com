@@ -9,7 +9,7 @@ export interface PostWithTranslations extends Omit<Post, "translations"> {
   translations: NonNullable<Post["translations"]>;
 }
 
-type Content = NonNullable<
+export type Content = NonNullable<
   NonNullable<GetContentTextQuery["contents"]>["data"][number]["attributes"]
 >;
 

@@ -119,7 +119,9 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
 
   const metaTitle = `${titlePrefix} - ${ogTitle}`;
 
-  const metaDescription = description ? description : langui.default_description ?? "";
+  const metaDescription = description
+    ? description
+    : langui.default_description ?? "";
 
   useEffect(() => {
     document.getElementsByTagName("html")[0].style.fontSize = `${

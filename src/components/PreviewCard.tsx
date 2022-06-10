@@ -229,7 +229,7 @@ export function PreviewCard(props: Immutable<Props>): JSX.Element {
           className={`linearbg-obi ${
             !keepInfoVisible &&
             `-inset-x-0.5 bottom-2 opacity-[var(--cover-opacity)]
-              notHoverable:rounded-b-md hoverable:absolute hoverable:drop-shadow-shade-lg`
+              hoverable:absolute hoverable:drop-shadow-shade-lg notHoverable:rounded-b-md`
           } z-20 grid gap-2 p-4 transition-opacity`}
         >
           {metadata?.position === "Top" && metadataJSX}

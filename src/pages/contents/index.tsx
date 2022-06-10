@@ -20,6 +20,7 @@ import { Icon } from "components/Ico";
 import { WithLabel } from "components/Inputs/WithLabel";
 import { Button } from "components/Inputs/Button";
 import { TextInput } from "components/Inputs/TextInput";
+import { useMediaHoverable } from "hooks/useMediaQuery";
 
 interface Props extends AppStaticProps {
   contents: NonNullable<GetContentsQuery["contents"]>["data"];
@@ -36,6 +37,7 @@ const defaultFiltersState = {
 
 export default function Contents(props: Immutable<Props>): JSX.Element {
   const { langui, contents, languages } = props;
+  const hoverable = useMediaHoverable();
 
   const [groupingMethod, setGroupingMethod] = useState<number>(
     defaultFiltersState.groupingMethod
@@ -118,10 +120,14 @@ export default function Contents(props: Immutable<Props>): JSX.Element {
         }
       />
 
-      <WithLabel
-        label={langui.always_show_info}
-        input={<Switch setState={setKeepInfoVisible} state={keepInfoVisible} />}
-      />
+      {hoverable && (
+        <WithLabel
+          label={langui.always_show_info}
+          input={
+            <Switch setState={setKeepInfoVisible} state={keepInfoVisible} />
+          }
+        />
+      )}
 
       <Button
         className="mt-8"

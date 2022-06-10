@@ -46,6 +46,8 @@ import {
 } from "next";
 import { Fragment, useState } from "react";
 import { isUntangibleGroupItem } from "helpers/libraryItem";
+import { useMediaHoverable } from "hooks/useMediaQuery";
+import { WithLabel } from "components/Inputs/WithLabel";
 
 interface Props extends AppStaticProps {
   item: NonNullable<
@@ -59,6 +61,7 @@ interface Props extends AppStaticProps {
 export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
   const { item, itemId, langui, currencies } = props;
   const appLayout = useAppLayout();
+  const hoverable = useMediaHoverable();
 
   useScrollTopOnChange(AnchorIds.ContentPanel, [item]);
 
@@ -401,10 +404,18 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
               {isVariantSet ? langui.variants : langui.subitems}
             </h2>
 
-            <div className="-mt-6 mb-8 flex flex-row place-items-center gap-2 coarse:hidden">
-              <p className="flex-shrink-0">{langui.always_show_info}:</p>
-              <Switch setState={setKeepInfoVisible} state={keepInfoVisible} />
-            </div>
+            {hoverable && (
+              <WithLabel
+                label={langui.always_show_info}
+                input={
+                  <Switch
+                    setState={setKeepInfoVisible}
+                    state={keepInfoVisible}
+                  />
+                }
+              />
+            )}
+
             <div
               className="grid w-full grid-cols-[repeat(auto-fill,minmax(15rem,1fr))] items-end
               gap-8 mobile:grid-cols-2"

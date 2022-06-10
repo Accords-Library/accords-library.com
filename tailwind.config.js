@@ -33,26 +33,22 @@ const fontDyslexic = {
 
 /* END CONFIG */
 
-function withOpacity(variableName) {
-  return ({ opacityValue }) => {
-    if (opacityValue) {
-      return `rgba(var(${variableName}), ${opacityValue})`;
-    }
-    return `rgb(var(${variableName}))`;
-  };
+function rgb(color) {
+  return [color.r, color.g, color.b].join(" ");
 }
 
+/** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: "class",
   content: ["./src/**/*.{tsx,ts}"],
   theme: {
     colors: {
-      highlight: withOpacity("--theme-color-highlight"),
-      light: withOpacity("--theme-color-light"),
-      mid: withOpacity("--theme-color-mid"),
-      dark: withOpacity("--theme-color-dark"),
-      shade: withOpacity("--theme-color-shade"),
-      black: withOpacity("--theme-color-black"),
+      highlight: "rgb(var(--theme-color-highlight) / <alpha-value>)",
+      light: "rgb(var(--theme-color-light) / <alpha-value>)",
+      mid: "rgb(var(--theme-color-mid) / <alpha-value>)",
+      dark: "rgb(var(--theme-color-dark) / <alpha-value>)",
+      shade: "rgb(var(--theme-color-shade) / <alpha-value>)",
+      black: "rgb(var(--theme-color-black) / <alpha-value>)",
     },
     fontFamily: {
       body: ["var(--theme-font-body)"],
@@ -65,8 +61,8 @@ module.exports = {
       desktop: breakDektop,
       mobile: breakMobile,
       thin: breakThin,
-      coarse: { raw: "(pointer: coarse)" },
-      fine: { raw: "(pointer: fine)" },
+      hoverable: { raw: "(hover: hover)" },
+      notHoverable: { raw: "(hover: hover)" },
     },
     extend: {
       boxShadow: {
@@ -78,22 +74,22 @@ module.exports = {
     plugin(function ({ addUtilities }) {
       addUtilities({
         ".set-theme-light": {
-          "--theme-color-highlight": `${hightlight.r}, ${hightlight.g}, ${hightlight.b}`,
-          "--theme-color-light": `${light.r}, ${light.g}, ${light.b}`,
-          "--theme-color-mid": `${mid.r}, ${mid.g}, ${mid.b}`,
-          "--theme-color-dark": `${dark.r}, ${dark.g}, ${dark.b}`,
-          "--theme-color-shade": `${shade.r}, ${shade.g}, ${shade.b}`,
-          "--theme-color-black": `${black.r}, ${black.g}, ${black.b}`,
+          "--theme-color-highlight": rgb(hightlight),
+          "--theme-color-light": rgb(light),
+          "--theme-color-mid": rgb(mid),
+          "--theme-color-dark": rgb(dark),
+          "--theme-color-shade": rgb(shade),
+          "--theme-color-black": rgb(black),
           "--theme-texture-dots": `url("/paper-dots.webp")`,
           "--theme-texture-dots-blend": `multiply`,
         },
         ".set-theme-dark": {
-          "--theme-color-highlight": `${dark_highlight.r}, ${dark_highlight.g}, ${dark_highlight.b}`,
-          "--theme-color-light": `${dark_light.r}, ${dark_light.g}, ${dark_light.b}`,
-          "--theme-color-mid": `${dark_mid.r}, ${dark_mid.g}, ${dark_mid.b}`,
-          "--theme-color-dark": `${dark_dark.r}, ${dark_dark.g}, ${dark_dark.b}`,
-          "--theme-color-shade": `${dark_shade.r}, ${dark_shade.g}, ${dark_shade.b}`,
-          "--theme-color-black": `${dark_black.r}, ${dark_black.g}, ${dark_black.b}`,
+          "--theme-color-highlight": rgb(dark_highlight),
+          "--theme-color-light": rgb(dark_light),
+          "--theme-color-mid": rgb(dark_mid),
+          "--theme-color-dark": rgb(dark_dark),
+          "--theme-color-shade": rgb(dark_shade),
+          "--theme-color-black": rgb(dark_black),
           "--theme-texture-dots": `url("/paper-dots-dark.webp")`,
           "--theme-texture-dots-blend": `overlay`,
         },
@@ -129,29 +125,41 @@ module.exports = {
     plugin(function ({ addUtilities }) {
       addUtilities({
         ".drop-shadow-shade-md": {
-          filter: `drop-shadow(0 4px 3px rgba(var(--theme-color-shade), 0.15)) drop-shadow(0 2px 2px rgba(var(--theme-color-shade), 0.2))`,
+          filter: `
+          drop-shadow(0 4px 3px rgb(var(--theme-color-shade) / 0.15))
+          drop-shadow(0 2px 2px rgb(var(--theme-color-shade) / 0.2))`,
         },
         ".drop-shadow-shade-lg": {
-          filter: `drop-shadow(0 10px 8px rgba(var(--theme-color-shade), 0.2)) drop-shadow(0 4px 3px rgba(var(--theme-color-shade), 0.4))`,
+          filter: `
+          drop-shadow(0 10px 8px rgb(var(--theme-color-shade) / 0.2))
+          drop-shadow(0 4px 3px rgb(var(--theme-color-shade) / 0.4))`,
         },
         ".drop-shadow-shade-xl": {
-          filter: `drop-shadow(0 20px 13px rgba(var(--theme-color-shade), 0.25)) drop-shadow(0 8px 5px rgba(var(--theme-color-shade), 0.7))`,
+          filter: `
+          drop-shadow(0 20px 13px rgb(var(--theme-color-shade) / 0.25))
+          drop-shadow(0 8px 5px rgb(var(--theme-color-shade) / 0.7))`,
         },
         ".drop-shadow-shade-2xl": {
-          filter: `drop-shadow(0 25px 25px rgba(var(--theme-color-shade), 0.8))`,
+          filter: `drop-shadow(0 25px 25px rgb(var(--theme-color-shade) / 0.8))`,
         },
 
         ".drop-shadow-black-md": {
-          filter: `drop-shadow(0 4px 3px rgba(var(--theme-color-black), 0.15)) drop-shadow(0 2px 2px rgba(var(--theme-color-black), 0.2))`,
+          filter: `
+          drop-shadow(0 4px 3px rgb(var(--theme-color-black) / 0.15))
+          drop-shadow(0 2px 2px rgb(var(--theme-color-black) / 0.2))`,
         },
         ".drop-shadow-black-lg": {
-          filter: `drop-shadow(0 10px 8px rgba(var(--theme-color-black), 0.2)) drop-shadow(0 4px 3px rgba(var(--theme-color-black), 0.4))`,
+          filter: `
+          drop-shadow(0 10px 8px rgb(var(--theme-color-black) / 0.2))
+          drop-shadow(0 4px 3px rgb(var(--theme-color-black) / 0.4))`,
         },
         ".drop-shadow-black-xl": {
-          filter: `drop-shadow(0 20px 13px rgba(var(--theme-color-black), 0.25)) drop-shadow(0 8px 5px rgba(var(--theme-color-black), 0.7))`,
+          filter: `
+          drop-shadow(0 20px 13px rgb(var(--theme-color-black) / 0.25))
+          drop-shadow(0 8px 5px rgb(var(--theme-color-black) / 0.7))`,
         },
         ".drop-shadow-black-2xl": {
-          filter: `drop-shadow(0 25px 25px rgba(var(--theme-color-black), 0.8))`,
+          filter: `drop-shadow(0 25px 25px rgb(var(--theme-color-black) / 0.8))`,
         },
       });
     }),
@@ -159,8 +167,13 @@ module.exports = {
     plugin(function ({ addUtilities }) {
       addUtilities({
         ".linearbg-obi": {
-          background:
-            "linear-gradient(to right, rgb(var(--theme-color-mid)), rgb(var(--theme-color-light)) 3%, rgb(var(--theme-color-light)) 97%, rgb(var(--theme-color-mid)))",
+          background: `linear-gradient(
+              to right,
+              rgb(var(--theme-color-mid)),
+              rgb(var(--theme-color-light)) 3%,
+              rgb(var(--theme-color-light)) 97%,
+              rgb(var(--theme-color-mid))
+            )`,
         },
       });
     }),

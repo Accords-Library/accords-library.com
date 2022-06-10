@@ -126,7 +126,7 @@ export function PreviewCard(props: Immutable<Props>): JSX.Element {
         drop-shadow-shade-xl [--bg-opacity:0] [--play-opacity:0]
         [--stacked-top:0] hover:scale-[1.02] hover:[--cover-opacity:1]
         hover:[--bg-opacity:0.5] hover:[--play-opacity:100]
-        hover:[--stacked-top:1] fine:[--cover-opacity:0]"
+        hover:[--stacked-top:1] hoverable:[--cover-opacity:0]"
       >
         {stackNumber > 0 && (
           <>
@@ -171,7 +171,7 @@ export function PreviewCard(props: Immutable<Props>): JSX.Element {
                 thumbnailRounded
                   ? keepInfoVisible
                     ? "rounded-t-md"
-                    : "rounded-md coarse:rounded-b-none"
+                    : "rounded-md notHoverable:rounded-b-none"
                   : undefined
               }
               image={thumbnail}
@@ -212,7 +212,7 @@ export function PreviewCard(props: Immutable<Props>): JSX.Element {
             className={`relative w-full bg-light ${
               keepInfoVisible
                 ? "rounded-t-md"
-                : "rounded-md coarse:rounded-b-none"
+                : "rounded-md notHoverable:rounded-b-none"
             }`}
           >
             {stackNumber > 0 && (
@@ -229,7 +229,7 @@ export function PreviewCard(props: Immutable<Props>): JSX.Element {
           className={`linearbg-obi ${
             !keepInfoVisible &&
             `-inset-x-0.5 bottom-2 opacity-[var(--cover-opacity)]
-              coarse:rounded-b-md fine:absolute fine:drop-shadow-shade-lg`
+              notHoverable:rounded-b-md hoverable:absolute hoverable:drop-shadow-shade-lg`
           } z-20 grid gap-2 p-4 transition-opacity`}
         >
           {metadata?.position === "Top" && metadataJSX}

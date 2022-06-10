@@ -29,6 +29,7 @@ import {
   isUntangibleGroupItem,
 } from "helpers/libraryItem";
 import { PreviewCard } from "components/PreviewCard";
+import { useMediaHoverable } from "hooks/useMediaQuery";
 
 interface Props extends AppStaticProps {
   items: NonNullable<GetLibraryItemsPreviewQuery["libraryItems"]>["data"];
@@ -48,6 +49,7 @@ const defaultFiltersState = {
 export default function Library(props: Immutable<Props>): JSX.Element {
   const { langui, items: libraryItems, currencies } = props;
   const appLayout = useAppLayout();
+  const hoverable = useMediaHoverable();
 
   const [searchName, setSearchName] = useState(defaultFiltersState.searchName);
   const [showSubitems, setShowSubitems] = useState<boolean>(
@@ -189,10 +191,14 @@ export default function Library(props: Immutable<Props>): JSX.Element {
         }
       />
 
-      <WithLabel
-        label={langui.always_show_info}
-        input={<Switch state={keepInfoVisible} setState={setKeepInfoVisible} />}
-      />
+      {hoverable && (
+        <WithLabel
+          label={langui.always_show_info}
+          input={
+            <Switch state={keepInfoVisible} setState={setKeepInfoVisible} />
+          }
+        />
+      )}
 
       <div className="mt-4 grid grid-flow-col">
         <ToolTip content={langui.only_display_items_i_want}>

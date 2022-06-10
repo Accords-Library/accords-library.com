@@ -45,12 +45,8 @@ export function useMediaDesktop() {
   return useMediaQuery("(min-width: 60rem)");
 }
 
-export function useMediaCoarse() {
-  return useMediaQuery("(pointer: coarse)");
-}
-
-export function useMediaFine() {
-  return useMediaQuery("(pointer: fine)");
+export function useMediaHoverable() {
+  return useMediaQuery("(hover: hover)");
 }
 
 export function usePrefersDarkMode() {

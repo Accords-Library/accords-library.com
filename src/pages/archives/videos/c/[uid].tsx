@@ -22,6 +22,8 @@ import {
 } from "next";
 import { Fragment, useState } from "react";
 import { Icon } from "components/Ico";
+import { useMediaHoverable } from "hooks/useMediaQuery";
+import { WithLabel } from "components/Inputs/WithLabel";
 
 interface Props extends AppStaticProps {
   channel: NonNullable<
@@ -32,6 +34,7 @@ interface Props extends AppStaticProps {
 export default function Channel(props: Props): JSX.Element {
   const { langui, channel } = props;
   const [keepInfoVisible, setKeepInfoVisible] = useState(true);
+  const hoverable = useMediaHoverable();
 
   const subPanel = (
     <SubPanel>
@@ -49,10 +52,14 @@ export default function Channel(props: Props): JSX.Element {
         description={langui.archives_description}
       />
 
-      <div className="flex flex-row place-items-center gap-2 coarse:hidden">
-        <p className="flex-shrink-0">{langui.always_show_info}:</p>
-        <Switch setState={setKeepInfoVisible} state={keepInfoVisible} />
-      </div>
+      {hoverable && (
+        <WithLabel
+          label={langui.always_show_info}
+          input={
+            <Switch setState={setKeepInfoVisible} state={keepInfoVisible} />
+          }
+        />
+      )}
     </SubPanel>
   );
 

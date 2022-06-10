@@ -1,11 +1,10 @@
-/** @type {import('next').NextConfig} */
-
 /* CONFIG */
 
 const locales = ["en", "es", "fr", "pt-br", "ja"];
 
 /* END CONFIG */
 
+/** @type {import('next').NextConfig} */
 module.exports = {
   swcMinify: true,
   reactStrictMode: true,

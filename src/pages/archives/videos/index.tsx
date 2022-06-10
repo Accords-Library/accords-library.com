@@ -2,6 +2,7 @@ import { AppLayout } from "components/AppLayout";
 import { Icon } from "components/Ico";
 import { PageSelector } from "components/Inputs/PageSelector";
 import { Switch } from "components/Inputs/Switch";
+import { WithLabel } from "components/Inputs/WithLabel";
 import { PanelHeader } from "components/PanelComponents/PanelHeader";
 import {
   ReturnButton,
@@ -18,6 +19,7 @@ import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import { prettyDate } from "helpers/formatters";
 import { getVideoThumbnailURL } from "helpers/videos";
+import { useMediaHoverable } from "hooks/useMediaQuery";
 import { GetStaticPropsContext } from "next";
 import { Fragment, useState } from "react";
 
@@ -27,6 +29,7 @@ interface Props extends AppStaticProps {
 
 export default function Videos(props: Props): JSX.Element {
   const { langui, videos } = props;
+  const hoverable = useMediaHoverable();
 
   videos
     .sort((a, b) => {
@@ -67,10 +70,14 @@ export default function Videos(props: Props): JSX.Element {
         description={langui.archives_description}
       />
 
-      <div className="flex flex-row place-items-center gap-2 coarse:hidden">
-        <p className="flex-shrink-0">{langui.always_show_info}:</p>
-        <Switch setState={setKeepInfoVisible} state={keepInfoVisible} />
-      </div>
+      {hoverable && (
+        <WithLabel
+          label={langui.always_show_info}
+          input={
+            <Switch setState={setKeepInfoVisible} state={keepInfoVisible} />
+          }
+        />
+      )}
     </SubPanel>
   );
 

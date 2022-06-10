@@ -18,6 +18,7 @@ import { Icon } from "components/Ico";
 import { WithLabel } from "components/Inputs/WithLabel";
 import { TextInput } from "components/Inputs/TextInput";
 import { Button } from "components/Inputs/Button";
+import { useMediaHoverable } from "hooks/useMediaQuery";
 
 interface Props extends AppStaticProps {
   posts: NonNullable<GetPostsPreviewQuery["posts"]>["data"];
@@ -31,6 +32,7 @@ const defaultFiltersState = {
 export default function News(props: Immutable<Props>): JSX.Element {
   const { langui } = props;
   const posts = sortPosts(props.posts);
+  const hoverable = useMediaHoverable();
 
   const [searchName, setSearchName] = useState(defaultFiltersState.searchName);
   const [keepInfoVisible, setKeepInfoVisible] = useState(
@@ -61,10 +63,14 @@ export default function News(props: Immutable<Props>): JSX.Element {
         setState={setSearchName}
       />
 
-      <WithLabel
-        label={langui.always_show_info}
-        input={<Switch setState={setKeepInfoVisible} state={keepInfoVisible} />}
-      />
+      {hoverable && (
+        <WithLabel
+          label={langui.always_show_info}
+          input={
+            <Switch setState={setKeepInfoVisible} state={keepInfoVisible} />
+          }
+        />
+      )}
 
       <Button
         className="mt-8"

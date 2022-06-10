@@ -182,7 +182,7 @@ export default function Editor(props: Immutable<Props>): JSX.Element {
             target.select();
             event.preventDefault();
           }}
-          className="h-[50vh] w-[50vw] font-monospace mobile:w-[75vw]"
+          className="h-[50vh] w-[50vw] mobile:w-[75vw]"
         />
       </Popup>
 
@@ -406,7 +406,7 @@ export default function Editor(props: Immutable<Props>): JSX.Element {
               const textarea = event.target as HTMLTextAreaElement;
               handleInput(textarea.value);
             }}
-            className="h-[70vh] w-full rounded-xl bg-mid !bg-opacity-40 p-8 font-monospace
+            className="h-[70vh] w-full rounded-xl bg-mid !bg-opacity-40 p-8
             text-black outline-none"
             value={markdown}
             title="Input textarea"

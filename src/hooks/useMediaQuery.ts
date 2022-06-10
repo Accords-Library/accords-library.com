@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { breaks } from "../../design.config";
 
 export function useMediaQuery(query: string): boolean {
   function getMatches(query: string): boolean {
@@ -34,15 +35,15 @@ export function useMediaQuery(query: string): boolean {
 }
 
 export function useMediaThin() {
-  return useMediaQuery("(max-width: 25rem)");
+  return useMediaQuery(breaks.thin.raw);
 }
 
 export function useMediaMobile() {
-  return useMediaQuery("(max-width: 60rem)");
+  return useMediaQuery(breaks.mobile.raw);
 }
 
 export function useMediaDesktop() {
-  return useMediaQuery("(min-width: 60rem)");
+  return useMediaQuery(breaks.desktop.raw);
 }
 
 export function useMediaHoverable() {

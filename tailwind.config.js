@@ -1,37 +1,5 @@
 const plugin = require("tailwindcss/plugin");
-
-/* CONFIG */
-
-const hightlight = { r: 255, g: 241, b: 224 };
-const light = { r: 255, g: 237, b: 216 };
-const mid = { r: 240, g: 209, b: 179 };
-const dark = { r: 156, g: 102, b: 68 };
-const shade = { r: 156, g: 102, b: 68 };
-const black = { r: 27, g: 24, b: 17 };
-
-const dark_highlight = { r: 44, g: 40, b: 37 };
-const dark_light = { r: 38, g: 34, b: 30 };
-const dark_mid = { r: 57, g: 45, b: 34 };
-const dark_dark = { r: 192, g: 132, b: 94 };
-const dark_shade = { r: 0, g: 0, b: 0 };
-const dark_black = { r: 235, g: 234, b: 231 };
-
-const breakDektop = { min: "60rem" };
-const breakMobile = { max: "60rem" };
-const breakThin = { max: "25rem" };
-
-const fontStandard = {
-  body: "Zen Maru Gothic",
-  headers: "Vollkorn",
-  monospace: "monospace",
-};
-const fontDyslexic = {
-  body: "OpenDyslexic",
-  headers: "OpenDyslexic",
-  monospace: "monospace",
-};
-
-/* END CONFIG */
+const { breaks, colors, fonts, fontFamilies } = require("./design.config.js");
 
 function rgb(color) {
   return [color.r, color.g, color.b].join(" ");
@@ -51,18 +19,16 @@ module.exports = {
       black: "rgb(var(--theme-color-black) / <alpha-value>)",
     },
     fontFamily: {
-      body: ["var(--theme-font-body)"],
-      headers: ["var(--theme-font-headers)"],
-      monospace: ["var(--theme-font-monospace)"],
-      openDyslexic: ["OpenDyslexic"],
-      zenMaruGothic: ["Zen Maru Gothic"],
+      body: "var(--theme-font-body)",
+      headers: "var(--theme-font-headers)",
+      ...fonts,
     },
     screens: {
-      desktop: breakDektop,
-      mobile: breakMobile,
-      thin: breakThin,
+      desktop: breaks.desktop,
+      mobile: breaks.mobile,
+      thin: breaks.thin,
       hoverable: { raw: "(hover: hover)" },
-      notHoverable: { raw: "(hover: hover)" },
+      notHoverable: { raw: "(hover: none)" },
     },
     extend: {
       boxShadow: {
@@ -74,22 +40,22 @@ module.exports = {
     plugin(function ({ addUtilities }) {
       addUtilities({
         ".set-theme-light": {
-          "--theme-color-highlight": rgb(hightlight),
-          "--theme-color-light": rgb(light),
-          "--theme-color-mid": rgb(mid),
-          "--theme-color-dark": rgb(dark),
-          "--theme-color-shade": rgb(shade),
-          "--theme-color-black": rgb(black),
+          "--theme-color-highlight": rgb(colors.light.hightlight),
+          "--theme-color-light": rgb(colors.light.light),
+          "--theme-color-mid": rgb(colors.light.mid),
+          "--theme-color-dark": rgb(colors.light.dark),
+          "--theme-color-shade": rgb(colors.light.shade),
+          "--theme-color-black": rgb(colors.light.black),
           "--theme-texture-dots": `url("/paper-dots.webp")`,
           "--theme-texture-dots-blend": `multiply`,
         },
         ".set-theme-dark": {
-          "--theme-color-highlight": rgb(dark_highlight),
-          "--theme-color-light": rgb(dark_light),
-          "--theme-color-mid": rgb(dark_mid),
-          "--theme-color-dark": rgb(dark_dark),
-          "--theme-color-shade": rgb(dark_shade),
-          "--theme-color-black": rgb(dark_black),
+          "--theme-color-highlight": rgb(colors.dark.highlight),
+          "--theme-color-light": rgb(colors.dark.light),
+          "--theme-color-mid": rgb(colors.dark.mid),
+          "--theme-color-dark": rgb(colors.dark.dark),
+          "--theme-color-shade": rgb(colors.dark.shade),
+          "--theme-color-black": rgb(colors.dark.black),
           "--theme-texture-dots": `url("/paper-dots-dark.webp")`,
           "--theme-texture-dots-blend": `overlay`,
         },
@@ -99,14 +65,12 @@ module.exports = {
     plugin(function ({ addUtilities }) {
       addUtilities({
         ".set-theme-font-standard": {
-          "--theme-font-body": fontStandard.body,
-          "--theme-font-headers": fontStandard.headers,
-          "--theme-font-monospace": fontStandard.monospace,
+          "--theme-font-body": fontFamilies.standard.body,
+          "--theme-font-headers": fontFamilies.standard.headers,
         },
         ".set-theme-font-dyslexic": {
-          "--theme-font-body": fontDyslexic.body,
-          "--theme-font-headers": fontDyslexic.headers,
-          "--theme-font-monospace": fontStandard.monospace,
+          "--theme-font-body": fontFamilies.dyslexic.body,
+          "--theme-font-headers": fontFamilies.dyslexic.headers,
         },
       });
     }),

@@ -31,10 +31,7 @@ export function ButtonGroup(props: Immutable<Props>): JSX.Element {
   }, [children]);
 
   return (
-    <div
-      ref={ref}
-      className={`grid grid-flow-col ${className}`}
-    >
+    <div ref={ref} className={`grid grid-flow-col ${className}`}>
       {children}
     </div>
   );

@@ -1,40 +1,40 @@
 query getWikiPagesPreviews {
-	wikiPages(pagination: { limit: -1 }) {
-		data {
-			id
-			attributes {
-				slug
-				thumbnail {
-					data {
-						attributes {
-							...uploadImage
-						}
-					}
-				}
-				categories {
-					data {
-						id
-						attributes {
-							name
-							short
-						}
-					}
-				}
-				translations {
-					title
-					aliases {
-						alias
-					}
-					summary
-					language {
-						data {
-							attributes {
-								code
-							}
-						}
-					}
-				}
-			}
-		}
-	}
+  wikiPages(pagination: { limit: -1 }) {
+    data {
+      id
+      attributes {
+        slug
+        thumbnail {
+          data {
+            attributes {
+              ...uploadImage
+            }
+          }
+        }
+        categories {
+          data {
+            id
+            attributes {
+              name
+              short
+            }
+          }
+        }
+        translations {
+          title
+          aliases {
+            alias
+          }
+          summary
+          language {
+            data {
+              attributes {
+                code
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }

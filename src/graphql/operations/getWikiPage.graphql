@@ -1,103 +1,103 @@
 query getWikiPage($slug: String, $language_code: String) {
-	wikiPages(filters: { slug: { eq: $slug } }) {
-		data {
-			id
-			attributes {
-				slug
-				thumbnail {
-					data {
-						attributes {
-							...uploadImage
-						}
-					}
-				}
-				categories {
-					data {
-						id
-						attributes {
-							name
-							short
-						}
-					}
-				}
-				translations {
-					title
-					aliases {
-						alias
-					}
-					summary
-					language {
-						data {
-							attributes {
-								code
-							}
-						}
-					}
-					body {
-						source_language {
-							data {
-								attributes {
-									code
-								}
-							}
-						}
-						status
-						body
-						authors {
-							data {
-								id
-								attributes {
-									...recorderChip
-								}
-							}
-						}
-						translators {
-							data {
-								id
-								attributes {
-									...recorderChip
-								}
-							}
-						}
-						proofreaders {
-							data {
-								id
-								attributes {
-									...recorderChip
-								}
-							}
-						}
-					}
-				}
-				definitions {
-					source {
-						data {
-							attributes {
-								name
-							}
-						}
-					}
-					translations {
-						language {
-							data {
-								attributes {
-									code
-								}
-							}
-						}
+  wikiPages(filters: { slug: { eq: $slug } }) {
+    data {
+      id
+      attributes {
+        slug
+        thumbnail {
+          data {
+            attributes {
+              ...uploadImage
+            }
+          }
+        }
+        categories {
+          data {
+            id
+            attributes {
+              name
+              short
+            }
+          }
+        }
+        translations {
+          title
+          aliases {
+            alias
+          }
+          summary
+          language {
+            data {
+              attributes {
+                code
+              }
+            }
+          }
+          body {
+            source_language {
+              data {
+                attributes {
+                  code
+                }
+              }
+            }
+            status
+            body
+            authors {
+              data {
+                id
+                attributes {
+                  ...recorderChip
+                }
+              }
+            }
+            translators {
+              data {
+                id
+                attributes {
+                  ...recorderChip
+                }
+              }
+            }
+            proofreaders {
+              data {
+                id
+                attributes {
+                  ...recorderChip
+                }
+              }
+            }
+          }
+        }
+        definitions {
+          source {
+            data {
+              attributes {
+                name
+              }
+            }
+          }
+          translations {
+            language {
+              data {
+                attributes {
+                  code
+                }
+              }
+            }
 
-						source_language {
-							data {
-								attributes {
-									code
-								}
-							}
-						}
-						status
-						definition
-					}
-				}
-			}
-		}
-	}
+            source_language {
+              data {
+                attributes {
+                  code
+                }
+              }
+            }
+            status
+            definition
+          }
+        }
+      }
+    }
+  }
 }

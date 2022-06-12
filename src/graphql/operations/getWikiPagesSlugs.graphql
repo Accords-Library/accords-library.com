@@ -1,9 +1,9 @@
 query getWikiPagesSlugs {
-	wikiPages(pagination: { limit: -1 }) {
-		data {
-			attributes {
-				slug
-			}
-		}
-	}
+  wikiPages(pagination: { limit: -1 }) {
+    data {
+      attributes {
+        slug
+      }
+    }
+  }
 }

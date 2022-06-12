@@ -119,7 +119,7 @@ mark {
 }
 
 .formatted code {
-  @apply  font-mono
+  @apply font-mono;
 }
 
 .formatted ul {

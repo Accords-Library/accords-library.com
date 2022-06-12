@@ -407,7 +407,7 @@ export default function Editor(props: Immutable<Props>): JSX.Element {
               handleInput(textarea.value);
             }}
             className="h-[70vh] w-full rounded-xl bg-mid !bg-opacity-40 p-8
-            text-black font-mono outline-none"
+            font-mono text-black outline-none"
             value={markdown}
             title="Input textarea"
           />

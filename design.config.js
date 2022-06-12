@@ -27,16 +27,19 @@ const fonts = {
   openDyslexic: "OpenDyslexic",
   vollkorn: "Vollkorn",
   zenMaruGothic: "Zen Maru Gothic",
+  shareTechMono: "Share Tech Mono",
 };
 
 const fontFamilies = {
   standard: {
     body: fonts.zenMaruGothic,
     headers: fonts.vollkorn,
+    mono: fonts.shareTechMono,
   },
   dyslexic: {
     body: fonts.openDyslexic,
     headers: fonts.openDyslexic,
+    mono: fonts.shareTechMono,
   },
 };
 

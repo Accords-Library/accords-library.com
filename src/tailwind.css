@@ -16,7 +16,8 @@ h6 {
 }
 
 a {
-  @apply cursor-pointer underline decoration-dark decoration-dotted underline-offset-2 transition-colors hover:text-dark;
+  @apply cursor-pointer underline decoration-dark decoration-dotted
+  underline-offset-2 transition-colors hover:text-dark;
 }
 
 *::selection {
@@ -117,6 +118,10 @@ mark {
   @apply border-l-dark;
 }
 
+.formatted code {
+  @apply  font-mono
+}
+
 .formatted ul {
   @apply list-disc pl-4;
 }
@@ -137,7 +142,9 @@ mark {
 
 input,
 textarea {
-  @apply rounded-full bg-light p-2 text-center text-dark outline outline-2 outline-offset-[-2px] outline-mid transition-all placeholder:text-dark placeholder:opacity-60 hover:bg-mid hover:outline-[transparent];
+  @apply rounded-full bg-light p-2 text-center text-dark outline outline-2 outline-offset-[-2px]
+  outline-mid transition-all placeholder:text-dark placeholder:opacity-60 hover:bg-mid
+  hover:outline-[transparent];
 }
 
 input::placeholder {
@@ -154,11 +161,15 @@ textarea {
 }
 
 input[type="submit"] {
-  @apply grid cursor-pointer place-content-center place-items-center rounded-full border-[1px] border-dark px-4 pt-[0.4rem] pb-[0.5rem] text-dark transition-all hover:bg-dark hover:text-light hover:drop-shadow-shade-lg active:border-black active:bg-black active:text-light active:drop-shadow-black-lg;
+  @apply grid cursor-pointer place-content-center place-items-center rounded-full border-[1px]
+  border-dark px-4 pt-[0.4rem] pb-[0.5rem] text-dark transition-all hover:bg-dark hover:text-light
+  hover:drop-shadow-shade-lg active:border-black active:bg-black active:text-light
+  active:drop-shadow-black-lg;
 }
 
 .texture-paper-dots {
-  @apply bg-[length:10cm] bg-local [background-image:var(--theme-texture-dots)] [background-blend-mode:var(--theme-texture-dots-blend)];
+  @apply bg-[length:10cm] bg-local [background-image:var(--theme-texture-dots)]
+  [background-blend-mode:var(--theme-texture-dots-blend)];
 }
 
 /* TIPPY */
@@ -170,7 +181,8 @@ input[type="submit"] {
   max-width: calc(100vw - 10px);
 }
 .tippy-box {
-  @apply relative rounded-lg bg-light transition-[transform,_visibility,_opacity] drop-shadow-shade-xl;
+  @apply relative rounded-lg bg-light transition-[transform,_visibility,_opacity]
+  drop-shadow-shade-xl;
 }
 .tippy-box[data-placement^="top"] > .tippy-arrow {
   @apply bottom-0;

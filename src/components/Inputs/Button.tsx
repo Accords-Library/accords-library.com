@@ -38,25 +38,25 @@ export function Button(props: Immutable<Props>): JSX.Element {
       draggable={draggable}
       id={id}
       onClick={onClick}
-      className={`--opacityBadge:100 grid select-none grid-flow-col place-content-center
-      place-items-center gap-2 rounded-full border-[1px] border-dark px-4 pt-[0.4rem]
-      pb-[0.5rem] text-dark transition-all hover:[--opacityBadge:0] ${className} ${
+      className={`component-button group grid select-none grid-flow-col place-content-center
+      place-items-center gap-2 rounded-full border-[1px] border-dark px-4 pt-[0.4rem] pb-[0.5rem]
+      text-dark transition-all ${
         active
           ? "!border-black bg-black text-light drop-shadow-black-lg"
           : `cursor-pointer hover:bg-dark hover:text-light hover:drop-shadow-shade-lg
           active:border-black active:bg-black active:text-light active:drop-shadow-black-lg`
-      }`}
+      } ${className}`}
     >
       {badgeNumber && (
         <div
           className="absolute -top-3 -right-2 grid h-8 w-8 place-items-center rounded-full bg-dark
-          font-bold text-light opacity-[var(--opacityBadge)] transition-opacity"
+          font-bold text-light transition-opacity group-hover:opacity-0"
         >
           <p className="-translate-y-[0.05em]">{badgeNumber}</p>
         </div>
       )}
-      {icon && <Ico className="translate-y-[0.04em]" icon={icon} />}
-      {text && <p className="-translate-y-[0.05em]">{text}</p>}
+      {icon && <Ico className="translate-y-[0.04em] !text-base" icon={icon} />}
+      {text && <p className="-translate-y-[0.05em] text-center">{text}</p>}
     </div>
   );
 

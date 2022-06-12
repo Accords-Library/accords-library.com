@@ -101,10 +101,11 @@ export default function News(props: Immutable<Props>): JSX.Element {
                 }
                 description={post.attributes.translations?.[0]?.excerpt}
                 thumbnail={post.attributes.thumbnail?.data?.attributes}
+                thumbnailAspectRatio="3/2"
+                thumbnailForceAspectRatio
                 bottomChips={post.attributes.categories?.data.map(
                   (category) => category.attributes?.short ?? ""
                 )}
-                thumbnailAspectRatio="3/2"
                 keepInfoVisible={keepInfoVisible}
                 metadata={{
                   release_date: post.attributes.date,

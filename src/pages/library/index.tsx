@@ -30,6 +30,7 @@ import {
 } from "helpers/libraryItem";
 import { PreviewCard } from "components/PreviewCard";
 import { useMediaHoverable } from "hooks/useMediaQuery";
+import { ButtonGroup } from "components/Inputs/ButtonGroup";
 
 interface Props extends AppStaticProps {
   items: NonNullable<GetLibraryItemsPreviewQuery["libraryItems"]>["data"];
@@ -200,10 +201,9 @@ export default function Library(props: Immutable<Props>): JSX.Element {
         />
       )}
 
-      <div className="mt-4 grid grid-flow-col">
+      <ButtonGroup className="mt-4">
         <ToolTip content={langui.only_display_items_i_want}>
           <Button
-            className="rounded-r-none"
             icon={Icon.Favorite}
             onClick={() => setFilterUserStatus(LibraryItemUserStatus.Want)}
             active={filterUserStatus === LibraryItemUserStatus.Want}
@@ -211,7 +211,6 @@ export default function Library(props: Immutable<Props>): JSX.Element {
         </ToolTip>
         <ToolTip content={langui.only_display_items_i_have}>
           <Button
-            className="rounded-none border-l-0"
             icon={Icon.BackHand}
             onClick={() => setFilterUserStatus(LibraryItemUserStatus.Have)}
             active={filterUserStatus === LibraryItemUserStatus.Have}
@@ -219,7 +218,6 @@ export default function Library(props: Immutable<Props>): JSX.Element {
         </ToolTip>
         <ToolTip content={langui.only_display_unmarked_items}>
           <Button
-            className="rounded-none border-l-0"
             icon={Icon.RadioButtonUnchecked}
             onClick={() => setFilterUserStatus(LibraryItemUserStatus.None)}
             active={filterUserStatus === LibraryItemUserStatus.None}
@@ -227,13 +225,12 @@ export default function Library(props: Immutable<Props>): JSX.Element {
         </ToolTip>
         <ToolTip content={langui.display_all_items}>
           <Button
-            className="rounded-l-none border-l-0"
             text={"All"}
             onClick={() => setFilterUserStatus(undefined)}
             active={filterUserStatus === undefined}
           />
         </ToolTip>
-      </div>
+      </ButtonGroup>
 
       <Button
         className="mt-8"
@@ -343,7 +340,7 @@ export async function getStaticProps(
   const items = await sdk.getLibraryItemsPreview({
     language_code: context.locale ?? "en",
   });
-  if (!items.libraryItems) return { notFound: true };
+  if (!items.libraryItems?.data) return { notFound: true };
   const props: Props = {
     ...(await getAppStaticProps(context)),
     items: items.libraryItems.data,

@@ -196,6 +196,7 @@ export default function Contents(props: Immutable<Props>): JSX.Element {
                         languages={languages}
                         thumbnail={item.attributes.thumbnail?.data?.attributes}
                         thumbnailAspectRatio="3/2"
+                        thumbnailForceAspectRatio
                         stackNumber={
                           effectiveCombineRelatedContent &&
                           item.attributes.group?.data?.attributes?.combine

@@ -13,6 +13,7 @@ import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
 import { useSwipeable } from "react-swipeable";
 import { Ico, Icon } from "./Ico";
+import { ButtonGroup } from "./Inputs/ButtonGroup";
 import { OrderableList } from "./Inputs/OrderableList";
 import { Select } from "./Inputs/Select";
 import { TextInput } from "./Inputs/TextInput";
@@ -381,7 +382,7 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
             <div className="grid place-items-center gap-8 text-center desktop:grid-cols-2">
               <div>
                 <h3 className="text-xl">{langui.theme}</h3>
-                <div className="flex flex-row">
+                <ButtonGroup>
                   <Button
                     onClick={() => {
                       appLayout.setDarkMode(false);
@@ -391,7 +392,6 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
                       appLayout.selectedThemeMode === true &&
                       appLayout.darkMode === false
                     }
-                    className="rounded-r-none"
                     text={langui.light}
                   />
                   <Button
@@ -399,7 +399,6 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
                       appLayout.setSelectedThemeMode(false);
                     }}
                     active={appLayout.selectedThemeMode === false}
-                    className="rounded-l-none rounded-r-none border-x-0"
                     text={langui.auto}
                   />
                   <Button
@@ -411,10 +410,9 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
                       appLayout.selectedThemeMode === true &&
                       appLayout.darkMode === true
                     }
-                    className="rounded-l-none"
                     text={langui.dark}
                   />
-                </div>
+                </ButtonGroup>
               </div>
 
               <div>
@@ -431,9 +429,8 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
 
               <div>
                 <h3 className="text-xl">{langui.font_size}</h3>
-                <div className="flex flex-row">
+                <ButtonGroup>
                   <Button
-                    className="rounded-r-none"
                     onClick={() =>
                       appLayout.setFontSize(
                         appLayout.fontSize
@@ -444,7 +441,6 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
                     icon={Icon.TextDecrease}
                   />
                   <Button
-                    className="rounded-l-none rounded-r-none border-x-0"
                     onClick={() => appLayout.setFontSize(1)}
                     text={`${((appLayout.fontSize ?? 1) * 100).toLocaleString(
                       undefined,
@@ -454,7 +450,6 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
                     )}%`}
                   />
                   <Button
-                    className="rounded-l-none"
                     onClick={() =>
                       appLayout.setFontSize(
                         appLayout.fontSize
@@ -464,7 +459,7 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
                     }
                     icon={Icon.TextIncrease}
                   />
-                </div>
+                </ButtonGroup>
               </div>
 
               <div>

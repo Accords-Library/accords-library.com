@@ -21,8 +21,7 @@ export function MainPanel(props: Immutable<Props>): JSX.Element {
 
   return (
     <div
-      className={`flex flex-col content-start justify-center
-      justify-items-center gap-y-2 p-8 text-center ${
+      className={`grid content-start justify-center gap-y-2 p-8 text-center ${
         appLayout.mainPanelReduced && isDesktop && "px-4"
       }`}
     >
@@ -131,9 +130,7 @@ export function MainPanel(props: Immutable<Props>): JSX.Element {
         icon={Icon.WatchLater}
         title={langui.chronicles}
         subtitle={langui.chronicles_short_description}
-        
         reduced={appLayout.mainPanelReduced && isDesktop}
-        
       />
       */}
 
@@ -151,9 +148,7 @@ export function MainPanel(props: Immutable<Props>): JSX.Element {
         url="/merch"
         icon={Icon.Store}
         title={langui.merch}
-        
         reduced={appLayout.mainPanelReduced && isDesktop}
-        
       />
       */}
 
@@ -193,23 +188,23 @@ export function MainPanel(props: Immutable<Props>): JSX.Element {
         <div className="mt-4 mb-8 grid place-content-center">
           <a
             aria-label="Read more about the license we use for this website"
-            className="grid grid-flow-col place-content-center gap-1 transition-[filter]
-            hover:[--theme-color-black:var(--theme-color-dark)]"
+            className="group grid grid-flow-col place-content-center gap-1 transition-[filter]"
             href="https://creativecommons.org/licenses/by-sa/4.0/"
           >
             <div
-              className="aspect-square w-6 bg-black [mask:url('/icons/creative-commons-brands.svg')]
-               ![mask-size:contain] ![mask-repeat:no-repeat] ![mask-position:center]"
+              className="aspect-square w-6 bg-black transition-colors
+              [mask:url('/icons/creative-commons-brands.svg')] ![mask-size:contain]
+              ![mask-repeat:no-repeat] ![mask-position:center] group-hover:bg-dark"
             />
             <div
-              className="aspect-square w-6 bg-black 
+              className="aspect-square w-6 bg-black transition-colors
               [mask:url('/icons/creative-commons-by-brands.svg')] ![mask-size:contain]
-              ![mask-repeat:no-repeat] ![mask-position:center]"
+              ![mask-repeat:no-repeat] ![mask-position:center] group-hover:bg-dark"
             />
             <div
-              className="aspect-square w-6 bg-black
-               [mask:url('/icons/creative-commons-sa-brands.svg')] ![mask-size:contain]
-               ![mask-repeat:no-repeat] ![mask-position:center]"
+              className="aspect-square w-6 bg-black transition-colors
+              [mask:url('/icons/creative-commons-sa-brands.svg')] ![mask-size:contain]
+              ![mask-repeat:no-repeat] ![mask-position:center] group-hover:bg-dark"
             />
           </a>
         </div>

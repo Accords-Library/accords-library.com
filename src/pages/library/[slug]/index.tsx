@@ -170,7 +170,7 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
                 />
               </div>
             )}
-            <div className="grid place-items-center">
+            <div className="grid place-items-center text-center">
               <h1 className="text-3xl">{item?.title}</h1>
               {item?.subtitle && <h2 className="text-2xl">{item.subtitle}</h2>}
             </div>
@@ -261,7 +261,10 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
         <InsetBox id="details" className="grid place-items-center">
           <div className="place-items grid w-[clamp(0px,100%,42rem)] gap-8">
             <h2 className="text-center text-2xl">{langui.details}</h2>
-            <div className="grid w-full grid-flow-col place-content-between">
+            <div
+              className="grid place-items-center gap-y-8
+              desktop:grid-flow-col desktop:place-content-between"
+            >
               {item?.metadata?.[0] && (
                 <div className="grid place-content-start place-items-center">
                   <h3 className="text-xl">{langui.type}</h3>
@@ -313,17 +316,26 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
             )}
 
             {item?.size && (
-              <>
+              <div className="grid gap-8 mobile:place-items-center">
                 <h3 className="text-xl">{langui.size}</h3>
-                <div className="grid w-full grid-flow-col place-content-between">
-                  <div className="flex flex-row flex-wrap place-items-start gap-4">
+                <div
+                  className="grid w-full grid-flow-col place-content-between thin:grid-flow-row
+                  thin:place-content-center thin:gap-8"
+                >
+                  <div
+                    className="grid place-items-center gap-x-4 desktop:grid-flow-col 
+                    desktop:place-items-start"
+                  >
                     <p className="font-bold">{langui.width}:</p>
                     <div>
                       <p>{item.size.width} mm</p>
                       <p>{convertMmToInch(item.size.width)} in</p>
                     </div>
                   </div>
-                  <div className="flex flex-row flex-wrap place-items-start gap-4">
+                  <div
+                    className="grid place-items-center gap-x-4 desktop:grid-flow-col
+                    desktop:place-items-start"
+                  >
                     <p className="font-bold">{langui.height}:</p>
                     <div>
                       <p>{item.size.height} mm</p>
@@ -331,7 +343,10 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
                     </div>
                   </div>
                   {item.size.thickness && (
-                    <div className="flex flex-row flex-wrap place-items-start gap-4">
+                    <div
+                      className="grid place-items-center gap-x-4 desktop:grid-flow-col
+                      desktop:place-items-start"
+                    >
                       <p className="font-bold">{langui.thickness}:</p>
                       <div>
                         <p>{item.size.thickness} mm</p>
@@ -340,7 +355,7 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
                     </div>
                   )}
                 </div>
-              </>
+              </div>
             )}
 
             {item?.metadata?.[0]?.__typename !== "ComponentMetadataGroup" &&
@@ -417,8 +432,8 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
             )}
 
             <div
-              className="grid w-full grid-cols-[repeat(auto-fill,minmax(15rem,1fr))] items-end
-              gap-8 mobile:grid-cols-2"
+              className="grid w-full grid-cols-[repeat(auto-fill,minmax(15rem,1fr))]
+              items-end gap-8 mobile:grid-cols-2 thin:grid-cols-1"
             >
               {item.subitems.data.map((subitem) => (
                 <Fragment key={subitem.id}>

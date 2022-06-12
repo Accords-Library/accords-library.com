@@ -21,6 +21,7 @@ module.exports = {
     fontFamily: {
       body: "var(--theme-font-body)",
       headers: "var(--theme-font-headers)",
+      mono: "var(--theme-font-mono)",
       ...fonts,
     },
     screens: {
@@ -67,10 +68,12 @@ module.exports = {
         ".set-theme-font-standard": {
           "--theme-font-body": fontFamilies.standard.body,
           "--theme-font-headers": fontFamilies.standard.headers,
+          "--theme-font-mono": fontFamilies.standard.mono,
         },
         ".set-theme-font-dyslexic": {
           "--theme-font-body": fontFamilies.dyslexic.body,
           "--theme-font-headers": fontFamilies.dyslexic.headers,
+          "--theme-font-mono": fontFamilies.dyslexic.mono,
         },
       });
     }),

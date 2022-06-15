@@ -19,7 +19,7 @@ export function TOC(props: Immutable<Props>): JSX.Element {
       <h3 className="text-xl">Table of content</h3>
       <div className="max-w-[14.5rem] text-left">
         <p className="relative my-2 overflow-x-hidden text-ellipsis whitespace-nowrap text-left">
-          <a className="" onClick={async () => router.replace(`#${toc.slug}`)}>
+          <a onClick={async () => router.replace(`#${toc.slug}`)}>
             {<abbr title={toc.title}>{toc.title}</abbr>}
           </a>
         </p>

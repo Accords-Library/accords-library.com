@@ -4,6 +4,7 @@ import {
   getPostStaticProps,
   PostStaticProps,
 } from "graphql/getPostStaticProps";
+import { cIf, cJoin } from "helpers/className";
 import { randomInt } from "helpers/numbers";
 import { Immutable } from "helpers/types";
 import { useRouter } from "next/router";
@@ -27,10 +28,13 @@ export default function AboutUs(
   const contactForm = (
     <div className="flex flex-col gap-8 text-center">
       <form
-        className={`grid gap-8 ${
-          formState !== "stale" &&
-          "pointer-events-none cursor-not-allowed touch-none opacity-60"
-        }`}
+        className={cJoin(
+          "grid gap-8",
+          cIf(
+            formState !== "stale",
+            "pointer-events-none cursor-not-allowed touch-none opacity-60"
+          )
+        )}
         onSubmit={(event) => {
           event.preventDefault();
 

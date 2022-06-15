@@ -1,3 +1,4 @@
+import { cJoin } from "helpers/className";
 import { Immutable } from "helpers/types";
 
 interface Props {
@@ -10,7 +11,10 @@ export function InsetBox(props: Immutable<Props>): JSX.Element {
   return (
     <div
       id={props.id}
-      className={`w-full rounded-xl bg-mid p-8 shadow-inner-sm shadow-shade ${props.className}`}
+      className={cJoin(
+        "w-full rounded-xl bg-mid p-8 shadow-inner-sm shadow-shade",
+        props.className
+      )}
     >
       {props.children}
     </div>

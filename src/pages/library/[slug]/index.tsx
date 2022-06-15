@@ -119,7 +119,7 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
   );
 
   const contentPanel = (
-    <ContentPanel width={ContentPanelWidthSizes.Large}>
+    <ContentPanel width={ContentPanelWidthSizes.Full}>
       <LightBox />
 
       <ReturnButton
@@ -444,6 +444,7 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
                       subtitle={subitem.attributes.subtitle}
                       thumbnail={subitem.attributes.thumbnail?.data?.attributes}
                       thumbnailAspectRatio="21/29.7"
+                      thumbnailRounded={false}
                       keepInfoVisible={keepInfoVisible}
                       topChips={
                         subitem.attributes.metadata &&

@@ -92,7 +92,7 @@ export default function Wiki(props: Immutable<Props>): JSX.Element {
   );
 
   const contentPanel = (
-    <ContentPanel width={ContentPanelWidthSizes.Large}>
+    <ContentPanel width={ContentPanelWidthSizes.Full}>
       <div
         className="grid grid-cols-2 items-end gap-8
         desktop:grid-cols-[repeat(auto-fill,_minmax(20rem,1fr))] mobile:gap-4"

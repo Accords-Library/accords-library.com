@@ -1,3 +1,4 @@
+import { cIf, cJoin } from "helpers/className";
 import { Immutable } from "helpers/types";
 
 interface Props {
@@ -10,12 +11,18 @@ export function WithLabel(props: Immutable<Props>): JSX.Element {
   const { label, input, disabled } = props;
   return (
     <div
-      className={`flex flex-row place-content-between place-items-center gap-2 ${
-        disabled ? "text-dark brightness-150 contrast-75 grayscale" : ""
-      }`}
+      className={cJoin(
+        "flex flex-row place-content-between place-items-center gap-2",
+        cIf(disabled, "text-dark brightness-150 contrast-75 grayscale")
+      )}
     >
       {label && (
-        <p className={`text-left ${label.length < 10 ? "flex-shrink-0" : ""}`}>
+        <p
+          className={cJoin(
+            "text-left",
+            cIf(label.length < 10, "flex-shrink-0")
+          )}
+        >
           {label}:
         </p>
       )}

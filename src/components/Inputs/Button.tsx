@@ -1,4 +1,5 @@
 import { Ico, Icon } from "components/Ico";
+import { cIf, cJoin } from "helpers/className";
 import { Immutable } from "helpers/types";
 import { useRouter } from "next/router";
 import { MouseEventHandler } from "react";
@@ -38,14 +39,18 @@ export function Button(props: Immutable<Props>): JSX.Element {
       draggable={draggable}
       id={id}
       onClick={onClick}
-      className={`component-button group grid select-none grid-flow-col place-content-center
-      place-items-center gap-2 rounded-full border-[1px] border-dark px-4 pt-[0.4rem] pb-[0.5rem]
-      text-dark transition-all ${
-        active
-          ? "!border-black bg-black text-light drop-shadow-black-lg"
-          : `cursor-pointer hover:bg-dark hover:text-light hover:drop-shadow-shade-lg
+      className={cJoin(
+        `component-button group grid select-none grid-flow-col place-content-center
+        place-items-center gap-2 rounded-full border-[1px] border-dark py-3 px-4 leading-none
+        text-dark transition-all`,
+        cIf(
+          active,
+          "!border-black bg-black text-light drop-shadow-black-lg",
+          `cursor-pointer hover:bg-dark hover:text-light hover:drop-shadow-shade-lg
           active:border-black active:bg-black active:text-light active:drop-shadow-black-lg`
-      } ${className}`}
+        ),
+        className
+      )}
     >
       {badgeNumber && (
         <div
@@ -55,7 +60,9 @@ export function Button(props: Immutable<Props>): JSX.Element {
           <p className="-translate-y-[0.05em]">{badgeNumber}</p>
         </div>
       )}
-      {icon && <Ico className="translate-y-[0.04em] !text-base" icon={icon} />}
+      {icon && (
+        <Ico className="[font-size:150%] [line-height:0.66]" icon={icon} />
+      )}
       {text && <p className="-translate-y-[0.05em] text-center">{text}</p>}
     </div>
   );

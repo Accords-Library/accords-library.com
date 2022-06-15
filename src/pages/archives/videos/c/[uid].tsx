@@ -64,7 +64,7 @@ export default function Channel(props: Props): JSX.Element {
   );
 
   const contentPanel = (
-    <ContentPanel width={ContentPanelWidthSizes.Large}>
+    <ContentPanel width={ContentPanelWidthSizes.Full}>
       <div className="mb-8">
         <h1 className="text-3xl">{channel?.title}</h1>
         <p>{channel?.subscribers.toLocaleString()} subscribers</p>

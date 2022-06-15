@@ -1,29 +1,33 @@
+import { cJoin } from "helpers/className";
 import { Immutable } from "helpers/types";
 
 interface Props {
   children: React.ReactNode;
-  autoformat?: boolean;
   width?: ContentPanelWidthSizes;
 }
 
 export enum ContentPanelWidthSizes {
   Default = "default",
   Large = "large",
+  Full = "full",
 }
 
 export function ContentPanel(props: Immutable<Props>): JSX.Element {
-  const width = props.width ? props.width : ContentPanelWidthSizes.Default;
-  const widthCSS =
-    width === ContentPanelWidthSizes.Default ? "max-w-2xl" : "w-full";
+  const { width = ContentPanelWidthSizes.Default, children } = props;
 
   return (
     <div className={`grid px-4 pt-10 pb-20 desktop:py-20 desktop:px-10`}>
       <main
-        className={`${
-          props.autoformat && "formatted"
-        } ${widthCSS} place-self-center`}
+        className={cJoin(
+          "place-self-center",
+          width === ContentPanelWidthSizes.Default
+            ? "max-w-2xl"
+            : width === ContentPanelWidthSizes.Large
+            ? "max-w-4xl"
+            : "w-full"
+        )}
       >
-        {props.children}
+        {children}
       </main>
     </div>
   );

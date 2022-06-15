@@ -1,3 +1,4 @@
+import { cJoin } from "helpers/className";
 import { Immutable } from "helpers/types";
 import { useEffect, useRef } from "react";
 
@@ -31,7 +32,7 @@ export function ButtonGroup(props: Immutable<Props>): JSX.Element {
   }, [children]);
 
   return (
-    <div ref={ref} className={`grid grid-flow-col ${className}`}>
+    <div ref={ref} className={cJoin("grid grid-flow-col", className)}>
       {children}
     </div>
   );

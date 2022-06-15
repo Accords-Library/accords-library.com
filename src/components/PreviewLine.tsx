@@ -34,9 +34,8 @@ export function PreviewLine(props: Immutable<Props>): JSX.Element {
   return (
     <Link href={href} passHref>
       <div
-        className="flex h-36 w-full cursor-pointer
-        flex-row place-items-center gap-4 overflow-hidden rounded-md
-        bg-light pr-4 transition-transform drop-shadow-shade-xl hover:scale-[1.02]"
+        className="flex h-36 w-full cursor-pointer flex-row place-items-center gap-4 overflow-hidden
+        rounded-md bg-light pr-4 transition-transform drop-shadow-shade-xl hover:scale-[1.02]"
       >
         {thumbnail ? (
           <div className="aspect-[3/2] h-full">

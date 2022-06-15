@@ -1,4 +1,5 @@
 import { useAppLayout } from "contexts/AppLayoutContext";
+import { cIf, cJoin } from "helpers/className";
 import { Immutable } from "helpers/types";
 import { Dispatch, SetStateAction, useEffect } from "react";
 import Hotkeys from "react-hot-keys";
@@ -40,32 +41,37 @@ export function Popup(props: Immutable<Props>): JSX.Element {
       }}
     >
       <div
-        className={`fixed inset-0 z-50 grid place-content-center
-      transition-[backdrop-filter] duration-500 ${
-        state ? "[backdrop-filter:blur(2px)]" : "pointer-events-none touch-none"
-      }`}
+        className={cJoin(
+          "fixed inset-0 z-50 grid place-content-center transition-[backdrop-filter] duration-500",
+          cIf(
+            state,
+            "[backdrop-filter:blur(2px)]",
+            "pointer-events-none touch-none"
+          )
+        )}
       >
         <div
-          className={`fixed inset-0 bg-shade transition-all duration-500 ${
-            state ? "bg-opacity-50" : "bg-opacity-0"
-          }`}
+          className={cJoin(
+            "fixed inset-0 bg-shade transition-all duration-500",
+            cIf(state, "bg-opacity-50", "bg-opacity-0")
+          )}
           onClick={() => {
             setState(false);
           }}
         />
 
         <div
-          className={`${
-            padding && "p-10 mobile:p-6"
-          } grid place-items-center gap-4 transition-transform ${
-            state ? "scale-100" : "scale-0"
-          } ${
-            fillViewport
-              ? "absolute inset-10"
-              : "relative max-h-[80vh] overflow-y-auto mobile:w-[85vw]"
-          } ${
-            hideBackground ? "" : "rounded-lg bg-light shadow-2xl shadow-shade"
-          }`}
+          className={cJoin(
+            "grid place-items-center gap-4 transition-transform",
+            cIf(padding, "p-10 mobile:p-6"),
+            cIf(state, "scale-100", "scale-0"),
+            cIf(
+              fillViewport,
+              "absolute inset-10",
+              "relative max-h-[80vh] overflow-y-auto mobile:w-[85vw]"
+            ),
+            cIf(!hideBackground, "rounded-lg bg-light shadow-2xl shadow-shade")
+          )}
         >
           {children}
         </div>

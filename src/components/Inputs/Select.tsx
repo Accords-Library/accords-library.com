@@ -1,4 +1,5 @@
 import { Ico, Icon } from "components/Ico";
+import { cIf, cJoin } from "helpers/className";
 import { Immutable } from "helpers/types";
 import { Dispatch, Fragment, SetStateAction, useState } from "react";
 
@@ -17,16 +18,19 @@ export function Select(props: Immutable<Props>): JSX.Element {
 
   return (
     <div
-      className={`relative text-center transition-[filter] ${
-        opened && "z-10 drop-shadow-shade-lg"
-      } ${className}`}
+      className={cJoin(
+        "relative text-center transition-[filter]",
+        cIf(opened, "z-10 drop-shadow-shade-lg"),
+        className
+      )}
     >
       <div
-        className={`grid cursor-pointer grid-flow-col grid-cols-[1fr_auto_auto] place-items-center
-        rounded-[1em] bg-light p-1 outline outline-2 outline-offset-[-2px] outline-mid
-        transition-all hover:bg-mid hover:outline-[transparent] ${
-          opened && "rounded-b-none bg-highlight outline-[transparent]"
-        }`}
+        className={cJoin(
+          `grid cursor-pointer grid-flow-col grid-cols-[1fr_auto_auto] place-items-center
+          rounded-[1em] bg-light p-1 outline outline-2 outline-offset-[-2px] outline-mid
+          transition-all hover:bg-mid hover:outline-[transparent]`,
+          cIf(opened, "rounded-b-none bg-highlight outline-[transparent]")
+        )}
       >
         <p onClick={() => setOpened(!opened)} className="w-full">
           {state === -1 ? "—" : options[state]}
@@ -44,18 +48,19 @@ export function Select(props: Immutable<Props>): JSX.Element {
         />
       </div>
       <div
-        className={`left-0 right-0 rounded-b-[1em] ${
-          opened ? "absolute" : "hidden"
-        }`}
+        className={cJoin(
+          "left-0 right-0 rounded-b-[1em]",
+          cIf(opened, "absolute", "hidden")
+        )}
       >
         {options.map((option, index) => (
           <Fragment key={index}>
             {index !== state && (
               <div
-                className={` ${
-                  opened ? "bg-highlight" : "bg-light"
-                } cursor-pointer p-1
-                transition-colors last-of-type:rounded-b-[1em] hover:bg-mid`}
+                className={cJoin(
+                  "cursor-pointer p-1 transition-colors last-of-type:rounded-b-[1em] hover:bg-mid",
+                  cIf(opened, "bg-highlight", "bg-light")
+                )}
                 id={option}
                 onClick={() => {
                   setOpened(false);

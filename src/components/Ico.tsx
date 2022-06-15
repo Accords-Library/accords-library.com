@@ -1,3 +1,4 @@
+import { cJoin } from "helpers/className";
 import { Immutable } from "helpers/types";
 import { MouseEventHandler } from "react";
 
@@ -10,7 +11,13 @@ interface Props {
 export function Ico(props: Immutable<Props>): JSX.Element {
   const { onClick, icon, className } = props;
   return (
-    <span onClick={onClick} className={`material-icons ${className}`}>
+    <span
+      onClick={onClick}
+      className={cJoin(
+        "material-icons [font-size:inherit] [line-height:inherit]",
+        className
+      )}
+    >
       {icon}
     </span>
   );

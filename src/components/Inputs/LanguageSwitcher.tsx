@@ -1,5 +1,6 @@
 import { Icon } from "components/Ico";
 import { AppStaticProps } from "graphql/getAppStaticProps";
+import { cJoin } from "helpers/className";
 import { prettyLanguage } from "helpers/formatters";
 import { Immutable } from "helpers/types";
 import { Dispatch, Fragment, SetStateAction } from "react";
@@ -20,7 +21,7 @@ export function LanguageSwitcher(props: Immutable<Props>): JSX.Element {
   return (
     <ToolTip
       content={
-        <div className={`flex flex-col gap-2 ${className}`}>
+        <div className={cJoin("flex flex-col gap-2", className)}>
           {[...locales].map(([locale, value], index) => (
             <Fragment key={index}>
               {locale && (

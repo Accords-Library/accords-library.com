@@ -4,6 +4,7 @@ import { Img } from "components/Img";
 import { InsetBox } from "components/InsetBox";
 import { ToolTip } from "components/ToolTip";
 import { useAppLayout } from "contexts/AppLayoutContext";
+import { cJoin } from "helpers/className";
 import { slugify } from "helpers/formatters";
 import { getAssetURL, ImageQuality } from "helpers/img";
 import { Immutable } from "helpers/types";
@@ -32,7 +33,7 @@ export function Markdawn(props: Immutable<Props>): JSX.Element {
       <>
         <LightBox />
         <Markdown
-          className={`formatted ${props.className}`}
+          className={cJoin("formatted", props.className)}
           options={{
             slugify: slugify,
             overrides: {

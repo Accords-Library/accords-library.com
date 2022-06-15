@@ -82,7 +82,7 @@ export default function Videos(props: Props): JSX.Element {
   );
 
   const contentPanel = (
-    <ContentPanel width={ContentPanelWidthSizes.Large}>
+    <ContentPanel width={ContentPanelWidthSizes.Full}>
       <PageSelector
         maxPage={Math.floor(videos.length / itemPerPage)}
         page={page}

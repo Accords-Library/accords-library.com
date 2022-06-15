@@ -1,4 +1,5 @@
 import { Icon } from "components/Ico";
+import { cJoin } from "helpers/className";
 import { Immutable } from "helpers/types";
 import { Dispatch, SetStateAction } from "react";
 import { Button } from "./Button";
@@ -11,10 +12,10 @@ interface Props {
 }
 
 export function PageSelector(props: Immutable<Props>): JSX.Element {
-  const { page, setPage, maxPage } = props;
+  const { page, setPage, maxPage, className } = props;
 
   return (
-    <div className={`flex flex-row place-content-center ${props.className}`}>
+    <div className={cJoin("flex flex-row place-content-center", className)}>
       <Button
         onClick={() => {
           if (page > 0) setPage(page - 1);

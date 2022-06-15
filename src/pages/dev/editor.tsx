@@ -146,7 +146,7 @@ export default function Editor(props: Immutable<Props>): JSX.Element {
   }
 
   const contentPanel = (
-    <ContentPanel width={ContentPanelWidthSizes.Large}>
+    <ContentPanel width={ContentPanelWidthSizes.Full}>
       <Popup setState={setConverterOpened} state={converterOpened}>
         <div className="text-center">
           <h2 className="mt-4">Convert HTML to markdown</h2>

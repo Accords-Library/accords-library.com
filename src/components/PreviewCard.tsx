@@ -5,6 +5,7 @@ import {
   UploadImageFragment,
 } from "graphql/generated";
 import { AppStaticProps } from "graphql/getAppStaticProps";
+import { cIf, cJoin } from "helpers/className";
 import {
   prettyDate,
   prettyDuration,
@@ -130,14 +131,15 @@ export function PreviewCard(props: Immutable<Props>): JSX.Element {
         {stackNumber > 0 && (
           <>
             <div
-              className={`absolute inset-0 scale-[.85] overflow-hidden bg-light brightness-[0.8]
-              sepia-[0.5] transition-[top_transform] group-hover:-top-8 ${
-                thumbnailRounded && "rounded-md"
-              }`}
+              className={cJoin(
+                `absolute inset-0 scale-[.85] overflow-hidden bg-light brightness-[0.8] sepia-[0.5]
+                 transition-[top_transform] group-hover:-top-8`,
+                cIf(thumbnailRounded, "rounded-md")
+              )}
             >
               {thumbnail && (
                 <Img
-                  className="opacity-30 "
+                  className="opacity-30"
                   image={thumbnail}
                   quality={ImageQuality.Medium}
                 />
@@ -145,10 +147,11 @@ export function PreviewCard(props: Immutable<Props>): JSX.Element {
             </div>
 
             <div
-              className={`absolute inset-0 overflow-hidden bg-light brightness-[0.9] sepia-[0.2]
-              transition-[top_transform] group-hover:-top-4 group-hover:scale-[.94] ${
-                thumbnailRounded && "rounded-md"
-              }`}
+              className={cJoin(
+                `absolute inset-0 overflow-hidden bg-light brightness-[0.9] sepia-[0.2]
+                transition-[top_transform] group-hover:-top-4 group-hover:scale-[.94]`,
+                cIf(thumbnailRounded, "rounded-md")
+              )}
             >
               {thumbnail && (
                 <Img
@@ -171,19 +174,24 @@ export function PreviewCard(props: Immutable<Props>): JSX.Element {
             }}
           >
             <Img
-              className={`${
-                thumbnailRounded &&
-                (keepInfoVisible
-                  ? "rounded-t-md"
-                  : "rounded-md notHoverable:rounded-b-none")
-              } ${thumbnailForceAspectRatio && "h-full w-full object-cover"}`}
+              className={cJoin(
+                cIf(
+                  thumbnailRounded,
+                  cIf(
+                    keepInfoVisible,
+                    "rounded-t-md",
+                    "rounded-md notHoverable:rounded-b-none"
+                  )
+                ),
+                cIf(thumbnailForceAspectRatio, "h-full w-full object-cover")
+              )}
               image={thumbnail}
               quality={ImageQuality.Medium}
             />
             {stackNumber > 0 && (
               <div
                 className="absolute right-2 top-2 rounded-full bg-black
-                  bg-opacity-60 px-2 text-light"
+                bg-opacity-60 px-2 text-light"
               >
                 {stackNumber}
               </div>
@@ -200,8 +208,8 @@ export function PreviewCard(props: Immutable<Props>): JSX.Element {
                   />
                 </div>
                 <div
-                  className="absolute right-2 bottom-2 rounded-full bg-black
-                  bg-opacity-60 px-2 text-light"
+                  className="absolute right-2 bottom-2 rounded-full bg-black bg-opacity-60 px-2
+                  text-light"
                 >
                   {prettyDuration(hoverlay.duration)}
                 </div>
@@ -211,11 +219,14 @@ export function PreviewCard(props: Immutable<Props>): JSX.Element {
         ) : (
           <div
             style={{ aspectRatio: thumbnailAspectRatio }}
-            className={`relative w-full bg-light ${
-              keepInfoVisible
-                ? "rounded-t-md"
-                : "rounded-md notHoverable:rounded-b-none"
-            }`}
+            className={cJoin(
+              "relative w-full bg-light",
+              cIf(
+                keepInfoVisible,
+                "rounded-t-md",
+                "rounded-md notHoverable:rounded-b-none"
+              )
+            )}
           >
             {stackNumber > 0 && (
               <div
@@ -228,11 +239,14 @@ export function PreviewCard(props: Immutable<Props>): JSX.Element {
           </div>
         )}
         <div
-          className={`z-20 grid gap-2 p-4 transition-opacity linearbg-obi ${
-            !keepInfoVisible &&
-            `-inset-x-0.5 bottom-2 opacity-0 group-hover:opacity-100 hoverable:absolute
-            hoverable:drop-shadow-shade-lg notHoverable:rounded-b-md`
-          }`}
+          className={cJoin(
+            "z-20 grid gap-2 p-4 transition-opacity linearbg-obi",
+            cIf(
+              !keepInfoVisible,
+              `-inset-x-0.5 bottom-2 opacity-0 group-hover:opacity-100 hoverable:absolute
+              hoverable:drop-shadow-shade-lg notHoverable:rounded-b-md`
+            )
+          )}
         >
           {metadata?.position === "Top" && metadataJSX}
           {topChips && topChips.length > 0 && (

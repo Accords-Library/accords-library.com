@@ -3,6 +3,7 @@ import { Icon } from "components/Ico";
 import { Button } from "components/Inputs/Button";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { AppStaticProps } from "graphql/getAppStaticProps";
+import { cJoin } from "helpers/className";
 import { Immutable } from "helpers/types";
 
 interface Props {
@@ -25,13 +26,14 @@ export function ReturnButton(props: Immutable<Props>): JSX.Element {
 
   return (
     <div
-      className={`${
+      className={cJoin(
         props.displayOn === ReturnButtonType.Mobile
           ? "desktop:hidden"
           : props.displayOn === ReturnButtonType.Desktop
           ? "mobile:hidden"
-          : ""
-      } ${props.className}`}
+          : "",
+        props.className
+      )}
     >
       <Button
         onClick={() => appLayout.setSubPanelOpen(false)}

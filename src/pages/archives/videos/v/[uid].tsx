@@ -72,7 +72,7 @@ export default function Video(props: Props): JSX.Element {
   );
 
   const contentPanel = (
-    <ContentPanel width={ContentPanelWidthSizes.Large}>
+    <ContentPanel width={ContentPanelWidthSizes.Full}>
       <ReturnButton
         href="/library/"
         title={langui.library}

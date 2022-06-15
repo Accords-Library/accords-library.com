@@ -2,6 +2,7 @@ import { Button } from "components/Inputs/Button";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { UploadImageFragment } from "graphql/generated";
 import { AppStaticProps } from "graphql/getAppStaticProps";
+import { cIf, cJoin } from "helpers/className";
 import { prettyLanguage, prettySlug } from "helpers/formatters";
 import { getOgImage, ImageQuality, OgImage } from "helpers/img";
 // import { getClient, Indexes, search, SearchResult } from "helpers/search";
@@ -181,19 +182,23 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
 
   return (
     <div
-      className={`${
-        appLayout.darkMode ? "set-theme-dark" : "set-theme-light"
-      } ${
-        appLayout.dyslexic
-          ? "set-theme-font-dyslexic"
-          : "set-theme-font-standard"
-      }`}
+      className={cJoin(
+        cIf(appLayout.darkMode, "set-theme-dark", "set-theme-light"),
+        cIf(
+          appLayout.dyslexic,
+          "set-theme-font-dyslexic",
+          "set-theme-font-standard"
+        )
+      )}
     >
       <div
         {...handlers}
-        className={`fixed inset-0 m-0 grid touch-pan-y bg-light p-0 text-black
-        [grid-template-areas:'main_sub_content'] ${gridCol} mobile:grid-cols-[1fr]
-        mobile:grid-rows-[1fr_5rem] mobile:[grid-template-areas:'content''navbar']`}
+        className={cJoin(
+          `fixed inset-0 m-0 grid touch-pan-y bg-light p-0 text-black
+          [grid-template-areas:'main_sub_content'] mobile:grid-cols-[1fr]
+          mobile:grid-rows-[1fr_5rem] mobile:[grid-template-areas:'content''navbar']`,
+          gridCol
+        )}
       >
         <Head>
           <title>{metaTitle}</title>
@@ -222,21 +227,25 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
 
         {/* Background when navbar is opened */}
         <div
-          className={`absolute inset-0 transition-[backdrop-filter]
-          duration-500 [grid-area:content] mobile:z-10 ${
-            (appLayout.mainPanelOpen || appLayout.subPanelOpen) && isMobile
-              ? "[backdrop-filter:blur(2px)]"
-              : "pointer-events-none touch-none "
-          }`}
+          className={cJoin(
+            `absolute inset-0 transition-[backdrop-filter] duration-500 [grid-area:content]
+            mobile:z-10`,
+            cIf(
+              (appLayout.mainPanelOpen || appLayout.subPanelOpen) && isMobile,
+              "[backdrop-filter:blur(2px)]",
+              "pointer-events-none touch-none"
+            )
+          )}
         >
           <div
-            className={`absolute inset-0 bg-shade transition-opacity duration-500 
-        ${turnSubIntoContent ? "" : ""}
-        ${
-          (appLayout.mainPanelOpen || appLayout.subPanelOpen) && isMobile
-            ? "opacity-60"
-            : "opacity-0"
-        }`}
+            className={cJoin(
+              "absolute inset-0 bg-shade transition-opacity duration-500",
+              cIf(
+                (appLayout.mainPanelOpen || appLayout.subPanelOpen) && isMobile,
+                "opacity-60",
+                "opacity-0"
+              )
+            )}
             onClick={() => {
               appLayout.setMainPanelOpen(false);
               appLayout.setSubPanelOpen(false);
@@ -255,7 +264,7 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
             <div className="grid h-full place-content-center">
               <div
                 className="grid grid-flow-col place-items-center gap-9 rounded-2xl
-              border-2 border-dotted border-dark p-8 text-dark opacity-40"
+                border-2 border-dotted border-dark p-8 text-dark opacity-40"
               >
                 <p className="text-4xl">❮</p>
                 <p className="w-64 text-2xl">{langui.select_option_sidebar}</p>
@@ -267,16 +276,18 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
         {/* Sub panel */}
         {subPanel && (
           <div
-            className={`texture-paper-dots overflow-y-scroll border-r-[1px] border-dotted
-            border-black bg-light transition-transform duration-300 [grid-area:sub]
-            [scrollbar-width:none] webkit-scrollbar:w-0 mobile:z-10 mobile:w-[90%]
-            mobile:justify-self-end mobile:border-r-0 mobile:border-l-[1px]
-            mobile:[grid-area:content]
-          ${
-            turnSubIntoContent
-              ? "mobile:w-full mobile:border-l-0"
-              : !appLayout.subPanelOpen && "mobile:translate-x-[100vw]"
-          }`}
+            className={cJoin(
+              `texture-paper-dots overflow-y-scroll border-r-[1px] border-dotted
+              border-black bg-light transition-transform duration-300 [grid-area:sub]
+              [scrollbar-width:none] webkit-scrollbar:w-0 mobile:z-10 mobile:w-[90%]
+              mobile:justify-self-end mobile:border-r-0 mobile:border-l-[1px]
+              mobile:[grid-area:content]`,
+              turnSubIntoContent
+                ? "mobile:w-full mobile:border-l-0"
+                : appLayout.subPanelOpen
+                ? ""
+                : "mobile:translate-x-[100vw]"
+            )}
           >
             {subPanel}
           </div>
@@ -284,12 +295,13 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
 
         {/* Main panel */}
         <div
-          className={`texture-paper-dots overflow-y-scroll border-r-[1px] border-dotted
-          border-black bg-light transition-transform duration-300 [grid-area:main]
-          [scrollbar-width:none] webkit-scrollbar:w-0 mobile:z-10 mobile:w-[90%]
-          mobile:justify-self-start mobile:[grid-area:content] ${
-            appLayout.mainPanelOpen ? "" : "mobile:-translate-x-full"
-          }`}
+          className={cJoin(
+            `texture-paper-dots overflow-y-scroll border-r-[1px] border-dotted
+            border-black bg-light transition-transform duration-300 [grid-area:main]
+            [scrollbar-width:none] webkit-scrollbar:w-0 mobile:z-10 mobile:w-[90%]
+            mobile:justify-self-start mobile:[grid-area:content]`,
+            cIf(!appLayout.mainPanelOpen, "mobile:-translate-x-full")
+          )}
         >
           <MainPanel langui={langui} />
         </div>
@@ -301,25 +313,28 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
         >
           <Ico
             icon={appLayout.mainPanelOpen ? Icon.Close : Icon.Menu}
-            className="mt-[.1em] cursor-pointer"
+            className="mt-[.1em] cursor-pointer !text-2xl"
             onClick={() => {
               appLayout.setMainPanelOpen(!appLayout.mainPanelOpen);
               appLayout.setSubPanelOpen(false);
             }}
           />
           <p
-            className={`overflow-hidden text-center font-headers font-black ${
-              ogTitle && ogTitle.length > 30
-                ? "max-h-14 text-xl"
-                : "max-h-16 text-2xl"
-            }`}
+            className={cJoin(
+              "overflow-hidden text-center font-headers font-black",
+              cIf(
+                ogTitle && ogTitle.length > 30,
+                "max-h-14 text-xl",
+                "max-h-16 text-2xl"
+              )
+            )}
           >
             {ogTitle}
           </p>
           {subPanel && !turnSubIntoContent && (
             <Ico
               icon={appLayout.subPanelOpen ? Icon.Close : subPanelIcon}
-              className="mt-[.1em] cursor-pointer"
+              className="mt-[.1em] cursor-pointer !text-2xl"
               onClick={() => {
                 appLayout.setSubPanelOpen(!appLayout.subPanelOpen);
                 appLayout.setMainPanelOpen(false);

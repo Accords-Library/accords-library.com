@@ -250,7 +250,7 @@ export default function Library(props: Immutable<Props>): JSX.Element {
     </SubPanel>
   );
   const contentPanel = (
-    <ContentPanel width={ContentPanelWidthSizes.Large}>
+    <ContentPanel width={ContentPanelWidthSizes.Full}>
       {[...groups].map(([name, items]) => (
         <Fragment key={name}>
           {items.length > 0 && (

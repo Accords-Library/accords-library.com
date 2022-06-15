@@ -1,4 +1,8 @@
-import { GetContentTextQuery, GetPostQuery } from "graphql/generated";
+import {
+  GetContentTextQuery,
+  GetPostQuery,
+  GetWikiPageQuery,
+} from "graphql/generated";
 import React from "react";
 
 type Post = NonNullable<
@@ -15,6 +19,15 @@ export type Content = NonNullable<
 
 export interface ContentWithTranslations extends Omit<Content, "translations"> {
   translations: NonNullable<Content["translations"]>;
+}
+
+type WikiPage = NonNullable<
+  NonNullable<GetWikiPageQuery["wikiPages"]>["data"][number]["attributes"]
+>;
+
+export interface WikiPageWithTranslations
+  extends Omit<WikiPage, "translations"> {
+  translations: NonNullable<WikiPage["translations"]>;
 }
 
 type ImmutableBlackList<T> = JSX.Element | React.ReactNode | Function;

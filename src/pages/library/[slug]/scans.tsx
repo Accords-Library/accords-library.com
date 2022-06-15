@@ -69,7 +69,7 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
   );
 
   const contentPanel = (
-    <ContentPanel width={ContentPanelWidthSizes.Large}>
+    <ContentPanel width={ContentPanelWidthSizes.Full}>
       <LightBox />
 
       <ReturnButton

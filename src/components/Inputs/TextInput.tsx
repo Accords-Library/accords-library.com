@@ -1,4 +1,5 @@
 import { Ico, Icon } from "components/Ico";
+import { cJoin } from "helpers/className";
 import { Immutable } from "helpers/types";
 import { Dispatch, SetStateAction } from "react";
 
@@ -16,7 +17,7 @@ export function TextInput(props: Immutable<Props>): JSX.Element {
   const { state, setState, className, name, placeholder } = props;
 
   return (
-    <div className={`relative ${className}`}>
+    <div className={cJoin("relative", className)}>
       <input
         className="w-full"
         type="text"

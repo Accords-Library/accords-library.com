@@ -9,6 +9,7 @@ import { useMediaDesktop } from "hooks/useMediaQuery";
 import Markdown from "markdown-to-jsx";
 import Link from "next/link";
 import { Icon } from "components/Ico";
+import { cIf, cJoin } from "helpers/className";
 
 interface Props {
   langui: AppStaticProps["langui"];
@@ -21,15 +22,17 @@ export function MainPanel(props: Immutable<Props>): JSX.Element {
 
   return (
     <div
-      className={`grid content-start justify-center gap-y-2 p-8 text-center ${
-        appLayout.mainPanelReduced && isDesktop && "px-4"
-      }`}
+      className={cJoin(
+        "grid content-start justify-center gap-y-2 p-8 text-center",
+        cIf(appLayout.mainPanelReduced && isDesktop, "px-4")
+      )}
     >
       {/* Reduce/expand main menu */}
       <div
-        className={`fixed top-1/2 mobile:hidden ${
-          appLayout.mainPanelReduced ? "left-[4.65rem]" : "left-[18.65rem]"
-        }`}
+        className={cJoin(
+          "fixed top-1/2 mobile:hidden",
+          cIf(appLayout.mainPanelReduced, "left-[4.65rem]", "left-[18.65rem]")
+        )}
         onClick={() =>
           appLayout.setMainPanelReduced(!appLayout.mainPanelReduced)
         }
@@ -46,26 +49,28 @@ export function MainPanel(props: Immutable<Props>): JSX.Element {
         <div className="grid place-items-center">
           <Link href="/" passHref>
             <div
-              className={`${
-                appLayout.mainPanelReduced && isDesktop ? "w-12" : "w-1/2"
-              } mb-4 aspect-square cursor-pointer bg-black
-              transition-colors [mask:url('/icons/accords.svg')]
-              ![mask-size:contain] ![mask-repeat:no-repeat] ![mask-position:center] hover:bg-dark`}
+              className={cJoin(
+                `mb-4 aspect-square cursor-pointer bg-black transition-colors
+                [mask:url('/icons/accords.svg')] ![mask-size:contain] ![mask-repeat:no-repeat]
+                ![mask-position:center] hover:bg-dark`,
+                cIf(appLayout.mainPanelReduced && isDesktop, "w-12", "w-1/2")
+              )}
             ></div>
           </Link>
 
-          {appLayout.mainPanelReduced && isDesktop ? (
-            ""
-          ) : (
+          {(!appLayout.mainPanelReduced || !isDesktop) && (
             <h2 className="text-3xl">Accord&rsquo;s Library</h2>
           )}
 
           <div
-            className={`flex ${
-              appLayout.mainPanelReduced && isDesktop
-                ? "flex-col gap-3"
-                : "flex-row"
-            } flex-wrap gap-2`}
+            className={cJoin(
+              "flex flex-wrap gap-2",
+              cIf(
+                appLayout.mainPanelReduced && isDesktop,
+                "flex-col gap-3",
+                "flex-row"
+              )
+            )}
           >
             <ToolTip
               content={<h3 className="text-2xl">{langui.open_settings}</h3>}
@@ -176,9 +181,10 @@ export function MainPanel(props: Immutable<Props>): JSX.Element {
       {appLayout.mainPanelReduced && isDesktop ? "" : <HorizontalLine />}
 
       <div
-        className={`text-center ${
-          appLayout.mainPanelReduced && isDesktop ? "hidden" : ""
-        }`}
+        className={cJoin(
+          "text-center",
+          cIf(appLayout.mainPanelReduced && isDesktop, "hidden")
+        )}
       >
         <p>
           {langui.licensing_notice && (

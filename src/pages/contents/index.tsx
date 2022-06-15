@@ -143,16 +143,15 @@ export default function Contents(props: Immutable<Props>): JSX.Element {
     </SubPanel>
   );
   const contentPanel = (
-    <ContentPanel width={ContentPanelWidthSizes.Large}>
-      {[...groups].map(([name, items]) => (
-        <Fragment key={name}>
-          {items.length > 0 && (
-            <Fragment>
+    <ContentPanel width={ContentPanelWidthSizes.Full}>
+      {[...groups].map(
+        ([name, items], index) =>
+          items.length > 0 && (
+            <Fragment key={index}>
               {name && (
                 <h2
-                  key={`h2${name}`}
-                  className="flex flex-row place-items-center gap-2
-                  pb-2 pt-10 text-2xl first-of-type:pt-0"
+                  className="flex flex-row place-items-center gap-2 pb-2 pt-10 text-2xl
+                first-of-type:pt-0"
                 >
                   {name}
                   <Chip>{`${items.reduce((currentSum, item) => {
@@ -173,8 +172,8 @@ export default function Contents(props: Immutable<Props>): JSX.Element {
                   }`}</Chip>
                 </h2>
               )}
+
               <div
-                key={`items${name}`}
                 className="grid grid-cols-2 items-end gap-8
                 desktop:grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] mobile:gap-4"
               >
@@ -226,9 +225,8 @@ export default function Contents(props: Immutable<Props>): JSX.Element {
                 ))}
               </div>
             </Fragment>
-          )}
-        </Fragment>
-      ))}
+          )
+      )}
     </ContentPanel>
   );
   return (

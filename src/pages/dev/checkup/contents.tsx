@@ -21,7 +21,7 @@ export default function CheckupContents(props: Immutable<Props>): JSX.Element {
   const testReport = testingContent(contents);
 
   const contentPanel = (
-    <ContentPanel width={ContentPanelWidthSizes.Large}>
+    <ContentPanel width={ContentPanelWidthSizes.Full}>
       {<h2 className="text-2xl">{testReport.title}</h2>}
 
       <div className="my-4 grid grid-cols-[2em,3em,2fr,1fr,0.5fr,0.5fr,2fr] items-center gap-2">
@@ -37,8 +37,8 @@ export default function CheckupContents(props: Immutable<Props>): JSX.Element {
       {testReport.lines.map((line, index) => (
         <div
           key={index}
-          className="mb-2 grid
-          grid-cols-[2em,3em,2fr,1fr,0.5fr,0.5fr,2fr] items-center justify-items-start gap-2"
+          className="mb-2 grid grid-cols-[2em,3em,2fr,1fr,0.5fr,0.5fr,2fr] items-center
+          justify-items-start gap-2"
         >
           <Button
             href={line.frontendUrl}

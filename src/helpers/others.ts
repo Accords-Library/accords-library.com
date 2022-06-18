@@ -4,7 +4,6 @@ import {
   GetLibraryItemScansQuery,
 } from "graphql/generated";
 import { AppStaticProps } from "../graphql/getAppStaticProps";
-import { Immutable } from "./types";
 
 type SortContentProps =
   | NonNullable<
@@ -18,9 +17,9 @@ type SortContentProps =
       >["data"][number]["attributes"]
     >["contents"];
 
-export function sortContent(contents: Immutable<SortContentProps>) {
+export function sortContent(contents: SortContentProps) {
   if (contents) {
-    const newContent = { ...contents } as SortContentProps;
+    const newContent = { ...contents };
     newContent?.data.sort((a, b) => {
       if (
         a.attributes?.range[0]?.__typename === "ComponentRangePageRange" &&
@@ -33,7 +32,7 @@ export function sortContent(contents: Immutable<SortContentProps>) {
       }
       return 0;
     });
-    return newContent as Immutable<SortContentProps>;
+    return newContent;
   }
   return contents;
 }

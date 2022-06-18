@@ -1,7 +1,6 @@
 import { ChronologyItemComponent } from "components/Wiki/Chronology/ChronologyItemComponent";
 import { GetChronologyItemsQuery } from "graphql/generated";
 import { AppStaticProps } from "graphql/getAppStaticProps";
-import { Immutable } from "helpers/types";
 
 interface Props {
   year: number;
@@ -11,7 +10,7 @@ interface Props {
   langui: AppStaticProps["langui"];
 }
 
-export function ChronologyYearComponent(props: Immutable<Props>): JSX.Element {
+export function ChronologyYearComponent(props: Props): JSX.Element {
   const { langui } = props;
 
   return (

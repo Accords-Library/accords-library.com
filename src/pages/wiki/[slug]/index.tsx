@@ -15,7 +15,7 @@ import DefinitionCard from "components/Wiki/DefinitionCard";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import { isDefined, isDefinedAndNotEmpty } from "helpers/others";
-import { Immutable, WikiPageWithTranslations } from "helpers/types";
+import { WikiPageWithTranslations } from "helpers/types";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 import {
   GetStaticPathsContext,
@@ -27,7 +27,7 @@ interface Props extends AppStaticProps {
   page: WikiPageWithTranslations;
 }
 
-export default function WikiPage(props: Immutable<Props>): JSX.Element {
+export default function WikiPage(props: Props): JSX.Element {
   const { page, langui, languages } = props;
 
   const [selectedTranslation, LanguageSwitcher] = useSmartLanguage({

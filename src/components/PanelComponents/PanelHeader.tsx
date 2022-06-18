@@ -1,7 +1,6 @@
 import { HorizontalLine } from "components/HorizontalLine";
 import { Ico, Icon } from "components/Ico";
 import { isDefinedAndNotEmpty } from "helpers/others";
-import { Immutable } from "helpers/types";
 
 interface Props {
   icon?: Icon;
@@ -9,7 +8,7 @@ interface Props {
   description?: string | null | undefined;
 }
 
-export function PanelHeader(props: Immutable<Props>): JSX.Element {
+export function PanelHeader(props: Props): JSX.Element {
   const { icon, description, title } = props;
   return (
     <>

@@ -3,7 +3,7 @@ import { NavOption } from "components/PanelComponents/NavOption";
 import { PanelHeader } from "components/PanelComponents/PanelHeader";
 import { SubPanel } from "components/Panels/SubPanel";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
-import { Immutable } from "helpers/types";
+
 import { GetStaticPropsContext } from "next";
 import { Icon } from "components/Ico";
 import { getReadySdk } from "graphql/sdk";
@@ -30,7 +30,7 @@ const defaultFiltersState = {
   keepInfoVisible: true,
 };
 
-export default function Wiki(props: Immutable<Props>): JSX.Element {
+export default function Wiki(props: Props): JSX.Element {
   const { langui, languages } = props;
   const pages = sortPages(props.pages);
   const hoverable = useMediaHoverable();
@@ -149,19 +149,17 @@ export async function getStaticProps(
   };
 }
 
-function sortPages(
-  pages: Immutable<Props["pages"]>
-): Immutable<Props["pages"]> {
-  const sortedPages = [...pages] as Props["pages"];
+function sortPages(pages: Props["pages"]): Props["pages"] {
+  const sortedPages = [...pages];
   sortedPages.sort((a, b) => {
     const slugA = a.attributes?.slug ?? "";
     const slugB = b.attributes?.slug ?? "";
     return slugA.localeCompare(slugB);
   });
-  return sortedPages as Immutable<Props["pages"]>;
+  return sortedPages;
 }
 
-function filterPages(posts: Immutable<Props["pages"]>, searchName: string) {
+function filterPages(posts: Props["pages"], searchName: string) {
   return [...posts].filter((post) => {
     if (searchName.length > 1) {
       if (

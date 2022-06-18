@@ -2,7 +2,7 @@ import { UploadImageFragment } from "graphql/generated";
 import { AppStaticProps } from "graphql/getAppStaticProps";
 import { prettySlug } from "helpers/formatters";
 import { ImageQuality } from "helpers/img";
-import { Immutable } from "helpers/types";
+
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 import Link from "next/link";
 import { Chip } from "./Chip";
@@ -19,7 +19,7 @@ interface Props {
   bottomChips?: string[];
 }
 
-export function PreviewLine(props: Immutable<Props>): JSX.Element {
+export function PreviewLine(props: Props): JSX.Element {
   const {
     href,
     thumbnail,

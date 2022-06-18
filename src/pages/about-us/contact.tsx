@@ -6,14 +6,12 @@ import {
 } from "graphql/getPostStaticProps";
 import { cIf, cJoin } from "helpers/className";
 import { randomInt } from "helpers/numbers";
-import { Immutable } from "helpers/types";
+
 import { useRouter } from "next/router";
 import { RequestMailProps, ResponseMailProps } from "pages/api/mail";
 import { useState } from "react";
 
-export default function AboutUs(
-  props: Immutable<PostStaticProps>
-): JSX.Element {
+export default function AboutUs(props: PostStaticProps): JSX.Element {
   const { post, langui, languages, currencies } = props;
 
   const router = useRouter();

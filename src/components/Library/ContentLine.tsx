@@ -4,7 +4,7 @@ import { Button } from "components/Inputs/Button";
 import { GetLibraryItemQuery } from "graphql/generated";
 import { AppStaticProps } from "graphql/getAppStaticProps";
 import { prettyinlineTitle, prettySlug } from "helpers/formatters";
-import { Immutable } from "helpers/types";
+
 import { useToggle } from "hooks/useToggle";
 import { useState } from "react";
 
@@ -20,7 +20,7 @@ interface Props {
   langui: AppStaticProps["langui"];
 }
 
-export function ContentLine(props: Immutable<Props>): JSX.Element {
+export function ContentLine(props: Props): JSX.Element {
   const { content, langui, parentSlug } = props;
 
   const [opened, setOpened] = useState(false);

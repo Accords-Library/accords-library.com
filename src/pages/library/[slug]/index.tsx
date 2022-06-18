@@ -36,7 +36,7 @@ import {
 import { getAssetURL, ImageQuality } from "helpers/img";
 import { convertMmToInch } from "helpers/numbers";
 import { isDefined, sortContent } from "helpers/others";
-import { Immutable } from "helpers/types";
+
 import { useLightBox } from "hooks/useLightBox";
 import { AnchorIds, useScrollTopOnChange } from "hooks/useScrollTopOnChange";
 import {
@@ -58,7 +58,7 @@ interface Props extends AppStaticProps {
   >["data"][number]["id"];
 }
 
-export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
+export default function LibrarySlug(props: Props): JSX.Element {
   const { item, itemId, langui, currencies } = props;
   const appLayout = useAppLayout();
   const hoverable = useMediaHoverable();

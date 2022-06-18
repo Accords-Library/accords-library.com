@@ -12,16 +12,14 @@ import {
 } from "graphql/generated";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
-import { Immutable } from "helpers/types";
+
 import { GetStaticPropsContext } from "next";
 
 interface Props extends AppStaticProps {
   libraryItems: DevGetLibraryItemsQuery;
 }
 
-export default function CheckupLibraryItems(
-  props: Immutable<Props>
-): JSX.Element {
+export default function CheckupLibraryItems(props: Props): JSX.Element {
   const { libraryItems } = props;
   const testReport = testingLibraryItem(libraryItems);
 
@@ -115,9 +113,7 @@ type ReportLine = {
   frontendUrl: string;
 };
 
-function testingLibraryItem(
-  libraryItems: Immutable<Props["libraryItems"]>
-): Report {
+function testingLibraryItem(libraryItems: Props["libraryItems"]): Report {
   const report: Report = {
     title: "Contents",
     lines: [],

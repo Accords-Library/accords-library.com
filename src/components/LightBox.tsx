@@ -1,4 +1,3 @@
-import { Immutable } from "helpers/types";
 import { Dispatch, SetStateAction, useCallback } from "react";
 import Hotkeys from "react-hot-keys";
 import { useSwipeable } from "react-swipeable";
@@ -19,7 +18,7 @@ interface Props {
 
 const SENSIBILITY_SWIPE = 0.5;
 
-export function LightBox(props: Immutable<Props>): JSX.Element {
+export function LightBox(props: Props): JSX.Element {
   const { state, setState, images, index, setIndex } = props;
 
   const handlePrevious = useCallback(() => {

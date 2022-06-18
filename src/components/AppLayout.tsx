@@ -7,7 +7,7 @@ import { prettyLanguage, prettySlug } from "helpers/formatters";
 import { getOgImage, ImageQuality } from "helpers/img";
 import { isDefined, isDefinedAndNotEmpty } from "helpers/others";
 // import { getClient, Indexes, search, SearchResult } from "helpers/search";
-import { Immutable } from "helpers/types";
+
 import { useMediaMobile } from "hooks/useMediaQuery";
 import { AnchorIds } from "hooks/useScrollTopOnChange";
 import Head from "next/head";
@@ -35,7 +35,7 @@ interface Props extends AppStaticProps {
 const SENSIBILITY_SWIPE = 1.1;
 const TITLE_PREFIX = "Accord’s Library";
 
-export function AppLayout(props: Immutable<Props>): JSX.Element {
+export function AppLayout(props: Props): JSX.Element {
   const {
     langui,
     currencies,

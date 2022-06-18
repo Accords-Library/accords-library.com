@@ -1,5 +1,4 @@
 import { cJoin } from "helpers/className";
-import { Immutable } from "helpers/types";
 
 interface Props {
   children: React.ReactNode;
@@ -12,7 +11,7 @@ export enum ContentPanelWidthSizes {
   Full = "full",
 }
 
-export function ContentPanel(props: Immutable<Props>): JSX.Element {
+export function ContentPanel(props: Props): JSX.Element {
   const { width = ContentPanelWidthSizes.Default, children } = props;
 
   return (

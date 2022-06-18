@@ -2,7 +2,7 @@ import { Chip } from "components/Chip";
 import { RecorderChipFragment } from "graphql/generated";
 import { AppStaticProps } from "graphql/getAppStaticProps";
 import { ImageQuality } from "helpers/img";
-import { Immutable } from "helpers/types";
+
 import { Fragment } from "react";
 import { Img } from "./Img";
 import { Markdawn } from "./Markdown/Markdawn";
@@ -14,7 +14,7 @@ interface Props {
   langui: AppStaticProps["langui"];
 }
 
-export function RecorderChip(props: Immutable<Props>): JSX.Element {
+export function RecorderChip(props: Props): JSX.Element {
   const { recorder, langui } = props;
   return (
     <ToolTip

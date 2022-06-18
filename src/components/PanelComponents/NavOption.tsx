@@ -2,7 +2,7 @@ import { Ico, Icon } from "components/Ico";
 import { ToolTip } from "components/ToolTip";
 import { cJoin, cIf } from "helpers/className";
 import { isDefinedAndNotEmpty } from "helpers/others";
-import { Immutable } from "helpers/types";
+
 import { useRouter } from "next/router";
 import { MouseEventHandler, useMemo } from "react";
 
@@ -16,7 +16,7 @@ interface Props {
   onClick?: MouseEventHandler<HTMLDivElement>;
 }
 
-export function NavOption(props: Immutable<Props>): JSX.Element {
+export function NavOption(props: Props): JSX.Element {
   const { url, icon, title, subtitle, border, reduced, onClick } = props;
   const router = useRouter();
   const isActive = useMemo(
@@ -66,7 +66,9 @@ export function NavOption(props: Immutable<Props>): JSX.Element {
         {reduced === false && (
           <div>
             <h3 className="text-2xl">{title}</h3>
-            {isDefinedAndNotEmpty(subtitle) && <p className="col-start-2">{subtitle}</p>}
+            {isDefinedAndNotEmpty(subtitle) && (
+              <p className="col-start-2">{subtitle}</p>
+            )}
           </div>
         )}
       </div>

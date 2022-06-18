@@ -30,14 +30,6 @@ export interface WikiPageWithTranslations
   translations: NonNullable<WikiPage["translations"]>;
 }
 
-type ImmutableBlackList<T> = JSX.Element | React.ReactNode | Function;
-
-export type Immutable<T> = {
-  readonly [K in keyof T]: T[K] extends ImmutableBlackList<T>
-    ? T[K]
-    : Immutable<T[K]>;
-};
-
 export type RequiredNonNullable<T> = Required<{
   [P in keyof T]: NonNullable<T[P]>;
 }>;

@@ -11,7 +11,7 @@ import { GetPostsPreviewQuery } from "graphql/generated";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import { prettyDate, prettySlug } from "helpers/formatters";
-import { Immutable } from "helpers/types";
+
 import { GetStaticPropsContext } from "next";
 import { Fragment, useMemo, useState } from "react";
 import { Icon } from "components/Ico";
@@ -29,7 +29,7 @@ const defaultFiltersState = {
   keepInfoVisible: true,
 };
 
-export default function News(props: Immutable<Props>): JSX.Element {
+export default function News(props: Props): JSX.Element {
   const { langui } = props;
   const posts = sortPosts(props.posts);
   const hoverable = useMediaHoverable();
@@ -144,10 +144,8 @@ export async function getStaticProps(
   };
 }
 
-function sortPosts(
-  posts: Immutable<Props["posts"]>
-): Immutable<Props["posts"]> {
-  const sortedPosts = [...posts] as Props["posts"];
+function sortPosts(posts: Props["posts"]): Props["posts"] {
+  const sortedPosts = [...posts];
   sortedPosts
     .sort((a, b) => {
       const dateA = a.attributes?.date ? prettyDate(a.attributes.date) : "9999";
@@ -155,10 +153,10 @@ function sortPosts(
       return dateA.localeCompare(dateB);
     })
     .reverse();
-  return sortedPosts as Immutable<Props["posts"]>;
+  return sortedPosts;
 }
 
-function filterItems(posts: Immutable<Props["posts"]>, searchName: string) {
+function filterItems(posts: Props["posts"], searchName: string) {
   return [...posts].filter((post) => {
     if (searchName.length > 1) {
       if (

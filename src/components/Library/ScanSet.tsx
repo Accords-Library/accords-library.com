@@ -8,7 +8,7 @@ import { AppStaticProps } from "graphql/getAppStaticProps";
 import { getAssetFilename, getAssetURL, ImageQuality } from "helpers/img";
 import { isInteger } from "helpers/numbers";
 import { getStatusDescription, isDefinedAndNotEmpty } from "helpers/others";
-import { Immutable } from "helpers/types";
+
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { Fragment } from "react";
 
@@ -40,7 +40,7 @@ interface Props {
   >["content"];
 }
 
-export function ScanSet(props: Immutable<Props>): JSX.Element {
+export function ScanSet(props: Props): JSX.Element {
   const { openLightBox, scanSet, slug, title, languages, langui, content } =
     props;
 
@@ -49,36 +49,34 @@ export function ScanSet(props: Immutable<Props>): JSX.Element {
     languages: languages,
     languageExtractor: (item) => item.language?.data?.attributes?.code,
     transform: (item) => {
-      (item as NonNullable<Props["scanSet"][number]>).pages?.data.sort(
-        (a, b) => {
-          if (
-            a.attributes &&
-            b.attributes &&
-            isDefinedAndNotEmpty(a.attributes.url) &&
-            isDefinedAndNotEmpty(b.attributes.url)
-          ) {
-            let aName = getAssetFilename(a.attributes.url);
-            let bName = getAssetFilename(b.attributes.url);
+      item.pages?.data.sort((a, b) => {
+        if (
+          a.attributes &&
+          b.attributes &&
+          isDefinedAndNotEmpty(a.attributes.url) &&
+          isDefinedAndNotEmpty(b.attributes.url)
+        ) {
+          let aName = getAssetFilename(a.attributes.url);
+          let bName = getAssetFilename(b.attributes.url);
 
-            /*
-             * If the number is a succession of 0s, make the number
-             * incrementally smaller than 0 (i.e: 00 becomes -1)
-             */
-            if (aName.replaceAll("0", "").length === 0) {
-              aName = (1 - aName.length).toString(10);
-            }
-            if (bName.replaceAll("0", "").length === 0) {
-              bName = (1 - bName.length).toString(10);
-            }
-
-            if (isInteger(aName) && isInteger(bName)) {
-              return parseInt(aName, 10) - parseInt(bName, 10);
-            }
-            return a.attributes.url.localeCompare(b.attributes.url);
+          /*
+           * If the number is a succession of 0s, make the number
+           * incrementally smaller than 0 (i.e: 00 becomes -1)
+           */
+          if (aName.replaceAll("0", "").length === 0) {
+            aName = (1 - aName.length).toString(10);
           }
-          return 0;
+          if (bName.replaceAll("0", "").length === 0) {
+            bName = (1 - bName.length).toString(10);
+          }
+
+          if (isInteger(aName) && isInteger(bName)) {
+            return parseInt(aName, 10) - parseInt(bName, 10);
+          }
+          return a.attributes.url.localeCompare(b.attributes.url);
         }
-      );
+        return 0;
+      });
       return item;
     },
   });

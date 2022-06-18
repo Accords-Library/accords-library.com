@@ -2,7 +2,7 @@ import { AppStaticProps } from "graphql/getAppStaticProps";
 import { getDescription } from "helpers/description";
 import { prettySlug } from "helpers/formatters";
 import { getStatusDescription } from "helpers/others";
-import { Immutable, PostWithTranslations } from "helpers/types";
+import { PostWithTranslations } from "helpers/types";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { Fragment, useMemo } from "react";
 import { AppLayout } from "./AppLayout";
@@ -33,7 +33,7 @@ interface Props {
   appendBody?: JSX.Element;
 }
 
-export function PostPage(props: Immutable<Props>): JSX.Element {
+export function PostPage(props: Props): JSX.Element {
   const {
     post,
     langui,

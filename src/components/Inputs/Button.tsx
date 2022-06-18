@@ -1,7 +1,7 @@
 import { Ico, Icon } from "components/Ico";
 import { cIf, cJoin } from "helpers/className";
 import { ConditionalWrapper, Wrapper } from "helpers/component";
-import { Immutable } from "helpers/types";
+
 import { isDefined, isDefinedAndNotEmpty } from "helpers/others";
 import { useRouter } from "next/router";
 import React, { MouseEventHandler } from "react";
@@ -20,7 +20,7 @@ interface Props {
   badgeNumber?: number;
 }
 
-export function Button(props: Immutable<Props>): JSX.Element {
+export function Button(props: Props): JSX.Element {
   const {
     draggable,
     id,

@@ -190,10 +190,10 @@ module.exports = {
     "@typescript-eslint/promise-function-async": "error",
     "@typescript-eslint/require-array-sort-compare": "error",
     "@typescript-eslint/sort-type-union-intersection-members": "warn",
-    "@typescript-eslint/strict-boolean-expressions": [
-      "error",
-      { allowAny: true },
-    ],
+    // "@typescript-eslint/strict-boolean-expressions": [
+    //   "error",
+    //   { allowAny: true },
+    // ],
     "@typescript-eslint/switch-exhaustiveness-check": "error",
     "@typescript-eslint/typedef": "error",
     "@typescript-eslint/unified-signatures": "error",

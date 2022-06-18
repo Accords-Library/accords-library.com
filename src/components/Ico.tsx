@@ -1,5 +1,5 @@
 import { cJoin } from "helpers/className";
-import { Immutable } from "helpers/types";
+
 import { MouseEventHandler } from "react";
 
 interface Props {
@@ -8,7 +8,7 @@ interface Props {
   icon: Icon;
 }
 
-export function Ico(props: Immutable<Props>): JSX.Element {
+export function Ico(props: Props): JSX.Element {
   const { onClick, icon, className } = props;
   return (
     <span

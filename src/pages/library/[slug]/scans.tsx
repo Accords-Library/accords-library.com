@@ -16,7 +16,7 @@ import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import { prettyinlineTitle, prettySlug } from "helpers/formatters";
 import { isDefined, sortContent } from "helpers/others";
-import { Immutable } from "helpers/types";
+
 import { useLightBox } from "hooks/useLightBox";
 import {
   GetStaticPathsContext,
@@ -34,7 +34,7 @@ interface Props extends AppStaticProps {
   >["data"][number]["id"];
 }
 
-export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
+export default function LibrarySlug(props: Props): JSX.Element {
   const { item, langui, languages } = props;
   const [openLightBox, LightBox] = useLightBox();
   sortContent(item?.contents);

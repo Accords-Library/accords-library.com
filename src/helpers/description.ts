@@ -1,13 +1,13 @@
 import { AppStaticProps } from "graphql/getAppStaticProps";
 import { prettySlug } from "./formatters";
 import { isDefined } from "./others";
-import { Content, Immutable } from "./types";
+import { Content } from "./types";
 
 interface Description {
   langui: AppStaticProps["langui"];
   description?: string | null | undefined;
-  type?: Immutable<Content["type"]>;
-  categories?: Immutable<Content["categories"]>;
+  type?: Content["type"];
+  categories?: Content["categories"];
 }
 
 export function getDescription(props: Description): string {

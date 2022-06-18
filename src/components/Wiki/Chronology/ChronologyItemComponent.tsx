@@ -7,7 +7,7 @@ import {
 } from "graphql/generated";
 import { AppStaticProps } from "graphql/getAppStaticProps";
 import { getStatusDescription } from "helpers/others";
-import { Immutable } from "helpers/types";
+
 import { Fragment } from "react";
 
 interface Props {
@@ -16,7 +16,7 @@ interface Props {
   langui: AppStaticProps["langui"];
 }
 
-export function ChronologyItemComponent(props: Immutable<Props>): JSX.Element {
+export function ChronologyItemComponent(props: Props): JSX.Element {
   const { langui } = props;
 
   if (props.item.attributes) {

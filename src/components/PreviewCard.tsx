@@ -14,7 +14,7 @@ import {
   prettySlug,
 } from "helpers/formatters";
 import { ImageQuality } from "helpers/img";
-import { Immutable } from "helpers/types";
+
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 import Link from "next/link";
 import { Chip } from "./Chip";
@@ -52,7 +52,7 @@ interface Props {
     | { __typename: "anotherHoverlayName" };
 }
 
-export function PreviewCard(props: Immutable<Props>): JSX.Element {
+export function PreviewCard(props: Props): JSX.Element {
   const {
     href,
     thumbnail,

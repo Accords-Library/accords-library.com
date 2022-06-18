@@ -3,9 +3,8 @@ import {
   getPostStaticProps,
   PostStaticProps,
 } from "graphql/getPostStaticProps";
-import { Immutable } from "helpers/types";
 
-export default function Home(props: Immutable<PostStaticProps>): JSX.Element {
+export default function Home(props: PostStaticProps): JSX.Element {
   const { post, langui, languages, currencies } = props;
   return (
     <PostPage

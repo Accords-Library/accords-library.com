@@ -8,7 +8,7 @@ import { cJoin } from "helpers/className";
 import { slugify } from "helpers/formatters";
 import { getAssetURL, ImageQuality } from "helpers/img";
 import { isDefined, isDefinedAndNotEmpty } from "helpers/others";
-import { Immutable } from "helpers/types";
+
 import { useLightBox } from "hooks/useLightBox";
 import Markdown from "markdown-to-jsx";
 import { useRouter } from "next/router";
@@ -20,7 +20,7 @@ interface Props {
   text: string;
 }
 
-export function Markdawn(props: Immutable<Props>): JSX.Element {
+export function Markdawn(props: Props): JSX.Element {
   const { className, text: rawText } = props;
   const appLayout = useAppLayout();
   const router = useRouter();

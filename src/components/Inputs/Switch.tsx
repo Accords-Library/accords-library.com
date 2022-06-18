@@ -1,5 +1,5 @@
 import { cIf, cJoin } from "helpers/className";
-import { Immutable } from "helpers/types";
+
 import { useToggle } from "hooks/useToggle";
 import { Dispatch, SetStateAction } from "react";
 
@@ -10,7 +10,7 @@ interface Props {
   disabled?: boolean;
 }
 
-export function Switch(props: Immutable<Props>): JSX.Element {
+export function Switch(props: Props): JSX.Element {
   const { state, setState, className, disabled } = props;
   const toggleState = useToggle(setState);
   return (

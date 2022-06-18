@@ -1,6 +1,6 @@
 import { Ico, Icon } from "components/Ico";
 import { cIf, cJoin } from "helpers/className";
-import { Immutable } from "helpers/types";
+
 import { useToggle } from "hooks/useToggle";
 import { Dispatch, Fragment, SetStateAction, useState } from "react";
 
@@ -13,7 +13,7 @@ interface Props {
   className?: string;
 }
 
-export function Select(props: Immutable<Props>): JSX.Element {
+export function Select(props: Props): JSX.Element {
   const { className, state, options, allowEmpty, setState } = props;
   const [opened, setOpened] = useState(false);
   const toggleOpened = useToggle(setOpened);

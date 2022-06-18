@@ -9,7 +9,7 @@ import {
 import { AppStaticProps } from "graphql/getAppStaticProps";
 import { getAssetURL, ImageQuality } from "helpers/img";
 import { getStatusDescription } from "helpers/others";
-import { Immutable } from "helpers/types";
+
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { Fragment } from "react";
 
@@ -26,7 +26,7 @@ interface Props {
   langui: AppStaticProps["langui"];
 }
 
-export function ScanSetCover(props: Immutable<Props>): JSX.Element {
+export function ScanSetCover(props: Props): JSX.Element {
   const { openLightBox, images, languages, langui } = props;
 
   const [selectedScan, LanguageSwitcher] = useSmartLanguage({

@@ -27,7 +27,7 @@ import {
 } from "helpers/formatters";
 import { isUntangibleGroupItem } from "helpers/libraryItem";
 import { getStatusDescription } from "helpers/others";
-import { ContentWithTranslations, Immutable } from "helpers/types";
+import { ContentWithTranslations } from "helpers/types";
 import { useMediaMobile } from "hooks/useMediaQuery";
 import { AnchorIds, useScrollTopOnChange } from "hooks/useScrollTopOnChange";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
@@ -42,7 +42,7 @@ interface Props extends AppStaticProps {
   content: ContentWithTranslations;
 }
 
-export default function Content(props: Immutable<Props>): JSX.Element {
+export default function Content(props: Props): JSX.Element {
   const { langui, content, languages, currencies } = props;
   const isMobile = useMediaMobile();
 

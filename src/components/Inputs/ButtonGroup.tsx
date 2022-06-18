@@ -1,5 +1,5 @@
 import { cJoin } from "helpers/className";
-import { Immutable } from "helpers/types";
+
 import { useLayoutEffect, useRef } from "react";
 
 interface Props {
@@ -7,7 +7,7 @@ interface Props {
   className?: string;
 }
 
-export function ButtonGroup(props: Immutable<Props>): JSX.Element {
+export function ButtonGroup(props: Props): JSX.Element {
   const { children, className } = props;
   const ref = useRef<HTMLDivElement>(null);
 

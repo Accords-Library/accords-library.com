@@ -4,10 +4,10 @@ import {
   GetWebsiteInterfaceQuery,
 } from "graphql/generated";
 import { getReadySdk } from "graphql/sdk";
-import { Immutable } from "helpers/types";
+
 import { GetStaticPropsContext } from "next";
 
-export type AppStaticProps = Immutable<{
+export type AppStaticProps = {
   langui: NonNullable<
     NonNullable<
       GetWebsiteInterfaceQuery["websiteInterfaces"]
@@ -15,7 +15,7 @@ export type AppStaticProps = Immutable<{
   >;
   currencies: NonNullable<GetCurrenciesQuery["currencies"]>["data"];
   languages: NonNullable<GetLanguagesQuery["languages"]>["data"];
-}>;
+};
 
 export async function getAppStaticProps(
   context: GetStaticPropsContext

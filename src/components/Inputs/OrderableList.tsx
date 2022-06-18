@@ -1,6 +1,6 @@
 import { Ico, Icon } from "components/Ico";
 import { arrayMove, isDefinedAndNotEmpty } from "helpers/others";
-import { Immutable } from "helpers/types";
+
 import { Fragment, useCallback, useState } from "react";
 
 interface Props {
@@ -10,7 +10,7 @@ interface Props {
   onChange?: (items: Map<string, string>) => void;
 }
 
-export function OrderableList(props: Immutable<Props>): JSX.Element {
+export function OrderableList(props: Props): JSX.Element {
   const { onChange } = props;
   const [items, setItems] = useState<Map<string, string>>(props.items);
 

@@ -1,11 +1,8 @@
 import { GetCurrenciesQuery, PricePickerFragment } from "graphql/generated";
-import { Immutable } from "./types";
 
 export function convertPrice(
-  pricePicker: Immutable<PricePickerFragment>,
-  targetCurrency: Immutable<
-    NonNullable<GetCurrenciesQuery["currencies"]>["data"][number]
-  >
+  pricePicker: PricePickerFragment,
+  targetCurrency: NonNullable<GetCurrenciesQuery["currencies"]>["data"][number]
 ): number {
   if (
     pricePicker.amount &&

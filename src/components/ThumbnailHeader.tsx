@@ -6,7 +6,7 @@ import { GetContentTextQuery, UploadImageFragment } from "graphql/generated";
 import { AppStaticProps } from "graphql/getAppStaticProps";
 import { prettyinlineTitle, prettySlug, slugify } from "helpers/formatters";
 import { getAssetURL, ImageQuality } from "helpers/img";
-import { Immutable } from "helpers/types";
+
 import { useLightBox } from "hooks/useLightBox";
 
 interface Props {
@@ -25,7 +25,7 @@ interface Props {
   languageSwitcher?: JSX.Element;
 }
 
-export function ThumbnailHeader(props: Immutable<Props>): JSX.Element {
+export function ThumbnailHeader(props: Props): JSX.Element {
   const {
     langui,
     pre_title,

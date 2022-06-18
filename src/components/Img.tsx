@@ -1,6 +1,6 @@
 import { UploadImageFragment } from "graphql/generated";
 import { getAssetURL, getImgSizesByQuality, ImageQuality } from "helpers/img";
-import { Immutable } from "helpers/types";
+
 import { ImageProps } from "next/image";
 import { MouseEventHandler } from "react";
 
@@ -12,7 +12,7 @@ interface Props {
   onClick?: MouseEventHandler<HTMLImageElement>;
 }
 
-export function Img(props: Immutable<Props>): JSX.Element {
+export function Img(props: Props): JSX.Element {
   const {
     className,
     image,

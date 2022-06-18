@@ -2,7 +2,7 @@ import { Icon } from "components/Ico";
 import { AppStaticProps } from "graphql/getAppStaticProps";
 import { cJoin } from "helpers/className";
 import { prettyLanguage } from "helpers/formatters";
-import { Immutable } from "helpers/types";
+
 import { Fragment } from "react";
 import { ToolTip } from "../ToolTip";
 import { Button } from "./Button";
@@ -15,7 +15,7 @@ interface Props {
   onLanguageChanged: (index: number) => void;
 }
 
-export function LanguageSwitcher(props: Immutable<Props>): JSX.Element {
+export function LanguageSwitcher(props: Props): JSX.Element {
   const { locales, className, localesIndex, onLanguageChanged } = props;
 
   return (

@@ -1,5 +1,4 @@
 import { UploadImageFragment } from "graphql/generated";
-import { Immutable } from "./types";
 
 export enum ImageQuality {
   Small = "small",
@@ -25,10 +24,7 @@ export function getAssetFilename(path: string): string {
   return result[0];
 }
 
-export function getAssetURL(
-  url: string,
-  quality: Immutable<ImageQuality>
-): string {
+export function getAssetURL(url: string, quality: ImageQuality): string {
   let newUrl = url;
   newUrl = newUrl.replace(/^\/uploads/u, `/${quality}`);
   newUrl = newUrl.replace(/.jpg$/u, ".webp");
@@ -71,8 +67,8 @@ export function getImgSizesByQuality(
 }
 
 export function getOgImage(
-  quality: Immutable<ImageQuality>,
-  image: Immutable<UploadImageFragment>
+  quality: ImageQuality,
+  image: UploadImageFragment
 ): OgImage {
   const imgSize = getImgSizesByQuality(
     image.width ?? 0,

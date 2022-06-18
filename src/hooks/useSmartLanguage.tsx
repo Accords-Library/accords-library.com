@@ -2,15 +2,15 @@ import { LanguageSwitcher } from "components/Inputs/LanguageSwitcher";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { AppStaticProps } from "graphql/getAppStaticProps";
 import { isDefined } from "helpers/others";
-import { Immutable } from "helpers/types";
+
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
 
 interface Props<T> {
-  items: Immutable<T[]>;
+  items: T[];
   languages: AppStaticProps["languages"];
-  languageExtractor: (item: NonNullable<Immutable<T>>) => string | undefined;
-  transform?: (item: NonNullable<Immutable<T>>) => NonNullable<Immutable<T>>;
+  languageExtractor: (item: NonNullable<T>) => string | undefined;
+  transform?: (item: NonNullable<T>) => NonNullable<T>;
 }
 
 function getPreferredLanguage(
@@ -27,7 +27,7 @@ function getPreferredLanguage(
 
 export function useSmartLanguage<T>(
   props: Props<T>
-): [Immutable<T | undefined>, () => JSX.Element] {
+): [T | undefined, () => JSX.Element] {
   const {
     items,
     languageExtractor,
@@ -63,13 +63,15 @@ export function useSmartLanguage<T>(
     );
   }, [preferredLanguages, availableLocales, router.locale]);
 
-  const selectedTranslation = useMemo(
-    () =>
-      isDefined(selectedTranslationIndex)
-        ? transform(items[selectedTranslationIndex])
-        : undefined,
-    [items, selectedTranslationIndex, transform]
-  );
+  const selectedTranslation = useMemo(() => {
+    if (isDefined(selectedTranslationIndex)) {
+      const item = items[selectedTranslationIndex];
+      if (isDefined(item)) {
+        return transform(item);
+      }
+    }
+    return undefined;
+  }, [items, selectedTranslationIndex, transform]);
 
   return [
     selectedTranslation,

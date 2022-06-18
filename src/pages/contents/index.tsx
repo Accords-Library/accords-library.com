@@ -13,7 +13,7 @@ import { GetContentsQuery } from "graphql/generated";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import { prettyinlineTitle, prettySlug } from "helpers/formatters";
-import { Immutable } from "helpers/types";
+
 import { GetStaticPropsContext } from "next";
 import { Fragment, useState, useMemo } from "react";
 import { Icon } from "components/Ico";
@@ -26,7 +26,7 @@ interface Props extends AppStaticProps {
   contents: NonNullable<GetContentsQuery["contents"]>["data"];
 }
 
-type GroupContentItems = Map<string, Immutable<Props["contents"]>>;
+type GroupContentItems = Map<string, Props["contents"]>;
 
 const defaultFiltersState = {
   groupingMethod: -1,
@@ -35,7 +35,7 @@ const defaultFiltersState = {
   searchName: "",
 };
 
-export default function Contents(props: Immutable<Props>): JSX.Element {
+export default function Contents(props: Props): JSX.Element {
   const { langui, contents, languages } = props;
   const hoverable = useMediaHoverable();
 
@@ -250,7 +250,7 @@ export async function getStaticProps(
 function getGroups(
   langui: AppStaticProps["langui"],
   groupByType: number,
-  items: Immutable<Props["contents"]>
+  items: Props["contents"]
 ): GroupContentItems {
   switch (groupByType) {
     case 0: {

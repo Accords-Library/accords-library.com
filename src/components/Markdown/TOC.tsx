@@ -1,5 +1,5 @@
 import { slugify } from "helpers/formatters";
-import { Immutable } from "helpers/types";
+
 import { useRouter } from "next/router";
 import { Fragment, useMemo } from "react";
 import { preprocessMarkDawn } from "./Markdawn";
@@ -9,7 +9,7 @@ interface Props {
   title?: string;
 }
 
-export function TOC(props: Immutable<Props>): JSX.Element {
+export function TOC(props: Props): JSX.Element {
   const { text, title } = props;
   const router = useRouter();
   const toc = useMemo(

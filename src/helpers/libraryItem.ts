@@ -4,14 +4,14 @@ import { AppStaticProps } from "graphql/getAppStaticProps";
 import { prettyinlineTitle, prettyDate } from "./formatters";
 import { convertPrice } from "./numbers";
 import { isDefined } from "./others";
-import { Immutable, LibraryItemUserStatus } from "./types";
+import { LibraryItemUserStatus } from "./types";
 type Items = NonNullable<GetLibraryItemsPreviewQuery["libraryItems"]>["data"];
-type GroupLibraryItems = Map<string, Immutable<Items>>;
+type GroupLibraryItems = Map<string, Items>;
 
 export function getGroups(
   langui: AppStaticProps["langui"],
   groupByType: number,
-  items: Immutable<Items>
+  items: Items
 ): GroupLibraryItems {
   switch (groupByType) {
     case 0: {
@@ -148,13 +148,13 @@ export function getGroups(
 
 export function filterItems(
   appLayout: AppLayoutState,
-  items: Immutable<Items>,
+  items: Items,
   searchName: string,
   showSubitems: boolean,
   showPrimaryItems: boolean,
   showSecondaryItems: boolean,
   filterUserStatus: LibraryItemUserStatus | undefined
-): Immutable<Items> {
+): Items {
   return [...items].filter((item) => {
     if (!showSubitems && !item.attributes?.root_item) return false;
     if (showSubitems && isUntangibleGroupItem(item.attributes?.metadata?.[0])) {
@@ -196,7 +196,6 @@ export function filterItems(
 }
 
 // TODO: Properly type this shit
-// Best attempt was Immutable<NonNullable<NonNullable<Items[number]["attributes"]>["metadata"]>[number]>
 export function isUntangibleGroupItem(metadata: any) {
   return (
     metadata &&
@@ -208,9 +207,9 @@ export function isUntangibleGroupItem(metadata: any) {
 
 export function sortBy(
   orderByType: number,
-  items: Immutable<Items>,
+  items: Items,
   currencies: AppStaticProps["currencies"]
-): Immutable<Items> {
+): Items {
   switch (orderByType) {
     case 0:
       return [...items].sort((a, b) => {

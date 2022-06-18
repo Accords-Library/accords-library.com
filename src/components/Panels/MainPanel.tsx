@@ -4,7 +4,7 @@ import { NavOption } from "components/PanelComponents/NavOption";
 import { ToolTip } from "components/ToolTip";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { AppStaticProps } from "graphql/getAppStaticProps";
-import { Immutable } from "helpers/types";
+
 import { useMediaDesktop } from "hooks/useMediaQuery";
 import Markdown from "markdown-to-jsx";
 import Link from "next/link";
@@ -16,7 +16,7 @@ interface Props {
   langui: AppStaticProps["langui"];
 }
 
-export function MainPanel(props: Immutable<Props>): JSX.Element {
+export function MainPanel(props: Props): JSX.Element {
   const { langui } = props;
   const isDesktop = useMediaDesktop();
   const {

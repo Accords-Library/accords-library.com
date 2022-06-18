@@ -1,6 +1,5 @@
 import { cIf, cJoin } from "helpers/className";
 import { isDefinedAndNotEmpty } from "helpers/others";
-import { Immutable } from "helpers/types";
 
 interface Props {
   label: string | null | undefined;
@@ -8,7 +7,7 @@ interface Props {
   disabled?: boolean;
 }
 
-export function WithLabel(props: Immutable<Props>): JSX.Element {
+export function WithLabel(props: Props): JSX.Element {
   const { label, input, disabled } = props;
   return (
     <div

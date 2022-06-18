@@ -1,5 +1,4 @@
 import { cJoin } from "helpers/className";
-import { Immutable } from "helpers/types";
 
 interface Props {
   className?: string;
@@ -7,7 +6,7 @@ interface Props {
   id?: string;
 }
 
-export function InsetBox(props: Immutable<Props>): JSX.Element {
+export function InsetBox(props: Props): JSX.Element {
   return (
     <div
       id={props.id}

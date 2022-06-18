@@ -1,12 +1,11 @@
 import { cJoin } from "helpers/className";
-import { Immutable } from "helpers/types";
 
 interface Props {
   className?: string;
   children: React.ReactNode;
 }
 
-export function Chip(props: Immutable<Props>): JSX.Element {
+export function Chip(props: Props): JSX.Element {
   return (
     <div
       className={cJoin(

@@ -12,7 +12,7 @@ import { GetLibraryItemsPreviewQuery } from "graphql/generated";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import { prettyItemSubType } from "helpers/formatters";
-import { Immutable, LibraryItemUserStatus } from "helpers/types";
+import { LibraryItemUserStatus } from "helpers/types";
 import { GetStaticPropsContext } from "next";
 import { Fragment, useState, useMemo } from "react";
 import { Icon } from "components/Ico";
@@ -48,7 +48,7 @@ const defaultFiltersState = {
   filterUserStatus: undefined,
 };
 
-export default function Library(props: Immutable<Props>): JSX.Element {
+export default function Library(props: Props): JSX.Element {
   const { langui, items: libraryItems, currencies } = props;
   const appLayout = useAppLayout();
   const hoverable = useMediaHoverable();

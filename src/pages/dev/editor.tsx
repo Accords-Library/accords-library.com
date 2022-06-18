@@ -8,7 +8,7 @@ import {
 import { Popup } from "components/Popup";
 import { ToolTip } from "components/ToolTip";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
-import { Immutable } from "helpers/types";
+
 import { GetStaticPropsContext } from "next";
 import { useCallback, useState } from "react";
 import TurndownService from "turndown";
@@ -17,7 +17,7 @@ import { TOC } from "components/Markdown/TOC";
 
 interface Props extends AppStaticProps {}
 
-export default function Editor(props: Immutable<Props>): JSX.Element {
+export default function Editor(props: Props): JSX.Element {
   const handleInput = useCallback((text: string) => {
     setMarkdown(text);
   }, []);
@@ -62,19 +62,20 @@ export default function Editor(props: Immutable<Props>): JSX.Element {
     properties?: Record<string, string>,
     addInnerNewLines?: boolean
   ) {
-    const textarea = document.querySelector(
-      "#editorTextArea"
-    ) as HTMLTextAreaElement;
-    const { value, selectionStart, selectionEnd } = textarea;
+    const textarea =
+      document.querySelector<HTMLTextAreaElement>("#editorTextArea");
+    if (textarea) {
+      const { value, selectionStart, selectionEnd } = textarea;
 
-    if (
-      value.slice(selectionStart - wrapper.length, selectionStart) ===
-        wrapper &&
-      value.slice(selectionEnd, selectionEnd + wrapper.length) === wrapper
-    ) {
-      unwrap(wrapper);
-    } else {
-      wrap(wrapper, properties, addInnerNewLines);
+      if (
+        value.slice(selectionStart - wrapper.length, selectionStart) ===
+          wrapper &&
+        value.slice(selectionEnd, selectionEnd + wrapper.length) === wrapper
+      ) {
+        unwrap(wrapper);
+      } else {
+        wrap(wrapper, properties, addInnerNewLines);
+      }
     }
   }
 
@@ -126,23 +127,24 @@ export default function Editor(props: Immutable<Props>): JSX.Element {
       selectedEnd: number
     ) => { prependLength: number; transformedValue: string }
   ) {
-    const textarea = document.querySelector(
-      "#editorTextArea"
-    ) as HTMLTextAreaElement;
-    const { value, selectionStart, selectionEnd } = textarea;
+    const textarea =
+      document.querySelector<HTMLTextAreaElement>("#editorTextArea");
+    if (textarea) {
+      const { value, selectionStart, selectionEnd } = textarea;
 
-    const { prependLength, transformedValue } = transformation(
-      value,
-      selectionStart,
-      selectionEnd
-    );
+      const { prependLength, transformedValue } = transformation(
+        value,
+        selectionStart,
+        selectionEnd
+      );
 
-    textarea.value = transformedValue;
-    handleInput(textarea.value);
+      textarea.value = transformedValue;
+      handleInput(textarea.value);
 
-    textarea.focus();
-    textarea.selectionStart = selectionStart + prependLength;
-    textarea.selectionEnd = selectionEnd + prependLength;
+      textarea.focus();
+      textarea.selectionStart = selectionStart + prependLength;
+      textarea.selectionEnd = selectionEnd + prependLength;
+    }
   }
 
   const contentPanel = (

@@ -1,7 +1,7 @@
 import { Ico, Icon } from "components/Ico";
 import { cJoin } from "helpers/className";
 import { isDefinedAndNotEmpty } from "helpers/others";
-import { Immutable } from "helpers/types";
+
 import { Dispatch, SetStateAction } from "react";
 
 interface Props {
@@ -14,7 +14,7 @@ interface Props {
   placeholder?: string;
 }
 
-export function TextInput(props: Immutable<Props>): JSX.Element {
+export function TextInput(props: Props): JSX.Element {
   const { state, setState, className, name, placeholder } = props;
 
   return (

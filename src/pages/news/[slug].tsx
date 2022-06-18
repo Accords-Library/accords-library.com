@@ -6,7 +6,7 @@ import {
 } from "graphql/getPostStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import { isDefined } from "helpers/others";
-import { Immutable } from "helpers/types";
+
 import {
   GetStaticPathsContext,
   GetStaticPathsResult,
@@ -15,7 +15,7 @@ import {
 
 interface Props extends AppStaticProps, PostStaticProps {}
 
-export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
+export default function LibrarySlug(props: Props): JSX.Element {
   const { post, langui, languages, currencies } = props;
   return (
     <PostPage

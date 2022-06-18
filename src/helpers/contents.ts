@@ -1,14 +1,12 @@
-import { ContentWithTranslations, Immutable } from "./types";
+import { ContentWithTranslations } from "./types";
 
-type Group = Immutable<
+type Group = NonNullable<
   NonNullable<
     NonNullable<
-      NonNullable<
-        NonNullable<ContentWithTranslations["group"]>["data"]
-      >["attributes"]
-    >["contents"]
-  >["data"]
->;
+      NonNullable<ContentWithTranslations["group"]>["data"]
+    >["attributes"]
+  >["contents"]
+>["data"];
 
 export function getPreviousContent(group: Group, currentSlug: string) {
   for (let index = 0; index < group.length; index += 1) {

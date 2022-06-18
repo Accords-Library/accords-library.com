@@ -1,38 +1,51 @@
-import { Immutable, LibraryItemUserStatus } from "helpers/types";
+import { isDefined } from "helpers/others";
+import {
+  Immutable,
+  LibraryItemUserStatus,
+  RequiredNonNullable,
+} from "helpers/types";
 import { useDarkMode } from "hooks/useDarkMode";
 import { useStateWithLocalStorage } from "hooks/useStateWithLocalStorage";
 import React, { ReactNode, useContext, useState } from "react";
 
 export interface AppLayoutState {
   subPanelOpen: boolean | undefined;
+  toggleSubPanelOpen: () => void;
   setSubPanelOpen: React.Dispatch<
     React.SetStateAction<AppLayoutState["subPanelOpen"]>
   >;
   configPanelOpen: boolean | undefined;
+  toggleConfigPanelOpen: () => void;
   setConfigPanelOpen: React.Dispatch<
     React.SetStateAction<AppLayoutState["configPanelOpen"]>
   >;
   searchPanelOpen: boolean | undefined;
+  toggleSearchPanelOpen: () => void;
   setSearchPanelOpen: React.Dispatch<
     React.SetStateAction<AppLayoutState["searchPanelOpen"]>
   >;
   mainPanelReduced: boolean | undefined;
+  toggleMainPanelReduced: () => void;
   setMainPanelReduced: React.Dispatch<
     React.SetStateAction<AppLayoutState["mainPanelReduced"]>
   >;
   mainPanelOpen: boolean | undefined;
+  toggleMainPanelOpen: () => void;
   setMainPanelOpen: React.Dispatch<
     React.SetStateAction<AppLayoutState["mainPanelOpen"]>
   >;
   darkMode: boolean | undefined;
+  toggleDarkMode: () => void;
   setDarkMode: React.Dispatch<React.SetStateAction<AppLayoutState["darkMode"]>>;
   selectedThemeMode: boolean | undefined;
+  toggleSelectedThemeMode: () => void;
   setSelectedThemeMode: React.Dispatch<
     React.SetStateAction<AppLayoutState["selectedThemeMode"]>
   >;
   fontSize: number | undefined;
   setFontSize: React.Dispatch<React.SetStateAction<AppLayoutState["fontSize"]>>;
   dyslexic: boolean | undefined;
+  toggleDyslexic: () => void;
   setDyslexic: React.Dispatch<React.SetStateAction<AppLayoutState["dyslexic"]>>;
   currency: string | undefined;
   setCurrency: React.Dispatch<React.SetStateAction<AppLayoutState["currency"]>>;
@@ -45,6 +58,7 @@ export interface AppLayoutState {
     React.SetStateAction<AppLayoutState["preferredLanguages"]>
   >;
   menuGestures: boolean;
+  toggleMenuGestures: () => void;
   setMenuGestures: React.Dispatch<
     React.SetStateAction<AppLayoutState["menuGestures"]>
   >;
@@ -54,38 +68,45 @@ export interface AppLayoutState {
   >;
 }
 
-/* eslint-disable @typescript-eslint/no-empty-function */
-const initialState: AppLayoutState = {
+const initialState: RequiredNonNullable<AppLayoutState> = {
   subPanelOpen: false,
+  toggleSubPanelOpen: () => null,
+  setSubPanelOpen: () => null,
   configPanelOpen: false,
+  setConfigPanelOpen: () => null,
+  toggleConfigPanelOpen: () => null,
   searchPanelOpen: false,
+  setSearchPanelOpen: () => null,
+  toggleSearchPanelOpen: () => null,
   mainPanelReduced: false,
+  setMainPanelReduced: () => null,
+  toggleMainPanelReduced: () => null,
   mainPanelOpen: false,
+  toggleMainPanelOpen: () => null,
+  setMainPanelOpen: () => null,
   darkMode: false,
+  toggleDarkMode: () => null,
+  setDarkMode: () => null,
   selectedThemeMode: false,
+  toggleSelectedThemeMode: () => null,
+  setSelectedThemeMode: () => null,
   fontSize: 1,
+  setFontSize: () => null,
   dyslexic: false,
+  toggleDyslexic: () => null,
+  setDyslexic: () => null,
   currency: "USD",
+  setCurrency: () => null,
   playerName: "",
+  setPlayerName: () => null,
   preferredLanguages: [],
+  setPreferredLanguages: () => null,
   menuGestures: true,
+  toggleMenuGestures: () => null,
+  setMenuGestures: () => null,
   libraryItemUserStatus: {},
-  setSubPanelOpen: () => {},
-  setMainPanelReduced: () => {},
-  setMainPanelOpen: () => {},
-  setDarkMode: () => {},
-  setSelectedThemeMode: () => {},
-  setConfigPanelOpen: () => {},
-  setSearchPanelOpen: () => {},
-  setFontSize: () => {},
-  setDyslexic: () => {},
-  setCurrency: () => {},
-  setPlayerName: () => {},
-  setPreferredLanguages: () => {},
-  setMenuGestures: () => {},
-  setLibraryItemUserStatus: () => {},
+  setLibraryItemUserStatus: () => null,
 };
-/* eslint-enable @typescript-eslint/no-empty-function */
 
 const AppContext = React.createContext<AppLayoutState>(initialState);
 
@@ -161,6 +182,44 @@ export function AppContextProvider(props: Immutable<Props>): JSX.Element {
       initialState.libraryItemUserStatus
     );
 
+  function toggleSubPanelOpen() {
+    setSubPanelOpen((current) => (isDefined(current) ? !current : current));
+  }
+
+  function toggleConfigPanelOpen() {
+    setConfigPanelOpen((current) => (isDefined(current) ? !current : current));
+  }
+
+  function toggleSearchPanelOpen() {
+    setSearchPanelOpen((current) => (isDefined(current) ? !current : current));
+  }
+
+  function toggleMainPanelReduced() {
+    setMainPanelReduced((current) => (isDefined(current) ? !current : current));
+  }
+
+  function toggleMainPanelOpen() {
+    setMainPanelOpen((current) => (isDefined(current) ? !current : current));
+  }
+
+  function toggleDarkMode() {
+    setDarkMode((current) => (isDefined(current) ? !current : current));
+  }
+
+  function toggleMenuGestures() {
+    setMenuGestures((current) => !current);
+  }
+
+  function toggleSelectedThemeMode() {
+    setSelectedThemeMode((current) =>
+      isDefined(current) ? !current : current
+    );
+  }
+
+  function toggleDyslexic() {
+    setDyslexic((current) => (isDefined(current) ? !current : current));
+  }
+
   return (
     <AppContext.Provider
       value={{
@@ -192,6 +251,15 @@ export function AppContextProvider(props: Immutable<Props>): JSX.Element {
         setPreferredLanguages,
         setMenuGestures,
         setLibraryItemUserStatus,
+        toggleSubPanelOpen,
+        toggleConfigPanelOpen,
+        toggleSearchPanelOpen,
+        toggleMainPanelReduced,
+        toggleMainPanelOpen,
+        toggleDarkMode,
+        toggleMenuGestures,
+        toggleSelectedThemeMode,
+        toggleDyslexic,
       }}
     >
       {props.children}

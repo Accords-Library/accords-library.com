@@ -4,7 +4,7 @@ import { prettySlug } from "helpers/formatters";
 import { getStatusDescription } from "helpers/others";
 import { Immutable, PostWithTranslations } from "helpers/types";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
-import { Fragment } from "react";
+import { Fragment, useMemo } from "react";
 import { AppLayout } from "./AppLayout";
 import { Chip } from "./Chip";
 import { HorizontalLine } from "./HorizontalLine";
@@ -55,13 +55,17 @@ export function PostPage(props: Immutable<Props>): JSX.Element {
     languageExtractor: (item) => item.language?.data?.attributes?.code,
   });
 
-  const thumbnail =
-    selectedTranslation?.thumbnail?.data?.attributes ??
-    post.thumbnail?.data?.attributes;
-
-  const body = selectedTranslation?.body ?? "";
-  const title = selectedTranslation?.title ?? prettySlug(post.slug);
-  const except = selectedTranslation?.excerpt ?? "";
+  const { thumbnail, body, title, excerpt } = useMemo(
+    () => ({
+      thumbnail:
+        selectedTranslation?.thumbnail?.data?.attributes ??
+        post.thumbnail?.data?.attributes,
+      body: selectedTranslation?.body ?? "",
+      title: selectedTranslation?.title ?? prettySlug(post.slug),
+      excerpt: selectedTranslation?.excerpt ?? "",
+    }),
+    [post.slug, post.thumbnail, selectedTranslation]
+  );
 
   const subPanel =
     returnHref || returnTitle || displayCredits || displayToc ? (
@@ -137,7 +141,7 @@ export function PostPage(props: Immutable<Props>): JSX.Element {
           <ThumbnailHeader
             thumbnail={thumbnail}
             title={title}
-            description={except}
+            description={excerpt}
             langui={langui}
             categories={post.categories}
             languageSwitcher={<LanguageSwitcher />}

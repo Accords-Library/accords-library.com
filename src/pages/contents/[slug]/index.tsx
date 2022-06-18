@@ -36,7 +36,7 @@ import {
   GetStaticPathsResult,
   GetStaticPropsContext,
 } from "next";
-import { Fragment } from "react";
+import { Fragment, useMemo } from "react";
 
 interface Props extends AppStaticProps {
   content: ContentWithTranslations;
@@ -54,16 +54,23 @@ export default function Content(props: Immutable<Props>): JSX.Element {
 
   useScrollTopOnChange(AnchorIds.ContentPanel, [selectedTranslation]);
 
-  const previousContent = content.group?.data?.attributes?.contents
-    ? getPreviousContent(
-        content.group.data.attributes.contents.data,
-        content.slug
-      )
-    : undefined;
-
-  const nextContent = content.group?.data?.attributes?.contents
-    ? getNextContent(content.group.data.attributes.contents.data, content.slug)
-    : undefined;
+  const { previousContent, nextContent } = useMemo(
+    () => ({
+      previousContent: content.group?.data?.attributes?.contents
+        ? getPreviousContent(
+            content.group.data.attributes.contents.data,
+            content.slug
+          )
+        : undefined,
+      nextContent: content.group?.data?.attributes?.contents
+        ? getNextContent(
+            content.group.data.attributes.contents.data,
+            content.slug
+          )
+        : undefined,
+    }),
+    [content.group, content.slug]
+  );
 
   const subPanel = (
     <SubPanel>

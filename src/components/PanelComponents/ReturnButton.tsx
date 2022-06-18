@@ -22,26 +22,27 @@ export enum ReturnButtonType {
 }
 
 export function ReturnButton(props: Immutable<Props>): JSX.Element {
+  const { href, title, langui, displayOn, horizontalLine, className } = props;
   const appLayout = useAppLayout();
 
   return (
     <div
       className={cJoin(
-        props.displayOn === ReturnButtonType.Mobile
+        displayOn === ReturnButtonType.Mobile
           ? "desktop:hidden"
-          : props.displayOn === ReturnButtonType.Desktop
+          : displayOn === ReturnButtonType.Desktop
           ? "mobile:hidden"
           : "",
-        props.className
+        className
       )}
     >
       <Button
         onClick={() => appLayout.setSubPanelOpen(false)}
-        href={props.href}
-        text={`${props.langui.return_to} ${props.title}`}
+        href={href}
+        text={`${langui.return_to} ${title}`}
         icon={Icon.NavigateBefore}
       />
-      {props.horizontalLine && <HorizontalLine />}
+      {horizontalLine === true && <HorizontalLine />}
     </div>
   );
 }

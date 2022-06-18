@@ -1,6 +1,7 @@
 import { Ico, Icon } from "components/Ico";
 import { cIf, cJoin } from "helpers/className";
 import { Immutable } from "helpers/types";
+import { useToggle } from "hooks/useToggle";
 import { Dispatch, Fragment, SetStateAction, useState } from "react";
 
 interface Props {
@@ -15,6 +16,7 @@ interface Props {
 export function Select(props: Immutable<Props>): JSX.Element {
   const { className, state, options, allowEmpty, setState } = props;
   const [opened, setOpened] = useState(false);
+  const toggleOpened = useToggle(setOpened);
 
   return (
     <div
@@ -32,18 +34,21 @@ export function Select(props: Immutable<Props>): JSX.Element {
           cIf(opened, "rounded-b-none bg-highlight outline-[transparent]")
         )}
       >
-        <p onClick={() => setOpened(!opened)} className="w-full">
+        <p onClick={toggleOpened} className="w-full">
           {state === -1 ? "—" : options[state]}
         </p>
         {state >= 0 && allowEmpty && (
           <Ico
             icon={Icon.Close}
             className="!text-xs"
-            onClick={() => setState(-1)}
+            onClick={() => {
+              setState(-1);
+              toggleOpened();
+            }}
           />
         )}
         <Ico
-          onClick={() => setOpened(!opened)}
+          onClick={toggleOpened}
           icon={opened ? Icon.ArrowDropUp : Icon.ArrowDropDown}
         />
       </div>

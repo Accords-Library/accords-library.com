@@ -7,7 +7,7 @@ import { GetLibraryItemScansQuery } from "graphql/generated";
 import { AppStaticProps } from "graphql/getAppStaticProps";
 import { getAssetFilename, getAssetURL, ImageQuality } from "helpers/img";
 import { isInteger } from "helpers/numbers";
-import { getStatusDescription } from "helpers/others";
+import { getStatusDescription, isDefinedAndNotEmpty } from "helpers/others";
 import { Immutable } from "helpers/types";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { Fragment } from "react";
@@ -51,7 +51,12 @@ export function ScanSet(props: Immutable<Props>): JSX.Element {
     transform: (item) => {
       (item as NonNullable<Props["scanSet"][number]>).pages?.data.sort(
         (a, b) => {
-          if (a.attributes?.url && b.attributes?.url) {
+          if (
+            a.attributes &&
+            b.attributes &&
+            isDefinedAndNotEmpty(a.attributes.url) &&
+            isDefinedAndNotEmpty(b.attributes.url)
+          ) {
             let aName = getAssetFilename(a.attributes.url);
             let bName = getAssetFilename(b.attributes.url);
 
@@ -99,12 +104,13 @@ export function ScanSet(props: Immutable<Props>): JSX.Element {
           </div>
 
           <div className="flex flex-row flex-wrap place-items-center gap-4 pb-6">
-            {content?.data?.attributes?.slug && (
-              <Button
-                href={`/contents/${content.data.attributes.slug}`}
-                text={langui.open_content}
-              />
-            )}
+            {content?.data?.attributes &&
+              isDefinedAndNotEmpty(content.data.attributes.slug) && (
+                <Button
+                  href={`/contents/${content.data.attributes.slug}`}
+                  text={langui.open_content}
+                />
+              )}
 
             <LanguageSwitcher />
 
@@ -173,7 +179,7 @@ export function ScanSet(props: Immutable<Props>): JSX.Element {
                 </div>
               )}
 
-            {selectedScan.notes && (
+            {isDefinedAndNotEmpty(selectedScan.notes) && (
               <ToolTip content={selectedScan.notes}>
                 <Chip>{"Notes"}</Chip>
               </ToolTip>
@@ -192,7 +198,10 @@ export function ScanSet(props: Immutable<Props>): JSX.Element {
                 onClick={() => {
                   const images: string[] = [];
                   selectedScan.pages?.data.map((image) => {
-                    if (image.attributes?.url)
+                    if (
+                      image.attributes &&
+                      isDefinedAndNotEmpty(image.attributes.url)
+                    )
                       images.push(
                         getAssetURL(image.attributes.url, ImageQuality.Large)
                       );

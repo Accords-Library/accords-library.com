@@ -1,5 +1,6 @@
 import { AppStaticProps } from "graphql/getAppStaticProps";
 import { prettySlug } from "./formatters";
+import { isDefined } from "./others";
 import { Content, Immutable } from "./types";
 
 interface Description {
@@ -51,7 +52,7 @@ function prettyMarkdown(markdown: string): string {
 
 function prettyChip(items: (string | undefined)[]): string {
   return items
-    .filter((item) => item !== undefined)
+    .filter((item) => isDefined(item))
     .map((item) => `(${item})`)
     .join(" ");
 }

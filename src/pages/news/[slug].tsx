@@ -5,6 +5,7 @@ import {
   PostStaticProps,
 } from "graphql/getPostStaticProps";
 import { getReadySdk } from "graphql/sdk";
+import { isDefined } from "helpers/others";
 import { Immutable } from "helpers/types";
 import {
   GetStaticPathsContext,
@@ -34,7 +35,10 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
 export async function getStaticProps(
   context: GetStaticPropsContext
 ): Promise<{ notFound: boolean } | { props: Props }> {
-  const slug = context.params?.slug ? context.params.slug.toString() : "";
+  const slug =
+    context.params && isDefined(context.params.slug)
+      ? context.params.slug.toString()
+      : "";
   return await getPostStaticProps(slug)(context);
 }
 

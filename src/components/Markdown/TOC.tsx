@@ -1,7 +1,7 @@
 import { slugify } from "helpers/formatters";
 import { Immutable } from "helpers/types";
 import { useRouter } from "next/router";
-import { Fragment } from "react";
+import { Fragment, useMemo } from "react";
 import { preprocessMarkDawn } from "./Markdawn";
 
 interface Props {
@@ -11,11 +11,15 @@ interface Props {
 
 export function TOC(props: Immutable<Props>): JSX.Element {
   const { text, title } = props;
-  const toc = getTocFromMarkdawn(preprocessMarkDawn(text), title);
   const router = useRouter();
+  const toc = useMemo(
+    () => getTocFromMarkdawn(preprocessMarkDawn(text), title),
+    [text, title]
+  );
 
   return (
     <>
+      {/* TODO: add to LANGUI */}
       <h3 className="text-xl">Table of content</h3>
       <div className="max-w-[14.5rem] text-left">
         <p className="relative my-2 overflow-x-hidden text-ellipsis whitespace-nowrap text-left">

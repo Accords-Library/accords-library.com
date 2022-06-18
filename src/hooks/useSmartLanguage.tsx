@@ -1,6 +1,7 @@
 import { LanguageSwitcher } from "components/Inputs/LanguageSwitcher";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { AppStaticProps } from "graphql/getAppStaticProps";
+import { isDefined } from "helpers/others";
 import { Immutable } from "helpers/types";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
@@ -17,7 +18,7 @@ function getPreferredLanguage(
   availableLanguages: Map<string, number>
 ): number | undefined {
   for (const locale of preferredLanguages) {
-    if (locale && availableLanguages.has(locale)) {
+    if (isDefined(locale) && availableLanguages.has(locale)) {
       return availableLanguages.get(locale);
     }
   }
@@ -33,39 +34,42 @@ export function useSmartLanguage<T>(
     languages,
     transform = (item) => item,
   } = props;
-  const appLayout = useAppLayout();
+  const { preferredLanguages } = useAppLayout();
   const router = useRouter();
 
-  const availableLocales: Map<string, number> = useMemo(() => new Map(), []);
+  const availableLocales = useMemo(() => {
+    const map = new Map<string, number>();
+    items.map((elem, index) => {
+      if (isDefined(elem)) {
+        const result = languageExtractor(elem);
+        if (isDefined(result)) map.set(result, index);
+      }
+    });
+    return map;
+  }, [items, languageExtractor]);
+
   const [selectedTranslationIndex, setSelectedTranslationIndex] = useState<
     number | undefined
   >();
-  const [selectedTranslation, setSelectedTranslation] =
-    useState<Immutable<T>>();
-
-  useEffect(() => {
-    items.map((elem, index) => {
-      if (elem !== null && elem !== undefined) {
-        const result = languageExtractor(elem);
-        if (result !== undefined) availableLocales.set(result, index);
-      }
-    });
-  }, [availableLocales, items, languageExtractor]);
 
   useEffect(() => {
     setSelectedTranslationIndex(
-      getPreferredLanguage(
-        appLayout.preferredLanguages ?? [router.locale],
-        availableLocales
-      )
+      (current) =>
+        current ??
+        getPreferredLanguage(
+          preferredLanguages ?? [router.locale],
+          availableLocales
+        )
     );
-  }, [appLayout.preferredLanguages, availableLocales, router.locale]);
+  }, [preferredLanguages, availableLocales, router.locale]);
 
-  useEffect(() => {
-    if (selectedTranslationIndex !== undefined) {
-      setSelectedTranslation(transform(items[selectedTranslationIndex]));
-    }
-  }, [items, selectedTranslationIndex, transform]);
+  const selectedTranslation = useMemo(
+    () =>
+      isDefined(selectedTranslationIndex)
+        ? transform(items[selectedTranslationIndex])
+        : undefined,
+    [items, selectedTranslationIndex, transform]
+  );
 
   return [
     selectedTranslation,
@@ -74,7 +78,7 @@ export function useSmartLanguage<T>(
         languages={languages}
         locales={availableLocales}
         localesIndex={selectedTranslationIndex}
-        setLocalesIndex={setSelectedTranslationIndex}
+        onLanguageChanged={setSelectedTranslationIndex}
       />
     ),
   ];

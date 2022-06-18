@@ -15,7 +15,7 @@ import { GetLibraryItemScansQuery } from "graphql/generated";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import { prettyinlineTitle, prettySlug } from "helpers/formatters";
-import { sortContent } from "helpers/others";
+import { isDefined, sortContent } from "helpers/others";
 import { Immutable } from "helpers/types";
 import { useLightBox } from "hooks/useLightBox";
 import {
@@ -123,7 +123,10 @@ export async function getStaticProps(
 ): Promise<{ notFound: boolean } | { props: Props }> {
   const sdk = getReadySdk();
   const item = await sdk.getLibraryItemScans({
-    slug: context.params?.slug ? context.params.slug.toString() : "",
+    slug:
+      context.params && isDefined(context.params.slug)
+        ? context.params.slug.toString()
+        : "",
     language_code: context.locale ?? "en",
   });
   if (!item.libraryItems?.data[0]?.attributes) return { notFound: true };

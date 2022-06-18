@@ -4,14 +4,15 @@ import { UploadImageFragment } from "graphql/generated";
 import { AppStaticProps } from "graphql/getAppStaticProps";
 import { cIf, cJoin } from "helpers/className";
 import { prettyLanguage, prettySlug } from "helpers/formatters";
-import { getOgImage, ImageQuality, OgImage } from "helpers/img";
+import { getOgImage, ImageQuality } from "helpers/img";
+import { isDefined, isDefinedAndNotEmpty } from "helpers/others";
 // import { getClient, Indexes, search, SearchResult } from "helpers/search";
 import { Immutable } from "helpers/types";
 import { useMediaMobile } from "hooks/useMediaQuery";
 import { AnchorIds } from "hooks/useScrollTopOnChange";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { useSwipeable } from "react-swipeable";
 import { Ico, Icon } from "./Ico";
 import { ButtonGroup } from "./Inputs/ButtonGroup";
@@ -31,6 +32,9 @@ interface Props extends AppStaticProps {
   description?: string;
 }
 
+const SENSIBILITY_SWIPE = 1.1;
+const TITLE_PREFIX = "Accord’s Library";
+
 export function AppLayout(props: Immutable<Props>): JSX.Element {
   const {
     langui,
@@ -44,151 +48,169 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
     description,
     subPanelIcon = Icon.Tune,
   } = props;
+
+  const {
+    configPanelOpen,
+    currency,
+    darkMode,
+    dyslexic,
+    fontSize,
+    mainPanelOpen,
+    mainPanelReduced,
+    menuGestures,
+    playerName,
+    preferredLanguages,
+    selectedThemeMode,
+    subPanelOpen,
+    setConfigPanelOpen,
+    setCurrency,
+    setDarkMode,
+    setDyslexic,
+    setFontSize,
+    setMainPanelOpen,
+    setPlayerName,
+    setPreferredLanguages,
+    setSelectedThemeMode,
+    setSubPanelOpen,
+    toggleMainPanelOpen,
+    toggleSubPanelOpen,
+  } = useAppLayout();
+
   const router = useRouter();
   const isMobile = useMediaMobile();
-  const appLayout = useAppLayout();
 
-  /*
-   * const [searchQuery, setSearchQuery] = useState("");
-   * const [searchResult, setSearchResult] = useState<SearchResult>();
-   */
-
-  const sensibilitySwipe = 1.1;
-
-  useMemo(() => {
+  useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     router.events?.on("routeChangeStart", () => {
-      appLayout.setConfigPanelOpen(false);
-      appLayout.setMainPanelOpen(false);
-      appLayout.setSubPanelOpen(false);
+      setConfigPanelOpen(false);
+      setMainPanelOpen(false);
+      setSubPanelOpen(false);
     });
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     router.events?.on("hashChangeStart", () => {
-      appLayout.setSubPanelOpen(false);
+      setSubPanelOpen(false);
     });
-  }, [appLayout, router.events]);
+  }, [router.events, setConfigPanelOpen, setMainPanelOpen, setSubPanelOpen]);
 
   const handlers = useSwipeable({
     onSwipedLeft: (SwipeEventData) => {
-      if (appLayout.menuGestures) {
-        if (SwipeEventData.velocity < sensibilitySwipe) return;
-        if (appLayout.mainPanelOpen) {
-          appLayout.setMainPanelOpen(false);
-        } else if (subPanel && contentPanel) {
-          appLayout.setSubPanelOpen(true);
+      if (menuGestures) {
+        if (SwipeEventData.velocity < SENSIBILITY_SWIPE) return;
+        if (mainPanelOpen === true) {
+          setMainPanelOpen(false);
+        } else if (subPanel === true && contentPanel === true) {
+          setSubPanelOpen(true);
         }
       }
     },
     onSwipedRight: (SwipeEventData) => {
-      if (appLayout.menuGestures) {
-        if (SwipeEventData.velocity < sensibilitySwipe) return;
-        if (appLayout.subPanelOpen) {
-          appLayout.setSubPanelOpen(false);
+      if (menuGestures) {
+        if (SwipeEventData.velocity < SENSIBILITY_SWIPE) return;
+        if (subPanelOpen === true) {
+          setSubPanelOpen(false);
         } else {
-          appLayout.setMainPanelOpen(true);
+          setMainPanelOpen(true);
         }
       }
     },
   });
 
-  /*
-   * const client = getClient();
-   * useEffect(() => {
-   *   if (searchQuery.length > 1) {
-   *     search(client, Indexes.Post, searchQuery).then((result) => {
-   *       setSearchResult(result);
-   *     });
-   *   } else {
-   *     setSearchResult(undefined);
-   *   }
-   *   // eslint-disable-next-line react-hooks/exhaustive-deps
-   * }, [searchQuery]);
-   */
+  const turnSubIntoContent = useMemo(
+    () => isDefined(subPanel) && isDefined(contentPanel),
+    [contentPanel, subPanel]
+  );
 
-  const turnSubIntoContent = subPanel && !contentPanel;
+  const metaImage = useMemo(
+    () =>
+      thumbnail
+        ? getOgImage(ImageQuality.Og, thumbnail)
+        : {
+            image: "/default_og.jpg",
+            width: 1200,
+            height: 630,
+            alt: "Accord's Library Logo",
+          },
+    [thumbnail]
+  );
 
-  const titlePrefix = "Accord’s Library";
-  const metaImage: OgImage = thumbnail
-    ? getOgImage(ImageQuality.Og, thumbnail)
-    : {
-        image: "/default_og.jpg",
-        width: 1200,
-        height: 630,
-        alt: "Accord's Library Logo",
-      };
-  const ogTitle =
-    title ?? navTitle ?? prettySlug(router.asPath.split("/").pop());
+  const { ogTitle, metaTitle } = useMemo(() => {
+    const resultTitle =
+      title ?? navTitle ?? prettySlug(router.asPath.split("/").pop());
+    return {
+      ogTitle: resultTitle,
+      metaTitle: `${TITLE_PREFIX} - ${resultTitle}`,
+    };
+  }, [navTitle, router.asPath, title]);
 
-  const metaTitle = `${titlePrefix} - ${ogTitle}`;
+  const metaDescription = useMemo(
+    () => description ?? langui.default_description ?? "",
+    [description, langui.default_description]
+  );
 
-  const metaDescription = description
-    ? description
-    : langui.default_description ?? "";
-
-  useEffect(() => {
+  useLayoutEffect(() => {
     document.getElementsByTagName("html")[0].style.fontSize = `${
-      (appLayout.fontSize ?? 1) * 100
+      (fontSize ?? 1) * 100
     }%`;
-  }, [appLayout.fontSize]);
+  }, [fontSize]);
 
-  const currencyOptions: string[] = [];
-  currencies.map((currency) => {
-    if (currency.attributes?.code)
-      currencyOptions.push(currency.attributes.code);
-  });
+  const defaultPreferredLanguages = useMemo(() => {
+    let list: string[] = [];
+    if (isDefinedAndNotEmpty(router.locale) && router.locales) {
+      if (router.locale === "en") {
+        list = [router.locale];
+        router.locales.map((locale) => {
+          if (locale !== router.locale) list.push(locale);
+        });
+      } else {
+        list = [router.locale, "en"];
+        router.locales.map((locale) => {
+          if (locale !== router.locale && locale !== "en") list.push(locale);
+        });
+      }
+    }
+    return list;
+  }, [router.locale, router.locales]);
+
+  const currencyOptions = useMemo(() => {
+    const list: string[] = [];
+    currencies.map((currentCurrency) => {
+      if (
+        currentCurrency.attributes &&
+        isDefinedAndNotEmpty(currentCurrency.attributes.code)
+      )
+        list.push(currentCurrency.attributes.code);
+    });
+    return list;
+  }, [currencies]);
+
   const [currencySelect, setCurrencySelect] = useState<number>(-1);
 
-  let defaultPreferredLanguages: string[] = [];
-
-  if (router.locale && router.locales) {
-    if (router.locale === "en") {
-      defaultPreferredLanguages = [router.locale];
-      router.locales.map((locale) => {
-        if (locale !== router.locale) defaultPreferredLanguages.push(locale);
-      });
-    } else {
-      defaultPreferredLanguages = [router.locale, "en"];
-      router.locales.map((locale) => {
-        if (locale !== router.locale && locale !== "en")
-          defaultPreferredLanguages.push(locale);
-      });
-    }
-  }
+  useEffect(() => {
+    if (isDefined(currency))
+      setCurrencySelect(currencyOptions.indexOf(currency));
+  }, [currency, currencyOptions]);
 
   useEffect(() => {
-    if (appLayout.currency)
-      setCurrencySelect(currencyOptions.indexOf(appLayout.currency));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [appLayout.currency]);
+    if (currencySelect >= 0) setCurrency(currencyOptions[currencySelect]);
+  }, [currencyOptions, currencySelect, setCurrency]);
 
-  useEffect(() => {
-    if (currencySelect >= 0)
-      appLayout.setCurrency(currencyOptions[currencySelect]);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currencySelect]);
-
-  let gridCol = "";
-  if (subPanel) {
-    if (appLayout.mainPanelReduced) {
-      gridCol = "grid-cols-[6rem_20rem_1fr]";
-    } else {
-      gridCol = "grid-cols-[20rem_20rem_1fr]";
+  const gridCol = useMemo(() => {
+    if (isDefined(subPanel)) {
+      if (mainPanelReduced === true) {
+        return "grid-cols-[6rem_20rem_1fr]";
+      }
+      return "grid-cols-[20rem_20rem_1fr]";
+    } else if (mainPanelReduced === true) {
+      return "grid-cols-[6rem_0px_1fr]";
     }
-  } else if (appLayout.mainPanelReduced) {
-    gridCol = "grid-cols-[6rem_0px_1fr]";
-  } else {
-    gridCol = "grid-cols-[20rem_0px_1fr]";
-  }
+    return "grid-cols-[20rem_0px_1fr]";
+  }, [mainPanelReduced, subPanel]);
 
   return (
     <div
       className={cJoin(
-        cIf(appLayout.darkMode, "set-theme-dark", "set-theme-light"),
-        cIf(
-          appLayout.dyslexic,
-          "set-theme-font-dyslexic",
-          "set-theme-font-standard"
-        )
+        cIf(darkMode, "set-theme-dark", "set-theme-light"),
+        cIf(dyslexic, "set-theme-font-dyslexic", "set-theme-font-standard")
       )}
     >
       <div
@@ -231,7 +253,7 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
             `absolute inset-0 transition-[backdrop-filter] duration-500 [grid-area:content]
             mobile:z-10`,
             cIf(
-              (appLayout.mainPanelOpen || appLayout.subPanelOpen) && isMobile,
+              (mainPanelOpen === true || subPanelOpen === true) && isMobile,
               "[backdrop-filter:blur(2px)]",
               "pointer-events-none touch-none"
             )
@@ -241,14 +263,14 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
             className={cJoin(
               "absolute inset-0 bg-shade transition-opacity duration-500",
               cIf(
-                (appLayout.mainPanelOpen || appLayout.subPanelOpen) && isMobile,
+                (mainPanelOpen === true || subPanelOpen === true) && isMobile,
                 "opacity-60",
                 "opacity-0"
               )
             )}
             onClick={() => {
-              appLayout.setMainPanelOpen(false);
-              appLayout.setSubPanelOpen(false);
+              setMainPanelOpen(false);
+              setSubPanelOpen(false);
             }}
           ></div>
         </div>
@@ -258,7 +280,7 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
           id={AnchorIds.ContentPanel}
           className={`texture-paper-dots overflow-y-scroll bg-light [grid-area:content]`}
         >
-          {contentPanel ? (
+          {isDefined(contentPanel) ? (
             contentPanel
           ) : (
             <div className="grid h-full place-content-center">
@@ -274,7 +296,7 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
         </div>
 
         {/* Sub panel */}
-        {subPanel && (
+        {isDefined(subPanel) && (
           <div
             className={cJoin(
               `texture-paper-dots overflow-y-scroll border-r-[1px] border-dotted
@@ -284,7 +306,7 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
               mobile:[grid-area:content]`,
               turnSubIntoContent
                 ? "mobile:w-full mobile:border-l-0"
-                : appLayout.subPanelOpen
+                : subPanelOpen === true
                 ? ""
                 : "mobile:translate-x-[100vw]"
             )}
@@ -300,7 +322,7 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
             border-black bg-light transition-transform duration-300 [grid-area:main]
             [scrollbar-width:none] webkit-scrollbar:w-0 mobile:z-10 mobile:w-[90%]
             mobile:justify-self-start mobile:[grid-area:content]`,
-            cIf(!appLayout.mainPanelOpen, "mobile:-translate-x-full")
+            cIf(mainPanelOpen === false, "mobile:-translate-x-full")
           )}
         >
           <MainPanel langui={langui} />
@@ -312,11 +334,11 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
           border-t-[1px] border-dotted border-black bg-light [grid-area:navbar] desktop:hidden"
         >
           <Ico
-            icon={appLayout.mainPanelOpen ? Icon.Close : Icon.Menu}
+            icon={mainPanelOpen === true ? Icon.Close : Icon.Menu}
             className="mt-[.1em] cursor-pointer !text-2xl"
             onClick={() => {
-              appLayout.setMainPanelOpen(!appLayout.mainPanelOpen);
-              appLayout.setSubPanelOpen(false);
+              toggleMainPanelOpen();
+              setSubPanelOpen(false);
             }}
           />
           <p
@@ -331,22 +353,19 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
           >
             {ogTitle}
           </p>
-          {subPanel && !turnSubIntoContent && (
+          {isDefined(subPanel) && !turnSubIntoContent && (
             <Ico
-              icon={appLayout.subPanelOpen ? Icon.Close : subPanelIcon}
+              icon={subPanelOpen === true ? Icon.Close : subPanelIcon}
               className="mt-[.1em] cursor-pointer !text-2xl"
               onClick={() => {
-                appLayout.setSubPanelOpen(!appLayout.subPanelOpen);
-                appLayout.setMainPanelOpen(false);
+                toggleSubPanelOpen();
+                setMainPanelOpen(false);
               }}
             />
           )}
         </div>
 
-        <Popup
-          state={appLayout.configPanelOpen}
-          setState={appLayout.setConfigPanelOpen}
-        >
+        <Popup state={configPanelOpen ?? false} setState={setConfigPanelOpen}>
           <h2 className="text-2xl">{langui.settings}</h2>
 
           <div
@@ -356,12 +375,12 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
             {router.locales && (
               <div>
                 <h3 className="text-xl">{langui.languages}</h3>
-                {appLayout.preferredLanguages && (
+                {preferredLanguages && (
                   <OrderableList
                     items={
-                      appLayout.preferredLanguages.length > 0
+                      preferredLanguages.length > 0
                         ? new Map(
-                            appLayout.preferredLanguages.map((locale) => [
+                            preferredLanguages.map((locale) => [
                               locale,
                               prettyLanguage(locale, languages),
                             ])
@@ -380,13 +399,13 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
                       ])
                     }
                     onChange={(items) => {
-                      const preferredLanguages = [...items].map(
+                      const newPreferredLanguages = [...items].map(
                         ([code]) => code
                       );
-                      appLayout.setPreferredLanguages(preferredLanguages);
-                      if (router.locale !== preferredLanguages[0]) {
+                      setPreferredLanguages(newPreferredLanguages);
+                      if (router.locale !== newPreferredLanguages[0]) {
                         router.push(router.asPath, router.asPath, {
-                          locale: preferredLanguages[0],
+                          locale: newPreferredLanguages[0],
                         });
                       }
                     }}
@@ -400,31 +419,25 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
                 <ButtonGroup>
                   <Button
                     onClick={() => {
-                      appLayout.setDarkMode(false);
-                      appLayout.setSelectedThemeMode(true);
+                      setDarkMode(false);
+                      setSelectedThemeMode(true);
                     }}
-                    active={
-                      appLayout.selectedThemeMode === true &&
-                      appLayout.darkMode === false
-                    }
+                    active={selectedThemeMode === true && darkMode === false}
                     text={langui.light}
                   />
                   <Button
                     onClick={() => {
-                      appLayout.setSelectedThemeMode(false);
+                      setSelectedThemeMode(false);
                     }}
-                    active={appLayout.selectedThemeMode === false}
+                    active={selectedThemeMode === false}
                     text={langui.auto}
                   />
                   <Button
                     onClick={() => {
-                      appLayout.setDarkMode(true);
-                      appLayout.setSelectedThemeMode(true);
+                      setDarkMode(true);
+                      setSelectedThemeMode(true);
                     }}
-                    active={
-                      appLayout.selectedThemeMode === true &&
-                      appLayout.darkMode === true
-                    }
+                    active={selectedThemeMode === true && darkMode === true}
                     text={langui.dark}
                   />
                 </ButtonGroup>
@@ -446,32 +459,17 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
                 <h3 className="text-xl">{langui.font_size}</h3>
                 <ButtonGroup>
                   <Button
-                    onClick={() =>
-                      appLayout.setFontSize(
-                        appLayout.fontSize
-                          ? appLayout.fontSize / 1.05
-                          : 1 / 1.05
-                      )
-                    }
+                    onClick={() => setFontSize((fontSize ?? 1) / 1.05)}
                     icon={Icon.TextDecrease}
                   />
                   <Button
-                    onClick={() => appLayout.setFontSize(1)}
-                    text={`${((appLayout.fontSize ?? 1) * 100).toLocaleString(
-                      undefined,
-                      {
-                        maximumFractionDigits: 0,
-                      }
-                    )}%`}
+                    onClick={() => setFontSize(1)}
+                    text={`${((fontSize ?? 1) * 100).toLocaleString(undefined, {
+                      maximumFractionDigits: 0,
+                    })}%`}
                   />
                   <Button
-                    onClick={() =>
-                      appLayout.setFontSize(
-                        appLayout.fontSize
-                          ? appLayout.fontSize * 1.05
-                          : 1 * 1.05
-                      )
-                    }
+                    onClick={() => setFontSize((fontSize ?? 1) * 1.05)}
                     icon={Icon.TextIncrease}
                   />
                 </ButtonGroup>
@@ -481,14 +479,14 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
                 <h3 className="text-xl">{langui.font}</h3>
                 <div className="grid gap-2">
                   <Button
-                    active={appLayout.dyslexic === false}
-                    onClick={() => appLayout.setDyslexic(false)}
+                    active={dyslexic === false}
+                    onClick={() => setDyslexic(false)}
                     className="font-zenMaruGothic"
                     text="Zen Maru Gothic"
                   />
                   <Button
-                    active={appLayout.dyslexic === true}
-                    onClick={() => appLayout.setDyslexic(true)}
+                    active={dyslexic === true}
+                    onClick={() => setDyslexic(true)}
                     className="font-openDyslexic"
                     text="OpenDyslexic"
                   />
@@ -500,8 +498,8 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
                 <TextInput
                   placeholder="<player>"
                   className="w-48"
-                  state={appLayout.playerName}
-                  setState={appLayout.setPlayerName}
+                  state={playerName}
+                  setState={setPlayerName}
                 />
               </div>
             </div>
@@ -509,8 +507,8 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
         </Popup>
 
         {/* <Popup
-          state={appLayout.searchPanelOpen}
-          setState={appLayout.setSearchPanelOpen}
+          state={searchPanelOpen}
+          setState={setSearchPanelOpen}
         >
           <div className="grid place-items-center gap-2">
             TODO: add to langui
@@ -546,3 +544,22 @@ export function AppLayout(props: Immutable<Props>): JSX.Element {
     </div>
   );
 }
+
+/*
+ * const [searchQuery, setSearchQuery] = useState("");
+ * const [searchResult, setSearchResult] = useState<SearchResult>();
+ */
+
+/*
+ * const client = getClient();
+ * useEffect(() => {
+ *   if (searchQuery.length > 1) {
+ *     search(client, Indexes.Post, searchQuery).then((result) => {
+ *       setSearchResult(result);
+ *     });
+ *   } else {
+ *     setSearchResult(undefined);
+ *   }
+ *   // eslint-disable-next-line react-hooks/exhaustive-deps
+ * }, [searchQuery]);
+ */

@@ -8,7 +8,7 @@ interface Props {
   setState:
     | Dispatch<SetStateAction<boolean | undefined>>
     | Dispatch<SetStateAction<boolean>>;
-  state?: boolean;
+  state: boolean;
   children: React.ReactNode;
   fillViewport?: boolean;
   hideBackground?: boolean;
@@ -21,16 +21,15 @@ export function Popup(props: Immutable<Props>): JSX.Element {
     state,
     children,
     fillViewport,
-    hideBackground,
+    hideBackground = false,
     padding = true,
   } = props;
 
-  const appLayout = useAppLayout();
+  const { setMenuGestures } = useAppLayout();
 
   useEffect(() => {
-    appLayout.setMenuGestures(!state);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state]);
+    setMenuGestures(state);
+  }, [setMenuGestures, state]);
 
   return (
     <Hotkeys

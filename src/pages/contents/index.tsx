@@ -15,7 +15,7 @@ import { getReadySdk } from "graphql/sdk";
 import { prettyinlineTitle, prettySlug } from "helpers/formatters";
 import { Immutable } from "helpers/types";
 import { GetStaticPropsContext } from "next";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useState, useMemo } from "react";
 import { Icon } from "components/Ico";
 import { WithLabel } from "components/Inputs/WithLabel";
 import { Button } from "components/Inputs/Button";
@@ -50,36 +50,20 @@ export default function Contents(props: Immutable<Props>): JSX.Element {
   );
   const [searchName, setSearchName] = useState(defaultFiltersState.searchName);
 
-  const [effectiveCombineRelatedContent, setEffectiveCombineRelatedContent] =
-    useState(true);
-
-  const [filteredItems, setFilteredItems] = useState(
-    filterContents(contents, combineRelatedContent, searchName)
+  const filteredItems = useMemo(
+    () => filterContents(contents, combineRelatedContent, searchName),
+    [combineRelatedContent, contents, searchName]
   );
 
-  const [groups, setGroups] = useState<GroupContentItems>(
-    getGroups(langui, groupingMethod, filteredItems)
+  const groups = useMemo(
+    () => getGroups(langui, groupingMethod, filteredItems),
+    [langui, groupingMethod, filteredItems]
   );
 
-  useEffect(() => {
-    if (searchName.length > 1) {
-      setEffectiveCombineRelatedContent(false);
-    } else {
-      setEffectiveCombineRelatedContent(combineRelatedContent);
-    }
-    setFilteredItems(
-      filterContents(contents, effectiveCombineRelatedContent, searchName)
-    );
-  }, [
-    effectiveCombineRelatedContent,
-    contents,
-    searchName,
-    combineRelatedContent,
-  ]);
-
-  useEffect(() => {
-    setGroups(getGroups(langui, groupingMethod, filteredItems));
-  }, [langui, groupingMethod, filteredItems]);
+  const effectiveCombineRelatedContent = useMemo(
+    () => (searchName.length > 1 ? false : combineRelatedContent),
+    [combineRelatedContent, searchName.length]
+  );
 
   const subPanel = (
     <SubPanel>

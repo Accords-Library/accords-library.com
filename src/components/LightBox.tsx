@@ -1,5 +1,5 @@
 import { Immutable } from "helpers/types";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useCallback } from "react";
 import Hotkeys from "react-hot-keys";
 import { useSwipeable } from "react-swipeable";
 import { Img } from "./Img";
@@ -17,26 +17,26 @@ interface Props {
   setIndex: Dispatch<SetStateAction<number>>;
 }
 
+const SENSIBILITY_SWIPE = 0.5;
+
 export function LightBox(props: Immutable<Props>): JSX.Element {
   const { state, setState, images, index, setIndex } = props;
 
-  function handlePrevious() {
+  const handlePrevious = useCallback(() => {
     if (index > 0) setIndex(index - 1);
-  }
+  }, [index, setIndex]);
 
-  function handleNext() {
+  const handleNext = useCallback(() => {
     if (index < images.length - 1) setIndex(index + 1);
-  }
-
-  const sensibilitySwipe = 0.5;
+  }, [images.length, index, setIndex]);
 
   const handlers = useSwipeable({
     onSwipedLeft: (SwipeEventData) => {
-      if (SwipeEventData.velocity < sensibilitySwipe) return;
+      if (SwipeEventData.velocity < SENSIBILITY_SWIPE) return;
       handleNext();
     },
     onSwipedRight: (SwipeEventData) => {
-      if (SwipeEventData.velocity < sensibilitySwipe) return;
+      if (SwipeEventData.velocity < SENSIBILITY_SWIPE) return;
       handlePrevious();
     },
   });

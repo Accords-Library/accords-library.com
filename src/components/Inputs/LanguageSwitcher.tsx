@@ -3,7 +3,7 @@ import { AppStaticProps } from "graphql/getAppStaticProps";
 import { cJoin } from "helpers/className";
 import { prettyLanguage } from "helpers/formatters";
 import { Immutable } from "helpers/types";
-import { Dispatch, Fragment, SetStateAction } from "react";
+import { Fragment } from "react";
 import { ToolTip } from "../ToolTip";
 import { Button } from "./Button";
 
@@ -12,11 +12,11 @@ interface Props {
   languages: AppStaticProps["languages"];
   locales: Map<string, number>;
   localesIndex: number | undefined;
-  setLocalesIndex: Dispatch<SetStateAction<number | undefined>>;
+  onLanguageChanged: (index: number) => void;
 }
 
 export function LanguageSwitcher(props: Immutable<Props>): JSX.Element {
-  const { locales, className, localesIndex, setLocalesIndex } = props;
+  const { locales, className, localesIndex, onLanguageChanged } = props;
 
   return (
     <ToolTip
@@ -27,7 +27,7 @@ export function LanguageSwitcher(props: Immutable<Props>): JSX.Element {
               {locale && (
                 <Button
                   active={value === localesIndex}
-                  onClick={() => setLocalesIndex(value)}
+                  onClick={() => onLanguageChanged(value)}
                   text={prettyLanguage(locale, props.languages)}
                 />
               )}

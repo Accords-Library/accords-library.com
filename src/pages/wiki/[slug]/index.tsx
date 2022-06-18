@@ -14,6 +14,7 @@ import { SubPanel } from "components/Panels/SubPanel";
 import DefinitionCard from "components/Wiki/DefinitionCard";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
+import { isDefined, isDefinedAndNotEmpty } from "helpers/others";
 import { Immutable, WikiPageWithTranslations } from "helpers/types";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 import {
@@ -81,7 +82,7 @@ export default function WikiPage(props: Immutable<Props>): JSX.Element {
               </div>
             </div>
           </div>
-          {selectedTranslation.summary && (
+          {isDefinedAndNotEmpty(selectedTranslation.summary) && (
             <div className="mb-6">
               <p className="font-headers text-lg">{langui.summary}</p>
               <p>{selectedTranslation.summary}</p>
@@ -121,7 +122,10 @@ export async function getStaticProps(
   context: GetStaticPropsContext
 ): Promise<{ notFound: boolean } | { props: Props }> {
   const sdk = getReadySdk();
-  const slug = context.params?.slug ? context.params.slug.toString() : "";
+  const slug =
+    context.params && isDefined(context.params.slug)
+      ? context.params.slug.toString()
+      : "";
   const page = await sdk.getWikiPage({
     language_code: context.locale ?? "en",
     slug: slug,

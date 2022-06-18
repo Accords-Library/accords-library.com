@@ -1,3 +1,4 @@
+import { isDefined } from "helpers/others";
 import { useEffect, useState } from "react";
 
 export function useStateWithLocalStorage<T>(
@@ -10,7 +11,7 @@ export function useStateWithLocalStorage<T>(
   useEffect(() => {
     try {
       const item = localStorage.getItem(key);
-      if (item !== "undefined" && item !== null) {
+      if (isDefined(item)) {
         setValue(JSON.parse(item) as T);
       } else {
         setValue(initialValue);
@@ -23,7 +24,7 @@ export function useStateWithLocalStorage<T>(
   }, [initialValue, key]);
 
   useEffect(() => {
-    if (value !== undefined) localStorage.setItem(key, JSON.stringify(value));
+    if (isDefined(value)) localStorage.setItem(key, JSON.stringify(value));
   }, [value, key]);
 
   return [value, setValue];

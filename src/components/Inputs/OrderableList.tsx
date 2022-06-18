@@ -1,7 +1,7 @@
 import { Ico, Icon } from "components/Ico";
-import { arrayMove } from "helpers/others";
+import { arrayMove, isDefinedAndNotEmpty } from "helpers/others";
 import { Immutable } from "helpers/types";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useCallback, useState } from "react";
 
 interface Props {
   className?: string;
@@ -11,25 +11,27 @@ interface Props {
 }
 
 export function OrderableList(props: Immutable<Props>): JSX.Element {
+  const { onChange } = props;
   const [items, setItems] = useState<Map<string, string>>(props.items);
 
-  useEffect(() => {
-    props.onChange?.(items);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [items]);
-
-  function updateOrder(sourceIndex: number, targetIndex: number) {
-    const newItems = arrayMove([...items], sourceIndex, targetIndex);
-    setItems(new Map(newItems));
-  }
+  const updateOrder = useCallback(
+    (sourceIndex: number, targetIndex: number) => {
+      const newItems = arrayMove([...items], sourceIndex, targetIndex);
+      const map = new Map(newItems);
+      setItems(map);
+      onChange?.(map);
+    },
+    [items, onChange]
+  );
 
   return (
     <div className="grid gap-2">
       {[...items].map(([key, value], index) => (
         <Fragment key={key}>
-          {props.insertLabels?.get(index) && (
-            <p>{props.insertLabels.get(index)}</p>
-          )}
+          {props.insertLabels &&
+            isDefinedAndNotEmpty(props.insertLabels.get(index)) && (
+              <p>{props.insertLabels.get(index)}</p>
+            )}
           <div
             onDragStart={(event) => {
               const source = event.target as HTMLElement;

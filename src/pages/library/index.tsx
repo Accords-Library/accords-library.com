@@ -14,7 +14,7 @@ import { getReadySdk } from "graphql/sdk";
 import { prettyItemSubType } from "helpers/formatters";
 import { Immutable, LibraryItemUserStatus } from "helpers/types";
 import { GetStaticPropsContext } from "next";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useState, useMemo } from "react";
 import { Icon } from "components/Ico";
 import { WithLabel } from "components/Inputs/WithLabel";
 import { TextInput } from "components/Inputs/TextInput";
@@ -31,6 +31,7 @@ import {
 import { PreviewCard } from "components/PreviewCard";
 import { useMediaHoverable } from "hooks/useMediaQuery";
 import { ButtonGroup } from "components/Inputs/ButtonGroup";
+import { isDefinedAndNotEmpty, isUndefined } from "helpers/others";
 
 interface Props extends AppStaticProps {
   items: NonNullable<GetLibraryItemsPreviewQuery["libraryItems"]>["data"];
@@ -75,28 +76,8 @@ export default function Library(props: Immutable<Props>): JSX.Element {
     LibraryItemUserStatus | undefined
   >(defaultFiltersState.filterUserStatus);
 
-  const [filteredItems, setFilteredItems] = useState(
-    filterItems(
-      appLayout,
-      libraryItems,
-      searchName,
-      showSubitems,
-      showPrimaryItems,
-      showSecondaryItems,
-      filterUserStatus
-    )
-  );
-
-  const [sortedItems, setSortedItem] = useState(
-    sortBy(groupingMethod, filteredItems, currencies)
-  );
-
-  const [groups, setGroups] = useState(
-    getGroups(langui, groupingMethod, sortedItems)
-  );
-
-  useEffect(() => {
-    setFilteredItems(
+  const filteredItems = useMemo(
+    () =>
       filterItems(
         appLayout,
         libraryItems,
@@ -105,25 +86,27 @@ export default function Library(props: Immutable<Props>): JSX.Element {
         showPrimaryItems,
         showSecondaryItems,
         filterUserStatus
-      )
-    );
-  }, [
-    showSubitems,
-    libraryItems,
-    showPrimaryItems,
-    showSecondaryItems,
-    searchName,
-    filterUserStatus,
-    appLayout,
-  ]);
+      ),
+    [
+      appLayout,
+      filterUserStatus,
+      libraryItems,
+      searchName,
+      showPrimaryItems,
+      showSecondaryItems,
+      showSubitems,
+    ]
+  );
 
-  useEffect(() => {
-    setSortedItem(sortBy(sortingMethod, filteredItems, currencies));
-  }, [currencies, filteredItems, sortingMethod]);
+  const sortedItems = useMemo(
+    () => sortBy(sortingMethod, filteredItems, currencies),
+    [currencies, filteredItems, sortingMethod]
+  );
 
-  useEffect(() => {
-    setGroups(getGroups(langui, groupingMethod, sortedItems));
-  }, [langui, groupingMethod, sortedItems]);
+  const groups = useMemo(
+    () => getGroups(langui, groupingMethod, sortedItems),
+    [langui, groupingMethod, sortedItems]
+  );
 
   const subPanel = (
     <SubPanel>
@@ -227,7 +210,7 @@ export default function Library(props: Immutable<Props>): JSX.Element {
           <Button
             text={"All"}
             onClick={() => setFilterUserStatus(undefined)}
-            active={filterUserStatus === undefined}
+            active={isUndefined(filterUserStatus)}
           />
         </ToolTip>
       </ButtonGroup>
@@ -275,7 +258,7 @@ export default function Library(props: Immutable<Props>): JSX.Element {
               >
                 {items.map((item) => (
                   <Fragment key={item.id}>
-                    {item.id && item.attributes && (
+                    {isDefinedAndNotEmpty(item.id) && item.attributes && (
                       <PreviewCard
                         href={`/library/${item.attributes.slug}`}
                         title={item.attributes.title}

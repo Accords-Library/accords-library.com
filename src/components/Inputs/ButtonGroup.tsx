@@ -1,6 +1,6 @@
 import { cJoin } from "helpers/className";
 import { Immutable } from "helpers/types";
-import { useEffect, useRef } from "react";
+import { useLayoutEffect, useRef } from "react";
 
 interface Props {
   children: React.ReactNode;
@@ -11,7 +11,7 @@ export function ButtonGroup(props: Immutable<Props>): JSX.Element {
   const { children, className } = props;
   const ref = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (ref.current) {
       const buttons = ref.current.querySelectorAll(".component-button");
       buttons.forEach((button, index) => {

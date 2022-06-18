@@ -38,6 +38,10 @@ export type Immutable<T> = {
     : Immutable<T[K]>;
 };
 
+export type RequiredNonNullable<T> = Required<{
+  [P in keyof T]: NonNullable<T[P]>;
+}>;
+
 export enum LibraryItemUserStatus {
   None = 0,
   Want = 1,

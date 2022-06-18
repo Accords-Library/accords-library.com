@@ -1,5 +1,6 @@
 import { Ico, Icon } from "components/Ico";
 import { cJoin } from "helpers/className";
+import { isDefinedAndNotEmpty } from "helpers/others";
 import { Immutable } from "helpers/types";
 import { Dispatch, SetStateAction } from "react";
 
@@ -28,8 +29,8 @@ export function TextInput(props: Immutable<Props>): JSX.Element {
           setState(event.target.value);
         }}
       />
-      <div className="absolute right-4 top-0 bottom-0 grid place-items-center">
-        {state && (
+      {isDefinedAndNotEmpty(state) && (
+        <div className="absolute right-4 top-0 bottom-0 grid place-items-center">
           <Ico
             className="cursor-pointer !text-xs"
             icon={Icon.Close}
@@ -37,8 +38,8 @@ export function TextInput(props: Immutable<Props>): JSX.Element {
               setState("");
             }}
           />
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }

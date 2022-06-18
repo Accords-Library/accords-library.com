@@ -3,6 +3,7 @@ import { GetLibraryItemsPreviewQuery } from "graphql/generated";
 import { AppStaticProps } from "graphql/getAppStaticProps";
 import { prettyinlineTitle, prettyDate } from "./formatters";
 import { convertPrice } from "./numbers";
+import { isDefined } from "./others";
 import { Immutable, LibraryItemUserStatus } from "./types";
 type Items = NonNullable<GetLibraryItemsPreviewQuery["libraryItems"]>["data"];
 type GroupLibraryItems = Map<string, Immutable<Items>>;
@@ -172,7 +173,7 @@ export function filterItems(
     }
 
     if (
-      filterUserStatus !== undefined &&
+      isDefined(filterUserStatus) &&
       item.id &&
       appLayout.libraryItemUserStatus
     ) {

@@ -1,4 +1,5 @@
 import { cIf, cJoin } from "helpers/className";
+import { isDefinedAndNotEmpty } from "helpers/others";
 import { Immutable } from "helpers/types";
 
 interface Props {
@@ -16,7 +17,7 @@ export function WithLabel(props: Immutable<Props>): JSX.Element {
         cIf(disabled, "text-dark brightness-150 contrast-75 grayscale")
       )}
     >
-      {label && (
+      {isDefinedAndNotEmpty(label) && (
         <p
           className={cJoin(
             "text-left",

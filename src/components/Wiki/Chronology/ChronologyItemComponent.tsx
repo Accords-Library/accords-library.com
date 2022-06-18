@@ -19,55 +19,6 @@ interface Props {
 export function ChronologyItemComponent(props: Immutable<Props>): JSX.Element {
   const { langui } = props;
 
-  function generateAnchor(
-    year: number | undefined,
-    month: number | null | undefined,
-    day: number | null | undefined
-  ): string {
-    let result = "";
-    if (year) result += year;
-    if (month) result += `- ${month.toString().padStart(2, "0")}`;
-    if (day) result += `- ${day.toString().padStart(2, "0")}`;
-    return result;
-  }
-
-  function generateYear(
-    displayed_date: string | null | undefined,
-    year: number | undefined
-  ): string {
-    return displayed_date ?? year?.toString() ?? "";
-  }
-
-  function generateDate(
-    month: number | null | undefined,
-    day: number | null | undefined
-  ): string {
-    const lut = [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-    ];
-
-    let result = "";
-    if (month && month >= 1 && month <= 12) {
-      result += lut[month - 1];
-      if (day) {
-        result += ` ${day}`;
-      }
-    }
-
-    return result;
-  }
-
   if (props.item.attributes) {
     return (
       <div
@@ -167,4 +118,53 @@ export function ChronologyItemComponent(props: Immutable<Props>): JSX.Element {
   }
 
   return <></>;
+}
+
+function generateAnchor(
+  year: number | undefined,
+  month: number | null | undefined,
+  day: number | null | undefined
+): string {
+  let result = "";
+  if (year) result += year;
+  if (month) result += `- ${month.toString().padStart(2, "0")}`;
+  if (day) result += `- ${day.toString().padStart(2, "0")}`;
+  return result;
+}
+
+function generateYear(
+  displayed_date: string | null | undefined,
+  year: number | undefined
+): string {
+  return displayed_date ?? year?.toString() ?? "";
+}
+
+function generateDate(
+  month: number | null | undefined,
+  day: number | null | undefined
+): string {
+  const lut = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+
+  let result = "";
+  if (month && month >= 1 && month <= 12) {
+    result += lut[month - 1];
+    if (day) {
+      result += ` ${day}`;
+    }
+  }
+
+  return result;
 }

@@ -18,6 +18,7 @@ import { GetVideoQuery } from "graphql/generated";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import { prettyDate, prettyShortenNumber } from "helpers/formatters";
+import { isDefined } from "helpers/others";
 import { getVideoFile } from "helpers/videos";
 import { useMediaMobile } from "hooks/useMediaQuery";
 import {
@@ -190,7 +191,10 @@ export async function getStaticProps(
 ): Promise<{ notFound: boolean } | { props: Props }> {
   const sdk = getReadySdk();
   const videos = await sdk.getVideo({
-    uid: context.params?.uid ? context.params.uid.toString() : "",
+    uid:
+      context.params && isDefined(context.params.uid)
+        ? context.params.uid.toString()
+        : "",
   });
   if (!videos.videos?.data[0]?.attributes) return { notFound: true };
   const props: Props = {

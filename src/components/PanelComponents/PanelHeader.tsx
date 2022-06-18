@@ -1,5 +1,6 @@
 import { HorizontalLine } from "components/HorizontalLine";
 import { Ico, Icon } from "components/Ico";
+import { isDefinedAndNotEmpty } from "helpers/others";
 import { Immutable } from "helpers/types";
 
 interface Props {
@@ -9,12 +10,13 @@ interface Props {
 }
 
 export function PanelHeader(props: Immutable<Props>): JSX.Element {
+  const { icon, description, title } = props;
   return (
     <>
       <div className="grid w-full place-items-center">
-        {props.icon && <Ico icon={props.icon} className="mb-3 !text-4xl" />}
-        <h2 className="text-2xl">{props.title}</h2>
-        {props.description ? <p>{props.description}</p> : ""}
+        {icon && <Ico icon={icon} className="mb-3 !text-4xl" />}
+        <h2 className="text-2xl">{title}</h2>
+        {isDefinedAndNotEmpty(description) && <p>{description}</p>}
       </div>
       <HorizontalLine />
     </>

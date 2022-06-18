@@ -12,7 +12,7 @@ import {
   ContentPanel,
   ContentPanelWidthSizes,
 } from "components/Panels/ContentPanel";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useMemo, useState } from "react";
 import { TranslatedPreviewCard } from "components/PreviewCard";
 import { HorizontalLine } from "components/HorizontalLine";
 import { Button } from "components/Inputs/Button";
@@ -40,14 +40,10 @@ export default function Wiki(props: Immutable<Props>): JSX.Element {
     defaultFiltersState.keepInfoVisible
   );
 
-  const [filteredPages, setFilteredPages] = useState(
-    filterPages(pages, searchName)
+  const filteredPages = useMemo(
+    () => filterPages(pages, searchName),
+    [pages, searchName]
   );
-
-  useEffect(() => {
-    setFilteredPages(filterPages(pages, searchName));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchName]);
 
   const subPanel = (
     <SubPanel>
@@ -171,7 +167,7 @@ function filterPages(posts: Immutable<Props["pages"]>, searchName: string) {
       if (
         post.attributes?.translations?.[0]?.title
           .toLowerCase()
-          .includes(searchName.toLowerCase())
+          .includes(searchName.toLowerCase()) === true
       ) {
         return true;
       }

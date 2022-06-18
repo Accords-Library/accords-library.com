@@ -5,6 +5,7 @@ import { GetLibraryItemQuery } from "graphql/generated";
 import { AppStaticProps } from "graphql/getAppStaticProps";
 import { prettyinlineTitle, prettySlug } from "helpers/formatters";
 import { Immutable } from "helpers/types";
+import { useToggle } from "hooks/useToggle";
 import { useState } from "react";
 
 interface Props {
@@ -23,6 +24,7 @@ export function ContentLine(props: Immutable<Props>): JSX.Element {
   const { content, langui, parentSlug } = props;
 
   const [opened, setOpened] = useState(false);
+  const toggleOpened = useToggle(setOpened);
 
   if (content.attributes) {
     return (
@@ -36,7 +38,7 @@ export function ContentLine(props: Immutable<Props>): JSX.Element {
         gap-4 thin:grid-cols-[auto_auto_1fr_auto]"
         >
           <a>
-            <h3 className="cursor-pointer" onClick={() => setOpened(!opened)}>
+            <h3 className="cursor-pointer" onClick={toggleOpened}>
               {content.attributes.content?.data?.attributes?.translations?.[0]
                 ? prettyinlineTitle(
                     content.attributes.content.data.attributes.translations[0]

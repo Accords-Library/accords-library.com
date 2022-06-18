@@ -10,6 +10,7 @@ import Markdown from "markdown-to-jsx";
 import Link from "next/link";
 import { Icon } from "components/Ico";
 import { cIf, cJoin } from "helpers/className";
+import { isDefinedAndNotEmpty } from "helpers/others";
 
 interface Props {
   langui: AppStaticProps["langui"];
@@ -18,30 +19,30 @@ interface Props {
 export function MainPanel(props: Immutable<Props>): JSX.Element {
   const { langui } = props;
   const isDesktop = useMediaDesktop();
-  const appLayout = useAppLayout();
+  const {
+    mainPanelReduced = false,
+    toggleMainPanelReduced,
+    setConfigPanelOpen,
+  } = useAppLayout();
 
   return (
     <div
       className={cJoin(
         "grid content-start justify-center gap-y-2 p-8 text-center",
-        cIf(appLayout.mainPanelReduced && isDesktop, "px-4")
+        cIf(mainPanelReduced && isDesktop, "px-4")
       )}
     >
       {/* Reduce/expand main menu */}
       <div
         className={cJoin(
           "fixed top-1/2 mobile:hidden",
-          cIf(appLayout.mainPanelReduced, "left-[4.65rem]", "left-[18.65rem]")
+          cIf(mainPanelReduced, "left-[4.65rem]", "left-[18.65rem]")
         )}
-        onClick={() =>
-          appLayout.setMainPanelReduced(!appLayout.mainPanelReduced)
-        }
+        onClick={toggleMainPanelReduced}
       >
         <Button
           className="bg-light !px-2"
-          icon={
-            appLayout.mainPanelReduced ? Icon.ChevronRight : Icon.ChevronLeft
-          }
+          icon={mainPanelReduced ? Icon.ChevronRight : Icon.ChevronLeft}
         />
       </div>
 
@@ -53,34 +54,30 @@ export function MainPanel(props: Immutable<Props>): JSX.Element {
                 `mb-4 aspect-square cursor-pointer bg-black transition-colors
                 [mask:url('/icons/accords.svg')] ![mask-size:contain] ![mask-repeat:no-repeat]
                 ![mask-position:center] hover:bg-dark`,
-                cIf(appLayout.mainPanelReduced && isDesktop, "w-12", "w-1/2")
+                cIf(mainPanelReduced && isDesktop, "w-12", "w-1/2")
               )}
             ></div>
           </Link>
 
-          {(!appLayout.mainPanelReduced || !isDesktop) && (
+          {(!mainPanelReduced || !isDesktop) && (
             <h2 className="text-3xl">Accord&rsquo;s Library</h2>
           )}
 
           <div
             className={cJoin(
               "flex flex-wrap gap-2",
-              cIf(
-                appLayout.mainPanelReduced && isDesktop,
-                "flex-col gap-3",
-                "flex-row"
-              )
+              cIf(mainPanelReduced && isDesktop, "flex-col gap-3", "flex-row")
             )}
           >
             <ToolTip
               content={<h3 className="text-2xl">{langui.open_settings}</h3>}
               placement="right"
               className="text-left"
-              disabled={!appLayout.mainPanelReduced}
+              disabled={!mainPanelReduced}
             >
               <Button
                 onClick={() => {
-                  appLayout.setConfigPanelOpen(true);
+                  setConfigPanelOpen(true);
                 }}
                 icon={Icon.Settings}
               />
@@ -90,11 +87,11 @@ export function MainPanel(props: Immutable<Props>): JSX.Element {
               content={<h3 className="text-2xl">{langui.open_search}</h3>}
               placement="right"
               className="text-left"
-              disabled={!appLayout.mainPanelReduced}
+              disabled={!mainPanelReduced}
             >
               <Button
                 onClick={() => {
-                  appLayout.setSearchPanelOpen(true);
+                  setSearchPanelOpen(true);
                 }}
                 icon={Icon.Search}
               />
@@ -110,7 +107,7 @@ export function MainPanel(props: Immutable<Props>): JSX.Element {
         icon={Icon.LibraryBooks}
         title={langui.library}
         subtitle={langui.library_short_description}
-        reduced={appLayout.mainPanelReduced && isDesktop}
+        reduced={mainPanelReduced && isDesktop}
       />
 
       <NavOption
@@ -118,7 +115,7 @@ export function MainPanel(props: Immutable<Props>): JSX.Element {
         icon={Icon.Workspaces}
         title={langui.contents}
         subtitle={langui.contents_short_description}
-        reduced={appLayout.mainPanelReduced && isDesktop}
+        reduced={mainPanelReduced && isDesktop}
       />
 
       <NavOption
@@ -126,7 +123,7 @@ export function MainPanel(props: Immutable<Props>): JSX.Element {
         icon={Icon.TravelExplore}
         title={langui.wiki}
         subtitle={langui.wiki_short_description}
-        reduced={appLayout.mainPanelReduced && isDesktop}
+        reduced={mainPanelReduced && isDesktop}
       />
 
       {/*
@@ -135,7 +132,7 @@ export function MainPanel(props: Immutable<Props>): JSX.Element {
         icon={Icon.WatchLater}
         title={langui.chronicles}
         subtitle={langui.chronicles_short_description}
-        reduced={appLayout.mainPanelReduced && isDesktop}
+        reduced={mainPanelReduced && isDesktop}
       />
       */}
 
@@ -145,7 +142,7 @@ export function MainPanel(props: Immutable<Props>): JSX.Element {
         url="/news"
         icon={Icon.Feed}
         title={langui.news}
-        reduced={appLayout.mainPanelReduced && isDesktop}
+        reduced={mainPanelReduced && isDesktop}
       />
 
       {/*
@@ -153,7 +150,7 @@ export function MainPanel(props: Immutable<Props>): JSX.Element {
         url="/merch"
         icon={Icon.Store}
         title={langui.merch}
-        reduced={appLayout.mainPanelReduced && isDesktop}
+        reduced={mainPanelReduced && isDesktop}
       />
       */}
 
@@ -161,36 +158,36 @@ export function MainPanel(props: Immutable<Props>): JSX.Element {
         url="https://gallery.accords-library.com/"
         icon={Icon.Collections}
         title={langui.gallery}
-        reduced={appLayout.mainPanelReduced && isDesktop}
+        reduced={mainPanelReduced && isDesktop}
       />
 
       <NavOption
         url="/archives"
         icon={Icon.Inventory}
         title={langui.archives}
-        reduced={appLayout.mainPanelReduced && isDesktop}
+        reduced={mainPanelReduced && isDesktop}
       />
 
       <NavOption
         url="/about-us"
         icon={Icon.Info}
         title={langui.about_us}
-        reduced={appLayout.mainPanelReduced && isDesktop}
+        reduced={mainPanelReduced && isDesktop}
       />
 
-      {appLayout.mainPanelReduced && isDesktop ? "" : <HorizontalLine />}
+      {mainPanelReduced && isDesktop ? "" : <HorizontalLine />}
 
       <div
         className={cJoin(
           "text-center",
-          cIf(appLayout.mainPanelReduced && isDesktop, "hidden")
+          cIf(mainPanelReduced && isDesktop, "hidden")
         )}
       >
-        <p>
-          {langui.licensing_notice && (
+        {isDefinedAndNotEmpty(langui.licensing_notice) && (
+          <p>
             <Markdown>{langui.licensing_notice}</Markdown>
-          )}
-        </p>
+          </p>
+        )}
         <div className="mt-4 mb-8 grid place-content-center">
           <a
             aria-label="Read more about the license we use for this website"
@@ -214,11 +211,11 @@ export function MainPanel(props: Immutable<Props>): JSX.Element {
             />
           </a>
         </div>
-        <p>
-          {langui.copyright_notice && (
+        {isDefinedAndNotEmpty(langui.copyright_notice) && (
+          <p>
             <Markdown>{langui.copyright_notice}</Markdown>
-          )}
-        </p>
+          </p>
+        )}
         <div className="mt-12 mb-4 grid h-4 grid-flow-col place-content-center gap-8">
           <a
             aria-label="Browse our GitHub repository, which include this website source code"

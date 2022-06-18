@@ -7,11 +7,12 @@ import { useAppLayout } from "contexts/AppLayoutContext";
 import { cJoin } from "helpers/className";
 import { slugify } from "helpers/formatters";
 import { getAssetURL, ImageQuality } from "helpers/img";
+import { isDefined, isDefinedAndNotEmpty } from "helpers/others";
 import { Immutable } from "helpers/types";
 import { useLightBox } from "hooks/useLightBox";
 import Markdown from "markdown-to-jsx";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useMemo } from "react";
 import ReactDOMServer from "react-dom/server";
 
 interface Props {
@@ -20,20 +21,20 @@ interface Props {
 }
 
 export function Markdawn(props: Immutable<Props>): JSX.Element {
+  const { className, text: rawText } = props;
   const appLayout = useAppLayout();
-  // eslint-disable-next-line no-irregular-whitespace
-  const text = `${preprocessMarkDawn(props.text)}​`;
-
   const router = useRouter();
-
   const [openLightBox, LightBox] = useLightBox();
+
+  // eslint-disable-next-line no-irregular-whitespace
+  const text = useMemo(() => `${preprocessMarkDawn(rawText)}​`, [rawText]);
 
   if (text) {
     return (
       <>
         <LightBox />
         <Markdown
-          className={cJoin("formatted", props.className)}
+          className={cJoin("formatted", className)}
           options={{
             slugify: slugify,
             overrides: {
@@ -155,15 +156,13 @@ export function Markdawn(props: Immutable<Props>): JSX.Element {
                   target?: string;
                   page?: string;
                 }) => {
-                  const slug = compProps.target
+                  const slug = isDefinedAndNotEmpty(compProps.target)
                     ? slugify(compProps.target)
                     : slugify(compProps.children?.toString());
                   return (
                     <a
                       onClick={async () =>
-                        router.replace(
-                          `${compProps.page ? compProps.page : ""}#${slug}`
-                        )
+                        router.replace(`${compProps.page ?? ""}#${slug}`)
                       }
                     >
                       {compProps.children}
@@ -175,7 +174,7 @@ export function Markdawn(props: Immutable<Props>): JSX.Element {
               player: {
                 component: () => (
                   <span className="text-dark opacity-70">
-                    {appLayout.playerName ? appLayout.playerName : "<player>"}
+                    {appLayout.playerName ?? "<player>"}
                   </span>
                 ),
               },
@@ -209,7 +208,7 @@ export function Markdawn(props: Immutable<Props>): JSX.Element {
                 component: (compProps: { children: React.ReactNode }) => (
                   <li
                     className={
-                      compProps.children &&
+                      isDefined(compProps.children) &&
                       ReactDOMServer.renderToStaticMarkup(
                         <>{compProps.children}</>
                       ).length > 100
@@ -243,7 +242,7 @@ export function Markdawn(props: Immutable<Props>): JSX.Element {
                   cite?: string;
                 }) => (
                   <blockquote>
-                    {compProps.cite ? (
+                    {isDefinedAndNotEmpty(compProps.cite) ? (
                       <>
                         &ldquo;{compProps.children}&rdquo;
                         <cite>— {compProps.cite}</cite>

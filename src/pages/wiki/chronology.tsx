@@ -12,6 +12,7 @@ import { GetChronologyItemsQuery, GetErasQuery } from "graphql/generated";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import { prettySlug } from "helpers/formatters";
+import { isDefined } from "helpers/others";
 import { GetStaticPropsContext } from "next";
 import { Fragment } from "react";
 
@@ -119,7 +120,7 @@ export default function Chronology(props: Props): JSX.Element {
           </InsetBox>
           {era.map((items, index) => (
             <Fragment key={index}>
-              {items[0].attributes?.year && (
+              {items[0].attributes && isDefined(items[0].attributes.year) && (
                 <ChronologyYearComponent
                   year={items[0].attributes.year}
                   items={items}

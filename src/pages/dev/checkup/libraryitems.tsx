@@ -115,7 +115,6 @@ type ReportLine = {
   frontendUrl: string;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function testingLibraryItem(
   libraryItems: Immutable<Props["libraryItems"]>
 ): Report {

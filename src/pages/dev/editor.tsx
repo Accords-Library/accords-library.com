@@ -42,7 +42,7 @@ export default function Editor(props: Immutable<Props>): JSX.Element {
         append = `</${wrapper}>`;
       }
 
-      if (addInnerNewLines) {
+      if (addInnerNewLines === true) {
         prepend = `${prepend}\n`;
         append = `\n${append}`;
       }

@@ -13,7 +13,7 @@ import { getReadySdk } from "graphql/sdk";
 import { prettyDate, prettySlug } from "helpers/formatters";
 import { Immutable } from "helpers/types";
 import { GetStaticPropsContext } from "next";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useMemo, useState } from "react";
 import { Icon } from "components/Ico";
 import { WithLabel } from "components/Inputs/WithLabel";
 import { TextInput } from "components/Inputs/TextInput";
@@ -35,18 +35,15 @@ export default function News(props: Immutable<Props>): JSX.Element {
   const hoverable = useMediaHoverable();
 
   const [searchName, setSearchName] = useState(defaultFiltersState.searchName);
+
   const [keepInfoVisible, setKeepInfoVisible] = useState(
     defaultFiltersState.keepInfoVisible
   );
 
-  const [filteredItems, setFilteredItems] = useState(
-    filterItems(posts, searchName)
+  const filteredItems = useMemo(
+    () => filterItems(posts, searchName),
+    [posts, searchName]
   );
-
-  useEffect(() => {
-    setFilteredItems(filterItems(posts, searchName));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchName]);
 
   const subPanel = (
     <SubPanel>
@@ -167,7 +164,7 @@ function filterItems(posts: Immutable<Props["posts"]>, searchName: string) {
       if (
         post.attributes?.translations?.[0]?.title
           .toLowerCase()
-          .includes(searchName.toLowerCase())
+          .includes(searchName.toLowerCase()) === true
       ) {
         return true;
       }

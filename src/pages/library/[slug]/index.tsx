@@ -35,7 +35,7 @@ import {
 } from "helpers/formatters";
 import { getAssetURL, ImageQuality } from "helpers/img";
 import { convertMmToInch } from "helpers/numbers";
-import { sortContent } from "helpers/others";
+import { isDefined, sortContent } from "helpers/others";
 import { Immutable } from "helpers/types";
 import { useLightBox } from "hooks/useLightBox";
 import { AnchorIds, useScrollTopOnChange } from "hooks/useScrollTopOnChange";
@@ -196,17 +196,19 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
                 {item?.urls && item.urls.length ? (
                   <div className="flex flex-row place-items-center gap-3">
                     <p>{langui.available_at}</p>
-                    {item.urls.map((url, index) => (
-                      <Fragment key={index}>
-                        {url?.url && (
-                          <Button
-                            href={url.url}
-                            target={"_blank"}
-                            text={prettyURL(url.url)}
-                          />
-                        )}
-                      </Fragment>
-                    ))}
+                    {item.urls
+                      .filter((url) => url)
+                      .map((url, index) => (
+                        <Fragment key={index}>
+                          {url?.url && (
+                            <Button
+                              href={url.url}
+                              target={"_blank"}
+                              text={prettyURL(url.url)}
+                            />
+                          )}
+                        </Fragment>
+                      ))}
                   </div>
                 ) : (
                   <p>{langui.item_not_available}</p>
@@ -342,7 +344,7 @@ export default function LibrarySlug(props: Immutable<Props>): JSX.Element {
                       <p>{convertMmToInch(item.size.height)} in</p>
                     </div>
                   </div>
-                  {item.size.thickness && (
+                  {isDefined(item.size.thickness) && (
                     <div
                       className="grid place-items-center gap-x-4 desktop:grid-flow-col
                       desktop:place-items-start"
@@ -523,7 +525,10 @@ export async function getStaticProps(
 ): Promise<{ notFound: boolean } | { props: Props }> {
   const sdk = getReadySdk();
   const item = await sdk.getLibraryItem({
-    slug: context.params?.slug ? context.params.slug.toString() : "",
+    slug:
+      context.params && isDefined(context.params.slug)
+        ? context.params.slug.toString()
+        : "",
     language_code: context.locale ?? "en",
   });
   if (!item.libraryItems?.data[0]?.attributes) return { notFound: true };

@@ -17,9 +17,7 @@ export function PageSelector(props: Immutable<Props>): JSX.Element {
   return (
     <div className={cJoin("flex flex-row place-content-center", className)}>
       <Button
-        onClick={() => {
-          if (page > 0) setPage(page - 1);
-        }}
+        onClick={() => setPage((current) => (page > 0 ? current - 1 : current))}
         className="rounded-r-none"
         icon={Icon.NavigateBefore}
       />
@@ -28,9 +26,9 @@ export function PageSelector(props: Immutable<Props>): JSX.Element {
         text={(page + 1).toString()}
       />
       <Button
-        onClick={() => {
-          if (page < maxPage) setPage(page + 1);
-        }}
+        onClick={() =>
+          setPage((current) => (page < maxPage ? page + 1 : current))
+        }
         className="rounded-l-none"
         icon={Icon.NavigateNext}
       />

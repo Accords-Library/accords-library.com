@@ -64,3 +64,21 @@ export function arrayMove<T>(arr: T[], old_index: number, new_index: number) {
   arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
   return arr;
 }
+
+export function isDefined<T>(t: T): t is NonNullable<T> {
+  return t !== null && t !== undefined;
+}
+
+export function isUndefined<T>(t: T | undefined | null): t is undefined | null {
+  return t === null || t === undefined;
+}
+
+export function isDefinedAndNotEmpty(
+  string: string | undefined | null
+): string is string {
+  return isDefined(string) && string.length > 0;
+}
+
+export function filterDefined<T>(t: T[]): NonNullable<T>[] {
+  return t.filter((item) => isDefined(item)) as NonNullable<T>[];
+}

@@ -24,6 +24,7 @@ import { Fragment, useState } from "react";
 import { Icon } from "components/Ico";
 import { useMediaHoverable } from "hooks/useMediaQuery";
 import { WithLabel } from "components/Inputs/WithLabel";
+import { isDefined } from "helpers/others";
 
 interface Props extends AppStaticProps {
   channel: NonNullable<
@@ -114,7 +115,10 @@ export async function getStaticProps(
 ): Promise<{ notFound: boolean } | { props: Props }> {
   const sdk = getReadySdk();
   const channel = await sdk.getVideoChannel({
-    channel: context.params?.uid ? context.params.uid.toString() : "",
+    channel:
+      context.params && isDefined(context.params.uid)
+        ? context.params.uid.toString()
+        : "",
   });
   if (!channel.videoChannels?.data[0].attributes) return { notFound: true };
   const props: Props = {

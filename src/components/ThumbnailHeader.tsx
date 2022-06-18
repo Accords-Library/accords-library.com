@@ -90,11 +90,9 @@ export function ThumbnailHeader(props: Props): JSX.Element {
           <div className="flex flex-col place-items-center gap-2">
             <h3 className="text-xl">{langui.categories}</h3>
             <div className="flex flex-row flex-wrap place-content-center gap-2">
-              {filterHasAttributes(categories.data).map(
-                (category) => (
-                  <Chip key={category.id}>{category.attributes.name}</Chip>
-                )
-              )}
+              {filterHasAttributes(categories.data).map((category) => (
+                <Chip key={category.id}>{category.attributes.name}</Chip>
+              ))}
             </div>
           </div>
         )}

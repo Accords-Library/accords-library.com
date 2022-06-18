@@ -88,9 +88,7 @@ interface TranslatedProps
   languages: AppStaticProps["languages"];
 }
 
-export function TranslatedPreviewLine(
-  props: TranslatedProps
-): JSX.Element {
+export function TranslatedPreviewLine(props: TranslatedProps): JSX.Element {
   const {
     translations = [{ title: props.slug, language: "default" }],
     slug,

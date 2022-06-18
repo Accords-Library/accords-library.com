@@ -244,8 +244,8 @@ export function PreviewCard(props: Props): JSX.Element {
             cIf(
               !keepInfoVisible,
               `-inset-x-0.5 bottom-2 opacity-0 group-hover:opacity-100 hoverable:absolute
-              hoverable:drop-shadow-shade-lg notHoverable:opacity-100
-              notHoverable:rounded-b-md`
+              hoverable:drop-shadow-shade-lg notHoverable:rounded-b-md
+              notHoverable:opacity-100`
             )
           )}
         >

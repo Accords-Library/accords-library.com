@@ -14,7 +14,11 @@ import { SubPanel } from "components/Panels/SubPanel";
 import DefinitionCard from "components/Wiki/DefinitionCard";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
-import { isDefined, isDefinedAndNotEmpty } from "helpers/others";
+import {
+  filterHasAttributes,
+  isDefined,
+  isDefinedAndNotEmpty,
+} from "helpers/others";
 import { WikiPageWithTranslations } from "helpers/types";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 import {
@@ -89,20 +93,24 @@ export default function WikiPage(props: Props): JSX.Element {
             </div>
           )}
 
-          {page.definitions?.map((definition, index) => (
-            <DefinitionCard
-              key={index}
-              source={definition?.source?.data?.attributes?.name}
-              translations={definition?.translations?.map((translation) => ({
-                language: translation?.language?.data?.attributes?.code,
-                definition: translation?.definition,
-                status: translation?.status,
-              }))}
-              index={index + 1}
-              languages={languages}
-              langui={langui}
-            />
-          ))}
+          {filterHasAttributes(page.definitions, ["translations"]).map(
+            (definition, index) => (
+              <DefinitionCard
+                key={index}
+                source={definition.source?.data?.attributes?.name}
+                translations={filterHasAttributes(definition.translations).map(
+                  (translation) => ({
+                    language: translation.language.data?.attributes?.code,
+                    definition: translation.definition,
+                    status: translation.status,
+                  })
+                )}
+                index={index + 1}
+                languages={languages}
+                langui={langui}
+              />
+            )
+          )}
         </div>
       )}
     </ContentPanel>
@@ -147,14 +155,13 @@ export async function getStaticPaths(
   const sdk = getReadySdk();
   const contents = await sdk.getWikiPagesSlugs();
   const paths: GetStaticPathsResult["paths"] = [];
-  contents.wikiPages?.data.map((wikiPage) => {
-    context.locales?.map((local) => {
-      if (wikiPage.attributes)
-        paths.push({
-          params: { slug: wikiPage.attributes.slug },
-          locale: local,
-        });
-    });
+  filterHasAttributes(contents.wikiPages?.data).map((wikiPage) => {
+    context.locales?.map((local) =>
+      paths.push({
+        params: { slug: wikiPage.attributes.slug },
+        locale: local,
+      })
+    );
   });
   return {
     paths,

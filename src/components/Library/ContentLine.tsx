@@ -3,7 +3,9 @@ import { Ico, Icon } from "components/Ico";
 import { Button } from "components/Inputs/Button";
 import { GetLibraryItemQuery } from "graphql/generated";
 import { AppStaticProps } from "graphql/getAppStaticProps";
+import { cIf, cJoin } from "helpers/className";
 import { prettyinlineTitle, prettySlug } from "helpers/formatters";
+import { filterHasAttributes } from "helpers/others";
 
 import { useToggle } from "hooks/useToggle";
 import { useState } from "react";
@@ -29,9 +31,10 @@ export function ContentLine(props: Props): JSX.Element {
   if (content.attributes) {
     return (
       <div
-        className={`grid gap-2 rounded-lg px-4 ${
-          opened && "my-2 h-auto bg-mid py-3 shadow-inner-sm shadow-shade"
-        }`}
+        className={cJoin(
+          "grid gap-2 rounded-lg px-4",
+          cIf(opened, "my-2 h-auto bg-mid py-3 shadow-inner-sm shadow-shade")
+        )}
       >
         <div
           className="grid grid-cols-[auto_auto_1fr_auto_12ch] place-items-center
@@ -52,11 +55,11 @@ export function ContentLine(props: Props): JSX.Element {
             </h3>
           </a>
           <div className="flex flex-row flex-wrap gap-1">
-            {content.attributes.content?.data?.attributes?.categories?.data.map(
-              (category) => (
-                <Chip key={category.id}>{category.attributes?.short}</Chip>
-              )
-            )}
+            {filterHasAttributes(
+              content.attributes.content?.data?.attributes?.categories?.data
+            ).map((category) => (
+              <Chip key={category.id}>{category.attributes.short}</Chip>
+            ))}
           </div>
           <p className="h-4 w-full border-b-2 border-dotted border-black opacity-30"></p>
           <p>

@@ -4,6 +4,7 @@ import {
   GetLibraryItemScansQuery,
 } from "graphql/generated";
 import { AppStaticProps } from "../graphql/getAppStaticProps";
+import { SelectiveRequiredNonNullable } from "./types";
 
 type SortContentProps =
   | NonNullable<
@@ -59,11 +60,6 @@ export function getStatusDescription(
   }
 }
 
-export function arrayMove<T>(arr: T[], old_index: number, new_index: number) {
-  arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
-  return arr;
-}
-
 export function isDefined<T>(t: T): t is NonNullable<T> {
   return t !== null && t !== undefined;
 }
@@ -78,6 +74,51 @@ export function isDefinedAndNotEmpty(
   return isDefined(string) && string.length > 0;
 }
 
-export function filterDefined<T>(t: T[]): NonNullable<T>[] {
+export function filterDefined<T>(t: T[] | undefined | null): NonNullable<T>[] {
+  if (isUndefined(t)) return [];
   return t.filter((item) => isDefined(item)) as NonNullable<T>[];
+}
+
+export function filterHasAttributes<T, P extends keyof NonNullable<T>>(
+  t: T[] | undefined | null,
+  attributes?: P[]
+): SelectiveRequiredNonNullable<NonNullable<T>, P>[] {
+  if (isUndefined(t)) return [];
+  return t.filter((item) => {
+    if (isDefined(item)) {
+      const attributesToCheck = attributes ?? (Object.keys(item) as P[]);
+      return attributesToCheck.every((attribute) => isDefined(item[attribute]));
+    }
+    return false;
+  }) as unknown as SelectiveRequiredNonNullable<NonNullable<T>, P>[];
+}
+
+export function iterateMap<K, V, U>(
+  map: Map<K, V>,
+  callbackfn: (key: K, value: V, index: number) => U
+): U[] {
+  const result: U[] = [];
+  let index = 0;
+  for (const [key, value] of map.entries()) {
+    result.push(callbackfn(key, value, index));
+    index += 1;
+  }
+  return result;
+}
+
+export function mapMoveEntry<K, V>(
+  map: Map<K, V>,
+  sourceIndex: number,
+  targetIndex: number
+) {
+  return new Map(arrayMove([...map], sourceIndex, targetIndex));
+}
+
+function arrayMove<T>(arr: T[], sourceIndex: number, targetIndex: number) {
+  arr.splice(targetIndex, 0, arr.splice(sourceIndex, 1)[0]);
+  return arr;
+}
+
+export function mapRemoveEmptyValues<K, V>(groups: Map<K, V[]>): Map<K, V[]> {
+  return new Map([...groups].filter(([_, items]) => items.length > 0));
 }

@@ -63,9 +63,8 @@ export function Button(props: Props): JSX.Element {
             text-dark transition-all`,
             cIf(
               active,
-              "!border-black bg-black text-light drop-shadow-black-lg",
-              `cursor-pointer hover:bg-dark hover:text-light hover:drop-shadow-shade-lg
-              active:border-black active:bg-black active:text-light active:drop-shadow-black-lg`
+              "!border-black bg-black !text-light drop-shadow-black-lg",
+              "cursor-pointer hover:bg-dark hover:text-light hover:drop-shadow-shade-lg"
             ),
             className
           )}

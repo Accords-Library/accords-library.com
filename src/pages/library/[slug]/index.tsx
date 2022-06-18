@@ -35,7 +35,12 @@ import {
 } from "helpers/formatters";
 import { getAssetURL, ImageQuality } from "helpers/img";
 import { convertMmToInch } from "helpers/numbers";
-import { isDefined, sortContent } from "helpers/others";
+import {
+  filterHasAttributes,
+  isDefined,
+  isDefinedAndNotEmpty,
+  sortContent,
+} from "helpers/others";
 
 import { useLightBox } from "hooks/useLightBox";
 import { AnchorIds, useScrollTopOnChange } from "hooks/useScrollTopOnChange";
@@ -172,7 +177,9 @@ export default function LibrarySlug(props: Props): JSX.Element {
             )}
             <div className="grid place-items-center text-center">
               <h1 className="text-3xl">{item?.title}</h1>
-              {item?.subtitle && <h2 className="text-2xl">{item.subtitle}</h2>}
+              {item && isDefinedAndNotEmpty(item.subtitle) && (
+                <h2 className="text-2xl">{item.subtitle}</h2>
+              )}
             </div>
 
             <PreviewCardCTAs
@@ -196,19 +203,15 @@ export default function LibrarySlug(props: Props): JSX.Element {
                 {item?.urls && item.urls.length ? (
                   <div className="flex flex-row place-items-center gap-3">
                     <p>{langui.available_at}</p>
-                    {item.urls
-                      .filter((url) => url)
-                      .map((url, index) => (
-                        <Fragment key={index}>
-                          {url?.url && (
-                            <Button
-                              href={url.url}
-                              target={"_blank"}
-                              text={prettyURL(url.url)}
-                            />
-                          )}
-                        </Fragment>
-                      ))}
+                    {filterHasAttributes(item.urls).map((url, index) => (
+                      <Fragment key={index}>
+                        <Button
+                          href={url.url}
+                          target={"_blank"}
+                          text={prettyURL(url.url)}
+                        />
+                      </Fragment>
+                    ))}
                   </div>
                 ) : (
                   <p>{langui.item_not_available}</p>
@@ -225,26 +228,19 @@ export default function LibrarySlug(props: Props): JSX.Element {
               className="grid w-full grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] items-end
               gap-8"
             >
-              {item.gallery.data.map((galleryItem, index) => (
-                <Fragment key={galleryItem.id}>
-                  {galleryItem.attributes && (
+              {filterHasAttributes(item.gallery.data).map(
+                (galleryItem, index) => (
+                  <Fragment key={galleryItem.id}>
                     <div
                       className="relative aspect-square cursor-pointer
                       transition-transform hover:scale-[1.02]"
                       onClick={() => {
-                        if (item.gallery?.data) {
-                          const images: string[] = [];
-                          item.gallery.data.map((image) => {
-                            if (image.attributes)
-                              images.push(
-                                getAssetURL(
-                                  image.attributes.url,
-                                  ImageQuality.Large
-                                )
-                              );
-                          });
-                          openLightBox(images, index);
-                        }
+                        const images: string[] = filterHasAttributes(
+                          item.gallery?.data
+                        ).map((image) =>
+                          getAssetURL(image.attributes.url, ImageQuality.Large)
+                        );
+                        openLightBox(images, index);
                       }}
                     >
                       <Img
@@ -253,9 +249,9 @@ export default function LibrarySlug(props: Props): JSX.Element {
                         image={galleryItem.attributes}
                       />
                     </div>
-                  )}
-                </Fragment>
-              ))}
+                  </Fragment>
+                )
+              )}
             </div>
           </div>
         )}
@@ -437,46 +433,44 @@ export default function LibrarySlug(props: Props): JSX.Element {
               className="grid w-full grid-cols-[repeat(auto-fill,minmax(15rem,1fr))]
               items-end gap-8 mobile:grid-cols-2 thin:grid-cols-1"
             >
-              {item.subitems.data.map((subitem) => (
+              {filterHasAttributes(item.subitems.data).map((subitem) => (
                 <Fragment key={subitem.id}>
-                  {subitem.attributes && subitem.id && (
-                    <PreviewCard
-                      href={`/library/${subitem.attributes.slug}`}
-                      title={subitem.attributes.title}
-                      subtitle={subitem.attributes.subtitle}
-                      thumbnail={subitem.attributes.thumbnail?.data?.attributes}
-                      thumbnailAspectRatio="21/29.7"
-                      thumbnailRounded={false}
-                      keepInfoVisible={keepInfoVisible}
-                      topChips={
-                        subitem.attributes.metadata &&
-                        subitem.attributes.metadata.length > 0 &&
-                        subitem.attributes.metadata[0]
-                          ? [prettyItemSubType(subitem.attributes.metadata[0])]
-                          : []
-                      }
-                      bottomChips={subitem.attributes.categories?.data.map(
-                        (category) => category.attributes?.short ?? ""
-                      )}
-                      metadata={{
-                        currencies: currencies,
-                        release_date: subitem.attributes.release_date,
-                        price: subitem.attributes.price,
-                        position: "Bottom",
-                      }}
-                      infoAppend={
-                        <PreviewCardCTAs
-                          id={subitem.id}
-                          langui={langui}
-                          displayCTAs={
-                            !isUntangibleGroupItem(
-                              subitem.attributes.metadata?.[0]
-                            )
-                          }
-                        />
-                      }
-                    />
-                  )}
+                  <PreviewCard
+                    href={`/library/${subitem.attributes.slug}`}
+                    title={subitem.attributes.title}
+                    subtitle={subitem.attributes.subtitle}
+                    thumbnail={subitem.attributes.thumbnail?.data?.attributes}
+                    thumbnailAspectRatio="21/29.7"
+                    thumbnailRounded={false}
+                    keepInfoVisible={keepInfoVisible}
+                    topChips={
+                      subitem.attributes.metadata &&
+                      subitem.attributes.metadata.length > 0 &&
+                      subitem.attributes.metadata[0]
+                        ? [prettyItemSubType(subitem.attributes.metadata[0])]
+                        : []
+                    }
+                    bottomChips={subitem.attributes.categories?.data.map(
+                      (category) => category.attributes?.short ?? ""
+                    )}
+                    metadata={{
+                      currencies: currencies,
+                      release_date: subitem.attributes.release_date,
+                      price: subitem.attributes.price,
+                      position: "Bottom",
+                    }}
+                    infoAppend={
+                      <PreviewCardCTAs
+                        id={subitem.id}
+                        langui={langui}
+                        displayCTAs={
+                          !isUntangibleGroupItem(
+                            subitem.attributes.metadata?.[0]
+                          )
+                        }
+                      />
+                    }
+                  />
                 </Fragment>
               ))}
             </div>
@@ -548,13 +542,12 @@ export async function getStaticPaths(
   const sdk = getReadySdk();
   const libraryItems = await sdk.getLibraryItemsSlugs();
   const paths: GetStaticPathsResult["paths"] = [];
-  if (libraryItems.libraryItems) {
-    libraryItems.libraryItems.data.map((item) => {
-      context.locales?.map((local) => {
-        paths.push({ params: { slug: item.attributes?.slug }, locale: local });
-      });
-    });
-  }
+  filterHasAttributes(libraryItems.libraryItems?.data).map((item) => {
+    context.locales?.map((local) =>
+      paths.push({ params: { slug: item.attributes?.slug }, locale: local })
+    );
+  });
+
   return {
     paths,
     fallback: "blocking",

@@ -89,7 +89,7 @@ interface TranslatedProps
 }
 
 export function TranslatedPreviewLine(
-  props: Immutable<TranslatedProps>
+  props: TranslatedProps
 ): JSX.Element {
   const {
     translations = [{ title: props.slug, language: "default" }],

@@ -2,6 +2,7 @@ import { Chip } from "components/Chip";
 import { RecorderChipFragment } from "graphql/generated";
 import { AppStaticProps } from "graphql/getAppStaticProps";
 import { ImageQuality } from "helpers/img";
+import { filterHasAttributes } from "helpers/others";
 
 import { Fragment } from "react";
 import { Img } from "./Img";
@@ -33,13 +34,13 @@ export function RecorderChip(props: Props): JSX.Element {
               {recorder.languages?.data && recorder.languages.data.length > 0 && (
                 <div className="flex flex-row flex-wrap gap-1">
                   <p>{langui.languages}:</p>
-                  {recorder.languages.data.map((language) => (
-                    <Fragment key={language.attributes?.code}>
-                      {language.attributes && (
+                  {filterHasAttributes(recorder.languages.data).map(
+                    (language) => (
+                      <Fragment key={language.attributes.code}>
                         <Chip>{language.attributes.code.toUpperCase()}</Chip>
-                      )}
-                    </Fragment>
-                  ))}
+                      </Fragment>
+                    )
+                  )}
                 </div>
               )}
               {recorder.pronouns && (

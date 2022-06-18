@@ -30,9 +30,13 @@ export interface WikiPageWithTranslations
   translations: NonNullable<WikiPage["translations"]>;
 }
 
-export type RequiredNonNullable<T> = Required<{
-  [P in keyof T]: NonNullable<T[P]>;
-}>;
+export type RequiredNonNullable<T> = {
+  [P in keyof T]-?: NonNullable<T[P]>;
+};
+
+export type SelectiveRequiredNonNullable<T, K extends keyof T> = Omit<T, K> & {
+  [P in K]-?: NonNullable<T[P]>;
+};
 
 export enum LibraryItemUserStatus {
   None = 0,

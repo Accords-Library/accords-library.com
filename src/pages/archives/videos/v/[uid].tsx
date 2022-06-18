@@ -18,7 +18,7 @@ import { GetVideoQuery } from "graphql/generated";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import { prettyDate, prettyShortenNumber } from "helpers/formatters";
-import { isDefined } from "helpers/others";
+import { filterHasAttributes, isDefined } from "helpers/others";
 import { getVideoFile } from "helpers/videos";
 import { useMediaMobile } from "hooks/useMediaQuery";
 import {
@@ -213,10 +213,9 @@ export async function getStaticPaths(
   const videos = await sdk.getVideosSlugs();
   const paths: GetStaticPathsResult["paths"] = [];
   if (videos.videos?.data)
-    videos.videos.data.map((video) => {
+    filterHasAttributes(videos.videos.data).map((video) => {
       context.locales?.map((local) => {
-        if (video.attributes)
-          paths.push({ params: { uid: video.attributes.uid }, locale: local });
+        paths.push({ params: { uid: video.attributes.uid }, locale: local });
       });
     });
   return {

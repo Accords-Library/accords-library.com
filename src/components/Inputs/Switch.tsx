@@ -11,7 +11,7 @@ interface Props {
 }
 
 export function Switch(props: Props): JSX.Element {
-  const { state, setState, className, disabled } = props;
+  const { state, setState, className, disabled = false } = props;
   const toggleState = useToggle(setState);
   return (
     <div
@@ -26,7 +26,7 @@ export function Switch(props: Props): JSX.Element {
         className
       )}
       onClick={() => {
-        if (disabled === false) toggleState();
+        if (!disabled) toggleState();
       }}
     >
       <div

@@ -15,7 +15,7 @@ import { GetLibraryItemScansQuery } from "graphql/generated";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import { prettyinlineTitle, prettySlug } from "helpers/formatters";
-import { isDefined, sortContent } from "helpers/others";
+import { filterHasAttributes, isDefined, sortContent } from "helpers/others";
 
 import { useLightBox } from "hooks/useLightBox";
 import {
@@ -146,14 +146,12 @@ export async function getStaticPaths(
   const sdk = getReadySdk();
   const libraryItems = await sdk.getLibraryItemsSlugs({});
   const paths: GetStaticPathsResult["paths"] = [];
-  if (libraryItems.libraryItems) {
-    libraryItems.libraryItems.data.map((item) => {
-      context.locales?.map((local) => {
-        if (item.attributes)
-          paths.push({ params: { slug: item.attributes.slug }, locale: local });
-      });
-    });
-  }
+  filterHasAttributes(libraryItems.libraryItems?.data).map((item) => {
+    context.locales?.map((local) =>
+      paths.push({ params: { slug: item.attributes.slug }, locale: local })
+    );
+  });
+
   return {
     paths,
     fallback: "blocking",

@@ -43,7 +43,7 @@ export function Select(props: Props): JSX.Element {
             className="!text-xs"
             onClick={() => {
               setState(-1);
-              toggleOpened();
+              setOpened(false);
             }}
           />
         )}

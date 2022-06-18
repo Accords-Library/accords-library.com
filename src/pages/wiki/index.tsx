@@ -20,6 +20,8 @@ import { Switch } from "components/Inputs/Switch";
 import { TextInput } from "components/Inputs/TextInput";
 import { WithLabel } from "components/Inputs/WithLabel";
 import { useMediaHoverable } from "hooks/useMediaQuery";
+import { filterHasAttributes } from "helpers/others";
+import { ContentPlaceholder } from "components/PanelComponents/ContentPlaceholder";
 
 interface Props extends AppStaticProps {
   pages: NonNullable<GetWikiPagesPreviewsQuery["wikiPages"]>["data"];
@@ -93,30 +95,37 @@ export default function Wiki(props: Props): JSX.Element {
         className="grid grid-cols-2 items-end gap-8
         desktop:grid-cols-[repeat(auto-fill,_minmax(20rem,1fr))] mobile:gap-4"
       >
-        {filteredPages.map((page) => (
+        {/* TODO: Add to langui */}
+        {filteredPages.length === 0 && (
+          <ContentPlaceholder
+            message={
+              "No results. You can try changing or resetting the search parameters."
+            }
+            icon={Icon.ChevronLeft}
+          />
+        )}
+        {filterHasAttributes(filteredPages).map((page) => (
           <Fragment key={page.id}>
-            {page.attributes && (
-              <TranslatedPreviewCard
-                href={`/wiki/${page.attributes.slug}`}
-                translations={page.attributes.translations?.map(
-                  (translation) => ({
-                    title: translation?.title,
-                    description: translation?.summary,
-                    language: translation?.language?.data?.attributes?.code,
-                  })
-                )}
-                thumbnail={page.attributes.thumbnail?.data?.attributes}
-                thumbnailAspectRatio={"4/3"}
-                thumbnailRounded
-                thumbnailForceAspectRatio
-                languages={languages}
-                slug={page.attributes.slug}
-                keepInfoVisible={keepInfoVisible}
-                bottomChips={page.attributes.categories?.data.map(
-                  (category) => category.attributes?.short ?? ""
-                )}
-              />
-            )}
+            <TranslatedPreviewCard
+              href={`/wiki/${page.attributes.slug}`}
+              translations={page.attributes.translations?.map(
+                (translation) => ({
+                  title: translation?.title,
+                  description: translation?.summary,
+                  language: translation?.language?.data?.attributes?.code,
+                })
+              )}
+              thumbnail={page.attributes.thumbnail?.data?.attributes}
+              thumbnailAspectRatio={"4/3"}
+              thumbnailRounded
+              thumbnailForceAspectRatio
+              languages={languages}
+              slug={page.attributes.slug}
+              keepInfoVisible={keepInfoVisible}
+              bottomChips={page.attributes.categories?.data.map(
+                (category) => category.attributes?.short ?? ""
+              )}
+            />
           </Fragment>
         ))}
       </div>
@@ -150,17 +159,15 @@ export async function getStaticProps(
 }
 
 function sortPages(pages: Props["pages"]): Props["pages"] {
-  const sortedPages = [...pages];
-  sortedPages.sort((a, b) => {
+  return pages.sort((a, b) => {
     const slugA = a.attributes?.slug ?? "";
     const slugB = b.attributes?.slug ?? "";
     return slugA.localeCompare(slugB);
   });
-  return sortedPages;
 }
 
 function filterPages(posts: Props["pages"], searchName: string) {
-  return [...posts].filter((post) => {
+  return posts.filter((post) => {
     if (searchName.length > 1) {
       if (
         post.attributes?.translations?.[0]?.title

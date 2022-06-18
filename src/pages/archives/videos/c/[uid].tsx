@@ -24,7 +24,7 @@ import { Fragment, useState } from "react";
 import { Icon } from "components/Ico";
 import { useMediaHoverable } from "hooks/useMediaQuery";
 import { WithLabel } from "components/Inputs/WithLabel";
-import { isDefined } from "helpers/others";
+import { filterHasAttributes, isDefined } from "helpers/others";
 
 interface Props extends AppStaticProps {
   channel: NonNullable<
@@ -74,27 +74,25 @@ export default function Channel(props: Props): JSX.Element {
         className="grid items-start gap-8 border-b-[3px] border-dotted pb-12 last-of-type:border-0
         desktop:grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] mobile:grid-cols-2"
       >
-        {channel?.videos?.data.map((video) => (
+        {filterHasAttributes(channel?.videos?.data).map((video) => (
           <Fragment key={video.id}>
-            {video.attributes && (
-              <PreviewCard
-                href={`/archives/videos/v/${video.attributes.uid}`}
-                title={video.attributes.title}
-                thumbnail={getVideoThumbnailURL(video.attributes.uid)}
-                thumbnailAspectRatio="16/9"
-                keepInfoVisible={keepInfoVisible}
-                metadata={{
-                  release_date: video.attributes.published_date,
-                  views: video.attributes.views,
-                  author: channel.title,
-                  position: "Top",
-                }}
-                hoverlay={{
-                  __typename: "Video",
-                  duration: video.attributes.duration,
-                }}
-              />
-            )}
+            <PreviewCard
+              href={`/archives/videos/v/${video.attributes.uid}`}
+              title={video.attributes.title}
+              thumbnail={getVideoThumbnailURL(video.attributes.uid)}
+              thumbnailAspectRatio="16/9"
+              keepInfoVisible={keepInfoVisible}
+              metadata={{
+                release_date: video.attributes.published_date,
+                views: video.attributes.views,
+                author: channel?.title,
+                position: "Top",
+              }}
+              hoverlay={{
+                __typename: "Video",
+                duration: video.attributes.duration,
+              }}
+            />
           </Fragment>
         ))}
       </div>
@@ -137,13 +135,12 @@ export async function getStaticPaths(
   const channels = await sdk.getVideoChannelsSlugs();
   const paths: GetStaticPathsResult["paths"] = [];
   if (channels.videoChannels?.data)
-    channels.videoChannels.data.map((channel) => {
+    filterHasAttributes(channels.videoChannels.data).map((channel) => {
       context.locales?.map((local) => {
-        if (channel.attributes)
-          paths.push({
-            params: { uid: channel.attributes.uid },
-            locale: local,
-          });
+        paths.push({
+          params: { uid: channel.attributes.uid },
+          locale: local,
+        });
       });
     });
   return {

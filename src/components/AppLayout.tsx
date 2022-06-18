@@ -5,7 +5,13 @@ import { AppStaticProps } from "graphql/getAppStaticProps";
 import { cIf, cJoin } from "helpers/className";
 import { prettyLanguage, prettySlug } from "helpers/formatters";
 import { getOgImage, ImageQuality } from "helpers/img";
-import { isDefined, isDefinedAndNotEmpty } from "helpers/others";
+import {
+  filterHasAttributes,
+  isDefined,
+  isDefinedAndNotEmpty,
+  isUndefined,
+  iterateMap,
+} from "helpers/others";
 // import { getClient, Indexes, search, SearchResult } from "helpers/search";
 
 import { useMediaMobile } from "hooks/useMediaQuery";
@@ -19,6 +25,7 @@ import { ButtonGroup } from "./Inputs/ButtonGroup";
 import { OrderableList } from "./Inputs/OrderableList";
 import { Select } from "./Inputs/Select";
 import { TextInput } from "./Inputs/TextInput";
+import { ContentPlaceholder } from "./PanelComponents/ContentPlaceholder";
 import { MainPanel } from "./Panels/MainPanel";
 import { Popup } from "./Popup";
 
@@ -98,7 +105,7 @@ export function AppLayout(props: Props): JSX.Element {
         if (SwipeEventData.velocity < SENSIBILITY_SWIPE) return;
         if (mainPanelOpen === true) {
           setMainPanelOpen(false);
-        } else if (subPanel === true && contentPanel === true) {
+        } else if (isDefined(subPanel) && isDefined(contentPanel)) {
           setSubPanelOpen(true);
         }
       }
@@ -116,7 +123,7 @@ export function AppLayout(props: Props): JSX.Element {
   });
 
   const turnSubIntoContent = useMemo(
-    () => isDefined(subPanel) && isDefined(contentPanel),
+    () => isDefined(subPanel) && isUndefined(contentPanel),
     [contentPanel, subPanel]
   );
 
@@ -173,11 +180,8 @@ export function AppLayout(props: Props): JSX.Element {
 
   const currencyOptions = useMemo(() => {
     const list: string[] = [];
-    currencies.map((currentCurrency) => {
-      if (
-        currentCurrency.attributes &&
-        isDefinedAndNotEmpty(currentCurrency.attributes.code)
-      )
+    filterHasAttributes(currencies).map((currentCurrency) => {
+      if (isDefinedAndNotEmpty(currentCurrency.attributes.code))
         list.push(currentCurrency.attributes.code);
     });
     return list;
@@ -283,15 +287,10 @@ export function AppLayout(props: Props): JSX.Element {
           {isDefined(contentPanel) ? (
             contentPanel
           ) : (
-            <div className="grid h-full place-content-center">
-              <div
-                className="grid grid-flow-col place-items-center gap-9 rounded-2xl
-                border-2 border-dotted border-dark p-8 text-dark opacity-40"
-              >
-                <p className="text-4xl">❮</p>
-                <p className="w-64 text-2xl">{langui.select_option_sidebar}</p>
-              </div>
-            </div>
+            <ContentPlaceholder
+              message={langui.select_option_sidebar ?? ""}
+              icon={Icon.ChevronLeft}
+            />
           )}
         </div>
 
@@ -299,11 +298,10 @@ export function AppLayout(props: Props): JSX.Element {
         {isDefined(subPanel) && (
           <div
             className={cJoin(
-              `texture-paper-dots overflow-y-scroll border-r-[1px] border-dotted
-              border-black bg-light transition-transform duration-300 [grid-area:sub]
-              [scrollbar-width:none] webkit-scrollbar:w-0 mobile:z-10 mobile:w-[90%]
-              mobile:justify-self-end mobile:border-r-0 mobile:border-l-[1px]
-              mobile:[grid-area:content]`,
+              `texture-paper-dots overflow-y-scroll border-r-[1px] border-dark/50 bg-light
+              transition-transform duration-300 [grid-area:sub] [scrollbar-width:none]
+              webkit-scrollbar:w-0 mobile:z-10 mobile:w-[90%] mobile:justify-self-end
+              mobile:border-r-0 mobile:border-l-[1px] mobile:[grid-area:content]`,
               turnSubIntoContent
                 ? "mobile:w-full mobile:border-l-0"
                 : subPanelOpen === true
@@ -318,10 +316,10 @@ export function AppLayout(props: Props): JSX.Element {
         {/* Main panel */}
         <div
           className={cJoin(
-            `texture-paper-dots overflow-y-scroll border-r-[1px] border-dotted
-            border-black bg-light transition-transform duration-300 [grid-area:main]
-            [scrollbar-width:none] webkit-scrollbar:w-0 mobile:z-10 mobile:w-[90%]
-            mobile:justify-self-start mobile:[grid-area:content]`,
+            `texture-paper-dots overflow-y-scroll border-r-[1px] border-dark/50 bg-light
+            transition-transform duration-300 [grid-area:main] [scrollbar-width:none]
+            webkit-scrollbar:w-0 mobile:z-10 mobile:w-[90%] mobile:justify-self-start
+            mobile:[grid-area:content]`,
             cIf(mainPanelOpen === false, "mobile:-translate-x-full")
           )}
         >
@@ -399,8 +397,9 @@ export function AppLayout(props: Props): JSX.Element {
                       ])
                     }
                     onChange={(items) => {
-                      const newPreferredLanguages = [...items].map(
-                        ([code]) => code
+                      const newPreferredLanguages = iterateMap(
+                        items,
+                        (code) => code
                       );
                       setPreferredLanguages(newPreferredLanguages);
                       if (router.locale !== newPreferredLanguages[0]) {

@@ -60,7 +60,7 @@ export function MainPanel(props: Props): JSX.Element {
           </Link>
 
           {(!mainPanelReduced || !isDesktop) && (
-            <h2 className="text-3xl">Accord&rsquo;s Library</h2>
+            <h2 className="mb-4 text-3xl">Accord&rsquo;s Library</h2>
           )}
 
           <div
@@ -155,7 +155,7 @@ export function MainPanel(props: Props): JSX.Element {
       */}
 
       <NavOption
-        url="https://gallery.accords-library.com/"
+        url="https://gallery.accords-library.com/posts/"
         icon={Icon.Collections}
         title={langui.gallery}
         reduced={mainPanelReduced && isDesktop}

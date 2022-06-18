@@ -26,7 +26,11 @@ import {
   prettySlug,
 } from "helpers/formatters";
 import { isUntangibleGroupItem } from "helpers/libraryItem";
-import { getStatusDescription } from "helpers/others";
+import {
+  filterHasAttributes,
+  getStatusDescription,
+  isDefinedAndNotEmpty,
+} from "helpers/others";
 import { ContentWithTranslations } from "helpers/types";
 import { useMediaMobile } from "hooks/useMediaQuery";
 import { AnchorIds, useScrollTopOnChange } from "hooks/useScrollTopOnChange";
@@ -82,31 +86,29 @@ export default function Content(props: Props): JSX.Element {
         horizontalLine
       />
 
-      {selectedTranslation?.text_set && (
+      {selectedTranslation?.text_set?.source_language?.data?.attributes
+        ?.code !== undefined && (
         <div className="grid gap-5">
           <h2 className="text-xl">
-            {selectedTranslation.text_set.source_language?.data?.attributes
-              ?.code === selectedTranslation.language?.data?.attributes?.code
+            {selectedTranslation.text_set.source_language.data.attributes
+              .code === selectedTranslation.language?.data?.attributes?.code
               ? langui.transcript_notice
               : langui.translation_notice}
           </h2>
 
-          {selectedTranslation.text_set.source_language?.data?.attributes
-            ?.code &&
-            selectedTranslation.text_set.source_language.data.attributes
-              .code !==
-              selectedTranslation.language?.data?.attributes?.code && (
-              <div className="grid place-items-center gap-2">
-                <p className="font-headers">{langui.source_language}:</p>
-                <Chip>
-                  {prettyLanguage(
-                    selectedTranslation.text_set.source_language.data.attributes
-                      .code,
-                    languages
-                  )}
-                </Chip>
-              </div>
-            )}
+          {selectedTranslation.text_set.source_language.data.attributes.code !==
+            selectedTranslation.language?.data?.attributes?.code && (
+            <div className="grid place-items-center gap-2">
+              <p className="font-headers">{langui.source_language}:</p>
+              <Chip>
+                {prettyLanguage(
+                  selectedTranslation.text_set.source_language.data.attributes
+                    .code,
+                  languages
+                )}
+              </Chip>
+            </div>
+          )}
 
           <div className="grid grid-flow-col place-content-center place-items-center gap-2">
             <p className="font-headers">{langui.status}:</p>
@@ -127,18 +129,16 @@ export default function Content(props: Props): JSX.Element {
               <div>
                 <p className="font-headers">{langui.transcribers}:</p>
                 <div className="grid place-content-center place-items-center gap-2">
-                  {selectedTranslation.text_set.transcribers.data.map(
-                    (recorder) => (
-                      <Fragment key={recorder.id}>
-                        {recorder.attributes && (
-                          <RecorderChip
-                            langui={langui}
-                            recorder={recorder.attributes}
-                          />
-                        )}
-                      </Fragment>
-                    )
-                  )}
+                  {filterHasAttributes(
+                    selectedTranslation.text_set.transcribers.data
+                  ).map((recorder) => (
+                    <Fragment key={recorder.id}>
+                      <RecorderChip
+                        langui={langui}
+                        recorder={recorder.attributes}
+                      />
+                    </Fragment>
+                  ))}
                 </div>
               </div>
             )}
@@ -148,18 +148,16 @@ export default function Content(props: Props): JSX.Element {
               <div>
                 <p className="font-headers">{langui.translators}:</p>
                 <div className="grid place-content-center place-items-center gap-2">
-                  {selectedTranslation.text_set.translators.data.map(
-                    (recorder) => (
-                      <Fragment key={recorder.id}>
-                        {recorder.attributes && (
-                          <RecorderChip
-                            langui={langui}
-                            recorder={recorder.attributes}
-                          />
-                        )}
-                      </Fragment>
-                    )
-                  )}
+                  {filterHasAttributes(
+                    selectedTranslation.text_set.translators.data
+                  ).map((recorder) => (
+                    <Fragment key={recorder.id}>
+                      <RecorderChip
+                        langui={langui}
+                        recorder={recorder.attributes}
+                      />
+                    </Fragment>
+                  ))}
                 </div>
               </div>
             )}
@@ -169,23 +167,21 @@ export default function Content(props: Props): JSX.Element {
               <div>
                 <p className="font-headers">{langui.proofreaders}:</p>
                 <div className="grid place-content-center place-items-center gap-2">
-                  {selectedTranslation.text_set.proofreaders.data.map(
-                    (recorder) => (
-                      <Fragment key={recorder.id}>
-                        {recorder.attributes && (
-                          <RecorderChip
-                            langui={langui}
-                            recorder={recorder.attributes}
-                          />
-                        )}
-                      </Fragment>
-                    )
-                  )}
+                  {filterHasAttributes(
+                    selectedTranslation.text_set.proofreaders.data
+                  ).map((recorder) => (
+                    <Fragment key={recorder.id}>
+                      <RecorderChip
+                        langui={langui}
+                        recorder={recorder.attributes}
+                      />
+                    </Fragment>
+                  ))}
                 </div>
               </div>
             )}
 
-          {selectedTranslation.text_set.notes && (
+          {isDefinedAndNotEmpty(selectedTranslation.text_set.notes) && (
             <div>
               <p className="font-headers">{"Notes"}:</p>
               <div className="grid place-content-center place-items-center gap-2">
@@ -450,13 +446,12 @@ export async function getStaticPaths(
   const sdk = getReadySdk();
   const contents = await sdk.getContentsSlugs();
   const paths: GetStaticPathsResult["paths"] = [];
-  contents.contents?.data.map((item) => {
+  filterHasAttributes(contents.contents?.data).map((item) => {
     context.locales?.map((local) => {
-      if (item.attributes)
-        paths.push({
-          params: { slug: item.attributes.slug },
-          locale: local,
-        });
+      paths.push({
+        params: { slug: item.attributes.slug },
+        locale: local,
+      });
     });
   });
   return {

@@ -21,6 +21,12 @@ import { WithLabel } from "components/Inputs/WithLabel";
 import { Button } from "components/Inputs/Button";
 import { TextInput } from "components/Inputs/TextInput";
 import { useMediaHoverable } from "hooks/useMediaQuery";
+import {
+  filterHasAttributes,
+  iterateMap,
+  mapRemoveEmptyValues,
+} from "helpers/others";
+import { ContentPlaceholder } from "components/PanelComponents/ContentPlaceholder";
 
 interface Props extends AppStaticProps {
   contents: NonNullable<GetContentsQuery["contents"]>["data"];
@@ -128,8 +134,18 @@ export default function Contents(props: Props): JSX.Element {
   );
   const contentPanel = (
     <ContentPanel width={ContentPanelWidthSizes.Full}>
-      {[...groups].map(
-        ([name, items], index) =>
+      {/* TODO: Add to langui */}
+      {groups.size === 0 && (
+        <ContentPlaceholder
+          message={
+            "No results. You can try changing or resetting the search parameters."
+          }
+          icon={Icon.ChevronLeft}
+        />
+      )}
+      {iterateMap(
+        groups,
+        (name, items, index) =>
           items.length > 0 && (
             <Fragment key={index}>
               {name && (
@@ -140,7 +156,10 @@ export default function Contents(props: Props): JSX.Element {
                   {name}
                   <Chip>{`${items.reduce((currentSum, item) => {
                     if (effectiveCombineRelatedContent) {
-                      if (item.attributes?.group?.data?.attributes?.combine) {
+                      if (
+                        item.attributes?.group?.data?.attributes?.combine ===
+                        true
+                      ) {
                         return (
                           currentSum +
                           (item.attributes.group.data.attributes.contents?.data
@@ -161,50 +180,49 @@ export default function Contents(props: Props): JSX.Element {
                 className="grid grid-cols-2 items-end gap-8
                 desktop:grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] mobile:gap-4"
               >
-                {items.map((item) => (
+                {filterHasAttributes(items).map((item) => (
                   <Fragment key={item.id}>
-                    {item.attributes && (
-                      <TranslatedPreviewCard
-                        href={`/contents/${item.attributes.slug}`}
-                        translations={item.attributes.translations?.map(
-                          (translation) => ({
-                            pre_title: translation?.pre_title,
-                            title: translation?.title,
-                            subtitle: translation?.subtitle,
-                            language:
-                              translation?.language?.data?.attributes?.code,
-                          })
-                        )}
-                        slug={item.attributes.slug}
-                        languages={languages}
-                        thumbnail={item.attributes.thumbnail?.data?.attributes}
-                        thumbnailAspectRatio="3/2"
-                        thumbnailForceAspectRatio
-                        stackNumber={
-                          effectiveCombineRelatedContent &&
-                          item.attributes.group?.data?.attributes?.combine
-                            ? item.attributes.group.data.attributes.contents
-                                ?.data.length
-                            : 0
-                        }
-                        topChips={
-                          item.attributes.type?.data?.attributes
-                            ? [
-                                item.attributes.type.data.attributes.titles?.[0]
-                                  ? item.attributes.type.data.attributes
-                                      .titles[0]?.title
-                                  : prettySlug(
-                                      item.attributes.type.data.attributes.slug
-                                    ),
-                              ]
-                            : undefined
-                        }
-                        bottomChips={item.attributes.categories?.data.map(
-                          (category) => category.attributes?.short ?? ""
-                        )}
-                        keepInfoVisible={keepInfoVisible}
-                      />
-                    )}
+                    <TranslatedPreviewCard
+                      href={`/contents/${item.attributes.slug}`}
+                      translations={item.attributes.translations?.map(
+                        (translation) => ({
+                          pre_title: translation?.pre_title,
+                          title: translation?.title,
+                          subtitle: translation?.subtitle,
+                          language:
+                            translation?.language?.data?.attributes?.code,
+                        })
+                      )}
+                      slug={item.attributes.slug}
+                      languages={languages}
+                      thumbnail={item.attributes.thumbnail?.data?.attributes}
+                      thumbnailAspectRatio="3/2"
+                      thumbnailForceAspectRatio
+                      stackNumber={
+                        effectiveCombineRelatedContent &&
+                        item.attributes.group?.data?.attributes?.combine ===
+                          true
+                          ? item.attributes.group.data.attributes.contents?.data
+                              .length
+                          : 0
+                      }
+                      topChips={
+                        item.attributes.type?.data?.attributes
+                          ? [
+                              item.attributes.type.data.attributes.titles?.[0]
+                                ? item.attributes.type.data.attributes.titles[0]
+                                    ?.title
+                                : prettySlug(
+                                    item.attributes.type.data.attributes.slug
+                                  ),
+                            ]
+                          : undefined
+                      }
+                      bottomChips={item.attributes.categories?.data.map(
+                        (category) => category.attributes?.short ?? ""
+                      )}
+                      keepInfoVisible={keepInfoVisible}
+                    />
                   </Fragment>
                 ))}
               </div>
@@ -252,71 +270,72 @@ function getGroups(
   groupByType: number,
   items: Props["contents"]
 ): GroupContentItems {
+  const groups: GroupContentItems = new Map();
+
   switch (groupByType) {
     case 0: {
-      const group = new Map();
-      group.set("Drakengard 1", []);
-      group.set("Drakengard 1.3", []);
-      group.set("Drakengard 2", []);
-      group.set("Drakengard 3", []);
-      group.set("Drakengard 4", []);
-      group.set("NieR Gestalt", []);
-      group.set("NieR Replicant", []);
-      group.set("NieR Replicant ver.1.22474487139...", []);
-      group.set("NieR:Automata", []);
-      group.set("NieR Re[in]carnation", []);
-      group.set("SINoALICE", []);
-      group.set("Voice of Cards", []);
-      group.set("Final Fantasy XIV", []);
-      group.set("Thou Shalt Not Die", []);
-      group.set("Bakuken", []);
-      group.set("YoRHa", []);
-      group.set("YoRHa Boys", []);
-      group.set(langui.no_category, []);
+      const noCategory = langui.no_category ?? "No category";
+      groups.set("Drakengard 1", []);
+      groups.set("Drakengard 1.3", []);
+      groups.set("Drakengard 2", []);
+      groups.set("Drakengard 3", []);
+      groups.set("Drakengard 4", []);
+      groups.set("NieR Gestalt", []);
+      groups.set("NieR Replicant", []);
+      groups.set("NieR Replicant ver.1.22474487139...", []);
+      groups.set("NieR:Automata", []);
+      groups.set("NieR Re[in]carnation", []);
+      groups.set("SINoALICE", []);
+      groups.set("Voice of Cards", []);
+      groups.set("Final Fantasy XIV", []);
+      groups.set("Thou Shalt Not Die", []);
+      groups.set("Bakuken", []);
+      groups.set("YoRHa", []);
+      groups.set("YoRHa Boys", []);
+      groups.set(noCategory, []);
 
       items.map((item) => {
         if (item.attributes?.categories?.data.length === 0) {
-          group.get(langui.no_category)?.push(item);
+          groups.get(noCategory)?.push(item);
         } else {
           item.attributes?.categories?.data.map((category) => {
-            group.get(category.attributes?.name)?.push(item);
+            groups.get(category.attributes?.name ?? noCategory)?.push(item);
           });
         }
       });
-      return group;
+      break;
     }
 
     case 1: {
-      const group = new Map();
       items.map((item) => {
+        const noType = langui.no_type ?? "No type";
         const type =
           item.attributes?.type?.data?.attributes?.titles?.[0]?.title ??
           item.attributes?.type?.data?.attributes?.slug
             ? prettySlug(item.attributes.type.data.attributes.slug)
             : langui.no_type;
-        if (!group.has(type)) group.set(type, []);
-        group.get(type)?.push(item);
+        if (!groups.has(type ?? noType)) groups.set(type ?? noType, []);
+        groups.get(type ?? noType)?.push(item);
       });
-      return group;
+      break;
     }
 
     default: {
-      const group: GroupContentItems = new Map();
-      group.set("", items);
-      return group;
+      groups.set("", items);
     }
   }
+  return mapRemoveEmptyValues(groups);
 }
 
 function filterContents(
-  contents: Immutable<Props["contents"]>,
+  contents: Props["contents"],
   combineRelatedContent: boolean,
   searchName: string
-): Immutable<Props["contents"]> {
+): Props["contents"] {
   return contents.filter((content) => {
     if (
       combineRelatedContent &&
-      content.attributes?.group?.data?.attributes?.combine &&
+      content.attributes?.group?.data?.attributes?.combine === true &&
       content.attributes.group.data.attributes.contents?.data[0].id !==
         content.id
     ) {

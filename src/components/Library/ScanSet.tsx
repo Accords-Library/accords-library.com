@@ -7,10 +7,15 @@ import { GetLibraryItemScansQuery } from "graphql/generated";
 import { AppStaticProps } from "graphql/getAppStaticProps";
 import { getAssetFilename, getAssetURL, ImageQuality } from "helpers/img";
 import { isInteger } from "helpers/numbers";
-import { getStatusDescription, isDefinedAndNotEmpty } from "helpers/others";
+import {
+  filterHasAttributes,
+  getStatusDescription,
+  isDefined,
+  isDefinedAndNotEmpty,
+} from "helpers/others";
 
 import { useSmartLanguage } from "hooks/useSmartLanguage";
-import { Fragment } from "react";
+import { Fragment, useMemo } from "react";
 
 interface Props {
   openLightBox: (images: string[], index?: number) => void;
@@ -81,9 +86,14 @@ export function ScanSet(props: Props): JSX.Element {
     },
   });
 
+  const pages = useMemo(
+    () => selectedScan && filterHasAttributes(selectedScan.pages?.data),
+    [selectedScan]
+  );
+
   return (
     <>
-      {selectedScan && (
+      {selectedScan && isDefined(pages) && (
         <div>
           <div
             className="flex flex-row flex-wrap place-items-center
@@ -126,16 +136,16 @@ export function ScanSet(props: Props): JSX.Element {
               <div>
                 <p className="font-headers">{"Scanners"}:</p>
                 <div className="grid place-content-center place-items-center gap-2">
-                  {selectedScan.scanners.data.map((scanner) => (
-                    <Fragment key={scanner.id}>
-                      {scanner.attributes && (
+                  {filterHasAttributes(selectedScan.scanners.data).map(
+                    (scanner) => (
+                      <Fragment key={scanner.id}>
                         <RecorderChip
                           langui={langui}
                           recorder={scanner.attributes}
                         />
-                      )}
-                    </Fragment>
-                  ))}
+                      </Fragment>
+                    )
+                  )}
                 </div>
               </div>
             )}
@@ -144,16 +154,18 @@ export function ScanSet(props: Props): JSX.Element {
               <div>
                 <p className="font-headers">{"Cleaners"}:</p>
                 <div className="grid place-content-center place-items-center gap-2">
-                  {selectedScan.cleaners.data.map((cleaner) => (
-                    <Fragment key={cleaner.id}>
-                      {cleaner.attributes && (
-                        <RecorderChip
-                          langui={langui}
-                          recorder={cleaner.attributes}
-                        />
-                      )}
-                    </Fragment>
-                  ))}
+                  {filterHasAttributes(selectedScan.cleaners.data).map(
+                    (cleaner) => (
+                      <Fragment key={cleaner.id}>
+                        {cleaner.attributes && (
+                          <RecorderChip
+                            langui={langui}
+                            recorder={cleaner.attributes}
+                          />
+                        )}
+                      </Fragment>
+                    )
+                  )}
                 </div>
               </div>
             )}
@@ -163,16 +175,18 @@ export function ScanSet(props: Props): JSX.Element {
                 <div>
                   <p className="font-headers">{"Typesetters"}:</p>
                   <div className="grid place-content-center place-items-center gap-2">
-                    {selectedScan.typesetters.data.map((typesetter) => (
-                      <Fragment key={typesetter.id}>
-                        {typesetter.attributes && (
-                          <RecorderChip
-                            langui={langui}
-                            recorder={typesetter.attributes}
-                          />
-                        )}
-                      </Fragment>
-                    ))}
+                    {filterHasAttributes(selectedScan.typesetters.data).map(
+                      (typesetter) => (
+                        <Fragment key={typesetter.id}>
+                          {typesetter.attributes && (
+                            <RecorderChip
+                              langui={langui}
+                              recorder={typesetter.attributes}
+                            />
+                          )}
+                        </Fragment>
+                      )
+                    )}
                   </div>
                 </div>
               )}
@@ -188,18 +202,15 @@ export function ScanSet(props: Props): JSX.Element {
             className="grid items-end gap-8 border-b-[3px] border-dotted pb-12 last-of-type:border-0
              desktop:grid-cols-[repeat(auto-fill,_minmax(10rem,1fr))] mobile:grid-cols-2"
           >
-            {selectedScan.pages?.data.map((page, index) => (
+            {pages.map((page, index) => (
               <div
                 key={page.id}
                 className="cursor-pointer transition-transform
                 drop-shadow-shade-lg hover:scale-[1.02]"
                 onClick={() => {
                   const images: string[] = [];
-                  selectedScan.pages?.data.map((image) => {
-                    if (
-                      image.attributes &&
-                      isDefinedAndNotEmpty(image.attributes.url)
-                    )
+                  pages.map((image) => {
+                    if (isDefinedAndNotEmpty(image.attributes.url))
                       images.push(
                         getAssetURL(image.attributes.url, ImageQuality.Large)
                       );

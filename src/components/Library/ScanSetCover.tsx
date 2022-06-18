@@ -8,7 +8,7 @@ import {
 } from "graphql/generated";
 import { AppStaticProps } from "graphql/getAppStaticProps";
 import { getAssetURL, ImageQuality } from "helpers/img";
-import { getStatusDescription } from "helpers/others";
+import { filterHasAttributes, getStatusDescription } from "helpers/others";
 
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { Fragment } from "react";
@@ -87,16 +87,16 @@ export function ScanSetCover(props: Props): JSX.Element {
                 <div>
                   <p className="font-headers">{"Scanners"}:</p>
                   <div className="grid place-content-center place-items-center gap-2">
-                    {selectedScan.scanners.data.map((scanner) => (
-                      <Fragment key={scanner.id}>
-                        {scanner.attributes && (
+                    {filterHasAttributes(selectedScan.scanners.data).map(
+                      (scanner) => (
+                        <Fragment key={scanner.id}>
                           <RecorderChip
                             langui={langui}
                             recorder={scanner.attributes}
                           />
-                        )}
-                      </Fragment>
-                    ))}
+                        </Fragment>
+                      )
+                    )}
                   </div>
                 </div>
               )}
@@ -105,16 +105,16 @@ export function ScanSetCover(props: Props): JSX.Element {
                 <div>
                   <p className="font-headers">{"Cleaners"}:</p>
                   <div className="grid place-content-center place-items-center gap-2">
-                    {selectedScan.cleaners.data.map((cleaner) => (
-                      <Fragment key={cleaner.id}>
-                        {cleaner.attributes && (
+                    {filterHasAttributes(selectedScan.cleaners.data).map(
+                      (cleaner) => (
+                        <Fragment key={cleaner.id}>
                           <RecorderChip
                             langui={langui}
                             recorder={cleaner.attributes}
                           />
-                        )}
-                      </Fragment>
-                    ))}
+                        </Fragment>
+                      )
+                    )}
                   </div>
                 </div>
               )}
@@ -124,16 +124,16 @@ export function ScanSetCover(props: Props): JSX.Element {
                   <div>
                     <p className="font-headers">{"Typesetters"}:</p>
                     <div className="grid place-content-center place-items-center gap-2">
-                      {selectedScan.typesetters.data.map((typesetter) => (
-                        <Fragment key={typesetter.id}>
-                          {typesetter.attributes && (
+                      {filterHasAttributes(selectedScan.typesetters.data).map(
+                        (typesetter) => (
+                          <Fragment key={typesetter.id}>
                             <RecorderChip
                               langui={langui}
                               recorder={typesetter.attributes}
                             />
-                          )}
-                        </Fragment>
-                      ))}
+                          </Fragment>
+                        )
+                      )}
                     </div>
                   </div>
                 )}

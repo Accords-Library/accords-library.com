@@ -1,5 +1,5 @@
 import { Ico, Icon } from "components/Ico";
-import { arrayMove, isDefinedAndNotEmpty } from "helpers/others";
+import { isDefinedAndNotEmpty, iterateMap, mapMoveEntry } from "helpers/others";
 
 import { Fragment, useCallback, useState } from "react";
 
@@ -16,17 +16,16 @@ export function OrderableList(props: Props): JSX.Element {
 
   const updateOrder = useCallback(
     (sourceIndex: number, targetIndex: number) => {
-      const newItems = arrayMove([...items], sourceIndex, targetIndex);
-      const map = new Map(newItems);
-      setItems(map);
-      onChange?.(map);
+      const newItems = mapMoveEntry(items, sourceIndex, targetIndex);
+      setItems(newItems);
+      onChange?.(newItems);
     },
     [items, onChange]
   );
 
   return (
     <div className="grid gap-2">
-      {[...items].map(([key, value], index) => (
+      {iterateMap(items, (key, value, index) => (
         <Fragment key={key}>
           {props.insertLabels &&
             isDefinedAndNotEmpty(props.insertLabels.get(index)) && (

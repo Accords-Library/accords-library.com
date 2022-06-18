@@ -18,6 +18,7 @@ import { GetVideosPreviewQuery } from "graphql/generated";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import { prettyDate } from "helpers/formatters";
+import { filterHasAttributes } from "helpers/others";
 import { getVideoThumbnailURL } from "helpers/videos";
 import { useMediaHoverable } from "hooks/useMediaQuery";
 import { GetStaticPropsContext } from "next";
@@ -95,27 +96,25 @@ export default function Videos(props: Props): JSX.Element {
         desktop:grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] mobile:grid-cols-2
         thin:grid-cols-1"
       >
-        {paginatedVideos[page].map((video) => (
+        {filterHasAttributes(paginatedVideos[page]).map((video) => (
           <Fragment key={video.id}>
-            {video.attributes && (
-              <PreviewCard
-                href={`/archives/videos/v/${video.attributes.uid}`}
-                title={video.attributes.title}
-                thumbnail={getVideoThumbnailURL(video.attributes.uid)}
-                thumbnailAspectRatio="16/9"
-                keepInfoVisible={keepInfoVisible}
-                metadata={{
-                  release_date: video.attributes.published_date,
-                  views: video.attributes.views,
-                  author: video.attributes.channel?.data?.attributes?.title,
-                  position: "Top",
-                }}
-                hoverlay={{
-                  __typename: "Video",
-                  duration: video.attributes.duration,
-                }}
-              />
-            )}
+            <PreviewCard
+              href={`/archives/videos/v/${video.attributes.uid}`}
+              title={video.attributes.title}
+              thumbnail={getVideoThumbnailURL(video.attributes.uid)}
+              thumbnailAspectRatio="16/9"
+              keepInfoVisible={keepInfoVisible}
+              metadata={{
+                release_date: video.attributes.published_date,
+                views: video.attributes.views,
+                author: video.attributes.channel?.data?.attributes?.title,
+                position: "Top",
+              }}
+              hoverlay={{
+                __typename: "Video",
+                duration: video.attributes.duration,
+              }}
+            />
           </Fragment>
         ))}
       </div>

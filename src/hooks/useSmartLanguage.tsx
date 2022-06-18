@@ -1,7 +1,7 @@
 import { LanguageSwitcher } from "components/Inputs/LanguageSwitcher";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { AppStaticProps } from "graphql/getAppStaticProps";
-import { isDefined } from "helpers/others";
+import { filterDefined, isDefined } from "helpers/others";
 
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
@@ -39,11 +39,9 @@ export function useSmartLanguage<T>(
 
   const availableLocales = useMemo(() => {
     const map = new Map<string, number>();
-    items.map((elem, index) => {
-      if (isDefined(elem)) {
-        const result = languageExtractor(elem);
-        if (isDefined(result)) map.set(result, index);
-      }
+    filterDefined(items).map((elem, index) => {
+      const result = languageExtractor(elem);
+      if (isDefined(result)) map.set(result, index);
     });
     return map;
   }, [items, languageExtractor]);

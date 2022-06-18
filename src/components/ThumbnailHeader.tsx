@@ -6,6 +6,7 @@ import { GetContentTextQuery, UploadImageFragment } from "graphql/generated";
 import { AppStaticProps } from "graphql/getAppStaticProps";
 import { prettyinlineTitle, prettySlug, slugify } from "helpers/formatters";
 import { getAssetURL, ImageQuality } from "helpers/img";
+import { filterHasAttributes } from "helpers/others";
 
 import { useLightBox } from "hooks/useLightBox";
 
@@ -89,9 +90,11 @@ export function ThumbnailHeader(props: Props): JSX.Element {
           <div className="flex flex-col place-items-center gap-2">
             <h3 className="text-xl">{langui.categories}</h3>
             <div className="flex flex-row flex-wrap place-content-center gap-2">
-              {categories.data.map((category) => (
-                <Chip key={category.id}>{category.attributes?.name}</Chip>
-              ))}
+              {filterHasAttributes(categories.data).map(
+                (category) => (
+                  <Chip key={category.id}>{category.attributes.name}</Chip>
+                )
+              )}
             </div>
           </div>
         )}

@@ -12,7 +12,7 @@ import { GetChronologyItemsQuery, GetErasQuery } from "graphql/generated";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import { prettySlug } from "helpers/formatters";
-import { isDefined } from "helpers/others";
+import { filterHasAttributes, isDefined } from "helpers/others";
 import { GetStaticPropsContext } from "next";
 import { Fragment } from "react";
 
@@ -70,22 +70,20 @@ export default function Chronology(props: Props): JSX.Element {
         horizontalLine
       />
 
-      {chronologyEras.map((era) => (
+      {filterHasAttributes(chronologyEras).map((era) => (
         <Fragment key={era.id}>
-          {era.attributes && (
-            <NavOption
-              url={`#${era.attributes.slug}`}
-              title={
-                era.attributes.title &&
-                era.attributes.title.length > 0 &&
-                era.attributes.title[0]
-                  ? era.attributes.title[0].title
-                  : prettySlug(era.attributes.slug)
-              }
-              subtitle={`${era.attributes.starting_year} → ${era.attributes.ending_year}`}
-              border
-            />
-          )}
+          <NavOption
+            url={`#${era.attributes.slug}`}
+            title={
+              era.attributes.title &&
+              era.attributes.title.length > 0 &&
+              era.attributes.title[0]
+                ? era.attributes.title[0].title
+                : prettySlug(era.attributes.slug)
+            }
+            subtitle={`${era.attributes.starting_year} → ${era.attributes.ending_year}`}
+            border
+          />
         </Fragment>
       ))}
     </SubPanel>

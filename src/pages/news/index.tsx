@@ -19,6 +19,7 @@ import { WithLabel } from "components/Inputs/WithLabel";
 import { TextInput } from "components/Inputs/TextInput";
 import { Button } from "components/Inputs/Button";
 import { useMediaHoverable } from "hooks/useMediaQuery";
+import { filterHasAttributes } from "helpers/others";
 
 interface Props extends AppStaticProps {
   posts: NonNullable<GetPostsPreviewQuery["posts"]>["data"];
@@ -87,29 +88,27 @@ export default function News(props: Props): JSX.Element {
         className="grid grid-cols-1 items-end gap-8
         desktop:grid-cols-[repeat(auto-fill,_minmax(20rem,1fr))]"
       >
-        {filteredItems.map((post) => (
+        {filterHasAttributes(filteredItems).map((post) => (
           <Fragment key={post.id}>
-            {post.attributes && (
-              <PreviewCard
-                href={`/news/${post.attributes.slug}`}
-                title={
-                  post.attributes.translations?.[0]?.title ??
-                  prettySlug(post.attributes.slug)
-                }
-                description={post.attributes.translations?.[0]?.excerpt}
-                thumbnail={post.attributes.thumbnail?.data?.attributes}
-                thumbnailAspectRatio="3/2"
-                thumbnailForceAspectRatio
-                bottomChips={post.attributes.categories?.data.map(
-                  (category) => category.attributes?.short ?? ""
-                )}
-                keepInfoVisible={keepInfoVisible}
-                metadata={{
-                  release_date: post.attributes.date,
-                  position: "Top",
-                }}
-              />
-            )}
+            <PreviewCard
+              href={`/news/${post.attributes.slug}`}
+              title={
+                post.attributes.translations?.[0]?.title ??
+                prettySlug(post.attributes.slug)
+              }
+              description={post.attributes.translations?.[0]?.excerpt}
+              thumbnail={post.attributes.thumbnail?.data?.attributes}
+              thumbnailAspectRatio="3/2"
+              thumbnailForceAspectRatio
+              bottomChips={post.attributes.categories?.data.map(
+                (category) => category.attributes?.short ?? ""
+              )}
+              keepInfoVisible={keepInfoVisible}
+              metadata={{
+                release_date: post.attributes.date,
+                position: "Top",
+              }}
+            />
           </Fragment>
         ))}
       </div>
@@ -145,19 +144,17 @@ export async function getStaticProps(
 }
 
 function sortPosts(posts: Props["posts"]): Props["posts"] {
-  const sortedPosts = [...posts];
-  sortedPosts
+  return posts
     .sort((a, b) => {
       const dateA = a.attributes?.date ? prettyDate(a.attributes.date) : "9999";
       const dateB = b.attributes?.date ? prettyDate(b.attributes.date) : "9999";
       return dateA.localeCompare(dateB);
     })
     .reverse();
-  return sortedPosts;
 }
 
 function filterItems(posts: Props["posts"], searchName: string) {
-  return [...posts].filter((post) => {
+  return posts.filter((post) => {
     if (searchName.length > 1) {
       if (
         post.attributes?.translations?.[0]?.title

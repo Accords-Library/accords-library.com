@@ -244,7 +244,8 @@ export function PreviewCard(props: Props): JSX.Element {
             cIf(
               !keepInfoVisible,
               `-inset-x-0.5 bottom-2 opacity-0 group-hover:opacity-100 hoverable:absolute
-              hoverable:drop-shadow-shade-lg notHoverable:rounded-b-md`
+              hoverable:drop-shadow-shade-lg notHoverable:opacity-100
+              notHoverable:rounded-b-md`
             )
           )}
         >
@@ -302,9 +303,7 @@ interface TranslatedProps
   languages: AppStaticProps["languages"];
 }
 
-export function TranslatedPreviewCard(
-  props: Immutable<TranslatedProps>
-): JSX.Element {
+export function TranslatedPreviewCard(props: TranslatedProps): JSX.Element {
   const {
     translations = [{ title: props.slug, language: "default" }],
     slug,

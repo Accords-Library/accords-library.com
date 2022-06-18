@@ -3,7 +3,7 @@ import { GetLibraryItemsPreviewQuery } from "graphql/generated";
 import { AppStaticProps } from "graphql/getAppStaticProps";
 import { prettyinlineTitle, prettyDate } from "./formatters";
 import { convertPrice } from "./numbers";
-import { isDefined } from "./others";
+import { isDefined, mapRemoveEmptyValues } from "./others";
 import { LibraryItemUserStatus } from "./types";
 type Items = NonNullable<GetLibraryItemsPreviewQuery["libraryItems"]>["data"];
 type GroupLibraryItems = Map<string, Items>;
@@ -13,67 +13,67 @@ export function getGroups(
   groupByType: number,
   items: Items
 ): GroupLibraryItems {
+  const groups: GroupLibraryItems = new Map();
+
   switch (groupByType) {
     case 0: {
-      const typeGroup = new Map();
-      typeGroup.set("Drakengard 1", []);
-      typeGroup.set("Drakengard 1.3", []);
-      typeGroup.set("Drakengard 2", []);
-      typeGroup.set("Drakengard 3", []);
-      typeGroup.set("Drakengard 4", []);
-      typeGroup.set("NieR Gestalt", []);
-      typeGroup.set("NieR Replicant", []);
-      typeGroup.set("NieR Replicant ver.1.22474487139...", []);
-      typeGroup.set("NieR:Automata", []);
-      typeGroup.set("NieR Re[in]carnation", []);
-      typeGroup.set("SINoALICE", []);
-      typeGroup.set("Voice of Cards", []);
-      typeGroup.set("Final Fantasy XIV", []);
-      typeGroup.set("Thou Shalt Not Die", []);
-      typeGroup.set("Bakuken", []);
-      typeGroup.set("YoRHa", []);
-      typeGroup.set("YoRHa Boys", []);
-      typeGroup.set(langui.no_category, []);
+      const noCategory = langui.no_category ?? "No category";
+      groups.set("Drakengard 1", []);
+      groups.set("Drakengard 1.3", []);
+      groups.set("Drakengard 2", []);
+      groups.set("Drakengard 3", []);
+      groups.set("Drakengard 4", []);
+      groups.set("NieR Gestalt", []);
+      groups.set("NieR Replicant", []);
+      groups.set("NieR Replicant ver.1.22474487139...", []);
+      groups.set("NieR:Automata", []);
+      groups.set("NieR Re[in]carnation", []);
+      groups.set("SINoALICE", []);
+      groups.set("Voice of Cards", []);
+      groups.set("Final Fantasy XIV", []);
+      groups.set("Thou Shalt Not Die", []);
+      groups.set("Bakuken", []);
+      groups.set("YoRHa", []);
+      groups.set("YoRHa Boys", []);
+      groups.set(noCategory, []);
 
       items.map((item) => {
         if (item.attributes?.categories?.data.length === 0) {
-          typeGroup.get(langui.no_category)?.push(item);
+          groups.get(noCategory)?.push(item);
         } else {
           item.attributes?.categories?.data.map((category) => {
-            typeGroup.get(category.attributes?.name)?.push(item);
+            groups.get(category.attributes?.name ?? noCategory)?.push(item);
           });
         }
       });
-
-      return typeGroup;
+      break;
     }
 
     case 1: {
-      const group = new Map();
-      group.set(langui.audio ?? "Audio", []);
-      group.set(langui.game ?? "Game", []);
-      group.set(langui.textual ?? "Textual", []);
-      group.set(langui.video ?? "Video", []);
-      group.set(langui.other ?? "Other", []);
-      group.set(langui.group ?? "Group", []);
-      group.set(langui.no_type ?? "No type", []);
+      groups.set(langui.audio ?? "Audio", []);
+      groups.set(langui.game ?? "Game", []);
+      groups.set(langui.textual ?? "Textual", []);
+      groups.set(langui.video ?? "Video", []);
+      groups.set(langui.other ?? "Other", []);
+      groups.set(langui.group ?? "Group", []);
+      groups.set(langui.no_type ?? "No type", []);
       items.map((item) => {
         if (item.attributes?.metadata && item.attributes.metadata.length > 0) {
           switch (item.attributes.metadata[0]?.__typename) {
             case "ComponentMetadataAudio":
-              group.get(langui.audio ?? "Audio")?.push(item);
+              groups.get(langui.audio ?? "Audio")?.push(item);
               break;
             case "ComponentMetadataGame":
-              group.get(langui.game ?? "Game")?.push(item);
+              groups.get(langui.game ?? "Game")?.push(item);
               break;
             case "ComponentMetadataBooks":
-              group.get(langui.textual ?? "Textual")?.push(item);
+              groups.get(langui.textual ?? "Textual")?.push(item);
               break;
             case "ComponentMetadataVideo":
-              group.get(langui.video ?? "Video")?.push(item);
+              groups.get(langui.video ?? "Video")?.push(item);
               break;
             case "ComponentMetadataOther":
-              group.get(langui.other ?? "Other")?.push(item);
+              groups.get(langui.other ?? "Other")?.push(item);
               break;
             case "ComponentMetadataGroup":
               switch (
@@ -81,19 +81,19 @@ export function getGroups(
                   ?.slug
               ) {
                 case "audio":
-                  group.get(langui.audio ?? "Audio")?.push(item);
+                  groups.get(langui.audio ?? "Audio")?.push(item);
                   break;
                 case "video":
-                  group.get(langui.video ?? "Video")?.push(item);
+                  groups.get(langui.video ?? "Video")?.push(item);
                   break;
                 case "game":
-                  group.get(langui.game ?? "Game")?.push(item);
+                  groups.get(langui.game ?? "Game")?.push(item);
                   break;
                 case "textual":
-                  group.get(langui.textual ?? "Textual")?.push(item);
+                  groups.get(langui.textual ?? "Textual")?.push(item);
                   break;
                 case "mixed":
-                  group.get(langui.group ?? "Group")?.push(item);
+                  groups.get(langui.group ?? "Group")?.push(item);
                   break;
                 default: {
                   throw new Error(
@@ -107,10 +107,10 @@ export function getGroups(
             }
           }
         } else {
-          group.get(langui.no_type ?? "No type")?.push(item);
+          groups.get(langui.no_type ?? "No type")?.push(item);
         }
       });
-      return group;
+      break;
     }
 
     case 2: {
@@ -121,29 +121,28 @@ export function getGroups(
             years.push(item.attributes.release_date.year);
         }
       });
-      const group = new Map();
+
       years.sort((a, b) => a - b);
       years.map((year) => {
-        group.set(year.toString(), []);
+        groups.set(year.toString(), []);
       });
-      group.set(langui.no_year ?? "No year", []);
+      groups.set(langui.no_year ?? "No year", []);
       items.map((item) => {
         if (item.attributes?.release_date?.year) {
-          group.get(item.attributes.release_date.year.toString())?.push(item);
+          groups.get(item.attributes.release_date.year.toString())?.push(item);
         } else {
-          group.get(langui.no_year ?? "No year")?.push(item);
+          groups.get(langui.no_year ?? "No year")?.push(item);
         }
       });
-
-      return group;
+      break;
     }
 
     default: {
-      const group = new Map();
-      group.set("", items);
-      return group;
+      groups.set("", items);
+      break;
     }
   }
+  return mapRemoveEmptyValues(groups);
 }
 
 export function filterItems(
@@ -155,7 +154,7 @@ export function filterItems(
   showSecondaryItems: boolean,
   filterUserStatus: LibraryItemUserStatus | undefined
 ): Items {
-  return [...items].filter((item) => {
+  return items.filter((item) => {
     if (!showSubitems && !item.attributes?.root_item) return false;
     if (showSubitems && isUntangibleGroupItem(item.attributes?.metadata?.[0])) {
       return false;
@@ -212,7 +211,7 @@ export function sortBy(
 ): Items {
   switch (orderByType) {
     case 0:
-      return [...items].sort((a, b) => {
+      return items.sort((a, b) => {
         const titleA = prettyinlineTitle(
           "",
           a.attributes?.title,
@@ -226,7 +225,7 @@ export function sortBy(
         return titleA.localeCompare(titleB);
       });
     case 1:
-      return [...items].sort((a, b) => {
+      return items.sort((a, b) => {
         const priceA = a.attributes?.price
           ? convertPrice(a.attributes.price, currencies[0])
           : 99999;
@@ -236,7 +235,7 @@ export function sortBy(
         return priceA - priceB;
       });
     case 2:
-      return [...items].sort((a, b) => {
+      return items.sort((a, b) => {
         const dateA = a.attributes?.release_date
           ? prettyDate(a.attributes.release_date)
           : "9999";

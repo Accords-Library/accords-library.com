@@ -1,7 +1,7 @@
 import { AppStaticProps } from "graphql/getAppStaticProps";
 import { getDescription } from "helpers/description";
 import { prettySlug } from "helpers/formatters";
-import { getStatusDescription } from "helpers/others";
+import { filterHasAttributes, getStatusDescription } from "helpers/others";
 import { PostWithTranslations } from "helpers/types";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { Fragment, useMemo } from "react";
@@ -102,14 +102,12 @@ export function PostPage(props: Props): JSX.Element {
               <div>
                 <p className="font-headers">{"Authors"}:</p>
                 <div className="grid place-content-center place-items-center gap-2">
-                  {post.authors.data.map((author) => (
+                  {filterHasAttributes(post.authors.data).map((author) => (
                     <Fragment key={author.id}>
-                      {author.attributes && (
-                        <RecorderChip
-                          langui={langui}
-                          recorder={author.attributes}
-                        />
-                      )}
+                      <RecorderChip
+                        langui={langui}
+                        recorder={author.attributes}
+                      />
                     </Fragment>
                   ))}
                 </div>

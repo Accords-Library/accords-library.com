@@ -5,7 +5,7 @@ import {
   PostStaticProps,
 } from "graphql/getPostStaticProps";
 import { getReadySdk } from "graphql/sdk";
-import { isDefined } from "helpers/others";
+import { filterHasAttributes, isDefined } from "helpers/others";
 
 import {
   GetStaticPathsContext,
@@ -48,13 +48,12 @@ export async function getStaticPaths(
   const sdk = getReadySdk();
   const posts = await sdk.getPostsSlugs();
   const paths: GetStaticPathsResult["paths"] = [];
-  if (posts.posts)
-    posts.posts.data.map((item) => {
-      context.locales?.map((local) => {
-        if (item.attributes)
-          paths.push({ params: { slug: item.attributes.slug }, locale: local });
-      });
-    });
+
+  filterHasAttributes(posts.posts?.data).map((item) => {
+    context.locales?.map((local) =>
+      paths.push({ params: { slug: item.attributes.slug }, locale: local })
+    );
+  });
   return {
     paths,
     fallback: "blocking",

@@ -28,7 +28,7 @@ export function Popup(props: Props): JSX.Element {
   const { setMenuGestures } = useAppLayout();
 
   useEffect(() => {
-    setMenuGestures(state);
+    setMenuGestures(!state);
   }, [setMenuGestures, state]);
 
   return (

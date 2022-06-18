@@ -31,7 +31,7 @@ mark {
 /* SCROLLBARS STYLING */
 
 * {
-  @apply [scrollbar-color:theme(colors.dark)_transparent] [scrollbar-width:thin];
+  @apply [scrollbar-color:theme(colors.dark/1)_transparent] [scrollbar-width:thin];
 }
 
 *::-webkit-scrollbar {

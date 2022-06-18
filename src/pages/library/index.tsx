@@ -31,7 +31,13 @@ import {
 import { PreviewCard } from "components/PreviewCard";
 import { useMediaHoverable } from "hooks/useMediaQuery";
 import { ButtonGroup } from "components/Inputs/ButtonGroup";
-import { isDefinedAndNotEmpty, isUndefined } from "helpers/others";
+import {
+  filterHasAttributes,
+  isDefinedAndNotEmpty,
+  isUndefined,
+  iterateMap,
+} from "helpers/others";
+import { ContentPlaceholder } from "components/PanelComponents/ContentPlaceholder";
 
 interface Props extends AppStaticProps {
   items: NonNullable<GetLibraryItemsPreviewQuery["libraryItems"]>["data"];
@@ -234,73 +240,74 @@ export default function Library(props: Props): JSX.Element {
   );
   const contentPanel = (
     <ContentPanel width={ContentPanelWidthSizes.Full}>
-      {[...groups].map(([name, items]) => (
+      {/* TODO: Add to langui */}
+      {groups.size === 0 && (
+        <ContentPlaceholder
+          message={
+            "No results. You can try changing or resetting the search parameters."
+          }
+          icon={Icon.ChevronLeft}
+        />
+      )}
+      {iterateMap(groups, (name, items) => (
         <Fragment key={name}>
-          {items.length > 0 && (
-            <>
-              {name && (
-                <h2
-                  className="flex flex-row place-items-center gap-2
+          {isDefinedAndNotEmpty(name) && (
+            <h2
+              className="flex flex-row place-items-center gap-2
                   pb-2 pt-10 text-2xl first-of-type:pt-0"
-                >
-                  {name}
-                  <Chip>{`${items.length} ${
-                    items.length <= 1
-                      ? langui.result?.toLowerCase() ?? "result"
-                      : langui.results?.toLowerCase() ?? "results"
-                  }`}</Chip>
-                </h2>
-              )}
-              <div
-                className="grid items-end gap-8 border-b-[3px] border-dotted pb-12
+            >
+              {name}
+              <Chip>{`${items.length} ${
+                items.length <= 1
+                  ? langui.result?.toLowerCase() ?? "result"
+                  : langui.results?.toLowerCase() ?? "results"
+              }`}</Chip>
+            </h2>
+          )}
+          <div
+            className="grid items-end gap-8 border-b-[3px] border-dotted pb-12
                 last-of-type:border-0 desktop:grid-cols-[repeat(auto-fill,_minmax(13rem,1fr))]
                 mobile:grid-cols-2 mobile:gap-4"
-              >
-                {items.map((item) => (
-                  <Fragment key={item.id}>
-                    {isDefinedAndNotEmpty(item.id) && item.attributes && (
-                      <PreviewCard
-                        href={`/library/${item.attributes.slug}`}
-                        title={item.attributes.title}
-                        subtitle={item.attributes.subtitle}
-                        thumbnail={item.attributes.thumbnail?.data?.attributes}
-                        thumbnailAspectRatio="21/29.7"
-                        thumbnailRounded={false}
-                        keepInfoVisible={keepInfoVisible}
-                        topChips={
-                          item.attributes.metadata &&
-                          item.attributes.metadata.length > 0 &&
-                          item.attributes.metadata[0]
-                            ? [prettyItemSubType(item.attributes.metadata[0])]
-                            : []
-                        }
-                        bottomChips={item.attributes.categories?.data.map(
-                          (category) => category.attributes?.short ?? ""
-                        )}
-                        metadata={{
-                          currencies: currencies,
-                          release_date: item.attributes.release_date,
-                          price: item.attributes.price,
-                          position: "Bottom",
-                        }}
-                        infoAppend={
-                          <PreviewCardCTAs
-                            id={item.id}
-                            displayCTAs={
-                              !isUntangibleGroupItem(
-                                item.attributes.metadata?.[0]
-                              )
-                            }
-                            langui={langui}
-                          />
-                        }
-                      />
-                    )}
-                  </Fragment>
-                ))}
-              </div>
-            </>
-          )}
+          >
+            {filterHasAttributes(items).map((item) => (
+              <Fragment key={item.id}>
+                <PreviewCard
+                  href={`/library/${item.attributes.slug}`}
+                  title={item.attributes.title}
+                  subtitle={item.attributes.subtitle}
+                  thumbnail={item.attributes.thumbnail?.data?.attributes}
+                  thumbnailAspectRatio="21/29.7"
+                  thumbnailRounded={false}
+                  keepInfoVisible={keepInfoVisible}
+                  topChips={
+                    item.attributes.metadata &&
+                    item.attributes.metadata.length > 0 &&
+                    item.attributes.metadata[0]
+                      ? [prettyItemSubType(item.attributes.metadata[0])]
+                      : []
+                  }
+                  bottomChips={item.attributes.categories?.data.map(
+                    (category) => category.attributes?.short ?? ""
+                  )}
+                  metadata={{
+                    currencies: currencies,
+                    release_date: item.attributes.release_date,
+                    price: item.attributes.price,
+                    position: "Bottom",
+                  }}
+                  infoAppend={
+                    <PreviewCardCTAs
+                      id={item.id}
+                      displayCTAs={
+                        !isUntangibleGroupItem(item.attributes.metadata?.[0])
+                      }
+                      langui={langui}
+                    />
+                  }
+                />
+              </Fragment>
+            ))}
+          </div>
         </Fragment>
       ))}
     </ContentPanel>

@@ -17,7 +17,15 @@ interface Props {
 }
 
 export function NavOption(props: Props): JSX.Element {
-  const { url, icon, title, subtitle, border, reduced, onClick } = props;
+  const {
+    url,
+    icon,
+    title,
+    subtitle,
+    border = false,
+    reduced = false,
+    onClick,
+  } = props;
   const router = useRouter();
   const isActive = useMemo(
     () => router.asPath.startsWith(url),
@@ -36,7 +44,7 @@ export function NavOption(props: Props): JSX.Element {
       }
       placement="right"
       className="text-left"
-      disabled={reduced === false}
+      disabled={!reduced}
     >
       <div
         onClick={(event) => {
@@ -63,7 +71,7 @@ export function NavOption(props: Props): JSX.Element {
       >
         {icon && <Ico icon={icon} className="mt-[-.1em] !text-2xl" />}
 
-        {reduced === false && (
+        {!reduced && (
           <div>
             <h3 className="text-2xl">{title}</h3>
             {isDefinedAndNotEmpty(subtitle) && (

@@ -27,7 +27,7 @@ module.exports = {
       },
       {
         source: "/gallery",
-        destination: "https://gallery.accords-library.com/",
+        destination: "https://gallery.accords-library.com/posts",
         permanent: false,
       },
     ];

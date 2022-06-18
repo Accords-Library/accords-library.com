@@ -6,7 +6,11 @@ import {
   GetChronologyItemsQuery,
 } from "graphql/generated";
 import { AppStaticProps } from "graphql/getAppStaticProps";
-import { getStatusDescription } from "helpers/others";
+import {
+  filterDefined,
+  filterHasAttributes,
+  getStatusDescription,
+} from "helpers/others";
 
 import { Fragment } from "react";
 
@@ -44,13 +48,16 @@ export function ChronologyItemComponent(props: Props): JSX.Element {
         </p>
 
         <div className="col-start-2 row-span-2 row-start-1 grid gap-4">
-          {props.item.attributes.events?.map((event) => (
-            <Fragment key={event?.id}>
-              {event && (
+          {props.item.attributes.events &&
+            filterHasAttributes(props.item.attributes.events, [
+              "id",
+              "translations",
+            ]).map((event) => (
+              <Fragment key={event.id}>
                 <div className="m-0">
-                  {event.translations?.map((translation, translationIndex) => (
-                    <Fragment key={translationIndex}>
-                      {translation && (
+                  {filterDefined(event.translations).map(
+                    (translation, translationIndex) => (
+                      <Fragment key={translationIndex}>
                         <Fragment>
                           <div
                             className="grid
@@ -94,9 +101,9 @@ export function ChronologyItemComponent(props: Props): JSX.Element {
                             ""
                           )}
                         </Fragment>
-                      )}
-                    </Fragment>
-                  ))}
+                      </Fragment>
+                    )
+                  )}
 
                   <p className="mt-1 grid grid-flow-col gap-1 place-self-start text-xs text-dark">
                     {event.source?.data ? (
@@ -109,9 +116,8 @@ export function ChronologyItemComponent(props: Props): JSX.Element {
                     )}
                   </p>
                 </div>
-              )}
-            </Fragment>
-          ))}
+              </Fragment>
+            ))}
         </div>
       </div>
     );

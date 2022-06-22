@@ -161,30 +161,30 @@ export function AppLayout(props: Props): JSX.Element {
   }, [fontSize]);
 
   const defaultPreferredLanguages = useMemo(() => {
-    let list: string[] = [];
+    let memo: string[] = [];
     if (isDefinedAndNotEmpty(router.locale) && router.locales) {
       if (router.locale === "en") {
-        list = [router.locale];
+        memo = [router.locale];
         router.locales.map((locale) => {
-          if (locale !== router.locale) list.push(locale);
+          if (locale !== router.locale) memo.push(locale);
         });
       } else {
-        list = [router.locale, "en"];
+        memo = [router.locale, "en"];
         router.locales.map((locale) => {
-          if (locale !== router.locale && locale !== "en") list.push(locale);
+          if (locale !== router.locale && locale !== "en") memo.push(locale);
         });
       }
     }
-    return list;
+    return memo;
   }, [router.locale, router.locales]);
 
   const currencyOptions = useMemo(() => {
-    const list: string[] = [];
+    const memo: string[] = [];
     filterHasAttributes(currencies).map((currentCurrency) => {
       if (isDefinedAndNotEmpty(currentCurrency.attributes.code))
-        list.push(currentCurrency.attributes.code);
+        memo.push(currentCurrency.attributes.code);
     });
-    return list;
+    return memo;
   }, [currencies]);
 
   const [currencySelect, setCurrencySelect] = useState<number>(-1);

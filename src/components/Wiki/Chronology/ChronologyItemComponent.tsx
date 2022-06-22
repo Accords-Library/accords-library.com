@@ -85,7 +85,6 @@ export function ChronologyItemComponent(props: Props): JSX.Element {
                           {translation.description && (
                             <p
                               className={
-                                event.translations &&
                                 event.translations.length > 1
                                   ? `mt-2 whitespace-pre-line before:ml-[-1em] before:inline-block
                                   before:w-4 before:text-dark before:content-['-']`

@@ -12,6 +12,7 @@ import { getReadySdk } from "graphql/sdk";
 import { filterDefined, filterHasAttributes } from "helpers/others";
 
 import { GetStaticPropsContext } from "next";
+import { useMemo } from "react";
 
 interface Props extends AppStaticProps {
   contents: DevGetContentsQuery;
@@ -21,61 +22,65 @@ export default function CheckupContents(props: Props): JSX.Element {
   const { contents } = props;
   const testReport = testingContent(contents);
 
-  const contentPanel = (
-    <ContentPanel width={ContentPanelWidthSizes.Full}>
-      {<h2 className="text-2xl">{testReport.title}</h2>}
+  const contentPanel = useMemo(
+    () => (
+      <ContentPanel width={ContentPanelWidthSizes.Full}>
+        {<h2 className="text-2xl">{testReport.title}</h2>}
 
-      <div className="my-4 grid grid-cols-[2em,3em,2fr,1fr,0.5fr,0.5fr,2fr] items-center gap-2">
-        <p></p>
-        <p></p>
-        <p className="font-headers">Ref</p>
-        <p className="font-headers">Name</p>
-        <p className="font-headers">Type</p>
-        <p className="font-headers">Severity</p>
-        <p className="font-headers">Description</p>
-      </div>
-
-      {testReport.lines.map((line, index) => (
-        <div
-          key={index}
-          className="mb-2 grid grid-cols-[2em,3em,2fr,1fr,0.5fr,0.5fr,2fr] items-center
-          justify-items-start gap-2"
-        >
-          <Button
-            href={line.frontendUrl}
-            target="_blank"
-            className="w-4 text-xs"
-            text="F"
-          />
-          <Button
-            href={line.backendUrl}
-            target="_blank"
-            className="w-4 text-xs"
-            text="B"
-          />
-          <p>{line.subitems.join(" -> ")}</p>
-          <p>{line.name}</p>
-          <Chip>{line.type}</Chip>
-          <Chip
-            className={
-              line.severity === "Very High"
-                ? "bg-[#f00] font-bold !opacity-100"
-                : line.severity === "High"
-                ? "bg-[#ff6600] font-bold !opacity-100"
-                : line.severity === "Medium"
-                ? "bg-[#fff344] !opacity-100"
-                : ""
-            }
-          >
-            {line.severity}
-          </Chip>
-          <ToolTip content={line.recommandation} placement="left">
-            <p>{line.description}</p>
-          </ToolTip>
+        <div className="my-4 grid grid-cols-[2em,3em,2fr,1fr,0.5fr,0.5fr,2fr] items-center gap-2">
+          <p></p>
+          <p></p>
+          <p className="font-headers">Ref</p>
+          <p className="font-headers">Name</p>
+          <p className="font-headers">Type</p>
+          <p className="font-headers">Severity</p>
+          <p className="font-headers">Description</p>
         </div>
-      ))}
-    </ContentPanel>
+
+        {testReport.lines.map((line, index) => (
+          <div
+            key={index}
+            className="mb-2 grid grid-cols-[2em,3em,2fr,1fr,0.5fr,0.5fr,2fr] items-center
+          justify-items-start gap-2"
+          >
+            <Button
+              href={line.frontendUrl}
+              target="_blank"
+              className="w-4 text-xs"
+              text="F"
+            />
+            <Button
+              href={line.backendUrl}
+              target="_blank"
+              className="w-4 text-xs"
+              text="B"
+            />
+            <p>{line.subitems.join(" -> ")}</p>
+            <p>{line.name}</p>
+            <Chip>{line.type}</Chip>
+            <Chip
+              className={
+                line.severity === "Very High"
+                  ? "bg-[#f00] font-bold !opacity-100"
+                  : line.severity === "High"
+                  ? "bg-[#ff6600] font-bold !opacity-100"
+                  : line.severity === "Medium"
+                  ? "bg-[#fff344] !opacity-100"
+                  : ""
+              }
+            >
+              {line.severity}
+            </Chip>
+            <ToolTip content={line.recommandation} placement="left">
+              <p>{line.description}</p>
+            </ToolTip>
+          </div>
+        ))}
+      </ContentPanel>
+    ),
+    [testReport.lines, testReport.title]
   );
+
   return (
     <AppLayout navTitle={"Checkup"} contentPanel={contentPanel} {...props} />
   );

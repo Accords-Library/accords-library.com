@@ -47,89 +47,95 @@ export default function Wiki(props: Props): JSX.Element {
     [pages, searchName]
   );
 
-  const subPanel = (
-    <SubPanel>
-      <PanelHeader
-        icon={Icon.TravelExplore}
-        title={langui.wiki}
-        description={langui.wiki_description}
-      />
-
-      <TextInput
-        className="mb-6 w-full"
-        placeholder={langui.search_title ?? undefined}
-        state={searchName}
-        setState={setSearchName}
-      />
-
-      {hoverable && (
-        <WithLabel
-          label={langui.always_show_info}
-          input={
-            <Switch setState={setKeepInfoVisible} state={keepInfoVisible} />
-          }
+  const subPanel = useMemo(
+    () => (
+      <SubPanel>
+        <PanelHeader
+          icon={Icon.TravelExplore}
+          title={langui.wiki}
+          description={langui.wiki_description}
         />
-      )}
 
-      <Button
-        className="mt-8"
-        text={langui.reset_all_filters}
-        icon={Icon.Replay}
-        onClick={() => {
-          setSearchName(defaultFiltersState.searchName);
-          setKeepInfoVisible(defaultFiltersState.keepInfoVisible);
-        }}
-      />
-      <HorizontalLine />
+        <TextInput
+          className="mb-6 w-full"
+          placeholder={langui.search_title ?? undefined}
+          state={searchName}
+          setState={setSearchName}
+        />
 
-      {/* TODO: Langui */}
-      <p className="mb-4 font-headers text-xl">Special Pages</p>
-
-      <NavOption title={langui.chronology} url="/wiki/chronology" border />
-    </SubPanel>
-  );
-
-  const contentPanel = (
-    <ContentPanel width={ContentPanelWidthSizes.Full}>
-      <div
-        className="grid grid-cols-2 items-end gap-8
-        desktop:grid-cols-[repeat(auto-fill,_minmax(20rem,1fr))] mobile:gap-4"
-      >
-        {/* TODO: Add to langui */}
-        {filteredPages.length === 0 && (
-          <ContentPlaceholder
-            message={
-              "No results. You can try changing or resetting the search parameters."
+        {hoverable && (
+          <WithLabel
+            label={langui.always_show_info}
+            input={
+              <Switch setState={setKeepInfoVisible} state={keepInfoVisible} />
             }
-            icon={Icon.ChevronLeft}
           />
         )}
-        {filterHasAttributes(filteredPages).map((page) => (
-          <Fragment key={page.id}>
-            <TranslatedPreviewCard
-              href={`/wiki/${page.attributes.slug}`}
-              translations={page.attributes.translations?.map(
-                (translation) => ({
-                  title: translation?.title,
-                  description: translation?.summary,
-                  language: translation?.language?.data?.attributes?.code,
-                })
-              )}
-              thumbnail={page.attributes.thumbnail?.data?.attributes}
-              thumbnailAspectRatio={"4/3"}
-              thumbnailRounded
-              thumbnailForceAspectRatio
-              languages={languages}
-              slug={page.attributes.slug}
-              keepInfoVisible={keepInfoVisible}
-              bottomChips={page.attributes.categories?.data.map(
-                (category) => category.attributes?.short ?? ""
-              )}
+
+        <Button
+          className="mt-8"
+          text={langui.reset_all_filters}
+          icon={Icon.Replay}
+          onClick={() => {
+            setSearchName(defaultFiltersState.searchName);
+            setKeepInfoVisible(defaultFiltersState.keepInfoVisible);
+          }}
+        />
+        <HorizontalLine />
+
+        {/* TODO: Langui */}
+        <p className="mb-4 font-headers text-xl">Special Pages</p>
+
+        <NavOption title={langui.chronology} url="/wiki/chronology" border />
+      </SubPanel>
+    ),
+    [hoverable, keepInfoVisible, langui, searchName]
+  );
+
+  const contentPanel = useMemo(
+    () => (
+      <ContentPanel width={ContentPanelWidthSizes.Full}>
+        <div
+          className="grid grid-cols-2 items-end gap-8
+        desktop:grid-cols-[repeat(auto-fill,_minmax(20rem,1fr))] mobile:gap-4"
+        >
+          {/* TODO: Add to langui */}
+          {filteredPages.length === 0 && (
+            <ContentPlaceholder
+              message={
+                "No results. You can try changing or resetting the search parameters."
+              }
+              icon={Icon.ChevronLeft}
             />
-          </Fragment>
-        ))}
-      </div>
-    </ContentPanel>
+          )}
+          {filterHasAttributes(filteredPages).map((page) => (
+            <Fragment key={page.id}>
+              <TranslatedPreviewCard
+                href={`/wiki/${page.attributes.slug}`}
+                translations={page.attributes.translations?.map(
+                  (translation) => ({
+                    title: translation?.title,
+                    description: translation?.summary,
+                    language: translation?.language?.data?.attributes?.code,
+                  })
+                )}
+                thumbnail={page.attributes.thumbnail?.data?.attributes}
+                thumbnailAspectRatio={"4/3"}
+                thumbnailRounded
+                thumbnailForceAspectRatio
+                languages={languages}
+                slug={page.attributes.slug}
+                keepInfoVisible={keepInfoVisible}
+                bottomChips={page.attributes.categories?.data.map(
+                  (category) => category.attributes?.short ?? ""
+                )}
+              />
+            </Fragment>
+          ))}
+        </div>
+      </ContentPanel>
+    ),
+    [filteredPages, keepInfoVisible, languages]
   );
 
   return (

@@ -7,21 +7,25 @@ import { ContentPanel } from "components/Panels/ContentPanel";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 
 import { GetStaticPropsContext } from "next";
+import { useMemo } from "react";
 
 interface Props extends AppStaticProps {}
 
 export default function FiveHundred(props: Props): JSX.Element {
   const { langui } = props;
-  const contentPanel = (
-    <ContentPanel>
-      <h1>500 - Internal Server Error</h1>
-      <ReturnButton
-        href="/"
-        title="Home"
-        langui={langui}
-        displayOn={ReturnButtonType.Both}
-      />
-    </ContentPanel>
+  const contentPanel = useMemo(
+    () => (
+      <ContentPanel>
+        <h1>500 - Internal Server Error</h1>
+        <ReturnButton
+          href="/"
+          title="Home"
+          langui={langui}
+          displayOn={ReturnButtonType.Both}
+        />
+      </ContentPanel>
+    ),
+    [langui]
   );
   return <AppLayout navTitle="500" contentPanel={contentPanel} {...props} />;
 }

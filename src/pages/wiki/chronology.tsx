@@ -14,7 +14,7 @@ import { getReadySdk } from "graphql/sdk";
 import { prettySlug } from "helpers/formatters";
 import { filterHasAttributes, isDefined } from "helpers/others";
 import { GetStaticPropsContext } from "next";
-import { Fragment } from "react";
+import { Fragment, useMemo } from "react";
 
 interface Props extends AppStaticProps {
   chronologyItems: NonNullable<
@@ -27,109 +27,113 @@ export default function Chronology(props: Props): JSX.Element {
   const { chronologyItems, chronologyEras, langui } = props;
 
   // Group by year the Chronology items
-  const chronologyItemYearGroups: Props["chronologyItems"][number][][][] = [];
+  const chronologyItemYearGroups = useMemo(() => {
+    const memo: Props["chronologyItems"][number][][][] = [];
+    chronologyEras.map(() => {
+      memo.push([]);
+    });
 
-  chronologyEras.map(() => {
-    chronologyItemYearGroups.push([]);
-  });
-
-  let currentChronologyEraIndex = 0;
-  chronologyItems.map((item) => {
-    if (item.attributes) {
-      if (
-        item.attributes.year >
-        (chronologyEras[currentChronologyEraIndex].attributes?.ending_year ??
-          999999)
-      ) {
-        currentChronologyEraIndex += 1;
+    let currentChronologyEraIndex = 0;
+    chronologyItems.map((item) => {
+      if (item.attributes) {
+        if (
+          item.attributes.year >
+          (chronologyEras[currentChronologyEraIndex].attributes?.ending_year ??
+            999999)
+        ) {
+          currentChronologyEraIndex += 1;
+        }
+        if (
+          Object.prototype.hasOwnProperty.call(
+            memo[currentChronologyEraIndex],
+            item.attributes.year
+          )
+        ) {
+          memo[currentChronologyEraIndex][item.attributes.year].push(item);
+        } else {
+          memo[currentChronologyEraIndex][item.attributes.year] = [item];
+        }
       }
-      if (
-        Object.prototype.hasOwnProperty.call(
-          chronologyItemYearGroups[currentChronologyEraIndex],
-          item.attributes.year
-        )
-      ) {
-        chronologyItemYearGroups[currentChronologyEraIndex][
-          item.attributes.year
-        ].push(item);
-      } else {
-        chronologyItemYearGroups[currentChronologyEraIndex][
-          item.attributes.year
-        ] = [item];
-      }
-    }
-  });
+    });
+    return memo;
+  }, [chronologyEras, chronologyItems]);
 
-  const subPanel = (
-    <SubPanel>
-      <ReturnButton
-        href="/wiki"
-        title={langui.wiki}
-        langui={langui}
-        displayOn={ReturnButtonType.Desktop}
-        horizontalLine
-      />
+  const subPanel = useMemo(
+    () => (
+      <SubPanel>
+        <ReturnButton
+          href="/wiki"
+          title={langui.wiki}
+          langui={langui}
+          displayOn={ReturnButtonType.Desktop}
+          horizontalLine
+        />
 
-      {filterHasAttributes(chronologyEras).map((era) => (
-        <Fragment key={era.id}>
-          <NavOption
-            url={`#${era.attributes.slug}`}
-            title={
-              era.attributes.title &&
-              era.attributes.title.length > 0 &&
-              era.attributes.title[0]
-                ? era.attributes.title[0].title
-                : prettySlug(era.attributes.slug)
-            }
-            subtitle={`${era.attributes.starting_year} → ${era.attributes.ending_year}`}
-            border
-          />
-        </Fragment>
-      ))}
-    </SubPanel>
+        {filterHasAttributes(chronologyEras).map((era) => (
+          <Fragment key={era.id}>
+            <NavOption
+              url={`#${era.attributes.slug}`}
+              title={
+                era.attributes.title &&
+                era.attributes.title.length > 0 &&
+                era.attributes.title[0]
+                  ? era.attributes.title[0].title
+                  : prettySlug(era.attributes.slug)
+              }
+              subtitle={`${era.attributes.starting_year} → ${era.attributes.ending_year}`}
+              border
+            />
+          </Fragment>
+        ))}
+      </SubPanel>
+    ),
+    [chronologyEras, langui]
   );
 
-  const contentPanel = (
-    <ContentPanel>
-      <ReturnButton
-        href="/wiki"
-        title={langui.wiki}
-        langui={langui}
-        displayOn={ReturnButtonType.Mobile}
-        className="mb-10"
-      />
+  const contentPanel = useMemo(
+    () => (
+      <ContentPanel>
+        <ReturnButton
+          href="/wiki"
+          title={langui.wiki}
+          langui={langui}
+          displayOn={ReturnButtonType.Mobile}
+          className="mb-10"
+        />
 
-      {chronologyItemYearGroups.map((era, eraIndex) => (
-        <Fragment key={eraIndex}>
-          <InsetBox
-            id={chronologyEras[eraIndex].attributes?.slug}
-            className="my-8 grid gap-4 text-center"
-          >
-            <h2 className="text-2xl">
-              {chronologyEras[eraIndex].attributes?.title?.[0]
-                ? chronologyEras[eraIndex].attributes?.title?.[0]?.title
-                : prettySlug(chronologyEras[eraIndex].attributes?.slug)}
-            </h2>
-            <p className="whitespace-pre-line ">
-              {chronologyEras[eraIndex].attributes?.title?.[0]
-                ? chronologyEras[eraIndex].attributes?.title?.[0]?.description
-                : ""}
-            </p>
-          </InsetBox>
-          {era.map((items, index) => (
-            <Fragment key={index}>
-              {items[0].attributes && isDefined(items[0].attributes.year) && (
-                <ChronologyYearComponent
-                  year={items[0].attributes.year}
-                  items={items}
-                  langui={langui}
-                />
-              )}
-            </Fragment>
-          ))}
-        </Fragment>
-      ))}
-    </ContentPanel>
+        {chronologyItemYearGroups.map((era, eraIndex) => (
+          <Fragment key={eraIndex}>
+            <InsetBox
+              id={chronologyEras[eraIndex].attributes?.slug}
+              className="my-8 grid gap-4 text-center"
+            >
+              <h2 className="text-2xl">
+                {chronologyEras[eraIndex].attributes?.title?.[0]
+                  ? chronologyEras[eraIndex].attributes?.title?.[0]?.title
+                  : prettySlug(chronologyEras[eraIndex].attributes?.slug)}
+              </h2>
+              <p className="whitespace-pre-line ">
+                {chronologyEras[eraIndex].attributes?.title?.[0]
+                  ? chronologyEras[eraIndex].attributes?.title?.[0]?.description
+                  : ""}
+              </p>
+            </InsetBox>
+            {era.map((items, index) => (
+              <Fragment key={index}>
+                {items[0].attributes && isDefined(items[0].attributes.year) && (
+                  <ChronologyYearComponent
+                    year={items[0].attributes.year}
+                    items={items}
+                    langui={langui}
+                  />
+                )}
+              </Fragment>
+            ))}
+          </Fragment>
+        ))}
+      </ContentPanel>
+    ),
+    [chronologyEras, chronologyItemYearGroups, langui]
   );
 
   return (

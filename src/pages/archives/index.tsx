@@ -6,20 +6,24 @@ import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 
 import { GetStaticPropsContext } from "next";
 import { Icon } from "components/Ico";
+import { useMemo } from "react";
 
 interface Props extends AppStaticProps {}
 
 export default function Archives(props: Props): JSX.Element {
   const { langui } = props;
-  const subPanel = (
-    <SubPanel>
-      <PanelHeader
-        icon={Icon.Inventory}
-        title={langui.archives}
-        description={langui.archives_description}
-      />
-      <NavOption title={"Videos"} url="/archives/videos/" border />
-    </SubPanel>
+  const subPanel = useMemo(
+    () => (
+      <SubPanel>
+        <PanelHeader
+          icon={Icon.Inventory}
+          title={langui.archives}
+          description={langui.archives_description}
+        />
+        <NavOption title={"Videos"} url="/archives/videos/" border />
+      </SubPanel>
+    ),
+    [langui]
   );
   return (
     <AppLayout navTitle={langui.archives} subPanel={subPanel} {...props} />

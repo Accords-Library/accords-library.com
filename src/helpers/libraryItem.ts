@@ -208,7 +208,7 @@ export function sortBy(
   orderByType: number,
   items: Items,
   currencies: AppStaticProps["currencies"]
-): Items {
+) {
   switch (orderByType) {
     case 0:
       return items.sort((a, b) => {

@@ -11,7 +11,7 @@ import { getAssetURL, ImageQuality } from "helpers/img";
 import { filterHasAttributes, getStatusDescription } from "helpers/others";
 
 import { useSmartLanguage } from "hooks/useSmartLanguage";
-import { Fragment } from "react";
+import { Fragment, useMemo } from "react";
 
 interface Props {
   openLightBox: (images: string[], index?: number) => void;
@@ -35,19 +35,22 @@ export function ScanSetCover(props: Props): JSX.Element {
     languageExtractor: (item) => item.language?.data?.attributes?.code,
   });
 
-  const coverImages: UploadImageFragment[] = [];
-  if (selectedScan?.obi_belt?.full?.data?.attributes)
-    coverImages.push(selectedScan.obi_belt.full.data.attributes);
-  if (selectedScan?.obi_belt?.inside_full?.data?.attributes)
-    coverImages.push(selectedScan.obi_belt.inside_full.data.attributes);
-  if (selectedScan?.dust_jacket?.full?.data?.attributes)
-    coverImages.push(selectedScan.dust_jacket.full.data.attributes);
-  if (selectedScan?.dust_jacket?.inside_full?.data?.attributes)
-    coverImages.push(selectedScan.dust_jacket.inside_full.data.attributes);
-  if (selectedScan?.cover?.full?.data?.attributes)
-    coverImages.push(selectedScan.cover.full.data.attributes);
-  if (selectedScan?.cover?.inside_full?.data?.attributes)
-    coverImages.push(selectedScan.cover.inside_full.data.attributes);
+  const coverImages = useMemo(() => {
+    const memo: UploadImageFragment[] = [];
+    if (selectedScan?.obi_belt?.full?.data?.attributes)
+      memo.push(selectedScan.obi_belt.full.data.attributes);
+    if (selectedScan?.obi_belt?.inside_full?.data?.attributes)
+      memo.push(selectedScan.obi_belt.inside_full.data.attributes);
+    if (selectedScan?.dust_jacket?.full?.data?.attributes)
+      memo.push(selectedScan.dust_jacket.full.data.attributes);
+    if (selectedScan?.dust_jacket?.inside_full?.data?.attributes)
+      memo.push(selectedScan.dust_jacket.inside_full.data.attributes);
+    if (selectedScan?.cover?.full?.data?.attributes)
+      memo.push(selectedScan.cover.full.data.attributes);
+    if (selectedScan?.cover?.inside_full?.data?.attributes)
+      memo.push(selectedScan.cover.inside_full.data.attributes);
+    return memo;
+  }, [selectedScan]);
 
   if (coverImages.length > 0) {
     return (

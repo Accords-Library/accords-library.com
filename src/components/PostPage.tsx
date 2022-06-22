@@ -67,105 +67,136 @@ export function PostPage(props: Props): JSX.Element {
     [post.slug, post.thumbnail, selectedTranslation]
   );
 
-  const subPanel =
-    returnHref || returnTitle || displayCredits || displayToc ? (
-      <SubPanel>
+  const subPanel = useMemo(
+    () =>
+      returnHref || returnTitle || displayCredits || displayToc ? (
+        <SubPanel>
+          {returnHref && returnTitle && (
+            <ReturnButton
+              href={returnHref}
+              title={returnTitle}
+              langui={langui}
+              displayOn={ReturnButtonType.Desktop}
+              horizontalLine
+            />
+          )}
+
+          {displayCredits && (
+            <>
+              {selectedTranslation && (
+                <div className="grid grid-flow-col place-content-center place-items-center gap-2">
+                  <p className="font-headers">{langui.status}:</p>
+
+                  <ToolTip
+                    content={getStatusDescription(
+                      selectedTranslation.status,
+                      langui
+                    )}
+                    maxWidth={"20rem"}
+                  >
+                    <Chip>{selectedTranslation.status}</Chip>
+                  </ToolTip>
+                </div>
+              )}
+
+              {post.authors && post.authors.data.length > 0 && (
+                <div>
+                  <p className="font-headers">{"Authors"}:</p>
+                  <div className="grid place-content-center place-items-center gap-2">
+                    {filterHasAttributes(post.authors.data).map((author) => (
+                      <Fragment key={author.id}>
+                        <RecorderChip
+                          langui={langui}
+                          recorder={author.attributes}
+                        />
+                      </Fragment>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <HorizontalLine />
+            </>
+          )}
+
+          {displayToc && <TOC text={body} title={title} />}
+        </SubPanel>
+      ) : undefined,
+    [
+      body,
+      displayCredits,
+      displayToc,
+      langui,
+      post.authors,
+      returnHref,
+      returnTitle,
+      selectedTranslation,
+      title,
+    ]
+  );
+
+  const contentPanel = useMemo(
+    () => (
+      <ContentPanel>
         {returnHref && returnTitle && (
           <ReturnButton
             href={returnHref}
             title={returnTitle}
             langui={langui}
-            displayOn={ReturnButtonType.Desktop}
+            displayOn={ReturnButtonType.Mobile}
             horizontalLine
           />
         )}
 
-        {displayCredits && (
+        {displayThumbnailHeader ? (
           <>
-            {selectedTranslation && (
-              <div className="grid grid-flow-col place-content-center place-items-center gap-2">
-                <p className="font-headers">{langui.status}:</p>
-
-                <ToolTip
-                  content={getStatusDescription(
-                    selectedTranslation.status,
-                    langui
-                  )}
-                  maxWidth={"20rem"}
-                >
-                  <Chip>{selectedTranslation.status}</Chip>
-                </ToolTip>
-              </div>
-            )}
-
-            {post.authors && post.authors.data.length > 0 && (
-              <div>
-                <p className="font-headers">{"Authors"}:</p>
-                <div className="grid place-content-center place-items-center gap-2">
-                  {filterHasAttributes(post.authors.data).map((author) => (
-                    <Fragment key={author.id}>
-                      <RecorderChip
-                        langui={langui}
-                        recorder={author.attributes}
-                      />
-                    </Fragment>
-                  ))}
-                </div>
-              </div>
-            )}
+            <ThumbnailHeader
+              thumbnail={thumbnail}
+              title={title}
+              description={excerpt}
+              langui={langui}
+              categories={post.categories}
+              languageSwitcher={<LanguageSwitcher />}
+            />
 
             <HorizontalLine />
           </>
+        ) : (
+          <>
+            {displayLanguageSwitcher && (
+              <div className="grid place-content-end place-items-start">
+                <LanguageSwitcher />
+              </div>
+            )}
+            {displayTitle && (
+              <h1 className="my-16 flex justify-center gap-3 text-center text-4xl">
+                {title}
+              </h1>
+            )}
+          </>
         )}
 
-        {displayToc && <TOC text={body} title={title} />}
-      </SubPanel>
-    ) : undefined;
-
-  const contentPanel = (
-    <ContentPanel>
-      {returnHref && returnTitle && (
-        <ReturnButton
-          href={returnHref}
-          title={returnTitle}
-          langui={langui}
-          displayOn={ReturnButtonType.Mobile}
-          horizontalLine
-        />
-      )}
-
-      {displayThumbnailHeader ? (
-        <>
-          <ThumbnailHeader
-            thumbnail={thumbnail}
-            title={title}
-            description={excerpt}
-            langui={langui}
-            categories={post.categories}
-            languageSwitcher={<LanguageSwitcher />}
-          />
-
-          <HorizontalLine />
-        </>
-      ) : (
-        <>
-          {displayLanguageSwitcher && (
-            <div className="grid place-content-end place-items-start">
-              <LanguageSwitcher />
-            </div>
-          )}
-          {displayTitle && (
-            <h1 className="my-16 flex justify-center gap-3 text-center text-4xl">
-              {title}
-            </h1>
-          )}
-        </>
-      )}
-
-      {prependBody}
-      <Markdawn text={body} />
-      {appendBody}
-    </ContentPanel>
+        {prependBody}
+        <Markdawn text={body} />
+        {appendBody}
+      </ContentPanel>
+    ),
+    [
+      LanguageSwitcher,
+      appendBody,
+      body,
+      displayLanguageSwitcher,
+      displayThumbnailHeader,
+      displayTitle,
+      excerpt,
+      langui,
+      post.categories,
+      prependBody,
+      returnHref,
+      returnTitle,
+      thumbnail,
+      title,
+    ]
   );
 
   return (

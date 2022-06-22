@@ -19,23 +19,18 @@ type SortContentProps =
     >["contents"];
 
 export function sortContent(contents: SortContentProps) {
-  if (contents) {
-    const newContent = { ...contents };
-    newContent?.data.sort((a, b) => {
-      if (
-        a.attributes?.range[0]?.__typename === "ComponentRangePageRange" &&
-        b.attributes?.range[0]?.__typename === "ComponentRangePageRange"
-      ) {
-        return (
-          a.attributes.range[0].starting_page -
-          b.attributes.range[0].starting_page
-        );
-      }
-      return 0;
-    });
-    return newContent;
-  }
-  return contents;
+  contents?.data.sort((a, b) => {
+    if (
+      a.attributes?.range[0]?.__typename === "ComponentRangePageRange" &&
+      b.attributes?.range[0]?.__typename === "ComponentRangePageRange"
+    ) {
+      return (
+        a.attributes.range[0].starting_page -
+        b.attributes.range[0].starting_page
+      );
+    }
+    return 0;
+  });
 }
 
 export function getStatusDescription(

@@ -38,12 +38,12 @@ export function useSmartLanguage<T>(
   const router = useRouter();
 
   const availableLocales = useMemo(() => {
-    const map = new Map<string, number>();
+    const memo = new Map<string, number>();
     filterDefined(items).map((elem, index) => {
       const result = languageExtractor(elem);
-      if (isDefined(result)) map.set(result, index);
+      if (isDefined(result)) memo.set(result, index);
     });
-    return map;
+    return memo;
   }, [items, languageExtractor]);
 
   const [selectedTranslationIndex, setSelectedTranslationIndex] = useState<

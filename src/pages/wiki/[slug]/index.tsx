@@ -26,6 +26,7 @@ import {
   GetStaticPathsResult,
   GetStaticPropsContext,
 } from "next";
+import { useMemo } from "react";
 
 interface Props extends AppStaticProps {
   page: WikiPageWithTranslations;
@@ -40,80 +41,95 @@ export default function WikiPage(props: Props): JSX.Element {
     languageExtractor: (item) => item.language?.data?.attributes?.code,
   });
 
-  const subPanel = (
-    <SubPanel>
-      <ReturnButton
-        href={`/wiki`}
-        title={langui.wiki}
-        langui={langui}
-        displayOn={ReturnButtonType.Desktop}
-        horizontalLine
-      />
-    </SubPanel>
+  const subPanel = useMemo(
+    () => (
+      <SubPanel>
+        <ReturnButton
+          href={`/wiki`}
+          title={langui.wiki}
+          langui={langui}
+          displayOn={ReturnButtonType.Desktop}
+          horizontalLine
+        />
+      </SubPanel>
+    ),
+    [langui]
   );
-  const contentPanel = (
-    <ContentPanel width={ContentPanelWidthSizes.Large}>
-      <ReturnButton
-        href={`/wiki`}
-        title={langui.wiki}
-        langui={langui}
-        displayOn={ReturnButtonType.Mobile}
-        className="mb-10"
-      />
 
-      <div className="flex place-content-center gap-4">
-        <h1 className="text-center text-3xl">{selectedTranslation?.title}</h1>
-        <LanguageSwitcher />
-      </div>
+  const contentPanel = useMemo(
+    () => (
+      <ContentPanel width={ContentPanelWidthSizes.Large}>
+        <ReturnButton
+          href={`/wiki`}
+          title={langui.wiki}
+          langui={langui}
+          displayOn={ReturnButtonType.Mobile}
+          className="mb-10"
+        />
 
-      <HorizontalLine />
+        <div className="flex place-content-center gap-4">
+          <h1 className="text-center text-3xl">{selectedTranslation?.title}</h1>
+          <LanguageSwitcher />
+        </div>
 
-      {selectedTranslation && (
-        <div className="text-justify">
-          <div
-            className="float-right ml-8 mb-8 w-[25rem] overflow-hidden rounded-lg bg-mid
+        <HorizontalLine />
+
+        {selectedTranslation && (
+          <div className="text-justify">
+            <div
+              className="float-right ml-8 mb-8 w-[25rem] overflow-hidden rounded-lg bg-mid
             text-center"
-          >
-            {page.thumbnail?.data?.attributes && (
-              <Img image={page.thumbnail.data.attributes} />
-            )}
-            <div className="my-4 grid gap-4 p-4">
-              <p className="font-headers text-xl">{langui.categories}</p>
-              <div className="flex flex-row flex-wrap place-content-center gap-2">
-                {page.categories?.data.map((category) => (
-                  <Chip key={category.id}>{category.attributes?.name}</Chip>
-                ))}
+            >
+              {page.thumbnail?.data?.attributes && (
+                <Img image={page.thumbnail.data.attributes} />
+              )}
+              <div className="my-4 grid gap-4 p-4">
+                <p className="font-headers text-xl">{langui.categories}</p>
+                <div className="flex flex-row flex-wrap place-content-center gap-2">
+                  {page.categories?.data.map((category) => (
+                    <Chip key={category.id}>{category.attributes?.name}</Chip>
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
-          {isDefinedAndNotEmpty(selectedTranslation.summary) && (
-            <div className="mb-6">
-              <p className="font-headers text-lg">{langui.summary}</p>
-              <p>{selectedTranslation.summary}</p>
-            </div>
-          )}
+            {isDefinedAndNotEmpty(selectedTranslation.summary) && (
+              <div className="mb-6">
+                <p className="font-headers text-lg">{langui.summary}</p>
+                <p>{selectedTranslation.summary}</p>
+              </div>
+            )}
 
-          {filterHasAttributes(page.definitions, ["translations"]).map(
-            (definition, index) => (
-              <DefinitionCard
-                key={index}
-                source={definition.source?.data?.attributes?.name}
-                translations={filterHasAttributes(definition.translations).map(
-                  (translation) => ({
+            {filterHasAttributes(page.definitions, ["translations"]).map(
+              (definition, index) => (
+                <DefinitionCard
+                  key={index}
+                  source={definition.source?.data?.attributes?.name}
+                  translations={filterHasAttributes(
+                    definition.translations
+                  ).map((translation) => ({
                     language: translation.language.data?.attributes?.code,
                     definition: translation.definition,
                     status: translation.status,
-                  })
-                )}
-                index={index + 1}
-                languages={languages}
-                langui={langui}
-              />
-            )
-          )}
-        </div>
-      )}
-    </ContentPanel>
+                  }))}
+                  index={index + 1}
+                  languages={languages}
+                  langui={langui}
+                />
+              )
+            )}
+          </div>
+        )}
+      </ContentPanel>
+    ),
+    [
+      LanguageSwitcher,
+      languages,
+      langui,
+      page.categories?.data,
+      page.definitions,
+      page.thumbnail?.data?.attributes,
+      selectedTranslation,
+    ]
   );
 
   return (

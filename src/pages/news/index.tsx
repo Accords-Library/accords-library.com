@@ -46,73 +46,79 @@ export default function News(props: Props): JSX.Element {
     [posts, searchName]
   );
 
-  const subPanel = (
-    <SubPanel>
-      <PanelHeader
-        icon={Icon.Feed}
-        title={langui.news}
-        description={langui.news_description}
-      />
-
-      <TextInput
-        className="mb-6 w-full"
-        placeholder={langui.search_title ?? undefined}
-        state={searchName}
-        setState={setSearchName}
-      />
-
-      {hoverable && (
-        <WithLabel
-          label={langui.always_show_info}
-          input={
-            <Switch setState={setKeepInfoVisible} state={keepInfoVisible} />
-          }
+  const subPanel = useMemo(
+    () => (
+      <SubPanel>
+        <PanelHeader
+          icon={Icon.Feed}
+          title={langui.news}
+          description={langui.news_description}
         />
-      )}
 
-      <Button
-        className="mt-8"
-        text={langui.reset_all_filters}
-        icon={Icon.Replay}
-        onClick={() => {
-          setSearchName(defaultFiltersState.searchName);
-          setKeepInfoVisible(defaultFiltersState.keepInfoVisible);
-        }}
-      />
-    </SubPanel>
+        <TextInput
+          className="mb-6 w-full"
+          placeholder={langui.search_title ?? undefined}
+          state={searchName}
+          setState={setSearchName}
+        />
+
+        {hoverable && (
+          <WithLabel
+            label={langui.always_show_info}
+            input={
+              <Switch setState={setKeepInfoVisible} state={keepInfoVisible} />
+            }
+          />
+        )}
+
+        <Button
+          className="mt-8"
+          text={langui.reset_all_filters}
+          icon={Icon.Replay}
+          onClick={() => {
+            setSearchName(defaultFiltersState.searchName);
+            setKeepInfoVisible(defaultFiltersState.keepInfoVisible);
+          }}
+        />
+      </SubPanel>
+    ),
+    [hoverable, keepInfoVisible, langui, searchName]
   );
 
-  const contentPanel = (
-    <ContentPanel width={ContentPanelWidthSizes.Full}>
-      <div
-        className="grid grid-cols-1 items-end gap-8
+  const contentPanel = useMemo(
+    () => (
+      <ContentPanel width={ContentPanelWidthSizes.Full}>
+        <div
+          className="grid grid-cols-1 items-end gap-8
         desktop:grid-cols-[repeat(auto-fill,_minmax(20rem,1fr))]"
-      >
-        {filterHasAttributes(filteredItems).map((post) => (
-          <Fragment key={post.id}>
-            <PreviewCard
-              href={`/news/${post.attributes.slug}`}
-              title={
-                post.attributes.translations?.[0]?.title ??
-                prettySlug(post.attributes.slug)
-              }
-              description={post.attributes.translations?.[0]?.excerpt}
-              thumbnail={post.attributes.thumbnail?.data?.attributes}
-              thumbnailAspectRatio="3/2"
-              thumbnailForceAspectRatio
-              bottomChips={post.attributes.categories?.data.map(
-                (category) => category.attributes?.short ?? ""
-              )}
-              keepInfoVisible={keepInfoVisible}
-              metadata={{
-                release_date: post.attributes.date,
-                position: "Top",
-              }}
-            />
-          </Fragment>
-        ))}
-      </div>
-    </ContentPanel>
+        >
+          {filterHasAttributes(filteredItems).map((post) => (
+            <Fragment key={post.id}>
+              <PreviewCard
+                href={`/news/${post.attributes.slug}`}
+                title={
+                  post.attributes.translations?.[0]?.title ??
+                  prettySlug(post.attributes.slug)
+                }
+                description={post.attributes.translations?.[0]?.excerpt}
+                thumbnail={post.attributes.thumbnail?.data?.attributes}
+                thumbnailAspectRatio="3/2"
+                thumbnailForceAspectRatio
+                bottomChips={post.attributes.categories?.data.map(
+                  (category) => category.attributes?.short ?? ""
+                )}
+                keepInfoVisible={keepInfoVisible}
+                metadata={{
+                  release_date: post.attributes.date,
+                  position: "Top",
+                }}
+              />
+            </Fragment>
+          ))}
+        </div>
+      </ContentPanel>
+    ),
+    [filteredItems, keepInfoVisible]
   );
 
   return (

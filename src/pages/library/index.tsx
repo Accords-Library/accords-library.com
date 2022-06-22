@@ -114,204 +114,226 @@ export default function Library(props: Props): JSX.Element {
     [langui, groupingMethod, sortedItems]
   );
 
-  const subPanel = (
-    <SubPanel>
-      <PanelHeader
-        icon={Icon.LibraryBooks}
-        title={langui.library}
-        description={langui.library_description}
-      />
+  const subPanel = useMemo(
+    () => (
+      <SubPanel>
+        <PanelHeader
+          icon={Icon.LibraryBooks}
+          title={langui.library}
+          description={langui.library_description}
+        />
 
-      <TextInput
-        className="mb-6 w-full"
-        placeholder={langui.search_title ?? undefined}
-        state={searchName}
-        setState={setSearchName}
-      />
+        <TextInput
+          className="mb-6 w-full"
+          placeholder={langui.search_title ?? undefined}
+          state={searchName}
+          setState={setSearchName}
+        />
 
-      <WithLabel
-        label={langui.group_by}
-        input={
-          <Select
-            className="w-full"
-            options={[
-              langui.category ?? "Category",
-              langui.type ?? "Type",
-              langui.release_year ?? "Year",
-            ]}
-            state={groupingMethod}
-            setState={setGroupingMethod}
-            allowEmpty
-          />
-        }
-      />
-
-      <WithLabel
-        label={langui.order_by}
-        input={
-          <Select
-            className="w-full"
-            options={[
-              langui.name ?? "Name",
-              langui.price ?? "Price",
-              langui.release_date ?? "Release date",
-            ]}
-            state={sortingMethod}
-            setState={setSortingMethod}
-          />
-        }
-      />
-
-      <WithLabel
-        label={langui.show_subitems}
-        input={<Switch state={showSubitems} setState={setShowSubitems} />}
-      />
-
-      <WithLabel
-        label={langui.show_primary_items}
-        input={
-          <Switch state={showPrimaryItems} setState={setShowPrimaryItems} />
-        }
-      />
-
-      <WithLabel
-        label={langui.show_secondary_items}
-        input={
-          <Switch state={showSecondaryItems} setState={setShowSecondaryItems} />
-        }
-      />
-
-      {hoverable && (
         <WithLabel
-          label={langui.always_show_info}
+          label={langui.group_by}
           input={
-            <Switch state={keepInfoVisible} setState={setKeepInfoVisible} />
+            <Select
+              className="w-full"
+              options={[
+                langui.category ?? "Category",
+                langui.type ?? "Type",
+                langui.release_year ?? "Year",
+              ]}
+              state={groupingMethod}
+              setState={setGroupingMethod}
+              allowEmpty
+            />
           }
         />
-      )}
 
-      <ButtonGroup className="mt-4">
-        <ToolTip content={langui.only_display_items_i_want}>
-          <Button
-            icon={Icon.Favorite}
-            onClick={() => setFilterUserStatus(LibraryItemUserStatus.Want)}
-            active={filterUserStatus === LibraryItemUserStatus.Want}
-          />
-        </ToolTip>
-        <ToolTip content={langui.only_display_items_i_have}>
-          <Button
-            icon={Icon.BackHand}
-            onClick={() => setFilterUserStatus(LibraryItemUserStatus.Have)}
-            active={filterUserStatus === LibraryItemUserStatus.Have}
-          />
-        </ToolTip>
-        <ToolTip content={langui.only_display_unmarked_items}>
-          <Button
-            icon={Icon.RadioButtonUnchecked}
-            onClick={() => setFilterUserStatus(LibraryItemUserStatus.None)}
-            active={filterUserStatus === LibraryItemUserStatus.None}
-          />
-        </ToolTip>
-        <ToolTip content={langui.display_all_items}>
-          <Button
-            text={"All"}
-            onClick={() => setFilterUserStatus(undefined)}
-            active={isUndefined(filterUserStatus)}
-          />
-        </ToolTip>
-      </ButtonGroup>
+        <WithLabel
+          label={langui.order_by}
+          input={
+            <Select
+              className="w-full"
+              options={[
+                langui.name ?? "Name",
+                langui.price ?? "Price",
+                langui.release_date ?? "Release date",
+              ]}
+              state={sortingMethod}
+              setState={setSortingMethod}
+            />
+          }
+        />
 
-      <Button
-        className="mt-8"
-        text={langui.reset_all_filters}
-        icon={Icon.Replay}
-        onClick={() => {
-          setSearchName(defaultFiltersState.searchName);
-          setShowSubitems(defaultFiltersState.showSubitems);
-          setShowPrimaryItems(defaultFiltersState.showPrimaryItems);
-          setShowSecondaryItems(defaultFiltersState.showSecondaryItems);
-          setSortingMethod(defaultFiltersState.sortingMethod);
-          setGroupingMethod(defaultFiltersState.groupingMethod);
-          setKeepInfoVisible(defaultFiltersState.keepInfoVisible);
-          setFilterUserStatus(defaultFiltersState.filterUserStatus);
-        }}
-      />
-    </SubPanel>
+        <WithLabel
+          label={langui.show_subitems}
+          input={<Switch state={showSubitems} setState={setShowSubitems} />}
+        />
+
+        <WithLabel
+          label={langui.show_primary_items}
+          input={
+            <Switch state={showPrimaryItems} setState={setShowPrimaryItems} />
+          }
+        />
+
+        <WithLabel
+          label={langui.show_secondary_items}
+          input={
+            <Switch
+              state={showSecondaryItems}
+              setState={setShowSecondaryItems}
+            />
+          }
+        />
+
+        {hoverable && (
+          <WithLabel
+            label={langui.always_show_info}
+            input={
+              <Switch state={keepInfoVisible} setState={setKeepInfoVisible} />
+            }
+          />
+        )}
+
+        <ButtonGroup className="mt-4">
+          <ToolTip content={langui.only_display_items_i_want}>
+            <Button
+              icon={Icon.Favorite}
+              onClick={() => setFilterUserStatus(LibraryItemUserStatus.Want)}
+              active={filterUserStatus === LibraryItemUserStatus.Want}
+            />
+          </ToolTip>
+          <ToolTip content={langui.only_display_items_i_have}>
+            <Button
+              icon={Icon.BackHand}
+              onClick={() => setFilterUserStatus(LibraryItemUserStatus.Have)}
+              active={filterUserStatus === LibraryItemUserStatus.Have}
+            />
+          </ToolTip>
+          <ToolTip content={langui.only_display_unmarked_items}>
+            <Button
+              icon={Icon.RadioButtonUnchecked}
+              onClick={() => setFilterUserStatus(LibraryItemUserStatus.None)}
+              active={filterUserStatus === LibraryItemUserStatus.None}
+            />
+          </ToolTip>
+          <ToolTip content={langui.display_all_items}>
+            <Button
+              text={"All"}
+              onClick={() => setFilterUserStatus(undefined)}
+              active={isUndefined(filterUserStatus)}
+            />
+          </ToolTip>
+        </ButtonGroup>
+
+        <Button
+          className="mt-8"
+          text={langui.reset_all_filters}
+          icon={Icon.Replay}
+          onClick={() => {
+            setSearchName(defaultFiltersState.searchName);
+            setShowSubitems(defaultFiltersState.showSubitems);
+            setShowPrimaryItems(defaultFiltersState.showPrimaryItems);
+            setShowSecondaryItems(defaultFiltersState.showSecondaryItems);
+            setSortingMethod(defaultFiltersState.sortingMethod);
+            setGroupingMethod(defaultFiltersState.groupingMethod);
+            setKeepInfoVisible(defaultFiltersState.keepInfoVisible);
+            setFilterUserStatus(defaultFiltersState.filterUserStatus);
+          }}
+        />
+      </SubPanel>
+    ),
+    [
+      filterUserStatus,
+      groupingMethod,
+      hoverable,
+      keepInfoVisible,
+      langui,
+      searchName,
+      showPrimaryItems,
+      showSecondaryItems,
+      showSubitems,
+      sortingMethod,
+    ]
   );
-  const contentPanel = (
-    <ContentPanel width={ContentPanelWidthSizes.Full}>
-      {/* TODO: Add to langui */}
-      {groups.size === 0 && (
-        <ContentPlaceholder
-          message={
-            "No results. You can try changing or resetting the search parameters."
-          }
-          icon={Icon.ChevronLeft}
-        />
-      )}
-      {iterateMap(groups, (name, items) => (
-        <Fragment key={name}>
-          {isDefinedAndNotEmpty(name) && (
-            <h2
-              className="flex flex-row place-items-center gap-2
+
+  const contentPanel = useMemo(
+    () => (
+      <ContentPanel width={ContentPanelWidthSizes.Full}>
+        {/* TODO: Add to langui */}
+        {groups.size === 0 && (
+          <ContentPlaceholder
+            message={
+              "No results. You can try changing or resetting the search parameters."
+            }
+            icon={Icon.ChevronLeft}
+          />
+        )}
+        {iterateMap(groups, (name, items) => (
+          <Fragment key={name}>
+            {isDefinedAndNotEmpty(name) && (
+              <h2
+                className="flex flex-row place-items-center gap-2
                   pb-2 pt-10 text-2xl first-of-type:pt-0"
-            >
-              {name}
-              <Chip>{`${items.length} ${
-                items.length <= 1
-                  ? langui.result?.toLowerCase() ?? "result"
-                  : langui.results?.toLowerCase() ?? "results"
-              }`}</Chip>
-            </h2>
-          )}
-          <div
-            className="grid items-end gap-8 border-b-[3px] border-dotted pb-12
+              >
+                {name}
+                <Chip>{`${items.length} ${
+                  items.length <= 1
+                    ? langui.result?.toLowerCase() ?? "result"
+                    : langui.results?.toLowerCase() ?? "results"
+                }`}</Chip>
+              </h2>
+            )}
+            <div
+              className="grid items-end gap-8 border-b-[3px] border-dotted pb-12
                 last-of-type:border-0 desktop:grid-cols-[repeat(auto-fill,_minmax(13rem,1fr))]
                 mobile:grid-cols-2 mobile:gap-4"
-          >
-            {filterHasAttributes(items).map((item) => (
-              <Fragment key={item.id}>
-                <PreviewCard
-                  href={`/library/${item.attributes.slug}`}
-                  title={item.attributes.title}
-                  subtitle={item.attributes.subtitle}
-                  thumbnail={item.attributes.thumbnail?.data?.attributes}
-                  thumbnailAspectRatio="21/29.7"
-                  thumbnailRounded={false}
-                  keepInfoVisible={keepInfoVisible}
-                  topChips={
-                    item.attributes.metadata &&
-                    item.attributes.metadata.length > 0 &&
-                    item.attributes.metadata[0]
-                      ? [prettyItemSubType(item.attributes.metadata[0])]
-                      : []
-                  }
-                  bottomChips={item.attributes.categories?.data.map(
-                    (category) => category.attributes?.short ?? ""
-                  )}
-                  metadata={{
-                    currencies: currencies,
-                    release_date: item.attributes.release_date,
-                    price: item.attributes.price,
-                    position: "Bottom",
-                  }}
-                  infoAppend={
-                    <PreviewCardCTAs
-                      id={item.id}
-                      displayCTAs={
-                        !isUntangibleGroupItem(item.attributes.metadata?.[0])
-                      }
-                      langui={langui}
-                    />
-                  }
-                />
-              </Fragment>
-            ))}
-          </div>
-        </Fragment>
-      ))}
-    </ContentPanel>
+            >
+              {filterHasAttributes(items).map((item) => (
+                <Fragment key={item.id}>
+                  <PreviewCard
+                    href={`/library/${item.attributes.slug}`}
+                    title={item.attributes.title}
+                    subtitle={item.attributes.subtitle}
+                    thumbnail={item.attributes.thumbnail?.data?.attributes}
+                    thumbnailAspectRatio="21/29.7"
+                    thumbnailRounded={false}
+                    keepInfoVisible={keepInfoVisible}
+                    topChips={
+                      item.attributes.metadata &&
+                      item.attributes.metadata.length > 0 &&
+                      item.attributes.metadata[0]
+                        ? [prettyItemSubType(item.attributes.metadata[0])]
+                        : []
+                    }
+                    bottomChips={item.attributes.categories?.data.map(
+                      (category) => category.attributes?.short ?? ""
+                    )}
+                    metadata={{
+                      currencies: currencies,
+                      release_date: item.attributes.release_date,
+                      price: item.attributes.price,
+                      position: "Bottom",
+                    }}
+                    infoAppend={
+                      <PreviewCardCTAs
+                        id={item.id}
+                        displayCTAs={
+                          !isUntangibleGroupItem(item.attributes.metadata?.[0])
+                        }
+                        langui={langui}
+                      />
+                    }
+                  />
+                </Fragment>
+              ))}
+            </div>
+          </Fragment>
+        ))}
+      </ContentPanel>
+    ),
+    [currencies, groups, keepInfoVisible, langui]
   );
+
   return (
     <AppLayout
       navTitle={langui.library}

@@ -157,12 +157,10 @@ export function ScanSet(props: Props): JSX.Element {
                   {filterHasAttributes(selectedScan.cleaners.data).map(
                     (cleaner) => (
                       <Fragment key={cleaner.id}>
-                        {cleaner.attributes && (
-                          <RecorderChip
-                            langui={langui}
-                            recorder={cleaner.attributes}
-                          />
-                        )}
+                        <RecorderChip
+                          langui={langui}
+                          recorder={cleaner.attributes}
+                        />
                       </Fragment>
                     )
                   )}
@@ -178,12 +176,10 @@ export function ScanSet(props: Props): JSX.Element {
                     {filterHasAttributes(selectedScan.typesetters.data).map(
                       (typesetter) => (
                         <Fragment key={typesetter.id}>
-                          {typesetter.attributes && (
-                            <RecorderChip
-                              langui={langui}
-                              recorder={typesetter.attributes}
-                            />
-                          )}
+                          <RecorderChip
+                            langui={langui}
+                            recorder={typesetter.attributes}
+                          />
                         </Fragment>
                       )
                     )}
@@ -218,9 +214,7 @@ export function ScanSet(props: Props): JSX.Element {
                   openLightBox(images, index);
                 }}
               >
-                {page.attributes && (
-                  <Img image={page.attributes} quality={ImageQuality.Small} />
-                )}
+                <Img image={page.attributes} quality={ImageQuality.Small} />
               </div>
             ))}
           </div>

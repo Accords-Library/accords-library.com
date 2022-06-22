@@ -71,166 +71,188 @@ export default function Contents(props: Props): JSX.Element {
     [combineRelatedContent, searchName.length]
   );
 
-  const subPanel = (
-    <SubPanel>
-      <PanelHeader
-        icon={Icon.Workspaces}
-        title={langui.contents}
-        description={langui.contents_description}
-      />
+  const subPanel = useMemo(
+    () => (
+      <SubPanel>
+        <PanelHeader
+          icon={Icon.Workspaces}
+          title={langui.contents}
+          description={langui.contents_description}
+        />
 
-      <TextInput
-        className="mb-6 w-full"
-        placeholder={langui.search_title ?? undefined}
-        state={searchName}
-        setState={setSearchName}
-      />
+        <TextInput
+          className="mb-6 w-full"
+          placeholder={langui.search_title ?? undefined}
+          state={searchName}
+          setState={setSearchName}
+        />
 
-      <WithLabel
-        label={langui.group_by}
-        input={
-          <Select
-            className="w-full"
-            options={[langui.category ?? "", langui.type ?? ""]}
-            state={groupingMethod}
-            setState={setGroupingMethod}
-            allowEmpty
-          />
-        }
-      />
-
-      <WithLabel
-        label={langui.combine_related_contents}
-        disabled={searchName.length > 1}
-        input={
-          <Switch
-            setState={setCombineRelatedContent}
-            state={effectiveCombineRelatedContent}
-          />
-        }
-      />
-
-      {hoverable && (
         <WithLabel
-          label={langui.always_show_info}
+          label={langui.group_by}
           input={
-            <Switch setState={setKeepInfoVisible} state={keepInfoVisible} />
+            <Select
+              className="w-full"
+              options={[langui.category ?? "", langui.type ?? ""]}
+              state={groupingMethod}
+              setState={setGroupingMethod}
+              allowEmpty
+            />
           }
         />
-      )}
 
-      <Button
-        className="mt-8"
-        text={langui.reset_all_filters}
-        icon={Icon.Replay}
-        onClick={() => {
-          setSearchName(defaultFiltersState.searchName);
-          setGroupingMethod(defaultFiltersState.groupingMethod);
-          setKeepInfoVisible(defaultFiltersState.keepInfoVisible);
-          setCombineRelatedContent(defaultFiltersState.combineRelatedContent);
-        }}
-      />
-    </SubPanel>
-  );
-  const contentPanel = (
-    <ContentPanel width={ContentPanelWidthSizes.Full}>
-      {/* TODO: Add to langui */}
-      {groups.size === 0 && (
-        <ContentPlaceholder
-          message={
-            "No results. You can try changing or resetting the search parameters."
+        <WithLabel
+          label={langui.combine_related_contents}
+          disabled={searchName.length > 1}
+          input={
+            <Switch
+              setState={setCombineRelatedContent}
+              state={effectiveCombineRelatedContent}
+            />
           }
-          icon={Icon.ChevronLeft}
         />
-      )}
-      {iterateMap(
-        groups,
-        (name, items, index) =>
-          items.length > 0 && (
-            <Fragment key={index}>
-              {name && (
-                <h2
-                  className="flex flex-row place-items-center gap-2 pb-2 pt-10 text-2xl
+
+        {hoverable && (
+          <WithLabel
+            label={langui.always_show_info}
+            input={
+              <Switch setState={setKeepInfoVisible} state={keepInfoVisible} />
+            }
+          />
+        )}
+
+        <Button
+          className="mt-8"
+          text={langui.reset_all_filters}
+          icon={Icon.Replay}
+          onClick={() => {
+            setSearchName(defaultFiltersState.searchName);
+            setGroupingMethod(defaultFiltersState.groupingMethod);
+            setKeepInfoVisible(defaultFiltersState.keepInfoVisible);
+            setCombineRelatedContent(defaultFiltersState.combineRelatedContent);
+          }}
+        />
+      </SubPanel>
+    ),
+    [
+      effectiveCombineRelatedContent,
+      groupingMethod,
+      hoverable,
+      keepInfoVisible,
+      langui,
+      searchName,
+    ]
+  );
+
+  const contentPanel = useMemo(
+    () => (
+      <ContentPanel width={ContentPanelWidthSizes.Full}>
+        {/* TODO: Add to langui */}
+        {groups.size === 0 && (
+          <ContentPlaceholder
+            message={
+              "No results. You can try changing or resetting the search parameters."
+            }
+            icon={Icon.ChevronLeft}
+          />
+        )}
+        {iterateMap(
+          groups,
+          (name, items, index) =>
+            items.length > 0 && (
+              <Fragment key={index}>
+                {name && (
+                  <h2
+                    className="flex flex-row place-items-center gap-2 pb-2 pt-10 text-2xl
                 first-of-type:pt-0"
-                >
-                  {name}
-                  <Chip>{`${items.reduce((currentSum, item) => {
-                    if (effectiveCombineRelatedContent) {
-                      if (
-                        item.attributes?.group?.data?.attributes?.combine ===
-                        true
-                      ) {
-                        return (
-                          currentSum +
-                          (item.attributes.group.data.attributes.contents?.data
-                            .length ?? 1)
-                        );
-                      }
-                    }
-                    return currentSum + 1;
-                  }, 0)} ${
-                    items.length <= 1
-                      ? langui.result?.toLowerCase() ?? ""
-                      : langui.results?.toLowerCase() ?? ""
-                  }`}</Chip>
-                </h2>
-              )}
-
-              <div
-                className="grid grid-cols-2 items-end gap-8
-                desktop:grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] mobile:gap-4"
-              >
-                {filterHasAttributes(items).map((item) => (
-                  <Fragment key={item.id}>
-                    <TranslatedPreviewCard
-                      href={`/contents/${item.attributes.slug}`}
-                      translations={item.attributes.translations?.map(
-                        (translation) => ({
-                          pre_title: translation?.pre_title,
-                          title: translation?.title,
-                          subtitle: translation?.subtitle,
-                          language:
-                            translation?.language?.data?.attributes?.code,
-                        })
-                      )}
-                      slug={item.attributes.slug}
-                      languages={languages}
-                      thumbnail={item.attributes.thumbnail?.data?.attributes}
-                      thumbnailAspectRatio="3/2"
-                      thumbnailForceAspectRatio
-                      stackNumber={
-                        effectiveCombineRelatedContent &&
-                        item.attributes.group?.data?.attributes?.combine ===
+                  >
+                    {name}
+                    <Chip>{`${items.reduce((currentSum, item) => {
+                      if (effectiveCombineRelatedContent) {
+                        if (
+                          item.attributes?.group?.data?.attributes?.combine ===
                           true
-                          ? item.attributes.group.data.attributes.contents?.data
-                              .length
-                          : 0
+                        ) {
+                          return (
+                            currentSum +
+                            (item.attributes.group.data.attributes.contents
+                              ?.data.length ?? 1)
+                          );
+                        }
                       }
-                      topChips={
-                        item.attributes.type?.data?.attributes
-                          ? [
-                              item.attributes.type.data.attributes.titles?.[0]
-                                ? item.attributes.type.data.attributes.titles[0]
-                                    ?.title
-                                : prettySlug(
-                                    item.attributes.type.data.attributes.slug
-                                  ),
-                            ]
-                          : undefined
-                      }
-                      bottomChips={item.attributes.categories?.data.map(
-                        (category) => category.attributes?.short ?? ""
-                      )}
-                      keepInfoVisible={keepInfoVisible}
-                    />
-                  </Fragment>
-                ))}
-              </div>
-            </Fragment>
-          )
-      )}
-    </ContentPanel>
+                      return currentSum + 1;
+                    }, 0)} ${
+                      items.length <= 1
+                        ? langui.result?.toLowerCase() ?? ""
+                        : langui.results?.toLowerCase() ?? ""
+                    }`}</Chip>
+                  </h2>
+                )}
+
+                <div
+                  className="grid grid-cols-2 items-end gap-8
+                desktop:grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] mobile:gap-4"
+                >
+                  {filterHasAttributes(items).map((item) => (
+                    <Fragment key={item.id}>
+                      <TranslatedPreviewCard
+                        href={`/contents/${item.attributes.slug}`}
+                        translations={item.attributes.translations?.map(
+                          (translation) => ({
+                            pre_title: translation?.pre_title,
+                            title: translation?.title,
+                            subtitle: translation?.subtitle,
+                            language:
+                              translation?.language?.data?.attributes?.code,
+                          })
+                        )}
+                        slug={item.attributes.slug}
+                        languages={languages}
+                        thumbnail={item.attributes.thumbnail?.data?.attributes}
+                        thumbnailAspectRatio="3/2"
+                        thumbnailForceAspectRatio
+                        stackNumber={
+                          effectiveCombineRelatedContent &&
+                          item.attributes.group?.data?.attributes?.combine ===
+                            true
+                            ? item.attributes.group.data.attributes.contents
+                                ?.data.length
+                            : 0
+                        }
+                        topChips={
+                          item.attributes.type?.data?.attributes
+                            ? [
+                                item.attributes.type.data.attributes.titles?.[0]
+                                  ? item.attributes.type.data.attributes
+                                      .titles[0]?.title
+                                  : prettySlug(
+                                      item.attributes.type.data.attributes.slug
+                                    ),
+                              ]
+                            : undefined
+                        }
+                        bottomChips={item.attributes.categories?.data.map(
+                          (category) => category.attributes?.short ?? ""
+                        )}
+                        keepInfoVisible={keepInfoVisible}
+                      />
+                    </Fragment>
+                  ))}
+                </div>
+              </Fragment>
+            )
+        )}
+      </ContentPanel>
+    ),
+    [
+      effectiveCombineRelatedContent,
+      groups,
+      keepInfoVisible,
+      languages,
+      langui.result,
+      langui.results,
+    ]
   );
+
   return (
     <AppLayout
       navTitle={langui.contents}

@@ -5,20 +5,24 @@ import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 
 import { GetStaticPropsContext } from "next";
 import { Icon } from "components/Ico";
+import { useMemo } from "react";
 
 interface Props extends AppStaticProps {}
 export default function Merch(props: Props): JSX.Element {
   const { langui } = props;
-  const subPanel = (
-    <SubPanel>
-      <PanelHeader
-        icon={Icon.Store}
-        title={langui.merch}
-        description={langui.merch_description}
-      />
-    </SubPanel>
+  const subPanel = useMemo(
+    () => (
+      <SubPanel>
+        <PanelHeader
+          icon={Icon.Store}
+          title={langui.merch}
+          description={langui.merch_description}
+        />
+      </SubPanel>
+    ),
+    [langui]
   );
-
+  
   return <AppLayout navTitle={langui.merch} subPanel={subPanel} {...props} />;
 }
 

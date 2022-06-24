@@ -106,8 +106,6 @@ const initialState: RequiredNonNullable<AppLayoutState> = {
 
 const AppContext = React.createContext<AppLayoutState>(initialState);
 
-export default AppContext;
-
 export function useAppLayout(): AppLayoutState {
   return useContext(AppContext);
 }

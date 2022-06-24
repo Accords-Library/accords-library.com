@@ -3,16 +3,15 @@ import { ToolTip } from "components/ToolTip";
 import { AppStaticProps } from "graphql/getAppStaticProps";
 import { getStatusDescription } from "helpers/others";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
+import { useCallback } from "react";
 
 interface Props {
   source?: string;
-  translations:
-    | {
-        language: string | undefined;
-        definition: string | null | undefined;
-        status: string | undefined;
-      }[]
-    | undefined;
+  translations: {
+    language: string | undefined;
+    definition: string | null | undefined;
+    status: string | undefined;
+  }[];
   languages: AppStaticProps["languages"];
   langui: AppStaticProps["langui"];
   index: number;
@@ -21,11 +20,15 @@ interface Props {
 export default function DefinitionCard(props: Props): JSX.Element {
   const { source, translations = [], languages, langui, index } = props;
 
-  const [selectedTranslation, LanguageSwitcher] = useSmartLanguage({
-    items: translations,
-    languages: languages,
-    languageExtractor: (item) => item.language,
-  });
+  const [selectedTranslation, LanguageSwitcher, languageSwitcherProps] =
+    useSmartLanguage({
+      items: translations,
+      languages: languages,
+      languageExtractor: useCallback(
+        (item: Props["translations"][number]) => item.language,
+        []
+      ),
+    });
 
   return (
     <>
@@ -40,7 +43,9 @@ export default function DefinitionCard(props: Props): JSX.Element {
             <Chip>{selectedTranslation.status}</Chip>
           </ToolTip>
         )}
-        {translations.length > 1 && <LanguageSwitcher />}
+        {translations.length > 1 && (
+          <LanguageSwitcher {...languageSwitcherProps} />
+        )}
       </div>
 
       <p className="italic">{`${langui.source}: ${source}`}</p>

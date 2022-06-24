@@ -15,7 +15,7 @@ import {
 } from "helpers/others";
 
 import { useSmartLanguage } from "hooks/useSmartLanguage";
-import { Fragment, useMemo } from "react";
+import { Fragment, useCallback, useMemo } from "react";
 
 interface Props {
   openLightBox: (images: string[], index?: number) => void;
@@ -49,42 +49,47 @@ export function ScanSet(props: Props): JSX.Element {
   const { openLightBox, scanSet, slug, title, languages, langui, content } =
     props;
 
-  const [selectedScan, LanguageSwitcher] = useSmartLanguage({
-    items: scanSet,
-    languages: languages,
-    languageExtractor: (item) => item.language?.data?.attributes?.code,
-    transform: (item) => {
-      item.pages?.data.sort((a, b) => {
-        if (
-          a.attributes &&
-          b.attributes &&
-          isDefinedAndNotEmpty(a.attributes.url) &&
-          isDefinedAndNotEmpty(b.attributes.url)
-        ) {
-          let aName = getAssetFilename(a.attributes.url);
-          let bName = getAssetFilename(b.attributes.url);
+  const [selectedScan, LanguageSwitcher, languageSwitcherProps] =
+    useSmartLanguage({
+      items: scanSet,
+      languages: languages,
+      languageExtractor: useCallback(
+        (item: NonNullable<Props["scanSet"][number]>) =>
+          item.language?.data?.attributes?.code,
+        []
+      ),
+      transform: useCallback((item: NonNullable<Props["scanSet"][number]>) => {
+        item.pages?.data.sort((a, b) => {
+          if (
+            a.attributes &&
+            b.attributes &&
+            isDefinedAndNotEmpty(a.attributes.url) &&
+            isDefinedAndNotEmpty(b.attributes.url)
+          ) {
+            let aName = getAssetFilename(a.attributes.url);
+            let bName = getAssetFilename(b.attributes.url);
 
-          /*
-           * If the number is a succession of 0s, make the number
-           * incrementally smaller than 0 (i.e: 00 becomes -1)
-           */
-          if (aName.replaceAll("0", "").length === 0) {
-            aName = (1 - aName.length).toString(10);
-          }
-          if (bName.replaceAll("0", "").length === 0) {
-            bName = (1 - bName.length).toString(10);
-          }
+            /*
+             * If the number is a succession of 0s, make the number
+             * incrementally smaller than 0 (i.e: 00 becomes -1)
+             */
+            if (aName.replaceAll("0", "").length === 0) {
+              aName = (1 - aName.length).toString(10);
+            }
+            if (bName.replaceAll("0", "").length === 0) {
+              bName = (1 - bName.length).toString(10);
+            }
 
-          if (isInteger(aName) && isInteger(bName)) {
-            return parseInt(aName, 10) - parseInt(bName, 10);
+            if (isInteger(aName) && isInteger(bName)) {
+              return parseInt(aName, 10) - parseInt(bName, 10);
+            }
+            return a.attributes.url.localeCompare(b.attributes.url);
           }
-          return a.attributes.url.localeCompare(b.attributes.url);
-        }
-        return 0;
-      });
-      return item;
-    },
-  });
+          return 0;
+        });
+        return item;
+      }, []),
+    });
 
   const pages = useMemo(
     () => selectedScan && filterHasAttributes(selectedScan.pages?.data),
@@ -120,7 +125,7 @@ export function ScanSet(props: Props): JSX.Element {
                 />
               )}
 
-            <LanguageSwitcher />
+            <LanguageSwitcher {...languageSwitcherProps} />
 
             <div className="grid place-content-center place-items-center">
               <p className="font-headers">{langui.status}:</p>

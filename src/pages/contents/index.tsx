@@ -9,7 +9,7 @@ import {
 } from "components/Panels/ContentPanel";
 import { SubPanel } from "components/Panels/SubPanel";
 import { TranslatedPreviewCard } from "components/PreviewCard";
-import { GetContentsQuery } from "graphql/generated";
+
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import { prettyinlineTitle, prettySlug } from "helpers/formatters";
@@ -27,6 +27,7 @@ import {
   mapRemoveEmptyValues,
 } from "helpers/others";
 import { ContentPlaceholder } from "components/PanelComponents/ContentPlaceholder";
+import { GetContentsQuery } from "graphql/generated";
 
 interface Props extends AppStaticProps {
   contents: NonNullable<GetContentsQuery["contents"]>["data"];
@@ -194,47 +195,53 @@ export default function Contents(props: Props): JSX.Element {
                 >
                   {filterHasAttributes(items).map((item) => (
                     <Fragment key={item.id}>
-                      <TranslatedPreviewCard
-                        href={`/contents/${item.attributes.slug}`}
-                        translations={item.attributes.translations?.map(
-                          (translation) => ({
-                            pre_title: translation?.pre_title,
-                            title: translation?.title,
-                            subtitle: translation?.subtitle,
-                            language:
-                              translation?.language?.data?.attributes?.code,
-                          })
-                        )}
-                        slug={item.attributes.slug}
-                        languages={languages}
-                        thumbnail={item.attributes.thumbnail?.data?.attributes}
-                        thumbnailAspectRatio="3/2"
-                        thumbnailForceAspectRatio
-                        stackNumber={
-                          effectiveCombineRelatedContent &&
-                          item.attributes.group?.data?.attributes?.combine ===
-                            true
-                            ? item.attributes.group.data.attributes.contents
-                                ?.data.length
-                            : 0
-                        }
-                        topChips={
-                          item.attributes.type?.data?.attributes
-                            ? [
-                                item.attributes.type.data.attributes.titles?.[0]
-                                  ? item.attributes.type.data.attributes
-                                      .titles[0]?.title
-                                  : prettySlug(
-                                      item.attributes.type.data.attributes.slug
-                                    ),
-                              ]
-                            : undefined
-                        }
-                        bottomChips={item.attributes.categories?.data.map(
-                          (category) => category.attributes?.short ?? ""
-                        )}
-                        keepInfoVisible={keepInfoVisible}
-                      />
+                      {item.attributes.translations && (
+                        <TranslatedPreviewCard
+                          href={`/contents/${item.attributes.slug}`}
+                          translations={item.attributes.translations.map(
+                            (translation) => ({
+                              pre_title: translation?.pre_title,
+                              title: translation?.title,
+                              subtitle: translation?.subtitle,
+                              language:
+                                translation?.language?.data?.attributes?.code,
+                            })
+                          )}
+                          slug={item.attributes.slug}
+                          languages={languages}
+                          thumbnail={
+                            item.attributes.thumbnail?.data?.attributes
+                          }
+                          thumbnailAspectRatio="3/2"
+                          thumbnailForceAspectRatio
+                          stackNumber={
+                            effectiveCombineRelatedContent &&
+                            item.attributes.group?.data?.attributes?.combine ===
+                              true
+                              ? item.attributes.group.data.attributes.contents
+                                  ?.data.length
+                              : 0
+                          }
+                          topChips={
+                            item.attributes.type?.data?.attributes
+                              ? [
+                                  item.attributes.type.data.attributes
+                                    .titles?.[0]
+                                    ? item.attributes.type.data.attributes
+                                        .titles[0]?.title
+                                    : prettySlug(
+                                        item.attributes.type.data.attributes
+                                          .slug
+                                      ),
+                                ]
+                              : undefined
+                          }
+                          bottomChips={item.attributes.categories?.data.map(
+                            (category) => category.attributes?.short ?? ""
+                          )}
+                          keepInfoVisible={keepInfoVisible}
+                        />
+                      )}
                     </Fragment>
                   ))}
                 </div>
@@ -243,14 +250,7 @@ export default function Contents(props: Props): JSX.Element {
         )}
       </ContentPanel>
     ),
-    [
-      effectiveCombineRelatedContent,
-      groups,
-      keepInfoVisible,
-      languages,
-      langui.result,
-      langui.results,
-    ]
+    [effectiveCombineRelatedContent, groups, keepInfoVisible, languages, langui]
   );
 
   return (
@@ -287,7 +287,7 @@ export async function getStaticProps(
   };
 }
 
-function getGroups(
+export function getGroups(
   langui: AppStaticProps["langui"],
   groupByType: number,
   items: Props["contents"]
@@ -349,7 +349,7 @@ function getGroups(
   return mapRemoveEmptyValues(groups);
 }
 
-function filterContents(
+export function filterContents(
   contents: Props["contents"],
   combineRelatedContent: boolean,
   searchName: string

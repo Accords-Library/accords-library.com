@@ -7,7 +7,7 @@ export enum ImageQuality {
   Og = "og",
 }
 
-export interface OgImage {
+interface OgImage {
   image: string;
   width: number;
   height: number;
@@ -34,7 +34,7 @@ export function getAssetURL(url: string, quality: ImageQuality): string {
   return process.env.NEXT_PUBLIC_URL_IMG + newUrl;
 }
 
-export function getImgSizesByMaxSize(
+function getImgSizesByMaxSize(
   width: number,
   height: number,
   maxSize: number

@@ -26,7 +26,7 @@ import {
   GetStaticPathsResult,
   GetStaticPropsContext,
 } from "next";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 
 interface Props extends AppStaticProps {
   page: WikiPageWithTranslations;
@@ -35,11 +35,16 @@ interface Props extends AppStaticProps {
 export default function WikiPage(props: Props): JSX.Element {
   const { page, langui, languages } = props;
 
-  const [selectedTranslation, LanguageSwitcher] = useSmartLanguage({
-    items: page.translations,
-    languages: languages,
-    languageExtractor: (item) => item.language?.data?.attributes?.code,
-  });
+  const [selectedTranslation, LanguageSwitcher, languageSwitcherProps] =
+    useSmartLanguage({
+      items: page.translations,
+      languages: languages,
+      languageExtractor: useCallback(
+        (item: NonNullable<Props["page"]["translations"][number]>) =>
+          item.language?.data?.attributes?.code,
+        []
+      ),
+    });
 
   const subPanel = useMemo(
     () => (
@@ -69,7 +74,7 @@ export default function WikiPage(props: Props): JSX.Element {
 
         <div className="flex place-content-center gap-4">
           <h1 className="text-center text-3xl">{selectedTranslation?.title}</h1>
-          <LanguageSwitcher />
+          <LanguageSwitcher {...languageSwitcherProps} />
         </div>
 
         <HorizontalLine />
@@ -123,6 +128,7 @@ export default function WikiPage(props: Props): JSX.Element {
     ),
     [
       LanguageSwitcher,
+      languageSwitcherProps,
       languages,
       langui,
       page.categories?.data,

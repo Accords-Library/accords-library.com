@@ -12,8 +12,6 @@ import {
   isUndefined,
   iterateMap,
 } from "helpers/others";
-// import { getClient, Indexes, search, SearchResult } from "helpers/search";
-
 import { useMediaMobile } from "hooks/useMediaQuery";
 import { AnchorIds } from "hooks/useScrollTopOnChange";
 import Head from "next/head";
@@ -415,31 +413,33 @@ export function AppLayout(props: Props): JSX.Element {
             <div className="grid place-items-center gap-8 text-center desktop:grid-cols-2">
               <div>
                 <h3 className="text-xl">{langui.theme}</h3>
-                <ButtonGroup>
-                  <Button
-                    onClick={() => {
-                      setDarkMode(false);
-                      setSelectedThemeMode(true);
-                    }}
-                    active={selectedThemeMode === true && darkMode === false}
-                    text={langui.light}
-                  />
-                  <Button
-                    onClick={() => {
-                      setSelectedThemeMode(false);
-                    }}
-                    active={selectedThemeMode === false}
-                    text={langui.auto}
-                  />
-                  <Button
-                    onClick={() => {
-                      setDarkMode(true);
-                      setSelectedThemeMode(true);
-                    }}
-                    active={selectedThemeMode === true && darkMode === true}
-                    text={langui.dark}
-                  />
-                </ButtonGroup>
+                <ButtonGroup
+                  buttonsProps={[
+                    {
+                      onClick: () => {
+                        setDarkMode(false);
+                        setSelectedThemeMode(true);
+                      },
+                      active: selectedThemeMode === true && darkMode === false,
+                      text: langui.light,
+                    },
+                    {
+                      onClick: () => {
+                        setSelectedThemeMode(false);
+                      },
+                      active: selectedThemeMode === false,
+                      text: langui.auto,
+                    },
+                    {
+                      onClick: () => {
+                        setDarkMode(true);
+                        setSelectedThemeMode(true);
+                      },
+                      active: selectedThemeMode === true && darkMode === true,
+                      text: langui.dark,
+                    },
+                  ]}
+                />
               </div>
 
               <div>
@@ -456,22 +456,27 @@ export function AppLayout(props: Props): JSX.Element {
 
               <div>
                 <h3 className="text-xl">{langui.font_size}</h3>
-                <ButtonGroup>
-                  <Button
-                    onClick={() => setFontSize((fontSize ?? 1) / 1.05)}
-                    icon={Icon.TextDecrease}
-                  />
-                  <Button
-                    onClick={() => setFontSize(1)}
-                    text={`${((fontSize ?? 1) * 100).toLocaleString(undefined, {
-                      maximumFractionDigits: 0,
-                    })}%`}
-                  />
-                  <Button
-                    onClick={() => setFontSize((fontSize ?? 1) * 1.05)}
-                    icon={Icon.TextIncrease}
-                  />
-                </ButtonGroup>
+                <ButtonGroup
+                  buttonsProps={[
+                    {
+                      onClick: () => setFontSize((fontSize ?? 1) / 1.05),
+                      icon: Icon.TextDecrease,
+                    },
+                    {
+                      onClick: () => setFontSize(1),
+                      text: `${((fontSize ?? 1) * 100).toLocaleString(
+                        undefined,
+                        {
+                          maximumFractionDigits: 0,
+                        }
+                      )}%`,
+                    },
+                    {
+                      onClick: () => setFontSize((fontSize ?? 1) * 1.05),
+                      icon: Icon.TextIncrease,
+                    },
+                  ]}
+                />
               </div>
 
               <div>
@@ -504,61 +509,7 @@ export function AppLayout(props: Props): JSX.Element {
             </div>
           </div>
         </Popup>
-
-        {/* <Popup
-          state={searchPanelOpen}
-          setState={setSearchPanelOpen}
-        >
-          <div className="grid place-items-center gap-2">
-            TODO: add to langui
-            <h2 className="text-2xl">{"Search"}</h2>
-            <TextInput
-              className="mb-6 w-full"
-              placeholder={"Search query..."}
-              state={searchQuery}
-              setState={setSearchQuery}
-            />
-          </div>
-          TODO: add to langui
-          <div className="grid gap-4">
-            <p className="font-headers text-xl">In news:</p>
-            <div
-              className="grid grid-cols-2 items-end gap-8
-                desktop:grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] mobile:gap-4"
-            >
-              {searchResult?.hits.map((hit) => (
-                <PreviewCard
-                  key={hit.id}
-                  href={hit.href}
-                  title={hit.title}
-                  thumbnailAspectRatio={"3/2"}
-                  thumbnail={hit.thumbnail}
-                  keepInfoVisible
-                />
-              ))}
-            </div>
-          </div>
-        </Popup> */}
       </div>
     </div>
   );
 }
-
-/*
- * const [searchQuery, setSearchQuery] = useState("");
- * const [searchResult, setSearchResult] = useState<SearchResult>();
- */
-
-/*
- * const client = getClient();
- * useEffect(() => {
- *   if (searchQuery.length > 1) {
- *     search(client, Indexes.Post, searchQuery).then((result) => {
- *       setSearchResult(result);
- *     });
- *   } else {
- *     setSearchResult(undefined);
- *   }
- *   // eslint-disable-next-line react-hooks/exhaustive-deps
- * }, [searchQuery]);
- */

@@ -17,6 +17,7 @@ import { ImageQuality } from "helpers/img";
 
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 import Link from "next/link";
+import { useCallback } from "react";
 import { Chip } from "./Chip";
 import { Ico, Icon } from "./Ico";
 import { Img } from "./Img";
@@ -290,15 +291,13 @@ export function PreviewCard(props: Props): JSX.Element {
 
 interface TranslatedProps
   extends Omit<Props, "description" | "pre_title" | "subtitle" | "title"> {
-  translations:
-    | {
-        pre_title?: string | null | undefined;
-        title: string | null | undefined;
-        subtitle?: string | null | undefined;
-        description?: string | null | undefined;
-        language: string | undefined;
-      }[]
-    | undefined;
+  translations: {
+    pre_title?: string | null | undefined;
+    title: string | null | undefined;
+    subtitle?: string | null | undefined;
+    description?: string | null | undefined;
+    language: string | undefined;
+  }[];
   slug: string;
   languages: AppStaticProps["languages"];
 }
@@ -313,7 +312,10 @@ export function TranslatedPreviewCard(props: TranslatedProps): JSX.Element {
   const [selectedTranslation] = useSmartLanguage({
     items: translations,
     languages: languages,
-    languageExtractor: (item) => item.language,
+    languageExtractor: useCallback(
+      (item: TranslatedProps["translations"][number]) => item.language,
+      []
+    ),
   });
 
   return (

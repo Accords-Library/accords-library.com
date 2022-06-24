@@ -3,7 +3,6 @@ import {
   GetPostQuery,
   GetWikiPageQuery,
 } from "graphql/generated";
-import React from "react";
 
 type Post = NonNullable<
   NonNullable<GetPostQuery["posts"]>["data"][number]["attributes"]

@@ -4,7 +4,6 @@ import { Img } from "components/Img";
 import { Button } from "components/Inputs/Button";
 import { Switch } from "components/Inputs/Switch";
 import { InsetBox } from "components/InsetBox";
-import { ContentLine } from "components/Library/ContentLine";
 import { PreviewCardCTAs } from "components/Library/PreviewCardCTAs";
 import { NavOption } from "components/PanelComponents/NavOption";
 import {
@@ -31,14 +30,17 @@ import {
   prettyItemSubType,
   prettyItemType,
   prettyPrice,
+  prettySlug,
   prettyURL,
 } from "helpers/formatters";
 import { getAssetURL, ImageQuality } from "helpers/img";
 import { convertMmToInch } from "helpers/numbers";
 import {
+  filterDefined,
   filterHasAttributes,
   isDefined,
   isDefinedAndNotEmpty,
+  isUndefined,
   sortContent,
 } from "helpers/others";
 
@@ -49,10 +51,14 @@ import {
   GetStaticPathsResult,
   GetStaticPropsContext,
 } from "next";
-import { Fragment, useMemo, useState } from "react";
+import { Fragment, useCallback, useMemo, useState } from "react";
 import { isUntangibleGroupItem } from "helpers/libraryItem";
 import { useMediaHoverable } from "hooks/useMediaQuery";
 import { WithLabel } from "components/Inputs/WithLabel";
+import { useToggle } from "hooks/useToggle";
+import { Ico, Icon } from "components/Ico";
+import { cJoin, cIf } from "helpers/className";
+import { useSmartLanguage } from "hooks/useSmartLanguage";
 
 interface Props extends AppStaticProps {
   item: NonNullable<
@@ -66,7 +72,7 @@ interface Props extends AppStaticProps {
 }
 
 export default function LibrarySlug(props: Props): JSX.Element {
-  const { item, itemId, langui, currencies } = props;
+  const { item, itemId, langui, currencies, languages } = props;
   const appLayout = useAppLayout();
   const hoverable = useMediaHoverable();
   const [openLightBox, LightBox] = useLightBox();
@@ -501,14 +507,56 @@ export default function LibrarySlug(props: Props): JSX.Element {
                 />
               )}
               <div className="grid w-full gap-4">
-                {item.contents.data.map((content) => (
-                  <ContentLine
-                    langui={langui}
-                    content={content}
-                    parentSlug={item.slug}
-                    key={content.id}
-                  />
-                ))}
+                {filterHasAttributes(item.contents.data).map(
+                  (rangedContent) => (
+                    <ContentLine
+                      content={
+                        rangedContent.attributes.content?.data?.attributes
+                          ? {
+                              translations: filterDefined(
+                                rangedContent.attributes.content.data.attributes
+                                  .translations
+                              ).map((translation) => ({
+                                pre_title: translation.pre_title,
+                                title: translation.title,
+                                subtitle: translation.subtitle,
+                                language:
+                                  translation.language?.data?.attributes?.code,
+                              })),
+                              categories: filterHasAttributes(
+                                rangedContent.attributes.content.data.attributes
+                                  .categories?.data
+                              ).map((category) => category.attributes.short),
+                              type:
+                                rangedContent.attributes.content.data.attributes
+                                  .type?.data?.attributes?.titles?.[0]?.title ??
+                                prettySlug(
+                                  rangedContent.attributes.content.data
+                                    .attributes.type?.data?.attributes?.slug
+                                ),
+                              slug: rangedContent.attributes.content.data
+                                .attributes.slug,
+                            }
+                          : undefined
+                      }
+                      langui={langui}
+                      rangeStart={
+                        rangedContent.attributes.range[0]?.__typename ===
+                        "ComponentRangePageRange"
+                          ? `${rangedContent.attributes.range[0].starting_page}`
+                          : ""
+                      }
+                      slug={rangedContent.attributes.slug}
+                      parentSlug={item.slug}
+                      key={rangedContent.id}
+                      languages={languages}
+                      hasScanSet={
+                        isDefined(rangedContent.attributes.scan_set) &&
+                        rangedContent.attributes.scan_set.length > 0
+                      }
+                    />
+                  )
+                )}
               </div>
             </div>
           )}
@@ -517,16 +565,31 @@ export default function LibrarySlug(props: Props): JSX.Element {
     ),
     [
       LightBox,
-      openLightBox,
-      appLayout.currency,
-      currencies,
-      displayOpenScans,
-      hoverable,
-      isVariantSet,
-      item,
-      itemId,
-      keepInfoVisible,
       langui,
+      item.thumbnail?.data?.attributes,
+      item.subitem_of?.data,
+      item.title,
+      item.subtitle,
+      item.metadata,
+      item.descriptions,
+      item.urls,
+      item.gallery,
+      item.release_date,
+      item.price,
+      item.categories,
+      item.size,
+      item.subitems,
+      item.contents,
+      item.slug,
+      itemId,
+      currencies,
+      appLayout.currency,
+      isVariantSet,
+      hoverable,
+      keepInfoVisible,
+      displayOpenScans,
+      openLightBox,
+      languages,
     ]
   );
 
@@ -581,4 +644,113 @@ export async function getStaticPaths(
     paths,
     fallback: "blocking",
   };
+}
+
+interface ContentLineProps {
+  content?: {
+    translations: {
+      pre_title: string | null | undefined;
+      title: string;
+      subtitle: string | null | undefined;
+      language: string | undefined;
+    }[];
+    categories?: string[];
+    type?: string;
+    slug: string;
+  };
+  rangeStart: string;
+  parentSlug: string;
+  slug: string;
+  langui: AppStaticProps["langui"];
+  languages: AppStaticProps["languages"];
+  hasScanSet: boolean;
+}
+
+export function ContentLine(props: ContentLineProps): JSX.Element {
+  const {
+    rangeStart,
+    content,
+    langui,
+    languages,
+    hasScanSet,
+    slug,
+    parentSlug,
+  } = props;
+
+  const [opened, setOpened] = useState(false);
+  const toggleOpened = useToggle(setOpened);
+
+  const [selectedTranslation] = useSmartLanguage({
+    items: content?.translations ?? [],
+    languages: languages,
+    languageExtractor: useCallback(
+      (
+        item: NonNullable<ContentLineProps["content"]>["translations"][number]
+      ) => item.language,
+      []
+    ),
+  });
+
+  return (
+    <div
+      className={cJoin(
+        "grid gap-2 rounded-lg px-4",
+        cIf(opened, "my-2 h-auto bg-mid py-3 shadow-inner-sm shadow-shade")
+      )}
+    >
+      <div
+        className="grid grid-cols-[auto_auto_1fr_auto_12ch] place-items-center
+        gap-4 thin:grid-cols-[auto_auto_1fr_auto]"
+      >
+        <a>
+          <h3 className="cursor-pointer" onClick={toggleOpened}>
+            {selectedTranslation
+              ? prettyinlineTitle(
+                  selectedTranslation.pre_title,
+                  selectedTranslation.title,
+                  selectedTranslation.subtitle
+                )
+              : content
+              ? prettySlug(content.slug)
+              : prettySlug(slug, parentSlug)}
+          </h3>
+        </a>
+        <div className="flex flex-row flex-wrap gap-1">
+          {content?.categories?.map((category, index) => (
+            <Chip key={index}>{category}</Chip>
+          ))}
+        </div>
+        <p className="h-4 w-full border-b-2 border-dotted border-black opacity-30"></p>
+        <p>{rangeStart}</p>
+        {content?.type && (
+          <Chip className="justify-self-end thin:hidden">{content.type}</Chip>
+        )}
+      </div>
+      <div
+        className={`grid-flow-col place-content-start place-items-center gap-2 ${
+          opened ? "grid" : "hidden"
+        }`}
+      >
+        <Ico icon={Icon.SubdirectoryArrowRight} className="text-dark" />
+
+        {hasScanSet || isDefined(content) ? (
+          <>
+            {hasScanSet && (
+              <Button
+                href={`/library/${parentSlug}/scans#${slug}`}
+                text={langui.view_scans}
+              />
+            )}
+            {isDefined(content) && (
+              <Button href={`/contents/${slug}`} text={langui.open_content} />
+            )}
+          </>
+        ) : (
+          "The content is not available"
+        )}
+      </div>
+    </div>
+  );
+
+  return <></>;
 }

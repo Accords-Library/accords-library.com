@@ -22,7 +22,7 @@ export default function Merch(props: Props): JSX.Element {
     ),
     [langui]
   );
-  
+
   return <AppLayout navTitle={langui.merch} subPanel={subPanel} {...props} />;
 }
 

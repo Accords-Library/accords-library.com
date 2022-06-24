@@ -5,6 +5,7 @@ import { ImageQuality } from "helpers/img";
 
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 import Link from "next/link";
+import { useCallback } from "react";
 import { Chip } from "./Chip";
 import { Img } from "./Img";
 
@@ -19,7 +20,7 @@ interface Props {
   bottomChips?: string[];
 }
 
-export function PreviewLine(props: Props): JSX.Element {
+function PreviewLine(props: Props): JSX.Element {
   const {
     href,
     thumbnail,
@@ -76,14 +77,13 @@ export function PreviewLine(props: Props): JSX.Element {
 
 interface TranslatedProps
   extends Omit<Props, "pre_title" | "subtitle" | "title"> {
-  translations:
-    | {
-        pre_title?: string | null | undefined;
-        title: string | null | undefined;
-        subtitle?: string | null | undefined;
-        language: string | undefined;
-      }[]
-    | undefined;
+  translations: {
+    pre_title?: string | null | undefined;
+    title: string | null | undefined;
+    subtitle?: string | null | undefined;
+    language: string | undefined;
+  }[];
+
   slug: string;
   languages: AppStaticProps["languages"];
 }
@@ -98,7 +98,10 @@ export function TranslatedPreviewLine(props: TranslatedProps): JSX.Element {
   const [selectedTranslation] = useSmartLanguage({
     items: translations,
     languages: languages,
-    languageExtractor: (item) => item.language,
+    languageExtractor: useCallback(
+      (item: TranslatedProps["translations"][number]) => item.language,
+      []
+    ),
   });
 
   return (

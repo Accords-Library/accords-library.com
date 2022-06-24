@@ -1,39 +1,53 @@
+import { ToolTip } from "components/ToolTip";
 import { cJoin } from "helpers/className";
-
-import { useLayoutEffect, useRef } from "react";
+import { ConditionalWrapper, Wrapper } from "helpers/component";
+import { isDefinedAndNotEmpty } from "helpers/others";
+import { Button } from "./Button";
 
 interface Props {
-  children: React.ReactNode;
   className?: string;
+  buttonsProps: (Parameters<typeof Button>[0] & {
+    tooltip?: string | null | undefined;
+  })[];
 }
 
 export function ButtonGroup(props: Props): JSX.Element {
-  const { children, className } = props;
-  const ref = useRef<HTMLDivElement>(null);
-
-  useLayoutEffect(() => {
-    if (ref.current) {
-      const buttons = ref.current.querySelectorAll(".component-button");
-      buttons.forEach((button, index) => {
-        button.classList.remove("rounded-full");
-        button.classList.remove("border-[1px]");
-        if (index === 0) {
-          button.classList.add("rounded-l-full");
-          button.classList.add("border-l-[1px]");
-        } else if (index === buttons.length - 1) {
-          button.classList.add("rounded-r-full");
-          button.classList.add("border-r-[1px]");
-        } else {
-          button.classList.add("rounded-none");
-        }
-        button.classList.add("border-y-[1px]");
-      });
-    }
-  }, [children]);
+  const { buttonsProps, className } = props;
 
   return (
-    <div ref={ref} className={cJoin("grid grid-flow-col", className)}>
-      {children}
+    <div className={cJoin("grid grid-flow-col", className)}>
+      {buttonsProps.map((buttonProps, index) => (
+        <ConditionalWrapper
+          key={index}
+          isWrapping={isDefinedAndNotEmpty(buttonProps.tooltip)}
+          wrapper={ToolTipWrapper}
+          wrapperProps={{ text: buttonProps.tooltip ?? "" }}
+        >
+          <Button
+            {...buttonProps}
+            className={
+              index === 0
+                ? "rounded-r-none border-r-0"
+                : index === buttonsProps.length - 1
+                ? "rounded-l-none"
+                : "rounded-none border-r-0"
+            }
+          />
+        </ConditionalWrapper>
+      ))}
     </div>
+  );
+}
+
+interface ToolTipWrapperProps {
+  text: string;
+}
+
+function ToolTipWrapper(props: ToolTipWrapperProps & Wrapper) {
+  const { text, children } = props;
+  return (
+    <ToolTip content={text}>
+      <>{children}</>
+    </ToolTip>
   );
 }

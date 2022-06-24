@@ -5,7 +5,9 @@ import { prettyinlineTitle, prettyDate } from "./formatters";
 import { convertPrice } from "./numbers";
 import { isDefined, mapRemoveEmptyValues } from "./others";
 import { LibraryItemUserStatus } from "./types";
-type Items = NonNullable<GetLibraryItemsPreviewQuery["libraryItems"]>["data"];
+import LibraryPage from "../pages/library/index";
+
+type Items = Parameters<typeof LibraryPage>[0]["items"];
 type GroupLibraryItems = Map<string, Items>;
 
 export function getGroups(

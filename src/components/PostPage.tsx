@@ -4,7 +4,7 @@ import { prettySlug } from "helpers/formatters";
 import { filterHasAttributes, getStatusDescription } from "helpers/others";
 import { PostWithTranslations } from "helpers/types";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
-import { Fragment, useMemo } from "react";
+import { Fragment, useCallback, useMemo } from "react";
 import { AppLayout } from "./AppLayout";
 import { Chip } from "./Chip";
 import { HorizontalLine } from "./HorizontalLine";
@@ -49,11 +49,16 @@ export function PostPage(props: Props): JSX.Element {
   } = props;
   const displayTitle = props.displayTitle ?? true;
 
-  const [selectedTranslation, LanguageSwitcher] = useSmartLanguage({
-    items: post.translations,
-    languages: languages,
-    languageExtractor: (item) => item.language?.data?.attributes?.code,
-  });
+  const [selectedTranslation, LanguageSwitcher, languageSwitcherProps] =
+    useSmartLanguage({
+      items: post.translations,
+      languages: languages,
+      languageExtractor: useCallback(
+        (item: NonNullable<PostWithTranslations["translations"][number]>) =>
+          item.language?.data?.attributes?.code,
+        []
+      ),
+    });
 
   const { thumbnail, body, title, excerpt } = useMemo(
     () => ({
@@ -156,7 +161,7 @@ export function PostPage(props: Props): JSX.Element {
               description={excerpt}
               langui={langui}
               categories={post.categories}
-              languageSwitcher={<LanguageSwitcher />}
+              languageSwitcher={<LanguageSwitcher {...languageSwitcherProps} />}
             />
 
             <HorizontalLine />
@@ -165,7 +170,7 @@ export function PostPage(props: Props): JSX.Element {
           <>
             {displayLanguageSwitcher && (
               <div className="grid place-content-end place-items-start">
-                <LanguageSwitcher />
+                <LanguageSwitcher {...languageSwitcherProps} />
               </div>
             )}
             {displayTitle && (
@@ -189,6 +194,7 @@ export function PostPage(props: Props): JSX.Element {
       displayThumbnailHeader,
       displayTitle,
       excerpt,
+      languageSwitcherProps,
       langui,
       post.categories,
       prependBody,

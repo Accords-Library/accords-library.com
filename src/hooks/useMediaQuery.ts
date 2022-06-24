@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { breaks } from "../../design.config";
 
-export function useMediaQuery(query: string): boolean {
+function useMediaQuery(query: string): boolean {
   function getMatches(query: string): boolean {
     // Prevents SSR issues
     if (typeof window !== "undefined") {
@@ -33,6 +33,7 @@ export function useMediaQuery(query: string): boolean {
   return matches;
 }
 
+// ts-unused-exports:disable-next-line
 export function useMediaThin() {
   return useMediaQuery(breaks.thin.raw);
 }

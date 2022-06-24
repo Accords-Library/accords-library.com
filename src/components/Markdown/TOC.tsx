@@ -69,7 +69,7 @@ interface TOCInterface {
   children: TOCInterface[];
 }
 
-export function getTocFromMarkdawn(text: string, title?: string): TOCInterface {
+function getTocFromMarkdawn(text: string, title?: string): TOCInterface {
   const toc: TOCInterface = {
     title: title ?? "Return to top",
     slug: slugify(title),

@@ -17,7 +17,6 @@ import { ThumbnailHeader } from "components/ThumbnailHeader";
 import { ToolTip } from "components/ToolTip";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
-import { getNextContent, getPreviousContent } from "helpers/contents";
 import { getDescription } from "helpers/description";
 import {
   prettyinlineTitle,
@@ -27,6 +26,7 @@ import {
 } from "helpers/formatters";
 import { isUntangibleGroupItem } from "helpers/libraryItem";
 import {
+  filterDefined,
   filterHasAttributes,
   getStatusDescription,
   isDefinedAndNotEmpty,
@@ -40,21 +40,34 @@ import {
   GetStaticPathsResult,
   GetStaticPropsContext,
 } from "next";
-import { Fragment, useMemo } from "react";
+import { Fragment, useCallback, useMemo } from "react";
 
 interface Props extends AppStaticProps {
   content: ContentWithTranslations;
 }
 
+type Group = NonNullable<
+  NonNullable<
+    NonNullable<
+      NonNullable<ContentWithTranslations["group"]>["data"]
+    >["attributes"]
+  >["contents"]
+>["data"];
+
 export default function Content(props: Props): JSX.Element {
   const { langui, content, languages, currencies } = props;
   const isMobile = useMediaMobile();
 
-  const [selectedTranslation, LanguageSwitcher] = useSmartLanguage({
-    items: content.translations,
-    languages: languages,
-    languageExtractor: (item) => item.language?.data?.attributes?.code,
-  });
+  const [selectedTranslation, LanguageSwitcher, languageSwitcherProps] =
+    useSmartLanguage({
+      items: content.translations,
+      languages: languages,
+      languageExtractor: useCallback(
+        (item: NonNullable<Props["content"]["translations"][number]>) =>
+          item.language?.data?.attributes?.code,
+        []
+      ),
+    });
 
   useScrollTopOnChange(AnchorIds.ContentPanel, [selectedTranslation]);
 
@@ -305,7 +318,7 @@ export default function Content(props: Props): JSX.Element {
             type={content.type}
             categories={content.categories}
             langui={langui}
-            languageSwitcher={<LanguageSwitcher />}
+            languageSwitcher={<LanguageSwitcher {...languageSwitcherProps} />}
           />
 
           {previousContent?.attributes && (
@@ -315,14 +328,14 @@ export default function Content(props: Props): JSX.Element {
               </h2>
               <TranslatedPreviewLine
                 href={`/contents/${previousContent.attributes.slug}`}
-                translations={previousContent.attributes.translations?.map(
-                  (translation) => ({
-                    pre_title: translation?.pre_title,
-                    title: translation?.title,
-                    subtitle: translation?.subtitle,
-                    language: translation?.language?.data?.attributes?.code,
-                  })
-                )}
+                translations={filterDefined(
+                  previousContent.attributes.translations
+                ).map((translation) => ({
+                  pre_title: translation.pre_title,
+                  title: translation.title,
+                  subtitle: translation.subtitle,
+                  language: translation.language?.data?.attributes?.code,
+                }))}
                 slug={previousContent.attributes.slug}
                 languages={languages}
                 thumbnail={
@@ -368,14 +381,14 @@ export default function Content(props: Props): JSX.Element {
               </h2>
               <TranslatedPreviewLine
                 href={`/contents/${nextContent.attributes.slug}`}
-                translations={nextContent.attributes.translations?.map(
-                  (translation) => ({
-                    pre_title: translation?.pre_title,
-                    title: translation?.title,
-                    subtitle: translation?.subtitle,
-                    language: translation?.language?.data?.attributes?.code,
-                  })
-                )}
+                translations={filterDefined(
+                  nextContent.attributes.translations
+                ).map((translation) => ({
+                  pre_title: translation.pre_title,
+                  title: translation.title,
+                  subtitle: translation.subtitle,
+                  language: translation.language?.data?.attributes?.code,
+                }))}
                 slug={nextContent.attributes.slug}
                 languages={languages}
                 thumbnail={nextContent.attributes.thumbnail?.data?.attributes}
@@ -413,11 +426,16 @@ export default function Content(props: Props): JSX.Element {
       content.thumbnail?.data?.attributes,
       content.type,
       isMobile,
+      languageSwitcherProps,
       languages,
       langui,
       nextContent?.attributes,
       previousContent?.attributes,
-      selectedTranslation,
+      selectedTranslation?.description,
+      selectedTranslation?.pre_title,
+      selectedTranslation?.subtitle,
+      selectedTranslation?.text_set?.text,
+      selectedTranslation?.title,
     ]
   );
 
@@ -486,4 +504,24 @@ export async function getStaticPaths(
     paths,
     fallback: "blocking",
   };
+}
+
+function getPreviousContent(group: Group, currentSlug: string) {
+  for (let index = 0; index < group.length; index += 1) {
+    const content = group[index];
+    if (content.attributes?.slug === currentSlug && index > 0) {
+      return group[index - 1];
+    }
+  }
+  return undefined;
+}
+
+function getNextContent(group: Group, currentSlug: string) {
+  for (let index = 0; index < group.length; index += 1) {
+    const content = group[index];
+    if (content.attributes?.slug === currentSlug && index < group.length - 1) {
+      return group[index + 1];
+    }
+  }
+  return undefined;
 }

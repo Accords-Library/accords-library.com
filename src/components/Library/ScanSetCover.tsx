@@ -11,7 +11,7 @@ import { getAssetURL, ImageQuality } from "helpers/img";
 import { filterHasAttributes, getStatusDescription } from "helpers/others";
 
 import { useSmartLanguage } from "hooks/useSmartLanguage";
-import { Fragment, useMemo } from "react";
+import { Fragment, useCallback, useMemo } from "react";
 
 interface Props {
   openLightBox: (images: string[], index?: number) => void;
@@ -29,11 +29,16 @@ interface Props {
 export function ScanSetCover(props: Props): JSX.Element {
   const { openLightBox, images, languages, langui } = props;
 
-  const [selectedScan, LanguageSwitcher] = useSmartLanguage({
-    items: images,
-    languages: languages,
-    languageExtractor: (item) => item.language?.data?.attributes?.code,
-  });
+  const [selectedScan, LanguageSwitcher, languageSwitcherProps] =
+    useSmartLanguage({
+      items: images,
+      languages: languages,
+      languageExtractor: useCallback(
+        (item: NonNullable<Props["images"][number]>) =>
+          item.language?.data?.attributes?.code,
+        []
+      ),
+    });
 
   const coverImages = useMemo(() => {
     const memo: UploadImageFragment[] = [];
@@ -74,7 +79,7 @@ export function ScanSetCover(props: Props): JSX.Element {
             </div>
 
             <div className="flex flex-row flex-wrap place-items-center gap-4 pb-6">
-              <LanguageSwitcher />
+              <LanguageSwitcher {...languageSwitcherProps} />
 
               <div className="grid place-content-center place-items-center">
                 <p className="font-headers">{langui.status}:</p>

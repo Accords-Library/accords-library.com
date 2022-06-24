@@ -58,7 +58,7 @@ export function Button(props: Props): JSX.Element {
           id={id}
           onClick={onClick}
           className={cJoin(
-            `component-button group grid select-none grid-flow-col place-content-center
+            `group grid select-none grid-flow-col place-content-center
             place-items-center gap-2 rounded-full border-[1px] border-dark py-3 px-4 leading-none
             text-dark transition-all`,
             cIf(

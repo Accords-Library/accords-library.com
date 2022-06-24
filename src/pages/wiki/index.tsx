@@ -110,26 +110,28 @@ export default function Wiki(props: Props): JSX.Element {
           )}
           {filterHasAttributes(filteredPages).map((page) => (
             <Fragment key={page.id}>
-              <TranslatedPreviewCard
-                href={`/wiki/${page.attributes.slug}`}
-                translations={page.attributes.translations?.map(
-                  (translation) => ({
-                    title: translation?.title,
-                    description: translation?.summary,
-                    language: translation?.language?.data?.attributes?.code,
-                  })
-                )}
-                thumbnail={page.attributes.thumbnail?.data?.attributes}
-                thumbnailAspectRatio={"4/3"}
-                thumbnailRounded
-                thumbnailForceAspectRatio
-                languages={languages}
-                slug={page.attributes.slug}
-                keepInfoVisible={keepInfoVisible}
-                bottomChips={page.attributes.categories?.data.map(
-                  (category) => category.attributes?.short ?? ""
-                )}
-              />
+              {page.attributes.translations && (
+                <TranslatedPreviewCard
+                  href={`/wiki/${page.attributes.slug}`}
+                  translations={page.attributes.translations.map(
+                    (translation) => ({
+                      title: translation?.title,
+                      description: translation?.summary,
+                      language: translation?.language?.data?.attributes?.code,
+                    })
+                  )}
+                  thumbnail={page.attributes.thumbnail?.data?.attributes}
+                  thumbnailAspectRatio={"4/3"}
+                  thumbnailRounded
+                  thumbnailForceAspectRatio
+                  languages={languages}
+                  slug={page.attributes.slug}
+                  keepInfoVisible={keepInfoVisible}
+                  bottomChips={page.attributes.categories?.data.map(
+                    (category) => category.attributes?.short ?? ""
+                  )}
+                />
+              )}
             </Fragment>
           ))}
         </div>

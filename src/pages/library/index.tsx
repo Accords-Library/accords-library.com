@@ -194,36 +194,36 @@ export default function Library(props: Props): JSX.Element {
           />
         )}
 
-        <ButtonGroup className="mt-4">
-          <ToolTip content={langui.only_display_items_i_want}>
-            <Button
-              icon={Icon.Favorite}
-              onClick={() => setFilterUserStatus(LibraryItemUserStatus.Want)}
-              active={filterUserStatus === LibraryItemUserStatus.Want}
-            />
-          </ToolTip>
-          <ToolTip content={langui.only_display_items_i_have}>
-            <Button
-              icon={Icon.BackHand}
-              onClick={() => setFilterUserStatus(LibraryItemUserStatus.Have)}
-              active={filterUserStatus === LibraryItemUserStatus.Have}
-            />
-          </ToolTip>
-          <ToolTip content={langui.only_display_unmarked_items}>
-            <Button
-              icon={Icon.RadioButtonUnchecked}
-              onClick={() => setFilterUserStatus(LibraryItemUserStatus.None)}
-              active={filterUserStatus === LibraryItemUserStatus.None}
-            />
-          </ToolTip>
-          <ToolTip content={langui.display_all_items}>
-            <Button
-              text={"All"}
-              onClick={() => setFilterUserStatus(undefined)}
-              active={isUndefined(filterUserStatus)}
-            />
-          </ToolTip>
-        </ButtonGroup>
+        {/* TODO: Add "All" to langui */}
+        <ButtonGroup
+          className="mt-4"
+          buttonsProps={[
+            {
+              tooltip: langui.only_display_items_i_want,
+              icon: Icon.Favorite,
+              onClick: () => setFilterUserStatus(LibraryItemUserStatus.Want),
+              active: filterUserStatus === LibraryItemUserStatus.Want,
+            },
+            {
+              tooltip: langui.only_display_items_i_have,
+              icon: Icon.BackHand,
+              onClick: () => setFilterUserStatus(LibraryItemUserStatus.Have),
+              active: filterUserStatus === LibraryItemUserStatus.Have,
+            },
+            {
+              tooltip: langui.only_display_unmarked_items,
+              icon: Icon.RadioButtonUnchecked,
+              onClick: () => setFilterUserStatus(LibraryItemUserStatus.None),
+              active: filterUserStatus === LibraryItemUserStatus.None,
+            },
+            {
+              tooltip: langui.only_display_unmarked_items,
+              text: "All",
+              onClick: () => setFilterUserStatus(undefined),
+              active: isUndefined(filterUserStatus),
+            },
+          ]}
+        />
 
         <Button
           className="mt-8"

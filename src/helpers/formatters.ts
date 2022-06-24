@@ -242,24 +242,12 @@ export function prettyLanguage(
   return result;
 }
 
-export function prettyLanguageToCode(
-  prettyLanguage: string,
-  languages: AppStaticProps["languages"]
-): string {
-  let result = prettyLanguage;
-  languages.forEach((language) => {
-    if (language?.attributes?.localized_name === prettyLanguage)
-      result = language.attributes.code;
-  });
-  return result;
-}
-
 export function prettyURL(url: string): string {
   let domain = new URL(url);
   return domain.hostname.replace("www.", "");
 }
 
-export function capitalizeString(string: string): string {
+function capitalizeString(string: string): string {
   function capitalizeWord(word: string): string {
     return word.charAt(0).toUpperCase() + word.substring(1);
   }

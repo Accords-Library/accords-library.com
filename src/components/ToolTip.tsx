@@ -6,7 +6,7 @@ interface Props extends TippyProps {}
 
 export function ToolTip(props: Props): JSX.Element {
   const newProps: Props = {
-    className: cJoin("text-[80%]", props.className),
+    className: cJoin("text-sm", props.className),
     delay: [150, 0],
     interactive: true,
     animation: "scale-subtle",

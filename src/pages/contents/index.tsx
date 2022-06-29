@@ -57,19 +57,19 @@ export default function Contents(props: Props): JSX.Element {
   );
   const [searchName, setSearchName] = useState(defaultFiltersState.searchName);
 
+  const effectiveCombineRelatedContent = useMemo(
+    () => (searchName.length > 1 ? false : combineRelatedContent),
+    [combineRelatedContent, searchName.length]
+  );
+
   const filteredItems = useMemo(
-    () => filterContents(contents, combineRelatedContent, searchName),
-    [combineRelatedContent, contents, searchName]
+    () => filterContents(contents, effectiveCombineRelatedContent, searchName),
+    [effectiveCombineRelatedContent, contents, searchName]
   );
 
   const groups = useMemo(
     () => getGroups(langui, groupingMethod, filteredItems),
     [langui, groupingMethod, filteredItems]
-  );
-
-  const effectiveCombineRelatedContent = useMemo(
-    () => (searchName.length > 1 ? false : combineRelatedContent),
-    [combineRelatedContent, searchName.length]
   );
 
   const subPanel = useMemo(

@@ -114,12 +114,12 @@ mark {
   @apply text-dark;
 }
 
-.formatted blockquote {
-  @apply border-l-dark;
-}
-
 .formatted code {
   @apply font-mono;
+}
+
+.formatted pre > code {
+  @apply block whitespace-pre;
 }
 
 .formatted ul {

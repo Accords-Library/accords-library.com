@@ -27,7 +27,11 @@ export function Markdawn(props: Props): JSX.Element {
   const [openLightBox, LightBox] = useLightBox();
 
   // eslint-disable-next-line no-irregular-whitespace
-  const text = useMemo(() => `${preprocessMarkDawn(rawText)}​`, [rawText]);
+  const text = useMemo(
+    () => `${preprocessMarkDawn(rawText)}
+  ​`,
+    [rawText]
+  );
 
   if (text) {
     return (
@@ -264,7 +268,7 @@ export function Markdawn(props: Props): JSX.Element {
                   name?: string;
                 }) => (
                   <div
-                    className="my-8 grid cursor-pointer place-content-center"
+                    className="mt-8 mb-12 grid cursor-pointer place-content-center"
                     onClick={() => {
                       openLightBox([
                         compProps.src.startsWith("/uploads/")
@@ -280,6 +284,7 @@ export function Markdawn(props: Props): JSX.Element {
                           : compProps.src
                       }
                       quality={ImageQuality.Medium}
+                      className="drop-shadow-shade-lg"
                     ></Img>
                   </div>
                 ),

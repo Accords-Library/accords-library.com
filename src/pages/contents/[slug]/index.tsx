@@ -231,6 +231,7 @@ export default function Content(props: Props): JSX.Element {
                               libraryItem.attributes.thumbnail?.data?.attributes
                             }
                             thumbnailAspectRatio="21/29.7"
+                            thumbnailRounded={false}
                             topChips={
                               libraryItem.attributes.metadata &&
                               libraryItem.attributes.metadata.length > 0 &&

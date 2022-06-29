@@ -26,12 +26,13 @@ export function Markdawn(props: Props): JSX.Element {
   const router = useRouter();
   const [openLightBox, LightBox] = useLightBox();
 
-  // eslint-disable-next-line no-irregular-whitespace
+  /* eslint-disable no-irregular-whitespace */
   const text = useMemo(
     () => `${preprocessMarkDawn(rawText)}
   ​`,
     [rawText]
   );
+  /* eslint-enable no-irregular-whitespace */
 
   if (text) {
     return (

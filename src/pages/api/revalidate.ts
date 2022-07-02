@@ -206,7 +206,7 @@ export default async function Revalidate(
   try {
     Promise.all(
       paths.map(async (path) => {
-        await res.unstable_revalidate(path);
+        await res.revalidate(path);
       })
     );
     return res.json({ message: "Success!", revalidated: true });

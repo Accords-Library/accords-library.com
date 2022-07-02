@@ -21,7 +21,6 @@ import { TextInput } from "components/Inputs/TextInput";
 import { Button } from "components/Inputs/Button";
 import { PreviewCardCTAs } from "components/Library/PreviewCardCTAs";
 import { useAppLayout } from "contexts/AppLayoutContext";
-import { ToolTip } from "components/ToolTip";
 import {
   filterItems,
   getGroups,

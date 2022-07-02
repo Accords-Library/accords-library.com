@@ -10,7 +10,7 @@ import { ToolTip } from "components/ToolTip";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 
 import { GetStaticPropsContext } from "next";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import TurndownService from "turndown";
 import { Icon } from "components/Ico";
 import { TOC } from "components/Markdown/TOC";
@@ -24,6 +24,7 @@ export default function Editor(props: Props): JSX.Element {
 
   const [markdown, setMarkdown] = useState("");
   const [converterOpened, setConverterOpened] = useState(false);
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
   const transformationWrapper = useCallback(
     (
@@ -33,10 +34,8 @@ export default function Editor(props: Props): JSX.Element {
         selectedEnd: number
       ) => { prependLength: number; transformedValue: string }
     ) => {
-      const textarea =
-        document.querySelector<HTMLTextAreaElement>("#editorTextArea");
-      if (textarea) {
-        const { value, selectionStart, selectionEnd } = textarea;
+      if (textAreaRef.current) {
+        const { value, selectionStart, selectionEnd } = textAreaRef.current;
 
         const { prependLength, transformedValue } = transformation(
           value,
@@ -44,12 +43,12 @@ export default function Editor(props: Props): JSX.Element {
           selectionEnd
         );
 
-        textarea.value = transformedValue;
-        handleInput(textarea.value);
+        textAreaRef.current.value = transformedValue;
+        handleInput(textAreaRef.current.value);
 
-        textarea.focus();
-        textarea.selectionStart = selectionStart + prependLength;
-        textarea.selectionEnd = selectionEnd + prependLength;
+        textAreaRef.current.focus();
+        textAreaRef.current.selectionStart = selectionStart + prependLength;
+        textAreaRef.current.selectionEnd = selectionEnd + prependLength;
       }
     },
     [handleInput]
@@ -109,10 +108,8 @@ export default function Editor(props: Props): JSX.Element {
       properties?: Record<string, string>,
       addInnerNewLines?: boolean
     ) => {
-      const textarea =
-        document.querySelector<HTMLTextAreaElement>("#editorTextArea");
-      if (textarea) {
-        const { value, selectionStart, selectionEnd } = textarea;
+      if (textAreaRef.current) {
+        const { value, selectionStart, selectionEnd } = textAreaRef.current;
 
         if (
           value.slice(selectionStart - wrapper.length, selectionStart) ===
@@ -186,7 +183,6 @@ export default function Editor(props: Props): JSX.Element {
           </div>
           <textarea
             readOnly
-            id="htmlMdTextArea"
             title="Ouput textarea"
             onPaste={(event) => {
               const turndownService = new TurndownService({
@@ -428,7 +424,7 @@ export default function Editor(props: Props): JSX.Element {
           <div>
             <h2>Editor</h2>
             <textarea
-              id="editorTextArea"
+              ref={textAreaRef}
               onInput={(event) => {
                 const textarea = event.target as HTMLTextAreaElement;
                 handleInput(textarea.value);

@@ -40,7 +40,6 @@ import {
   filterHasAttributes,
   isDefined,
   isDefinedAndNotEmpty,
-  isUndefined,
   sortContent,
 } from "helpers/others";
 
@@ -742,7 +741,10 @@ export function ContentLine(props: ContentLineProps): JSX.Element {
               />
             )}
             {isDefined(content) && (
-              <Button href={`/contents/${slug}`} text={langui.open_content} />
+              <Button
+                href={`/contents/${content.slug}`}
+                text={langui.open_content}
+              />
             )}
           </>
         ) : (

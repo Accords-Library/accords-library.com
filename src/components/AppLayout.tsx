@@ -35,6 +35,7 @@ interface Props extends AppStaticProps {
   navTitle: string | null | undefined;
   thumbnail?: UploadImageFragment;
   description?: string;
+  contentPanelScroolbar?: boolean;
 }
 
 const SENSIBILITY_SWIPE = 1.1;
@@ -52,6 +53,7 @@ export function AppLayout(props: Props): JSX.Element {
     navTitle,
     description,
     subPanelIcon = Icon.Tune,
+    contentPanelScroolbar = true,
   } = props;
 
   const {
@@ -280,7 +282,10 @@ export function AppLayout(props: Props): JSX.Element {
         {/* Content panel */}
         <div
           id={AnchorIds.ContentPanel}
-          className={`texture-paper-dots overflow-y-scroll bg-light [grid-area:content]`}
+          className={cJoin(
+            "texture-paper-dots bg-light [grid-area:content]",
+            cIf(contentPanelScroolbar, "overflow-y-scroll")
+          )}
         >
           {isDefined(contentPanel) ? (
             contentPanel

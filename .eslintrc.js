@@ -88,7 +88,7 @@ module.exports = {
     "no-new-wrappers": "warn",
     "no-octal-escape": "warn",
     "no-param-reassign": "warn",
-    "no-plusplus": "warn",
+    // "no-plusplus": "warn",
     "no-proto": "warn",
     "no-restricted-exports": "warn",
     "no-restricted-globals": "warn",

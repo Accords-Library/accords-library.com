@@ -3,6 +3,7 @@ import { cJoin } from "helpers/className";
 interface Props {
   children: React.ReactNode;
   width?: ContentPanelWidthSizes;
+  className?: string;
 }
 
 export enum ContentPanelWidthSizes {
@@ -12,18 +13,19 @@ export enum ContentPanelWidthSizes {
 }
 
 export function ContentPanel(props: Props): JSX.Element {
-  const { width = ContentPanelWidthSizes.Default, children } = props;
+  const { width = ContentPanelWidthSizes.Default, children, className } = props;
 
   return (
-    <div className={`grid h-full px-4 desktop:px-10`}>
+    <div className="grid h-full">
       <main
         className={cJoin(
-          "justify-self-center pt-10 pb-20 desktop:pt-20 desktop:pb-32",
+          "justify-self-center px-4 pt-10 pb-20 desktop:px-10 desktop:pt-20 desktop:pb-32",
           width === ContentPanelWidthSizes.Default
             ? "max-w-2xl"
             : width === ContentPanelWidthSizes.Large
             ? "max-w-4xl"
-            : "w-full"
+            : "w-full",
+          className
         )}
       >
         {children}

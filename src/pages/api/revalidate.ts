@@ -8,7 +8,8 @@ type RequestProps =
   | HookChronology
   | HookContent
   | HookContentGroup
-  | HookCustom;
+  | HookCustom
+  | HookWiki;
 
 type HookRangedContent = {
   event: "entry.update" | "entry.delete" | "entry.create";
@@ -74,6 +75,14 @@ type HookContentGroup = {
 type HookChronology = {
   event: "entry.update" | "entry.delete" | "entry.create";
   model: "chronology-era" | "chronology-item";
+};
+
+type HookWiki = {
+  event: "entry.update" | "entry.delete" | "entry.create";
+  model: "wiki-page";
+  entry: {
+    slug: string;
+  };
 };
 
 type ResponseMailProps = {
@@ -188,6 +197,17 @@ const Revalidate = async (
           paths.push(`/${locale}/contents/${content.slug}`);
         });
       });
+      break;
+    }
+
+    case "wiki-page": {
+      paths.push(`/wiki`);
+      paths.push(`/wiki/${body.entry.slug}`);
+      serverRuntimeConfig.locales?.map((locale: string) => {
+        paths.push(`/${locale}/wiki`);
+        paths.push(`/${locale}/wiki/${body.entry.slug}`);
+      });
+
       break;
     }
 

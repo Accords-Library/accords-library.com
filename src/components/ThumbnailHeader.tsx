@@ -7,8 +7,12 @@ import { AppStaticProps } from "graphql/getAppStaticProps";
 import { prettyinlineTitle, prettySlug, slugify } from "helpers/formatters";
 import { getAssetURL, ImageQuality } from "helpers/img";
 import { filterHasAttributes } from "helpers/others";
-
 import { useLightBox } from "hooks/useLightBox";
+
+/*
+ *                                        ╭─────────────╮
+ * ───────────────────────────────────────╯  COMPONENT  ╰───────────────────────────────────────────
+ */
 
 interface Props {
   pre_title?: string | null | undefined;
@@ -26,19 +30,19 @@ interface Props {
   languageSwitcher?: JSX.Element;
 }
 
-export function ThumbnailHeader(props: Props): JSX.Element {
-  const {
-    langui,
-    pre_title,
-    title,
-    subtitle,
-    thumbnail,
-    type,
-    categories,
-    description,
-    languageSwitcher,
-  } = props;
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
+export const ThumbnailHeader = ({
+  langui,
+  pre_title,
+  title,
+  subtitle,
+  thumbnail,
+  type,
+  categories,
+  description,
+  languageSwitcher,
+}: Props): JSX.Element => {
   const [openLightBox, LightBox] = useLightBox();
 
   return (
@@ -105,4 +109,4 @@ export function ThumbnailHeader(props: Props): JSX.Element {
       )}
     </>
   );
-}
+};

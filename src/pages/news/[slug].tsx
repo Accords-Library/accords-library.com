@@ -6,45 +6,43 @@ import {
 } from "graphql/getPostStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import { filterHasAttributes, isDefined } from "helpers/others";
+import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next";
 
-import {
-  GetStaticPathsContext,
-  GetStaticPathsResult,
-  GetStaticPropsContext,
-} from "next";
+/*
+ *                                           ╭────────╮
+ * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
+ */
 
 interface Props extends AppStaticProps, PostStaticProps {}
 
-export default function LibrarySlug(props: Props): JSX.Element {
-  const { post, langui, languages, currencies } = props;
-  return (
-    <PostPage
-      currencies={currencies}
-      languages={languages}
-      langui={langui}
-      post={post}
-      returnHref="/news"
-      returnTitle={langui.news}
-      displayCredits
-      displayThumbnailHeader
-      displayToc
-    />
-  );
-}
+const LibrarySlug = (props: Props): JSX.Element => (
+  <PostPage
+    returnHref="/news"
+    returnTitle={props.langui.news}
+    displayCredits
+    displayThumbnailHeader
+    displayToc
+    {...props}
+  />
+);
+export default LibrarySlug;
 
-export async function getStaticProps(
-  context: GetStaticPropsContext
-): Promise<{ notFound: boolean } | { props: Props }> {
+/*
+ *                                    ╭──────────────────────╮
+ * ───────────────────────────────────╯  NEXT DATA FETCHING  ╰──────────────────────────────────────
+ */
+
+export const getStaticProps: GetStaticProps = async (context) => {
   const slug =
     context.params && isDefined(context.params.slug)
       ? context.params.slug.toString()
       : "";
   return await getPostStaticProps(slug)(context);
-}
+};
 
-export async function getStaticPaths(
-  context: GetStaticPathsContext
-): Promise<GetStaticPathsResult> {
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
+
+export const getStaticPaths: GetStaticPaths = async (context) => {
   const sdk = getReadySdk();
   const posts = await sdk.getPostsSlugs();
   const paths: GetStaticPathsResult["paths"] = [];
@@ -58,4 +56,4 @@ export async function getStaticPaths(
     paths,
     fallback: "blocking",
   };
-}
+};

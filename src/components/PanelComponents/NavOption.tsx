@@ -2,9 +2,13 @@ import { Ico, Icon } from "components/Ico";
 import { ToolTip } from "components/ToolTip";
 import { cJoin, cIf } from "helpers/className";
 import { isDefinedAndNotEmpty } from "helpers/others";
-
 import { useRouter } from "next/router";
 import { MouseEventHandler, useMemo } from "react";
+
+/*
+ *                                        ╭─────────────╮
+ * ───────────────────────────────────────╯  COMPONENT  ╰───────────────────────────────────────────
+ */
 
 interface Props {
   url: string;
@@ -16,16 +20,17 @@ interface Props {
   onClick?: MouseEventHandler<HTMLDivElement>;
 }
 
-export function NavOption(props: Props): JSX.Element {
-  const {
-    url,
-    icon,
-    title,
-    subtitle,
-    border = false,
-    reduced = false,
-    onClick,
-  } = props;
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
+
+export const NavOption = ({
+  url,
+  icon,
+  title,
+  subtitle,
+  border = false,
+  reduced = false,
+  onClick,
+}: Props): JSX.Element => {
   const router = useRouter();
   const isActive = useMemo(
     () => router.asPath.startsWith(url),
@@ -82,4 +87,4 @@ export function NavOption(props: Props): JSX.Element {
       </div>
     </ToolTip>
   );
-}
+};

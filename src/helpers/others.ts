@@ -18,7 +18,7 @@ type SortContentProps =
       >["data"][number]["attributes"]
     >["contents"];
 
-export function sortContent(contents: SortContentProps) {
+export const sortContent = (contents: SortContentProps) => {
   contents?.data.sort((a, b) => {
     if (
       a.attributes?.range[0]?.__typename === "ComponentRangePageRange" &&
@@ -31,12 +31,12 @@ export function sortContent(contents: SortContentProps) {
     }
     return 0;
   });
-}
+};
 
-export function getStatusDescription(
+export const getStatusDescription = (
   status: string,
   langui: AppStaticProps["langui"]
-): string | null | undefined {
+): string | null | undefined => {
   switch (status) {
     case Enum_Componentsetstextset_Status.Incomplete:
       return langui.status_incomplete;
@@ -53,45 +53,44 @@ export function getStatusDescription(
     default:
       return "";
   }
-}
+};
 
-export function isDefined<T>(t: T): t is NonNullable<T> {
-  return t !== null && t !== undefined;
-}
+export const isDefined = <T>(t: T): t is NonNullable<T> =>
+  t !== null && t !== undefined;
 
-export function isUndefined<T>(t: T | undefined | null): t is undefined | null {
-  return t === null || t === undefined;
-}
+export const isUndefined = <T>(
+  t: T | undefined | null
+): t is undefined | null => t === null || t === undefined;
 
-export function isDefinedAndNotEmpty(
+export const isDefinedAndNotEmpty = (
   string: string | undefined | null
-): string is string {
-  return isDefined(string) && string.length > 0;
-}
+): string is string => isDefined(string) && string.length > 0;
 
-export function filterDefined<T>(t: T[] | undefined | null): NonNullable<T>[] {
-  if (isUndefined(t)) return [];
-  return t.filter((item) => isDefined(item)) as NonNullable<T>[];
-}
+export const filterDefined = <T>(t: T[] | undefined | null): NonNullable<T>[] =>
+  isUndefined(t)
+    ? []
+    : (t.filter((item) => isDefined(item)) as NonNullable<T>[]);
 
-export function filterHasAttributes<T, P extends keyof NonNullable<T>>(
+export const filterHasAttributes = <T, P extends keyof NonNullable<T>>(
   t: T[] | undefined | null,
   attributes?: P[]
-): SelectiveRequiredNonNullable<NonNullable<T>, P>[] {
-  if (isUndefined(t)) return [];
-  return t.filter((item) => {
-    if (isDefined(item)) {
-      const attributesToCheck = attributes ?? (Object.keys(item) as P[]);
-      return attributesToCheck.every((attribute) => isDefined(item[attribute]));
-    }
-    return false;
-  }) as unknown as SelectiveRequiredNonNullable<NonNullable<T>, P>[];
-}
+): SelectiveRequiredNonNullable<NonNullable<T>, P>[] =>
+  isUndefined(t)
+    ? []
+    : (t.filter((item) => {
+        if (isDefined(item)) {
+          const attributesToCheck = attributes ?? (Object.keys(item) as P[]);
+          return attributesToCheck.every((attribute) =>
+            isDefined(item[attribute])
+          );
+        }
+        return false;
+      }) as unknown as SelectiveRequiredNonNullable<NonNullable<T>, P>[]);
 
-export function iterateMap<K, V, U>(
+export const iterateMap = <K, V, U>(
   map: Map<K, V>,
   callbackfn: (key: K, value: V, index: number) => U
-): U[] {
+): U[] => {
   const result: U[] = [];
   let index = 0;
   for (const [key, value] of map.entries()) {
@@ -99,21 +98,18 @@ export function iterateMap<K, V, U>(
     index += 1;
   }
   return result;
-}
+};
 
-export function mapMoveEntry<K, V>(
+export const mapMoveEntry = <K, V>(
   map: Map<K, V>,
   sourceIndex: number,
   targetIndex: number
-) {
-  return new Map(arrayMove([...map], sourceIndex, targetIndex));
-}
+) => new Map(arrayMove([...map], sourceIndex, targetIndex));
 
-function arrayMove<T>(arr: T[], sourceIndex: number, targetIndex: number) {
+const arrayMove = <T>(arr: T[], sourceIndex: number, targetIndex: number) => {
   arr.splice(targetIndex, 0, arr.splice(sourceIndex, 1)[0]);
   return arr;
-}
+};
 
-export function mapRemoveEmptyValues<K, V>(groups: Map<K, V[]>): Map<K, V[]> {
-  return new Map([...groups].filter(([_, items]) => items.length > 0));
-}
+export const mapRemoveEmptyValues = <K, V>(groups: Map<K, V[]>): Map<K, V[]> =>
+  new Map([...groups].filter(([_, items]) => items.length > 0));

@@ -3,15 +3,19 @@ import { PanelHeader } from "components/PanelComponents/PanelHeader";
 import { SubPanel } from "components/Panels/SubPanel";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 
-import { GetStaticPropsContext } from "next";
+import { GetStaticProps } from "next";
 import { Icon } from "components/Ico";
-import { useMemo } from "react";
+
+/*
+ *                                           ╭────────╮
+ * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
+ */
 
 interface Props extends AppStaticProps {}
-export default function Merch(props: Props): JSX.Element {
-  const { langui } = props;
-  const subPanel = useMemo(
-    () => (
+const Merch = ({ langui, ...otherProps }: Props): JSX.Element => (
+  <AppLayout
+    navTitle={langui.merch}
+    subPanel={
       <SubPanel>
         <PanelHeader
           icon={Icon.Store}
@@ -19,20 +23,23 @@ export default function Merch(props: Props): JSX.Element {
           description={langui.merch_description}
         />
       </SubPanel>
-    ),
-    [langui]
-  );
+    }
+    langui={langui}
+    {...otherProps}
+  />
+);
+export default Merch;
 
-  return <AppLayout navTitle={langui.merch} subPanel={subPanel} {...props} />;
-}
+/*
+ *                                    ╭──────────────────────╮
+ * ───────────────────────────────────╯  NEXT DATA FETCHING  ╰──────────────────────────────────────
+ */
 
-export async function getStaticProps(
-  context: GetStaticPropsContext
-): Promise<{ notFound: boolean } | { props: Props }> {
+export const getStaticProps: GetStaticProps = async (context) => {
   const props: Props = {
     ...(await getAppStaticProps(context)),
   };
   return {
     props: props,
   };
-}
+};

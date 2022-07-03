@@ -106,15 +106,13 @@ const initialState: RequiredNonNullable<AppLayoutState> = {
 
 const AppContext = React.createContext<AppLayoutState>(initialState);
 
-export function useAppLayout(): AppLayoutState {
-  return useContext(AppContext);
-}
+export const useAppLayout = (): AppLayoutState => useContext(AppContext);
 
 interface Props {
   children: ReactNode;
 }
 
-export function AppContextProvider(props: Props): JSX.Element {
+export const AppContextProvider = (props: Props): JSX.Element => {
   const [subPanelOpen, setSubPanelOpen] = useStateWithLocalStorage(
     "subPanelOpen",
     initialState.subPanelOpen
@@ -176,43 +174,43 @@ export function AppContextProvider(props: Props): JSX.Element {
       initialState.libraryItemUserStatus
     );
 
-  function toggleSubPanelOpen() {
+  const toggleSubPanelOpen = () => {
     setSubPanelOpen((current) => (isDefined(current) ? !current : current));
-  }
+  };
 
-  function toggleConfigPanelOpen() {
+  const toggleConfigPanelOpen = () => {
     setConfigPanelOpen((current) => (isDefined(current) ? !current : current));
-  }
+  };
 
-  function toggleSearchPanelOpen() {
+  const toggleSearchPanelOpen = () => {
     setSearchPanelOpen((current) => (isDefined(current) ? !current : current));
-  }
+  };
 
-  function toggleMainPanelReduced() {
+  const toggleMainPanelReduced = () => {
     setMainPanelReduced((current) => (isDefined(current) ? !current : current));
-  }
+  };
 
-  function toggleMainPanelOpen() {
+  const toggleMainPanelOpen = () => {
     setMainPanelOpen((current) => (isDefined(current) ? !current : current));
-  }
+  };
 
-  function toggleDarkMode() {
+  const toggleDarkMode = () => {
     setDarkMode((current) => (isDefined(current) ? !current : current));
-  }
+  };
 
-  function toggleMenuGestures() {
+  const toggleMenuGestures = () => {
     setMenuGestures((current) => !current);
-  }
+  };
 
-  function toggleSelectedThemeMode() {
+  const toggleSelectedThemeMode = () => {
     setSelectedThemeMode((current) =>
       isDefined(current) ? !current : current
     );
-  }
+  };
 
-  function toggleDyslexic() {
+  const toggleDyslexic = () => {
     setDyslexic((current) => (isDefined(current) ? !current : current));
-  }
+  };
 
   return (
     <AppContext.Provider
@@ -259,4 +257,4 @@ export function AppContextProvider(props: Props): JSX.Element {
       {props.children}
     </AppContext.Provider>
   );
-}
+};

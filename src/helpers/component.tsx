@@ -2,16 +2,21 @@ export interface Wrapper {
   children: React.ReactNode;
 }
 
-export function ConditionalWrapper<T>(props: {
+interface Props<T> {
   isWrapping: boolean;
   children: React.ReactNode;
   wrapper: (wrapperProps: T & Wrapper) => JSX.Element;
   wrapperProps: T;
-}): JSX.Element {
-  const { isWrapping, children, wrapper: Wrapper, wrapperProps } = props;
-  return isWrapping ? (
+}
+
+export const ConditionalWrapper = <T,>({
+  isWrapping,
+  children,
+  wrapper: Wrapper,
+  wrapperProps,
+}: Props<T>): JSX.Element =>
+  isWrapping ? (
     <Wrapper {...wrapperProps}>{children}</Wrapper>
   ) : (
     <>{children}</>
   );
-}

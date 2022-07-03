@@ -9,12 +9,10 @@ import {
 } from "components/Panels/ContentPanel";
 import { SubPanel } from "components/Panels/SubPanel";
 import { TranslatedPreviewCard } from "components/PreviewCard";
-
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import { prettyinlineTitle, prettySlug } from "helpers/formatters";
-
-import { GetStaticPropsContext } from "next";
+import { GetStaticProps } from "next";
 import { Fragment, useState, useMemo } from "react";
 import { Icon } from "components/Ico";
 import { WithLabel } from "components/Inputs/WithLabel";
@@ -29,33 +27,47 @@ import {
 import { ContentPlaceholder } from "components/PanelComponents/ContentPlaceholder";
 import { GetContentsQuery } from "graphql/generated";
 
-interface Props extends AppStaticProps {
-  contents: NonNullable<GetContentsQuery["contents"]>["data"];
-}
+/*
+ *                                         ╭─────────────╮
+ * ────────────────────────────────────────╯  CONSTANTS  ╰──────────────────────────────────────────
+ */
 
-type GroupContentItems = Map<string, Props["contents"]>;
-
-const defaultFiltersState = {
+const DEFAULT_FILTERS_STATE = {
   groupingMethod: -1,
   keepInfoVisible: false,
   combineRelatedContent: true,
   searchName: "",
 };
 
-export default function Contents(props: Props): JSX.Element {
-  const { langui, contents, languages } = props;
+/*
+ *                                           ╭────────╮
+ * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
+ */
+
+interface Props extends AppStaticProps {
+  contents: NonNullable<GetContentsQuery["contents"]>["data"];
+}
+
+const Contents = ({
+  langui,
+  contents,
+  languages,
+  ...otherProps
+}: Props): JSX.Element => {
   const hoverable = useMediaHoverable();
 
   const [groupingMethod, setGroupingMethod] = useState<number>(
-    defaultFiltersState.groupingMethod
+    DEFAULT_FILTERS_STATE.groupingMethod
   );
   const [keepInfoVisible, setKeepInfoVisible] = useState(
-    defaultFiltersState.keepInfoVisible
+    DEFAULT_FILTERS_STATE.keepInfoVisible
   );
   const [combineRelatedContent, setCombineRelatedContent] = useState(
-    defaultFiltersState.combineRelatedContent
+    DEFAULT_FILTERS_STATE.combineRelatedContent
   );
-  const [searchName, setSearchName] = useState(defaultFiltersState.searchName);
+  const [searchName, setSearchName] = useState(
+    DEFAULT_FILTERS_STATE.searchName
+  );
 
   const effectiveCombineRelatedContent = useMemo(
     () => (searchName.length > 1 ? false : combineRelatedContent),
@@ -126,10 +138,12 @@ export default function Contents(props: Props): JSX.Element {
           text={langui.reset_all_filters}
           icon={Icon.Replay}
           onClick={() => {
-            setSearchName(defaultFiltersState.searchName);
-            setGroupingMethod(defaultFiltersState.groupingMethod);
-            setKeepInfoVisible(defaultFiltersState.keepInfoVisible);
-            setCombineRelatedContent(defaultFiltersState.combineRelatedContent);
+            setSearchName(DEFAULT_FILTERS_STATE.searchName);
+            setGroupingMethod(DEFAULT_FILTERS_STATE.groupingMethod);
+            setKeepInfoVisible(DEFAULT_FILTERS_STATE.keepInfoVisible);
+            setCombineRelatedContent(
+              DEFAULT_FILTERS_STATE.combineRelatedContent
+            );
           }}
         />
       </SubPanel>
@@ -147,12 +161,9 @@ export default function Contents(props: Props): JSX.Element {
   const contentPanel = useMemo(
     () => (
       <ContentPanel width={ContentPanelWidthSizes.Full}>
-        {/* TODO: Add to langui */}
         {groups.size === 0 && (
           <ContentPlaceholder
-            message={
-              "No results. You can try changing or resetting the search parameters."
-            }
+            message={langui.no_results_message ?? "No results"}
             icon={Icon.ChevronLeft}
           />
         )}
@@ -259,14 +270,20 @@ export default function Contents(props: Props): JSX.Element {
       subPanel={subPanel}
       contentPanel={contentPanel}
       subPanelIcon={Icon.Search}
-      {...props}
+      languages={languages}
+      langui={langui}
+      {...otherProps}
     />
   );
-}
+};
+export default Contents;
 
-export async function getStaticProps(
-  context: GetStaticPropsContext
-): Promise<{ notFound: boolean } | { props: Props }> {
+/*
+ *                                    ╭──────────────────────╮
+ * ───────────────────────────────────╯  NEXT DATA FETCHING  ╰──────────────────────────────────────
+ */
+
+export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
   const contents = await sdk.getContents({
     language_code: context.locale ?? "en",
@@ -285,13 +302,20 @@ export async function getStaticProps(
   return {
     props: props,
   };
-}
+};
 
-export function getGroups(
+/*
+ *                                      ╭───────────────────╮
+ * ─────────────────────────────────────╯  PRIVATE METHODS  ╰───────────────────────────────────────
+ */
+
+type GroupContentItems = Map<string, Props["contents"]>;
+
+export const getGroups = (
   langui: AppStaticProps["langui"],
   groupByType: number,
   items: Props["contents"]
-): GroupContentItems {
+): GroupContentItems => {
   const groups: GroupContentItems = new Map();
 
   switch (groupByType) {
@@ -347,14 +371,16 @@ export function getGroups(
     }
   }
   return mapRemoveEmptyValues(groups);
-}
+};
 
-export function filterContents(
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
+
+export const filterContents = (
   contents: Props["contents"],
   combineRelatedContent: boolean,
   searchName: string
-): Props["contents"] {
-  return contents.filter((content) => {
+): Props["contents"] =>
+  contents.filter((content) => {
     if (
       combineRelatedContent &&
       content.attributes?.group?.data?.attributes?.combine === true &&
@@ -381,4 +407,3 @@ export function filterContents(
     }
     return true;
   });
-}

@@ -1,10 +1,10 @@
 import { LightBox } from "components/LightBox";
 import { useState } from "react";
 
-export function useLightBox(): [
+export const useLightBox = (): [
   (images: string[], index?: number) => void,
   () => JSX.Element
-] {
+] => {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxImages, setLightboxImages] = useState([""]);
   const [lightboxIndex, setLightboxIndex] = useState(0);
@@ -25,4 +25,4 @@ export function useLightBox(): [
       />
     ),
   ];
-}
+};

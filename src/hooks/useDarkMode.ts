@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { usePrefersDarkMode } from "./useMediaQuery";
 import { useStateWithLocalStorage } from "./useStateWithLocalStorage";
 
-export function useDarkMode(
+export const useDarkMode = (
   key: string,
   initialValue: boolean | undefined
 ): [
@@ -10,11 +10,9 @@ export function useDarkMode(
   boolean | undefined,
   React.Dispatch<React.SetStateAction<boolean | undefined>>,
   React.Dispatch<React.SetStateAction<boolean | undefined>>
-] {
+] => {
   const [darkMode, setDarkMode] = useStateWithLocalStorage(key, initialValue);
-
   const prefersDarkMode = usePrefersDarkMode();
-
   const [selectedThemeMode, setSelectedThemeMode] = useStateWithLocalStorage(
     "selectedThemeMode",
     false
@@ -25,4 +23,4 @@ export function useDarkMode(
   }, [selectedThemeMode, prefersDarkMode, setDarkMode]);
 
   return [darkMode, selectedThemeMode, setDarkMode, setSelectedThemeMode];
-}
+};

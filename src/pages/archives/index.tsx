@@ -4,14 +4,18 @@ import { PanelHeader } from "components/PanelComponents/PanelHeader";
 import { SubPanel } from "components/Panels/SubPanel";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 
-import { GetStaticPropsContext } from "next";
+import { GetStaticProps } from "next";
 import { Icon } from "components/Ico";
 import { useMemo } from "react";
 
+/*
+ *                                           ╭────────╮
+ * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
+ */
+
 interface Props extends AppStaticProps {}
 
-export default function Archives(props: Props): JSX.Element {
-  const { langui } = props;
+const Archives = ({ langui, ...otherProps }: Props): JSX.Element => {
   const subPanel = useMemo(
     () => (
       <SubPanel>
@@ -26,17 +30,26 @@ export default function Archives(props: Props): JSX.Element {
     [langui]
   );
   return (
-    <AppLayout navTitle={langui.archives} subPanel={subPanel} {...props} />
+    <AppLayout
+      navTitle={langui.archives}
+      subPanel={subPanel}
+      langui={langui}
+      {...otherProps}
+    />
   );
-}
+};
+export default Archives;
 
-export async function getStaticProps(
-  context: GetStaticPropsContext
-): Promise<{ notFound: boolean } | { props: Props }> {
+/*
+ *                                    ╭──────────────────────╮
+ * ───────────────────────────────────╯  NEXT DATA FETCHING  ╰──────────────────────────────────────
+ */
+
+export const getStaticProps: GetStaticProps = async (context) => {
   const props: Props = {
     ...(await getAppStaticProps(context)),
   };
   return {
     props: props,
   };
-}
+};

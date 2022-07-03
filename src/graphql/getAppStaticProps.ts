@@ -17,9 +17,9 @@ export type AppStaticProps = {
   languages: NonNullable<GetLanguagesQuery["languages"]>["data"];
 };
 
-export async function getAppStaticProps(
+export const getAppStaticProps = async (
   context: GetStaticPropsContext
-): Promise<AppStaticProps> {
+): Promise<AppStaticProps> => {
   const sdk = getReadySdk();
   const languages = (await sdk.getLanguages()).languages;
 
@@ -53,4 +53,4 @@ export async function getAppStaticProps(
   };
 
   return appStaticProps;
-}
+};

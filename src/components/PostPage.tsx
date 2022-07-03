@@ -8,14 +8,18 @@ import { Fragment, useCallback, useMemo } from "react";
 import { AppLayout } from "./AppLayout";
 import { Chip } from "./Chip";
 import { HorizontalLine } from "./HorizontalLine";
-import { Markdawn } from "./Markdown/Markdawn";
-import { TOC } from "./Markdown/TOC";
+import { Markdawn, TableOfContents } from "./Markdown/Markdawn";
 import { ReturnButton, ReturnButtonType } from "./PanelComponents/ReturnButton";
 import { ContentPanel } from "./Panels/ContentPanel";
 import { SubPanel } from "./Panels/SubPanel";
 import { RecorderChip } from "./RecorderChip";
 import { ThumbnailHeader } from "./ThumbnailHeader";
 import { ToolTip } from "./ToolTip";
+
+/*
+ *                                        ╭─────────────╮
+ * ───────────────────────────────────────╯  COMPONENT  ╰───────────────────────────────────────────
+ */
 
 interface Props {
   post: PostWithTranslations;
@@ -33,22 +37,23 @@ interface Props {
   appendBody?: JSX.Element;
 }
 
-export function PostPage(props: Props): JSX.Element {
-  const {
-    post,
-    langui,
-    languages,
-    returnHref,
-    returnTitle,
-    displayCredits,
-    displayToc,
-    displayThumbnailHeader,
-    displayLanguageSwitcher,
-    appendBody,
-    prependBody,
-  } = props;
-  const displayTitle = props.displayTitle ?? true;
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
+export const PostPage = ({
+  post,
+  langui,
+  languages,
+  returnHref,
+  returnTitle,
+  displayCredits,
+  displayToc,
+  displayThumbnailHeader,
+  displayLanguageSwitcher,
+  appendBody,
+  prependBody,
+  displayTitle = true,
+  currencies,
+}: Props): JSX.Element => {
   const [selectedTranslation, LanguageSwitcher, languageSwitcherProps] =
     useSmartLanguage({
       items: post.translations,
@@ -124,7 +129,9 @@ export function PostPage(props: Props): JSX.Element {
             </>
           )}
 
-          {displayToc && <TOC text={body} title={title} />}
+          {displayToc && (
+            <TableOfContents text={body} title={title} langui={langui} />
+          )}
         </SubPanel>
       ) : undefined,
     [
@@ -216,7 +223,9 @@ export function PostPage(props: Props): JSX.Element {
       contentPanel={contentPanel}
       subPanel={subPanel}
       thumbnail={thumbnail ?? undefined}
-      {...props}
+      currencies={currencies}
+      languages={languages}
+      langui={langui}
     />
   );
-}
+};

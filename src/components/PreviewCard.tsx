@@ -14,13 +14,17 @@ import {
   prettySlug,
 } from "helpers/formatters";
 import { ImageQuality } from "helpers/img";
-
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 import Link from "next/link";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { Chip } from "./Chip";
 import { Ico, Icon } from "./Ico";
 import { Img } from "./Img";
+
+/*
+ *                                        ╭─────────────╮
+ * ───────────────────────────────────────╯  COMPONENT  ╰───────────────────────────────────────────
+ */
 
 interface Props {
   thumbnail?: UploadImageFragment | string | null | undefined;
@@ -53,75 +57,78 @@ interface Props {
     | { __typename: "anotherHoverlayName" };
 }
 
-export function PreviewCard(props: Props): JSX.Element {
-  const {
-    href,
-    thumbnail,
-    thumbnailAspectRatio = "4/3",
-    thumbnailForceAspectRatio = false,
-    thumbnailRounded = true,
-    pre_title,
-    title,
-    subtitle,
-    description,
-    stackNumber = 0,
-    topChips,
-    bottomChips,
-    keepInfoVisible,
-    metadata,
-    hoverlay,
-    infoAppend,
-  } = props;
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
+export const PreviewCard = ({
+  href,
+  thumbnail,
+  thumbnailAspectRatio = "4/3",
+  thumbnailForceAspectRatio = false,
+  thumbnailRounded = true,
+  pre_title,
+  title,
+  subtitle,
+  description,
+  stackNumber = 0,
+  topChips,
+  bottomChips,
+  keepInfoVisible,
+  metadata,
+  hoverlay,
+  infoAppend,
+}: Props): JSX.Element => {
   const appLayout = useAppLayout();
 
-  const metadataJSX =
-    metadata && (metadata.release_date || metadata.price) ? (
-      <div className="flex w-full flex-row flex-wrap gap-x-3">
-        {metadata.release_date && (
-          <p className="text-sm mobile:text-xs">
-            <Ico
-              icon={Icon.Event}
-              className="mr-1 translate-y-[.15em] !text-base"
-            />
-            {prettyDate(metadata.release_date)}
-          </p>
-        )}
-        {metadata.price && metadata.currencies && (
-          <p className="justify-self-end text-sm mobile:text-xs">
-            <Ico
-              icon={Icon.ShoppingCart}
-              className="mr-1 translate-y-[.15em] !text-base"
-            />
-            {prettyPrice(
-              metadata.price,
-              metadata.currencies,
-              appLayout.currency
-            )}
-          </p>
-        )}
-        {metadata.views && (
-          <p className="text-sm mobile:text-xs">
-            <Ico
-              icon={Icon.Visibility}
-              className="mr-1 translate-y-[.15em] !text-base"
-            />
-            {prettyShortenNumber(metadata.views)}
-          </p>
-        )}
-        {metadata.author && (
-          <p className="text-sm mobile:text-xs">
-            <Ico
-              icon={Icon.Person}
-              className="mr-1 translate-y-[.15em] !text-base"
-            />
-            {metadata.author}
-          </p>
-        )}
-      </div>
-    ) : (
-      <></>
-    );
+  const metadataJSX = useMemo(
+    () =>
+      metadata && (metadata.release_date || metadata.price) ? (
+        <div className="flex w-full flex-row flex-wrap gap-x-3">
+          {metadata.release_date && (
+            <p className="text-sm mobile:text-xs">
+              <Ico
+                icon={Icon.Event}
+                className="mr-1 translate-y-[.15em] !text-base"
+              />
+              {prettyDate(metadata.release_date)}
+            </p>
+          )}
+          {metadata.price && metadata.currencies && (
+            <p className="justify-self-end text-sm mobile:text-xs">
+              <Ico
+                icon={Icon.ShoppingCart}
+                className="mr-1 translate-y-[.15em] !text-base"
+              />
+              {prettyPrice(
+                metadata.price,
+                metadata.currencies,
+                appLayout.currency
+              )}
+            </p>
+          )}
+          {metadata.views && (
+            <p className="text-sm mobile:text-xs">
+              <Ico
+                icon={Icon.Visibility}
+                className="mr-1 translate-y-[.15em] !text-base"
+              />
+              {prettyShortenNumber(metadata.views)}
+            </p>
+          )}
+          {metadata.author && (
+            <p className="text-sm mobile:text-xs">
+              <Ico
+                icon={Icon.Person}
+                className="mr-1 translate-y-[.15em] !text-base"
+              />
+              {metadata.author}
+            </p>
+          )}
+        </div>
+      ) : (
+        <></>
+      ),
+    [appLayout.currency, metadata]
+  );
 
   return (
     <Link href={href} passHref>
@@ -241,12 +248,13 @@ export function PreviewCard(props: Props): JSX.Element {
         )}
         <div
           className={cJoin(
-            "z-20 grid gap-2 p-4 transition-opacity linearbg-obi",
+            "grid gap-2 p-4 transition-opacity linearbg-obi",
             cIf(
               !keepInfoVisible,
-              `-inset-x-0.5 bottom-2 opacity-0 group-hover:opacity-100 hoverable:absolute
-              hoverable:drop-shadow-shade-lg notHoverable:rounded-b-md
-              notHoverable:opacity-100`
+              `-inset-x-0.5 bottom-2 opacity-0 [border-radius:10%_10%_10%_10%_/_1%_1%_3%_3%]
+              group-hover:opacity-100 hoverable:absolute hoverable:drop-shadow-shade-lg
+              notHoverable:rounded-b-md notHoverable:opacity-100`,
+              "[border-radius:0%_0%_10%_10%_/_0%_0%_3%_3%]"
             )
           )}
         >
@@ -287,7 +295,9 @@ export function PreviewCard(props: Props): JSX.Element {
       </div>
     </Link>
   );
-}
+};
+
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
 interface TranslatedProps
   extends Omit<Props, "description" | "pre_title" | "subtitle" | "title"> {
@@ -302,13 +312,14 @@ interface TranslatedProps
   languages: AppStaticProps["languages"];
 }
 
-export function TranslatedPreviewCard(props: TranslatedProps): JSX.Element {
-  const {
-    translations = [{ title: props.slug, language: "default" }],
-    slug,
-    languages,
-  } = props;
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
+export const TranslatedPreviewCard = ({
+  slug,
+  translations = [{ title: slug, language: "default" }],
+  languages,
+  ...otherProps
+}: TranslatedProps): JSX.Element => {
   const [selectedTranslation] = useSmartLanguage({
     items: translations,
     languages: languages,
@@ -324,7 +335,7 @@ export function TranslatedPreviewCard(props: TranslatedProps): JSX.Element {
       title={selectedTranslation?.title ?? prettySlug(slug)}
       subtitle={selectedTranslation?.subtitle}
       description={selectedTranslation?.description}
-      {...props}
+      {...otherProps}
     />
   );
-}
+};

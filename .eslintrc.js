@@ -41,7 +41,7 @@ module.exports = {
     eqeqeq: "error",
     "func-name-matching": "warn",
     "func-names": "warn",
-    "func-style": ["warn", "declaration"],
+    "func-style": ["warn", "expression"],
     "grouped-accessor-pairs": "warn",
     "guard-for-in": "warn",
     "id-denylist": ["error", "data", "err", "e", "cb", "callback", "i"],

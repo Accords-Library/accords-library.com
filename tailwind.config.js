@@ -1,9 +1,7 @@
 const plugin = require("tailwindcss/plugin");
 const { breaks, colors, fonts, fontFamilies } = require("./design.config.js");
 
-function rgb(color) {
-  return [color.r, color.g, color.b].join(" ");
-}
+const rgb = (color) => [color.r, color.g, color.b].join(" ");
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -38,7 +36,7 @@ module.exports = {
     },
   },
   plugins: [
-    plugin(function ({ addUtilities }) {
+    plugin(({ addUtilities }) => {
       addUtilities({
         ".set-theme-light": {
           "--theme-color-highlight": rgb(colors.light.hightlight),
@@ -63,7 +61,7 @@ module.exports = {
       });
     }),
 
-    plugin(function ({ addUtilities }) {
+    plugin(({ addUtilities }) => {
       addUtilities({
         ".set-theme-font-standard": {
           "--theme-font-body": fontFamilies.standard.body,
@@ -78,7 +76,7 @@ module.exports = {
       });
     }),
 
-    plugin(function ({ addVariant, e }) {
+    plugin(({ addVariant, e }) => {
       addVariant("webkit-scrollbar", ({ modifySelectors, separator }) => {
         modifySelectors(({ className }) => {
           return `.${e(
@@ -89,7 +87,7 @@ module.exports = {
     }),
 
     // Colored Dropshadow
-    plugin(function ({ addUtilities }) {
+    plugin(({ addUtilities }) => {
       addUtilities({
         ".drop-shadow-shade-md": {
           filter: `
@@ -131,7 +129,7 @@ module.exports = {
       });
     }),
 
-    plugin(function ({ addUtilities }) {
+    plugin(({ addUtilities }) => {
       addUtilities({
         ".linearbg-obi": {
           background: `linear-gradient(
@@ -145,7 +143,7 @@ module.exports = {
       });
     }),
 
-    plugin(function ({ addUtilities }) {
+    plugin(({ addUtilities }) => {
       addUtilities({
         ".break-words": {
           "word-break": "break-word",

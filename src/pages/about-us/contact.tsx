@@ -11,9 +11,17 @@ import { useRouter } from "next/router";
 import { RequestMailProps, ResponseMailProps } from "pages/api/mail";
 import { useState } from "react";
 
-export default function AboutUs(props: PostStaticProps): JSX.Element {
-  const { post, langui, languages, currencies } = props;
+/*
+ *                                           ╭────────╮
+ * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
+ */
 
+const AboutUs = ({
+  post,
+  langui,
+  languages,
+  currencies,
+}: PostStaticProps): JSX.Element => {
   const router = useRouter();
   const [formResponse, setFormResponse] = useState("");
   const [formState, setFormState] = useState<"completed" | "ongoing" | "stale">(
@@ -181,6 +189,12 @@ export default function AboutUs(props: PostStaticProps): JSX.Element {
       displayLanguageSwitcher
     />
   );
-}
+};
+export default AboutUs;
+
+/*
+ *                                    ╭──────────────────────╮
+ * ───────────────────────────────────╯  NEXT DATA FETCHING  ╰──────────────────────────────────────
+ */
 
 export const getStaticProps = getPostStaticProps("contact");

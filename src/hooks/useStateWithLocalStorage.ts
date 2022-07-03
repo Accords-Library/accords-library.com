@@ -1,10 +1,10 @@
 import { isDefined } from "helpers/others";
 import { useEffect, useState } from "react";
 
-export function useStateWithLocalStorage<T>(
+export const useStateWithLocalStorage = <T>(
   key: string,
   initialValue: T
-): [T | undefined, React.Dispatch<React.SetStateAction<T | undefined>>] {
+): [T | undefined, React.Dispatch<React.SetStateAction<T | undefined>>] => {
   const [value, setValue] = useState<T | undefined>(undefined);
   const [, setFromLocaleStorage] = useState<boolean>(false);
 
@@ -28,4 +28,4 @@ export function useStateWithLocalStorage<T>(
   }, [value, key]);
 
   return [value, setValue];
-}
+};

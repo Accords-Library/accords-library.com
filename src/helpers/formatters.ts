@@ -2,7 +2,7 @@ import { DatePickerFragment, PricePickerFragment } from "graphql/generated";
 import { AppStaticProps } from "../graphql/getAppStaticProps";
 import { convertPrice } from "./numbers";
 
-export function prettyDate(datePicker: DatePickerFragment): string {
+export const prettyDate = (datePicker: DatePickerFragment): string => {
   let result = "";
   if (datePicker.year) result += datePicker.year.toString();
   if (datePicker.month)
@@ -10,13 +10,13 @@ export function prettyDate(datePicker: DatePickerFragment): string {
   if (datePicker.day)
     result += `/${datePicker.day.toString().padStart(2, "0")}`;
   return result;
-}
+};
 
-export function prettyPrice(
+export const prettyPrice = (
   pricePicker: PricePickerFragment,
   currencies: AppStaticProps["currencies"],
   targetCurrencyCode?: string
-): string {
+): string => {
   if (!targetCurrencyCode) return "";
   let result = "";
   currencies.map((currency) => {
@@ -31,9 +31,9 @@ export function prettyPrice(
     }
   });
   return result;
-}
+};
 
-export function prettySlug(slug?: string, parentSlug?: string): string {
+export const prettySlug = (slug?: string, parentSlug?: string): string => {
   if (slug) {
     if (parentSlug && slug.startsWith(parentSlug))
       slug = slug.substring(parentSlug.length + 1);
@@ -42,24 +42,24 @@ export function prettySlug(slug?: string, parentSlug?: string): string {
     return capitalizeString(slug);
   }
   return "";
-}
+};
 
-export function prettyinlineTitle(
+export const prettyinlineTitle = (
   pretitle: string | undefined | null,
   title: string | undefined | null,
   subtitle: string | undefined | null
-): string {
+): string => {
   let result = "";
   if (pretitle) result += `${pretitle}: `;
   result += title;
   if (subtitle) result += ` - ${subtitle}`;
   return result;
-}
+};
 
-export function prettyItemType(
+export const prettyItemType = (
   metadata: any,
   langui: AppStaticProps["langui"]
-): string | undefined | null {
+): string | undefined | null => {
   switch (metadata.__typename) {
     case "ComponentMetadataAudio":
       return langui.audio;
@@ -76,9 +76,9 @@ export function prettyItemType(
     default:
       return "";
   }
-}
+};
 
-export function prettyItemSubType(
+export const prettyItemSubType = (
   metadata:
     | {
         __typename: "ComponentMetadataAudio";
@@ -156,7 +156,7 @@ export function prettyItemSubType(
       }
     | { __typename: "Error" }
     | null
-): string {
+): string => {
   if (metadata) {
     switch (metadata.__typename) {
       case "ComponentMetadataAudio":
@@ -195,9 +195,9 @@ export function prettyItemSubType(
   }
   return "";
   /* eslint-enable @typescript-eslint/no-explicit-any */
-}
+};
 
-export function prettyShortenNumber(number: number): string {
+export const prettyShortenNumber = (number: number): string => {
   if (number > 1000000) {
     return number.toLocaleString(undefined, {
       maximumSignificantDigits: 3,
@@ -210,9 +210,9 @@ export function prettyShortenNumber(number: number): string {
     );
   }
   return number.toLocaleString();
-}
+};
 
-export function prettyDuration(seconds: number): string {
+export const prettyDuration = (seconds: number): string => {
   let hours = 0;
   let minutes = 0;
   while (seconds > 60) {
@@ -228,36 +228,36 @@ export function prettyDuration(seconds: number): string {
   result += minutes.toString().padStart(2, "0") + ":";
   result += seconds.toString().padStart(2, "0");
   return result;
-}
+};
 
-export function prettyLanguage(
+export const prettyLanguage = (
   code: string,
   languages: AppStaticProps["languages"]
-): string {
+): string => {
   let result = code;
   languages.forEach((language) => {
     if (language?.attributes?.code === code)
       result = language.attributes.localized_name;
   });
   return result;
-}
+};
 
-export function prettyURL(url: string): string {
+export const prettyURL = (url: string): string => {
   let domain = new URL(url);
   return domain.hostname.replace("www.", "");
-}
+};
 
-function capitalizeString(string: string): string {
-  function capitalizeWord(word: string): string {
+const capitalizeString = (string: string): string => {
+  const capitalizeWord = (word: string): string => {
     return word.charAt(0).toUpperCase() + word.substring(1);
-  }
+  };
 
   let words = string.split(" ");
   words = words.map((word) => capitalizeWord(word));
   return words.join(" ");
-}
+};
 
-export function slugify(string: string | undefined): string {
+export const slugify = (string: string | undefined): string => {
   if (!string) {
     return "";
   }
@@ -275,4 +275,4 @@ export function slugify(string: string | undefined): string {
     .replace(/[^a-z0-9- ]/gu, "")
     .trim()
     .replace(/ /gu, "-");
-}
+};

@@ -13,15 +13,22 @@ import {
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
 
-import { GetStaticPropsContext } from "next";
+import { GetStaticProps } from "next";
 import { useMemo } from "react";
+
+/*
+ *                                           ╭────────╮
+ * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
+ */
 
 interface Props extends AppStaticProps {
   libraryItems: DevGetLibraryItemsQuery;
 }
 
-export default function CheckupLibraryItems(props: Props): JSX.Element {
-  const { libraryItems } = props;
+const CheckupLibraryItems = ({
+  libraryItems,
+  ...otherProps
+}: Props): JSX.Element => {
   const testReport = testingLibraryItem(libraryItems);
 
   const contentPanel = useMemo(
@@ -84,13 +91,21 @@ export default function CheckupLibraryItems(props: Props): JSX.Element {
   );
 
   return (
-    <AppLayout navTitle={"Checkup"} contentPanel={contentPanel} {...props} />
+    <AppLayout
+      navTitle={"Checkup"}
+      contentPanel={contentPanel}
+      {...otherProps}
+    />
   );
-}
+};
+export default CheckupLibraryItems;
 
-export async function getStaticProps(
-  context: GetStaticPropsContext
-): Promise<{ notFound: boolean } | { props: Props }> {
+/*
+ *                                    ╭──────────────────────╮
+ * ───────────────────────────────────╯  NEXT DATA FETCHING  ╰──────────────────────────────────────
+ */
+
+export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
   const libraryItems = await sdk.devGetLibraryItems();
   const props: Props = {
@@ -100,7 +115,12 @@ export async function getStaticProps(
   return {
     props: props,
   };
-}
+};
+
+/*
+ *                                      ╭───────────────────╮
+ * ─────────────────────────────────────╯  PRIVATE METHODS  ╰───────────────────────────────────────
+ */
 
 type Report = {
   title: string;
@@ -118,7 +138,7 @@ type ReportLine = {
   frontendUrl: string;
 };
 
-function testingLibraryItem(libraryItems: Props["libraryItems"]): Report {
+const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
   const report: Report = {
     title: "Contents",
     lines: [],
@@ -757,4 +777,4 @@ function testingLibraryItem(libraryItems: Props["libraryItems"]): Report {
   });
 
   return report;
-}
+};

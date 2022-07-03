@@ -1,7 +1,11 @@
 import { Ico, Icon } from "components/Ico";
 import { isDefinedAndNotEmpty, iterateMap, mapMoveEntry } from "helpers/others";
-
 import { Fragment, useCallback, useState } from "react";
+
+/*
+ *                                        ╭─────────────╮
+ * ───────────────────────────────────────╯  COMPONENT  ╰───────────────────────────────────────────
+ */
 
 interface Props {
   className?: string;
@@ -10,9 +14,14 @@ interface Props {
   onChange?: (items: Map<string, string>) => void;
 }
 
-export function OrderableList(props: Props): JSX.Element {
-  const { onChange } = props;
-  const [items, setItems] = useState<Map<string, string>>(props.items);
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
+
+export const OrderableList = ({
+  onChange,
+  items: propsItems,
+  insertLabels,
+}: Props): JSX.Element => {
+  const [items, setItems] = useState<Map<string, string>>(propsItems);
 
   const updateOrder = useCallback(
     (sourceIndex: number, targetIndex: number) => {
@@ -27,10 +36,9 @@ export function OrderableList(props: Props): JSX.Element {
     <div className="grid gap-2">
       {iterateMap(items, (key, value, index) => (
         <Fragment key={key}>
-          {props.insertLabels &&
-            isDefinedAndNotEmpty(props.insertLabels.get(index)) && (
-              <p>{props.insertLabels.get(index)}</p>
-            )}
+          {insertLabels && isDefinedAndNotEmpty(insertLabels.get(index)) && (
+            <p>{insertLabels.get(index)}</p>
+          )}
           <div
             onDragStart={(event) => {
               const source = event.target as HTMLElement;
@@ -89,4 +97,4 @@ export function OrderableList(props: Props): JSX.Element {
       ))}
     </div>
   );
-}
+};

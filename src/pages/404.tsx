@@ -5,16 +5,19 @@ import {
 } from "components/PanelComponents/ReturnButton";
 import { ContentPanel } from "components/Panels/ContentPanel";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
+import { GetStaticProps } from "next";
 
-import { GetStaticPropsContext } from "next";
-import { useMemo } from "react";
+/*
+ *                                           ╭────────╮
+ * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
+ */
 
 interface Props extends AppStaticProps {}
 
-export default function FourOhFour(props: Props): JSX.Element {
-  const { langui } = props;
-  const contentPanel = useMemo(
-    () => (
+const FourOhFour = ({ langui, ...otherProps }: Props): JSX.Element => (
+  <AppLayout
+    navTitle="404"
+    contentPanel={
       <ContentPanel>
         <h1>404 - {langui.page_not_found}</h1>
         <ReturnButton
@@ -24,19 +27,23 @@ export default function FourOhFour(props: Props): JSX.Element {
           displayOn={ReturnButtonType.Both}
         />
       </ContentPanel>
-    ),
-    [langui]
-  );
-  return <AppLayout navTitle="404" contentPanel={contentPanel} {...props} />;
-}
+    }
+    langui={langui}
+    {...otherProps}
+  />
+);
+export default FourOhFour;
 
-export async function getStaticProps(
-  context: GetStaticPropsContext
-): Promise<{ notFound: boolean } | { props: Props }> {
+/*
+ *                                    ╭──────────────────────╮
+ * ───────────────────────────────────╯  NEXT DATA FETCHING  ╰──────────────────────────────────────
+ */
+
+export const getStaticProps: GetStaticProps = async (context) => {
   const props: Props = {
     ...(await getAppStaticProps(context)),
   };
   return {
     props: props,
   };
-}
+};

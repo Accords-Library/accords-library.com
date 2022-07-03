@@ -10,22 +10,22 @@ interface Props {
   langui: AppStaticProps["langui"];
 }
 
-export function ChronologyYearComponent(props: Props): JSX.Element {
-  const { langui } = props;
-
-  return (
-    <div
-      className="rounded-2xl target:my-4 target:bg-mid target:py-4"
-      id={props.items.length > 1 ? props.year.toString() : undefined}
-    >
-      {props.items.map((item, index) => (
-        <ChronologyItemComponent
-          key={index}
-          item={item}
-          displayYear={index === 0}
-          langui={langui}
-        />
-      ))}
-    </div>
-  );
-}
+export const ChronologyYearComponent = ({
+  langui,
+  year,
+  items,
+}: Props): JSX.Element => (
+  <div
+    className="rounded-2xl target:my-4 target:bg-mid target:py-4"
+    id={items.length > 1 ? year.toString() : undefined}
+  >
+    {items.map((item, index) => (
+      <ChronologyItemComponent
+        key={index}
+        item={item}
+        displayYear={index === 0}
+        langui={langui}
+      />
+    ))}
+  </div>
+);

@@ -10,16 +10,19 @@ import { DevGetContentsQuery } from "graphql/generated";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import { filterDefined, filterHasAttributes } from "helpers/others";
-
-import { GetStaticPropsContext } from "next";
+import { GetStaticProps } from "next";
 import { useMemo } from "react";
+
+/*
+ *                                           ╭────────╮
+ * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
+ */
 
 interface Props extends AppStaticProps {
   contents: DevGetContentsQuery;
 }
 
-export default function CheckupContents(props: Props): JSX.Element {
-  const { contents } = props;
+const CheckupContents = ({ contents, ...otherProps }: Props): JSX.Element => {
   const testReport = testingContent(contents);
 
   const contentPanel = useMemo(
@@ -82,13 +85,21 @@ export default function CheckupContents(props: Props): JSX.Element {
   );
 
   return (
-    <AppLayout navTitle={"Checkup"} contentPanel={contentPanel} {...props} />
+    <AppLayout
+      navTitle={"Checkup"}
+      contentPanel={contentPanel}
+      {...otherProps}
+    />
   );
-}
+};
+export default CheckupContents;
 
-export async function getStaticProps(
-  context: GetStaticPropsContext
-): Promise<{ notFound: boolean } | { props: Props }> {
+/*
+ *                                    ╭──────────────────────╮
+ * ───────────────────────────────────╯  NEXT DATA FETCHING  ╰──────────────────────────────────────
+ */
+
+export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
   const contents = await sdk.devGetContents();
   const props: Props = {
@@ -98,7 +109,12 @@ export async function getStaticProps(
   return {
     props: props,
   };
-}
+};
+
+/*
+ *                                      ╭───────────────────╮
+ * ─────────────────────────────────────╯  PRIVATE METHODS  ╰───────────────────────────────────────
+ */
 
 type Report = {
   title: string;
@@ -116,7 +132,7 @@ type ReportLine = {
   frontendUrl: string;
 };
 
-function testingContent(contents: Props["contents"]): Report {
+const testingContent = (contents: Props["contents"]): Report => {
   const report: Report = {
     title: "Contents",
     lines: [],
@@ -438,4 +454,4 @@ function testingContent(contents: Props["contents"]): Report {
     }
   });
   return report;
-}
+};

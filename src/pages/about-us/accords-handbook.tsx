@@ -4,20 +4,33 @@ import {
   PostStaticProps,
 } from "graphql/getPostStaticProps";
 
-export default function AccordsHandbook(props: PostStaticProps): JSX.Element {
-  const { post, langui, languages, currencies } = props;
-  return (
-    <PostPage
-      currencies={currencies}
-      languages={languages}
-      langui={langui}
-      post={post}
-      returnHref="/about-us/"
-      returnTitle={langui.about_us}
-      displayToc
-      displayLanguageSwitcher
-    />
-  );
-}
+/*
+ *                                           ╭────────╮
+ * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
+ */
+
+const AccordsHandbook = ({
+  post,
+  langui,
+  languages,
+  currencies,
+}: PostStaticProps): JSX.Element => (
+  <PostPage
+    currencies={currencies}
+    languages={languages}
+    langui={langui}
+    post={post}
+    returnHref="/about-us/"
+    returnTitle={langui.about_us}
+    displayToc
+    displayLanguageSwitcher
+  />
+);
+export default AccordsHandbook;
+
+/*
+ *                                    ╭──────────────────────╮
+ * ───────────────────────────────────╯  NEXT DATA FETCHING  ╰──────────────────────────────────────
+ */
 
 export const getStaticProps = getPostStaticProps("accords-handbook");

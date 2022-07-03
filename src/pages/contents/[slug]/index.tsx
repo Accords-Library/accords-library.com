@@ -2,8 +2,7 @@ import { AppLayout } from "components/AppLayout";
 import { Chip } from "components/Chip";
 import { HorizontalLine } from "components/HorizontalLine";
 import { PreviewCardCTAs } from "components/Library/PreviewCardCTAs";
-import { Markdawn } from "components/Markdown/Markdawn";
-import { TOC } from "components/Markdown/TOC";
+import { Markdawn, TableOfContents } from "components/Markdown/Markdawn";
 import {
   ReturnButton,
   ReturnButtonType,
@@ -35,27 +34,25 @@ import { ContentWithTranslations } from "helpers/types";
 import { useMediaMobile } from "hooks/useMediaQuery";
 import { AnchorIds, useScrollTopOnChange } from "hooks/useScrollTopOnChange";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
-import {
-  GetStaticPathsContext,
-  GetStaticPathsResult,
-  GetStaticPropsContext,
-} from "next";
+import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next";
 import { Fragment, useCallback, useMemo } from "react";
+
+/*
+ *                                           ╭────────╮
+ * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
+ */
 
 interface Props extends AppStaticProps {
   content: ContentWithTranslations;
 }
 
-type Group = NonNullable<
-  NonNullable<
-    NonNullable<
-      NonNullable<ContentWithTranslations["group"]>["data"]
-    >["attributes"]
-  >["contents"]
->["data"];
-
-export default function Content(props: Props): JSX.Element {
-  const { langui, content, languages, currencies } = props;
+const Content = ({
+  langui,
+  content,
+  languages,
+  currencies,
+  ...otherProps
+}: Props): JSX.Element => {
   const isMobile = useMediaMobile();
 
   const [selectedTranslation, LanguageSwitcher, languageSwitcherProps] =
@@ -253,15 +250,14 @@ export default function Content(props: Props): JSX.Element {
                               position: "Bottom",
                             }}
                             infoAppend={
-                              <PreviewCardCTAs
-                                id={libraryItem.id}
-                                displayCTAs={
-                                  !isUntangibleGroupItem(
-                                    libraryItem.attributes.metadata?.[0]
-                                  )
-                                }
-                                langui={langui}
-                              />
+                              !isUntangibleGroupItem(
+                                libraryItem.attributes.metadata?.[0]
+                              ) && (
+                                <PreviewCardCTAs
+                                  id={libraryItem.id}
+                                  langui={langui}
+                                />
+                              )
                             }
                           />
                         </div>
@@ -277,13 +273,14 @@ export default function Content(props: Props): JSX.Element {
         {selectedTranslation?.text_set?.text && (
           <>
             <HorizontalLine />
-            <TOC
+            <TableOfContents
               text={selectedTranslation.text_set.text}
               title={prettyinlineTitle(
                 selectedTranslation.pre_title,
                 selectedTranslation.title,
                 selectedTranslation.subtitle
               )}
+              langui={langui}
             />
           </>
         )}
@@ -460,14 +457,21 @@ export default function Content(props: Props): JSX.Element {
       thumbnail={content.thumbnail?.data?.attributes ?? undefined}
       contentPanel={contentPanel}
       subPanel={subPanel}
-      {...props}
+      currencies={currencies}
+      languages={languages}
+      langui={langui}
+      {...otherProps}
     />
   );
-}
+};
+export default Content;
 
-export async function getStaticProps(
-  context: GetStaticPropsContext
-): Promise<{ notFound: boolean } | { props: Props }> {
+/*
+ *                                    ╭──────────────────────╮
+ * ───────────────────────────────────╯  NEXT DATA FETCHING  ╰──────────────────────────────────────
+ */
+
+export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
   const slug = context.params?.slug ? context.params.slug.toString() : "";
   const content = await sdk.getContentText({
@@ -485,11 +489,11 @@ export async function getStaticProps(
   return {
     props: props,
   };
-}
+};
 
-export async function getStaticPaths(
-  context: GetStaticPathsContext
-): Promise<GetStaticPathsResult> {
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
+
+export const getStaticPaths: GetStaticPaths = async (context) => {
   const sdk = getReadySdk();
   const contents = await sdk.getContentsSlugs();
   const paths: GetStaticPathsResult["paths"] = [];
@@ -505,9 +509,22 @@ export async function getStaticPaths(
     paths,
     fallback: "blocking",
   };
-}
+};
 
-function getPreviousContent(group: Group, currentSlug: string) {
+/*
+ *                                      ╭───────────────────╮
+ * ─────────────────────────────────────╯  PRIVATE METHODS  ╰───────────────────────────────────────
+ */
+
+type Group = NonNullable<
+  NonNullable<
+    NonNullable<
+      NonNullable<ContentWithTranslations["group"]>["data"]
+    >["attributes"]
+  >["contents"]
+>["data"];
+
+const getPreviousContent = (group: Group, currentSlug: string) => {
   for (let index = 0; index < group.length; index += 1) {
     const content = group[index];
     if (content.attributes?.slug === currentSlug && index > 0) {
@@ -515,9 +532,11 @@ function getPreviousContent(group: Group, currentSlug: string) {
     }
   }
   return undefined;
-}
+};
 
-function getNextContent(group: Group, currentSlug: string) {
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
+
+const getNextContent = (group: Group, currentSlug: string) => {
   for (let index = 0; index < group.length; index += 1) {
     const content = group[index];
     if (content.attributes?.slug === currentSlug && index < group.length - 1) {
@@ -525,4 +544,4 @@ function getNextContent(group: Group, currentSlug: string) {
     }
   }
   return undefined;
-}
+};

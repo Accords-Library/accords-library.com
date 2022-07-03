@@ -5,6 +5,11 @@ import { useAppLayout } from "contexts/AppLayoutContext";
 import { AppStaticProps } from "graphql/getAppStaticProps";
 import { cJoin } from "helpers/className";
 
+/*
+ *                                        ╭─────────────╮
+ * ───────────────────────────────────────╯  COMPONENT  ╰───────────────────────────────────────────
+ */
+
 interface Props {
   href: string;
   title: string | null | undefined;
@@ -20,8 +25,16 @@ export enum ReturnButtonType {
   Both = "both",
 }
 
-export function ReturnButton(props: Props): JSX.Element {
-  const { href, title, langui, displayOn, horizontalLine, className } = props;
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
+
+export const ReturnButton = ({
+  href,
+  title,
+  langui,
+  displayOn,
+  horizontalLine,
+  className,
+}: Props): JSX.Element => {
   const appLayout = useAppLayout();
 
   return (
@@ -44,4 +57,4 @@ export function ReturnButton(props: Props): JSX.Element {
       {horizontalLine === true && <HorizontalLine />}
     </div>
   );
-}
+};

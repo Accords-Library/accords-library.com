@@ -4,16 +4,19 @@ import { NavOption } from "components/PanelComponents/NavOption";
 import { PanelHeader } from "components/PanelComponents/PanelHeader";
 import { SubPanel } from "components/Panels/SubPanel";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
+import { GetStaticProps } from "next";
 
-import { GetStaticPropsContext } from "next";
-import { useMemo } from "react";
+/*
+ *                                           ╭────────╮
+ * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
+ */
 
 interface Props extends AppStaticProps {}
 
-export default function AboutUs(props: Props): JSX.Element {
-  const { langui } = props;
-  const subPanel = useMemo(
-    () => (
+const AboutUs = ({ langui, ...otherProps }: Props): JSX.Element => (
+  <AppLayout
+    navTitle={langui.about_us}
+    subPanel={
       <SubPanel>
         <PanelHeader
           icon={Icon.Info}
@@ -33,21 +36,23 @@ export default function AboutUs(props: Props): JSX.Element {
         />
         <NavOption title={langui.contact_us} url="/about-us/contact" border />
       </SubPanel>
-    ),
-    [langui]
-  );
-  return (
-    <AppLayout navTitle={langui.about_us} subPanel={subPanel} {...props} />
-  );
-}
+    }
+    langui={langui}
+    {...otherProps}
+  />
+);
+export default AboutUs;
 
-export async function getStaticProps(
-  context: GetStaticPropsContext
-): Promise<{ notFound: boolean } | { props: Props }> {
+/*
+ *                                    ╭──────────────────────╮
+ * ───────────────────────────────────╯  NEXT DATA FETCHING  ╰──────────────────────────────────────
+ */
+
+export const getStaticProps: GetStaticProps = async (context) => {
   const props: Props = {
     ...(await getAppStaticProps(context)),
   };
   return {
     props: props,
   };
-}
+};

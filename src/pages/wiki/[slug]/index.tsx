@@ -21,20 +21,19 @@ import {
 } from "helpers/others";
 import { WikiPageWithTranslations } from "helpers/types";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
-import {
-  GetStaticPathsContext,
-  GetStaticPathsResult,
-  GetStaticPropsContext,
-} from "next";
+import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next";
 import { useCallback, useMemo } from "react";
 
 interface Props extends AppStaticProps {
   page: WikiPageWithTranslations;
 }
 
-export default function WikiPage(props: Props): JSX.Element {
-  const { page, langui, languages } = props;
-
+const WikiPage = ({
+  page,
+  langui,
+  languages,
+  ...otherProps
+}: Props): JSX.Element => {
   const [selectedTranslation, LanguageSwitcher, languageSwitcherProps] =
     useSmartLanguage({
       items: page.translations,
@@ -143,14 +142,15 @@ export default function WikiPage(props: Props): JSX.Element {
       navTitle={langui.news}
       subPanel={subPanel}
       contentPanel={contentPanel}
-      {...props}
+      languages={languages}
+      langui={langui}
+      {...otherProps}
     />
   );
-}
+};
+export default WikiPage;
 
-export async function getStaticProps(
-  context: GetStaticPropsContext
-): Promise<{ notFound: boolean } | { props: Props }> {
+export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
   const slug =
     context.params && isDefined(context.params.slug)
@@ -169,11 +169,9 @@ export async function getStaticProps(
   return {
     props: props,
   };
-}
+};
 
-export async function getStaticPaths(
-  context: GetStaticPathsContext
-): Promise<GetStaticPathsResult> {
+export const getStaticPaths: GetStaticPaths = async (context) => {
   const sdk = getReadySdk();
   const contents = await sdk.getWikiPagesSlugs();
   const paths: GetStaticPathsResult["paths"] = [];
@@ -189,4 +187,4 @@ export async function getStaticPaths(
     paths,
     fallback: "blocking",
   };
-}
+};

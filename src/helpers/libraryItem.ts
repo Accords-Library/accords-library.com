@@ -10,11 +10,11 @@ import LibraryPage from "../pages/library/index";
 type Items = Parameters<typeof LibraryPage>[0]["items"];
 type GroupLibraryItems = Map<string, Items>;
 
-export function getGroups(
+export const getGroups = (
   langui: AppStaticProps["langui"],
   groupByType: number,
   items: Items
-): GroupLibraryItems {
+): GroupLibraryItems => {
   const groups: GroupLibraryItems = new Map();
 
   switch (groupByType) {
@@ -145,9 +145,9 @@ export function getGroups(
     }
   }
   return mapRemoveEmptyValues(groups);
-}
+};
 
-export function filterItems(
+export const filterItems = (
   appLayout: AppLayoutState,
   items: Items,
   searchName: string,
@@ -155,7 +155,7 @@ export function filterItems(
   showPrimaryItems: boolean,
   showSecondaryItems: boolean,
   filterUserStatus: LibraryItemUserStatus | undefined
-): Items {
+): Items => {
   return items.filter((item) => {
     if (!showSubitems && !item.attributes?.root_item) return false;
     if (showSubitems && isUntangibleGroupItem(item.attributes?.metadata?.[0])) {
@@ -194,23 +194,23 @@ export function filterItems(
 
     return true;
   });
-}
+};
 
 // TODO: Properly type this shit
-export function isUntangibleGroupItem(metadata: any) {
+export const isUntangibleGroupItem = (metadata: any) => {
   return (
     metadata &&
     metadata.__typename === "ComponentMetadataGroup" &&
     (metadata.subtype?.data?.attributes?.slug === "variant-set" ||
       metadata.subtype?.data?.attributes?.slug === "relation-set")
   );
-}
+};
 
-export function sortBy(
+export const sortBy = (
   orderByType: number,
   items: Items,
   currencies: AppStaticProps["currencies"]
-) {
+) => {
   switch (orderByType) {
     case 0:
       return items.sort((a, b) => {
@@ -249,4 +249,4 @@ export function sortBy(
     default:
       return items;
   }
-}
+};

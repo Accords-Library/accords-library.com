@@ -21,18 +21,29 @@ import { prettyDate } from "helpers/formatters";
 import { filterHasAttributes } from "helpers/others";
 import { getVideoThumbnailURL } from "helpers/videos";
 import { useMediaHoverable } from "hooks/useMediaQuery";
-import { GetStaticPropsContext } from "next";
+import { GetStaticProps } from "next";
 import { Fragment, useMemo, useState } from "react";
+
+/*
+ *                                         ╭─────────────╮
+ * ────────────────────────────────────────╯  CONSTANTS  ╰──────────────────────────────────────────
+ */
+
+const ITEM_PER_PAGE = 50;
+
+/*
+ *                                           ╭────────╮
+ * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
+ */
 
 interface Props extends AppStaticProps {
   videos: NonNullable<GetVideosPreviewQuery["videos"]>["data"];
 }
 
-const ITEM_PER_PAGE = 50;
-
-export default function Videos(props: Props): JSX.Element {
-  const { langui, videos } = props;
+const Videos = ({ langui, videos, ...otherProps }: Props): JSX.Element => {
   const hoverable = useMediaHoverable();
+  const [page, setPage] = useState(0);
+  const [keepInfoVisible, setKeepInfoVisible] = useState(true);
 
   const paginatedVideos = useMemo(() => {
     const memo = [];
@@ -43,9 +54,6 @@ export default function Videos(props: Props): JSX.Element {
     }
     return memo;
   }, [videos]);
-
-  const [page, setPage] = useState(0);
-  const [keepInfoVisible, setKeepInfoVisible] = useState(true);
 
   const subPanel = useMemo(
     () => (
@@ -130,14 +138,19 @@ export default function Videos(props: Props): JSX.Element {
       navTitle={langui.archives}
       subPanel={subPanel}
       contentPanel={contentPanel}
-      {...props}
+      langui={langui}
+      {...otherProps}
     />
   );
-}
+};
+export default Videos;
 
-export async function getStaticProps(
-  context: GetStaticPropsContext
-): Promise<{ notFound: boolean } | { props: Props }> {
+/*
+ *                                    ╭──────────────────────╮
+ * ───────────────────────────────────╯  NEXT DATA FETCHING  ╰──────────────────────────────────────
+ */
+
+export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
   const videos = await sdk.getVideosPreview();
   if (!videos.videos) return { notFound: true };
@@ -159,4 +172,4 @@ export async function getStaticProps(
   return {
     props: props,
   };
-}
+};

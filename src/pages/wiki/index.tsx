@@ -4,7 +4,7 @@ import { PanelHeader } from "components/PanelComponents/PanelHeader";
 import { SubPanel } from "components/Panels/SubPanel";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 
-import { GetStaticPropsContext } from "next";
+import { GetStaticProps } from "next";
 import { Icon } from "components/Ico";
 import { getReadySdk } from "graphql/sdk";
 import { GetWikiPagesPreviewsQuery } from "graphql/generated";
@@ -23,23 +23,38 @@ import { useMediaHoverable } from "hooks/useMediaQuery";
 import { filterHasAttributes } from "helpers/others";
 import { ContentPlaceholder } from "components/PanelComponents/ContentPlaceholder";
 
-interface Props extends AppStaticProps {
-  pages: NonNullable<GetWikiPagesPreviewsQuery["wikiPages"]>["data"];
-}
+/*
+ *                                         ╭─────────────╮
+ * ────────────────────────────────────────╯  CONSTANTS  ╰──────────────────────────────────────────
+ */
 
-const defaultFiltersState = {
+const DEFAULT_FILTERS_STATE = {
   searchName: "",
   keepInfoVisible: true,
 };
 
-export default function Wiki(props: Props): JSX.Element {
-  const { langui, languages } = props;
-  const pages = sortPages(props.pages);
+/*
+ *                                           ╭────────╮
+ * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
+ */
+
+interface Props extends AppStaticProps {
+  pages: NonNullable<GetWikiPagesPreviewsQuery["wikiPages"]>["data"];
+}
+
+const Wiki = ({
+  langui,
+  languages,
+  pages,
+  ...otherProps
+}: Props): JSX.Element => {
   const hoverable = useMediaHoverable();
 
-  const [searchName, setSearchName] = useState(defaultFiltersState.searchName);
+  const [searchName, setSearchName] = useState(
+    DEFAULT_FILTERS_STATE.searchName
+  );
   const [keepInfoVisible, setKeepInfoVisible] = useState(
-    defaultFiltersState.keepInfoVisible
+    DEFAULT_FILTERS_STATE.keepInfoVisible
   );
 
   const filteredPages = useMemo(
@@ -77,14 +92,13 @@ export default function Wiki(props: Props): JSX.Element {
           text={langui.reset_all_filters}
           icon={Icon.Replay}
           onClick={() => {
-            setSearchName(defaultFiltersState.searchName);
-            setKeepInfoVisible(defaultFiltersState.keepInfoVisible);
+            setSearchName(DEFAULT_FILTERS_STATE.searchName);
+            setKeepInfoVisible(DEFAULT_FILTERS_STATE.keepInfoVisible);
           }}
         />
         <HorizontalLine />
 
-        {/* TODO: Langui */}
-        <p className="mb-4 font-headers text-xl">Special Pages</p>
+        <p className="mb-4 font-headers text-xl">{langui.special_pages}</p>
 
         <NavOption title={langui.chronology} url="/wiki/chronology" border />
       </SubPanel>
@@ -99,12 +113,9 @@ export default function Wiki(props: Props): JSX.Element {
           className="grid grid-cols-2 items-end gap-8
         desktop:grid-cols-[repeat(auto-fill,_minmax(20rem,1fr))] mobile:gap-4"
         >
-          {/* TODO: Add to langui */}
           {filteredPages.length === 0 && (
             <ContentPlaceholder
-              message={
-                "No results. You can try changing or resetting the search parameters."
-              }
+              message={langui.no_results_message ?? "No results"}
               icon={Icon.ChevronLeft}
             />
           )}
@@ -137,7 +148,7 @@ export default function Wiki(props: Props): JSX.Element {
         </div>
       </ContentPanel>
     ),
-    [filteredPages, keepInfoVisible, languages]
+    [filteredPages, keepInfoVisible, languages, langui]
   );
 
   return (
@@ -146,36 +157,48 @@ export default function Wiki(props: Props): JSX.Element {
       subPanel={subPanel}
       contentPanel={contentPanel}
       subPanelIcon={Icon.Search}
-      {...props}
+      languages={languages}
+      langui={langui}
+      {...otherProps}
     />
   );
-}
+};
+export default Wiki;
 
-export async function getStaticProps(
-  context: GetStaticPropsContext
-): Promise<{ notFound: boolean } | { props: Props }> {
+/*
+ *                                    ╭──────────────────────╮
+ * ───────────────────────────────────╯  NEXT DATA FETCHING  ╰──────────────────────────────────────
+ */
+
+export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
   const pages = await sdk.getWikiPagesPreviews({});
   if (!pages.wikiPages?.data) return { notFound: true };
   const props: Props = {
     ...(await getAppStaticProps(context)),
-    pages: pages.wikiPages.data,
+    pages: sortPages(pages.wikiPages.data),
   };
   return {
     props: props,
   };
-}
+};
 
-function sortPages(pages: Props["pages"]): Props["pages"] {
-  return pages.sort((a, b) => {
+/*
+ *                                      ╭───────────────────╮
+ * ─────────────────────────────────────╯  PRIVATE METHODS  ╰───────────────────────────────────────
+ */
+
+const sortPages = (pages: Props["pages"]): Props["pages"] =>
+  pages.sort((a, b) => {
     const slugA = a.attributes?.slug ?? "";
     const slugB = b.attributes?.slug ?? "";
     return slugA.localeCompare(slugB);
   });
-}
 
-function filterPages(posts: Props["pages"], searchName: string) {
-  return posts.filter((post) => {
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
+
+const filterPages = (posts: Props["pages"], searchName: string) =>
+  posts.filter((post) => {
     if (searchName.length > 1) {
       if (
         post.attributes?.translations?.[0]?.title
@@ -188,4 +211,3 @@ function filterPages(posts: Props["pages"], searchName: string) {
     }
     return true;
   });
-}

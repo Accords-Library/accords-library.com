@@ -12,7 +12,7 @@ import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import { prettyDate, prettySlug } from "helpers/formatters";
 
-import { GetStaticPropsContext } from "next";
+import { GetStaticProps } from "next";
 import { Fragment, useMemo, useState } from "react";
 import { Icon } from "components/Ico";
 import { WithLabel } from "components/Inputs/WithLabel";
@@ -21,24 +21,32 @@ import { Button } from "components/Inputs/Button";
 import { useMediaHoverable } from "hooks/useMediaQuery";
 import { filterHasAttributes } from "helpers/others";
 
-interface Props extends AppStaticProps {
-  posts: NonNullable<GetPostsPreviewQuery["posts"]>["data"];
-}
+/*
+ *                                         ╭─────────────╮
+ * ────────────────────────────────────────╯  CONSTANTS  ╰──────────────────────────────────────────
+ */
 
-const defaultFiltersState = {
+const DEFAULT_FILTERS_STATE = {
   searchName: "",
   keepInfoVisible: true,
 };
 
-export default function News(props: Props): JSX.Element {
-  const { langui } = props;
-  const posts = sortPosts(props.posts);
+/*
+ *                                           ╭────────╮
+ * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
+ */
+
+interface Props extends AppStaticProps {
+  posts: NonNullable<GetPostsPreviewQuery["posts"]>["data"];
+}
+
+const News = ({ langui, posts, ...otherProps }: Props): JSX.Element => {
   const hoverable = useMediaHoverable();
-
-  const [searchName, setSearchName] = useState(defaultFiltersState.searchName);
-
+  const [searchName, setSearchName] = useState(
+    DEFAULT_FILTERS_STATE.searchName
+  );
   const [keepInfoVisible, setKeepInfoVisible] = useState(
-    defaultFiltersState.keepInfoVisible
+    DEFAULT_FILTERS_STATE.keepInfoVisible
   );
 
   const filteredItems = useMemo(
@@ -76,8 +84,8 @@ export default function News(props: Props): JSX.Element {
           text={langui.reset_all_filters}
           icon={Icon.Replay}
           onClick={() => {
-            setSearchName(defaultFiltersState.searchName);
-            setKeepInfoVisible(defaultFiltersState.keepInfoVisible);
+            setSearchName(DEFAULT_FILTERS_STATE.searchName);
+            setKeepInfoVisible(DEFAULT_FILTERS_STATE.keepInfoVisible);
           }}
         />
       </SubPanel>
@@ -127,14 +135,19 @@ export default function News(props: Props): JSX.Element {
       subPanel={subPanel}
       contentPanel={contentPanel}
       subPanelIcon={Icon.Search}
-      {...props}
+      langui={langui}
+      {...otherProps}
     />
   );
-}
+};
+export default News;
 
-export async function getStaticProps(
-  context: GetStaticPropsContext
-): Promise<{ notFound: boolean } | { props: Props }> {
+/*
+ *                                    ╭──────────────────────╮
+ * ───────────────────────────────────╯  NEXT DATA FETCHING  ╰──────────────────────────────────────
+ */
+
+export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
   const posts = await sdk.getPostsPreview({
     language_code: context.locale ?? "en",
@@ -142,25 +155,31 @@ export async function getStaticProps(
   if (!posts.posts) return { notFound: true };
   const props: Props = {
     ...(await getAppStaticProps(context)),
-    posts: posts.posts.data,
+    posts: sortPosts(posts.posts.data),
   };
   return {
     props: props,
   };
-}
+};
 
-function sortPosts(posts: Props["posts"]): Props["posts"] {
-  return posts
+/*
+ *                                      ╭───────────────────╮
+ * ─────────────────────────────────────╯  PRIVATE METHODS  ╰───────────────────────────────────────
+ */
+
+const sortPosts = (posts: Props["posts"]): Props["posts"] =>
+  posts
     .sort((a, b) => {
       const dateA = a.attributes?.date ? prettyDate(a.attributes.date) : "9999";
       const dateB = b.attributes?.date ? prettyDate(b.attributes.date) : "9999";
       return dateA.localeCompare(dateB);
     })
     .reverse();
-}
 
-function filterItems(posts: Props["posts"], searchName: string) {
-  return posts.filter((post) => {
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
+
+const filterItems = (posts: Props["posts"], searchName: string) =>
+  posts.filter((post) => {
     if (searchName.length > 1) {
       if (
         post.attributes?.translations?.[0]?.title
@@ -173,4 +192,3 @@ function filterItems(posts: Props["posts"], searchName: string) {
     }
     return true;
   });
-}

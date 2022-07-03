@@ -9,9 +9,13 @@ import {
 import { AppStaticProps } from "graphql/getAppStaticProps";
 import { getAssetURL, ImageQuality } from "helpers/img";
 import { filterHasAttributes, getStatusDescription } from "helpers/others";
-
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { Fragment, useCallback, useMemo } from "react";
+
+/*
+ *                                        ╭─────────────╮
+ * ───────────────────────────────────────╯  COMPONENT  ╰───────────────────────────────────────────
+ */
 
 interface Props {
   openLightBox: (images: string[], index?: number) => void;
@@ -26,9 +30,14 @@ interface Props {
   langui: AppStaticProps["langui"];
 }
 
-export function ScanSetCover(props: Props): JSX.Element {
-  const { openLightBox, images, languages, langui } = props;
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
+export const ScanSetCover = ({
+  openLightBox,
+  images,
+  languages,
+  langui,
+}: Props): JSX.Element => {
   const [selectedScan, LanguageSwitcher, languageSwitcherProps] =
     useSmartLanguage({
       items: images,
@@ -176,4 +185,4 @@ export function ScanSetCover(props: Props): JSX.Element {
     );
   }
   return <></>;
-}
+};

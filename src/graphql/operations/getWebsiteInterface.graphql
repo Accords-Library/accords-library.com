@@ -154,6 +154,11 @@ query getWebsiteInterface($language_code: String) {
         only_display_items_i_want
         only_display_unmarked_items
         display_all_items
+        table_of_contents
+        definition
+        no_results_message
+        all
+        special_pages
       }
     }
   }

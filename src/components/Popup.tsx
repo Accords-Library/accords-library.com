@@ -1,8 +1,12 @@
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { cIf, cJoin } from "helpers/className";
-
 import { Dispatch, SetStateAction, useEffect } from "react";
 import Hotkeys from "react-hot-keys";
+
+/*
+ *                                        ╭─────────────╮
+ * ───────────────────────────────────────╯  COMPONENT  ╰───────────────────────────────────────────
+ */
 
 interface Props {
   setState:
@@ -15,16 +19,16 @@ interface Props {
   padding?: boolean;
 }
 
-export function Popup(props: Props): JSX.Element {
-  const {
-    setState,
-    state,
-    children,
-    fillViewport,
-    hideBackground = false,
-    padding = true,
-  } = props;
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
+export const Popup = ({
+  setState,
+  state,
+  children,
+  fillViewport,
+  hideBackground = false,
+  padding = true,
+}: Props): JSX.Element => {
   const { setMenuGestures } = useAppLayout();
 
   useEffect(() => {
@@ -77,4 +81,4 @@ export function Popup(props: Props): JSX.Element {
       </div>
     </Hotkeys>
   );
-}
+};

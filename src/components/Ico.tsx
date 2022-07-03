@@ -1,6 +1,10 @@
 import { cJoin } from "helpers/className";
-
 import { MouseEventHandler } from "react";
+
+/*
+ *                                        ╭─────────────╮
+ * ───────────────────────────────────────╯  COMPONENT  ╰───────────────────────────────────────────
+ */
 
 interface Props {
   className?: string;
@@ -8,20 +12,24 @@ interface Props {
   icon: Icon;
 }
 
-export function Ico(props: Props): JSX.Element {
-  const { onClick, icon, className } = props;
-  return (
-    <span
-      onClick={onClick}
-      className={cJoin(
-        "material-icons [font-size:inherit] [line-height:inherit]",
-        className
-      )}
-    >
-      {icon}
-    </span>
-  );
-}
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
+
+export const Ico = ({ onClick, icon, className }: Props): JSX.Element => (
+  <span
+    onClick={onClick}
+    className={cJoin(
+      "material-icons [font-size:inherit] [line-height:inherit]",
+      className
+    )}
+  >
+    {icon}
+  </span>
+);
+
+/*
+ *                                          ╭─────────╮
+ * ─────────────────────────────────────────╯  OTHER  ╰─────────────────────────────────────────────
+ */
 
 export enum Icon {
   Onek = "1k",

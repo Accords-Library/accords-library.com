@@ -13,9 +13,13 @@ import {
   isDefined,
   isDefinedAndNotEmpty,
 } from "helpers/others";
-
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { Fragment, useCallback, useMemo } from "react";
+
+/*
+ *                                        ╭─────────────╮
+ * ───────────────────────────────────────╯  COMPONENT  ╰───────────────────────────────────────────
+ */
 
 interface Props {
   openLightBox: (images: string[], index?: number) => void;
@@ -45,10 +49,17 @@ interface Props {
   >["content"];
 }
 
-export function ScanSet(props: Props): JSX.Element {
-  const { openLightBox, scanSet, slug, title, languages, langui, content } =
-    props;
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
+export const ScanSet = ({
+  openLightBox,
+  scanSet,
+  slug,
+  title,
+  languages,
+  langui,
+  content,
+}: Props): JSX.Element => {
   const [selectedScan, LanguageSwitcher, languageSwitcherProps] =
     useSmartLanguage({
       items: scanSet,
@@ -227,4 +238,4 @@ export function ScanSet(props: Props): JSX.Element {
       )}
     </>
   );
-}
+};

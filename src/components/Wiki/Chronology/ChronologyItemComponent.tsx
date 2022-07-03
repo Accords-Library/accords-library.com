@@ -20,36 +20,35 @@ interface Props {
   langui: AppStaticProps["langui"];
 }
 
-export function ChronologyItemComponent(props: Props): JSX.Element {
-  const { langui } = props;
-
-  if (props.item.attributes) {
+export const ChronologyItemComponent = ({
+  langui,
+  item,
+  displayYear,
+}: Props): JSX.Element => {
+  if (item.attributes) {
     return (
       <div
         className="grid grid-cols-[4em] grid-rows-[auto_1fr] place-content-start
         rounded-2xl py-4 px-8 target:my-4 target:bg-mid target:py-8"
         id={generateAnchor(
-          props.item.attributes.year,
-          props.item.attributes.month,
-          props.item.attributes.day
+          item.attributes.year,
+          item.attributes.month,
+          item.attributes.day
         )}
       >
-        {props.displayYear && (
+        {displayYear && (
           <p className="mt-[-.2em] text-lg font-bold">
-            {generateYear(
-              props.item.attributes.displayed_date,
-              props.item.attributes.year
-            )}
+            {generateYear(item.attributes.displayed_date, item.attributes.year)}
           </p>
         )}
 
         <p className="col-start-1 text-sm text-dark">
-          {generateDate(props.item.attributes.month, props.item.attributes.day)}
+          {generateDate(item.attributes.month, item.attributes.day)}
         </p>
 
         <div className="col-start-2 row-span-2 row-start-1 grid gap-4">
-          {props.item.attributes.events &&
-            filterHasAttributes(props.item.attributes.events, [
+          {item.attributes.events &&
+            filterHasAttributes(item.attributes.events, [
               "id",
               "translations",
             ]).map((event) => (
@@ -123,31 +122,29 @@ export function ChronologyItemComponent(props: Props): JSX.Element {
   }
 
   return <></>;
-}
+};
 
-function generateAnchor(
+const generateAnchor = (
   year: number | undefined,
   month: number | null | undefined,
   day: number | null | undefined
-): string {
+): string => {
   let result = "";
   if (year) result += year;
   if (month) result += `- ${month.toString().padStart(2, "0")}`;
   if (day) result += `- ${day.toString().padStart(2, "0")}`;
   return result;
-}
+};
 
-function generateYear(
+const generateYear = (
   displayed_date: string | null | undefined,
   year: number | undefined
-): string {
-  return displayed_date ?? year?.toString() ?? "";
-}
+): string => displayed_date ?? year?.toString() ?? "";
 
-function generateDate(
+const generateDate = (
   month: number | null | undefined,
   day: number | null | undefined
-): string {
+): string => {
   const lut = [
     "Jan",
     "Feb",
@@ -172,4 +169,4 @@ function generateDate(
   }
 
   return result;
-}
+};

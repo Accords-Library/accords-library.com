@@ -1,10 +1,14 @@
 import { Ico, Icon } from "components/Ico";
 import { cIf, cJoin } from "helpers/className";
 import { ConditionalWrapper, Wrapper } from "helpers/component";
-
 import { isDefined, isDefinedAndNotEmpty } from "helpers/others";
 import { useRouter } from "next/router";
 import React, { MouseEventHandler } from "react";
+
+/*
+ *                                        ╭─────────────╮
+ * ───────────────────────────────────────╯  COMPONENT  ╰───────────────────────────────────────────
+ */
 
 interface Props {
   id?: string;
@@ -20,21 +24,21 @@ interface Props {
   badgeNumber?: number;
 }
 
-export function Button(props: Props): JSX.Element {
-  const {
-    draggable,
-    id,
-    onClick,
-    active,
-    className,
-    icon,
-    text,
-    target,
-    href,
-    locale,
-    badgeNumber,
-  } = props;
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
+export const Button = ({
+  draggable,
+  id,
+  onClick,
+  active,
+  className,
+  icon,
+  text,
+  target,
+  href,
+  locale,
+  badgeNumber,
+}: Props): JSX.Element => {
   const router = useRouter();
 
   return (
@@ -87,17 +91,19 @@ export function Button(props: Props): JSX.Element {
       </div>
     </ConditionalWrapper>
   );
-}
+};
+
+/*
+ *                                    ╭──────────────────────╮
+ * ───────────────────────────────────╯  PRIVATE COMPONENTS  ╰──────────────────────────────────────
+ */
 
 interface LinkWrapperProps {
   href?: string;
 }
 
-function LinkWrapper(props: LinkWrapperProps & Wrapper) {
-  const { children, href } = props;
-  return (
-    <a href={href} target="_blank" rel="noreferrer">
-      {children}
-    </a>
-  );
-}
+const LinkWrapper = ({ children, href }: LinkWrapperProps & Wrapper) => (
+  <a href={href} target="_blank" rel="noreferrer">
+    {children}
+  </a>
+);

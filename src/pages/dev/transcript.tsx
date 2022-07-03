@@ -1,5 +1,4 @@
 import { AppLayout } from "components/AppLayout";
-import { Icon } from "components/Ico";
 import { Button } from "components/Inputs/Button";
 import { ButtonGroup } from "components/Inputs/ButtonGroup";
 import {
@@ -8,42 +7,43 @@ import {
 } from "components/Panels/ContentPanel";
 import { ToolTip } from "components/ToolTip";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
-import { GetStaticPropsContext } from "next";
+import { GetStaticProps } from "next";
 import { useCallback, useMemo, useRef, useState } from "react";
 
-interface Props extends AppStaticProps {}
+/*
+ *                                         ╭─────────────╮
+ * ────────────────────────────────────────╯  CONSTANTS  ╰──────────────────────────────────────────
+ */
 
 const SIZE_MULTIPLIER = 1000;
 
-function replaceSelection(
+/*
+ *                                           ╭────────╮
+ * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
+ */
+
+interface Props extends AppStaticProps {}
+
+const replaceSelection = (
   text: string,
   selectionStart: number,
   selectionEnd: number,
   newSelectedText: string
-) {
-  return (
-    text.substring(0, selectionStart) +
-    newSelectedText +
-    text.substring(selectionEnd)
-  );
-}
+) =>
+  text.substring(0, selectionStart) +
+  newSelectedText +
+  text.substring(selectionEnd);
 
-function swapChar(char: string, swaps: string[]): string {
+const swapChar = (char: string, swaps: string[]): string => {
   for (let index = 0; index < swaps.length; index++) {
     if (char === swaps[index]) {
-      console.log(
-        "found it",
-        char,
-        " returning",
-        swaps[(index + 1) % swaps.length]
-      );
       return swaps[(index + 1) % swaps.length];
     }
   }
   return char;
-}
+};
 
-export default function Transcript(props: Props): JSX.Element {
+const Transcript = (props: Props): JSX.Element => {
   const [text, setText] = useState("");
   const [fontSize, setFontSize] = useState(1);
   const [xOffset, setXOffset] = useState(0);
@@ -67,6 +67,114 @@ export default function Transcript(props: Props): JSX.Element {
     }
   }, []);
 
+  const convertFullWidth = useCallback(() => {
+    if (textAreaRef.current) {
+      textAreaRef.current.value = textAreaRef.current.value
+        // Numbers
+        .replaceAll("0", "０")
+        .replaceAll("1", "１")
+        .replaceAll("2", "２")
+        .replaceAll("3", "３")
+        .replaceAll("4", "４")
+        .replaceAll("5", "５")
+        .replaceAll("6", "６")
+        .replaceAll("7", "７")
+        .replaceAll("8", "８")
+        .replaceAll("9", "９")
+        // Uppercase letters
+        .replaceAll("A", "Ａ")
+        .replaceAll("B", "Ｂ")
+        .replaceAll("C", "Ｃ")
+        .replaceAll("D", "Ｄ")
+        .replaceAll("E", "Ｅ")
+        .replaceAll("F", "Ｆ")
+        .replaceAll("G", "Ｇ")
+        .replaceAll("H", "Ｈ")
+        .replaceAll("I", "Ｉ")
+        .replaceAll("J", "Ｊ")
+        .replaceAll("K", "Ｋ")
+        .replaceAll("L", "Ｌ")
+        .replaceAll("M", "Ｍ")
+        .replaceAll("N", "Ｎ")
+        .replaceAll("O", "Ｏ")
+        .replaceAll("P", "Ｐ")
+        .replaceAll("Q", "Ｑ")
+        .replaceAll("R", "Ｒ")
+        .replaceAll("S", "Ｓ")
+        .replaceAll("T", "Ｔ")
+        .replaceAll("U", "Ｕ")
+        .replaceAll("V", "Ｖ")
+        .replaceAll("W", "Ｗ")
+        .replaceAll("X", "Ｘ")
+        .replaceAll("Y", "Ｙ")
+        .replaceAll("Z", "Ｚ")
+        // Lowercase letters
+        .replaceAll("a", "ａ")
+        .replaceAll("b", "ｂ")
+        .replaceAll("c", "ｃ")
+        .replaceAll("d", "ｄ")
+        .replaceAll("e", "ｅ")
+        .replaceAll("f", "ｆ")
+        .replaceAll("g", "ｇ")
+        .replaceAll("h", "ｈ")
+        .replaceAll("i", "ｉ")
+        .replaceAll("j", "ｊ")
+        .replaceAll("k", "ｋ")
+        .replaceAll("l", "ｌ")
+        .replaceAll("m", "ｍ")
+        .replaceAll("n", "ｎ")
+        .replaceAll("o", "ｏ")
+        .replaceAll("p", "ｐ")
+        .replaceAll("q", "ｑ")
+        .replaceAll("r", "ｒ")
+        .replaceAll("s", "ｓ")
+        .replaceAll("t", "ｔ")
+        .replaceAll("u", "ｕ")
+        .replaceAll("v", "ｖ")
+        .replaceAll("w", "ｗ")
+        .replaceAll("x", "ｘ")
+        .replaceAll("y", "ｙ")
+        .replaceAll("z", "ｚ")
+        // Others
+        .replaceAll(" ", "　")
+        .replaceAll(",", "，")
+        .replaceAll(".", "．")
+        .replaceAll(":", "：")
+        .replaceAll(";", "；")
+        .replaceAll("!", "！")
+        .replaceAll("?", "？")
+        .replaceAll('"', "＂")
+        .replaceAll("'", "＇")
+        .replaceAll("`", "｀")
+        .replaceAll("^", "＾")
+        .replaceAll("~", "～")
+        .replaceAll("_", "＿")
+        .replaceAll("&", "＆")
+        .replaceAll("@", "＠")
+        .replaceAll("#", "＃")
+        .replaceAll("%", "％")
+        .replaceAll("+", "＋")
+        .replaceAll("-", "－")
+        .replaceAll("*", "＊")
+        .replaceAll("=", "＝")
+        .replaceAll("<", "＜")
+        .replaceAll(">", "＞")
+        .replaceAll("(", "（")
+        .replaceAll(")", "）")
+        .replaceAll("[", "［")
+        .replaceAll("]", "］")
+        .replaceAll("{", "｛")
+        .replaceAll("}", "｝")
+        .replaceAll("|", "｜")
+        .replaceAll("$", "＄")
+        .replaceAll("£", "￡")
+        .replaceAll("¢", "￠")
+        .replaceAll("₩", "￦")
+        .replaceAll("¥", "￥");
+      updateDisplayedText();
+    }
+  }, [updateDisplayedText]);
+
   const convertPunctuation = useCallback(() => {
     if (textAreaRef.current) {
       textAreaRef.current.value = textAreaRef.current.value
@@ -76,7 +184,9 @@ export default function Transcript(props: Props): JSX.Element {
         .replaceAll(".", "。")
         .replaceAll(",", "、")
         .replaceAll("?", "？")
-        .replaceAll("!", "！");
+        .replaceAll("!", "！")
+        .replaceAll(":", "：")
+        .replaceAll("~", "～");
       updateDisplayedText();
     }
   }, [updateDisplayedText]);
@@ -320,14 +430,19 @@ export default function Transcript(props: Props): JSX.Element {
               }
             ></input>
           </div>
-          <ToolTip content="Automatically convert punctuations">
-            <Button icon={Icon.QuestionMark} onClick={convertPunctuation} />
+          <ToolTip content="Automatically convert Western punctuations to Japanese ones.">
+            <Button text=". ⟹ 。" onClick={convertPunctuation} />
           </ToolTip>
-          <Button text={"か ⟺ が"} onClick={toggleDakuten} />
-          <Button text={"つ ⟺ っ"} onClick={toggleSmallForm} />
-          <Button text={"。"} onClick={() => insert("。")} />
-          <Button text={"？"} onClick={() => insert("？")} />
-          <Button text={"！"} onClick={() => insert("！")} />
+          <ToolTip content="Swap a kana for one of its variant (different diacritics).">
+            <Button text="か ⟺ が" onClick={toggleDakuten} />
+          </ToolTip>
+          <ToolTip content="Toggle a kana's small form">
+            <Button text="つ ⟺ っ" onClick={toggleSmallForm} />
+          </ToolTip>
+          <ToolTip content="Convert standard characters to their full width variant.">
+            <Button text="123 ⟹ １２３" onClick={convertFullWidth} />
+          </ToolTip>
+
           <ToolTip
             content={
               <div className="grid gap-2">
@@ -351,14 +466,26 @@ export default function Transcript(props: Props): JSX.Element {
                 />
                 <ButtonGroup
                   buttonsProps={[
-                    { text: "（", onClick: () => insert("（") },
-                    { text: "）", onClick: () => insert("）") },
+                    { text: "〖", onClick: () => insert("〖") },
+                    { text: "〗", onClick: () => insert("〗") },
                   ]}
                 />
                 <ButtonGroup
                   buttonsProps={[
                     { text: "〝", onClick: () => insert("〝") },
                     { text: "〟", onClick: () => insert("〟") },
+                  ]}
+                />
+                <ButtonGroup
+                  buttonsProps={[
+                    { text: "（", onClick: () => insert("（") },
+                    { text: "）", onClick: () => insert("）") },
+                  ]}
+                />
+                <ButtonGroup
+                  buttonsProps={[
+                    { text: "｟", onClick: () => insert("｟") },
+                    { text: "｠", onClick: () => insert("｠") },
                   ]}
                 />
                 <ButtonGroup
@@ -373,19 +500,57 @@ export default function Transcript(props: Props): JSX.Element {
                     { text: "》", onClick: () => insert("》") },
                   ]}
                 />
+                <ButtonGroup
+                  buttonsProps={[
+                    { text: "｛", onClick: () => insert("｛") },
+                    { text: "｝", onClick: () => insert("｝") },
+                  ]}
+                />
+                <ButtonGroup
+                  buttonsProps={[
+                    { text: "［", onClick: () => insert("［") },
+                    { text: "］", onClick: () => insert("］") },
+                  ]}
+                />
+                <ButtonGroup
+                  buttonsProps={[
+                    { text: "〔", onClick: () => insert("〔") },
+                    { text: "〕", onClick: () => insert("〕") },
+                  ]}
+                />
+                <ButtonGroup
+                  buttonsProps={[
+                    { text: "〘", onClick: () => insert("〘") },
+                    { text: "〙", onClick: () => insert("〙") },
+                  ]}
+                />
               </div>
             }
           >
             <Button text={"Quotations"} />
           </ToolTip>
-
-          <Button text={"⋯"} onClick={() => insert("⋯")} />
-          <Button text={"※"} onClick={() => insert("※")} />
-          <Button text={'"　"'} onClick={() => insert("　")} />
+          <ToolTip
+            content={
+              <div className="grid gap-2">
+                <Button text={"。"} onClick={() => insert("。")} />
+                <Button text={"？"} onClick={() => insert("？")} />
+                <Button text={"！"} onClick={() => insert("！")} />
+                <Button text={"⋯"} onClick={() => insert("⋯")} />
+                <Button text={"※"} onClick={() => insert("※")} />
+                <Button text={"♪"} onClick={() => insert("♪")} />
+                <Button text={"・"} onClick={() => insert("・")} />
+                <Button text={"〇"} onClick={() => insert("〇")} />
+                <Button text={'"　"'} onClick={() => insert("　")} />
+              </div>
+            }
+          >
+            <Button text="Insert" />
+          </ToolTip>
         </div>
       </ContentPanel>
     ),
     [
+      convertFullWidth,
       convertPunctuation,
       fontSize,
       insert,
@@ -407,15 +572,19 @@ export default function Transcript(props: Props): JSX.Element {
       contentPanelScroolbar={false}
     />
   );
-}
+};
+export default Transcript;
 
-export async function getStaticProps(
-  context: GetStaticPropsContext
-): Promise<{ notFound: boolean } | { props: Props }> {
+/*
+ *                                    ╭──────────────────────╮
+ * ───────────────────────────────────╯  NEXT DATA FETCHING  ╰──────────────────────────────────────
+ */
+
+export const getStaticProps: GetStaticProps = async (context) => {
   const props: Props = {
     ...(await getAppStaticProps(context)),
   };
   return {
     props: props,
   };
-}
+};

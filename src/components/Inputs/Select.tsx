@@ -1,8 +1,12 @@
 import { Ico, Icon } from "components/Ico";
 import { cIf, cJoin } from "helpers/className";
-
 import { useToggle } from "hooks/useToggle";
 import { Dispatch, Fragment, SetStateAction, useState } from "react";
+
+/*
+ *                                        ╭─────────────╮
+ * ───────────────────────────────────────╯  COMPONENT  ╰───────────────────────────────────────────
+ */
 
 interface Props {
   setState: Dispatch<SetStateAction<number>>;
@@ -13,8 +17,15 @@ interface Props {
   className?: string;
 }
 
-export function Select(props: Props): JSX.Element {
-  const { className, state, options, allowEmpty, setState } = props;
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
+
+export const Select = ({
+  className,
+  state,
+  options,
+  allowEmpty,
+  setState,
+}: Props): JSX.Element => {
   const [opened, setOpened] = useState(false);
   const toggleOpened = useToggle(setOpened);
 
@@ -80,4 +91,4 @@ export function Select(props: Props): JSX.Element {
       </div>
     </div>
   );
-}
+};

@@ -1,8 +1,12 @@
 import { UploadImageFragment } from "graphql/generated";
 import { getAssetURL, getImgSizesByQuality, ImageQuality } from "helpers/img";
-
 import { ImageProps } from "next/image";
 import { MouseEventHandler } from "react";
+
+/*
+ *                                         ╭─────────────╮
+ * ────────────────────────────────────────╯  CONSTANTS  ╰──────────────────────────────────────────
+ */
 
 interface Props {
   className?: string;
@@ -12,15 +16,15 @@ interface Props {
   onClick?: MouseEventHandler<HTMLImageElement>;
 }
 
-export function Img(props: Props): JSX.Element {
-  const {
-    className,
-    image,
-    quality = ImageQuality.Small,
-    alt,
-    onClick,
-  } = props;
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
+export const Img = ({
+  className,
+  image,
+  quality = ImageQuality.Small,
+  alt,
+  onClick,
+}: Props): JSX.Element => {
   if (typeof image === "string") {
     return (
       <img className={className} src={image} alt={alt ?? ""} loading="lazy" />
@@ -40,4 +44,4 @@ export function Img(props: Props): JSX.Element {
     );
   }
   return <></>;
-}
+};

@@ -14,10 +14,10 @@ export interface RequestMailProps {
   formName: string;
 }
 
-export default async function Mail(
+const Mail = async (
   req: NextApiRequest,
   res: NextApiResponse<ResponseMailProps>
-) {
+) => {
   if (req.method === "POST") {
     const body = req.body as RequestMailProps;
 
@@ -48,4 +48,5 @@ export default async function Mail(
   }
 
   res.status(200).json({ code: "OKAY" });
-}
+};
+export default Mail;

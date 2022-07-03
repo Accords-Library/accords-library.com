@@ -13,31 +13,28 @@ interface Props<T> {
   transform?: (item: NonNullable<T>) => NonNullable<T>;
 }
 
-function getPreferredLanguage(
+const getPreferredLanguage = (
   preferredLanguages: (string | undefined)[],
   availableLanguages: Map<string, number>
-): number | undefined {
+): number | undefined => {
   for (const locale of preferredLanguages) {
     if (isDefined(locale) && availableLanguages.has(locale)) {
       return availableLanguages.get(locale);
     }
   }
   return undefined;
-}
+};
 
-export function useSmartLanguage<T>(
-  props: Props<T>
-): [
+export const useSmartLanguage = <T>({
+  items,
+  languageExtractor,
+  languages,
+  transform = (item) => item,
+}: Props<T>): [
   T | undefined,
   typeof LanguageSwitcher,
   Parameters<typeof LanguageSwitcher>[0]
-] {
-  const {
-    items,
-    languageExtractor,
-    languages,
-    transform = (item) => item,
-  } = props;
+] => {
   const { preferredLanguages } = useAppLayout();
   const router = useRouter();
 
@@ -81,4 +78,4 @@ export function useSmartLanguage<T>(
   };
 
   return [selectedTranslation, LanguageSwitcher, languageSwitcherProps];
-}
+};

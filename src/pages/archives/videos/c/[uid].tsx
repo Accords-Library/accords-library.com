@@ -15,16 +15,17 @@ import { GetVideoChannelQuery } from "graphql/generated";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import { getVideoThumbnailURL } from "helpers/videos";
-import {
-  GetStaticPathsContext,
-  GetStaticPathsResult,
-  GetStaticPropsContext,
-} from "next";
+import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next";
 import { Fragment, useState, useMemo } from "react";
 import { Icon } from "components/Ico";
 import { useMediaHoverable } from "hooks/useMediaQuery";
 import { WithLabel } from "components/Inputs/WithLabel";
 import { filterHasAttributes, isDefined } from "helpers/others";
+
+/*
+ *                                           ╭────────╮
+ * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
+ */
 
 interface Props extends AppStaticProps {
   channel: NonNullable<
@@ -32,8 +33,7 @@ interface Props extends AppStaticProps {
   >["data"][number]["attributes"];
 }
 
-export default function Channel(props: Props): JSX.Element {
-  const { langui, channel } = props;
+const Channel = ({ langui, channel, ...otherProps }: Props): JSX.Element => {
   const [keepInfoVisible, setKeepInfoVisible] = useState(true);
   const hoverable = useMediaHoverable();
 
@@ -115,14 +115,19 @@ export default function Channel(props: Props): JSX.Element {
       navTitle={langui.archives}
       subPanel={subPanel}
       contentPanel={contentPanel}
-      {...props}
+      langui={langui}
+      {...otherProps}
     />
   );
-}
+};
+export default Channel;
 
-export async function getStaticProps(
-  context: GetStaticPropsContext
-): Promise<{ notFound: boolean } | { props: Props }> {
+/*
+ *                                    ╭──────────────────────╮
+ * ───────────────────────────────────╯  NEXT DATA FETCHING  ╰──────────────────────────────────────
+ */
+
+export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
   const channel = await sdk.getVideoChannel({
     channel:
@@ -138,11 +143,11 @@ export async function getStaticProps(
   return {
     props: props,
   };
-}
+};
 
-export async function getStaticPaths(
-  context: GetStaticPathsContext
-): Promise<GetStaticPathsResult> {
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
+
+export const getStaticPaths: GetStaticPaths = async (context) => {
   const sdk = getReadySdk();
   const channels = await sdk.getVideoChannelsSlugs();
   const paths: GetStaticPathsResult["paths"] = [];
@@ -159,4 +164,4 @@ export async function getStaticPaths(
     paths,
     fallback: "blocking",
   };
-}
+};

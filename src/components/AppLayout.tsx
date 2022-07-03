@@ -27,6 +27,19 @@ import { ContentPlaceholder } from "./PanelComponents/ContentPlaceholder";
 import { MainPanel } from "./Panels/MainPanel";
 import { Popup } from "./Popup";
 
+/*
+ *                                         ╭─────────────╮
+ * ────────────────────────────────────────╯  CONSTANTS  ╰──────────────────────────────────────────
+ */
+
+const SENSIBILITY_SWIPE = 1.1;
+const TITLE_PREFIX = "Accord’s Library";
+
+/*
+ *                                        ╭─────────────╮
+ * ───────────────────────────────────────╯  COMPONENT  ╰───────────────────────────────────────────
+ */
+
 interface Props extends AppStaticProps {
   subPanel?: React.ReactNode;
   subPanelIcon?: Icon;
@@ -38,24 +51,21 @@ interface Props extends AppStaticProps {
   contentPanelScroolbar?: boolean;
 }
 
-const SENSIBILITY_SWIPE = 1.1;
-const TITLE_PREFIX = "Accord’s Library";
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
-export function AppLayout(props: Props): JSX.Element {
-  const {
-    langui,
-    currencies,
-    languages,
-    subPanel,
-    contentPanel,
-    thumbnail,
-    title,
-    navTitle,
-    description,
-    subPanelIcon = Icon.Tune,
-    contentPanelScroolbar = true,
-  } = props;
-
+export const AppLayout = ({
+  langui,
+  currencies,
+  languages,
+  subPanel,
+  contentPanel,
+  thumbnail,
+  title,
+  navTitle,
+  description,
+  subPanelIcon = Icon.Tune,
+  contentPanelScroolbar = true,
+}: Props): JSX.Element => {
   const {
     configPanelOpen,
     currency,
@@ -396,7 +406,7 @@ export function AppLayout(props: Props): JSX.Element {
                     insertLabels={
                       new Map([
                         [0, langui.primary_language],
-                        [1, langui.secondary_language],
+                        [1, langui.secondary_language], 
                       ])
                     }
                     onChange={(items) => {
@@ -517,4 +527,4 @@ export function AppLayout(props: Props): JSX.Element {
       </div>
     </div>
   );
-}
+};

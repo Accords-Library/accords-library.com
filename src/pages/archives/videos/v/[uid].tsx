@@ -21,12 +21,13 @@ import { prettyDate, prettyShortenNumber } from "helpers/formatters";
 import { filterHasAttributes, isDefined } from "helpers/others";
 import { getVideoFile } from "helpers/videos";
 import { useMediaMobile } from "hooks/useMediaQuery";
-import {
-  GetStaticPathsContext,
-  GetStaticPathsResult,
-  GetStaticPropsContext,
-} from "next";
+import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next";
 import { useMemo } from "react";
+
+/*
+ *                                           ╭────────╮
+ * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
+ */
 
 interface Props extends AppStaticProps {
   video: NonNullable<
@@ -34,8 +35,7 @@ interface Props extends AppStaticProps {
   >;
 }
 
-export default function Video(props: Props): JSX.Element {
-  const { langui, video } = props;
+const Video = ({ langui, video, ...otherProps }: Props): JSX.Element => {
   const isMobile = useMediaMobile();
   const appLayout = useAppLayout();
   const subPanel = useMemo(
@@ -201,14 +201,19 @@ export default function Video(props: Props): JSX.Element {
       navTitle={langui.archives}
       subPanel={subPanel}
       contentPanel={contentPanel}
-      {...props}
+      langui={langui}
+      {...otherProps}
     />
   );
-}
+};
+export default Video;
 
-export async function getStaticProps(
-  context: GetStaticPropsContext
-): Promise<{ notFound: boolean } | { props: Props }> {
+/*
+ *                                    ╭──────────────────────╮
+ * ───────────────────────────────────╯  NEXT DATA FETCHING  ╰──────────────────────────────────────
+ */
+
+export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
   const videos = await sdk.getVideo({
     uid:
@@ -224,11 +229,11 @@ export async function getStaticProps(
   return {
     props: props,
   };
-}
+};
 
-export async function getStaticPaths(
-  context: GetStaticPathsContext
-): Promise<GetStaticPathsResult> {
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
+
+export const getStaticPaths: GetStaticPaths = async (context) => {
   const sdk = getReadySdk();
   const videos = await sdk.getVideosSlugs();
   const paths: GetStaticPathsResult["paths"] = [];
@@ -242,4 +247,4 @@ export async function getStaticPaths(
     paths,
     fallback: "blocking",
   };
-}
+};

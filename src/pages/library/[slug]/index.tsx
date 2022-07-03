@@ -42,14 +42,9 @@ import {
   isDefinedAndNotEmpty,
   sortContent,
 } from "helpers/others";
-
 import { useLightBox } from "hooks/useLightBox";
 import { AnchorIds, useScrollTopOnChange } from "hooks/useScrollTopOnChange";
-import {
-  GetStaticPathsContext,
-  GetStaticPathsResult,
-  GetStaticPropsContext,
-} from "next";
+import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next";
 import { Fragment, useCallback, useMemo, useState } from "react";
 import { isUntangibleGroupItem } from "helpers/libraryItem";
 import { useMediaHoverable } from "hooks/useMediaQuery";
@@ -58,6 +53,12 @@ import { useToggle } from "hooks/useToggle";
 import { Ico, Icon } from "components/Ico";
 import { cJoin, cIf } from "helpers/className";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
+import { getDescription } from "helpers/description";
+
+/*
+ *                                           ╭────────╮
+ * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
+ */
 
 interface Props extends AppStaticProps {
   item: NonNullable<
@@ -70,8 +71,14 @@ interface Props extends AppStaticProps {
   >["data"][number]["id"];
 }
 
-export default function LibrarySlug(props: Props): JSX.Element {
-  const { item, itemId, langui, currencies, languages } = props;
+const LibrarySlug = ({
+  item,
+  itemId,
+  langui,
+  currencies,
+  languages,
+  ...otherProps
+}: Props): JSX.Element => {
   const appLayout = useAppLayout();
   const hoverable = useMediaHoverable();
   const [openLightBox, LightBox] = useLightBox();
@@ -192,12 +199,11 @@ export default function LibrarySlug(props: Props): JSX.Element {
                 )}
               </div>
 
-              <PreviewCardCTAs
-                id={itemId}
-                displayCTAs={!isUntangibleGroupItem(item.metadata?.[0])}
-                langui={langui}
-                expand
-              />
+              {!isUntangibleGroupItem(item.metadata?.[0]) &&
+                isDefinedAndNotEmpty(itemId) && (
+                  <PreviewCardCTAs id={itemId} langui={langui} expand />
+                )}
+
               {item.descriptions?.[0] && (
                 <p className="text-justify">
                   {item.descriptions[0].description}
@@ -479,15 +485,9 @@ export default function LibrarySlug(props: Props): JSX.Element {
                         position: "Bottom",
                       }}
                       infoAppend={
-                        <PreviewCardCTAs
-                          id={subitem.id}
-                          langui={langui}
-                          displayCTAs={
-                            !isUntangibleGroupItem(
-                              subitem.attributes.metadata?.[0]
-                            )
-                          }
-                        />
+                        !isUntangibleGroupItem(
+                          subitem.attributes.metadata?.[0]
+                        ) && <PreviewCardCTAs id={subitem.id} langui={langui} />
                       }
                     />
                   </Fragment>
@@ -598,15 +598,25 @@ export default function LibrarySlug(props: Props): JSX.Element {
       contentPanel={contentPanel}
       subPanel={subPanel}
       thumbnail={item.thumbnail?.data?.attributes ?? undefined}
-      description={item.descriptions?.[0]?.description ?? undefined}
-      {...props}
+      description={getDescription({
+        langui,
+        description: item.descriptions?.[0]?.description,
+      })}
+      currencies={currencies}
+      languages={languages}
+      langui={langui}
+      {...otherProps}
     />
   );
-}
+};
+export default LibrarySlug;
 
-export async function getStaticProps(
-  context: GetStaticPropsContext
-): Promise<{ notFound: boolean } | { props: Props }> {
+/*
+ *                                    ╭──────────────────────╮
+ * ───────────────────────────────────╯  NEXT DATA FETCHING  ╰──────────────────────────────────────
+ */
+
+export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
   const item = await sdk.getLibraryItem({
     slug:
@@ -625,11 +635,11 @@ export async function getStaticProps(
   return {
     props: props,
   };
-}
+};
 
-export async function getStaticPaths(
-  context: GetStaticPathsContext
-): Promise<GetStaticPathsResult> {
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
+
+export const getStaticPaths: GetStaticPaths = async (context) => {
   const sdk = getReadySdk();
   const libraryItems = await sdk.getLibraryItemsSlugs();
   const paths: GetStaticPathsResult["paths"] = [];
@@ -638,12 +648,16 @@ export async function getStaticPaths(
       paths.push({ params: { slug: item.attributes.slug }, locale: local })
     );
   });
-
   return {
     paths,
     fallback: "blocking",
   };
-}
+};
+
+/*
+ *                                    ╭──────────────────────╮
+ * ───────────────────────────────────╯  PRIVATE COMPONENTS  ╰──────────────────────────────────────
+ */
 
 interface ContentLineProps {
   content?: {
@@ -665,17 +679,15 @@ interface ContentLineProps {
   hasScanSet: boolean;
 }
 
-export function ContentLine(props: ContentLineProps): JSX.Element {
-  const {
-    rangeStart,
-    content,
-    langui,
-    languages,
-    hasScanSet,
-    slug,
-    parentSlug,
-  } = props;
-
+const ContentLine = ({
+  rangeStart,
+  content,
+  langui,
+  languages,
+  hasScanSet,
+  slug,
+  parentSlug,
+}: ContentLineProps): JSX.Element => {
   const [opened, setOpened] = useState(false);
   const toggleOpened = useToggle(setOpened);
 
@@ -753,6 +765,4 @@ export function ContentLine(props: ContentLineProps): JSX.Element {
       </div>
     </div>
   );
-
-  return <></>;
-}
+};

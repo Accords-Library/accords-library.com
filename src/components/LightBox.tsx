@@ -6,6 +6,18 @@ import { Button } from "./Inputs/Button";
 import { Popup } from "./Popup";
 import { Icon } from "components/Ico";
 
+/*
+ *                                         ╭─────────────╮
+ * ────────────────────────────────────────╯  CONSTANTS  ╰──────────────────────────────────────────
+ */
+
+const SENSIBILITY_SWIPE = 0.5;
+
+/*
+ *                                        ╭─────────────╮
+ * ───────────────────────────────────────╯  COMPONENT  ╰───────────────────────────────────────────
+ */
+
 interface Props {
   setState:
     | Dispatch<SetStateAction<boolean | undefined>>
@@ -16,11 +28,15 @@ interface Props {
   setIndex: Dispatch<SetStateAction<number>>;
 }
 
-const SENSIBILITY_SWIPE = 0.5;
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
-export function LightBox(props: Props): JSX.Element {
-  const { state, setState, images, index, setIndex } = props;
-
+export const LightBox = ({
+  state,
+  setState,
+  images,
+  index,
+  setIndex,
+}: Props): JSX.Element => {
   const handlePrevious = useCallback(() => {
     if (index > 0) setIndex(index - 1);
   }, [index, setIndex]);
@@ -83,4 +99,4 @@ export function LightBox(props: Props): JSX.Element {
       )}
     </>
   );
-}
+};

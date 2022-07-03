@@ -1,5 +1,10 @@
 import { cJoin } from "helpers/className";
 
+/*
+ *                                        ╭─────────────╮
+ * ───────────────────────────────────────╯  COMPONENT  ╰───────────────────────────────────────────
+ */
+
 interface Props {
   children: React.ReactNode;
   width?: ContentPanelWidthSizes;
@@ -12,24 +17,26 @@ export enum ContentPanelWidthSizes {
   Full = "full",
 }
 
-export function ContentPanel(props: Props): JSX.Element {
-  const { width = ContentPanelWidthSizes.Default, children, className } = props;
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
-  return (
-    <div className="grid h-full">
-      <main
-        className={cJoin(
-          "justify-self-center px-4 pt-10 pb-20 desktop:px-10 desktop:pt-20 desktop:pb-32",
-          width === ContentPanelWidthSizes.Default
-            ? "max-w-2xl"
-            : width === ContentPanelWidthSizes.Large
-            ? "max-w-4xl"
-            : "w-full",
-          className
-        )}
-      >
-        {children}
-      </main>
-    </div>
-  );
-}
+export const ContentPanel = ({
+  width = ContentPanelWidthSizes.Default,
+  children,
+  className,
+}: Props): JSX.Element => (
+  <div className="grid h-full">
+    <main
+      className={cJoin(
+        "justify-self-center px-4 pt-10 pb-20 desktop:px-10 desktop:pt-20 desktop:pb-32",
+        width === ContentPanelWidthSizes.Default
+          ? "max-w-2xl"
+          : width === ContentPanelWidthSizes.Large
+          ? "max-w-4xl"
+          : "w-full",
+        className
+      )}
+    >
+      {children}
+    </main>
+  </div>
+);

@@ -13,8 +13,13 @@ import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import { prettySlug } from "helpers/formatters";
 import { filterHasAttributes, isDefined } from "helpers/others";
-import { GetStaticPropsContext } from "next";
+import { GetStaticProps } from "next";
 import { Fragment, useMemo } from "react";
+
+/*
+ *                                           ╭────────╮
+ * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
+ */
 
 interface Props extends AppStaticProps {
   chronologyItems: NonNullable<
@@ -23,9 +28,12 @@ interface Props extends AppStaticProps {
   chronologyEras: NonNullable<GetErasQuery["chronologyEras"]>["data"];
 }
 
-export default function Chronology(props: Props): JSX.Element {
-  const { chronologyItems, chronologyEras, langui } = props;
-
+const Chronology = ({
+  chronologyItems,
+  chronologyEras,
+  langui,
+  ...otherProps
+}: Props): JSX.Element => {
   // Group by year the Chronology items
   const chronologyItemYearGroups = useMemo(() => {
     const memo: Props["chronologyItems"][number][][][] = [];
@@ -141,14 +149,19 @@ export default function Chronology(props: Props): JSX.Element {
       navTitle={langui.chronology}
       contentPanel={contentPanel}
       subPanel={subPanel}
-      {...props}
+      langui={langui}
+      {...otherProps}
     />
   );
-}
+};
+export default Chronology;
 
-export async function getStaticProps(
-  context: GetStaticPropsContext
-): Promise<{ notFound: boolean } | { props: Props }> {
+/*
+ *                                    ╭──────────────────────╮
+ * ───────────────────────────────────╯  NEXT DATA FETCHING  ╰──────────────────────────────────────
+ */
+
+export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
   const chronologyItems = await sdk.getChronologyItems({
     language_code: context.locale ?? "en",
@@ -166,4 +179,4 @@ export async function getStaticProps(
   return {
     props: props,
   };
-}
+};

@@ -1,6 +1,6 @@
 import { AppLayout } from "components/AppLayout";
 import { Button } from "components/Inputs/Button";
-import { Markdawn } from "components/Markdown/Markdawn";
+import { Markdawn, TableOfContents } from "components/Markdown/Markdawn";
 import {
   ContentPanel,
   ContentPanelWidthSizes,
@@ -8,16 +8,19 @@ import {
 import { Popup } from "components/Popup";
 import { ToolTip } from "components/ToolTip";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
-
-import { GetStaticPropsContext } from "next";
+import { GetStaticProps } from "next";
 import { useCallback, useMemo, useRef, useState } from "react";
 import TurndownService from "turndown";
 import { Icon } from "components/Ico";
-import { TOC } from "components/Markdown/TOC";
+
+/*
+ *                                           ╭────────╮
+ * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
+ */
 
 interface Props extends AppStaticProps {}
 
-export default function Editor(props: Props): JSX.Element {
+const Editor = ({ langui, ...otherProps }: Props): JSX.Element => {
   const handleInput = useCallback((text: string) => {
     setMarkdown(text);
   }, []);
@@ -444,7 +447,7 @@ export default function Editor(props: Props): JSX.Element {
         </div>
 
         <div className="mt-8">
-          <TOC text={markdown} />
+          <TableOfContents text={markdown} langui={langui} />
         </div>
       </ContentPanel>
     ),
@@ -453,6 +456,7 @@ export default function Editor(props: Props): JSX.Element {
       converterOpened,
       handleInput,
       insert,
+      langui,
       markdown,
       preline,
       toggleWrap,
@@ -464,18 +468,23 @@ export default function Editor(props: Props): JSX.Element {
     <AppLayout
       navTitle="Markdawn Editor"
       contentPanel={contentPanel}
-      {...props}
+      langui={langui}
+      {...otherProps}
     />
   );
-}
+};
+export default Editor;
 
-export async function getStaticProps(
-  context: GetStaticPropsContext
-): Promise<{ notFound: boolean } | { props: Props }> {
+/*
+ *                                    ╭──────────────────────╮
+ * ───────────────────────────────────╯  NEXT DATA FETCHING  ╰──────────────────────────────────────
+ */
+
+export const getStaticProps: GetStaticProps = async (context) => {
   const props: Props = {
     ...(await getAppStaticProps(context)),
   };
   return {
     props: props,
   };
-}
+};

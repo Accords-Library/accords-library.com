@@ -13,7 +13,7 @@ import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import { prettyItemSubType } from "helpers/formatters";
 import { LibraryItemUserStatus } from "helpers/types";
-import { GetStaticPropsContext } from "next";
+import { GetStaticProps } from "next";
 import { Fragment, useState, useMemo } from "react";
 import { Icon } from "components/Ico";
 import { WithLabel } from "components/Inputs/WithLabel";
@@ -38,11 +38,12 @@ import {
 } from "helpers/others";
 import { ContentPlaceholder } from "components/PanelComponents/ContentPlaceholder";
 
-interface Props extends AppStaticProps {
-  items: NonNullable<GetLibraryItemsPreviewQuery["libraryItems"]>["data"];
-}
+/*
+ *                                         ╭─────────────╮
+ * ────────────────────────────────────────╯  CONSTANTS  ╰──────────────────────────────────────────
+ */
 
-const defaultFiltersState = {
+const DEFAULT_FILTERS_STATE = {
   searchName: "",
   showSubitems: false,
   showPrimaryItems: true,
@@ -53,33 +54,48 @@ const defaultFiltersState = {
   filterUserStatus: undefined,
 };
 
-export default function Library(props: Props): JSX.Element {
-  const { langui, items: libraryItems, currencies } = props;
+/*
+ *                                           ╭────────╮
+ * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
+ */
+
+interface Props extends AppStaticProps {
+  items: NonNullable<GetLibraryItemsPreviewQuery["libraryItems"]>["data"];
+}
+
+const Library = ({
+  langui,
+  items: libraryItems,
+  currencies,
+  ...otherProps
+}: Props): JSX.Element => {
   const appLayout = useAppLayout();
   const hoverable = useMediaHoverable();
 
-  const [searchName, setSearchName] = useState(defaultFiltersState.searchName);
+  const [searchName, setSearchName] = useState(
+    DEFAULT_FILTERS_STATE.searchName
+  );
   const [showSubitems, setShowSubitems] = useState<boolean>(
-    defaultFiltersState.showSubitems
+    DEFAULT_FILTERS_STATE.showSubitems
   );
   const [showPrimaryItems, setShowPrimaryItems] = useState<boolean>(
-    defaultFiltersState.showPrimaryItems
+    DEFAULT_FILTERS_STATE.showPrimaryItems
   );
   const [showSecondaryItems, setShowSecondaryItems] = useState<boolean>(
-    defaultFiltersState.showSecondaryItems
+    DEFAULT_FILTERS_STATE.showSecondaryItems
   );
   const [sortingMethod, setSortingMethod] = useState<number>(
-    defaultFiltersState.sortingMethod
+    DEFAULT_FILTERS_STATE.sortingMethod
   );
   const [groupingMethod, setGroupingMethod] = useState<number>(
-    defaultFiltersState.groupingMethod
+    DEFAULT_FILTERS_STATE.groupingMethod
   );
   const [keepInfoVisible, setKeepInfoVisible] = useState(
-    defaultFiltersState.keepInfoVisible
+    DEFAULT_FILTERS_STATE.keepInfoVisible
   );
   const [filterUserStatus, setFilterUserStatus] = useState<
     LibraryItemUserStatus | undefined
-  >(defaultFiltersState.filterUserStatus);
+  >(DEFAULT_FILTERS_STATE.filterUserStatus);
 
   const filteredItems = useMemo(
     () =>
@@ -193,7 +209,6 @@ export default function Library(props: Props): JSX.Element {
           />
         )}
 
-        {/* TODO: Add "All" to langui */}
         <ButtonGroup
           className="mt-4"
           buttonsProps={[
@@ -217,7 +232,7 @@ export default function Library(props: Props): JSX.Element {
             },
             {
               tooltip: langui.only_display_unmarked_items,
-              text: "All",
+              text: langui.all,
               onClick: () => setFilterUserStatus(undefined),
               active: isUndefined(filterUserStatus),
             },
@@ -229,14 +244,14 @@ export default function Library(props: Props): JSX.Element {
           text={langui.reset_all_filters}
           icon={Icon.Replay}
           onClick={() => {
-            setSearchName(defaultFiltersState.searchName);
-            setShowSubitems(defaultFiltersState.showSubitems);
-            setShowPrimaryItems(defaultFiltersState.showPrimaryItems);
-            setShowSecondaryItems(defaultFiltersState.showSecondaryItems);
-            setSortingMethod(defaultFiltersState.sortingMethod);
-            setGroupingMethod(defaultFiltersState.groupingMethod);
-            setKeepInfoVisible(defaultFiltersState.keepInfoVisible);
-            setFilterUserStatus(defaultFiltersState.filterUserStatus);
+            setSearchName(DEFAULT_FILTERS_STATE.searchName);
+            setShowSubitems(DEFAULT_FILTERS_STATE.showSubitems);
+            setShowPrimaryItems(DEFAULT_FILTERS_STATE.showPrimaryItems);
+            setShowSecondaryItems(DEFAULT_FILTERS_STATE.showSecondaryItems);
+            setSortingMethod(DEFAULT_FILTERS_STATE.sortingMethod);
+            setGroupingMethod(DEFAULT_FILTERS_STATE.groupingMethod);
+            setKeepInfoVisible(DEFAULT_FILTERS_STATE.keepInfoVisible);
+            setFilterUserStatus(DEFAULT_FILTERS_STATE.filterUserStatus);
           }}
         />
       </SubPanel>
@@ -258,12 +273,9 @@ export default function Library(props: Props): JSX.Element {
   const contentPanel = useMemo(
     () => (
       <ContentPanel width={ContentPanelWidthSizes.Full}>
-        {/* TODO: Add to langui */}
         {groups.size === 0 && (
           <ContentPlaceholder
-            message={
-              "No results. You can try changing or resetting the search parameters."
-            }
+            message={langui.no_results_message ?? "No results"}
             icon={Icon.ChevronLeft}
           />
         )}
@@ -314,13 +326,9 @@ export default function Library(props: Props): JSX.Element {
                       position: "Bottom",
                     }}
                     infoAppend={
-                      <PreviewCardCTAs
-                        id={item.id}
-                        displayCTAs={
-                          !isUntangibleGroupItem(item.attributes.metadata?.[0])
-                        }
-                        langui={langui}
-                      />
+                      !isUntangibleGroupItem(item.attributes.metadata?.[0]) && (
+                        <PreviewCardCTAs id={item.id} langui={langui} />
+                      )
                     }
                   />
                 </Fragment>
@@ -339,14 +347,20 @@ export default function Library(props: Props): JSX.Element {
       subPanel={subPanel}
       contentPanel={contentPanel}
       subPanelIcon={Icon.Search}
-      {...props}
+      currencies={currencies}
+      langui={langui}
+      {...otherProps}
     />
   );
-}
+};
+export default Library;
 
-export async function getStaticProps(
-  context: GetStaticPropsContext
-): Promise<{ notFound: boolean } | { props: Props }> {
+/*
+ *                                    ╭──────────────────────╮
+ * ───────────────────────────────────╯  NEXT DATA FETCHING  ╰──────────────────────────────────────
+ */
+
+export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
   const items = await sdk.getLibraryItemsPreview({
     language_code: context.locale ?? "en",
@@ -359,4 +373,4 @@ export async function getStaticProps(
   return {
     props: props,
   };
-}
+};

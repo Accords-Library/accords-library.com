@@ -10,9 +10,12 @@ interface Description {
   categories?: Content["categories"];
 }
 
-export function getDescription(props: Description): string {
-  const { langui, description: text, type, categories } = props;
-
+export const getDescription = ({
+  langui,
+  description: text,
+  type,
+  categories,
+}: Description): string => {
   let description = "";
 
   // TEXT
@@ -44,15 +47,15 @@ export function getDescription(props: Description): string {
   }
 
   return description;
-}
+};
 
-function prettyMarkdown(markdown: string): string {
+const prettyMarkdown = (markdown: string): string => {
   return markdown.replace(/[*]/gu, "").replace(/[_]/gu, "");
-}
+};
 
-function prettyChip(items: (string | undefined)[]): string {
+const prettyChip = (items: (string | undefined)[]): string => {
   return items
     .filter((item) => isDefined(item))
     .map((item) => `(${item})`)
     .join(" ");
-}
+};

@@ -18,12 +18,13 @@ import { prettyinlineTitle, prettySlug } from "helpers/formatters";
 import { filterHasAttributes, isDefined, sortContent } from "helpers/others";
 
 import { useLightBox } from "hooks/useLightBox";
-import {
-  GetStaticPathsContext,
-  GetStaticPathsResult,
-  GetStaticPropsContext,
-} from "next";
+import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next";
 import { Fragment, useMemo } from "react";
+
+/*
+ *                                           ╭────────╮
+ * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
+ */
 
 interface Props extends AppStaticProps {
   item: NonNullable<
@@ -36,8 +37,12 @@ interface Props extends AppStaticProps {
   >;
 }
 
-export default function LibrarySlug(props: Props): JSX.Element {
-  const { item, langui, languages } = props;
+const LibrarySlug = ({
+  item,
+  langui,
+  languages,
+  ...otherProps
+}: Props): JSX.Element => {
   const [openLightBox, LightBox] = useLightBox();
   sortContent(item.contents);
 
@@ -129,14 +134,20 @@ export default function LibrarySlug(props: Props): JSX.Element {
       contentPanel={contentPanel}
       subPanel={subPanel}
       thumbnail={item.thumbnail?.data?.attributes ?? undefined}
-      {...props}
+      languages={languages}
+      langui={langui}
+      {...otherProps}
     />
   );
-}
+};
+export default LibrarySlug;
 
-export async function getStaticProps(
-  context: GetStaticPropsContext
-): Promise<{ notFound: boolean } | { props: Props }> {
+/*
+ *                                    ╭──────────────────────╮
+ * ───────────────────────────────────╯  NEXT DATA FETCHING  ╰──────────────────────────────────────
+ */
+
+export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
   const item = await sdk.getLibraryItemScans({
     slug:
@@ -155,11 +166,11 @@ export async function getStaticProps(
   return {
     props: props,
   };
-}
+};
 
-export async function getStaticPaths(
-  context: GetStaticPathsContext
-): Promise<GetStaticPathsResult> {
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
+
+export const getStaticPaths: GetStaticPaths = async (context) => {
   const sdk = getReadySdk();
   const libraryItems = await sdk.getLibraryItemsSlugs({});
   const paths: GetStaticPathsResult["paths"] = [];
@@ -173,4 +184,4 @@ export async function getStaticPaths(
     paths,
     fallback: "blocking",
   };
-}
+};

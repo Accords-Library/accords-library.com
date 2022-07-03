@@ -17,9 +17,13 @@ interface Props {
   index: number;
 }
 
-export default function DefinitionCard(props: Props): JSX.Element {
-  const { source, translations = [], languages, langui, index } = props;
-
+const DefinitionCard = ({
+  source,
+  translations = [],
+  languages,
+  langui,
+  index,
+}: Props): JSX.Element => {
   const [selectedTranslation, LanguageSwitcher, languageSwitcherProps] =
     useSmartLanguage({
       items: translations,
@@ -33,8 +37,7 @@ export default function DefinitionCard(props: Props): JSX.Element {
   return (
     <>
       <div className="flex place-items-center gap-2">
-        {/* TODO: Langui */}
-        <p className="font-headers text-lg">{`Definition ${index}`}</p>
+        <p className="font-headers text-lg">{`${langui.definition} ${index}`}</p>
         {selectedTranslation?.status && (
           <ToolTip
             content={getStatusDescription(selectedTranslation.status, langui)}
@@ -52,4 +55,5 @@ export default function DefinitionCard(props: Props): JSX.Element {
       <p>{selectedTranslation?.definition}</p>
     </>
   );
-}
+};
+export default DefinitionCard;

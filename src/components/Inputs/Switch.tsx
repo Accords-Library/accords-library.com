@@ -1,7 +1,11 @@
 import { cIf, cJoin } from "helpers/className";
-
 import { useToggle } from "hooks/useToggle";
 import { Dispatch, SetStateAction } from "react";
+
+/*
+ *                                        ╭─────────────╮
+ * ───────────────────────────────────────╯  COMPONENT  ╰───────────────────────────────────────────
+ */
 
 interface Props {
   setState: Dispatch<SetStateAction<boolean>>;
@@ -10,8 +14,14 @@ interface Props {
   disabled?: boolean;
 }
 
-export function Switch(props: Props): JSX.Element {
-  const { state, setState, className, disabled = false } = props;
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
+
+export const Switch = ({
+  state,
+  setState,
+  className,
+  disabled = false,
+}: Props): JSX.Element => {
   const toggleState = useToggle(setState);
   return (
     <div
@@ -41,4 +51,4 @@ export function Switch(props: Props): JSX.Element {
       ></div>
     </div>
   );
-}
+};

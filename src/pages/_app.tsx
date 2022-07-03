@@ -9,10 +9,9 @@ import { AppContextProvider } from "contexts/AppLayoutContext";
 import type { AppProps } from "next/app";
 import "tailwind.css";
 
-export default function AccordsLibraryApp(props: AppProps): JSX.Element {
-  return (
-    <AppContextProvider>
-      <props.Component {...props.pageProps} />
-    </AppContextProvider>
-  );
-}
+const AccordsLibraryApp = (props: AppProps): JSX.Element => (
+  <AppContextProvider>
+    <props.Component {...props.pageProps} />
+  </AppContextProvider>
+);
+export default AccordsLibraryApp;

@@ -81,10 +81,10 @@ type ResponseMailProps = {
   revalidated: boolean;
 };
 
-export default async function Revalidate(
+const Revalidate = async (
   req: NextApiRequest,
   res: NextApiResponse<ResponseMailProps>
-) {
+) => {
   const body = req.body as RequestProps;
   const { serverRuntimeConfig } = getConfig();
 
@@ -217,4 +217,5 @@ export default async function Revalidate(
       .status(500)
       .send({ message: "Error revalidating", revalidated: false });
   }
-}
+};
+export default Revalidate;

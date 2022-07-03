@@ -14,7 +14,7 @@ interface OgImage {
   alt: string;
 }
 
-export function getAssetFilename(path: string): string {
+export const getAssetFilename = (path: string): string => {
   let result = path.split("/");
   result = result[result.length - 1].split(".");
   result = result
@@ -22,9 +22,9 @@ export function getAssetFilename(path: string): string {
     .join(".")
     .split("_");
   return result[0];
-}
+};
 
-export function getAssetURL(url: string, quality: ImageQuality): string {
+export const getAssetURL = (url: string, quality: ImageQuality): string => {
   let newUrl = url;
   newUrl = newUrl.replace(/^\/uploads/u, `/${quality}`);
   newUrl = newUrl.replace(/.jpg$/u, ".webp");
@@ -32,26 +32,26 @@ export function getAssetURL(url: string, quality: ImageQuality): string {
   newUrl = newUrl.replace(/.png$/u, ".webp");
   if (quality === ImageQuality.Og) newUrl = newUrl.replace(/.webp$/u, ".jpg");
   return process.env.NEXT_PUBLIC_URL_IMG + newUrl;
-}
+};
 
-function getImgSizesByMaxSize(
+const getImgSizesByMaxSize = (
   width: number,
   height: number,
   maxSize: number
-): { width: number; height: number } {
+): { width: number; height: number } => {
   if (width > height) {
     if (width < maxSize) return { width: width, height: height };
     return { width: maxSize, height: (height / width) * maxSize };
   }
   if (height < maxSize) return { width: width, height: height };
   return { width: (width / height) * maxSize, height: maxSize };
-}
+};
 
-export function getImgSizesByQuality(
+export const getImgSizesByQuality = (
   width: number,
   height: number,
   quality: ImageQuality
-): { width: number; height: number } {
+): { width: number; height: number } => {
   switch (quality) {
     case ImageQuality.Og:
       return getImgSizesByMaxSize(width, height, 512);
@@ -64,12 +64,12 @@ export function getImgSizesByQuality(
     default:
       return { width: 0, height: 0 };
   }
-}
+};
 
-export function getOgImage(
+export const getOgImage = (
   quality: ImageQuality,
   image: UploadImageFragment
-): OgImage {
+): OgImage => {
   const imgSize = getImgSizesByQuality(
     image.width ?? 0,
     image.height ?? 0,
@@ -81,4 +81,4 @@ export function getOgImage(
     height: imgSize.height,
     alt: image.alternativeText || "",
   };
-}
+};

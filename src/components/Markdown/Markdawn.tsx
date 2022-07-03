@@ -4,24 +4,33 @@ import { Img } from "components/Img";
 import { InsetBox } from "components/InsetBox";
 import { ToolTip } from "components/ToolTip";
 import { useAppLayout } from "contexts/AppLayoutContext";
+import { AppStaticProps } from "graphql/getAppStaticProps";
 import { cJoin } from "helpers/className";
 import { slugify } from "helpers/formatters";
 import { getAssetURL, ImageQuality } from "helpers/img";
 import { isDefined, isDefinedAndNotEmpty } from "helpers/others";
-
 import { useLightBox } from "hooks/useLightBox";
 import Markdown from "markdown-to-jsx";
 import { useRouter } from "next/router";
-import React, { useMemo } from "react";
+import React, { Fragment, useMemo } from "react";
 import ReactDOMServer from "react-dom/server";
 
-interface Props {
+/*
+ *                                        ╭─────────────╮
+ * ───────────────────────────────────────╯  COMPONENT  ╰───────────────────────────────────────────
+ */
+
+interface MarkdawnProps {
   className?: string;
   text: string;
 }
 
-export function Markdawn(props: Props): JSX.Element {
-  const { className, text: rawText } = props;
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
+
+export const Markdawn = ({
+  className,
+  text: rawText,
+}: MarkdawnProps): JSX.Element => {
   const appLayout = useAppLayout();
   const router = useRouter();
   const [openLightBox, LightBox] = useLightBox();
@@ -299,33 +308,121 @@ export function Markdawn(props: Props): JSX.Element {
     );
   }
   return <></>;
+};
+
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
+
+interface TableOfContentsProps {
+  text: string;
+  title?: string;
+  langui: AppStaticProps["langui"];
 }
 
-function HeaderToolTip(props: { id: string }) {
-  return (
-    <ToolTip
-      content={"Copy anchor link"}
-      trigger="mouseenter"
-      className="text-sm"
-    >
-      <ToolTip content={"Copied! 👍"} trigger="click" className="text-sm">
-        <Ico
-          icon={Icon.Link}
-          className="transition-color cursor-pointer hover:text-dark"
-          onClick={() => {
-            navigator.clipboard.writeText(
-              `${process.env.NEXT_PUBLIC_URL_SELF + window.location.pathname}#${
-                props.id
-              }`
-            );
-          }}
-        />
-      </ToolTip>
-    </ToolTip>
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
+
+export const TableOfContents = ({
+  text,
+  title,
+  langui,
+}: TableOfContentsProps): JSX.Element => {
+  const router = useRouter();
+  const toc = useMemo(
+    () => getTocFromMarkdawn(preprocessMarkDawn(text), title),
+    [text, title]
   );
+
+  return (
+    <>
+      <h3 className="text-xl">{langui.table_of_contents}</h3>
+      <div className="max-w-[14.5rem] text-left">
+        <p className="relative my-2 overflow-x-hidden text-ellipsis whitespace-nowrap text-left">
+          <a onClick={async () => router.replace(`#${toc.slug}`)}>
+            {<abbr title={toc.title}>{toc.title}</abbr>}
+          </a>
+        </p>
+        <TocLevel tocchildren={toc.children} parentNumbering="" />
+      </div>
+    </>
+  );
+};
+
+/*
+ *                                    ╭──────────────────────╮
+ * ───────────────────────────────────╯  PRIVATE COMPONENTS  ╰──────────────────────────────────────
+ */
+
+interface TocInterface {
+  title: string;
+  slug: string;
+  children: TocInterface[];
 }
 
-function typographicRules(text: string): string {
+interface LevelProps {
+  tocchildren: TocInterface[];
+  parentNumbering: string;
+}
+
+const TocLevel = ({
+  tocchildren,
+  parentNumbering,
+}: LevelProps): JSX.Element => {
+  const router = useRouter();
+
+  return (
+    <ol className="pl-4 text-left">
+      {tocchildren.map((child, childIndex) => (
+        <Fragment key={child.slug}>
+          <li className="my-2 w-full overflow-x-hidden text-ellipsis whitespace-nowrap">
+            <span className="text-dark">{`${parentNumbering}${
+              childIndex + 1
+            }.`}</span>{" "}
+            <a onClick={async () => router.replace(`#${child.slug}`)}>
+              {<abbr title={child.title}>{child.title}</abbr>}
+            </a>
+          </li>
+          <TocLevel
+            tocchildren={child.children}
+            parentNumbering={`${parentNumbering}${childIndex + 1}.`}
+          />
+        </Fragment>
+      ))}
+    </ol>
+  );
+};
+
+/*
+ *                                      ╭───────────────────╮
+ * ─────────────────────────────────────╯  PRIVATE METHODS  ╰───────────────────────────────────────
+ */
+
+const HeaderToolTip = (props: { id: string }): JSX.Element => (
+  <ToolTip
+    content={"Copy anchor link"}
+    trigger="mouseenter"
+    className="text-sm"
+  >
+    <ToolTip content={"Copied! 👍"} trigger="click" className="text-sm">
+      <Ico
+        icon={Icon.Link}
+        className="transition-color cursor-pointer hover:text-dark"
+        onClick={() => {
+          navigator.clipboard.writeText(
+            `${process.env.NEXT_PUBLIC_URL_SELF + window.location.pathname}#${
+              props.id
+            }`
+          );
+        }}
+      />
+    </ToolTip>
+  </ToolTip>
+);
+
+/*
+ *                                    ╭──────────────────────╮
+ * ───────────────────────────────────╯  PRIVATE COMPONENTS  ╰──────────────────────────────────────
+ */
+
+const typographicRules = (text: string): string => {
   let newText = text;
   newText = newText.replace(/--/gu, "—");
   /*
@@ -336,9 +433,20 @@ function typographicRules(text: string): string {
    * newText = newText.replace(/'/gu, "’");
    */
   return newText;
+};
+
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
+
+enum HeaderLevels {
+  H1 = 1,
+  H2 = 2,
+  H3 = 3,
+  H4 = 4,
+  H5 = 5,
+  H6 = 6,
 }
 
-export function preprocessMarkDawn(text: string): string {
+const preprocessMarkDawn = (text: string): string => {
   if (!text) return "";
 
   let preprocessed = typographicRules(text);
@@ -383,22 +491,15 @@ export function preprocessMarkDawn(text: string): string {
     .join("\n");
 
   return preprocessed;
-}
+};
 
-enum HeaderLevels {
-  H1 = 1,
-  H2 = 2,
-  H3 = 3,
-  H4 = 4,
-  H5 = 5,
-  H6 = 6,
-}
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
-function markdawnHeadersParser(
+const markdawnHeadersParser = (
   headerLevel: HeaderLevels,
   line: string,
   visitedSlugs: string[]
-): string {
+): string => {
   const lineText = line.slice(headerLevel + 1);
   const slug = slugify(lineText);
   let newSlug = slug;
@@ -409,4 +510,102 @@ function markdawnHeadersParser(
   }
   visitedSlugs.push(newSlug);
   return `<h${headerLevel} id="${newSlug}">${lineText}</h${headerLevel}>`;
-}
+};
+
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
+
+const getTocFromMarkdawn = (text: string, title?: string): TocInterface => {
+  const toc: TocInterface = {
+    title: title ?? "Return to top",
+    slug: slugify(title),
+    children: [],
+  };
+  let h2 = -1;
+  let h3 = -1;
+  let h4 = -1;
+  let h5 = -1;
+  let scenebreak = 0;
+  let scenebreakIndex = 0;
+
+  const getTitle = (line: string): string =>
+    line.slice(line.indexOf(`">`) + 2, line.indexOf("</"));
+
+  const getSlug = (line: string): string =>
+    line.slice(line.indexOf(`id="`) + 4, line.indexOf(`">`));
+
+  text.split("\n").map((line) => {
+    if (line.startsWith("<h1 id=")) {
+      toc.title = getTitle(line);
+      toc.slug = getSlug(line);
+    } else if (line.startsWith("<h2 id=")) {
+      toc.children.push({
+        title: getTitle(line),
+        slug: getSlug(line),
+        children: [],
+      });
+      h2 += 1;
+      h3 = -1;
+      h4 = -1;
+      h5 = -1;
+      scenebreak = 0;
+    } else if (h2 >= 0 && line.startsWith("<h3 id=")) {
+      toc.children[h2].children.push({
+        title: getTitle(line),
+        slug: getSlug(line),
+        children: [],
+      });
+      h3 += 1;
+      h4 = -1;
+      h5 = -1;
+      scenebreak = 0;
+    } else if (h3 >= 0 && line.startsWith("<h4 id=")) {
+      toc.children[h2].children[h3].children.push({
+        title: getTitle(line),
+        slug: getSlug(line),
+        children: [],
+      });
+      h4 += 1;
+      h5 = -1;
+      scenebreak = 0;
+    } else if (h4 >= 0 && line.startsWith("<h5 id=")) {
+      toc.children[h2].children[h3].children[h4].children.push({
+        title: getTitle(line),
+        slug: getSlug(line),
+        children: [],
+      });
+      h5 += 1;
+      scenebreak = 0;
+    } else if (h5 >= 0 && line.startsWith("<h6 id=")) {
+      toc.children[h2].children[h3].children[h4].children[h5].children.push({
+        title: getTitle(line),
+        slug: getSlug(line),
+        children: [],
+      });
+    } else if (line.startsWith(`<SceneBreak`)) {
+      scenebreak += 1;
+      scenebreakIndex += 1;
+
+      const child = {
+        title: `Scene break ${scenebreak}`,
+        slug: slugify(`scene-break-${scenebreakIndex}`),
+        children: [],
+      };
+
+      if (h5 >= 0) {
+        toc.children[h2].children[h3].children[h4].children[h5].children.push(
+          child
+        );
+      } else if (h4 >= 0) {
+        toc.children[h2].children[h3].children[h4].children.push(child);
+      } else if (h3 >= 0) {
+        toc.children[h2].children[h3].children.push(child);
+      } else if (h2 >= 0) {
+        toc.children[h2].children.push(child);
+      } else {
+        toc.children.push(child);
+      }
+    }
+  });
+
+  return toc;
+};

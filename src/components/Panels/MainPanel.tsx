@@ -12,12 +12,18 @@ import { Icon } from "components/Ico";
 import { cIf, cJoin } from "helpers/className";
 import { isDefinedAndNotEmpty } from "helpers/others";
 
+/*
+ *                                        ╭─────────────╮
+ * ───────────────────────────────────────╯  COMPONENT  ╰───────────────────────────────────────────
+ */
+
 interface Props {
   langui: AppStaticProps["langui"];
 }
 
-export function MainPanel(props: Props): JSX.Element {
-  const { langui } = props;
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
+
+export const MainPanel = ({ langui }: Props): JSX.Element => {
   const isDesktop = useMediaDesktop();
   const {
     mainPanelReduced = false,
@@ -239,4 +245,4 @@ export function MainPanel(props: Props): JSX.Element {
       </div>
     </div>
   );
-}
+};

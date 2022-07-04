@@ -141,7 +141,7 @@ export const PreviewCard = ({
             <div
               className={cJoin(
                 `absolute inset-0 scale-[.85] overflow-hidden bg-light brightness-[0.8] sepia-[0.5]
-                 transition-[top_transform] group-hover:-top-8`,
+                 transition-[top_transform] group-hover:-top-9`,
                 cIf(thumbnailRounded, "rounded-md")
               )}
             >
@@ -248,7 +248,7 @@ export const PreviewCard = ({
         )}
         <div
           className={cJoin(
-            "grid gap-2 p-4 transition-opacity linearbg-obi",
+            "z-20 grid gap-2 p-4 transition-opacity linearbg-obi",
             cIf(
               !keepInfoVisible,
               `-inset-x-0.5 bottom-2 opacity-0 [border-radius:10%_10%_10%_10%_/_1%_1%_3%_3%]
@@ -271,7 +271,7 @@ export const PreviewCard = ({
               <p className="mb-1 break-words leading-none">{pre_title}</p>
             )}
             {title && (
-              <p className="break-words font-headers text-lg leading-none">
+              <p className="break-words font-headers font-bold text-lg leading-none">
                 {title}
               </p>
             )}

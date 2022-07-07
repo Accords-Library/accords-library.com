@@ -1,2 +1,9 @@
-*.js
-*.ts
+src/graphql/generated.ts
+.eslintrc.js
+graphql-codegen.config.js
+next-env.d.ts
+next-sitemap.config.js
+next.config.js
+postcss.config.js
+tailwind.config.js
+design.config.js

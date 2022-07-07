@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import { Chip } from "components/Chip";
 import { Ico, Icon } from "components/Ico";
 import { ToolTip } from "components/ToolTip";
@@ -12,13 +13,18 @@ import {
   getStatusDescription,
 } from "helpers/others";
 
-import { Fragment } from "react";
+/*
+ *                                        ╭─────────────╮
+ * ───────────────────────────────────────╯  COMPONENT  ╰───────────────────────────────────────────
+ */
 
 interface Props {
   item: NonNullable<GetChronologyItemsQuery["chronologyItems"]>["data"][number];
   displayYear: boolean;
   langui: AppStaticProps["langui"];
 }
+
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
 export const ChronologyItemComponent = ({
   langui,
@@ -123,6 +129,11 @@ export const ChronologyItemComponent = ({
 
   return <></>;
 };
+
+/*
+ *                                      ╭───────────────────╮
+ * ─────────────────────────────────────╯  PRIVATE METHODS  ╰───────────────────────────────────────
+ */
 
 const generateAnchor = (
   year: number | undefined,

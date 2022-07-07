@@ -1,9 +1,8 @@
+import { GetStaticProps } from "next";
 import { AppLayout } from "components/AppLayout";
 import { PanelHeader } from "components/PanelComponents/PanelHeader";
 import { SubPanel } from "components/Panels/SubPanel";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
-
-import { GetStaticProps } from "next";
 import { Icon } from "components/Ico";
 
 /*

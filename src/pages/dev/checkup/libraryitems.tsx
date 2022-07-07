@@ -1,3 +1,5 @@
+import { GetStaticProps } from "next";
+import { useMemo } from "react";
 import { AppLayout } from "components/AppLayout";
 import { Chip } from "components/Chip";
 import { Button } from "components/Inputs/Button";
@@ -12,9 +14,6 @@ import {
 } from "graphql/generated";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
-
-import { GetStaticProps } from "next";
-import { useMemo } from "react";
 
 /*
  *                                           ╭────────╮

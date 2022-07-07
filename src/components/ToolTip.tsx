@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/named
 import Tippy, { TippyProps } from "@tippyjs/react";
 import { cJoin } from "helpers/className";
 import "tippy.js/animations/scale-subtle.css";

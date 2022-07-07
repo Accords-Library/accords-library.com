@@ -1,4 +1,4 @@
-query getPostsPreview($language_code: String) {
+query getPostsPreview {
   posts(filters: { hidden: { eq: false } }) {
     data {
       id
@@ -22,7 +22,14 @@ query getPostsPreview($language_code: String) {
             }
           }
         }
-        translations(filters: { language: { code: { eq: $language_code } } }) {
+        translations {
+          language {
+            data {
+              attributes {
+                code
+              }
+            }
+          }
           title
           excerpt
           thumbnail {

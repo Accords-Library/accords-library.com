@@ -1,9 +1,9 @@
+import { useRouter } from "next/router";
+import React, { MouseEventHandler } from "react";
 import { Ico, Icon } from "components/Ico";
 import { cIf, cJoin } from "helpers/className";
 import { ConditionalWrapper, Wrapper } from "helpers/component";
 import { isDefined, isDefinedAndNotEmpty } from "helpers/others";
-import { useRouter } from "next/router";
-import React, { MouseEventHandler } from "react";
 
 /*
  *                                        ╭─────────────╮
@@ -22,6 +22,7 @@ interface Props {
   onClick?: MouseEventHandler<HTMLDivElement>;
   draggable?: boolean;
   badgeNumber?: number;
+  size?: "normal" | "small";
 }
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
@@ -38,6 +39,7 @@ export const Button = ({
   href,
   locale,
   badgeNumber,
+  size = "normal",
 }: Props): JSX.Element => {
   const router = useRouter();
 
@@ -70,13 +72,17 @@ export const Button = ({
               "!border-black bg-black !text-light drop-shadow-black-lg",
               "cursor-pointer hover:bg-dark hover:text-light hover:drop-shadow-shade-lg"
             ),
+            cIf(size === "small", "px-3 py-1 text-xs"),
             className
           )}
         >
           {isDefined(badgeNumber) && (
             <div
-              className="absolute -top-3 -right-2 grid h-8 w-8 place-items-center rounded-full
-              bg-dark font-bold text-light transition-opacity group-hover:opacity-0"
+              className={cJoin(
+                `absolute -top-3 -right-2 grid h-8 w-8 place-items-center
+              rounded-full bg-dark font-bold text-light transition-opacity group-hover:opacity-0`,
+                cIf(size === "small", "-top-2 -right-2 h-5 w-5")
+              )}
             >
               <p className="-translate-y-[0.05em]">{badgeNumber}</p>
             </div>

@@ -1,3 +1,5 @@
+import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next";
+import { useMemo } from "react";
 import { AppLayout } from "components/AppLayout";
 import { HorizontalLine } from "components/HorizontalLine";
 import { Ico, Icon } from "components/Ico";
@@ -21,8 +23,6 @@ import { prettyDate, prettyShortenNumber } from "helpers/formatters";
 import { filterHasAttributes, isDefined } from "helpers/others";
 import { getVideoFile } from "helpers/videos";
 import { useMediaMobile } from "hooks/useMediaQuery";
-import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next";
-import { useMemo } from "react";
 
 /*
  *                                           ╭────────╮

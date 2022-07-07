@@ -1,3 +1,5 @@
+import { GetStaticProps } from "next";
+import { useMemo, useState } from "react";
 import { AppLayout } from "components/AppLayout";
 import { Switch } from "components/Inputs/Switch";
 import { PanelHeader } from "components/PanelComponents/PanelHeader";
@@ -6,20 +8,18 @@ import {
   ContentPanelWidthSizes,
 } from "components/Panels/ContentPanel";
 import { SubPanel } from "components/Panels/SubPanel";
-import { PreviewCard } from "components/PreviewCard";
+import { TranslatedPreviewCard } from "components/PreviewCard";
 import { GetPostsPreviewQuery } from "graphql/generated";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import { prettyDate, prettySlug } from "helpers/formatters";
-
-import { GetStaticProps } from "next";
-import { Fragment, useMemo, useState } from "react";
 import { Icon } from "components/Ico";
 import { WithLabel } from "components/Inputs/WithLabel";
 import { TextInput } from "components/Inputs/TextInput";
 import { Button } from "components/Inputs/Button";
 import { useMediaHoverable } from "hooks/useMediaQuery";
-import { filterHasAttributes } from "helpers/others";
+import { filterDefined, filterHasAttributes } from "helpers/others";
+import { SmartList } from "components/SmartList";
 
 /*
  *                                         ╭─────────────╮
@@ -40,18 +40,18 @@ interface Props extends AppStaticProps {
   posts: NonNullable<GetPostsPreviewQuery["posts"]>["data"];
 }
 
-const News = ({ langui, posts, ...otherProps }: Props): JSX.Element => {
+const News = ({
+  langui,
+  posts,
+  languages,
+  ...otherProps
+}: Props): JSX.Element => {
   const hoverable = useMediaHoverable();
   const [searchName, setSearchName] = useState(
     DEFAULT_FILTERS_STATE.searchName
   );
   const [keepInfoVisible, setKeepInfoVisible] = useState(
     DEFAULT_FILTERS_STATE.keepInfoVisible
-  );
-
-  const filteredItems = useMemo(
-    () => filterItems(posts, searchName),
-    [posts, searchName]
   );
 
   const subPanel = useMemo(
@@ -96,37 +96,46 @@ const News = ({ langui, posts, ...otherProps }: Props): JSX.Element => {
   const contentPanel = useMemo(
     () => (
       <ContentPanel width={ContentPanelWidthSizes.Full}>
-        <div
-          className="grid grid-cols-1 items-end gap-8
-        desktop:grid-cols-[repeat(auto-fill,_minmax(20rem,1fr))]"
-        >
-          {filterHasAttributes(filteredItems).map((post) => (
-            <Fragment key={post.id}>
-              <PreviewCard
-                href={`/news/${post.attributes.slug}`}
-                title={
-                  post.attributes.translations?.[0]?.title ??
-                  prettySlug(post.attributes.slug)
-                }
-                description={post.attributes.translations?.[0]?.excerpt}
-                thumbnail={post.attributes.thumbnail?.data?.attributes}
-                thumbnailAspectRatio="3/2"
-                thumbnailForceAspectRatio
-                bottomChips={post.attributes.categories?.data.map(
-                  (category) => category.attributes?.short ?? ""
-                )}
-                keepInfoVisible={keepInfoVisible}
-                metadata={{
-                  release_date: post.attributes.date,
-                  position: "Top",
-                }}
-              />
-            </Fragment>
-          ))}
-        </div>
+        <SmartList
+          items={filterHasAttributes(posts)}
+          getItemId={(post) => post.id}
+          langui={langui}
+          renderItem={({ item: post }) => (
+            <TranslatedPreviewCard
+              href={`/news/${post.attributes.slug}`}
+              translations={filterDefined(post.attributes.translations).map(
+                (translation) => ({
+                  language: translation.language?.data?.attributes?.code,
+                  title: translation.title,
+                  description: translation.excerpt,
+                })
+              )}
+              languages={languages}
+              slug={post.attributes.slug}
+              thumbnail={post.attributes.thumbnail?.data?.attributes}
+              thumbnailAspectRatio="3/2"
+              thumbnailForceAspectRatio
+              bottomChips={post.attributes.categories?.data.map(
+                (category) => category.attributes?.short ?? ""
+              )}
+              keepInfoVisible={keepInfoVisible}
+              metadata={{
+                release_date: post.attributes.date,
+                position: "Top",
+              }}
+            />
+          )}
+          className="grid-cols-1 desktop:grid-cols-[repeat(auto-fill,_minmax(20rem,1fr))]"
+          searchingTerm={searchName}
+          searchingBy={(post) =>
+            `${prettySlug(post.attributes.slug)} ${post.attributes.translations
+              ?.map((translation) => translation?.title)
+              .join(" ")}`
+          }
+        />
       </ContentPanel>
     ),
-    [filteredItems, keepInfoVisible]
+    [keepInfoVisible, languages, langui, posts, searchName]
   );
 
   return (
@@ -136,6 +145,7 @@ const News = ({ langui, posts, ...otherProps }: Props): JSX.Element => {
       contentPanel={contentPanel}
       subPanelIcon={Icon.Search}
       langui={langui}
+      languages={languages}
       {...otherProps}
     />
   );
@@ -149,9 +159,7 @@ export default News;
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
-  const posts = await sdk.getPostsPreview({
-    language_code: context.locale ?? "en",
-  });
+  const posts = await sdk.getPostsPreview();
   if (!posts.posts) return { notFound: true };
   const props: Props = {
     ...(await getAppStaticProps(context)),
@@ -175,20 +183,3 @@ const sortPosts = (posts: Props["posts"]): Props["posts"] =>
       return dateA.localeCompare(dateB);
     })
     .reverse();
-
-// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
-
-const filterItems = (posts: Props["posts"], searchName: string) =>
-  posts.filter((post) => {
-    if (searchName.length > 1) {
-      if (
-        post.attributes?.translations?.[0]?.title
-          .toLowerCase()
-          .includes(searchName.toLowerCase()) === true
-      ) {
-        return true;
-      }
-      return false;
-    }
-    return true;
-  });

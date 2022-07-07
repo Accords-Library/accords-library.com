@@ -1,5 +1,5 @@
-import { LightBox } from "components/LightBox";
 import { useState } from "react";
+import { LightBox } from "components/LightBox";
 
 export const useLightBox = (): [
   (images: string[], index?: number) => void,

@@ -1,3 +1,5 @@
+import Markdown from "markdown-to-jsx";
+import Link from "next/link";
 import { HorizontalLine } from "components/HorizontalLine";
 import { Button } from "components/Inputs/Button";
 import { NavOption } from "components/PanelComponents/NavOption";
@@ -6,8 +8,6 @@ import { useAppLayout } from "contexts/AppLayoutContext";
 import { AppStaticProps } from "graphql/getAppStaticProps";
 
 import { useMediaDesktop } from "hooks/useMediaQuery";
-import Markdown from "markdown-to-jsx";
-import Link from "next/link";
 import { Icon } from "components/Ico";
 import { cIf, cJoin } from "helpers/className";
 import { isDefinedAndNotEmpty } from "helpers/others";

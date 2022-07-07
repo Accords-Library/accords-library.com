@@ -1,3 +1,8 @@
+import Link from "next/link";
+import { useCallback, useMemo } from "react";
+import { Chip } from "./Chip";
+import { Ico, Icon } from "./Ico";
+import { Img } from "./Img";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import {
   DatePickerFragment,
@@ -15,11 +20,6 @@ import {
 } from "helpers/formatters";
 import { ImageQuality } from "helpers/img";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
-import Link from "next/link";
-import { useCallback, useMemo } from "react";
-import { Chip } from "./Chip";
-import { Ico, Icon } from "./Ico";
-import { Img } from "./Img";
 
 /*
  *                                        ╭─────────────╮
@@ -212,7 +212,7 @@ export const PreviewCard = ({
                 >
                   <Ico
                     icon={Icon.PlayCircleOutline}
-                    className="text-6xl opacity-0 transition-opacity group-hover:opacity-100"
+                    className="!text-6xl opacity-0 transition-opacity group-hover:opacity-100"
                   />
                 </div>
                 <div
@@ -271,7 +271,7 @@ export const PreviewCard = ({
               <p className="mb-1 break-words leading-none">{pre_title}</p>
             )}
             {title && (
-              <p className="break-words font-headers font-bold text-lg leading-none">
+              <p className="break-words font-headers text-lg font-bold leading-none">
                 {title}
               </p>
             )}

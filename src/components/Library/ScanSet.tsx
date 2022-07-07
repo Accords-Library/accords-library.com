@@ -1,3 +1,4 @@
+import { Fragment, useCallback, useMemo } from "react";
 import { Chip } from "components/Chip";
 import { Img } from "components/Img";
 import { Button } from "components/Inputs/Button";
@@ -14,7 +15,6 @@ import {
   isDefinedAndNotEmpty,
 } from "helpers/others";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
-import { Fragment, useCallback, useMemo } from "react";
 
 /*
  *                                        ╭─────────────╮
@@ -139,7 +139,7 @@ export const ScanSet = ({
             <LanguageSwitcher {...languageSwitcherProps} />
 
             <div className="grid place-content-center place-items-center">
-              <p className="font-headers">{langui.status}:</p>
+              <p className="font-headers font-bold">{langui.status}:</p>
               <ToolTip
                 content={getStatusDescription(selectedScan.status, langui)}
                 maxWidth={"20rem"}
@@ -150,7 +150,8 @@ export const ScanSet = ({
 
             {selectedScan.scanners && selectedScan.scanners.data.length > 0 && (
               <div>
-                <p className="font-headers">{"Scanners"}:</p>
+                {/* TODO: Add Scanner to langui */}
+                <p className="font-headers font-bold">{"Scanners"}:</p>
                 <div className="grid place-content-center place-items-center gap-2">
                   {filterHasAttributes(selectedScan.scanners.data).map(
                     (scanner) => (
@@ -168,7 +169,8 @@ export const ScanSet = ({
 
             {selectedScan.cleaners && selectedScan.cleaners.data.length > 0 && (
               <div>
-                <p className="font-headers">{"Cleaners"}:</p>
+                {/* TODO: Add Cleaners to langui */}
+                <p className="font-headers font-bold">{"Cleaners"}:</p>
                 <div className="grid place-content-center place-items-center gap-2">
                   {filterHasAttributes(selectedScan.cleaners.data).map(
                     (cleaner) => (
@@ -187,7 +189,8 @@ export const ScanSet = ({
             {selectedScan.typesetters &&
               selectedScan.typesetters.data.length > 0 && (
                 <div>
-                  <p className="font-headers">{"Typesetters"}:</p>
+                  {/* TODO: Add Cleaners to Typesetters */}
+                  <p className="font-headers font-bold">{"Typesetters"}:</p>
                   <div className="grid place-content-center place-items-center gap-2">
                     {filterHasAttributes(selectedScan.typesetters.data).map(
                       (typesetter) => (
@@ -205,6 +208,7 @@ export const ScanSet = ({
 
             {isDefinedAndNotEmpty(selectedScan.notes) && (
               <ToolTip content={selectedScan.notes}>
+                {/* TODO: Add Notes to Typesetters */}
                 <Chip>{"Notes"}</Chip>
               </ToolTip>
             )}

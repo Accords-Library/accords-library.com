@@ -1,3 +1,5 @@
+import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next";
+import { Fragment, useState, useMemo } from "react";
 import { AppLayout } from "components/AppLayout";
 import { Switch } from "components/Inputs/Switch";
 import { PanelHeader } from "components/PanelComponents/PanelHeader";
@@ -15,8 +17,6 @@ import { GetVideoChannelQuery } from "graphql/generated";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import { getVideoThumbnailURL } from "helpers/videos";
-import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next";
-import { Fragment, useState, useMemo } from "react";
 import { Icon } from "components/Ico";
 import { useMediaHoverable } from "hooks/useMediaQuery";
 import { WithLabel } from "components/Inputs/WithLabel";

@@ -1,6 +1,6 @@
+import { Dispatch, SetStateAction } from "react";
 import { cIf, cJoin } from "helpers/className";
 import { useToggle } from "hooks/useToggle";
-import { Dispatch, SetStateAction } from "react";
 
 /*
  *                                        ╭─────────────╮

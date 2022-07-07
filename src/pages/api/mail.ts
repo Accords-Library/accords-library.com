@@ -17,7 +17,7 @@ export interface RequestMailProps {
 const Mail = async (
   req: NextApiRequest,
   res: NextApiResponse<ResponseMailProps>
-) => {
+): Promise<void> => {
   if (req.method === "POST") {
     const body = req.body as RequestMailProps;
 

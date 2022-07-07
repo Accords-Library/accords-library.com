@@ -1,10 +1,9 @@
+import { useRouter } from "next/router";
+import { useEffect, useMemo, useState } from "react";
 import { LanguageSwitcher } from "components/Inputs/LanguageSwitcher";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { AppStaticProps } from "graphql/getAppStaticProps";
 import { filterDefined, isDefined } from "helpers/others";
-
-import { useRouter } from "next/router";
-import { useEffect, useMemo, useState } from "react";
 
 interface Props<T> {
   items: T[];

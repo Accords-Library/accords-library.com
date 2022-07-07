@@ -1,14 +1,15 @@
-import { PostWithTranslations } from "helpers/types";
-import { GetStaticProps, GetStaticPropsContext } from "next";
+import { GetStaticProps } from "next";
 import { AppStaticProps, getAppStaticProps } from "./getAppStaticProps";
 import { getReadySdk } from "./sdk";
+import { PostWithTranslations } from "helpers/types";
 
 export interface PostStaticProps extends AppStaticProps {
   post: PostWithTranslations;
 }
 
-export const getPostStaticProps = (slug: string): GetStaticProps => {
-  return async (context) => {
+export const getPostStaticProps =
+  (slug: string): GetStaticProps =>
+  async (context) => {
     const sdk = getReadySdk();
     const post = await sdk.getPost({
       slug: slug,
@@ -25,4 +26,3 @@ export const getPostStaticProps = (slug: string): GetStaticProps => {
     }
     return { notFound: true };
   };
-};

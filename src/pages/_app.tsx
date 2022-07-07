@@ -5,8 +5,8 @@ import "@fontsource/opendyslexic/700.css";
 import "@fontsource/vollkorn/700.css";
 import "@fontsource/zen-maru-gothic/500.css";
 import "@fontsource/zen-maru-gothic/900.css";
-import { AppContextProvider } from "contexts/AppLayoutContext";
 import type { AppProps } from "next/app";
+import { AppContextProvider } from "contexts/AppLayoutContext";
 import "tailwind.css";
 
 const AccordsLibraryApp = (props: AppProps): JSX.Element => (

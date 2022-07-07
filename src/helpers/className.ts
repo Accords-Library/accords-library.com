@@ -1,11 +1,8 @@
 export const cIf = (
-  condition: boolean | null | undefined | string,
+  condition: boolean | string | null | undefined,
   ifTrueCss: string,
   ifFalseCss?: string
-) => {
-  return condition ? ifTrueCss : ifFalseCss ?? "";
-};
+): string => (condition ? ifTrueCss : ifFalseCss ?? "");
 
-export const cJoin = (...args: (string | undefined)[]): string => {
-  return args.filter((elem) => elem).join(" ");
-};
+export const cJoin = (...args: (string | undefined)[]): string =>
+  args.filter((elem) => elem).join(" ");

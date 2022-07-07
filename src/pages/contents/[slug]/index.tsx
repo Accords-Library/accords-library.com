@@ -1,3 +1,5 @@
+import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next";
+import { Fragment, useCallback, useMemo } from "react";
 import { AppLayout } from "components/AppLayout";
 import { Chip } from "components/Chip";
 import { HorizontalLine } from "components/HorizontalLine";
@@ -34,8 +36,6 @@ import { ContentWithTranslations } from "helpers/types";
 import { useMediaMobile } from "hooks/useMediaQuery";
 import { AnchorIds, useScrollTopOnChange } from "hooks/useScrollTopOnChange";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
-import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next";
-import { Fragment, useCallback, useMemo } from "react";
 
 /*
  *                                           ╭────────╮
@@ -111,7 +111,9 @@ const Content = ({
               .code !==
               selectedTranslation.language?.data?.attributes?.code && (
               <div className="grid place-items-center gap-2">
-                <p className="font-headers">{langui.source_language}:</p>
+                <p className="font-headers font-bold">
+                  {langui.source_language}:
+                </p>
                 <Chip>
                   {prettyLanguage(
                     selectedTranslation.text_set.source_language.data.attributes
@@ -123,7 +125,7 @@ const Content = ({
             )}
 
             <div className="grid grid-flow-col place-content-center place-items-center gap-2">
-              <p className="font-headers">{langui.status}:</p>
+              <p className="font-headers font-bold">{langui.status}:</p>
 
               <ToolTip
                 content={getStatusDescription(
@@ -139,7 +141,9 @@ const Content = ({
             {selectedTranslation.text_set.transcribers &&
               selectedTranslation.text_set.transcribers.data.length > 0 && (
                 <div>
-                  <p className="font-headers">{langui.transcribers}:</p>
+                  <p className="font-headers font-bold">
+                    {langui.transcribers}:
+                  </p>
                   <div className="grid place-content-center place-items-center gap-2">
                     {filterHasAttributes(
                       selectedTranslation.text_set.transcribers.data
@@ -158,7 +162,9 @@ const Content = ({
             {selectedTranslation.text_set.translators &&
               selectedTranslation.text_set.translators.data.length > 0 && (
                 <div>
-                  <p className="font-headers">{langui.translators}:</p>
+                  <p className="font-headers font-bold">
+                    {langui.translators}:
+                  </p>
                   <div className="grid place-content-center place-items-center gap-2">
                     {filterHasAttributes(
                       selectedTranslation.text_set.translators.data
@@ -177,7 +183,9 @@ const Content = ({
             {selectedTranslation.text_set.proofreaders &&
               selectedTranslation.text_set.proofreaders.data.length > 0 && (
                 <div>
-                  <p className="font-headers">{langui.proofreaders}:</p>
+                  <p className="font-headers font-bold">
+                    {langui.proofreaders}:
+                  </p>
                   <div className="grid place-content-center place-items-center gap-2">
                     {filterHasAttributes(
                       selectedTranslation.text_set.proofreaders.data
@@ -195,7 +203,7 @@ const Content = ({
 
             {isDefinedAndNotEmpty(selectedTranslation.text_set.notes) && (
               <div>
-                <p className="font-headers">{"Notes"}:</p>
+                <p className="font-headers font-bold">{"Notes"}:</p>
                 <div className="grid place-content-center place-items-center gap-2">
                   <Markdawn text={selectedTranslation.text_set.notes} />
                 </div>
@@ -209,7 +217,9 @@ const Content = ({
             <>
               <HorizontalLine />
               <div>
-                <p className="font-headers text-2xl">{langui.source}</p>
+                <p className="font-headers text-2xl font-bold">
+                  {langui.source}
+                </p>
                 <div className="mt-6 grid place-items-center gap-6 text-left">
                   {content.ranged_contents.data.map((rangedContent) => {
                     const libraryItem =
@@ -525,7 +535,7 @@ type Group = NonNullable<
 >["data"];
 
 const getPreviousContent = (group: Group, currentSlug: string) => {
-  for (let index = 0; index < group.length; index += 1) {
+  for (let index = 0; index < group.length; index++) {
     const content = group[index];
     if (content.attributes?.slug === currentSlug && index > 0) {
       return group[index - 1];
@@ -537,7 +547,7 @@ const getPreviousContent = (group: Group, currentSlug: string) => {
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
 const getNextContent = (group: Group, currentSlug: string) => {
-  for (let index = 0; index < group.length; index += 1) {
+  for (let index = 0; index < group.length; index++) {
     const content = group[index];
     if (content.attributes?.slug === currentSlug && index < group.length - 1) {
       return group[index + 1];

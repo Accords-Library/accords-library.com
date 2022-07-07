@@ -1,3 +1,4 @@
+import { Fragment, useCallback, useMemo } from "react";
 import { Chip } from "components/Chip";
 import { Img } from "components/Img";
 import { RecorderChip } from "components/RecorderChip";
@@ -10,7 +11,6 @@ import { AppStaticProps } from "graphql/getAppStaticProps";
 import { getAssetURL, ImageQuality } from "helpers/img";
 import { filterHasAttributes, getStatusDescription } from "helpers/others";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
-import { Fragment, useCallback, useMemo } from "react";
 
 /*
  *                                        ╭─────────────╮
@@ -73,9 +73,10 @@ export const ScanSetCover = ({
           <div>
             <div
               className="flex flex-row flex-wrap place-items-center
-              gap-6 pt-10 text-base first-of-type:pt-0"
+          gap-6 pt-10 text-base first-of-type:pt-0"
             >
-              <h2 id="cover" className="text-2xl">
+              <h2 id={"cover"} className="text-2xl">
+                {/* TODO: Add Cover to langui */}
                 {"Cover"}
               </h2>
 
@@ -91,7 +92,7 @@ export const ScanSetCover = ({
               <LanguageSwitcher {...languageSwitcherProps} />
 
               <div className="grid place-content-center place-items-center">
-                <p className="font-headers">{langui.status}:</p>
+                <p className="font-headers font-bold">{langui.status}:</p>
                 <ToolTip
                   content={getStatusDescription(selectedScan.status, langui)}
                   maxWidth={"20rem"}
@@ -102,7 +103,8 @@ export const ScanSetCover = ({
 
               {selectedScan.scanners && selectedScan.scanners.data.length > 0 && (
                 <div>
-                  <p className="font-headers">{"Scanners"}:</p>
+                  {/* TODO: Add Scanner to langui */}
+                  <p className="font-headers font-bold">{"Scanners"}:</p>
                   <div className="grid place-content-center place-items-center gap-2">
                     {filterHasAttributes(selectedScan.scanners.data).map(
                       (scanner) => (
@@ -120,7 +122,8 @@ export const ScanSetCover = ({
 
               {selectedScan.cleaners && selectedScan.cleaners.data.length > 0 && (
                 <div>
-                  <p className="font-headers">{"Cleaners"}:</p>
+                  {/* TODO: Add Cleaners to langui */}
+                  <p className="font-headers font-bold">{"Cleaners"}:</p>
                   <div className="grid place-content-center place-items-center gap-2">
                     {filterHasAttributes(selectedScan.cleaners.data).map(
                       (cleaner) => (
@@ -139,7 +142,8 @@ export const ScanSetCover = ({
               {selectedScan.typesetters &&
                 selectedScan.typesetters.data.length > 0 && (
                   <div>
-                    <p className="font-headers">{"Typesetters"}:</p>
+                    {/* TODO: Add Cleaners to Typesetters */}
+                    <p className="font-headers font-bold">{"Typesetters"}:</p>
                     <div className="grid place-content-center place-items-center gap-2">
                       {filterHasAttributes(selectedScan.typesetters.data).map(
                         (typesetter) => (

@@ -2,6 +2,11 @@ import { ChronologyItemComponent } from "components/Wiki/Chronology/ChronologyIt
 import { GetChronologyItemsQuery } from "graphql/generated";
 import { AppStaticProps } from "graphql/getAppStaticProps";
 
+/*
+ *                                        ╭─────────────╮
+ * ───────────────────────────────────────╯  COMPONENT  ╰───────────────────────────────────────────
+ */
+
 interface Props {
   year: number;
   items: NonNullable<
@@ -9,6 +14,8 @@ interface Props {
   >["data"][number][];
   langui: AppStaticProps["langui"];
 }
+
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
 export const ChronologyYearComponent = ({
   langui,

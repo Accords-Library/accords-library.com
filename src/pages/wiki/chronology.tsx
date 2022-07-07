@@ -1,3 +1,5 @@
+import { GetStaticProps } from "next";
+import { Fragment, useMemo } from "react";
 import { AppLayout } from "components/AppLayout";
 import { InsetBox } from "components/InsetBox";
 import { NavOption } from "components/PanelComponents/NavOption";
@@ -13,8 +15,6 @@ import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import { prettySlug } from "helpers/formatters";
 import { filterHasAttributes, isDefined } from "helpers/others";
-import { GetStaticProps } from "next";
-import { Fragment, useMemo } from "react";
 
 /*
  *                                           ╭────────╮
@@ -49,13 +49,10 @@ const Chronology = ({
           (chronologyEras[currentChronologyEraIndex].attributes?.ending_year ??
             999999)
         ) {
-          currentChronologyEraIndex += 1;
+          currentChronologyEraIndex++;
         }
         if (
-          Object.prototype.hasOwnProperty.call(
-            memo[currentChronologyEraIndex],
-            item.attributes.year
-          )
+          Object.hasOwn(memo[currentChronologyEraIndex], item.attributes.year)
         ) {
           memo[currentChronologyEraIndex][item.attributes.year].push(item);
         } else {

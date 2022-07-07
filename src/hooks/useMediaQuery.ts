@@ -1,20 +1,20 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { breaks } from "../../design.config";
 
 const useMediaQuery = (query: string): boolean => {
-  const getMatches = (query: string): boolean => {
+  const getMatches = useCallback((): boolean => {
     // Prevents SSR issues
     if (typeof window !== "undefined") {
       return window.matchMedia(query).matches;
     }
     return false;
-  };
+  }, [query]);
 
-  const [matches, setMatches] = useState<boolean>(getMatches(query));
+  const [matches, setMatches] = useState<boolean>(getMatches());
 
   useEffect(() => {
     const handleChange = () => {
-      setMatches(getMatches(query));
+      setMatches(getMatches());
     };
 
     const matchMedia = window.matchMedia(query);
@@ -28,19 +28,19 @@ const useMediaQuery = (query: string): boolean => {
     return () => {
       matchMedia.removeEventListener("change", handleChange);
     };
-  }, [query]);
+  }, [getMatches, query]);
 
   return matches;
 };
 
 // ts-unused-exports:disable-next-line
-export const useMediaThin = () => useMediaQuery(breaks.thin.raw);
+export const useMediaThin = (): boolean => useMediaQuery(breaks.thin.raw);
 
-export const useMediaMobile = () => useMediaQuery(breaks.mobile.raw);
+export const useMediaMobile = (): boolean => useMediaQuery(breaks.mobile.raw);
 
-export const useMediaDesktop = () => useMediaQuery(breaks.desktop.raw);
+export const useMediaDesktop = (): boolean => useMediaQuery(breaks.desktop.raw);
 
-export const useMediaHoverable = () => useMediaQuery("(hover: hover)");
+export const useMediaHoverable = (): boolean => useMediaQuery("(hover: hover)");
 
-export const usePrefersDarkMode = () =>
+export const usePrefersDarkMode = (): boolean =>
   useMediaQuery("(prefers-color-scheme: dark)");

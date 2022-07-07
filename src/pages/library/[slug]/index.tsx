@@ -1,3 +1,5 @@
+import { Fragment, useCallback, useMemo, useState } from "react";
+import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next";
 import { AppLayout } from "components/AppLayout";
 import { Chip } from "components/Chip";
 import { Img } from "components/Img";
@@ -40,12 +42,10 @@ import {
   filterHasAttributes,
   isDefined,
   isDefinedAndNotEmpty,
-  sortContent,
+  sortRangedContent,
 } from "helpers/others";
 import { useLightBox } from "hooks/useLightBox";
 import { AnchorIds, useScrollTopOnChange } from "hooks/useScrollTopOnChange";
-import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next";
-import { Fragment, useCallback, useMemo, useState } from "react";
 import { isUntangibleGroupItem } from "helpers/libraryItem";
 import { useMediaHoverable } from "hooks/useMediaQuery";
 import { WithLabel } from "components/Inputs/WithLabel";
@@ -626,7 +626,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     language_code: context.locale ?? "en",
   });
   if (!item.libraryItems?.data[0]?.attributes) return { notFound: true };
-  sortContent(item.libraryItems.data[0].attributes.contents);
+  sortRangedContent(item.libraryItems.data[0].attributes.contents);
   const props: Props = {
     ...(await getAppStaticProps(context)),
     item: item.libraryItems.data[0].attributes,
@@ -702,6 +702,8 @@ const ContentLine = ({
     ),
   });
 
+  console.log(prettySlug(slug, parentSlug));
+
   return (
     <div
       className={cJoin(
@@ -722,7 +724,7 @@ const ContentLine = ({
                   selectedTranslation.subtitle
                 )
               : content
-              ? prettySlug(content.slug)
+              ? prettySlug(content.slug, parentSlug)
               : prettySlug(slug, parentSlug)}
           </h3>
         </a>

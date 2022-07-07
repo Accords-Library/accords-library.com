@@ -1,7 +1,7 @@
-import { UploadImageFragment } from "graphql/generated";
-import { getAssetURL, getImgSizesByQuality, ImageQuality } from "helpers/img";
 import { ImageProps } from "next/image";
 import { MouseEventHandler } from "react";
+import { UploadImageFragment } from "graphql/generated";
+import { getAssetURL, getImgSizesByQuality, ImageQuality } from "helpers/img";
 
 /*
  *                                         ╭─────────────╮

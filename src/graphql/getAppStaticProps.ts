@@ -1,11 +1,10 @@
+import { GetStaticPropsContext } from "next";
 import {
   GetCurrenciesQuery,
   GetLanguagesQuery,
   GetWebsiteInterfaceQuery,
 } from "graphql/generated";
 import { getReadySdk } from "graphql/sdk";
-
-import { GetStaticPropsContext } from "next";
 
 export type AppStaticProps = {
   langui: NonNullable<
@@ -21,7 +20,7 @@ export const getAppStaticProps = async (
   context: GetStaticPropsContext
 ): Promise<AppStaticProps> => {
   const sdk = getReadySdk();
-  const languages = (await sdk.getLanguages()).languages;
+  const { languages } = await sdk.getLanguages();
 
   if (languages?.data) {
     languages.data.sort((a, b) =>
@@ -31,7 +30,7 @@ export const getAppStaticProps = async (
     );
   }
 
-  const currencies = (await sdk.getCurrencies()).currencies;
+  const { currencies } = await sdk.getCurrencies();
   if (currencies?.data) {
     currencies.data.sort((a, b) =>
       a.attributes && b.attributes

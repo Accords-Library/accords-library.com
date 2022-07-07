@@ -1,6 +1,7 @@
-import { DatePickerFragment, PricePickerFragment } from "graphql/generated";
 import { AppStaticProps } from "../graphql/getAppStaticProps";
 import { convertPrice } from "./numbers";
+import { isDefinedAndNotEmpty } from "./others";
+import { DatePickerFragment, PricePickerFragment } from "graphql/generated";
 
 export const prettyDate = (datePicker: DatePickerFragment): string => {
   let result = "";
@@ -20,7 +21,7 @@ export const prettyPrice = (
   if (!targetCurrencyCode) return "";
   let result = "";
   currencies.map((currency) => {
-    if (currency?.attributes?.code === targetCurrencyCode) {
+    if (currency.attributes?.code === targetCurrencyCode) {
       const amountInTargetCurrency = convertPrice(pricePicker, currency);
       result =
         currency.attributes.symbol +
@@ -34,20 +35,20 @@ export const prettyPrice = (
 };
 
 export const prettySlug = (slug?: string, parentSlug?: string): string => {
-  if (slug) {
-    if (parentSlug && slug.startsWith(parentSlug))
-      slug = slug.substring(parentSlug.length + 1);
-    slug = slug.replace(new RegExp("-", "g"), " ");
-    slug = slug.replace(new RegExp("_", "g"), " ");
-    return capitalizeString(slug);
+  let newSlug = slug;
+  if (newSlug) {
+    if (isDefinedAndNotEmpty(parentSlug) && newSlug.startsWith(parentSlug))
+      newSlug = newSlug.substring(parentSlug.length + 1);
+    newSlug = newSlug.replaceAll("-", " ");
+    return capitalizeString(newSlug);
   }
   return "";
 };
 
 export const prettyinlineTitle = (
-  pretitle: string | undefined | null,
-  title: string | undefined | null,
-  subtitle: string | undefined | null
+  pretitle: string | null | undefined,
+  title: string | null | undefined,
+  subtitle: string | null | undefined
 ): string => {
   let result = "";
   if (pretitle) result += `${pretitle}: `;
@@ -59,7 +60,7 @@ export const prettyinlineTitle = (
 export const prettyItemType = (
   metadata: any,
   langui: AppStaticProps["langui"]
-): string | undefined | null => {
+): string | null | undefined => {
   switch (metadata.__typename) {
     case "ComponentMetadataAudio":
       return langui.audio;
@@ -78,6 +79,7 @@ export const prettyItemType = (
   }
 };
 
+/* eslint-disable id-denylist */
 export const prettyItemSubType = (
   metadata:
     | {
@@ -86,9 +88,11 @@ export const prettyItemSubType = (
           data?: {
             attributes?: {
               slug: string;
-              titles?: Array<{
-                title: string;
-              } | null> | null;
+              titles?:
+                | ({
+                    title: string;
+                  } | null)[]
+                | null;
             } | null;
           } | null;
         } | null;
@@ -99,9 +103,11 @@ export const prettyItemSubType = (
           data?: {
             attributes?: {
               slug: string;
-              titles?: Array<{
-                title: string;
-              } | null> | null;
+              titles?:
+                | ({
+                    title: string;
+                  } | null)[]
+                | null;
             } | null;
           } | null;
         } | null;
@@ -109,12 +115,12 @@ export const prettyItemSubType = (
     | {
         __typename: "ComponentMetadataGame";
         platforms?: {
-          data: Array<{
+          data: {
             id?: string | null;
             attributes?: {
               short: string;
             } | null;
-          }>;
+          }[];
         } | null;
       }
     | {
@@ -123,9 +129,11 @@ export const prettyItemSubType = (
           data?: {
             attributes?: {
               slug: string;
-              titles?: Array<{
-                title: string;
-              } | null> | null;
+              titles?:
+                | ({
+                    title: string;
+                  } | null)[]
+                | null;
             } | null;
           } | null;
         } | null;
@@ -133,27 +141,31 @@ export const prettyItemSubType = (
           data?: {
             attributes?: {
               slug: string;
-              titles?: Array<{
-                title: string;
-              } | null> | null;
+              titles?:
+                | ({
+                    title: string;
+                  } | null)[]
+                | null;
             } | null;
           } | null;
         } | null;
       }
-    | { __typename: "ComponentMetadataOther" }
     | {
         __typename: "ComponentMetadataVideo";
         subtype?: {
           data?: {
             attributes?: {
               slug: string;
-              titles?: Array<{
-                title: string;
-              } | null> | null;
+              titles?:
+                | ({
+                    title: string;
+                  } | null)[]
+                | null;
             } | null;
           } | null;
         } | null;
       }
+    | { __typename: "ComponentMetadataOther" }
     | { __typename: "Error" }
     | null
 ): string => {
@@ -163,27 +175,27 @@ export const prettyItemSubType = (
       case "ComponentMetadataBooks":
       case "ComponentMetadataVideo":
         return metadata.subtype?.data?.attributes?.titles &&
-          metadata.subtype?.data?.attributes?.titles.length > 0 &&
+          metadata.subtype.data.attributes.titles.length > 0 &&
           metadata.subtype.data.attributes.titles[0]
           ? metadata.subtype.data.attributes.titles[0].title
           : prettySlug(metadata.subtype?.data?.attributes?.slug);
       case "ComponentMetadataGame":
         return metadata.platforms?.data &&
-          metadata.platforms?.data.length > 0 &&
+          metadata.platforms.data.length > 0 &&
           metadata.platforms.data[0].attributes
           ? metadata.platforms.data[0].attributes.short
           : "";
       case "ComponentMetadataGroup": {
         const firstPart =
           metadata.subtype?.data?.attributes?.titles &&
-          metadata.subtype?.data?.attributes?.titles.length > 0 &&
+          metadata.subtype.data.attributes.titles.length > 0 &&
           metadata.subtype.data.attributes.titles[0]
             ? metadata.subtype.data.attributes.titles[0].title
             : prettySlug(metadata.subtype?.data?.attributes?.slug);
 
         const secondPart =
           metadata.subitems_type?.data?.attributes?.titles &&
-          metadata.subitems_type?.data?.attributes?.titles.length > 0 &&
+          metadata.subitems_type.data.attributes.titles.length > 0 &&
           metadata.subitems_type.data.attributes.titles[0]
             ? metadata.subitems_type.data.attributes.titles[0].title
             : prettySlug(metadata.subitems_type?.data?.attributes?.slug);
@@ -194,8 +206,8 @@ export const prettyItemSubType = (
     }
   }
   return "";
-  /* eslint-enable @typescript-eslint/no-explicit-any */
 };
+/* eslint-enable id-denylist */
 
 export const prettyShortenNumber = (number: number): string => {
   if (number > 1000000) {
@@ -203,11 +215,9 @@ export const prettyShortenNumber = (number: number): string => {
       maximumSignificantDigits: 3,
     });
   } else if (number > 1000) {
-    return (
-      (number / 1000).toLocaleString(undefined, {
-        maximumSignificantDigits: 2,
-      }) + "K"
-    );
+    return `${(number / 1000).toLocaleString(undefined, {
+      maximumSignificantDigits: 2,
+    })}K`;
   }
   return number.toLocaleString();
 };
@@ -215,18 +225,19 @@ export const prettyShortenNumber = (number: number): string => {
 export const prettyDuration = (seconds: number): string => {
   let hours = 0;
   let minutes = 0;
-  while (seconds > 60) {
-    minutes += 1;
-    seconds -= 60;
+  let remainingSeconds = seconds;
+  while (remainingSeconds > 60) {
+    minutes++;
+    remainingSeconds -= 60;
   }
   while (minutes > 60) {
-    hours += 1;
+    hours++;
     minutes -= 60;
   }
   let result = "";
-  if (hours) result += hours.toString().padStart(2, "0") + ":";
-  result += minutes.toString().padStart(2, "0") + ":";
-  result += seconds.toString().padStart(2, "0");
+  if (hours) result += `${hours.toString().padStart(2, "0")}:`;
+  result += `${minutes.toString().padStart(2, "0")}:`;
+  result += remainingSeconds.toString().padStart(2, "0");
   return result;
 };
 
@@ -236,21 +247,20 @@ export const prettyLanguage = (
 ): string => {
   let result = code;
   languages.forEach((language) => {
-    if (language?.attributes?.code === code)
+    if (language.attributes?.code === code)
       result = language.attributes.localized_name;
   });
   return result;
 };
 
 export const prettyURL = (url: string): string => {
-  let domain = new URL(url);
+  const domain = new URL(url);
   return domain.hostname.replace("www.", "");
 };
 
 const capitalizeString = (string: string): string => {
-  const capitalizeWord = (word: string): string => {
-    return word.charAt(0).toUpperCase() + word.substring(1);
-  };
+  const capitalizeWord = (word: string): string =>
+    word.charAt(0).toUpperCase() + word.substring(1);
 
   let words = string.split(" ");
   words = words.map((word) => capitalizeWord(word));
@@ -262,7 +272,7 @@ export const slugify = (string: string | undefined): string => {
     return "";
   }
   return string
-    .replace(/[ÀÁÂÃÄÅàáâãäåæÆ]/g, "a")
+    .replace(/[ÀÁÂÃÄÅàáâãäåæÆ]/gu, "a")
     .replace(/[çÇ]/gu, "c")
     .replace(/[ðÐ]/gu, "d")
     .replace(/[ÈÉÊËéèêë]/gu, "e")

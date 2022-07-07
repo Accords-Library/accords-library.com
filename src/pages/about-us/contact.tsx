@@ -1,3 +1,5 @@
+import { useRouter } from "next/router";
+import { useState } from "react";
 import { InsetBox } from "components/InsetBox";
 import { PostPage } from "components/PostPage";
 import {
@@ -6,10 +8,7 @@ import {
 } from "graphql/getPostStaticProps";
 import { cIf, cJoin } from "helpers/className";
 import { randomInt } from "helpers/numbers";
-
-import { useRouter } from "next/router";
 import { RequestMailProps, ResponseMailProps } from "pages/api/mail";
-import { useState } from "react";
 
 /*
  *                                           ╭────────╮

@@ -1,9 +1,3 @@
-import { AppStaticProps } from "graphql/getAppStaticProps";
-import { getDescription } from "helpers/description";
-import { prettySlug } from "helpers/formatters";
-import { filterHasAttributes, getStatusDescription } from "helpers/others";
-import { PostWithTranslations } from "helpers/types";
-import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { Fragment, useCallback, useMemo } from "react";
 import { AppLayout } from "./AppLayout";
 import { Chip } from "./Chip";
@@ -15,6 +9,12 @@ import { SubPanel } from "./Panels/SubPanel";
 import { RecorderChip } from "./RecorderChip";
 import { ThumbnailHeader } from "./ThumbnailHeader";
 import { ToolTip } from "./ToolTip";
+import { useSmartLanguage } from "hooks/useSmartLanguage";
+import { PostWithTranslations } from "helpers/types";
+import { filterHasAttributes, getStatusDescription } from "helpers/others";
+import { prettySlug } from "helpers/formatters";
+import { getDescription } from "helpers/description";
+import { AppStaticProps } from "graphql/getAppStaticProps";
 
 /*
  *                                        ╭─────────────╮
@@ -95,7 +95,7 @@ export const PostPage = ({
             <>
               {selectedTranslation && (
                 <div className="grid grid-flow-col place-content-center place-items-center gap-2">
-                  <p className="font-headers">{langui.status}:</p>
+                  <p className="font-headers font-bold">{langui.status}:</p>
 
                   <ToolTip
                     content={getStatusDescription(
@@ -111,7 +111,7 @@ export const PostPage = ({
 
               {post.authors && post.authors.data.length > 0 && (
                 <div>
-                  <p className="font-headers">{"Authors"}:</p>
+                  <p className="font-headers font-bold">{"Authors"}:</p>
                   <div className="grid place-content-center place-items-center gap-2">
                     {filterHasAttributes(post.authors.data).map((author) => (
                       <Fragment key={author.id}>

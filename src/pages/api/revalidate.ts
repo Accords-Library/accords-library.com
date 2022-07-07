@@ -2,17 +2,17 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import getConfig from "next/config";
 
 type RequestProps =
-  | HookRangedContent
-  | HookPostContent
-  | HookLibraryItem
   | HookChronology
   | HookContent
   | HookContentGroup
   | HookCustom
+  | HookLibraryItem
+  | HookPostContent
+  | HookRangedContent
   | HookWiki;
 
 type HookRangedContent = {
-  event: "entry.update" | "entry.delete" | "entry.create";
+  event: "entry.create" | "entry.delete" | "entry.update";
   model: "ranged-content";
   entry: {
     library_item?: {
@@ -33,16 +33,14 @@ type HookContent = {
   model: "content";
   entry: {
     slug: string;
-    ranged_contents: [
-      {
-        slug: string;
-      }
-    ];
+    ranged_contents: {
+      slug: string;
+    }[];
   };
 };
 
 type HookPostContent = {
-  event: "entry.update" | "entry.delete" | "entry.create";
+  event: "entry.create" | "entry.delete" | "entry.update";
   model: "post";
   entry: {
     slug: string;
@@ -50,7 +48,7 @@ type HookPostContent = {
 };
 
 type HookLibraryItem = {
-  event: "entry.update" | "entry.delete" | "entry.create";
+  event: "entry.create" | "entry.delete" | "entry.update";
   model: "library-item";
   entry: {
     slug: string;
@@ -63,7 +61,7 @@ type HookLibraryItem = {
 };
 
 type HookContentGroup = {
-  event: "entry.update" | "entry.delete" | "entry.create";
+  event: "entry.create" | "entry.delete" | "entry.update";
   model: "contents-group";
   entry: {
     contents: {
@@ -73,12 +71,12 @@ type HookContentGroup = {
 };
 
 type HookChronology = {
-  event: "entry.update" | "entry.delete" | "entry.create";
+  event: "entry.create" | "entry.delete" | "entry.update";
   model: "chronology-era" | "chronology-item";
 };
 
 type HookWiki = {
-  event: "entry.update" | "entry.delete" | "entry.create";
+  event: "entry.create" | "entry.delete" | "entry.update";
   model: "wiki-page";
   entry: {
     slug: string;
@@ -90,10 +88,10 @@ type ResponseMailProps = {
   revalidated: boolean;
 };
 
-const Revalidate = async (
+const Revalidate = (
   req: NextApiRequest,
   res: NextApiResponse<ResponseMailProps>
-) => {
+): void => {
   const body = req.body as RequestProps;
   const { serverRuntimeConfig } = getConfig();
 
@@ -101,9 +99,8 @@ const Revalidate = async (
   if (
     req.headers.authorization !== `Bearer ${process.env.REVALIDATION_TOKEN}`
   ) {
-    return res
-      .status(401)
-      .json({ message: "Invalid token", revalidated: false });
+    res.status(401).json({ message: "Invalid token", revalidated: false });
+    return;
   }
 
   const paths: string[] = [];
@@ -229,13 +226,12 @@ const Revalidate = async (
         await res.revalidate(path);
       })
     );
-    return res.json({ message: "Success!", revalidated: true });
-  } catch (err) {
-    // If there was an error, Next.js will continue
-    // to show the last successfully generated page
-    return res
+    res.json({ message: "Success!", revalidated: true });
+    return;
+  } catch (error) {
+    res
       .status(500)
-      .send({ message: "Error revalidating", revalidated: false });
+      .send({ message: `Error revalidating: ${error}`, revalidated: false });
   }
 };
 export default Revalidate;

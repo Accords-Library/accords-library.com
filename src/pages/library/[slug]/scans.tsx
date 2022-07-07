@@ -1,3 +1,5 @@
+import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next";
+import { Fragment, useMemo } from "react";
 import { AppLayout } from "components/AppLayout";
 import { ScanSet } from "components/Library/ScanSet";
 import { ScanSetCover } from "components/Library/ScanSetCover";
@@ -15,11 +17,12 @@ import { GetLibraryItemScansQuery } from "graphql/generated";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import { prettyinlineTitle, prettySlug } from "helpers/formatters";
-import { filterHasAttributes, isDefined, sortContent } from "helpers/others";
-
+import {
+  filterHasAttributes,
+  isDefined,
+  sortRangedContent,
+} from "helpers/others";
 import { useLightBox } from "hooks/useLightBox";
-import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next";
-import { Fragment, useMemo } from "react";
 
 /*
  *                                           ╭────────╮
@@ -44,7 +47,6 @@ const LibrarySlug = ({
   ...otherProps
 }: Props): JSX.Element => {
   const [openLightBox, LightBox] = useLightBox();
-  sortContent(item.contents);
 
   const subPanel = useMemo(
     () => (
@@ -158,6 +160,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   });
   if (!item.libraryItems?.data[0]?.attributes || !item.libraryItems.data[0]?.id)
     return { notFound: true };
+  sortRangedContent(item.libraryItems.data[0].attributes.contents);
   const props: Props = {
     ...(await getAppStaticProps(context)),
     item: item.libraryItems.data[0].attributes,

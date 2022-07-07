@@ -3,13 +3,14 @@
   "private": true,
   "scripts": {
     "dev": "next dev -p 12499",
-    "precommit": "npm run prettier && npm run unused-exports && npm run lint && npm run tsc && npm run generate && echo ALL PRECOMMIT CHECKS PASSED SUCCESSFULLY, LET\\'S FUCKING GO!",
+    "precommit": "npm run prettier && npm run unused-exports && npm run eslint && npm run tsc && npm run generate && echo ALL PRECOMMIT CHECKS PASSED SUCCESSFULLY, LET\\'S FUCKING GO!",
     "unused-exports": "ts-unused-exports ./tsconfig.json --excludePathsFromReport=src/pages --ignoreFiles=generated",
     "prebuild": "npm run generate",
     "build": "next build",
     "postbuild": "next-sitemap --config next-sitemap.config.js",
     "start": "next start -p 12500",
     "lint": "next lint",
+    "eslint": "npx eslint .",
     "generate": "graphql-codegen --config graphql-codegen.config.js",
     "tsc": "tsc",
     "prettier": "prettier --end-of-line auto --write ."
@@ -31,6 +32,7 @@
     "react-dom": "18.2.0",
     "react-hot-keys": "^2.7.2",
     "react-swipeable": "^7.0.0",
+    "tippy.js": "^6.3.7",
     "turndown": "^7.1.1"
   },
   "devDependencies": {
@@ -47,10 +49,10 @@
     "@typescript-eslint/parser": "^5.30.3",
     "eslint": "^8.19.0",
     "eslint-config-next": "12.2.0",
+    "eslint-plugin-import": "^2.26.0",
     "graphql": "^16.5.0",
     "next-sitemap": "^3.1.7",
     "prettier": "^2.7.1",
-    "prettier-plugin-organize-imports": "^3.0.0",
     "prettier-plugin-tailwindcss": "^0.1.11",
     "tailwindcss": "^3.1.4",
     "ts-unused-exports": "^8.0.0",

@@ -73,12 +73,12 @@ export const getOgImage = (
   const imgSize = getImgSizesByQuality(
     image.width ?? 0,
     image.height ?? 0,
-    quality ? quality : ImageQuality.Small
+    quality
   );
   return {
     image: getAssetURL(image.url, quality),
     width: imgSize.width,
     height: imgSize.height,
-    alt: image.alternativeText || "",
+    alt: image.alternativeText ?? "",
   };
 };

@@ -1,10 +1,10 @@
+import { GetStaticProps } from "next";
+import { Fragment, useMemo, useState } from "react";
 import { AppLayout } from "components/AppLayout";
 import { NavOption } from "components/PanelComponents/NavOption";
 import { PanelHeader } from "components/PanelComponents/PanelHeader";
 import { SubPanel } from "components/Panels/SubPanel";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
-
-import { GetStaticProps } from "next";
 import { Icon } from "components/Ico";
 import { getReadySdk } from "graphql/sdk";
 import { GetWikiPagesPreviewsQuery } from "graphql/generated";
@@ -12,7 +12,6 @@ import {
   ContentPanel,
   ContentPanelWidthSizes,
 } from "components/Panels/ContentPanel";
-import { Fragment, useMemo, useState } from "react";
 import { TranslatedPreviewCard } from "components/PreviewCard";
 import { HorizontalLine } from "components/HorizontalLine";
 import { Button } from "components/Inputs/Button";
@@ -98,7 +97,9 @@ const Wiki = ({
         />
         <HorizontalLine />
 
-        <p className="mb-4 font-headers text-xl">{langui.special_pages}</p>
+        <p className="mb-4 font-headers text-xl font-bold">
+          {langui.special_pages}
+        </p>
 
         <NavOption title={langui.chronology} url="/wiki/chronology" border />
       </SubPanel>
@@ -127,6 +128,12 @@ const Wiki = ({
                   translations={page.attributes.translations.map(
                     (translation) => ({
                       title: translation?.title,
+                      subtitle:
+                        translation?.aliases && translation.aliases.length > 0
+                          ? translation.aliases
+                              .map((alias) => alias?.alias)
+                              .join(" | ")
+                          : undefined,
                       description: translation?.summary,
                       language: translation?.language?.data?.attributes?.code,
                     })

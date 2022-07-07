@@ -5,8 +5,15 @@ export enum AnchorIds {
 }
 
 // Scroll to top of element "id" when "deps" update.
-export const useScrollTopOnChange = (id: AnchorIds, deps: DependencyList) => {
+export const useScrollTopOnChange = (
+  id: AnchorIds,
+  deps: DependencyList,
+  enabled = true
+): void => {
   useEffect(() => {
-    document.querySelector(`#${id}`)?.scrollTo({ top: 0, behavior: "smooth" });
-  }, deps);
+    if (enabled)
+      document
+        .querySelector(`#${id}`)
+        ?.scrollTo({ top: 0, behavior: "smooth" });
+  }, [id, deps, enabled]);
 };

@@ -16,15 +16,11 @@ export const convertPrice = (
   return 0;
 };
 
-export const convertMmToInch = (mm: number | null | undefined): string => {
-  return mm ? (mm * 0.03937008).toPrecision(3) : "";
-};
+export const convertMmToInch = (mm: number | null | undefined): string =>
+  mm ? (mm * 0.03937008).toPrecision(3) : "";
 
-export const randomInt = (min: number, max: number) => {
-  return Math.floor(Math.random() * (max - min)) + min;
-};
+export const randomInt = (min: number, max: number): number =>
+  Math.floor(Math.random() * (max - min)) + min;
 
-export const isInteger = (value: string): boolean => {
-  // eslint-disable-next-line require-unicode-regexp
-  return /^[+-]?[0-9]+$/.test(value);
-};
+export const isInteger = (value: string): boolean =>
+  /^[+-]?[0-9]+$/u.test(value);

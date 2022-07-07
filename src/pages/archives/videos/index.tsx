@@ -1,8 +1,12 @@
+import { GetStaticProps } from "next";
+import { useMemo, useState } from "react";
 import { AppLayout } from "components/AppLayout";
+import { SmartList } from "components/SmartList";
 import { Icon } from "components/Ico";
-import { PageSelector } from "components/Inputs/PageSelector";
 import { Switch } from "components/Inputs/Switch";
+import { TextInput } from "components/Inputs/TextInput";
 import { WithLabel } from "components/Inputs/WithLabel";
+import { ContentPlaceholder } from "components/PanelComponents/ContentPlaceholder";
 import { PanelHeader } from "components/PanelComponents/PanelHeader";
 import {
   ReturnButton,
@@ -21,15 +25,15 @@ import { prettyDate } from "helpers/formatters";
 import { filterHasAttributes } from "helpers/others";
 import { getVideoThumbnailURL } from "helpers/videos";
 import { useMediaHoverable } from "hooks/useMediaQuery";
-import { GetStaticProps } from "next";
-import { Fragment, useMemo, useState } from "react";
 
 /*
  *                                         ╭─────────────╮
  * ────────────────────────────────────────╯  CONSTANTS  ╰──────────────────────────────────────────
  */
 
-const ITEM_PER_PAGE = 50;
+const DEFAULT_FILTERS_STATE = {
+  searchName: "",
+};
 
 /*
  *                                           ╭────────╮
@@ -42,18 +46,10 @@ interface Props extends AppStaticProps {
 
 const Videos = ({ langui, videos, ...otherProps }: Props): JSX.Element => {
   const hoverable = useMediaHoverable();
-  const [page, setPage] = useState(0);
   const [keepInfoVisible, setKeepInfoVisible] = useState(true);
-
-  const paginatedVideos = useMemo(() => {
-    const memo = [];
-    for (let index = 0; ITEM_PER_PAGE * index < videos.length; index += 1) {
-      memo.push(
-        videos.slice(index * ITEM_PER_PAGE, (index + 1) * ITEM_PER_PAGE)
-      );
-    }
-    return memo;
-  }, [videos]);
+  const [searchName, setSearchName] = useState(
+    DEFAULT_FILTERS_STATE.searchName
+  );
 
   const subPanel = useMemo(
     () => (
@@ -72,6 +68,13 @@ const Videos = ({ langui, videos, ...otherProps }: Props): JSX.Element => {
           description={langui.archives_description}
         />
 
+        <TextInput
+          className="mb-6 w-full"
+          placeholder={langui.search_title ?? undefined}
+          state={searchName}
+          setState={setSearchName}
+        />
+
         {hoverable && (
           <WithLabel
             label={langui.always_show_info}
@@ -82,56 +85,53 @@ const Videos = ({ langui, videos, ...otherProps }: Props): JSX.Element => {
         )}
       </SubPanel>
     ),
-    [hoverable, keepInfoVisible, langui]
+    [hoverable, keepInfoVisible, langui, searchName]
   );
 
   const contentPanel = useMemo(
     () => (
       <ContentPanel width={ContentPanelWidthSizes.Full}>
-        <PageSelector
-          maxPage={Math.floor(videos.length / ITEM_PER_PAGE)}
-          page={page}
-          setPage={setPage}
-          className="mb-12"
-        />
-
-        <div
-          className="grid items-start gap-8 border-b-[3px] border-dotted pb-12 last-of-type:border-0
-        desktop:grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] mobile:grid-cols-2
-        thin:grid-cols-1"
-        >
-          {filterHasAttributes(paginatedVideos[page]).map((video) => (
-            <Fragment key={video.id}>
+        <SmartList
+          items={filterHasAttributes(videos)}
+          getItemId={(item) => item.id}
+          renderItem={({ item }) => (
+            <>
               <PreviewCard
-                href={`/archives/videos/v/${video.attributes.uid}`}
-                title={video.attributes.title}
-                thumbnail={getVideoThumbnailURL(video.attributes.uid)}
+                href={`/archives/videos/v/${item.attributes.uid}`}
+                title={item.attributes.title}
+                thumbnail={getVideoThumbnailURL(item.attributes.uid)}
                 thumbnailAspectRatio="16/9"
+                thumbnailForceAspectRatio
                 keepInfoVisible={keepInfoVisible}
                 metadata={{
-                  release_date: video.attributes.published_date,
-                  views: video.attributes.views,
-                  author: video.attributes.channel?.data?.attributes?.title,
+                  release_date: item.attributes.published_date,
+                  views: item.attributes.views,
+                  author: item.attributes.channel?.data?.attributes?.title,
                   position: "Top",
                 }}
                 hoverlay={{
                   __typename: "Video",
-                  duration: video.attributes.duration,
+                  duration: item.attributes.duration,
                 }}
               />
-            </Fragment>
-          ))}
-        </div>
-
-        <PageSelector
-          maxPage={Math.floor(videos.length / ITEM_PER_PAGE)}
-          page={page}
-          setPage={setPage}
-          className="mt-12"
+            </>
+          )}
+          renderWhenEmpty={() => (
+            <ContentPlaceholder
+              message={langui.no_results_message ?? "No results"}
+              icon={Icon.ChevronLeft}
+            />
+          )}
+          className="desktop:grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] mobile:grid-cols-2
+          thin:grid-cols-1"
+          paginationItemPerPage={20}
+          searchingTerm={searchName}
+          searchingBy={(item) => item.attributes.title}
+          langui={langui}
         />
       </ContentPanel>
     ),
-    [keepInfoVisible, page, paginatedVideos, videos.length]
+    [keepInfoVisible, langui, searchName, videos]
   );
   return (
     <AppLayout

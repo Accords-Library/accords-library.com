@@ -1,12 +1,12 @@
+import { AppStaticProps } from "../graphql/getAppStaticProps";
+import { SelectiveRequiredNonNullable } from "./types";
 import {
   Enum_Componentsetstextset_Status,
   GetLibraryItemQuery,
   GetLibraryItemScansQuery,
 } from "graphql/generated";
-import { AppStaticProps } from "../graphql/getAppStaticProps";
-import { SelectiveRequiredNonNullable } from "./types";
 
-type SortContentProps =
+type SortRangedContentProps =
   | NonNullable<
       NonNullable<
         GetLibraryItemQuery["libraryItems"]
@@ -18,7 +18,7 @@ type SortContentProps =
       >["data"][number]["attributes"]
     >["contents"];
 
-export const sortContent = (contents: SortContentProps) => {
+export const sortRangedContent = (contents: SortRangedContentProps): void => {
   contents?.data.sort((a, b) => {
     if (
       a.attributes?.range[0]?.__typename === "ComponentRangePageRange" &&
@@ -59,20 +59,20 @@ export const isDefined = <T>(t: T): t is NonNullable<T> =>
   t !== null && t !== undefined;
 
 export const isUndefined = <T>(
-  t: T | undefined | null
-): t is undefined | null => t === null || t === undefined;
+  t: T | null | undefined
+): t is null | undefined => t === null || t === undefined;
 
 export const isDefinedAndNotEmpty = (
-  string: string | undefined | null
+  string: string | null | undefined
 ): string is string => isDefined(string) && string.length > 0;
 
-export const filterDefined = <T>(t: T[] | undefined | null): NonNullable<T>[] =>
+export const filterDefined = <T>(t: T[] | null | undefined): NonNullable<T>[] =>
   isUndefined(t)
     ? []
     : (t.filter((item) => isDefined(item)) as NonNullable<T>[]);
 
 export const filterHasAttributes = <T, P extends keyof NonNullable<T>>(
-  t: T[] | undefined | null,
+  t: T[] | null | undefined,
   attributes?: P[]
 ): SelectiveRequiredNonNullable<NonNullable<T>, P>[] =>
   isUndefined(t)
@@ -89,27 +89,24 @@ export const filterHasAttributes = <T, P extends keyof NonNullable<T>>(
 
 export const iterateMap = <K, V, U>(
   map: Map<K, V>,
-  callbackfn: (key: K, value: V, index: number) => U
+  callbackfn: (key: K, value: V, index: number) => U,
+  sortingFunction?: (a: [K, V], b: [K, V]) => number
 ): U[] => {
-  const result: U[] = [];
-  let index = 0;
-  for (const [key, value] of map.entries()) {
-    result.push(callbackfn(key, value, index));
-    index += 1;
+  const toList = [...map];
+  if (isDefined(sortingFunction)) {
+    toList.sort(sortingFunction);
+    console.log(toList.sort(sortingFunction));
   }
-  return result;
+  return toList.map(([key, value], index) => callbackfn(key, value, index));
 };
 
 export const mapMoveEntry = <K, V>(
   map: Map<K, V>,
   sourceIndex: number,
   targetIndex: number
-) => new Map(arrayMove([...map], sourceIndex, targetIndex));
+): Map<K, V> => new Map(arrayMove([...map], sourceIndex, targetIndex));
 
 const arrayMove = <T>(arr: T[], sourceIndex: number, targetIndex: number) => {
   arr.splice(targetIndex, 0, arr.splice(sourceIndex, 1)[0]);
   return arr;
 };
-
-export const mapRemoveEmptyValues = <K, V>(groups: Map<K, V[]>): Map<K, V[]> =>
-  new Map([...groups].filter(([_, items]) => items.length > 0));

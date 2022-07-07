@@ -1,7 +1,7 @@
+import { Dispatch, SetStateAction } from "react";
+import { ButtonGroup } from "./ButtonGroup";
 import { Icon } from "components/Ico";
 import { cJoin } from "helpers/className";
-import { Dispatch, SetStateAction } from "react";
-import { Button } from "./Button";
 
 /*
  *                                        ╭─────────────╮
@@ -23,19 +23,21 @@ export const PageSelector = ({
   maxPage,
   className,
 }: Props): JSX.Element => (
-  <div className={cJoin("flex flex-row place-content-center", className)}>
-    <Button
-      onClick={() => setPage((current) => (page > 0 ? current - 1 : current))}
-      className="rounded-r-none"
-      icon={Icon.NavigateBefore}
-    />
-    <Button className="rounded-none border-x-0" text={(page + 1).toString()} />
-    <Button
-      onClick={() =>
-        setPage((current) => (page < maxPage ? page + 1 : current))
-      }
-      className="rounded-l-none"
-      icon={Icon.NavigateNext}
-    />
-  </div>
+  <ButtonGroup
+    className={cJoin("flex flex-row place-content-center", className)}
+    buttonsProps={[
+      {
+        onClick: () => setPage((current) => (page > 0 ? current - 1 : current)),
+        icon: Icon.NavigateBefore,
+      },
+      {
+        text: (page + 1).toString(),
+      },
+      {
+        onClick: () =>
+          setPage((current) => (page < maxPage ? page + 1 : current)),
+        icon: Icon.NavigateNext,
+      },
+    ]}
+  />
 );

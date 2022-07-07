@@ -1,5 +1,5 @@
-import { cJoin } from "helpers/className";
 import { MouseEventHandler } from "react";
+import { cJoin } from "helpers/className";
 
 /*
  *                                        ╭─────────────╮
@@ -31,6 +31,7 @@ export const Ico = ({ onClick, icon, className }: Props): JSX.Element => (
  * ─────────────────────────────────────────╯  OTHER  ╰─────────────────────────────────────────────
  */
 
+/* eslint-disable max-len */
 export enum Icon {
   Onek = "1k",
   OnekPlus = "1k_plus",

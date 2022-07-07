@@ -1,3 +1,4 @@
+import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next";
 import { PostPage } from "components/PostPage";
 import { AppStaticProps } from "graphql/getAppStaticProps";
 import {
@@ -6,7 +7,6 @@ import {
 } from "graphql/getPostStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import { filterHasAttributes, isDefined } from "helpers/others";
-import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next";
 
 /*
  *                                           ╭────────╮

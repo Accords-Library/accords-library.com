@@ -1,5 +1,6 @@
+import { GetStaticProps } from "next";
+import { useState, useMemo, useCallback } from "react";
 import { AppLayout } from "components/AppLayout";
-import { Chip } from "components/Chip";
 import { Select } from "components/Inputs/Select";
 import { Switch } from "components/Inputs/Switch";
 import { PanelHeader } from "components/PanelComponents/PanelHeader";
@@ -12,20 +13,16 @@ import { TranslatedPreviewCard } from "components/PreviewCard";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import { prettyinlineTitle, prettySlug } from "helpers/formatters";
-import { GetStaticProps } from "next";
-import { Fragment, useState, useMemo } from "react";
-import { Icon } from "components/Ico";
+import { TextInput } from "components/Inputs/TextInput";
 import { WithLabel } from "components/Inputs/WithLabel";
 import { Button } from "components/Inputs/Button";
-import { TextInput } from "components/Inputs/TextInput";
 import { useMediaHoverable } from "hooks/useMediaQuery";
-import {
-  filterHasAttributes,
-  iterateMap,
-  mapRemoveEmptyValues,
-} from "helpers/others";
-import { ContentPlaceholder } from "components/PanelComponents/ContentPlaceholder";
+import { Icon } from "components/Ico";
+import { filterDefined, filterHasAttributes } from "helpers/others";
 import { GetContentsQuery } from "graphql/generated";
+import { SmartList } from "components/SmartList";
+import { SelectiveRequiredNonNullable } from "helpers/types";
+import { ContentPlaceholder } from "components/PanelComponents/ContentPlaceholder";
 
 /*
  *                                         ╭─────────────╮
@@ -74,14 +71,72 @@ const Contents = ({
     [combineRelatedContent, searchName.length]
   );
 
-  const filteredItems = useMemo(
-    () => filterContents(contents, effectiveCombineRelatedContent, searchName),
-    [effectiveCombineRelatedContent, contents, searchName]
+  const groupingFunction = useCallback(
+    (
+      item: SelectiveRequiredNonNullable<
+        NonNullable<GetContentsQuery["contents"]>["data"][number],
+        "attributes" | "id"
+      >
+    ): string[] => {
+      switch (groupingMethod) {
+        case 0: {
+          const categories = filterHasAttributes(
+            item.attributes.categories?.data
+          );
+          if (categories.length > 0) {
+            return categories.map((category) => category.attributes.name);
+          }
+          return [langui.no_category ?? "No category"];
+        }
+        case 1: {
+          return [
+            item.attributes.type?.data?.attributes?.titles?.[0]?.title ??
+            item.attributes.type?.data?.attributes?.slug
+              ? prettySlug(item.attributes.type.data.attributes.slug)
+              : langui.no_type ?? "No type",
+          ];
+        }
+        default: {
+          return [""];
+        }
+      }
+    },
+    [groupingMethod, langui]
   );
 
-  const groups = useMemo(
-    () => getGroups(langui, groupingMethod, filteredItems),
-    [langui, groupingMethod, filteredItems]
+  const filteringFunction = useCallback(
+    (
+      item: SelectiveRequiredNonNullable<
+        Props["contents"][number],
+        "attributes" | "id"
+      >
+    ) => {
+      if (
+        effectiveCombineRelatedContent &&
+        item.attributes.group?.data?.attributes?.combine === true &&
+        item.attributes.group.data.attributes.contents?.data[0].id !== item.id
+      ) {
+        return false;
+      }
+      if (searchName.length > 1) {
+        if (
+          filterDefined(item.attributes.translations).find((translation) =>
+            prettyinlineTitle(
+              translation.pre_title,
+              translation.title,
+              translation.subtitle
+            )
+              .toLowerCase()
+              .includes(searchName.toLowerCase())
+          )
+        ) {
+          return true;
+        }
+        return false;
+      }
+      return true;
+    },
+    [effectiveCombineRelatedContent, searchName]
   );
 
   const subPanel = useMemo(
@@ -161,107 +216,91 @@ const Contents = ({
   const contentPanel = useMemo(
     () => (
       <ContentPanel width={ContentPanelWidthSizes.Full}>
-        {groups.size === 0 && (
-          <ContentPlaceholder
-            message={langui.no_results_message ?? "No results"}
-            icon={Icon.ChevronLeft}
-          />
-        )}
-        {iterateMap(
-          groups,
-          (name, items, index) =>
-            items.length > 0 && (
-              <Fragment key={index}>
-                {name && (
-                  <h2
-                    className="flex flex-row place-items-center gap-2 pb-2 pt-10 text-2xl
-                first-of-type:pt-0"
-                  >
-                    {name}
-                    <Chip>{`${items.reduce((currentSum, item) => {
-                      if (effectiveCombineRelatedContent) {
-                        if (
-                          item.attributes?.group?.data?.attributes?.combine ===
-                          true
-                        ) {
-                          return (
-                            currentSum +
-                            (item.attributes.group.data.attributes.contents
-                              ?.data.length ?? 1)
-                          );
-                        }
-                      }
-                      return currentSum + 1;
-                    }, 0)} ${
-                      items.length <= 1
-                        ? langui.result?.toLowerCase() ?? ""
-                        : langui.results?.toLowerCase() ?? ""
-                    }`}</Chip>
-                  </h2>
-                )}
-
-                <div
-                  className="grid grid-cols-2 items-end gap-8
-                desktop:grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] mobile:gap-4"
-                >
-                  {filterHasAttributes(items).map((item) => (
-                    <Fragment key={item.id}>
-                      {item.attributes.translations && (
-                        <TranslatedPreviewCard
-                          href={`/contents/${item.attributes.slug}`}
-                          translations={item.attributes.translations.map(
-                            (translation) => ({
-                              pre_title: translation?.pre_title,
-                              title: translation?.title,
-                              subtitle: translation?.subtitle,
-                              language:
-                                translation?.language?.data?.attributes?.code,
-                            })
-                          )}
-                          slug={item.attributes.slug}
-                          languages={languages}
-                          thumbnail={
-                            item.attributes.thumbnail?.data?.attributes
-                          }
-                          thumbnailAspectRatio="3/2"
-                          thumbnailForceAspectRatio
-                          stackNumber={
-                            effectiveCombineRelatedContent &&
-                            item.attributes.group?.data?.attributes?.combine ===
-                              true
-                              ? item.attributes.group.data.attributes.contents
-                                  ?.data.length
-                              : 0
-                          }
-                          topChips={
-                            item.attributes.type?.data?.attributes
-                              ? [
-                                  item.attributes.type.data.attributes
-                                    .titles?.[0]
-                                    ? item.attributes.type.data.attributes
-                                        .titles[0]?.title
-                                    : prettySlug(
-                                        item.attributes.type.data.attributes
-                                          .slug
-                                      ),
-                                ]
-                              : undefined
-                          }
-                          bottomChips={item.attributes.categories?.data.map(
-                            (category) => category.attributes?.short ?? ""
-                          )}
-                          keepInfoVisible={keepInfoVisible}
-                        />
-                      )}
-                    </Fragment>
-                  ))}
-                </div>
-              </Fragment>
-            )
-        )}
+        <SmartList
+          items={filterHasAttributes(contents)}
+          getItemId={(item) => item.id}
+          renderItem={({ item }) => (
+            <>
+              {item.attributes.translations && (
+                <TranslatedPreviewCard
+                  href={`/contents/${item.attributes.slug}`}
+                  translations={item.attributes.translations.map(
+                    (translation) => ({
+                      pre_title: translation?.pre_title,
+                      title: translation?.title,
+                      subtitle: translation?.subtitle,
+                      language: translation?.language?.data?.attributes?.code,
+                    })
+                  )}
+                  slug={item.attributes.slug}
+                  languages={languages}
+                  thumbnail={item.attributes.thumbnail?.data?.attributes}
+                  thumbnailAspectRatio="3/2"
+                  thumbnailForceAspectRatio
+                  stackNumber={
+                    effectiveCombineRelatedContent &&
+                    item.attributes.group?.data?.attributes?.combine === true
+                      ? item.attributes.group.data.attributes.contents?.data
+                          .length
+                      : 0
+                  }
+                  topChips={
+                    item.attributes.type?.data?.attributes
+                      ? [
+                          item.attributes.type.data.attributes.titles?.[0]
+                            ? item.attributes.type.data.attributes.titles[0]
+                                ?.title
+                            : prettySlug(
+                                item.attributes.type.data.attributes.slug
+                              ),
+                        ]
+                      : undefined
+                  }
+                  bottomChips={item.attributes.categories?.data.map(
+                    (category) => category.attributes?.short ?? ""
+                  )}
+                  keepInfoVisible={keepInfoVisible}
+                />
+              )}
+            </>
+          )}
+          renderWhenEmpty={() => (
+            <ContentPlaceholder
+              message={langui.no_results_message ?? "No results"}
+              icon={Icon.ChevronLeft}
+            />
+          )}
+          className="grid-cols-2 items-end desktop:grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))]"
+          groupingFunction={groupingFunction}
+          filteringFunction={filteringFunction}
+          searchingTerm={searchName}
+          searchingBy={(item) =>
+            `
+            ${item.attributes.slug}
+            ${filterDefined(item.attributes.translations)
+              .map((translation) =>
+                prettyinlineTitle(
+                  translation.pre_title,
+                  translation.title,
+                  translation.subtitle
+                )
+              )
+              .join(" ")}`
+          }
+          langui={langui}
+        />
       </ContentPanel>
     ),
-    [effectiveCombineRelatedContent, groups, keepInfoVisible, languages, langui]
+    [
+      contents,
+      effectiveCombineRelatedContent,
+      filteringFunction,
+      groupingFunction,
+      keepInfoVisible,
+      languages,
+      langui,
+      searchName,
+    ]
   );
 
   return (
@@ -303,107 +342,3 @@ export const getStaticProps: GetStaticProps = async (context) => {
     props: props,
   };
 };
-
-/*
- *                                      ╭───────────────────╮
- * ─────────────────────────────────────╯  PRIVATE METHODS  ╰───────────────────────────────────────
- */
-
-type GroupContentItems = Map<string, Props["contents"]>;
-
-export const getGroups = (
-  langui: AppStaticProps["langui"],
-  groupByType: number,
-  items: Props["contents"]
-): GroupContentItems => {
-  const groups: GroupContentItems = new Map();
-
-  switch (groupByType) {
-    case 0: {
-      const noCategory = langui.no_category ?? "No category";
-      groups.set("Drakengard 1", []);
-      groups.set("Drakengard 1.3", []);
-      groups.set("Drakengard 2", []);
-      groups.set("Drakengard 3", []);
-      groups.set("Drakengard 4", []);
-      groups.set("NieR Gestalt", []);
-      groups.set("NieR Replicant", []);
-      groups.set("NieR Replicant ver.1.22474487139...", []);
-      groups.set("NieR:Automata", []);
-      groups.set("NieR Re[in]carnation", []);
-      groups.set("SINoALICE", []);
-      groups.set("Voice of Cards", []);
-      groups.set("Final Fantasy XIV", []);
-      groups.set("Thou Shalt Not Die", []);
-      groups.set("Bakuken", []);
-      groups.set("YoRHa", []);
-      groups.set("YoRHa Boys", []);
-      groups.set(noCategory, []);
-
-      items.map((item) => {
-        if (item.attributes?.categories?.data.length === 0) {
-          groups.get(noCategory)?.push(item);
-        } else {
-          item.attributes?.categories?.data.map((category) => {
-            groups.get(category.attributes?.name ?? noCategory)?.push(item);
-          });
-        }
-      });
-      break;
-    }
-
-    case 1: {
-      items.map((item) => {
-        const noType = langui.no_type ?? "No type";
-        const type =
-          item.attributes?.type?.data?.attributes?.titles?.[0]?.title ??
-          item.attributes?.type?.data?.attributes?.slug
-            ? prettySlug(item.attributes.type.data.attributes.slug)
-            : langui.no_type;
-        if (!groups.has(type ?? noType)) groups.set(type ?? noType, []);
-        groups.get(type ?? noType)?.push(item);
-      });
-      break;
-    }
-
-    default: {
-      groups.set("", items);
-    }
-  }
-  return mapRemoveEmptyValues(groups);
-};
-
-// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
-
-export const filterContents = (
-  contents: Props["contents"],
-  combineRelatedContent: boolean,
-  searchName: string
-): Props["contents"] =>
-  contents.filter((content) => {
-    if (
-      combineRelatedContent &&
-      content.attributes?.group?.data?.attributes?.combine === true &&
-      content.attributes.group.data.attributes.contents?.data[0].id !==
-        content.id
-    ) {
-      return false;
-    }
-    if (searchName.length > 1) {
-      if (
-        content.attributes?.translations?.find((translation) =>
-          prettyinlineTitle(
-            translation?.pre_title,
-            translation?.title,
-            translation?.subtitle
-          )
-            .toLowerCase()
-            .includes(searchName.toLowerCase())
-        )
-      ) {
-        return true;
-      }
-      return false;
-    }
-    return true;
-  });

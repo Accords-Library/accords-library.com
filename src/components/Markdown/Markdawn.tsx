@@ -1,3 +1,7 @@
+import Markdown from "markdown-to-jsx";
+import { useRouter } from "next/router";
+import React, { Fragment, useMemo } from "react";
+import ReactDOMServer from "react-dom/server";
 import { HorizontalLine } from "components/HorizontalLine";
 import { Ico, Icon } from "components/Ico";
 import { Img } from "components/Img";
@@ -10,10 +14,6 @@ import { slugify } from "helpers/formatters";
 import { getAssetURL, ImageQuality } from "helpers/img";
 import { isDefined, isDefinedAndNotEmpty } from "helpers/others";
 import { useLightBox } from "hooks/useLightBox";
-import Markdown from "markdown-to-jsx";
-import { useRouter } from "next/router";
-import React, { Fragment, useMemo } from "react";
-import ReactDOMServer from "react-dom/server";
 
 /*
  *                                        ╭─────────────╮
@@ -458,7 +458,7 @@ const preprocessMarkDawn = (text: string): string => {
     .split("\n")
     .map((line) => {
       if (line === "* * *" || line === "---") {
-        scenebreakIndex += 1;
+        scenebreakIndex++;
         return `<SceneBreak id="scene-break-${scenebreakIndex}">`;
       }
 
@@ -506,7 +506,7 @@ const markdawnHeadersParser = (
   let index = 2;
   while (visitedSlugs.includes(newSlug)) {
     newSlug = `${slug}-${index}`;
-    index += 1;
+    index++;
   }
   visitedSlugs.push(newSlug);
   return `<h${headerLevel} id="${newSlug}">${lineText}</h${headerLevel}>`;
@@ -543,7 +543,7 @@ const getTocFromMarkdawn = (text: string, title?: string): TocInterface => {
         slug: getSlug(line),
         children: [],
       });
-      h2 += 1;
+      h2++;
       h3 = -1;
       h4 = -1;
       h5 = -1;
@@ -554,7 +554,7 @@ const getTocFromMarkdawn = (text: string, title?: string): TocInterface => {
         slug: getSlug(line),
         children: [],
       });
-      h3 += 1;
+      h3++;
       h4 = -1;
       h5 = -1;
       scenebreak = 0;
@@ -564,7 +564,7 @@ const getTocFromMarkdawn = (text: string, title?: string): TocInterface => {
         slug: getSlug(line),
         children: [],
       });
-      h4 += 1;
+      h4++;
       h5 = -1;
       scenebreak = 0;
     } else if (h4 >= 0 && line.startsWith("<h5 id=")) {
@@ -573,7 +573,7 @@ const getTocFromMarkdawn = (text: string, title?: string): TocInterface => {
         slug: getSlug(line),
         children: [],
       });
-      h5 += 1;
+      h5++;
       scenebreak = 0;
     } else if (h5 >= 0 && line.startsWith("<h6 id=")) {
       toc.children[h2].children[h3].children[h4].children[h5].children.push({
@@ -582,8 +582,8 @@ const getTocFromMarkdawn = (text: string, title?: string): TocInterface => {
         children: [],
       });
     } else if (line.startsWith(`<SceneBreak`)) {
-      scenebreak += 1;
-      scenebreakIndex += 1;
+      scenebreak++;
+      scenebreakIndex++;
 
       const child = {
         title: `Scene break ${scenebreak}`,

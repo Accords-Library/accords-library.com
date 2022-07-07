@@ -1,12 +1,12 @@
+import Link from "next/link";
+import { useCallback } from "react";
+import { Chip } from "./Chip";
+import { Img } from "./Img";
 import { UploadImageFragment } from "graphql/generated";
 import { AppStaticProps } from "graphql/getAppStaticProps";
 import { prettySlug } from "helpers/formatters";
 import { ImageQuality } from "helpers/img";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
-import Link from "next/link";
-import { useCallback } from "react";
-import { Chip } from "./Chip";
-import { Img } from "./Img";
 
 /*
  *                                        ╭─────────────╮
@@ -59,7 +59,9 @@ const PreviewLine = ({
         <div className="my-1 flex flex-col">
           {pre_title && <p className="mb-1 leading-none">{pre_title}</p>}
           {title && (
-            <p className="font-headers text-lg leading-none">{title}</p>
+            <p className="font-headers text-lg font-bold leading-none">
+              {title}
+            </p>
           )}
           {subtitle && <p className="leading-none">{subtitle}</p>}
         </div>

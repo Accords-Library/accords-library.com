@@ -77,6 +77,15 @@ query getWikiPage($slug: String, $language_code: String) {
               }
             }
           }
+          categories {
+            data {
+              id
+              attributes {
+                name
+                short
+              }
+            }
+          }
           translations {
             language {
               data {
@@ -85,7 +94,6 @@ query getWikiPage($slug: String, $language_code: String) {
                 }
               }
             }
-
             source_language {
               data {
                 attributes {

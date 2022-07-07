@@ -1,3 +1,5 @@
+import { useCallback, useMemo } from "react";
+import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next";
 import { AppLayout } from "components/AppLayout";
 import { Chip } from "components/Chip";
 import { HorizontalLine } from "components/HorizontalLine";
@@ -21,8 +23,6 @@ import {
 } from "helpers/others";
 import { WikiPageWithTranslations } from "helpers/types";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
-import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next";
-import { useCallback, useMemo } from "react";
 
 interface Props extends AppStaticProps {
   page: WikiPageWithTranslations;
@@ -71,8 +71,16 @@ const WikiPage = ({
           className="mb-10"
         />
 
-        <div className="flex place-content-center gap-4">
+        <div className="flex place-content-center gap-3">
           <h1 className="text-center text-3xl">{selectedTranslation?.title}</h1>
+          {selectedTranslation?.aliases &&
+            selectedTranslation.aliases.length > 0 && (
+              <p className="mr-3 text-center text-2xl">
+                {`(${selectedTranslation.aliases
+                  .map((alias) => alias?.alias)
+                  .join(", ")})`}
+              </p>
+            )}
           <LanguageSwitcher {...languageSwitcherProps} />
         </div>
 
@@ -88,7 +96,9 @@ const WikiPage = ({
                 <Img image={page.thumbnail.data.attributes} />
               )}
               <div className="my-4 grid gap-4 p-4">
-                <p className="font-headers text-xl">{langui.categories}</p>
+                <p className="font-headers text-xl font-bold">
+                  {langui.categories}
+                </p>
                 <div className="flex flex-row flex-wrap place-content-center gap-2">
                   {page.categories?.data.map((category) => (
                     <Chip key={category.id}>{category.attributes?.name}</Chip>
@@ -96,29 +106,38 @@ const WikiPage = ({
                 </div>
               </div>
             </div>
+
             {isDefinedAndNotEmpty(selectedTranslation.summary) && (
               <div className="mb-6">
-                <p className="font-headers text-lg">{langui.summary}</p>
+                <p className="font-headers text-lg font-bold">
+                  {langui.summary}
+                </p>
                 <p>{selectedTranslation.summary}</p>
               </div>
             )}
 
             {filterHasAttributes(page.definitions, ["translations"]).map(
               (definition, index) => (
-                <DefinitionCard
-                  key={index}
-                  source={definition.source?.data?.attributes?.name}
-                  translations={filterHasAttributes(
-                    definition.translations
-                  ).map((translation) => ({
-                    language: translation.language.data?.attributes?.code,
-                    definition: translation.definition,
-                    status: translation.status,
-                  }))}
-                  index={index + 1}
-                  languages={languages}
-                  langui={langui}
-                />
+                <>
+                  <DefinitionCard
+                    key={index}
+                    source={definition.source?.data?.attributes?.name}
+                    translations={filterHasAttributes(
+                      definition.translations
+                    ).map((translation) => ({
+                      language: translation.language.data?.attributes?.code,
+                      definition: translation.definition,
+                      status: translation.status,
+                    }))}
+                    index={index + 1}
+                    languages={languages}
+                    langui={langui}
+                    categories={filterHasAttributes(
+                      definition.categories?.data
+                    ).map((category) => category.attributes.short)}
+                  />
+                  <br />
+                </>
               )
             )}
           </div>

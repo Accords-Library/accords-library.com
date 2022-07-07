@@ -1,11 +1,11 @@
+import { Fragment } from "react";
+import { ToolTip } from "../ToolTip";
+import { Button } from "./Button";
 import { Icon } from "components/Ico";
 import { AppStaticProps } from "graphql/getAppStaticProps";
 import { cJoin } from "helpers/className";
 import { prettyLanguage } from "helpers/formatters";
 import { iterateMap } from "helpers/others";
-import { Fragment } from "react";
-import { ToolTip } from "../ToolTip";
-import { Button } from "./Button";
 
 /*
  *                                        ╭─────────────╮
@@ -18,6 +18,7 @@ interface Props {
   locales: Map<string, number>;
   localesIndex: number | undefined;
   onLanguageChanged: (index: number) => void;
+  size?: Parameters<typeof Button>[0]["size"];
 }
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
@@ -27,6 +28,7 @@ export const LanguageSwitcher = ({
   locales,
   localesIndex,
   languages,
+  size,
   onLanguageChanged,
 }: Props): JSX.Element => (
   <ToolTip
@@ -47,6 +49,7 @@ export const LanguageSwitcher = ({
     <Button
       badgeNumber={locales.size > 1 ? locales.size : undefined}
       icon={Icon.Translate}
+      size={size}
     />
   </ToolTip>
 );

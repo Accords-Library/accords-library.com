@@ -1,5 +1,6 @@
+import { GetStaticProps } from "next";
+import { useState, useMemo, useCallback } from "react";
 import { AppLayout } from "components/AppLayout";
-import { Chip } from "components/Chip";
 import { Select } from "components/Inputs/Select";
 import { Switch } from "components/Inputs/Switch";
 import { PanelHeader } from "components/PanelComponents/PanelHeader";
@@ -11,32 +12,29 @@ import { SubPanel } from "components/Panels/SubPanel";
 import { GetLibraryItemsPreviewQuery } from "graphql/generated";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
-import { prettyItemSubType } from "helpers/formatters";
-import { LibraryItemUserStatus } from "helpers/types";
-import { GetStaticProps } from "next";
-import { Fragment, useState, useMemo } from "react";
+import {
+  prettyDate,
+  prettyinlineTitle,
+  prettyItemSubType,
+} from "helpers/formatters";
+import {
+  LibraryItemUserStatus,
+  SelectiveRequiredNonNullable,
+} from "helpers/types";
 import { Icon } from "components/Ico";
 import { WithLabel } from "components/Inputs/WithLabel";
 import { TextInput } from "components/Inputs/TextInput";
 import { Button } from "components/Inputs/Button";
 import { PreviewCardCTAs } from "components/Library/PreviewCardCTAs";
-import { useAppLayout } from "contexts/AppLayoutContext";
-import {
-  filterItems,
-  getGroups,
-  sortBy,
-  isUntangibleGroupItem,
-} from "helpers/libraryItem";
+import { isUntangibleGroupItem } from "helpers/libraryItem";
 import { PreviewCard } from "components/PreviewCard";
 import { useMediaHoverable } from "hooks/useMediaQuery";
 import { ButtonGroup } from "components/Inputs/ButtonGroup";
-import {
-  filterHasAttributes,
-  isDefinedAndNotEmpty,
-  isUndefined,
-  iterateMap,
-} from "helpers/others";
+import { filterHasAttributes, isDefined, isUndefined } from "helpers/others";
 import { ContentPlaceholder } from "components/PanelComponents/ContentPlaceholder";
+import { useAppLayout } from "contexts/AppLayoutContext";
+import { convertPrice } from "helpers/numbers";
+import { SmartList } from "components/SmartList";
 
 /*
  *                                         ╭─────────────╮
@@ -65,12 +63,12 @@ interface Props extends AppStaticProps {
 
 const Library = ({
   langui,
-  items: libraryItems,
+  items,
   currencies,
   ...otherProps
 }: Props): JSX.Element => {
-  const appLayout = useAppLayout();
   const hoverable = useMediaHoverable();
+  const appLayout = useAppLayout();
 
   const [searchName, setSearchName] = useState(
     DEFAULT_FILTERS_STATE.searchName
@@ -97,36 +95,170 @@ const Library = ({
     LibraryItemUserStatus | undefined
   >(DEFAULT_FILTERS_STATE.filterUserStatus);
 
-  const filteredItems = useMemo(
-    () =>
-      filterItems(
-        appLayout,
-        libraryItems,
-        searchName,
-        showSubitems,
-        showPrimaryItems,
-        showSecondaryItems,
-        filterUserStatus
-      ),
+  const filteringFunction = useCallback(
+    (
+      item: SelectiveRequiredNonNullable<
+        Props["items"][number],
+        "attributes" | "id"
+      >
+    ) => {
+      if (!showSubitems && !item.attributes.root_item) return false;
+      if (
+        showSubitems &&
+        isUntangibleGroupItem(item.attributes.metadata?.[0])
+      ) {
+        return false;
+      }
+      if (item.attributes.primary && !showPrimaryItems) return false;
+      if (!item.attributes.primary && !showSecondaryItems) return false;
+
+      if (
+        isDefined(filterUserStatus) &&
+        item.id &&
+        appLayout.libraryItemUserStatus
+      ) {
+        if (isUntangibleGroupItem(item.attributes.metadata?.[0])) {
+          return false;
+        }
+        if (filterUserStatus === LibraryItemUserStatus.None) {
+          if (appLayout.libraryItemUserStatus[item.id]) {
+            return false;
+          }
+        } else if (
+          filterUserStatus !== appLayout.libraryItemUserStatus[item.id]
+        ) {
+          return false;
+        }
+      }
+      return true;
+    },
     [
-      appLayout,
+      appLayout.libraryItemUserStatus,
       filterUserStatus,
-      libraryItems,
-      searchName,
       showPrimaryItems,
       showSecondaryItems,
       showSubitems,
     ]
   );
 
-  const sortedItems = useMemo(
-    () => sortBy(sortingMethod, filteredItems, currencies),
-    [currencies, filteredItems, sortingMethod]
+  const sortingFunction = useCallback(
+    (
+      a: SelectiveRequiredNonNullable<
+        Props["items"][number],
+        "attributes" | "id"
+      >,
+      b: SelectiveRequiredNonNullable<
+        Props["items"][number],
+        "attributes" | "id"
+      >
+    ) => {
+      switch (sortingMethod) {
+        case 0: {
+          const titleA = prettyinlineTitle(
+            "",
+            a.attributes.title,
+            a.attributes.subtitle
+          );
+          const titleB = prettyinlineTitle(
+            "",
+            b.attributes.title,
+            b.attributes.subtitle
+          );
+          return titleA.localeCompare(titleB);
+        }
+        case 1: {
+          const priceA = a.attributes.price
+            ? convertPrice(a.attributes.price, currencies[0])
+            : 99999;
+          const priceB = b.attributes.price
+            ? convertPrice(b.attributes.price, currencies[0])
+            : 99999;
+          return priceA - priceB;
+        }
+        case 2: {
+          const dateA = a.attributes.release_date
+            ? prettyDate(a.attributes.release_date)
+            : "9999";
+          const dateB = b.attributes.release_date
+            ? prettyDate(b.attributes.release_date)
+            : "9999";
+          return dateA.localeCompare(dateB);
+        }
+        default:
+          return 0;
+      }
+    },
+    [currencies, sortingMethod]
   );
 
-  const groups = useMemo(
-    () => getGroups(langui, groupingMethod, sortedItems),
-    [langui, groupingMethod, sortedItems]
+  const groupingFunction = useCallback(
+    (
+      item: SelectiveRequiredNonNullable<
+        Props["items"][number],
+        "attributes" | "id"
+      >
+    ): string[] => {
+      switch (groupingMethod) {
+        case 0: {
+          const categories = filterHasAttributes(
+            item.attributes.categories?.data
+          );
+          if (categories.length > 0) {
+            return categories.map((category) => category.attributes.name);
+          }
+          return [langui.no_category ?? "No category"];
+        }
+        case 1: {
+          if (item.attributes.metadata && item.attributes.metadata.length > 0) {
+            switch (item.attributes.metadata[0]?.__typename) {
+              case "ComponentMetadataAudio":
+                return [langui.audio ?? "Audio"];
+              case "ComponentMetadataGame":
+                return [langui.game ?? "Game"];
+              case "ComponentMetadataBooks":
+                return [langui.textual ?? "Textual"];
+              case "ComponentMetadataVideo":
+                return [langui.video ?? "Video"];
+              case "ComponentMetadataOther":
+                return [langui.other ?? "Other"];
+              case "ComponentMetadataGroup": {
+                switch (
+                  item.attributes.metadata[0]?.subitems_type?.data?.attributes
+                    ?.slug
+                ) {
+                  case "audio":
+                    return [langui.audio ?? "Audio"];
+                  case "video":
+                    return [langui.video ?? "Video"];
+                  case "game":
+                    return [langui.game ?? "Game"];
+                  case "textual":
+                    return [langui.textual ?? "Textual"];
+                  case "mixed":
+                    return [langui.group ?? "Group"];
+                  default: {
+                    return [langui.no_type ?? "No type"];
+                  }
+                }
+              }
+              default:
+                return [langui.no_type ?? "No type"];
+            }
+          } else {
+            return [langui.no_type ?? "No type"];
+          }
+        }
+        case 2: {
+          if (item.attributes.release_date?.year) {
+            return [item.attributes.release_date.year.toString()];
+          }
+          return [langui.no_year ?? "No year"];
+        }
+        default:
+          return [""];
+      }
+    },
+    [groupingMethod, langui]
   );
 
   const subPanel = useMemo(
@@ -273,72 +405,73 @@ const Library = ({
   const contentPanel = useMemo(
     () => (
       <ContentPanel width={ContentPanelWidthSizes.Full}>
-        {groups.size === 0 && (
-          <ContentPlaceholder
-            message={langui.no_results_message ?? "No results"}
-            icon={Icon.ChevronLeft}
-          />
-        )}
-        {iterateMap(groups, (name, items) => (
-          <Fragment key={name}>
-            {isDefinedAndNotEmpty(name) && (
-              <h2
-                className="flex flex-row place-items-center gap-2
-                  pb-2 pt-10 text-2xl first-of-type:pt-0"
-              >
-                {name}
-                <Chip>{`${items.length} ${
-                  items.length <= 1
-                    ? langui.result?.toLowerCase() ?? "result"
-                    : langui.results?.toLowerCase() ?? "results"
-                }`}</Chip>
-              </h2>
-            )}
-            <div
-              className="grid items-end gap-8 border-b-[3px] border-dotted pb-12
-                last-of-type:border-0 desktop:grid-cols-[repeat(auto-fill,_minmax(13rem,1fr))]
-                mobile:grid-cols-2 mobile:gap-4"
-            >
-              {filterHasAttributes(items).map((item) => (
-                <Fragment key={item.id}>
-                  <PreviewCard
-                    href={`/library/${item.attributes.slug}`}
-                    title={item.attributes.title}
-                    subtitle={item.attributes.subtitle}
-                    thumbnail={item.attributes.thumbnail?.data?.attributes}
-                    thumbnailAspectRatio="21/29.7"
-                    thumbnailRounded={false}
-                    keepInfoVisible={keepInfoVisible}
-                    topChips={
-                      item.attributes.metadata &&
-                      item.attributes.metadata.length > 0 &&
-                      item.attributes.metadata[0]
-                        ? [prettyItemSubType(item.attributes.metadata[0])]
-                        : []
-                    }
-                    bottomChips={item.attributes.categories?.data.map(
-                      (category) => category.attributes?.short ?? ""
-                    )}
-                    metadata={{
-                      currencies: currencies,
-                      release_date: item.attributes.release_date,
-                      price: item.attributes.price,
-                      position: "Bottom",
-                    }}
-                    infoAppend={
-                      !isUntangibleGroupItem(item.attributes.metadata?.[0]) && (
-                        <PreviewCardCTAs id={item.id} langui={langui} />
-                      )
-                    }
-                  />
-                </Fragment>
-              ))}
-            </div>
-          </Fragment>
-        ))}
+        <SmartList
+          items={filterHasAttributes(items)}
+          getItemId={(item) => item.id}
+          renderItem={({ item }) => (
+            <PreviewCard
+              href={`/library/${item.attributes.slug}`}
+              title={item.attributes.title}
+              subtitle={item.attributes.subtitle}
+              thumbnail={item.attributes.thumbnail?.data?.attributes}
+              thumbnailAspectRatio="21/29.7"
+              thumbnailRounded={false}
+              keepInfoVisible={keepInfoVisible}
+              topChips={
+                item.attributes.metadata &&
+                item.attributes.metadata.length > 0 &&
+                item.attributes.metadata[0]
+                  ? [prettyItemSubType(item.attributes.metadata[0])]
+                  : []
+              }
+              bottomChips={item.attributes.categories?.data.map(
+                (category) => category.attributes?.short ?? ""
+              )}
+              metadata={{
+                currencies: currencies,
+                release_date: item.attributes.release_date,
+                price: item.attributes.price,
+                position: "Bottom",
+              }}
+              infoAppend={
+                !isUntangibleGroupItem(item.attributes.metadata?.[0]) && (
+                  <PreviewCardCTAs id={item.id} langui={langui} />
+                )
+              }
+            />
+          )}
+          renderWhenEmpty={() => (
+            <ContentPlaceholder
+              message={langui.no_results_message ?? "No results"}
+              icon={Icon.ChevronLeft}
+            />
+          )}
+          className="grid-cols-2 items-end desktop:grid-cols-[repeat(auto-fill,_minmax(13rem,1fr))]"
+          searchingTerm={searchName}
+          sortingFunction={sortingFunction}
+          groupingFunction={groupingFunction}
+          searchingBy={(item) =>
+            prettyinlineTitle(
+              "",
+              item.attributes.title,
+              item.attributes.subtitle
+            )
+          }
+          filteringFunction={filteringFunction}
+          langui={langui}
+        />
       </ContentPanel>
     ),
-    [currencies, groups, keepInfoVisible, langui]
+    [
+      currencies,
+      filteringFunction,
+      groupingFunction,
+      items,
+      keepInfoVisible,
+      langui,
+      searchName,
+      sortingFunction,
+    ]
   );
 
   return (

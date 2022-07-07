@@ -1,19 +1,3 @@
-import { Button } from "components/Inputs/Button";
-import { useAppLayout } from "contexts/AppLayoutContext";
-import { UploadImageFragment } from "graphql/generated";
-import { AppStaticProps } from "graphql/getAppStaticProps";
-import { cIf, cJoin } from "helpers/className";
-import { prettyLanguage, prettySlug } from "helpers/formatters";
-import { getOgImage, ImageQuality } from "helpers/img";
-import {
-  filterHasAttributes,
-  isDefined,
-  isDefinedAndNotEmpty,
-  isUndefined,
-  iterateMap,
-} from "helpers/others";
-import { useMediaMobile } from "hooks/useMediaQuery";
-import { AnchorIds } from "hooks/useScrollTopOnChange";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useLayoutEffect, useMemo, useState } from "react";
@@ -26,6 +10,22 @@ import { TextInput } from "./Inputs/TextInput";
 import { ContentPlaceholder } from "./PanelComponents/ContentPlaceholder";
 import { MainPanel } from "./Panels/MainPanel";
 import { Popup } from "./Popup";
+import { AnchorIds } from "hooks/useScrollTopOnChange";
+import { useMediaMobile } from "hooks/useMediaQuery";
+import {
+  filterHasAttributes,
+  isDefined,
+  isDefinedAndNotEmpty,
+  isUndefined,
+  iterateMap,
+} from "helpers/others";
+import { getOgImage, ImageQuality } from "helpers/img";
+import { prettyLanguage, prettySlug } from "helpers/formatters";
+import { cIf, cJoin } from "helpers/className";
+import { AppStaticProps } from "graphql/getAppStaticProps";
+import { UploadImageFragment } from "graphql/generated";
+import { useAppLayout } from "contexts/AppLayoutContext";
+import { Button } from "components/Inputs/Button";
 
 /*
  *                                         ╭─────────────╮
@@ -406,7 +406,7 @@ export const AppLayout = ({
                     insertLabels={
                       new Map([
                         [0, langui.primary_language],
-                        [1, langui.secondary_language], 
+                        [1, langui.secondary_language],
                       ])
                     }
                     onChange={(items) => {

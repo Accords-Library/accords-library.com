@@ -1,5 +1,5 @@
-import { isDefined } from "helpers/others";
 import { useEffect, useState } from "react";
+import { isDefined } from "helpers/others";
 
 export const useStateWithLocalStorage = <T>(
   key: string,

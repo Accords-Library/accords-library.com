@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev -p 12499",
-    "precommit": "npm run prettier && npm run unused-exports && npm run eslint && npm run tsc && npm run generate && echo ALL PRECOMMIT CHECKS PASSED SUCCESSFULLY, LET\\'S FUCKING GO!",
+    "precommit": "npm run generate && npm run prettier && npm run unused-exports && npm run eslint && npm run tsc && echo ALL PRECOMMIT CHECKS PASSED SUCCESSFULLY, LET\\'S FUCKING GO!",
     "unused-exports": "ts-unused-exports ./tsconfig.json --excludePathsFromReport=src/pages --ignoreFiles=generated",
     "prebuild": "npm run generate",
     "build": "next build",

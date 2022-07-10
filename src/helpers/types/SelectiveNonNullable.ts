@@ -34,11 +34,11 @@ type Recursive<T, Path extends unknown[]> = PathHead<Path> extends keyof T
 
 type Split<
   Str,
-  Cache extends string[] = []
-> = Str extends `${infer Method}.${infer PathRest}`
-  ? Split<PathRest, [...Cache, Method]>
-  : Str extends `${infer PathLast}`
-  ? [...Cache, PathLast]
+  Acc extends string[] = []
+> = Str extends `${infer Head}.${infer Rest}`
+  ? Split<Rest, [...Acc, Head]>
+  : Str extends `${infer Last}`
+  ? [...Acc, Last]
   : never;
 
 export type SelectiveNonNullable<T, P extends PathDot<T>> = Recursive<

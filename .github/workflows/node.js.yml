@@ -26,11 +26,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
       - run: npm ci
-      - run: npm run lint
-      - run: npm run build --if-present
+      - run: npm run precommit
         env:
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-          NEXT_PUBLIC_URL_CMS: ${{ secrets.NEXT_PUBLIC_URL_CMS }}
-          NEXT_PUBLIC_URL_IMG: ${{ secrets.NEXT_PUBLIC_URL_IMG }}
-          NEXT_PUBLIC_URL_SELF: ${{ secrets.NEXT_PUBLIC_URL_SELF }}
           URL_GRAPHQL: ${{ secrets.URL_GRAPHQL }}

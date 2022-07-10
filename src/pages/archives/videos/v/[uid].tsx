@@ -238,11 +238,13 @@ export const getStaticPaths: GetStaticPaths = async (context) => {
   const videos = await sdk.getVideosSlugs();
   const paths: GetStaticPathsResult["paths"] = [];
   if (videos.videos?.data)
-    filterHasAttributes(videos.videos.data).map((video) => {
-      context.locales?.map((local) => {
-        paths.push({ params: { uid: video.attributes.uid }, locale: local });
-      });
-    });
+    filterHasAttributes(videos.videos.data, ["attributes"] as const).map(
+      (video) => {
+        context.locales?.map((local) => {
+          paths.push({ params: { uid: video.attributes.uid }, locale: local });
+        });
+      }
+    );
   return {
     paths,
     fallback: "blocking",

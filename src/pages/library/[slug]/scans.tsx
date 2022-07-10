@@ -177,7 +177,9 @@ export const getStaticPaths: GetStaticPaths = async (context) => {
   const sdk = getReadySdk();
   const libraryItems = await sdk.getLibraryItemsSlugs({});
   const paths: GetStaticPathsResult["paths"] = [];
-  filterHasAttributes(libraryItems.libraryItems?.data).map((item) => {
+  filterHasAttributes(libraryItems.libraryItems?.data, [
+    "attributes",
+  ] as const).map((item) => {
     context.locales?.map((local) =>
       paths.push({ params: { slug: item.attributes.slug }, locale: local })
     );

@@ -78,7 +78,9 @@ const Channel = ({ langui, channel, ...otherProps }: Props): JSX.Element => {
           className="grid items-start gap-8 border-b-[3px] border-dotted pb-12 last-of-type:border-0
         desktop:grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] mobile:grid-cols-2"
         >
-          {filterHasAttributes(channel?.videos?.data).map((video) => (
+          {filterHasAttributes(channel?.videos?.data, [
+            "attributes",
+          ] as const).map((video) => (
             <Fragment key={video.id}>
               <PreviewCard
                 href={`/archives/videos/v/${video.attributes.uid}`}
@@ -152,7 +154,9 @@ export const getStaticPaths: GetStaticPaths = async (context) => {
   const channels = await sdk.getVideoChannelsSlugs();
   const paths: GetStaticPathsResult["paths"] = [];
   if (channels.videoChannels?.data)
-    filterHasAttributes(channels.videoChannels.data).map((channel) => {
+    filterHasAttributes(channels.videoChannels.data, [
+      "attributes",
+    ] as const).map((channel) => {
       context.locales?.map((local) => {
         paths.push({
           params: { uid: channel.attributes.uid },

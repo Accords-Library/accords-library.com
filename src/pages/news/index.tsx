@@ -97,7 +97,7 @@ const News = ({
     () => (
       <ContentPanel width={ContentPanelWidthSizes.Full}>
         <SmartList
-          items={filterHasAttributes(posts)}
+          items={filterHasAttributes(posts, ["attributes", "id"] as const)}
           getItemId={(post) => post.id}
           langui={langui}
           renderItem={({ item: post }) => (

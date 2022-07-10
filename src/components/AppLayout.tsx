@@ -188,14 +188,13 @@ export const AppLayout = ({
     return memo;
   }, [router.locale, router.locales]);
 
-  const currencyOptions = useMemo(() => {
-    const memo: string[] = [];
-    filterHasAttributes(currencies).map((currentCurrency) => {
-      if (isDefinedAndNotEmpty(currentCurrency.attributes.code))
-        memo.push(currentCurrency.attributes.code);
-    });
-    return memo;
-  }, [currencies]);
+  const currencyOptions = useMemo(
+    () =>
+      filterHasAttributes(currencies, ["attributes"] as const).map(
+        (currentCurrency) => currentCurrency.attributes.code
+      ),
+    [currencies]
+  );
 
   const [currencySelect, setCurrencySelect] = useState<number>(-1);
 

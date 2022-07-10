@@ -80,12 +80,12 @@ export const ThumbnailHeader = ({
           <div className="flex flex-col place-items-center gap-2">
             <h3 className="text-xl">{langui.type}</h3>
             <div className="flex flex-row flex-wrap">
-              <Chip>
-                {type.data.attributes.titles &&
-                type.data.attributes.titles.length > 0
-                  ? type.data.attributes.titles[0]?.title
-                  : prettySlug(type.data.attributes.slug)}
-              </Chip>
+              <Chip
+                text={
+                  type.data.attributes.titles?.[0]?.title ??
+                  prettySlug(type.data.attributes.slug)
+                }
+              />
             </div>
           </div>
         )}
@@ -94,8 +94,11 @@ export const ThumbnailHeader = ({
           <div className="flex flex-col place-items-center gap-2">
             <h3 className="text-xl">{langui.categories}</h3>
             <div className="flex flex-row flex-wrap place-content-center gap-2">
-              {filterHasAttributes(categories.data).map((category) => (
-                <Chip key={category.id}>{category.attributes.name}</Chip>
+              {filterHasAttributes(categories.data, [
+                "attributes",
+                "id",
+              ] as const).map((category) => (
+                <Chip key={category.id} text={category.attributes.name} />
               ))}
             </div>
           </div>

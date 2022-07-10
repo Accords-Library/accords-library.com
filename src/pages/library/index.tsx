@@ -17,10 +17,7 @@ import {
   prettyinlineTitle,
   prettyItemSubType,
 } from "helpers/formatters";
-import {
-  LibraryItemUserStatus,
-  SelectiveRequiredNonNullable,
-} from "helpers/types";
+import { LibraryItemUserStatus } from "helpers/types";
 import { Icon } from "components/Ico";
 import { WithLabel } from "components/Inputs/WithLabel";
 import { TextInput } from "components/Inputs/TextInput";
@@ -35,6 +32,7 @@ import { ContentPlaceholder } from "components/PanelComponents/ContentPlaceholde
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { convertPrice } from "helpers/numbers";
 import { SmartList } from "components/SmartList";
+import { SelectiveNonNullable } from "helpers/types/SelectiveNonNullable";
 
 /*
  *                                         ╭─────────────╮
@@ -97,10 +95,7 @@ const Library = ({
 
   const filteringFunction = useCallback(
     (
-      item: SelectiveRequiredNonNullable<
-        Props["items"][number],
-        "attributes" | "id"
-      >
+      item: SelectiveNonNullable<Props["items"][number], "attributes" | "id">
     ) => {
       if (!showSubitems && !item.attributes.root_item) return false;
       if (
@@ -143,14 +138,8 @@ const Library = ({
 
   const sortingFunction = useCallback(
     (
-      a: SelectiveRequiredNonNullable<
-        Props["items"][number],
-        "attributes" | "id"
-      >,
-      b: SelectiveRequiredNonNullable<
-        Props["items"][number],
-        "attributes" | "id"
-      >
+      a: SelectiveNonNullable<Props["items"][number], "attributes" | "id">,
+      b: SelectiveNonNullable<Props["items"][number], "attributes" | "id">
     ) => {
       switch (sortingMethod) {
         case 0: {
@@ -193,15 +182,13 @@ const Library = ({
 
   const groupingFunction = useCallback(
     (
-      item: SelectiveRequiredNonNullable<
-        Props["items"][number],
-        "attributes" | "id"
-      >
+      item: SelectiveNonNullable<Props["items"][number], "attributes" | "id">
     ): string[] => {
       switch (groupingMethod) {
         case 0: {
           const categories = filterHasAttributes(
-            item.attributes.categories?.data
+            item.attributes.categories?.data,
+            ["attributes"] as const
           );
           if (categories.length > 0) {
             return categories.map((category) => category.attributes.name);
@@ -406,7 +393,7 @@ const Library = ({
     () => (
       <ContentPanel width={ContentPanelWidthSizes.Full}>
         <SmartList
-          items={filterHasAttributes(items)}
+          items={filterHasAttributes(items, ["id", "attributes"] as const)}
           getItemId={(item) => item.id}
           renderItem={({ item }) => (
             <PreviewCard

@@ -221,15 +221,17 @@ const LibrarySlug = ({
                   {item.urls?.length ? (
                     <div className="flex flex-row place-items-center gap-3">
                       <p>{langui.available_at}</p>
-                      {filterHasAttributes(item.urls).map((url, index) => (
-                        <Fragment key={index}>
-                          <Button
-                            href={url.url}
-                            target={"_blank"}
-                            text={prettyURL(url.url)}
-                          />
-                        </Fragment>
-                      ))}
+                      {filterHasAttributes(item.urls, ["url"] as const).map(
+                        (url, index) => (
+                          <Fragment key={index}>
+                            <Button
+                              href={url.url}
+                              target={"_blank"}
+                              text={prettyURL(url.url)}
+                            />
+                          </Fragment>
+                        )
+                      )}
                     </div>
                   ) : (
                     <p>{langui.item_not_available}</p>
@@ -246,33 +248,32 @@ const LibrarySlug = ({
                 className="grid w-full grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] items-end
               gap-8"
               >
-                {filterHasAttributes(item.gallery.data).map(
-                  (galleryItem, index) => (
-                    <Fragment key={galleryItem.id}>
-                      <div
-                        className="relative aspect-square cursor-pointer
+                {filterHasAttributes(item.gallery.data, [
+                  "id",
+                  "attributes",
+                ] as const).map((galleryItem, index) => (
+                  <Fragment key={galleryItem.id}>
+                    <div
+                      className="relative aspect-square cursor-pointer
                       transition-transform hover:scale-[1.02]"
-                        onClick={() => {
-                          const images: string[] = filterHasAttributes(
-                            item.gallery?.data
-                          ).map((image) =>
-                            getAssetURL(
-                              image.attributes.url,
-                              ImageQuality.Large
-                            )
-                          );
-                          openLightBox(images, index);
-                        }}
-                      >
-                        <Img
-                          className="h-full w-full rounded-lg
+                      onClick={() => {
+                        const images: string[] = filterHasAttributes(
+                          item.gallery?.data,
+                          ["attributes"] as const
+                        ).map((image) =>
+                          getAssetURL(image.attributes.url, ImageQuality.Large)
+                        );
+                        openLightBox(images, index);
+                      }}
+                    >
+                      <Img
+                        className="h-full w-full rounded-lg
                         bg-light object-cover drop-shadow-shade-md"
-                          image={galleryItem.attributes}
-                        />
-                      </div>
-                    </Fragment>
-                  )
-                )}
+                        image={galleryItem.attributes}
+                      />
+                    </div>
+                  </Fragment>
+                ))}
               </div>
             </div>
           )}
@@ -288,9 +289,9 @@ const LibrarySlug = ({
                   <div className="grid place-content-start place-items-center">
                     <h3 className="text-xl">{langui.type}</h3>
                     <div className="grid grid-flow-col gap-1">
-                      <Chip>{prettyItemType(item.metadata[0], langui)}</Chip>
+                      <Chip text={prettyItemType(item.metadata[0], langui)} />
                       {"›"}
-                      <Chip>{prettyItemSubType(item.metadata[0])}</Chip>
+                      <Chip text={prettyItemSubType(item.metadata[0])} />
                     </div>
                   </div>
                 )}
@@ -331,8 +332,10 @@ const LibrarySlug = ({
                 <div className="flex flex-col place-items-center gap-2">
                   <h3 className="text-xl">{langui.categories}</h3>
                   <div className="flex flex-row flex-wrap place-content-center gap-2">
-                    {item.categories.data.map((category) => (
-                      <Chip key={category.id}>{category.attributes?.name}</Chip>
+                    {filterHasAttributes(item.categories.data, [
+                      "attributes",
+                    ] as const).map((category) => (
+                      <Chip key={category.id} text={category.attributes.name} />
                     ))}
                   </div>
                 </div>
@@ -458,7 +461,10 @@ const LibrarySlug = ({
                 className="grid w-full grid-cols-[repeat(auto-fill,minmax(15rem,1fr))]
               items-end gap-8 mobile:grid-cols-2 thin:grid-cols-1"
               >
-                {filterHasAttributes(item.subitems.data).map((subitem) => (
+                {filterHasAttributes(item.subitems.data, [
+                  "id",
+                  "attributes",
+                ] as const).map((subitem) => (
                   <Fragment key={subitem.id}>
                     <PreviewCard
                       href={`/library/${subitem.attributes.slug}`}
@@ -506,56 +512,57 @@ const LibrarySlug = ({
                 />
               )}
               <div className="grid w-full gap-4">
-                {filterHasAttributes(item.contents.data).map(
-                  (rangedContent) => (
-                    <ContentLine
-                      content={
-                        rangedContent.attributes.content?.data?.attributes
-                          ? {
-                              translations: filterDefined(
+                {filterHasAttributes(item.contents.data, [
+                  "attributes",
+                ] as const).map((rangedContent) => (
+                  <ContentLine
+                    content={
+                      rangedContent.attributes.content?.data?.attributes
+                        ? {
+                            translations: filterDefined(
+                              rangedContent.attributes.content.data.attributes
+                                .translations
+                            ).map((translation) => ({
+                              pre_title: translation.pre_title,
+                              title: translation.title,
+                              subtitle: translation.subtitle,
+                              language:
+                                translation.language?.data?.attributes?.code,
+                            })),
+                            categories: filterHasAttributes(
+                              rangedContent.attributes.content.data.attributes
+                                .categories?.data,
+                              ["attributes"]
+                            ).map((category) => category.attributes.short),
+                            type:
+                              rangedContent.attributes.content.data.attributes
+                                .type?.data?.attributes?.titles?.[0]?.title ??
+                              prettySlug(
                                 rangedContent.attributes.content.data.attributes
-                                  .translations
-                              ).map((translation) => ({
-                                pre_title: translation.pre_title,
-                                title: translation.title,
-                                subtitle: translation.subtitle,
-                                language:
-                                  translation.language?.data?.attributes?.code,
-                              })),
-                              categories: filterHasAttributes(
-                                rangedContent.attributes.content.data.attributes
-                                  .categories?.data
-                              ).map((category) => category.attributes.short),
-                              type:
-                                rangedContent.attributes.content.data.attributes
-                                  .type?.data?.attributes?.titles?.[0]?.title ??
-                                prettySlug(
-                                  rangedContent.attributes.content.data
-                                    .attributes.type?.data?.attributes?.slug
-                                ),
-                              slug: rangedContent.attributes.content.data
-                                .attributes.slug,
-                            }
-                          : undefined
-                      }
-                      langui={langui}
-                      rangeStart={
-                        rangedContent.attributes.range[0]?.__typename ===
-                        "ComponentRangePageRange"
-                          ? `${rangedContent.attributes.range[0].starting_page}`
-                          : ""
-                      }
-                      slug={rangedContent.attributes.slug}
-                      parentSlug={item.slug}
-                      key={rangedContent.id}
-                      languages={languages}
-                      hasScanSet={
-                        isDefined(rangedContent.attributes.scan_set) &&
-                        rangedContent.attributes.scan_set.length > 0
-                      }
-                    />
-                  )
-                )}
+                                  .type?.data?.attributes?.slug
+                              ),
+                            slug: rangedContent.attributes.content.data
+                              .attributes.slug,
+                          }
+                        : undefined
+                    }
+                    langui={langui}
+                    rangeStart={
+                      rangedContent.attributes.range[0]?.__typename ===
+                      "ComponentRangePageRange"
+                        ? `${rangedContent.attributes.range[0].starting_page}`
+                        : ""
+                    }
+                    slug={rangedContent.attributes.slug}
+                    parentSlug={item.slug}
+                    key={rangedContent.id}
+                    languages={languages}
+                    hasScanSet={
+                      isDefined(rangedContent.attributes.scan_set) &&
+                      rangedContent.attributes.scan_set.length > 0
+                    }
+                  />
+                ))}
               </div>
             </div>
           )}
@@ -643,7 +650,9 @@ export const getStaticPaths: GetStaticPaths = async (context) => {
   const sdk = getReadySdk();
   const libraryItems = await sdk.getLibraryItemsSlugs();
   const paths: GetStaticPathsResult["paths"] = [];
-  filterHasAttributes(libraryItems.libraryItems?.data).map((item) => {
+  filterHasAttributes(libraryItems.libraryItems?.data, [
+    "attributes",
+  ] as const).map((item) => {
     context.locales?.map((local) =>
       paths.push({ params: { slug: item.attributes.slug }, locale: local })
     );
@@ -702,8 +711,6 @@ const ContentLine = ({
     ),
   });
 
-  console.log(prettySlug(slug, parentSlug));
-
   return (
     <div
       className={cJoin(
@@ -730,13 +737,13 @@ const ContentLine = ({
         </a>
         <div className="flex flex-row flex-wrap gap-1">
           {content?.categories?.map((category, index) => (
-            <Chip key={index}>{category}</Chip>
+            <Chip key={index} text={category} />
           ))}
         </div>
         <p className="h-4 w-full border-b-2 border-dotted border-black opacity-30"></p>
         <p>{rangeStart}</p>
         {content?.type && (
-          <Chip className="justify-self-end thin:hidden">{content.type}</Chip>
+          <Chip className="justify-self-end thin:hidden" text={content.type} />
         )}
       </div>
       <div

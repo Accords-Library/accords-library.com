@@ -7,12 +7,12 @@ import { cJoin } from "helpers/className";
 
 interface Props {
   className?: string;
-  children: React.ReactNode;
+  text: string;
 }
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
-export const Chip = ({ className, children }: Props): JSX.Element => (
+export const Chip = ({ className, text }: Props): JSX.Element => (
   <div
     className={cJoin(
       `grid place-content-center place-items-center whitespace-nowrap rounded-full
@@ -21,6 +21,6 @@ export const Chip = ({ className, children }: Props): JSX.Element => (
       className
     )}
   >
-    {children}
+    {text}
   </div>
 );

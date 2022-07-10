@@ -92,7 +92,7 @@ const Videos = ({ langui, videos, ...otherProps }: Props): JSX.Element => {
     () => (
       <ContentPanel width={ContentPanelWidthSizes.Full}>
         <SmartList
-          items={filterHasAttributes(videos)}
+          items={filterHasAttributes(videos, ["id", "attributes"] as const)}
           getItemId={(item) => item.id}
           renderItem={({ item }) => (
             <>

@@ -114,13 +114,13 @@ const Content = ({
                 <p className="font-headers font-bold">
                   {langui.source_language}:
                 </p>
-                <Chip>
-                  {prettyLanguage(
+                <Chip
+                  text={prettyLanguage(
                     selectedTranslation.text_set.source_language.data.attributes
                       .code,
                     languages
                   )}
-                </Chip>
+                />
               </div>
             )}
 
@@ -134,7 +134,7 @@ const Content = ({
                 )}
                 maxWidth={"20rem"}
               >
-                <Chip>{selectedTranslation.text_set.status}</Chip>
+                <Chip text={selectedTranslation.text_set.status} />
               </ToolTip>
             </div>
 
@@ -146,7 +146,8 @@ const Content = ({
                   </p>
                   <div className="grid place-content-center place-items-center gap-2">
                     {filterHasAttributes(
-                      selectedTranslation.text_set.transcribers.data
+                      selectedTranslation.text_set.transcribers.data,
+                      ["attributes", "id"] as const
                     ).map((recorder) => (
                       <Fragment key={recorder.id}>
                         <RecorderChip
@@ -167,7 +168,8 @@ const Content = ({
                   </p>
                   <div className="grid place-content-center place-items-center gap-2">
                     {filterHasAttributes(
-                      selectedTranslation.text_set.translators.data
+                      selectedTranslation.text_set.translators.data,
+                      ["attributes", "id"] as const
                     ).map((recorder) => (
                       <Fragment key={recorder.id}>
                         <RecorderChip
@@ -188,7 +190,8 @@ const Content = ({
                   </p>
                   <div className="grid place-content-center place-items-center gap-2">
                     {filterHasAttributes(
-                      selectedTranslation.text_set.proofreaders.data
+                      selectedTranslation.text_set.proofreaders.data,
+                      ["attributes", "id"] as const
                     ).map((recorder) => (
                       <Fragment key={recorder.id}>
                         <RecorderChip
@@ -221,59 +224,60 @@ const Content = ({
                   {langui.source}
                 </p>
                 <div className="mt-6 grid place-items-center gap-6 text-left">
-                  {content.ranged_contents.data.map((rangedContent) => {
+                  {filterHasAttributes(content.ranged_contents.data, [
+                    "attributes.library_item.data.attributes",
+                    "attributes.library_item.data.id",
+                  ] as const).map((rangedContent) => {
                     const libraryItem =
-                      rangedContent.attributes?.library_item?.data;
-                    if (libraryItem?.attributes && libraryItem.id) {
-                      return (
-                        <div
-                          key={libraryItem.attributes.slug}
-                          className="mobile:w-[80%]"
-                        >
-                          <PreviewCard
-                            href={`/library/${libraryItem.attributes.slug}`}
-                            title={libraryItem.attributes.title}
-                            subtitle={libraryItem.attributes.subtitle}
-                            thumbnail={
-                              libraryItem.attributes.thumbnail?.data?.attributes
-                            }
-                            thumbnailAspectRatio="21/29.7"
-                            thumbnailRounded={false}
-                            topChips={
-                              libraryItem.attributes.metadata &&
-                              libraryItem.attributes.metadata.length > 0 &&
-                              libraryItem.attributes.metadata[0]
-                                ? [
-                                    prettyItemSubType(
-                                      libraryItem.attributes.metadata[0]
-                                    ),
-                                  ]
-                                : []
-                            }
-                            bottomChips={libraryItem.attributes.categories?.data.map(
-                              (category) => category.attributes?.short ?? ""
-                            )}
-                            metadata={{
-                              currencies: currencies,
-                              release_date: libraryItem.attributes.release_date,
-                              price: libraryItem.attributes.price,
-                              position: "Bottom",
-                            }}
-                            infoAppend={
-                              !isUntangibleGroupItem(
-                                libraryItem.attributes.metadata?.[0]
-                              ) && (
-                                <PreviewCardCTAs
-                                  id={libraryItem.id}
-                                  langui={langui}
-                                />
-                              )
-                            }
-                          />
-                        </div>
-                      );
-                    }
-                    return <></>;
+                      rangedContent.attributes.library_item.data;
+                    return (
+                      <div
+                        key={libraryItem.attributes.slug}
+                        className="mobile:w-[80%]"
+                      >
+                        <PreviewCard
+                          href={`/library/${libraryItem.attributes.slug}`}
+                          title={libraryItem.attributes.title}
+                          subtitle={libraryItem.attributes.subtitle}
+                          thumbnail={
+                            libraryItem.attributes.thumbnail?.data?.attributes
+                          }
+                          thumbnailAspectRatio="21/29.7"
+                          thumbnailRounded={false}
+                          topChips={
+                            libraryItem.attributes.metadata &&
+                            libraryItem.attributes.metadata.length > 0 &&
+                            libraryItem.attributes.metadata[0]
+                              ? [
+                                  prettyItemSubType(
+                                    libraryItem.attributes.metadata[0]
+                                  ),
+                                ]
+                              : []
+                          }
+                          bottomChips={filterHasAttributes(
+                            libraryItem.attributes.categories?.data,
+                            ["attributes"] as const
+                          ).map((category) => category.attributes.short)}
+                          metadata={{
+                            currencies: currencies,
+                            release_date: libraryItem.attributes.release_date,
+                            price: libraryItem.attributes.price,
+                            position: "Bottom",
+                          }}
+                          infoAppend={
+                            !isUntangibleGroupItem(
+                              libraryItem.attributes.metadata?.[0]
+                            ) && (
+                              <PreviewCardCTAs
+                                id={libraryItem.id}
+                                langui={langui}
+                              />
+                            )
+                          }
+                        />
+                      </div>
+                    );
                   })}
                 </div>
               </div>
@@ -507,14 +511,16 @@ export const getStaticPaths: GetStaticPaths = async (context) => {
   const sdk = getReadySdk();
   const contents = await sdk.getContentsSlugs();
   const paths: GetStaticPathsResult["paths"] = [];
-  filterHasAttributes(contents.contents?.data).map((item) => {
-    context.locales?.map((local) => {
-      paths.push({
-        params: { slug: item.attributes.slug },
-        locale: local,
+  filterHasAttributes(contents.contents?.data, ["attributes"] as const).map(
+    (item) => {
+      context.locales?.map((local) => {
+        paths.push({
+          params: { slug: item.attributes.slug },
+          locale: local,
+        });
       });
-    });
-  });
+    }
+  );
   return {
     paths,
     fallback: "blocking",

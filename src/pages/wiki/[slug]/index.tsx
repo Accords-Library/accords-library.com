@@ -100,8 +100,10 @@ const WikiPage = ({
                   {langui.categories}
                 </p>
                 <div className="flex flex-row flex-wrap place-content-center gap-2">
-                  {page.categories?.data.map((category) => (
-                    <Chip key={category.id}>{category.attributes?.name}</Chip>
+                  {filterHasAttributes(page.categories?.data, [
+                    "attributes",
+                  ] as const).map((category) => (
+                    <Chip key={category.id} text={category.attributes.name} />
                   ))}
                 </div>
               </div>
@@ -116,30 +118,28 @@ const WikiPage = ({
               </div>
             )}
 
-            {filterHasAttributes(page.definitions, ["translations"]).map(
-              (definition, index) => (
-                <>
-                  <DefinitionCard
-                    key={index}
-                    source={definition.source?.data?.attributes?.name}
-                    translations={filterHasAttributes(
-                      definition.translations
-                    ).map((translation) => ({
-                      language: translation.language.data?.attributes?.code,
-                      definition: translation.definition,
-                      status: translation.status,
-                    }))}
-                    index={index + 1}
-                    languages={languages}
-                    langui={langui}
-                    categories={filterHasAttributes(
-                      definition.categories?.data
-                    ).map((category) => category.attributes.short)}
-                  />
-                  <br />
-                </>
-              )
-            )}
+            {filterHasAttributes(page.definitions, [
+              "translations",
+            ] as const).map((definition, index) => (
+              <>
+                <DefinitionCard
+                  key={index}
+                  source={definition.source?.data?.attributes?.name}
+                  translations={definition.translations.map((translation) => ({
+                    language: translation?.language?.data?.attributes?.code,
+                    definition: translation?.definition,
+                    status: translation?.status,
+                  }))}
+                  index={index + 1}
+                  languages={languages}
+                  langui={langui}
+                  categories={filterHasAttributes(definition.categories?.data, [
+                    "attributes",
+                  ] as const).map((category) => category.attributes.short)}
+                />
+                <br />
+              </>
+            ))}
           </div>
         )}
       </ContentPanel>
@@ -194,14 +194,16 @@ export const getStaticPaths: GetStaticPaths = async (context) => {
   const sdk = getReadySdk();
   const contents = await sdk.getWikiPagesSlugs();
   const paths: GetStaticPathsResult["paths"] = [];
-  filterHasAttributes(contents.wikiPages?.data).map((wikiPage) => {
-    context.locales?.map((local) =>
-      paths.push({
-        params: { slug: wikiPage.attributes.slug },
-        locale: local,
-      })
-    );
-  });
+  filterHasAttributes(contents.wikiPages?.data, ["attributes"] as const).map(
+    (wikiPage) => {
+      context.locales?.map((local) =>
+        paths.push({
+          params: { slug: wikiPage.attributes.slug },
+          locale: local,
+        })
+      );
+    }
+  );
   return {
     paths,
     fallback: "blocking",

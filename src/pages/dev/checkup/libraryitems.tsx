@@ -65,7 +65,7 @@ const CheckupLibraryItems = ({
             />
             <p>{line.subitems.join(" -> ")}</p>
             <p>{line.name}</p>
-            <Chip>{line.type}</Chip>
+            <Chip text={line.type} />
             <Chip
               className={
                 line.severity === "Very High"
@@ -76,9 +76,8 @@ const CheckupLibraryItems = ({
                   ? "bg-[#fff344] !opacity-100"
                   : ""
               }
-            >
-              {line.severity}
-            </Chip>
+              text={line.severity}
+            />
             <ToolTip content={line.recommandation} placement="left">
               <p>{line.description}</p>
             </ToolTip>

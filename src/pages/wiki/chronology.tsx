@@ -74,22 +74,24 @@ const Chronology = ({
           horizontalLine
         />
 
-        {filterHasAttributes(chronologyEras).map((era) => (
-          <Fragment key={era.id}>
-            <NavOption
-              url={`#${era.attributes.slug}`}
-              title={
-                era.attributes.title &&
-                era.attributes.title.length > 0 &&
-                era.attributes.title[0]
-                  ? era.attributes.title[0].title
-                  : prettySlug(era.attributes.slug)
-              }
-              subtitle={`${era.attributes.starting_year} → ${era.attributes.ending_year}`}
-              border
-            />
-          </Fragment>
-        ))}
+        {filterHasAttributes(chronologyEras, ["attributes", "id"] as const).map(
+          (era) => (
+            <Fragment key={era.id}>
+              <NavOption
+                url={`#${era.attributes.slug}`}
+                title={
+                  era.attributes.title &&
+                  era.attributes.title.length > 0 &&
+                  era.attributes.title[0]
+                    ? era.attributes.title[0].title
+                    : prettySlug(era.attributes.slug)
+                }
+                subtitle={`${era.attributes.starting_year} → ${era.attributes.ending_year}`}
+                border
+              />
+            </Fragment>
+          )
+        )}
       </SubPanel>
     ),
     [chronologyEras, langui]

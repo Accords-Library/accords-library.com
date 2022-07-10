@@ -146,11 +146,13 @@ export const SmartList = <T,>({
                 first-of-type:pt-0"
                     >
                       {name}
-                      <Chip>{`${groupItems.length} ${
-                        groupItems.length <= 1
-                          ? langui.result?.toLowerCase() ?? ""
-                          : langui.results?.toLowerCase() ?? ""
-                      }`}</Chip>
+                      <Chip
+                        text={`${groupItems.length} ${
+                          groupItems.length <= 1
+                            ? langui.result?.toLowerCase() ?? ""
+                            : langui.results?.toLowerCase() ?? ""
+                        }`}
+                      />
                     </h2>
                   )}
                   <div

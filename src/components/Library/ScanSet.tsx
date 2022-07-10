@@ -103,7 +103,7 @@ export const ScanSet = ({
     });
 
   const pages = useMemo(
-    () => selectedScan && filterHasAttributes(selectedScan.pages?.data),
+    () => filterHasAttributes(selectedScan?.pages?.data, ["attributes"]),
     [selectedScan]
   );
 
@@ -119,12 +119,15 @@ export const ScanSet = ({
               {title}
             </h2>
 
-            <Chip>
-              {selectedScan.language?.data?.attributes?.code ===
-              selectedScan.source_language?.data?.attributes?.code
-                ? "Scan"
-                : "Scanlation"}
-            </Chip>
+            {/* TODO: Add Scan and Scanlation to langui */}
+            <Chip
+              text={
+                selectedScan.language?.data?.attributes?.code ===
+                selectedScan.source_language?.data?.attributes?.code
+                  ? "Scan"
+                  : "Scanlation"
+              }
+            />
           </div>
 
           <div className="flex flex-row flex-wrap place-items-center gap-4 pb-6">
@@ -144,7 +147,7 @@ export const ScanSet = ({
                 content={getStatusDescription(selectedScan.status, langui)}
                 maxWidth={"20rem"}
               >
-                <Chip>{selectedScan.status}</Chip>
+                <Chip text={selectedScan.status} />
               </ToolTip>
             </div>
 
@@ -153,16 +156,17 @@ export const ScanSet = ({
                 {/* TODO: Add Scanner to langui */}
                 <p className="font-headers font-bold">{"Scanners"}:</p>
                 <div className="grid place-content-center place-items-center gap-2">
-                  {filterHasAttributes(selectedScan.scanners.data).map(
-                    (scanner) => (
-                      <Fragment key={scanner.id}>
-                        <RecorderChip
-                          langui={langui}
-                          recorder={scanner.attributes}
-                        />
-                      </Fragment>
-                    )
-                  )}
+                  {filterHasAttributes(selectedScan.scanners.data, [
+                    "id",
+                    "attributes",
+                  ] as const).map((scanner) => (
+                    <Fragment key={scanner.id}>
+                      <RecorderChip
+                        langui={langui}
+                        recorder={scanner.attributes}
+                      />
+                    </Fragment>
+                  ))}
                 </div>
               </div>
             )}
@@ -172,16 +176,17 @@ export const ScanSet = ({
                 {/* TODO: Add Cleaners to langui */}
                 <p className="font-headers font-bold">{"Cleaners"}:</p>
                 <div className="grid place-content-center place-items-center gap-2">
-                  {filterHasAttributes(selectedScan.cleaners.data).map(
-                    (cleaner) => (
-                      <Fragment key={cleaner.id}>
-                        <RecorderChip
-                          langui={langui}
-                          recorder={cleaner.attributes}
-                        />
-                      </Fragment>
-                    )
-                  )}
+                  {filterHasAttributes(selectedScan.cleaners.data, [
+                    "id",
+                    "attributes",
+                  ] as const).map((cleaner) => (
+                    <Fragment key={cleaner.id}>
+                      <RecorderChip
+                        langui={langui}
+                        recorder={cleaner.attributes}
+                      />
+                    </Fragment>
+                  ))}
                 </div>
               </div>
             )}
@@ -189,27 +194,28 @@ export const ScanSet = ({
             {selectedScan.typesetters &&
               selectedScan.typesetters.data.length > 0 && (
                 <div>
-                  {/* TODO: Add Cleaners to Typesetters */}
+                  {/* TODO: Add typesetter to langui */}
                   <p className="font-headers font-bold">{"Typesetters"}:</p>
                   <div className="grid place-content-center place-items-center gap-2">
-                    {filterHasAttributes(selectedScan.typesetters.data).map(
-                      (typesetter) => (
-                        <Fragment key={typesetter.id}>
-                          <RecorderChip
-                            langui={langui}
-                            recorder={typesetter.attributes}
-                          />
-                        </Fragment>
-                      )
-                    )}
+                    {filterHasAttributes(selectedScan.typesetters.data, [
+                      "id",
+                      "attributes",
+                    ] as const).map((typesetter) => (
+                      <Fragment key={typesetter.id}>
+                        <RecorderChip
+                          langui={langui}
+                          recorder={typesetter.attributes}
+                        />
+                      </Fragment>
+                    ))}
                   </div>
                 </div>
               )}
 
             {isDefinedAndNotEmpty(selectedScan.notes) && (
               <ToolTip content={selectedScan.notes}>
-                {/* TODO: Add Notes to Typesetters */}
-                <Chip>{"Notes"}</Chip>
+                {/* TODO: Add Notes to langui */}
+                <Chip text={"Notes"} />
               </ToolTip>
             )}
           </div>
@@ -224,13 +230,9 @@ export const ScanSet = ({
                 className="cursor-pointer transition-transform
                 drop-shadow-shade-lg hover:scale-[1.02]"
                 onClick={() => {
-                  const images: string[] = [];
-                  pages.map((image) => {
-                    if (isDefinedAndNotEmpty(image.attributes.url))
-                      images.push(
-                        getAssetURL(image.attributes.url, ImageQuality.Large)
-                      );
-                  });
+                  const images = pages.map((image) =>
+                    getAssetURL(image.attributes.url, ImageQuality.Large)
+                  );
                   openLightBox(images, index);
                 }}
               >

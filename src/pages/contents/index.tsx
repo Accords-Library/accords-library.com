@@ -21,8 +21,8 @@ import { Icon } from "components/Ico";
 import { filterDefined, filterHasAttributes } from "helpers/others";
 import { GetContentsQuery } from "graphql/generated";
 import { SmartList } from "components/SmartList";
-import { SelectiveRequiredNonNullable } from "helpers/types";
 import { ContentPlaceholder } from "components/PanelComponents/ContentPlaceholder";
+import { SelectiveNonNullable } from "helpers/types/SelectiveNonNullable";
 
 /*
  *                                         ╭─────────────╮
@@ -73,7 +73,7 @@ const Contents = ({
 
   const groupingFunction = useCallback(
     (
-      item: SelectiveRequiredNonNullable<
+      item: SelectiveNonNullable<
         NonNullable<GetContentsQuery["contents"]>["data"][number],
         "attributes" | "id"
       >
@@ -81,7 +81,8 @@ const Contents = ({
       switch (groupingMethod) {
         case 0: {
           const categories = filterHasAttributes(
-            item.attributes.categories?.data
+            item.attributes.categories?.data,
+            ["attributes"] as const
           );
           if (categories.length > 0) {
             return categories.map((category) => category.attributes.name);
@@ -106,10 +107,7 @@ const Contents = ({
 
   const filteringFunction = useCallback(
     (
-      item: SelectiveRequiredNonNullable<
-        Props["contents"][number],
-        "attributes" | "id"
-      >
+      item: SelectiveNonNullable<Props["contents"][number], "attributes" | "id">
     ) => {
       if (
         effectiveCombineRelatedContent &&
@@ -217,7 +215,7 @@ const Contents = ({
     () => (
       <ContentPanel width={ContentPanelWidthSizes.Full}>
         <SmartList
-          items={filterHasAttributes(contents)}
+          items={filterHasAttributes(contents, ["attributes", "id"] as const)}
           getItemId={(item) => item.id}
           renderItem={({ item }) => (
             <>

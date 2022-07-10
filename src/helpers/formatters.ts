@@ -60,20 +60,20 @@ export const prettyinlineTitle = (
 export const prettyItemType = (
   metadata: any,
   langui: AppStaticProps["langui"]
-): string | null | undefined => {
+): string => {
   switch (metadata.__typename) {
     case "ComponentMetadataAudio":
-      return langui.audio;
+      return langui.audio ?? "Audio";
     case "ComponentMetadataBooks":
-      return langui.textual;
+      return langui.textual ?? "Textual";
     case "ComponentMetadataGame":
-      return langui.game;
+      return langui.game ?? "Game";
     case "ComponentMetadataVideo":
-      return langui.video;
+      return langui.video ?? "Video";
     case "ComponentMetadataGroup":
-      return langui.group;
+      return langui.group ?? "Group";
     case "ComponentMetadataOther":
-      return langui.other;
+      return langui.other ?? "Other";
     default:
       return "";
   }

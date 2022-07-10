@@ -62,7 +62,7 @@ const DefinitionCard = ({
               content={getStatusDescription(selectedTranslation.status, langui)}
               maxWidth={"20rem"}
             >
-              <Chip>{selectedTranslation.status}</Chip>
+              <Chip text={selectedTranslation.status} />
             </ToolTip>
           </>
         )}
@@ -72,7 +72,7 @@ const DefinitionCard = ({
             <Separator />
             <div className="flex flex-row gap-1">
               {categories.map((category, categoryIndex) => (
-                <Chip key={categoryIndex}>{category}</Chip>
+                <Chip key={categoryIndex} text={category} />
               ))}
             </div>
           </>

@@ -57,7 +57,7 @@ export const ChronologyItemComponent = ({
             filterHasAttributes(item.attributes.events, [
               "id",
               "translations",
-            ]).map((event) => (
+            ] as const).map((event) => (
               <Fragment key={event.id}>
                 <div className="m-0">
                   {filterDefined(event.translations).map(
@@ -77,7 +77,7 @@ export const ChronologyItemComponent = ({
                                 )}
                                 maxWidth={"20rem"}
                               >
-                                <Chip>{translation.status}</Chip>
+                                <Chip text={translation.status} />
                               </ToolTip>
                             )}
                             {translation.title ? (

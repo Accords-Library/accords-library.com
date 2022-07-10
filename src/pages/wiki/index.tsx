@@ -120,36 +120,37 @@ const Wiki = ({
               icon={Icon.ChevronLeft}
             />
           )}
-          {filterHasAttributes(filteredPages).map((page) => (
+          {filterHasAttributes(filteredPages, [
+            "id",
+            "attributes.translations",
+          ] as const).map((page) => (
             <Fragment key={page.id}>
-              {page.attributes.translations && (
-                <TranslatedPreviewCard
-                  href={`/wiki/${page.attributes.slug}`}
-                  translations={page.attributes.translations.map(
-                    (translation) => ({
-                      title: translation?.title,
-                      subtitle:
-                        translation?.aliases && translation.aliases.length > 0
-                          ? translation.aliases
-                              .map((alias) => alias?.alias)
-                              .join(" | ")
-                          : undefined,
-                      description: translation?.summary,
-                      language: translation?.language?.data?.attributes?.code,
-                    })
-                  )}
-                  thumbnail={page.attributes.thumbnail?.data?.attributes}
-                  thumbnailAspectRatio={"4/3"}
-                  thumbnailRounded
-                  thumbnailForceAspectRatio
-                  languages={languages}
-                  slug={page.attributes.slug}
-                  keepInfoVisible={keepInfoVisible}
-                  bottomChips={page.attributes.categories?.data.map(
-                    (category) => category.attributes?.short ?? ""
-                  )}
-                />
-              )}
+              <TranslatedPreviewCard
+                href={`/wiki/${page.attributes.slug}`}
+                translations={page.attributes.translations.map(
+                  (translation) => ({
+                    title: translation?.title,
+                    subtitle:
+                      translation?.aliases && translation.aliases.length > 0
+                        ? translation.aliases
+                            .map((alias) => alias?.alias)
+                            .join(" | ")
+                        : undefined,
+                    description: translation?.summary,
+                    language: translation?.language?.data?.attributes?.code,
+                  })
+                )}
+                thumbnail={page.attributes.thumbnail?.data?.attributes}
+                thumbnailAspectRatio={"4/3"}
+                thumbnailRounded
+                thumbnailForceAspectRatio
+                languages={languages}
+                slug={page.attributes.slug}
+                keepInfoVisible={keepInfoVisible}
+                bottomChips={page.attributes.categories?.data.map(
+                  (category) => category.attributes?.short ?? ""
+                )}
+              />
             </Fragment>
           ))}
         </div>

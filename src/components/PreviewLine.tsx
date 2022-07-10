@@ -52,7 +52,7 @@ const PreviewLine = ({
         {topChips && topChips.length > 0 && (
           <div className="grid grid-flow-col place-content-start gap-1 overflow-hidden">
             {topChips.map((text, index) => (
-              <Chip key={index}>{text}</Chip>
+              <Chip key={index} text={text} />
             ))}
           </div>
         )}
@@ -68,9 +68,7 @@ const PreviewLine = ({
         {bottomChips && bottomChips.length > 0 && (
           <div className="grid grid-flow-col place-content-start gap-1 overflow-hidden">
             {bottomChips.map((text, index) => (
-              <Chip key={index} className="text-sm">
-                {text}
-              </Chip>
+              <Chip key={index} className="text-sm" text={text} />
             ))}
           </div>
         )}

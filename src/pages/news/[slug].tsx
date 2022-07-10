@@ -47,11 +47,13 @@ export const getStaticPaths: GetStaticPaths = async (context) => {
   const posts = await sdk.getPostsSlugs();
   const paths: GetStaticPathsResult["paths"] = [];
 
-  filterHasAttributes(posts.posts?.data).map((item) => {
-    context.locales?.map((local) =>
-      paths.push({ params: { slug: item.attributes.slug }, locale: local })
-    );
-  });
+  filterHasAttributes(posts.posts?.data, ["attributes"] as const).map(
+    (item) => {
+      context.locales?.map((local) =>
+        paths.push({ params: { slug: item.attributes.slug }, locale: local })
+      );
+    }
+  );
   return {
     paths,
     fallback: "blocking",

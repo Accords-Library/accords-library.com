@@ -1,5 +1,5 @@
 import { AppStaticProps } from "../graphql/getAppStaticProps";
-import { SelectiveRequiredNonNullable } from "./types";
+import { PathDot, SelectiveNonNullable } from "./types/SelectiveNonNullable";
 import {
   Enum_Componentsetstextset_Status,
   GetLibraryItemQuery,
@@ -71,21 +71,29 @@ export const filterDefined = <T>(t: T[] | null | undefined): NonNullable<T>[] =>
     ? []
     : (t.filter((item) => isDefined(item)) as NonNullable<T>[]);
 
-export const filterHasAttributes = <T, P extends keyof NonNullable<T>>(
+export const filterHasAttributes = <T, P extends PathDot<T>>(
   t: T[] | null | undefined,
-  attributes?: P[]
-): SelectiveRequiredNonNullable<NonNullable<T>, P>[] =>
+  paths: readonly P[]
+): SelectiveNonNullable<T, typeof paths[number]>[] =>
   isUndefined(t)
     ? []
-    : (t.filter((item) => {
-        if (isDefined(item)) {
-          const attributesToCheck = attributes ?? (Object.keys(item) as P[]);
-          return attributesToCheck.every((attribute) =>
-            isDefined(item[attribute])
-          );
-        }
-        return false;
-      }) as unknown as SelectiveRequiredNonNullable<NonNullable<T>, P>[]);
+    : (t.filter((item) =>
+        hasAttributes(item, paths)
+      ) as unknown as SelectiveNonNullable<T, typeof paths[number]>[]);
+
+const hasAttributes = <T>(item: T, paths: readonly PathDot<T>[]): boolean => {
+  if (isDefined(item)) {
+    return paths.every((path) => {
+      const attributeToCheck = (path as string).split(".")[0];
+      return (
+        isDefined(attributeToCheck) &&
+        Object.keys(item).includes(attributeToCheck) &&
+        isDefined(item[attributeToCheck as keyof T])
+      );
+    });
+  }
+  return false;
+};
 
 export const iterateMap = <K, V, U>(
   map: Map<K, V>,
@@ -95,7 +103,6 @@ export const iterateMap = <K, V, U>(
   const toList = [...map];
   if (isDefined(sortingFunction)) {
     toList.sort(sortingFunction);
-    console.log(toList.sort(sortingFunction));
   }
   return toList.map(([key, value], index) => callbackfn(key, value, index));
 };

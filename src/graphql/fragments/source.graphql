@@ -1,0 +1,24 @@
+fragment source on Source {
+  name
+  content {
+    data {
+      attributes {
+        slug
+      }
+    }
+  }
+  ranged_content {
+    data {
+      attributes {
+        slug
+        library_item {
+          data {
+            attributes {
+              slug
+            }
+          }
+        }
+      }
+    }
+  }
+}

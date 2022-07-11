@@ -1,4 +1,10 @@
-import { Dispatch, Fragment, SetStateAction, useState } from "react";
+import {
+  Dispatch,
+  Fragment,
+  SetStateAction,
+  useCallback,
+  useState,
+} from "react";
 import { Ico, Icon } from "components/Ico";
 import { cIf, cJoin } from "helpers/className";
 import { useToggle } from "hooks/useToggle";
@@ -29,6 +35,11 @@ export const Select = ({
   const [opened, setOpened] = useState(false);
   const toggleOpened = useToggle(setOpened);
 
+  const tryToggling = useCallback(() => {
+    const optionCount = options.length + (state === -1 ? 1 : 0);
+    if (optionCount > 1) toggleOpened();
+  }, [options.length, state, toggleOpened]);
+
   return (
     <div
       className={cJoin(
@@ -45,7 +56,7 @@ export const Select = ({
           cIf(opened, "rounded-b-none bg-highlight outline-[transparent]")
         )}
       >
-        <p onClick={toggleOpened} className="w-full">
+        <p onClick={tryToggling} className="w-full">
           {state === -1 ? "—" : options[state]}
         </p>
         {state >= 0 && allowEmpty && (
@@ -59,7 +70,7 @@ export const Select = ({
           />
         )}
         <Ico
-          onClick={toggleOpened}
+          onClick={tryToggling}
           icon={opened ? Icon.ArrowDropUp : Icon.ArrowDropDown}
         />
       </div>

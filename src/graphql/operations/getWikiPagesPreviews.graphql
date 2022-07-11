@@ -1,4 +1,4 @@
-query getWikiPagesPreviews {
+query getWikiPagesPreviews($language_code: String) {
   wikiPages(pagination: { limit: -1 }) {
     data {
       id
@@ -17,6 +17,24 @@ query getWikiPagesPreviews {
             attributes {
               name
               short
+            }
+          }
+        }
+        tags {
+          data {
+            id
+            attributes {
+              slug
+              titles(filters: { language: { code: { eq: $language_code } } }) {
+                language {
+                  data {
+                    attributes {
+                      code
+                    }
+                  }
+                }
+                title
+              }
             }
           }
         }

@@ -20,6 +20,24 @@ query getWikiPage($slug: String, $language_code: String) {
             }
           }
         }
+        tags {
+          data {
+            id
+            attributes {
+              slug
+              titles(filters: { language: { code: { eq: $language_code } } }) {
+                language {
+                  data {
+                    attributes {
+                      code
+                    }
+                  }
+                }
+                title
+              }
+            }
+          }
+        }
         translations {
           title
           aliases {
@@ -73,7 +91,7 @@ query getWikiPage($slug: String, $language_code: String) {
           source {
             data {
               attributes {
-                name
+                ...source
               }
             }
           }

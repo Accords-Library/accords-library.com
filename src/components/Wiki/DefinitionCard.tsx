@@ -4,6 +4,8 @@ import { ToolTip } from "components/ToolTip";
 import { AppStaticProps } from "graphql/getAppStaticProps";
 import { getStatusDescription } from "helpers/others";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
+import Link from "next/link";
+import { Button } from "components/Inputs/Button";
 
 /*
  *                                        ╭─────────────╮
@@ -11,7 +13,10 @@ import { useSmartLanguage } from "hooks/useSmartLanguage";
  */
 
 interface Props {
-  source?: string;
+  source?: {
+    name?: string;
+    url?: string;
+  };
   translations: {
     language: string | undefined;
     definition: string | null | undefined;
@@ -79,9 +84,16 @@ const DefinitionCard = ({
         )}
       </div>
 
-      <p className="italic">{`${langui.source}: ${source}`}</p>
-
       <p>{selectedTranslation?.definition}</p>
+
+      {source?.url && source.name && (
+        <Link href={source.url}>
+          <div className="flex place-items-center gap-2 mt-3">
+            <p>{langui.source}: </p>
+            <Button size="small" text={source.name} />
+          </div>
+        </Link>
+      )}
     </>
   );
 };

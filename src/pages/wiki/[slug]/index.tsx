@@ -23,6 +23,9 @@ import {
 } from "helpers/others";
 import { WikiPageWithTranslations } from "helpers/types";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
+import { prettySlug } from "helpers/formatters";
+import { useLightBox } from "hooks/useLightBox";
+import { getAssetURL, ImageQuality } from "helpers/img";
 
 interface Props extends AppStaticProps {
   page: WikiPageWithTranslations;
@@ -45,6 +48,8 @@ const WikiPage = ({
       ),
     });
 
+  const [openLightBox, LightBox] = useLightBox();
+
   const subPanel = useMemo(
     () => (
       <SubPanel>
@@ -63,6 +68,8 @@ const WikiPage = ({
   const contentPanel = useMemo(
     () => (
       <ContentPanel width={ContentPanelWidthSizes.Large}>
+        <LightBox />
+
         <ReturnButton
           href={`/wiki`}
           title={langui.wiki}
@@ -78,7 +85,7 @@ const WikiPage = ({
               <p className="mr-3 text-center text-2xl">
                 {`(${selectedTranslation.aliases
                   .map((alias) => alias?.alias)
-                  .join(", ")})`}
+                  .join("・")})`}
               </p>
             )}
           <LanguageSwitcher {...languageSwitcherProps} />
@@ -93,19 +100,63 @@ const WikiPage = ({
             text-center"
             >
               {page.thumbnail?.data?.attributes && (
-                <Img image={page.thumbnail.data.attributes} />
+                <Img
+                  image={page.thumbnail.data.attributes}
+                  quality={ImageQuality.Medium}
+                  className="w-full cursor-pointer"
+                  onClick={() => {
+                    if (page.thumbnail?.data?.attributes?.url) {
+                      openLightBox([
+                        getAssetURL(
+                          page.thumbnail.data.attributes.url,
+                          ImageQuality.Large
+                        ),
+                      ]);
+                    }
+                  }}
+                />
               )}
               <div className="my-4 grid gap-4 p-4">
-                <p className="font-headers text-xl font-bold">
-                  {langui.categories}
-                </p>
-                <div className="flex flex-row flex-wrap place-content-center gap-2">
-                  {filterHasAttributes(page.categories?.data, [
-                    "attributes",
-                  ] as const).map((category) => (
-                    <Chip key={category.id} text={category.attributes.name} />
-                  ))}
-                </div>
+                {page.categories?.data && page.categories.data.length > 0 && (
+                  <>
+                    <p className="font-headers text-xl font-bold">
+                      {langui.categories}
+                    </p>
+
+                    <div className="flex flex-row flex-wrap place-content-center gap-2">
+                      {filterHasAttributes(page.categories.data, [
+                        "attributes",
+                      ] as const).map((category) => (
+                        <Chip
+                          key={category.id}
+                          text={category.attributes.name}
+                        />
+                      ))}
+                    </div>
+                  </>
+                )}
+
+                {page.tags?.data && page.tags.data.length > 0 && (
+                  <>
+                    <p className="font-headers text-xl font-bold">
+                      {/* TODO: Add Tags to langui */}
+                      {"Tags"}
+                    </p>
+                    <div className="flex flex-row flex-wrap place-content-center gap-2">
+                      {filterHasAttributes(page.tags?.data, [
+                        "attributes",
+                      ] as const).map((tag) => (
+                        <Chip
+                          key={tag.id}
+                          text={
+                            tag.attributes.titles?.[0]?.title ??
+                            prettySlug(tag.attributes.slug)
+                          }
+                        />
+                      ))}
+                    </div>
+                  </>
+                )}
               </div>
             </div>
 
@@ -124,7 +175,13 @@ const WikiPage = ({
               <>
                 <DefinitionCard
                   key={index}
-                  source={definition.source?.data?.attributes?.name}
+                  source={{
+                    name: definition.source?.data?.attributes?.name,
+                    url: definition.source?.data?.attributes?.content?.data
+                      ?.attributes?.slug
+                      ? `/contents/${definition.source.data.attributes.content.data.attributes.slug}`
+                      : `/library/${definition.source?.data?.attributes?.ranged_content?.data?.attributes?.library_item?.data?.attributes?.slug}`,
+                  }}
                   translations={definition.translations.map((translation) => ({
                     language: translation?.language?.data?.attributes?.code,
                     definition: translation?.definition,
@@ -149,9 +206,7 @@ const WikiPage = ({
       languageSwitcherProps,
       languages,
       langui,
-      page.categories?.data,
-      page.definitions,
-      page.thumbnail?.data?.attributes,
+      page,
       selectedTranslation,
     ]
   );

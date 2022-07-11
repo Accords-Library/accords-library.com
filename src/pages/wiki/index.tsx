@@ -1,5 +1,5 @@
 import { GetStaticProps } from "next";
-import { Fragment, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { AppLayout } from "components/AppLayout";
 import { NavOption } from "components/PanelComponents/NavOption";
 import { PanelHeader } from "components/PanelComponents/PanelHeader";
@@ -7,7 +7,7 @@ import { SubPanel } from "components/Panels/SubPanel";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { Icon } from "components/Ico";
 import { getReadySdk } from "graphql/sdk";
-import { GetWikiPagesPreviewsQuery } from "graphql/generated";
+import { GetWikiPageQuery, GetWikiPagesPreviewsQuery } from "graphql/generated";
 import {
   ContentPanel,
   ContentPanelWidthSizes,
@@ -19,8 +19,12 @@ import { Switch } from "components/Inputs/Switch";
 import { TextInput } from "components/Inputs/TextInput";
 import { WithLabel } from "components/Inputs/WithLabel";
 import { useMediaHoverable } from "hooks/useMediaQuery";
-import { filterHasAttributes } from "helpers/others";
+import { filterDefined, filterHasAttributes, isDefined } from "helpers/others";
 import { ContentPlaceholder } from "components/PanelComponents/ContentPlaceholder";
+import { SmartList } from "components/SmartList";
+import { Select } from "components/Inputs/Select";
+import { SelectiveNonNullable } from "helpers/types/SelectiveNonNullable";
+import { prettySlug } from "helpers/formatters";
 
 /*
  *                                         ╭─────────────╮
@@ -30,6 +34,7 @@ import { ContentPlaceholder } from "components/PanelComponents/ContentPlaceholde
 const DEFAULT_FILTERS_STATE = {
   searchName: "",
   keepInfoVisible: true,
+  groupingMethod: -1,
 };
 
 /*
@@ -52,13 +57,13 @@ const Wiki = ({
   const [searchName, setSearchName] = useState(
     DEFAULT_FILTERS_STATE.searchName
   );
-  const [keepInfoVisible, setKeepInfoVisible] = useState(
-    DEFAULT_FILTERS_STATE.keepInfoVisible
+
+  const [groupingMethod, setGroupingMethod] = useState<number>(
+    DEFAULT_FILTERS_STATE.groupingMethod
   );
 
-  const filteredPages = useMemo(
-    () => filterPages(pages, searchName),
-    [pages, searchName]
+  const [keepInfoVisible, setKeepInfoVisible] = useState(
+    DEFAULT_FILTERS_STATE.keepInfoVisible
   );
 
   const subPanel = useMemo(
@@ -75,6 +80,19 @@ const Wiki = ({
           placeholder={langui.search_title ?? undefined}
           state={searchName}
           setState={setSearchName}
+        />
+
+        <WithLabel
+          label={langui.group_by}
+          input={
+            <Select
+              className="w-full"
+              options={[langui.category ?? ""]}
+              state={groupingMethod}
+              setState={setGroupingMethod}
+              allowEmpty
+            />
+          }
         />
 
         {hoverable && (
@@ -104,59 +122,105 @@ const Wiki = ({
         <NavOption title={langui.chronology} url="/wiki/chronology" border />
       </SubPanel>
     ),
-    [hoverable, keepInfoVisible, langui, searchName]
+    [groupingMethod, hoverable, keepInfoVisible, langui, searchName]
+  );
+
+  const groupingFunction = useCallback(
+    (
+      item: SelectiveNonNullable<
+        NonNullable<GetWikiPageQuery["wikiPages"]>["data"][number],
+        "attributes" | "id"
+      >
+    ): string[] => {
+      switch (groupingMethod) {
+        case 0: {
+          const categories = filterHasAttributes(
+            item.attributes.categories?.data,
+            ["attributes"] as const
+          );
+          if (categories.length > 0) {
+            return categories.map((category) => category.attributes.name);
+          }
+          return [langui.no_category ?? "No category"];
+        }
+        default: {
+          return [""];
+        }
+      }
+    },
+    [groupingMethod, langui]
   );
 
   const contentPanel = useMemo(
     () => (
       <ContentPanel width={ContentPanelWidthSizes.Full}>
-        <div
-          className="grid grid-cols-2 items-end gap-8
-        desktop:grid-cols-[repeat(auto-fill,_minmax(20rem,1fr))] mobile:gap-4"
-        >
-          {filteredPages.length === 0 && (
+        <SmartList
+          items={filterHasAttributes(pages, ["id", "attributes"] as const)}
+          getItemId={(item) => item.id}
+          renderItem={({ item }) => (
+            <>
+              {isDefined(item.attributes.translations) && (
+                <TranslatedPreviewCard
+                  href={`/wiki/${item.attributes.slug}`}
+                  translations={item.attributes.translations.map(
+                    (translation) => ({
+                      title: translation?.title,
+                      subtitle:
+                        translation?.aliases && translation.aliases.length > 0
+                          ? translation.aliases
+                              .map((alias) => alias?.alias)
+                              .join("・")
+                          : undefined,
+                      description: translation?.summary,
+                      language: translation?.language?.data?.attributes?.code,
+                    })
+                  )}
+                  thumbnail={item.attributes.thumbnail?.data?.attributes}
+                  thumbnailAspectRatio={"4/3"}
+                  thumbnailRounded
+                  thumbnailForceAspectRatio
+                  languages={languages}
+                  slug={item.attributes.slug}
+                  keepInfoVisible={keepInfoVisible}
+                  topChips={filterHasAttributes(item.attributes.tags?.data, [
+                    "attributes",
+                  ] as const).map(
+                    (tag) =>
+                      tag.attributes.titles?.[0]?.title ??
+                      prettySlug(tag.attributes.slug)
+                  )}
+                  bottomChips={filterHasAttributes(
+                    item.attributes.categories?.data,
+                    ["attributes"] as const
+                  ).map((category) => category.attributes.short)}
+                />
+              )}
+            </>
+          )}
+          renderWhenEmpty={() => (
             <ContentPlaceholder
               message={langui.no_results_message ?? "No results"}
               icon={Icon.ChevronLeft}
             />
           )}
-          {filterHasAttributes(filteredPages, [
-            "id",
-            "attributes.translations",
-          ] as const).map((page) => (
-            <Fragment key={page.id}>
-              <TranslatedPreviewCard
-                href={`/wiki/${page.attributes.slug}`}
-                translations={page.attributes.translations.map(
-                  (translation) => ({
-                    title: translation?.title,
-                    subtitle:
-                      translation?.aliases && translation.aliases.length > 0
-                        ? translation.aliases
-                            .map((alias) => alias?.alias)
-                            .join(" | ")
-                        : undefined,
-                    description: translation?.summary,
-                    language: translation?.language?.data?.attributes?.code,
-                  })
-                )}
-                thumbnail={page.attributes.thumbnail?.data?.attributes}
-                thumbnailAspectRatio={"4/3"}
-                thumbnailRounded
-                thumbnailForceAspectRatio
-                languages={languages}
-                slug={page.attributes.slug}
-                keepInfoVisible={keepInfoVisible}
-                bottomChips={page.attributes.categories?.data.map(
-                  (category) => category.attributes?.short ?? ""
-                )}
-              />
-            </Fragment>
-          ))}
-        </div>
+          langui={langui}
+          className="grid-cols-2 desktop:grid-cols-[repeat(auto-fill,_minmax(20rem,1fr))]"
+          searchingTerm={searchName}
+          searchingBy={(item) =>
+            filterDefined(item.attributes.translations)
+              .map(
+                (translation) =>
+                  `${translation.title} ${filterDefined(translation.aliases)
+                    .map((alias) => alias.alias)
+                    .join(" ")}`
+              )
+              .join(" ")
+          }
+          groupingFunction={groupingFunction}
+        />
       </ContentPanel>
     ),
-    [filteredPages, keepInfoVisible, languages, langui]
+    [groupingFunction, keepInfoVisible, languages, langui, pages, searchName]
   );
 
   return (
@@ -180,7 +244,9 @@ export default Wiki;
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
-  const pages = await sdk.getWikiPagesPreviews({});
+  const pages = await sdk.getWikiPagesPreviews({
+    language_code: context.locale ?? "en",
+  });
   if (!pages.wikiPages?.data) return { notFound: true };
   const props: Props = {
     ...(await getAppStaticProps(context)),
@@ -201,21 +267,4 @@ const sortPages = (pages: Props["pages"]): Props["pages"] =>
     const slugA = a.attributes?.slug ?? "";
     const slugB = b.attributes?.slug ?? "";
     return slugA.localeCompare(slugB);
-  });
-
-// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
-
-const filterPages = (posts: Props["pages"], searchName: string) =>
-  posts.filter((post) => {
-    if (searchName.length > 1) {
-      if (
-        post.attributes?.translations?.[0]?.title
-          .toLowerCase()
-          .includes(searchName.toLowerCase()) === true
-      ) {
-        return true;
-      }
-      return false;
-    }
-    return true;
   });

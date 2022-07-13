@@ -66,132 +66,126 @@ export const ScanSetCover = ({
     return memo;
   }, [selectedScan]);
 
-  if (coverImages.length > 0) {
-    return (
-      <>
-        {selectedScan && (
-          <div>
-            <div
-              className="flex flex-row flex-wrap place-items-center
+  return (
+    <>
+      {coverImages.length > 0 && selectedScan && (
+        <div>
+          <div
+            className="flex flex-row flex-wrap place-items-center
           gap-6 pt-10 text-base first-of-type:pt-0"
-            >
-              <h2 id={"cover"} className="text-2xl">
-                {/* TODO: Add Cover to langui */}
-                {"Cover"}
-              </h2>
+          >
+            <h2 id={"cover"} className="text-2xl">
+              {langui.cover}
+            </h2>
 
-              {/* TODO: Add Scan and Scanlation to langui */}
-              <Chip
-                text={
-                  selectedScan.language?.data?.attributes?.code ===
-                  selectedScan.source_language?.data?.attributes?.code
-                    ? "Scan"
-                    : "Scanlation"
-                }
-              />
+            <Chip
+              text={
+                selectedScan.language?.data?.attributes?.code ===
+                selectedScan.source_language?.data?.attributes?.code
+                  ? langui.scan ?? "Scan"
+                  : langui.scanlation ?? "Scanlation"
+              }
+            />
+          </div>
+
+          <div className="flex flex-row flex-wrap place-items-center gap-4 pb-6">
+            <LanguageSwitcher {...languageSwitcherProps} />
+
+            <div className="grid place-content-center place-items-center">
+              <p className="font-headers font-bold">{langui.status}:</p>
+              <ToolTip
+                content={getStatusDescription(selectedScan.status, langui)}
+                maxWidth={"20rem"}
+              >
+                <Chip text={selectedScan.status} />
+              </ToolTip>
             </div>
 
-            <div className="flex flex-row flex-wrap place-items-center gap-4 pb-6">
-              <LanguageSwitcher {...languageSwitcherProps} />
-
-              <div className="grid place-content-center place-items-center">
-                <p className="font-headers font-bold">{langui.status}:</p>
-                <ToolTip
-                  content={getStatusDescription(selectedScan.status, langui)}
-                  maxWidth={"20rem"}
-                >
-                  <Chip text={selectedScan.status} />
-                </ToolTip>
+            {selectedScan.scanners && selectedScan.scanners.data.length > 0 && (
+              <div>
+                <p className="font-headers font-bold">{langui.scanners}:</p>
+                <div className="grid place-content-center place-items-center gap-2">
+                  {filterHasAttributes(selectedScan.scanners.data, [
+                    "id",
+                    "attributes",
+                  ] as const).map((scanner) => (
+                    <Fragment key={scanner.id}>
+                      <RecorderChip
+                        langui={langui}
+                        recorder={scanner.attributes}
+                      />
+                    </Fragment>
+                  ))}
+                </div>
               </div>
+            )}
 
-              {selectedScan.scanners && selectedScan.scanners.data.length > 0 && (
+            {selectedScan.cleaners && selectedScan.cleaners.data.length > 0 && (
+              <div>
+                <p className="font-headers font-bold">{langui.cleaners}:</p>
+                <div className="grid place-content-center place-items-center gap-2">
+                  {filterHasAttributes(selectedScan.cleaners.data, [
+                    "id",
+                    "attributes",
+                  ] as const).map((cleaner) => (
+                    <Fragment key={cleaner.id}>
+                      <RecorderChip
+                        langui={langui}
+                        recorder={cleaner.attributes}
+                      />
+                    </Fragment>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {selectedScan.typesetters &&
+              selectedScan.typesetters.data.length > 0 && (
                 <div>
-                  {/* TODO: Add Scanner to langui */}
-                  <p className="font-headers font-bold">{"Scanners"}:</p>
+                  <p className="font-headers font-bold">
+                    {langui.typesetters}:
+                  </p>
                   <div className="grid place-content-center place-items-center gap-2">
-                    {filterHasAttributes(selectedScan.scanners.data, [
+                    {filterHasAttributes(selectedScan.typesetters.data, [
                       "id",
                       "attributes",
-                    ] as const).map((scanner) => (
-                      <Fragment key={scanner.id}>
+                    ] as const).map((typesetter) => (
+                      <Fragment key={typesetter.id}>
                         <RecorderChip
                           langui={langui}
-                          recorder={scanner.attributes}
+                          recorder={typesetter.attributes}
                         />
                       </Fragment>
                     ))}
                   </div>
                 </div>
               )}
+          </div>
 
-              {selectedScan.cleaners && selectedScan.cleaners.data.length > 0 && (
-                <div>
-                  {/* TODO: Add Cleaners to langui */}
-                  <p className="font-headers font-bold">{"Cleaners"}:</p>
-                  <div className="grid place-content-center place-items-center gap-2">
-                    {filterHasAttributes(selectedScan.cleaners.data, [
-                      "id",
-                      "attributes",
-                    ] as const).map((cleaner) => (
-                      <Fragment key={cleaner.id}>
-                        <RecorderChip
-                          langui={langui}
-                          recorder={cleaner.attributes}
-                        />
-                      </Fragment>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {selectedScan.typesetters &&
-                selectedScan.typesetters.data.length > 0 && (
-                  <div>
-                    {/* TODO: Add Cleaners to Typesetters */}
-                    <p className="font-headers font-bold">{"Typesetters"}:</p>
-                    <div className="grid place-content-center place-items-center gap-2">
-                      {filterHasAttributes(selectedScan.typesetters.data, [
-                        "id",
-                        "attributes",
-                      ] as const).map((typesetter) => (
-                        <Fragment key={typesetter.id}>
-                          <RecorderChip
-                            langui={langui}
-                            recorder={typesetter.attributes}
-                          />
-                        </Fragment>
-                      ))}
-                    </div>
-                  </div>
-                )}
-            </div>
-
-            <div
-              className="grid items-end gap-8 border-b-[3px] border-dotted pb-12
+          <div
+            className="grid items-end gap-8 border-b-[3px] border-dotted pb-12
               last-of-type:border-0 desktop:grid-cols-[repeat(auto-fill,_minmax(10rem,1fr))]
               mobile:grid-cols-2"
-            >
-              {coverImages.map((image, index) => (
-                <div
-                  key={image.url}
-                  className="cursor-pointer transition-transform
+          >
+            {coverImages.map((image, index) => (
+              <div
+                key={image.url}
+                className="cursor-pointer transition-transform
                   drop-shadow-shade-lg hover:scale-[1.02]"
-                  onClick={() => {
-                    const imgs = coverImages.map((img) =>
-                      getAssetURL(img.url, ImageQuality.Large)
-                    );
+                onClick={() => {
+                  const imgs = coverImages.map((img) =>
+                    getAssetURL(img.url, ImageQuality.Large)
+                  );
 
-                    openLightBox(imgs, index);
-                  }}
-                >
-                  <Img image={image} quality={ImageQuality.Small} />
-                </div>
-              ))}
-            </div>
+                  openLightBox(imgs, index);
+                }}
+              >
+                <Img image={image} quality={ImageQuality.Small} />
+              </div>
+            ))}
           </div>
-        )}
-      </>
-    );
-  }
-  return <></>;
+        </div>
+      )}
+    </>
+  );
 };

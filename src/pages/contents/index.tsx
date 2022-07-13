@@ -23,6 +23,7 @@ import { GetContentsQuery } from "graphql/generated";
 import { SmartList } from "components/SmartList";
 import { ContentPlaceholder } from "components/PanelComponents/ContentPlaceholder";
 import { SelectiveNonNullable } from "helpers/types/SelectiveNonNullable";
+import { useBoolean } from "hooks/useBoolean";
 
 /*
  *                                         ╭─────────────╮
@@ -56,9 +57,11 @@ const Contents = ({
   const [groupingMethod, setGroupingMethod] = useState<number>(
     DEFAULT_FILTERS_STATE.groupingMethod
   );
-  const [keepInfoVisible, setKeepInfoVisible] = useState(
-    DEFAULT_FILTERS_STATE.keepInfoVisible
-  );
+  const {
+    state: keepInfoVisible,
+    toggleState: toggleKeepInfoVisible,
+    setState: setKeepInfoVisible,
+  } = useBoolean(DEFAULT_FILTERS_STATE.keepInfoVisible);
   const [combineRelatedContent, setCombineRelatedContent] = useState(
     DEFAULT_FILTERS_STATE.combineRelatedContent
   );
@@ -149,8 +152,8 @@ const Contents = ({
         <TextInput
           className="mb-6 w-full"
           placeholder={langui.search_title ?? undefined}
-          state={searchName}
-          setState={setSearchName}
+          value={searchName}
+          onChange={setSearchName}
         />
 
         <WithLabel
@@ -159,8 +162,8 @@ const Contents = ({
             <Select
               className="w-full"
               options={[langui.category ?? "", langui.type ?? ""]}
-              state={groupingMethod}
-              setState={setGroupingMethod}
+              value={groupingMethod}
+              onChange={setGroupingMethod}
               allowEmpty
             />
           }
@@ -171,8 +174,8 @@ const Contents = ({
           disabled={searchName.length > 1}
           input={
             <Switch
-              setState={setCombineRelatedContent}
-              state={effectiveCombineRelatedContent}
+              value={effectiveCombineRelatedContent}
+              onClick={toggleKeepInfoVisible}
             />
           }
         />
@@ -181,7 +184,7 @@ const Contents = ({
           <WithLabel
             label={langui.always_show_info}
             input={
-              <Switch setState={setKeepInfoVisible} state={keepInfoVisible} />
+              <Switch onClick={toggleKeepInfoVisible} value={keepInfoVisible} />
             }
           />
         )}
@@ -208,6 +211,8 @@ const Contents = ({
       keepInfoVisible,
       langui,
       searchName,
+      setKeepInfoVisible,
+      toggleKeepInfoVisible,
     ]
   );
 

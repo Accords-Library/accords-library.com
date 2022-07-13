@@ -97,14 +97,13 @@ export const AppLayout = ({
   const isMobile = useMediaMobile();
 
   useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    router.events?.on("routeChangeStart", () => {
+    router.events.on("routeChangeStart", () => {
       setConfigPanelOpen(false);
       setMainPanelOpen(false);
       setSubPanelOpen(false);
     });
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    router.events?.on("hashChangeStart", () => {
+
+    router.events.on("hashChangeStart", () => {
       setSubPanelOpen(false);
     });
   }, [router.events, setConfigPanelOpen, setMainPanelOpen, setSubPanelOpen]);
@@ -461,8 +460,8 @@ export const AppLayout = ({
                 <div>
                   <Select
                     options={currencyOptions}
-                    state={currencySelect}
-                    setState={setCurrencySelect}
+                    value={currencySelect}
+                    onChange={setCurrencySelect}
                     className="w-28"
                   />
                 </div>
@@ -516,8 +515,8 @@ export const AppLayout = ({
                 <TextInput
                   placeholder="<player>"
                   className="w-48"
-                  state={playerName}
-                  setState={setPlayerName}
+                  value={playerName ?? ""}
+                  onChange={setPlayerName}
                 />
               </div>
             </div>

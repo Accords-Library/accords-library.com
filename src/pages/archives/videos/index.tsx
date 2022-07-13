@@ -25,6 +25,7 @@ import { prettyDate } from "helpers/formatters";
 import { filterHasAttributes } from "helpers/others";
 import { getVideoThumbnailURL } from "helpers/videos";
 import { useMediaHoverable } from "hooks/useMediaQuery";
+import { useBoolean } from "hooks/useBoolean";
 
 /*
  *                                         ╭─────────────╮
@@ -46,7 +47,10 @@ interface Props extends AppStaticProps {
 
 const Videos = ({ langui, videos, ...otherProps }: Props): JSX.Element => {
   const hoverable = useMediaHoverable();
-  const [keepInfoVisible, setKeepInfoVisible] = useState(true);
+
+  const { state: keepInfoVisible, toggleState: toggleKeepInfoVisible } =
+    useBoolean(true);
+
   const [searchName, setSearchName] = useState(
     DEFAULT_FILTERS_STATE.searchName
   );
@@ -71,21 +75,21 @@ const Videos = ({ langui, videos, ...otherProps }: Props): JSX.Element => {
         <TextInput
           className="mb-6 w-full"
           placeholder={langui.search_title ?? undefined}
-          state={searchName}
-          setState={setSearchName}
+          value={searchName}
+          onChange={setSearchName}
         />
 
         {hoverable && (
           <WithLabel
             label={langui.always_show_info}
             input={
-              <Switch setState={setKeepInfoVisible} state={keepInfoVisible} />
+              <Switch value={keepInfoVisible} onClick={toggleKeepInfoVisible} />
             }
           />
         )}
       </SubPanel>
     ),
-    [hoverable, keepInfoVisible, langui, searchName]
+    [hoverable, keepInfoVisible, langui, searchName, toggleKeepInfoVisible]
   );
 
   const contentPanel = useMemo(

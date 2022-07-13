@@ -1,5 +1,5 @@
 import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next";
-import { Fragment, useState, useMemo } from "react";
+import { Fragment, useMemo } from "react";
 import { AppLayout } from "components/AppLayout";
 import { Switch } from "components/Inputs/Switch";
 import { PanelHeader } from "components/PanelComponents/PanelHeader";
@@ -21,6 +21,7 @@ import { Icon } from "components/Ico";
 import { useMediaHoverable } from "hooks/useMediaQuery";
 import { WithLabel } from "components/Inputs/WithLabel";
 import { filterHasAttributes, isDefined } from "helpers/others";
+import { useBoolean } from "hooks/useBoolean";
 
 /*
  *                                           ╭────────╮
@@ -34,7 +35,8 @@ interface Props extends AppStaticProps {
 }
 
 const Channel = ({ langui, channel, ...otherProps }: Props): JSX.Element => {
-  const [keepInfoVisible, setKeepInfoVisible] = useState(true);
+  const { state: keepInfoVisible, toggleState: toggleKeepInfoVisible } =
+    useBoolean(true);
   const hoverable = useMediaHoverable();
 
   const subPanel = useMemo(
@@ -58,13 +60,13 @@ const Channel = ({ langui, channel, ...otherProps }: Props): JSX.Element => {
           <WithLabel
             label={langui.always_show_info}
             input={
-              <Switch setState={setKeepInfoVisible} state={keepInfoVisible} />
+              <Switch value={keepInfoVisible} onClick={toggleKeepInfoVisible} />
             }
           />
         )}
       </SubPanel>
     ),
-    [hoverable, keepInfoVisible, langui]
+    [hoverable, keepInfoVisible, langui, toggleKeepInfoVisible]
   );
 
   const contentPanel = useMemo(

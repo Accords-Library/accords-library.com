@@ -1,4 +1,3 @@
-import { Dispatch, SetStateAction } from "react";
 import { ButtonGroup } from "./ButtonGroup";
 import { Icon } from "components/Ico";
 import { cJoin } from "helpers/className";
@@ -10,34 +9,23 @@ import { cJoin } from "helpers/className";
 
 interface Props {
   className?: string;
-  maxPage: number;
   page: number;
-  setPage: Dispatch<SetStateAction<number>>;
+  onChange: (value: number) => void;
 }
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
 export const PageSelector = ({
   page,
-  setPage,
-  maxPage,
   className,
+  onChange,
 }: Props): JSX.Element => (
   <ButtonGroup
     className={cJoin("flex flex-row place-content-center", className)}
     buttonsProps={[
-      {
-        onClick: () => setPage((current) => (page > 0 ? current - 1 : current)),
-        icon: Icon.NavigateBefore,
-      },
-      {
-        text: (page + 1).toString(),
-      },
-      {
-        onClick: () =>
-          setPage((current) => (page < maxPage ? page + 1 : current)),
-        icon: Icon.NavigateNext,
-      },
+      { onClick: () => onChange(page - 1), icon: Icon.NavigateBefore },
+      { text: (page + 1).toString() },
+      { onClick: () => onChange(page + 1), icon: Icon.NavigateNext },
     ]}
   />
 );

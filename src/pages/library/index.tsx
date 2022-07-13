@@ -33,6 +33,7 @@ import { useAppLayout } from "contexts/AppLayoutContext";
 import { convertPrice } from "helpers/numbers";
 import { SmartList } from "components/SmartList";
 import { SelectiveNonNullable } from "helpers/types/SelectiveNonNullable";
+import { useBoolean } from "hooks/useBoolean";
 
 /*
  *                                         ╭─────────────╮
@@ -66,29 +67,44 @@ const Library = ({
   ...otherProps
 }: Props): JSX.Element => {
   const hoverable = useMediaHoverable();
-  const appLayout = useAppLayout();
+  const { libraryItemUserStatus } = useAppLayout();
 
   const [searchName, setSearchName] = useState(
     DEFAULT_FILTERS_STATE.searchName
   );
-  const [showSubitems, setShowSubitems] = useState<boolean>(
-    DEFAULT_FILTERS_STATE.showSubitems
-  );
-  const [showPrimaryItems, setShowPrimaryItems] = useState<boolean>(
-    DEFAULT_FILTERS_STATE.showPrimaryItems
-  );
-  const [showSecondaryItems, setShowSecondaryItems] = useState<boolean>(
-    DEFAULT_FILTERS_STATE.showSecondaryItems
-  );
+
+  const {
+    state: showSubitems,
+    toggleState: toggleShowSubitems,
+    setState: setShowSubitems,
+  } = useBoolean(DEFAULT_FILTERS_STATE.showSubitems);
+
+  const {
+    state: showPrimaryItems,
+    toggleState: toggleShowPrimaryItems,
+    setState: setShowPrimaryItems,
+  } = useBoolean(DEFAULT_FILTERS_STATE.showPrimaryItems);
+
+  const {
+    state: showSecondaryItems,
+    toggleState: toggleShowSecondaryItems,
+    setState: setShowSecondaryItems,
+  } = useBoolean(DEFAULT_FILTERS_STATE.showSecondaryItems);
+
+  const {
+    state: keepInfoVisible,
+    toggleState: toggleKeepInfoVisible,
+    setState: setKeepInfoVisible,
+  } = useBoolean(DEFAULT_FILTERS_STATE.keepInfoVisible);
+
   const [sortingMethod, setSortingMethod] = useState<number>(
     DEFAULT_FILTERS_STATE.sortingMethod
   );
+
   const [groupingMethod, setGroupingMethod] = useState<number>(
     DEFAULT_FILTERS_STATE.groupingMethod
   );
-  const [keepInfoVisible, setKeepInfoVisible] = useState(
-    DEFAULT_FILTERS_STATE.keepInfoVisible
-  );
+
   const [filterUserStatus, setFilterUserStatus] = useState<
     LibraryItemUserStatus | undefined
   >(DEFAULT_FILTERS_STATE.filterUserStatus);
@@ -107,28 +123,22 @@ const Library = ({
       if (item.attributes.primary && !showPrimaryItems) return false;
       if (!item.attributes.primary && !showSecondaryItems) return false;
 
-      if (
-        isDefined(filterUserStatus) &&
-        item.id &&
-        appLayout.libraryItemUserStatus
-      ) {
+      if (isDefined(filterUserStatus) && item.id && libraryItemUserStatus) {
         if (isUntangibleGroupItem(item.attributes.metadata?.[0])) {
           return false;
         }
         if (filterUserStatus === LibraryItemUserStatus.None) {
-          if (appLayout.libraryItemUserStatus[item.id]) {
+          if (libraryItemUserStatus[item.id]) {
             return false;
           }
-        } else if (
-          filterUserStatus !== appLayout.libraryItemUserStatus[item.id]
-        ) {
+        } else if (filterUserStatus !== libraryItemUserStatus[item.id]) {
           return false;
         }
       }
       return true;
     },
     [
-      appLayout.libraryItemUserStatus,
+      libraryItemUserStatus,
       filterUserStatus,
       showPrimaryItems,
       showSecondaryItems,
@@ -260,8 +270,8 @@ const Library = ({
         <TextInput
           className="mb-6 w-full"
           placeholder={langui.search_title ?? undefined}
-          state={searchName}
-          setState={setSearchName}
+          value={searchName}
+          onChange={setSearchName}
         />
 
         <WithLabel
@@ -274,8 +284,8 @@ const Library = ({
                 langui.type ?? "Type",
                 langui.release_year ?? "Year",
               ]}
-              state={groupingMethod}
-              setState={setGroupingMethod}
+              value={groupingMethod}
+              onChange={setGroupingMethod}
               allowEmpty
             />
           }
@@ -291,21 +301,21 @@ const Library = ({
                 langui.price ?? "Price",
                 langui.release_date ?? "Release date",
               ]}
-              state={sortingMethod}
-              setState={setSortingMethod}
+              value={sortingMethod}
+              onChange={setSortingMethod}
             />
           }
         />
 
         <WithLabel
           label={langui.show_subitems}
-          input={<Switch state={showSubitems} setState={setShowSubitems} />}
+          input={<Switch value={showSubitems} onClick={toggleShowSubitems} />}
         />
 
         <WithLabel
           label={langui.show_primary_items}
           input={
-            <Switch state={showPrimaryItems} setState={setShowPrimaryItems} />
+            <Switch value={showPrimaryItems} onClick={toggleShowPrimaryItems} />
           }
         />
 
@@ -313,8 +323,8 @@ const Library = ({
           label={langui.show_secondary_items}
           input={
             <Switch
-              state={showSecondaryItems}
-              setState={setShowSecondaryItems}
+              value={showSecondaryItems}
+              onClick={toggleShowSecondaryItems}
             />
           }
         />
@@ -323,7 +333,7 @@ const Library = ({
           <WithLabel
             label={langui.always_show_info}
             input={
-              <Switch state={keepInfoVisible} setState={setKeepInfoVisible} />
+              <Switch value={keepInfoVisible} onClick={toggleKeepInfoVisible} />
             }
           />
         )}
@@ -382,10 +392,18 @@ const Library = ({
       keepInfoVisible,
       langui,
       searchName,
+      setKeepInfoVisible,
+      setShowPrimaryItems,
+      setShowSecondaryItems,
+      setShowSubitems,
       showPrimaryItems,
       showSecondaryItems,
       showSubitems,
       sortingMethod,
+      toggleKeepInfoVisible,
+      toggleShowPrimaryItems,
+      toggleShowSecondaryItems,
+      toggleShowSubitems,
     ]
   );
 

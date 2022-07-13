@@ -23,7 +23,7 @@ export const PreviewCardCTAs = ({
   expand = false,
   langui,
 }: Props): JSX.Element => {
-  const appLayout = useAppLayout();
+  const { libraryItemUserStatus, setLibraryItemUserStatus } = useAppLayout();
   return (
     <>
       <div
@@ -35,13 +35,10 @@ export const PreviewCardCTAs = ({
           <Button
             icon={Icon.Favorite}
             text={expand ? langui.want_it : undefined}
-            active={
-              appLayout.libraryItemUserStatus?.[id] ===
-              LibraryItemUserStatus.Want
-            }
+            active={libraryItemUserStatus?.[id] === LibraryItemUserStatus.Want}
             onClick={(event) => {
               event.preventDefault();
-              appLayout.setLibraryItemUserStatus((current) => {
+              setLibraryItemUserStatus((current) => {
                 const newLibraryItemUserStatus = current ? { ...current } : {};
                 newLibraryItemUserStatus[id] =
                   newLibraryItemUserStatus[id] === LibraryItemUserStatus.Want
@@ -56,13 +53,10 @@ export const PreviewCardCTAs = ({
           <Button
             icon={Icon.BackHand}
             text={expand ? langui.have_it : undefined}
-            active={
-              appLayout.libraryItemUserStatus?.[id] ===
-              LibraryItemUserStatus.Have
-            }
+            active={libraryItemUserStatus?.[id] === LibraryItemUserStatus.Have}
             onClick={(event) => {
               event.preventDefault();
-              appLayout.setLibraryItemUserStatus((current) => {
+              setLibraryItemUserStatus((current) => {
                 const newLibraryItemUserStatus = current ? { ...current } : {};
                 newLibraryItemUserStatus[id] =
                   newLibraryItemUserStatus[id] === LibraryItemUserStatus.Have

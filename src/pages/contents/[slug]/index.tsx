@@ -206,7 +206,7 @@ const Content = ({
 
             {isDefinedAndNotEmpty(selectedTranslation.text_set.notes) && (
               <div>
-                <p className="font-headers font-bold">{"Notes"}:</p>
+                <p className="font-headers font-bold">{langui.notes}:</p>
                 <div className="grid place-content-center place-items-center gap-2">
                   <Markdawn text={selectedTranslation.text_set.notes} />
                 </div>
@@ -223,7 +223,7 @@ const Content = ({
                 <p className="font-headers text-2xl font-bold">
                   {langui.source}
                 </p>
-                <div className="mt-6 grid place-items-center gap-6 text-left">
+                <div className="mt-6 grid place-items-center gap-6">
                   {filterHasAttributes(content.ranged_contents.data, [
                     "attributes.library_item.data.attributes",
                     "attributes.library_item.data.id",
@@ -330,7 +330,11 @@ const Content = ({
             type={content.type}
             categories={content.categories}
             langui={langui}
-            languageSwitcher={<LanguageSwitcher {...languageSwitcherProps} />}
+            languageSwitcher={
+              languageSwitcherProps.locales.size > 1 ? (
+                <LanguageSwitcher {...languageSwitcherProps} />
+              ) : undefined
+            }
           />
 
           {previousContent?.attributes && (

@@ -139,11 +139,10 @@ const WikiPage = ({
                 {page.tags?.data && page.tags.data.length > 0 && (
                   <>
                     <p className="font-headers text-xl font-bold">
-                      {/* TODO: Add Tags to langui */}
-                      {"Tags"}
+                      {langui.tags}
                     </p>
                     <div className="flex flex-row flex-wrap place-content-center gap-2">
-                      {filterHasAttributes(page.tags?.data, [
+                      {filterHasAttributes(page.tags.data, [
                         "attributes",
                       ] as const).map((tag) => (
                         <Chip
@@ -203,9 +202,11 @@ const WikiPage = ({
     ),
     [
       LanguageSwitcher,
+      LightBox,
       languageSwitcherProps,
       languages,
       langui,
+      openLightBox,
       page,
       selectedTranslation,
     ]

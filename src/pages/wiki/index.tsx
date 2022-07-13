@@ -25,6 +25,7 @@ import { SmartList } from "components/SmartList";
 import { Select } from "components/Inputs/Select";
 import { SelectiveNonNullable } from "helpers/types/SelectiveNonNullable";
 import { prettySlug } from "helpers/formatters";
+import { useBoolean } from "hooks/useBoolean";
 
 /*
  *                                         ╭─────────────╮
@@ -62,9 +63,11 @@ const Wiki = ({
     DEFAULT_FILTERS_STATE.groupingMethod
   );
 
-  const [keepInfoVisible, setKeepInfoVisible] = useState(
-    DEFAULT_FILTERS_STATE.keepInfoVisible
-  );
+  const {
+    state: keepInfoVisible,
+    toggleState: toggleKeepInfoVisible,
+    setState: setKeepInfoVisible,
+  } = useBoolean(DEFAULT_FILTERS_STATE.keepInfoVisible);
 
   const subPanel = useMemo(
     () => (
@@ -78,8 +81,8 @@ const Wiki = ({
         <TextInput
           className="mb-6 w-full"
           placeholder={langui.search_title ?? undefined}
-          state={searchName}
-          setState={setSearchName}
+          value={searchName}
+          onChange={setSearchName}
         />
 
         <WithLabel
@@ -88,8 +91,8 @@ const Wiki = ({
             <Select
               className="w-full"
               options={[langui.category ?? ""]}
-              state={groupingMethod}
-              setState={setGroupingMethod}
+              value={groupingMethod}
+              onChange={setGroupingMethod}
               allowEmpty
             />
           }
@@ -99,7 +102,7 @@ const Wiki = ({
           <WithLabel
             label={langui.always_show_info}
             input={
-              <Switch setState={setKeepInfoVisible} state={keepInfoVisible} />
+              <Switch value={keepInfoVisible} onClick={toggleKeepInfoVisible} />
             }
           />
         )}
@@ -122,7 +125,15 @@ const Wiki = ({
         <NavOption title={langui.chronology} url="/wiki/chronology" border />
       </SubPanel>
     ),
-    [groupingMethod, hoverable, keepInfoVisible, langui, searchName]
+    [
+      groupingMethod,
+      hoverable,
+      keepInfoVisible,
+      langui,
+      searchName,
+      setKeepInfoVisible,
+      toggleKeepInfoVisible,
+    ]
   );
 
   const groupingFunction = useCallback(

@@ -15,5 +15,6 @@ export const useScrollTopOnChange = (
       document
         .querySelector(`#${id}`)
         ?.scrollTo({ top: 0, behavior: "smooth" });
-  }, [id, deps, enabled]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id, ...deps, enabled]);
 };

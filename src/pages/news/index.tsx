@@ -20,6 +20,7 @@ import { Button } from "components/Inputs/Button";
 import { useMediaHoverable } from "hooks/useMediaQuery";
 import { filterDefined, filterHasAttributes } from "helpers/others";
 import { SmartList } from "components/SmartList";
+import { useBoolean } from "hooks/useBoolean";
 
 /*
  *                                         ╭─────────────╮
@@ -50,9 +51,11 @@ const News = ({
   const [searchName, setSearchName] = useState(
     DEFAULT_FILTERS_STATE.searchName
   );
-  const [keepInfoVisible, setKeepInfoVisible] = useState(
-    DEFAULT_FILTERS_STATE.keepInfoVisible
-  );
+  const {
+    state: keepInfoVisible,
+    toggleState: toggleKeepInfoVisible,
+    setState: setKeepInfoVisible,
+  } = useBoolean(DEFAULT_FILTERS_STATE.keepInfoVisible);
 
   const subPanel = useMemo(
     () => (
@@ -66,15 +69,15 @@ const News = ({
         <TextInput
           className="mb-6 w-full"
           placeholder={langui.search_title ?? undefined}
-          state={searchName}
-          setState={setSearchName}
+          value={searchName}
+          onChange={setSearchName}
         />
 
         {hoverable && (
           <WithLabel
             label={langui.always_show_info}
             input={
-              <Switch setState={setKeepInfoVisible} state={keepInfoVisible} />
+              <Switch onClick={toggleKeepInfoVisible} value={keepInfoVisible} />
             }
           />
         )}
@@ -90,7 +93,14 @@ const News = ({
         />
       </SubPanel>
     ),
-    [hoverable, keepInfoVisible, langui, searchName]
+    [
+      hoverable,
+      keepInfoVisible,
+      langui,
+      searchName,
+      setKeepInfoVisible,
+      toggleKeepInfoVisible,
+    ]
   );
 
   const contentPanel = useMemo(

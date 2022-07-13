@@ -7,3 +7,4 @@ next.config.js
 postcss.config.js
 tailwind.config.js
 design.config.js
+graphql.config.js

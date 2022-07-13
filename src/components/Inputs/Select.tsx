@@ -1,10 +1,4 @@
-import {
-  Dispatch,
-  Fragment,
-  SetStateAction,
-  useCallback,
-  useState,
-} from "react";
+import { Fragment, useCallback, useState } from "react";
 import { Ico, Icon } from "components/Ico";
 import { cIf, cJoin } from "helpers/className";
 import { useToggle } from "hooks/useToggle";
@@ -15,30 +9,30 @@ import { useToggle } from "hooks/useToggle";
  */
 
 interface Props {
-  setState: Dispatch<SetStateAction<number>>;
-  state: number;
+  value: number;
   options: string[];
   selected?: number;
   allowEmpty?: boolean;
   className?: string;
+  onChange: (value: number) => void;
 }
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
 export const Select = ({
   className,
-  state,
+  value,
   options,
   allowEmpty,
-  setState,
+  onChange,
 }: Props): JSX.Element => {
   const [opened, setOpened] = useState(false);
   const toggleOpened = useToggle(setOpened);
 
   const tryToggling = useCallback(() => {
-    const optionCount = options.length + (state === -1 ? 1 : 0);
+    const optionCount = options.length + (value === -1 ? 1 : 0);
     if (optionCount > 1) toggleOpened();
-  }, [options.length, state, toggleOpened]);
+  }, [options.length, value, toggleOpened]);
 
   return (
     <div
@@ -57,14 +51,14 @@ export const Select = ({
         )}
       >
         <p onClick={tryToggling} className="w-full">
-          {state === -1 ? "—" : options[state]}
+          {value === -1 ? "—" : options[value]}
         </p>
-        {state >= 0 && allowEmpty && (
+        {value >= 0 && allowEmpty && (
           <Ico
             icon={Icon.Close}
             className="!text-xs"
             onClick={() => {
-              setState(-1);
+              onChange(-1);
               setOpened(false);
             }}
           />
@@ -82,7 +76,7 @@ export const Select = ({
       >
         {options.map((option, index) => (
           <Fragment key={index}>
-            {index !== state && (
+            {index !== value && (
               <div
                 className={cJoin(
                   "cursor-pointer p-1 transition-colors last-of-type:rounded-b-[1em] hover:bg-mid",
@@ -91,7 +85,7 @@ export const Select = ({
                 id={option}
                 onClick={() => {
                   setOpened(false);
-                  setState(index);
+                  onChange(index);
                 }}
               >
                 {option}

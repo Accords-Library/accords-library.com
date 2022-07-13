@@ -34,7 +34,7 @@ interface Props {
       >["data"][number]["attributes"]
     >["scan_set"]
   >;
-  slug: string;
+  id: string;
   title: string;
   languages: AppStaticProps["languages"];
   langui: AppStaticProps["langui"];
@@ -51,10 +51,10 @@ interface Props {
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
-export const ScanSet = ({
+const ScanSet = ({
   openLightBox,
   scanSet,
-  slug,
+  id,
   title,
   languages,
   langui,
@@ -115,17 +115,16 @@ export const ScanSet = ({
             className="flex flex-row flex-wrap place-items-center
           gap-6 pt-10 text-base first-of-type:pt-0"
           >
-            <h2 id={slug} className="text-2xl">
+            <h2 id={id} className="text-2xl">
               {title}
             </h2>
 
-            {/* TODO: Add Scan and Scanlation to langui */}
             <Chip
               text={
                 selectedScan.language?.data?.attributes?.code ===
                 selectedScan.source_language?.data?.attributes?.code
-                  ? "Scan"
-                  : "Scanlation"
+                  ? langui.scan ?? "Scan"
+                  : langui.scanlation ?? "Scanlation"
               }
             />
           </div>
@@ -153,8 +152,7 @@ export const ScanSet = ({
 
             {selectedScan.scanners && selectedScan.scanners.data.length > 0 && (
               <div>
-                {/* TODO: Add Scanner to langui */}
-                <p className="font-headers font-bold">{"Scanners"}:</p>
+                <p className="font-headers font-bold">{langui.scanners}:</p>
                 <div className="grid place-content-center place-items-center gap-2">
                   {filterHasAttributes(selectedScan.scanners.data, [
                     "id",
@@ -173,8 +171,7 @@ export const ScanSet = ({
 
             {selectedScan.cleaners && selectedScan.cleaners.data.length > 0 && (
               <div>
-                {/* TODO: Add Cleaners to langui */}
-                <p className="font-headers font-bold">{"Cleaners"}:</p>
+                <p className="font-headers font-bold">{langui.cleaners}:</p>
                 <div className="grid place-content-center place-items-center gap-2">
                   {filterHasAttributes(selectedScan.cleaners.data, [
                     "id",
@@ -194,8 +191,9 @@ export const ScanSet = ({
             {selectedScan.typesetters &&
               selectedScan.typesetters.data.length > 0 && (
                 <div>
-                  {/* TODO: Add typesetter to langui */}
-                  <p className="font-headers font-bold">{"Typesetters"}:</p>
+                  <p className="font-headers font-bold">
+                    {langui.typesetters}:
+                  </p>
                   <div className="grid place-content-center place-items-center gap-2">
                     {filterHasAttributes(selectedScan.typesetters.data, [
                       "id",
@@ -214,8 +212,7 @@ export const ScanSet = ({
 
             {isDefinedAndNotEmpty(selectedScan.notes) && (
               <ToolTip content={selectedScan.notes}>
-                {/* TODO: Add Notes to langui */}
-                <Chip text={"Notes"} />
+                <Chip text={langui.notes ?? "Notes"} />
               </ToolTip>
             )}
           </div>
@@ -243,5 +240,42 @@ export const ScanSet = ({
         </div>
       )}
     </>
+  );
+};
+
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
+
+interface TranslatedProps extends Omit<Props, "title"> {
+  translations: {
+    title: string;
+    language: string;
+  }[];
+  fallbackTitle: TranslatedProps["translations"][number]["title"];
+  languages: AppStaticProps["languages"];
+}
+
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
+
+export const TranslatedScanSet = ({
+  fallbackTitle,
+  translations = [{ title: fallbackTitle, language: "default" }],
+  languages,
+  ...otherProps
+}: TranslatedProps): JSX.Element => {
+  const [selectedTranslation] = useSmartLanguage({
+    items: translations,
+    languages: languages,
+    languageExtractor: useCallback(
+      (item: TranslatedProps["translations"][number]) => item.language,
+      []
+    ),
+  });
+
+  return (
+    <ScanSet
+      title={selectedTranslation?.title ?? fallbackTitle}
+      languages={languages}
+      {...otherProps}
+    />
   );
 };

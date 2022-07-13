@@ -171,7 +171,11 @@ export const PostPage = ({
               description={excerpt}
               langui={langui}
               categories={post.categories}
-              languageSwitcher={<LanguageSwitcher {...languageSwitcherProps} />}
+              languageSwitcher={
+                languageSwitcherProps.locales.size > 1 ? (
+                  <LanguageSwitcher {...languageSwitcherProps} />
+                ) : undefined
+              }
             />
 
             <HorizontalLine />

@@ -30,7 +30,6 @@ The following is all the tests done on the data entries coming from Strapi. This
 | Text Sets | Credited Translators  | Error       | High      | The Content is a Transcription but credits one or more Translators.   | If appropriate, create a Translation Text Set with the Translator credited there.                                                      |
 | Text Sets | Duplicate Language    | Error       | High      |                                                                       |                                                                                                                                        |
 
-
 ## LibraryItems
 
 | Subitem              | Name                   | Type        | Severity  | Description                                                           | Recommendation                                                                          |
@@ -100,4 +99,4 @@ The following is all the tests done on the data entries coming from Strapi. This
 | Metadata Group       | Has URLs               | Error       | High      | Variant Sets shouldn't have URLs.                                     |                                                                                         |
 | Metadata Group       | Has Contents           | Error       | High      | Variant Sets and Relation Set shouldn't have Contents.                |                                                                                         |
 | Metadata Group       | Has Images             | Error       | High      | Variant Sets and Relation Set shouldn't have Images.                  |                                                                                         |
-| Metadata Group       | No Subitems            | Missing     | High      | Group Items should have subitems.                                     |     
+| Metadata Group       | No Subitems            | Missing     | High      | Group Items should have subitems.                                     |

@@ -35,7 +35,7 @@ export const ReturnButton = ({
   horizontalLine,
   className,
 }: Props): JSX.Element => {
-  const appLayout = useAppLayout();
+  const { setSubPanelOpen } = useAppLayout();
 
   return (
     <div
@@ -49,7 +49,7 @@ export const ReturnButton = ({
       )}
     >
       <Button
-        onClick={() => appLayout.setSubPanelOpen(false)}
+        onClick={() => setSubPanelOpen(false)}
         href={href}
         text={`${langui.return_to} ${title}`}
         icon={Icon.NavigateBefore}

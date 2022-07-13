@@ -1,10 +1,10 @@
 import { useCallback } from "react";
+import Link from "next/link";
 import { Chip } from "components/Chip";
 import { ToolTip } from "components/ToolTip";
 import { AppStaticProps } from "graphql/getAppStaticProps";
 import { getStatusDescription } from "helpers/others";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
-import Link from "next/link";
 import { Button } from "components/Inputs/Button";
 
 /*
@@ -88,7 +88,7 @@ const DefinitionCard = ({
 
       {source?.url && source.name && (
         <Link href={source.url}>
-          <div className="flex place-items-center gap-2 mt-3">
+          <div className="mt-3 flex place-items-center gap-2">
             <p>{langui.source}: </p>
             <Button size="small" text={source.name} />
           </div>

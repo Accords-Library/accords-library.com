@@ -37,7 +37,7 @@ interface Props extends AppStaticProps {
 
 const Video = ({ langui, video, ...otherProps }: Props): JSX.Element => {
   const isMobile = useMediaMobile();
-  const appLayout = useAppLayout();
+  const { setSubPanelOpen } = useAppLayout();
   const subPanel = useMemo(
     () => (
       <SubPanel>
@@ -55,25 +55,25 @@ const Video = ({ langui, video, ...otherProps }: Props): JSX.Element => {
           title={langui.video}
           url="#video"
           border
-          onClick={() => appLayout.setSubPanelOpen(false)}
+          onClick={() => setSubPanelOpen(false)}
         />
 
         <NavOption
           title={langui.channel}
           url="#channel"
           border
-          onClick={() => appLayout.setSubPanelOpen(false)}
+          onClick={() => setSubPanelOpen(false)}
         />
 
         <NavOption
           title={langui.description}
           url="#description"
           border
-          onClick={() => appLayout.setSubPanelOpen(false)}
+          onClick={() => setSubPanelOpen(false)}
         />
       </SubPanel>
     ),
-    [appLayout, langui]
+    [setSubPanelOpen, langui]
   );
 
   const contentPanel = useMemo(

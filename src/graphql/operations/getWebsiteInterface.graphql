@@ -159,6 +159,15 @@ query getWebsiteInterface($language_code: String) {
         no_results_message
         all
         special_pages
+        scan
+        scanlation
+        scanners
+        cleaners
+        typesetters
+        notes
+        cover
+        tags
+        no_source_warning
       }
     }
   }

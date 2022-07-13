@@ -102,6 +102,102 @@ query getLibraryItemScans($slug: String, $language_code: String) {
             }
           }
         }
+        release_date {
+          ...datePicker
+        }
+        price {
+          ...pricePicker
+        }
+        categories {
+          data {
+            id
+            attributes {
+              name
+              short
+            }
+          }
+        }
+        metadata {
+          __typename
+          ... on ComponentMetadataBooks {
+            subtype {
+              data {
+                attributes {
+                  slug
+                  titles(
+                    filters: { language: { code: { eq: $language_code } } }
+                  ) {
+                    title
+                  }
+                }
+              }
+            }
+          }
+          ... on ComponentMetadataGame {
+            platforms {
+              data {
+                id
+                attributes {
+                  short
+                }
+              }
+            }
+          }
+          ... on ComponentMetadataVideo {
+            subtype {
+              data {
+                attributes {
+                  slug
+                  titles(
+                    filters: { language: { code: { eq: $language_code } } }
+                  ) {
+                    title
+                  }
+                }
+              }
+            }
+          }
+          ... on ComponentMetadataAudio {
+            subtype {
+              data {
+                attributes {
+                  slug
+                  titles(
+                    filters: { language: { code: { eq: $language_code } } }
+                  ) {
+                    title
+                  }
+                }
+              }
+            }
+          }
+          ... on ComponentMetadataGroup {
+            subtype {
+              data {
+                attributes {
+                  slug
+                  titles(
+                    filters: { language: { code: { eq: $language_code } } }
+                  ) {
+                    title
+                  }
+                }
+              }
+            }
+            subitems_type {
+              data {
+                attributes {
+                  slug
+                  titles(
+                    filters: { language: { code: { eq: $language_code } } }
+                  ) {
+                    title
+                  }
+                }
+              }
+            }
+          }
+        }
         contents(pagination: { limit: -1 }) {
           data {
             id
@@ -122,6 +218,18 @@ query getLibraryItemScans($slug: String, $language_code: String) {
                 data {
                   attributes {
                     slug
+                    translations {
+                      pre_title
+                      title
+                      subtitle
+                      language {
+                        data {
+                          attributes {
+                            code
+                          }
+                        }
+                      }
+                    }
                   }
                 }
               }

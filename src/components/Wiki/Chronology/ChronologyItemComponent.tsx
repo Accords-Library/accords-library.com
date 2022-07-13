@@ -11,6 +11,7 @@ import {
   filterDefined,
   filterHasAttributes,
   getStatusDescription,
+  isDefined,
 } from "helpers/others";
 
 /*
@@ -30,9 +31,9 @@ export const ChronologyItemComponent = ({
   langui,
   item,
   displayYear,
-}: Props): JSX.Element => {
-  if (item.attributes) {
-    return (
+}: Props): JSX.Element => (
+  <>
+    {isDefined(item.attributes) && (
       <div
         className="grid grid-cols-[4em] grid-rows-[auto_1fr] place-content-start
         rounded-2xl py-4 px-8 target:my-4 target:bg-mid target:py-8"
@@ -100,7 +101,7 @@ export const ChronologyItemComponent = ({
                             </p>
                           )}
                           {translation.note ? (
-                            <em>{`Notes: ${translation.note}`}</em>
+                            <em>{`${langui.notes}: ${translation.note}`}</em>
                           ) : (
                             ""
                           )}
@@ -115,7 +116,7 @@ export const ChronologyItemComponent = ({
                     ) : (
                       <div className="flex items-center gap-1">
                         <Ico icon={Icon.Warning} className="!text-sm" />
-                        No sources!
+                        {langui.no_source_warning}
                       </div>
                     )}
                   </p>
@@ -124,11 +125,9 @@ export const ChronologyItemComponent = ({
             ))}
         </div>
       </div>
-    );
-  }
-
-  return <></>;
-};
+    )}
+  </>
+);
 
 /*
  *                                      ╭───────────────────╮

@@ -53,6 +53,7 @@ export const SmartList = <T,>({
   langui,
 }: Props<T>): JSX.Element => {
   const [page, setPage] = useState(0);
+
   useScrollTopOnChange(AnchorIds.ContentPanel, [page], paginationScroolTop);
 
   type Group = Map<string, T[]>;
@@ -123,62 +124,68 @@ export const SmartList = <T,>({
     [paginationItemPerPage, filteredItems.length]
   );
 
+  const changePage = useCallback(
+    (newPage: number) =>
+      setPage(() => {
+        if (newPage <= 0) {
+          return 0;
+        }
+        if (newPage >= pageCount) {
+          return pageCount;
+        }
+        return newPage;
+      }),
+    [pageCount]
+  );
+
   return (
     <>
       {pageCount > 1 && paginationSelectorTop && (
-        <PageSelector
-          maxPage={pageCount}
-          page={page}
-          setPage={setPage}
-          className="mb-12"
-        />
+        <PageSelector className="mb-12" page={page} onChange={changePage} />
       )}
 
-      {groupedList.size > 0
-        ? iterateMap(
-            groupedList,
-            (name, groupItems) =>
-              groupItems.length > 0 && (
-                <Fragment key={name}>
-                  {name.length > 0 && (
-                    <h2
-                      className="flex flex-row place-items-center gap-2 pb-2 pt-10 text-2xl
+      <div className="mb-8">
+        {groupedList.size > 0
+          ? iterateMap(
+              groupedList,
+              (name, groupItems) =>
+                groupItems.length > 0 && (
+                  <Fragment key={name}>
+                    {name.length > 0 && (
+                      <h2
+                        className="flex flex-row place-items-center gap-2 pb-2 pt-10 text-2xl
                 first-of-type:pt-0"
-                    >
-                      {name}
-                      <Chip
-                        text={`${groupItems.length} ${
-                          groupItems.length <= 1
-                            ? langui.result?.toLowerCase() ?? ""
-                            : langui.results?.toLowerCase() ?? ""
-                        }`}
-                      />
-                    </h2>
-                  )}
-                  <div
-                    className={cJoin(
-                      `grid items-start gap-8 border-b-[3px] border-dotted pb-12
-                      last-of-type:border-0 mobile:gap-4`,
-                      className
+                      >
+                        {name}
+                        <Chip
+                          text={`${groupItems.length} ${
+                            groupItems.length <= 1
+                              ? langui.result?.toLowerCase() ?? ""
+                              : langui.results?.toLowerCase() ?? ""
+                          }`}
+                        />
+                      </h2>
                     )}
-                  >
-                    {groupItems.map((item) => (
-                      <RenderItem item={item} key={getItemId(item)} />
-                    ))}
-                  </div>
-                </Fragment>
-              ),
-            ([a], [b]) => groupSortingFunction(a, b)
-          )
-        : isDefined(RenderWhenEmpty) && <RenderWhenEmpty />}
+                    <div
+                      className={cJoin(
+                        `grid items-start gap-8 border-b-[3px] border-dotted pb-12
+                      last-of-type:border-0 mobile:gap-4`,
+                        className
+                      )}
+                    >
+                      {groupItems.map((item) => (
+                        <RenderItem item={item} key={getItemId(item)} />
+                      ))}
+                    </div>
+                  </Fragment>
+                ),
+              ([a], [b]) => groupSortingFunction(a, b)
+            )
+          : isDefined(RenderWhenEmpty) && <RenderWhenEmpty />}
+      </div>
 
       {pageCount > 1 && paginationSelectorBottom && (
-        <PageSelector
-          maxPage={pageCount}
-          page={page}
-          setPage={setPage}
-          className="mt-12"
-        />
+        <PageSelector className="mb-12" page={page} onChange={changePage} />
       )}
     </>
   );

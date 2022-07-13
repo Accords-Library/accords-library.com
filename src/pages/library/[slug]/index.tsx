@@ -54,6 +54,7 @@ import { Ico, Icon } from "components/Ico";
 import { cJoin, cIf } from "helpers/className";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { getDescription } from "helpers/description";
+import { useBoolean } from "hooks/useBoolean";
 
 /*
  *                                           ╭────────╮
@@ -79,10 +80,11 @@ const LibrarySlug = ({
   languages,
   ...otherProps
 }: Props): JSX.Element => {
-  const appLayout = useAppLayout();
+  const { currency } = useAppLayout();
   const hoverable = useMediaHoverable();
   const [openLightBox, LightBox] = useLightBox();
-  const [keepInfoVisible, setKeepInfoVisible] = useState(false);
+  const { state: keepInfoVisible, toggleState: toggleKeepInfoVisible } =
+    useBoolean(false);
 
   useScrollTopOnChange(AnchorIds.ContentPanel, [item]);
 
@@ -314,14 +316,10 @@ const LibrarySlug = ({
                       )}
                     </p>
                     {item.price.currency?.data?.attributes?.code !==
-                      appLayout.currency && (
+                      currency && (
                       <p>
-                        {prettyPrice(
-                          item.price,
-                          currencies,
-                          appLayout.currency
-                        )}{" "}
-                        <br />({langui.calculated?.toLowerCase()})
+                        {prettyPrice(item.price, currencies, currency)} <br />(
+                        {langui.calculated?.toLowerCase()})
                       </p>
                     )}
                   </div>
@@ -450,8 +448,8 @@ const LibrarySlug = ({
                   label={langui.always_show_info}
                   input={
                     <Switch
-                      setState={setKeepInfoVisible}
-                      state={keepInfoVisible}
+                      onClick={toggleKeepInfoVisible}
+                      value={keepInfoVisible}
                     />
                   }
                 />
@@ -572,26 +570,13 @@ const LibrarySlug = ({
     [
       LightBox,
       langui,
-      item.thumbnail?.data?.attributes,
-      item.subitem_of?.data,
-      item.title,
-      item.subtitle,
-      item.metadata,
-      item.descriptions,
-      item.urls,
-      item.gallery,
-      item.release_date,
-      item.price,
-      item.categories,
-      item.size,
-      item.subitems,
-      item.contents,
-      item.slug,
+      item,
       itemId,
       currencies,
-      appLayout.currency,
+      currency,
       isVariantSet,
       hoverable,
+      toggleKeepInfoVisible,
       keepInfoVisible,
       displayOpenScans,
       openLightBox,

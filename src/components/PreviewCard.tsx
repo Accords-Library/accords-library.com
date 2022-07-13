@@ -77,64 +77,61 @@ export const PreviewCard = ({
   hoverlay,
   infoAppend,
 }: Props): JSX.Element => {
-  const appLayout = useAppLayout();
+  const { currency } = useAppLayout();
 
   const metadataJSX = useMemo(
-    () =>
-      metadata && (metadata.release_date || metadata.price) ? (
-        <div className="flex w-full flex-row flex-wrap gap-x-3">
-          {metadata.release_date && (
-            <p className="text-sm mobile:text-xs">
-              <Ico
-                icon={Icon.Event}
-                className="mr-1 translate-y-[.15em] !text-base"
-              />
-              {prettyDate(metadata.release_date)}
-            </p>
-          )}
-          {metadata.price && metadata.currencies && (
-            <p className="justify-self-end text-sm mobile:text-xs">
-              <Ico
-                icon={Icon.ShoppingCart}
-                className="mr-1 translate-y-[.15em] !text-base"
-              />
-              {prettyPrice(
-                metadata.price,
-                metadata.currencies,
-                appLayout.currency
-              )}
-            </p>
-          )}
-          {metadata.views && (
-            <p className="text-sm mobile:text-xs">
-              <Ico
-                icon={Icon.Visibility}
-                className="mr-1 translate-y-[.15em] !text-base"
-              />
-              {prettyShortenNumber(metadata.views)}
-            </p>
-          )}
-          {metadata.author && (
-            <p className="text-sm mobile:text-xs">
-              <Ico
-                icon={Icon.Person}
-                className="mr-1 translate-y-[.15em] !text-base"
-              />
-              {metadata.author}
-            </p>
-          )}
-        </div>
-      ) : (
-        <></>
-      ),
-    [appLayout.currency, metadata]
+    () => (
+      <>
+        {metadata && (metadata.release_date || metadata.price) && (
+          <div className="flex w-full flex-row flex-wrap gap-x-3">
+            {metadata.release_date && (
+              <p className="text-sm mobile:text-xs">
+                <Ico
+                  icon={Icon.Event}
+                  className="mr-1 translate-y-[.15em] !text-base"
+                />
+                {prettyDate(metadata.release_date)}
+              </p>
+            )}
+            {metadata.price && metadata.currencies && (
+              <p className="justify-self-end text-sm mobile:text-xs">
+                <Ico
+                  icon={Icon.ShoppingCart}
+                  className="mr-1 translate-y-[.15em] !text-base"
+                />
+                {prettyPrice(metadata.price, metadata.currencies, currency)}
+              </p>
+            )}
+            {metadata.views && (
+              <p className="text-sm mobile:text-xs">
+                <Ico
+                  icon={Icon.Visibility}
+                  className="mr-1 translate-y-[.15em] !text-base"
+                />
+                {prettyShortenNumber(metadata.views)}
+              </p>
+            )}
+            {metadata.author && (
+              <p className="text-sm mobile:text-xs">
+                <Ico
+                  icon={Icon.Person}
+                  className="mr-1 translate-y-[.15em] !text-base"
+                />
+                {metadata.author}
+              </p>
+            )}
+          </div>
+        )}
+      </>
+    ),
+    [currency, metadata]
   );
 
   return (
     <Link href={href} passHref>
       <div
-        className="group grid cursor-pointer items-end transition-transform drop-shadow-shade-xl
-        hover:scale-[1.02]"
+        className="group grid cursor-pointer items-end text-left transition-transform
+        drop-shadow-shade-xl hover:scale-[1.02]"
       >
         {stackNumber > 0 && (
           <>

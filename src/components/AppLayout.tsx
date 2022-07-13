@@ -169,24 +169,6 @@ export const AppLayout = ({
     }%`;
   }, [fontSize]);
 
-  const defaultPreferredLanguages = useMemo(() => {
-    let memo: string[] = [];
-    if (isDefinedAndNotEmpty(router.locale) && router.locales) {
-      if (router.locale === "en") {
-        memo = [router.locale];
-        router.locales.map((locale) => {
-          if (locale !== router.locale) memo.push(locale);
-        });
-      } else {
-        memo = [router.locale, "en"];
-        router.locales.map((locale) => {
-          if (locale !== router.locale && locale !== "en") memo.push(locale);
-        });
-      }
-    }
-    return memo;
-  }, [router.locale, router.locales]);
-
   const currencyOptions = useMemo(
     () =>
       filterHasAttributes(currencies, ["attributes"] as const).map(
@@ -205,6 +187,40 @@ export const AppLayout = ({
   useEffect(() => {
     if (currencySelect >= 0) setCurrency(currencyOptions[currencySelect]);
   }, [currencyOptions, currencySelect, setCurrency]);
+
+  useEffect(() => {
+    if (preferredLanguages) {
+      if (preferredLanguages.length === 0) {
+        let defaultPreferredLanguages: string[] = [];
+        if (isDefinedAndNotEmpty(router.locale) && router.locales) {
+          if (router.locale === "en") {
+            defaultPreferredLanguages = [router.locale];
+            router.locales.map((locale) => {
+              if (locale !== router.locale)
+                defaultPreferredLanguages.push(locale);
+            });
+          } else {
+            defaultPreferredLanguages = [router.locale, "en"];
+            router.locales.map((locale) => {
+              if (locale !== router.locale && locale !== "en")
+                defaultPreferredLanguages.push(locale);
+            });
+          }
+        }
+        setPreferredLanguages(defaultPreferredLanguages);
+      } else if (router.locale !== preferredLanguages[0]) {
+        router.push(router.asPath, router.asPath, {
+          locale: preferredLanguages[0],
+        });
+      }
+    }
+  }, [
+    preferredLanguages,
+    router,
+    router.locale,
+    router.locales,
+    setPreferredLanguages,
+  ]);
 
   const gridCol = useMemo(() => {
     if (isDefined(subPanel)) {
@@ -384,22 +400,15 @@ export const AppLayout = ({
             {router.locales && (
               <div>
                 <h3 className="text-xl">{langui.languages}</h3>
-                {preferredLanguages && (
+                {preferredLanguages && preferredLanguages.length > 0 && (
                   <OrderableList
                     items={
-                      preferredLanguages.length > 0
-                        ? new Map(
-                            preferredLanguages.map((locale) => [
-                              locale,
-                              prettyLanguage(locale, languages),
-                            ])
-                          )
-                        : new Map(
-                            defaultPreferredLanguages.map((locale) => [
-                              locale,
-                              prettyLanguage(locale, languages),
-                            ])
-                          )
+                      new Map(
+                        preferredLanguages.map((locale) => [
+                          locale,
+                          prettyLanguage(locale, languages),
+                        ])
+                      )
                     }
                     insertLabels={
                       new Map([
@@ -413,11 +422,6 @@ export const AppLayout = ({
                         (code) => code
                       );
                       setPreferredLanguages(newPreferredLanguages);
-                      if (router.locale !== newPreferredLanguages[0]) {
-                        router.push(router.asPath, router.asPath, {
-                          locale: newPreferredLanguages[0],
-                        });
-                      }
                     }}
                   />
                 )}

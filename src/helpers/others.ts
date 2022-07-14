@@ -75,22 +75,27 @@ export const filterHasAttributes = <T, P extends PathDot<T>>(
   t: T[] | null | undefined,
   paths: readonly P[]
 ): SelectiveNonNullable<T, typeof paths[number]>[] =>
-  isUndefined(t)
-    ? []
-    : (t.filter((item) =>
+  isDefined(t)
+    ? (t.filter((item) =>
         hasAttributes(item, paths)
-      ) as unknown as SelectiveNonNullable<T, typeof paths[number]>[]);
+      ) as unknown as SelectiveNonNullable<T, typeof paths[number]>[])
+    : [];
 
-const hasAttributes = <T>(item: T, paths: readonly PathDot<T>[]): boolean => {
+const hasAttributes = <T>(item: T, paths: readonly PathDot<T>[]): boolean =>
+  isDefined(item) && paths.every((path) => hasAttribute(item, path));
+
+const hasAttribute = <T>(item: T, path: string): boolean => {
   if (isDefined(item)) {
-    return paths.every((path) => {
-      const attributeToCheck = (path as string).split(".")[0];
-      return (
-        isDefined(attributeToCheck) &&
-        Object.keys(item).includes(attributeToCheck) &&
-        isDefined(item[attributeToCheck as keyof T])
-      );
-    });
+    const [head, ...rest] = path.split(".");
+    if (Object.keys(item).includes(head)) {
+      const attribute = head as keyof T;
+      if (isDefined(item[attribute])) {
+        if (rest.length > 0) {
+          return hasAttribute(item[attribute], rest.join("."));
+        }
+        return true;
+      }
+    }
   }
   return false;
 };

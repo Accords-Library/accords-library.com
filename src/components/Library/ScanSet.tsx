@@ -51,7 +51,7 @@ interface Props {
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
-const ScanSet = ({
+export const ScanSet = ({
   openLightBox,
   scanSet,
   id,
@@ -138,7 +138,9 @@ const ScanSet = ({
                 />
               )}
 
-            <LanguageSwitcher {...languageSwitcherProps} />
+            {languageSwitcherProps.locales.size > 1 && (
+              <LanguageSwitcher {...languageSwitcherProps} />
+            )}
 
             <div className="grid place-content-center place-items-center">
               <p className="font-headers font-bold">{langui.status}:</p>
@@ -240,42 +242,5 @@ const ScanSet = ({
         </div>
       )}
     </>
-  );
-};
-
-// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
-
-interface TranslatedProps extends Omit<Props, "title"> {
-  translations: {
-    title: string;
-    language: string;
-  }[];
-  fallbackTitle: TranslatedProps["translations"][number]["title"];
-  languages: AppStaticProps["languages"];
-}
-
-// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
-
-export const TranslatedScanSet = ({
-  fallbackTitle,
-  translations = [{ title: fallbackTitle, language: "default" }],
-  languages,
-  ...otherProps
-}: TranslatedProps): JSX.Element => {
-  const [selectedTranslation] = useSmartLanguage({
-    items: translations,
-    languages: languages,
-    languageExtractor: useCallback(
-      (item: TranslatedProps["translations"][number]) => item.language,
-      []
-    ),
-  });
-
-  return (
-    <ScanSet
-      title={selectedTranslation?.title ?? fallbackTitle}
-      languages={languages}
-      {...otherProps}
-    />
   );
 };

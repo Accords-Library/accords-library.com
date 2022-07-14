@@ -9,7 +9,6 @@ import {
   ContentPanelWidthSizes,
 } from "components/Panels/ContentPanel";
 import { SubPanel } from "components/Panels/SubPanel";
-import { TranslatedPreviewCard } from "components/PreviewCard";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import { prettyinlineTitle, prettySlug } from "helpers/formatters";
@@ -24,6 +23,7 @@ import { SmartList } from "components/SmartList";
 import { ContentPlaceholder } from "components/PanelComponents/ContentPlaceholder";
 import { SelectiveNonNullable } from "helpers/types/SelectiveNonNullable";
 import { useBoolean } from "hooks/useBoolean";
+import { TranslatedPreviewCard } from "components/Translated";
 
 /*
  *                                         ╭─────────────╮
@@ -223,49 +223,41 @@ const Contents = ({
           items={filterHasAttributes(contents, ["attributes", "id"] as const)}
           getItemId={(item) => item.id}
           renderItem={({ item }) => (
-            <>
-              {item.attributes.translations && (
-                <TranslatedPreviewCard
-                  href={`/contents/${item.attributes.slug}`}
-                  translations={item.attributes.translations.map(
-                    (translation) => ({
-                      pre_title: translation?.pre_title,
-                      title: translation?.title,
-                      subtitle: translation?.subtitle,
-                      language: translation?.language?.data?.attributes?.code,
-                    })
-                  )}
-                  slug={item.attributes.slug}
-                  languages={languages}
-                  thumbnail={item.attributes.thumbnail?.data?.attributes}
-                  thumbnailAspectRatio="3/2"
-                  thumbnailForceAspectRatio
-                  stackNumber={
-                    effectiveCombineRelatedContent &&
-                    item.attributes.group?.data?.attributes?.combine === true
-                      ? item.attributes.group.data.attributes.contents?.data
-                          .length
-                      : 0
-                  }
-                  topChips={
-                    item.attributes.type?.data?.attributes
-                      ? [
-                          item.attributes.type.data.attributes.titles?.[0]
-                            ? item.attributes.type.data.attributes.titles[0]
-                                ?.title
-                            : prettySlug(
-                                item.attributes.type.data.attributes.slug
-                              ),
-                        ]
-                      : undefined
-                  }
-                  bottomChips={item.attributes.categories?.data.map(
-                    (category) => category.attributes?.short ?? ""
-                  )}
-                  keepInfoVisible={keepInfoVisible}
-                />
+            <TranslatedPreviewCard
+              href={`/contents/${item.attributes.slug}`}
+              translations={filterHasAttributes(item.attributes.translations, [
+                "language.data.attributes.code",
+              ] as const).map((translation) => ({
+                pre_title: translation.pre_title,
+                title: translation.title,
+                subtitle: translation.subtitle,
+                language: translation.language.data.attributes.code,
+              }))}
+              fallback={{ title: prettySlug(item.attributes.slug) }}
+              languages={languages}
+              thumbnail={item.attributes.thumbnail?.data?.attributes}
+              thumbnailAspectRatio="3/2"
+              thumbnailForceAspectRatio
+              stackNumber={
+                effectiveCombineRelatedContent &&
+                item.attributes.group?.data?.attributes?.combine === true
+                  ? item.attributes.group.data.attributes.contents?.data.length
+                  : 0
+              }
+              topChips={
+                item.attributes.type?.data?.attributes
+                  ? [
+                      item.attributes.type.data.attributes.titles?.[0]
+                        ? item.attributes.type.data.attributes.titles[0]?.title
+                        : prettySlug(item.attributes.type.data.attributes.slug),
+                    ]
+                  : undefined
+              }
+              bottomChips={item.attributes.categories?.data.map(
+                (category) => category.attributes?.short ?? ""
               )}
-            </>
+              keepInfoVisible={keepInfoVisible}
+            />
           )}
           renderWhenEmpty={() => (
             <ContentPlaceholder

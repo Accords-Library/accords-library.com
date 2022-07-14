@@ -8,7 +8,6 @@ import {
   ContentPanelWidthSizes,
 } from "components/Panels/ContentPanel";
 import { SubPanel } from "components/Panels/SubPanel";
-import { TranslatedPreviewCard } from "components/PreviewCard";
 import { GetPostsPreviewQuery } from "graphql/generated";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
@@ -18,9 +17,10 @@ import { WithLabel } from "components/Inputs/WithLabel";
 import { TextInput } from "components/Inputs/TextInput";
 import { Button } from "components/Inputs/Button";
 import { useMediaHoverable } from "hooks/useMediaQuery";
-import { filterDefined, filterHasAttributes } from "helpers/others";
+import { filterHasAttributes } from "helpers/others";
 import { SmartList } from "components/SmartList";
 import { useBoolean } from "hooks/useBoolean";
+import { TranslatedPreviewCard } from "components/Translated";
 
 /*
  *                                         ╭─────────────╮
@@ -113,15 +113,15 @@ const News = ({
           renderItem={({ item: post }) => (
             <TranslatedPreviewCard
               href={`/news/${post.attributes.slug}`}
-              translations={filterDefined(post.attributes.translations).map(
-                (translation) => ({
-                  language: translation.language?.data?.attributes?.code,
-                  title: translation.title,
-                  description: translation.excerpt,
-                })
-              )}
+              translations={filterHasAttributes(post.attributes.translations, [
+                "language.data.attributes.code",
+              ] as const).map((translation) => ({
+                language: translation.language.data.attributes.code,
+                title: translation.title,
+                description: translation.excerpt,
+              }))}
+              fallback={{ title: prettySlug(post.attributes.slug) }}
               languages={languages}
-              slug={post.attributes.slug}
               thumbnail={post.attributes.thumbnail?.data?.attributes}
               thumbnailAspectRatio="3/2"
               thumbnailForceAspectRatio

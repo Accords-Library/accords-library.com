@@ -1,11 +1,9 @@
 import { useRouter } from "next/router";
-import { MouseEventHandler, useCallback, useMemo } from "react";
+import { MouseEventHandler, useMemo } from "react";
 import { Ico, Icon } from "components/Ico";
 import { ToolTip } from "components/ToolTip";
 import { cJoin, cIf } from "helpers/className";
 import { isDefinedAndNotEmpty } from "helpers/others";
-import { AppStaticProps } from "graphql/getAppStaticProps";
-import { useSmartLanguage } from "hooks/useSmartLanguage";
 
 /*
  *                                        ╭─────────────╮
@@ -88,47 +86,5 @@ export const NavOption = ({
         )}
       </div>
     </ToolTip>
-  );
-};
-
-// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
-
-interface TranslatedProps extends Omit<Props, "subtitle" | "title"> {
-  translations: {
-    title: string | null | undefined;
-    subtitle?: string | null | undefined;
-    language: string;
-  }[];
-  fallbackTitle: TranslatedProps["translations"][number]["title"];
-  fallbackSubtitle: TranslatedProps["translations"][number]["subtitle"];
-  languages: AppStaticProps["languages"];
-}
-
-// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
-
-export const TranslatedNavOption = ({
-  fallbackTitle,
-  fallbackSubtitle,
-  translations = [
-    { title: fallbackTitle, subtitle: fallbackSubtitle, language: "default" },
-  ],
-  languages,
-  ...otherProps
-}: TranslatedProps): JSX.Element => {
-  const [selectedTranslation] = useSmartLanguage({
-    items: translations,
-    languages: languages,
-    languageExtractor: useCallback(
-      (item: TranslatedProps["translations"][number]) => item.language,
-      []
-    ),
-  });
-
-  return (
-    <NavOption
-      title={selectedTranslation?.title ?? fallbackTitle}
-      subtitle={selectedTranslation?.subtitle ?? fallbackSubtitle}
-      {...otherProps}
-    />
   );
 };

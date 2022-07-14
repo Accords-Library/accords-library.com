@@ -12,7 +12,6 @@ import {
 import { ContentPanel } from "components/Panels/ContentPanel";
 import { SubPanel } from "components/Panels/SubPanel";
 import { PreviewCard } from "components/PreviewCard";
-import { TranslatedPreviewLine } from "components/PreviewLine";
 import { RecorderChip } from "components/RecorderChip";
 import { ThumbnailHeader } from "components/ThumbnailHeader";
 import { ToolTip } from "components/ToolTip";
@@ -27,7 +26,6 @@ import {
 } from "helpers/formatters";
 import { isUntangibleGroupItem } from "helpers/libraryItem";
 import {
-  filterDefined,
   filterHasAttributes,
   getStatusDescription,
   isDefinedAndNotEmpty,
@@ -36,6 +34,7 @@ import { ContentWithTranslations } from "helpers/types";
 import { useMediaMobile } from "hooks/useMediaQuery";
 import { AnchorIds, useScrollTopOnChange } from "hooks/useScrollTopOnChange";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
+import { TranslatedPreviewLine } from "components/Translated";
 
 /*
  *                                           ╭────────╮
@@ -344,15 +343,18 @@ const Content = ({
               </h2>
               <TranslatedPreviewLine
                 href={`/contents/${previousContent.attributes.slug}`}
-                translations={filterDefined(
-                  previousContent.attributes.translations
+                translations={filterHasAttributes(
+                  previousContent.attributes.translations,
+                  ["language.data.attributes.code"] as const
                 ).map((translation) => ({
                   pre_title: translation.pre_title,
                   title: translation.title,
                   subtitle: translation.subtitle,
-                  language: translation.language?.data?.attributes?.code,
+                  language: translation.language.data.attributes.code,
                 }))}
-                slug={previousContent.attributes.slug}
+                fallback={{
+                  title: prettySlug(previousContent.attributes.slug),
+                }}
                 languages={languages}
                 thumbnail={
                   previousContent.attributes.thumbnail?.data?.attributes
@@ -397,15 +399,16 @@ const Content = ({
               </h2>
               <TranslatedPreviewLine
                 href={`/contents/${nextContent.attributes.slug}`}
-                translations={filterDefined(
-                  nextContent.attributes.translations
+                translations={filterHasAttributes(
+                  nextContent.attributes.translations,
+                  ["language.data.attributes.code"] as const
                 ).map((translation) => ({
                   pre_title: translation.pre_title,
                   title: translation.title,
                   subtitle: translation.subtitle,
-                  language: translation.language?.data?.attributes?.code,
+                  language: translation.language.data.attributes.code,
                 }))}
-                slug={nextContent.attributes.slug}
+                fallback={{ title: nextContent.attributes.slug }}
                 languages={languages}
                 thumbnail={nextContent.attributes.thumbnail?.data?.attributes}
                 thumbnailAspectRatio="3/2"

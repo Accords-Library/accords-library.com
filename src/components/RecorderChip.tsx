@@ -41,7 +41,7 @@ export const RecorderChip = ({ recorder, langui }: Props): JSX.Element => (
                 {filterHasAttributes(recorder.languages.data, [
                   "attributes",
                 ] as const).map((language) => (
-                  <Fragment key={language.attributes.code}>
+                  <Fragment key={language.__typename}>
                     <Chip text={language.attributes.code.toUpperCase()} />
                   </Fragment>
                 ))}

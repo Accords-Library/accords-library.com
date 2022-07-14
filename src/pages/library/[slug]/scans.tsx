@@ -1,9 +1,7 @@
 import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next";
 import { Fragment, useMemo } from "react";
 import { AppLayout } from "components/AppLayout";
-import { TranslatedScanSet } from "components/Library/ScanSet";
 import { ScanSetCover } from "components/Library/ScanSetCover";
-import { TranslatedNavOption } from "components/PanelComponents/NavOption";
 import {
   ReturnButton,
   ReturnButtonType,
@@ -31,6 +29,7 @@ import { isUntangibleGroupItem } from "helpers/libraryItem";
 import { PreviewCardCTAs } from "components/Library/PreviewCardCTAs";
 import { PreviewCard } from "components/PreviewCard";
 import { HorizontalLine } from "components/HorizontalLine";
+import { TranslatedNavOption, TranslatedScanSet } from "components/Translated";
 
 /*
  *                                           ╭────────╮
@@ -69,34 +68,36 @@ const LibrarySlug = ({
           displayOn={ReturnButtonType.Desktop}
         />
 
-        <div className="mobile:w-[80%]">
-          <PreviewCard
-            href={`/library/${item.slug}`}
-            title={item.title}
-            subtitle={item.subtitle}
-            thumbnail={item.thumbnail?.data?.attributes}
-            thumbnailAspectRatio="21/29.7"
-            thumbnailRounded={false}
-            topChips={
-              item.metadata && item.metadata.length > 0 && item.metadata[0]
-                ? [prettyItemSubType(item.metadata[0])]
-                : []
-            }
-            bottomChips={filterHasAttributes(item.categories?.data, [
-              "attributes",
-            ] as const).map((category) => category.attributes.short)}
-            metadata={{
-              currencies: currencies,
-              release_date: item.release_date,
-              price: item.price,
-              position: "Bottom",
-            }}
-            infoAppend={
-              !isUntangibleGroupItem(item.metadata?.[0]) && (
-                <PreviewCardCTAs id={itemId} langui={langui} />
-              )
-            }
-          />
+        <div className="grid place-items-center">
+          <div className="mobile:w-[80%]">
+            <PreviewCard
+              href={`/library/${item.slug}`}
+              title={item.title}
+              subtitle={item.subtitle}
+              thumbnail={item.thumbnail?.data?.attributes}
+              thumbnailAspectRatio="21/29.7"
+              thumbnailRounded={false}
+              topChips={
+                item.metadata && item.metadata.length > 0 && item.metadata[0]
+                  ? [prettyItemSubType(item.metadata[0])]
+                  : []
+              }
+              bottomChips={filterHasAttributes(item.categories?.data, [
+                "attributes",
+              ] as const).map((category) => category.attributes.short)}
+              metadata={{
+                currencies: currencies,
+                release_date: item.release_date,
+                price: item.price,
+                position: "Bottom",
+              }}
+              infoAppend={
+                !isUntangibleGroupItem(item.metadata?.[0]) && (
+                  <PreviewCardCTAs id={itemId} langui={langui} />
+                )
+              }
+            />
+          </div>
         </div>
 
         <HorizontalLine />
@@ -132,18 +133,16 @@ const LibrarySlug = ({
                             `${content.attributes.range[0].ending_page}`
                           : undefined,
                     }))}
-                    fallbackTitle={prettySlug(
-                      content.attributes.slug,
-                      item.slug
-                    )}
-                    fallbackSubtitle={
-                      content.attributes.range[0]?.__typename ===
-                      "ComponentRangePageRange"
-                        ? `${content.attributes.range[0].starting_page}` +
-                          `→` +
-                          `${content.attributes.range[0].ending_page}`
-                        : undefined
-                    }
+                    fallback={{
+                      title: prettySlug(content.attributes.slug, item.slug),
+                      subtitle:
+                        content.attributes.range[0]?.__typename ===
+                        "ComponentRangePageRange"
+                          ? `${content.attributes.range[0].starting_page}` +
+                            `→` +
+                            `${content.attributes.range[0].ending_page}`
+                          : undefined,
+                    }}
                     border
                     languages={languages}
                   />
@@ -210,7 +209,9 @@ const LibrarySlug = ({
                     translation.subtitle
                   ),
                 }))}
-                fallbackTitle={prettySlug(content.attributes.slug, item.slug)}
+                fallback={{
+                  title: prettySlug(content.attributes.slug, item.slug),
+                }}
                 languages={languages}
                 langui={langui}
                 content={content.attributes.content}

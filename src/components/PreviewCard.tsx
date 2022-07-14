@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { useCallback, useMemo } from "react";
+import { useMemo } from "react";
 import { Chip } from "./Chip";
 import { Ico, Icon } from "./Ico";
 import { Img } from "./Img";
@@ -16,10 +16,9 @@ import {
   prettyDuration,
   prettyPrice,
   prettyShortenNumber,
-  prettySlug,
 } from "helpers/formatters";
 import { ImageQuality } from "helpers/img";
-import { useSmartLanguage } from "hooks/useSmartLanguage";
+import { useMediaHoverable } from "hooks/useMediaQuery";
 
 /*
  *                                        ╭─────────────╮
@@ -78,6 +77,7 @@ export const PreviewCard = ({
   infoAppend,
 }: Props): JSX.Element => {
   const { currency } = useAppLayout();
+  const isHoverable = useMediaHoverable();
 
   const metadataJSX = useMemo(
     () => (
@@ -247,7 +247,7 @@ export const PreviewCard = ({
           className={cJoin(
             "z-20 grid gap-2 p-4 transition-opacity linearbg-obi",
             cIf(
-              !keepInfoVisible,
+              !keepInfoVisible && isHoverable,
               `-inset-x-0.5 bottom-2 opacity-0 [border-radius:10%_10%_10%_10%_/_1%_1%_3%_3%]
               group-hover:opacity-100 hoverable:absolute hoverable:drop-shadow-shade-lg
               notHoverable:rounded-b-md notHoverable:opacity-100`,
@@ -289,48 +289,5 @@ export const PreviewCard = ({
         </div>
       </div>
     </Link>
-  );
-};
-
-// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
-
-interface TranslatedProps
-  extends Omit<Props, "description" | "pre_title" | "subtitle" | "title"> {
-  translations: {
-    pre_title?: string | null | undefined;
-    title: string | null | undefined;
-    subtitle?: string | null | undefined;
-    description?: string | null | undefined;
-    language: string | undefined;
-  }[];
-  slug: string;
-  languages: AppStaticProps["languages"];
-}
-
-// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
-
-export const TranslatedPreviewCard = ({
-  slug,
-  translations = [{ title: slug, language: "default" }],
-  languages,
-  ...otherProps
-}: TranslatedProps): JSX.Element => {
-  const [selectedTranslation] = useSmartLanguage({
-    items: translations,
-    languages: languages,
-    languageExtractor: useCallback(
-      (item: TranslatedProps["translations"][number]) => item.language,
-      []
-    ),
-  });
-
-  return (
-    <PreviewCard
-      pre_title={selectedTranslation?.pre_title}
-      title={selectedTranslation?.title ?? prettySlug(slug)}
-      subtitle={selectedTranslation?.subtitle}
-      description={selectedTranslation?.description}
-      {...otherProps}
-    />
   );
 };

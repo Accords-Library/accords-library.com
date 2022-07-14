@@ -1,12 +1,8 @@
 import Link from "next/link";
-import { useCallback } from "react";
 import { Chip } from "./Chip";
 import { Img } from "./Img";
 import { UploadImageFragment } from "graphql/generated";
-import { AppStaticProps } from "graphql/getAppStaticProps";
-import { prettySlug } from "helpers/formatters";
 import { ImageQuality } from "helpers/img";
-import { useSmartLanguage } from "hooks/useSmartLanguage";
 
 /*
  *                                        ╭─────────────╮
@@ -26,7 +22,7 @@ interface Props {
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
-const PreviewLine = ({
+export const PreviewLine = ({
   href,
   thumbnail,
   pre_title,
@@ -76,45 +72,3 @@ const PreviewLine = ({
     </div>
   </Link>
 );
-
-// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
-
-interface TranslatedProps
-  extends Omit<Props, "pre_title" | "subtitle" | "title"> {
-  translations: {
-    pre_title?: string | null | undefined;
-    title: string | null | undefined;
-    subtitle?: string | null | undefined;
-    language: string | undefined;
-  }[];
-
-  slug: string;
-  languages: AppStaticProps["languages"];
-}
-
-// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
-
-export const TranslatedPreviewLine = ({
-  slug,
-  translations = [{ title: slug, language: "default" }],
-  languages,
-  ...otherProps
-}: TranslatedProps): JSX.Element => {
-  const [selectedTranslation] = useSmartLanguage({
-    items: translations,
-    languages: languages,
-    languageExtractor: useCallback(
-      (item: TranslatedProps["translations"][number]) => item.language,
-      []
-    ),
-  });
-
-  return (
-    <PreviewLine
-      pre_title={selectedTranslation?.pre_title}
-      title={selectedTranslation?.title ?? prettySlug(slug)}
-      subtitle={selectedTranslation?.subtitle}
-      {...otherProps}
-    />
-  );
-};

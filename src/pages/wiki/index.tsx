@@ -12,20 +12,20 @@ import {
   ContentPanel,
   ContentPanelWidthSizes,
 } from "components/Panels/ContentPanel";
-import { TranslatedPreviewCard } from "components/PreviewCard";
 import { HorizontalLine } from "components/HorizontalLine";
 import { Button } from "components/Inputs/Button";
 import { Switch } from "components/Inputs/Switch";
 import { TextInput } from "components/Inputs/TextInput";
 import { WithLabel } from "components/Inputs/WithLabel";
 import { useMediaHoverable } from "hooks/useMediaQuery";
-import { filterDefined, filterHasAttributes, isDefined } from "helpers/others";
+import { filterDefined, filterHasAttributes } from "helpers/others";
 import { ContentPlaceholder } from "components/PanelComponents/ContentPlaceholder";
 import { SmartList } from "components/SmartList";
 import { Select } from "components/Inputs/Select";
 import { SelectiveNonNullable } from "helpers/types/SelectiveNonNullable";
 import { prettySlug } from "helpers/formatters";
 import { useBoolean } from "hooks/useBoolean";
+import { TranslatedPreviewCard } from "components/Translated";
 
 /*
  *                                         ╭─────────────╮
@@ -169,44 +169,40 @@ const Wiki = ({
           items={filterHasAttributes(pages, ["id", "attributes"] as const)}
           getItemId={(item) => item.id}
           renderItem={({ item }) => (
-            <>
-              {isDefined(item.attributes.translations) && (
-                <TranslatedPreviewCard
-                  href={`/wiki/${item.attributes.slug}`}
-                  translations={item.attributes.translations.map(
-                    (translation) => ({
-                      title: translation?.title,
-                      subtitle:
-                        translation?.aliases && translation.aliases.length > 0
-                          ? translation.aliases
-                              .map((alias) => alias?.alias)
-                              .join("・")
-                          : undefined,
-                      description: translation?.summary,
-                      language: translation?.language?.data?.attributes?.code,
-                    })
-                  )}
-                  thumbnail={item.attributes.thumbnail?.data?.attributes}
-                  thumbnailAspectRatio={"4/3"}
-                  thumbnailRounded
-                  thumbnailForceAspectRatio
-                  languages={languages}
-                  slug={item.attributes.slug}
-                  keepInfoVisible={keepInfoVisible}
-                  topChips={filterHasAttributes(item.attributes.tags?.data, [
-                    "attributes",
-                  ] as const).map(
-                    (tag) =>
-                      tag.attributes.titles?.[0]?.title ??
-                      prettySlug(tag.attributes.slug)
-                  )}
-                  bottomChips={filterHasAttributes(
-                    item.attributes.categories?.data,
-                    ["attributes"] as const
-                  ).map((category) => category.attributes.short)}
-                />
+            <TranslatedPreviewCard
+              href={`/wiki/${item.attributes.slug}`}
+              translations={filterHasAttributes(item.attributes.translations, [
+                "language.data.attributes.code",
+              ] as const).map((translation) => ({
+                title: translation.title,
+                subtitle:
+                  translation.aliases && translation.aliases.length > 0
+                    ? translation.aliases
+                        .map((alias) => alias?.alias)
+                        .join("・")
+                    : undefined,
+                description: translation.summary,
+                language: translation.language.data.attributes.code,
+              }))}
+              fallback={{ title: prettySlug(item.attributes.slug) }}
+              thumbnail={item.attributes.thumbnail?.data?.attributes}
+              thumbnailAspectRatio={"4/3"}
+              thumbnailRounded
+              thumbnailForceAspectRatio
+              languages={languages}
+              keepInfoVisible={keepInfoVisible}
+              topChips={filterHasAttributes(item.attributes.tags?.data, [
+                "attributes",
+              ] as const).map(
+                (tag) =>
+                  tag.attributes.titles?.[0]?.title ??
+                  prettySlug(tag.attributes.slug)
               )}
-            </>
+              bottomChips={filterHasAttributes(
+                item.attributes.categories?.data,
+                ["attributes"] as const
+              ).map((category) => category.attributes.short)}
+            />
           )}
           renderWhenEmpty={() => (
             <ContentPlaceholder

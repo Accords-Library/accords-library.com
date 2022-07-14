@@ -27,6 +27,11 @@ import { prettySlug } from "helpers/formatters";
 import { useLightBox } from "hooks/useLightBox";
 import { getAssetURL, ImageQuality } from "helpers/img";
 
+/*
+ *                                           ╭────────╮
+ * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
+ */
+
 interface Props extends AppStaticProps {
   page: WikiPageWithTranslations;
 }
@@ -78,7 +83,7 @@ const WikiPage = ({
           className="mb-10"
         />
 
-        <div className="flex place-content-center gap-3">
+        <div className="flex flex-wrap place-content-center gap-3">
           <h1 className="text-center text-3xl">{selectedTranslation?.title}</h1>
           {selectedTranslation?.aliases &&
             selectedTranslation.aliases.length > 0 && (
@@ -96,8 +101,8 @@ const WikiPage = ({
         {selectedTranslation && (
           <div className="text-justify">
             <div
-              className="float-right ml-8 mb-8 w-[25rem] overflow-hidden rounded-lg bg-mid
-            text-center"
+              className="mb-8 overflow-hidden rounded-lg bg-mid text-center desktop:float-right
+              desktop:ml-8 desktop:w-[25rem]"
             >
               {page.thumbnail?.data?.attributes && (
                 <Img
@@ -160,7 +165,7 @@ const WikiPage = ({
             </div>
 
             {isDefinedAndNotEmpty(selectedTranslation.summary) && (
-              <div className="mb-6">
+              <div className="mb-12">
                 <p className="font-headers text-lg font-bold">
                   {langui.summary}
                 </p>
@@ -171,9 +176,8 @@ const WikiPage = ({
             {filterHasAttributes(page.definitions, [
               "translations",
             ] as const).map((definition, index) => (
-              <>
+              <div key={index} className="mb-12">
                 <DefinitionCard
-                  key={index}
                   source={{
                     name: definition.source?.data?.attributes?.name,
                     url: definition.source?.data?.attributes?.content?.data
@@ -193,8 +197,7 @@ const WikiPage = ({
                     "attributes",
                   ] as const).map((category) => category.attributes.short)}
                 />
-                <br />
-              </>
+              </div>
             ))}
           </div>
         )}
@@ -225,6 +228,11 @@ const WikiPage = ({
 };
 export default WikiPage;
 
+/*
+ *                                    ╭──────────────────────╮
+ * ───────────────────────────────────╯  NEXT DATA FETCHING  ╰──────────────────────────────────────
+ */
+
 export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
   const slug =
@@ -245,6 +253,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
     props: props,
   };
 };
+
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
 export const getStaticPaths: GetStaticPaths = async (context) => {
   const sdk = getReadySdk();

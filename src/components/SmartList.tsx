@@ -1,6 +1,7 @@
 import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import { Chip } from "./Chip";
 import { PageSelector } from "./Inputs/PageSelector";
+import { Ico, Icon } from "./Ico";
 import { AppStaticProps } from "graphql/getAppStaticProps";
 import { cJoin } from "helpers/className";
 import { isDefined, isDefinedAndNotEmpty, iterateMap } from "helpers/others";
@@ -145,43 +146,47 @@ export const SmartList = <T,>({
       )}
 
       <div className="mb-8">
-        {groupedList.size > 0
-          ? iterateMap(
-              groupedList,
-              (name, groupItems) =>
-                groupItems.length > 0 && (
-                  <Fragment key={name}>
-                    {name.length > 0 && (
-                      <h2
-                        className="flex flex-row place-items-center gap-2 pb-2 pt-10 text-2xl
+        {groupedList.size > 0 ? (
+          iterateMap(
+            groupedList,
+            (name, groupItems) =>
+              groupItems.length > 0 && (
+                <Fragment key={name}>
+                  {name.length > 0 && (
+                    <h2
+                      className="flex flex-row place-items-center gap-2 pb-2 pt-10 text-2xl
                 first-of-type:pt-0"
-                      >
-                        {name}
-                        <Chip
-                          text={`${groupItems.length} ${
-                            groupItems.length <= 1
-                              ? langui.result?.toLowerCase() ?? ""
-                              : langui.results?.toLowerCase() ?? ""
-                          }`}
-                        />
-                      </h2>
-                    )}
-                    <div
-                      className={cJoin(
-                        `grid items-start gap-8 border-b-[3px] border-dotted pb-12
-                      last-of-type:border-0 mobile:gap-4`,
-                        className
-                      )}
                     >
-                      {groupItems.map((item) => (
-                        <RenderItem item={item} key={getItemId(item)} />
-                      ))}
-                    </div>
-                  </Fragment>
-                ),
-              ([a], [b]) => groupSortingFunction(a, b)
-            )
-          : isDefined(RenderWhenEmpty) && <RenderWhenEmpty />}
+                      {name}
+                      <Chip
+                        text={`${groupItems.length} ${
+                          groupItems.length <= 1
+                            ? langui.result?.toLowerCase() ?? ""
+                            : langui.results?.toLowerCase() ?? ""
+                        }`}
+                      />
+                    </h2>
+                  )}
+                  <div
+                    className={cJoin(
+                      `grid items-start gap-8 border-b-[3px] border-dotted pb-12
+                      last-of-type:border-0 mobile:gap-4`,
+                      className
+                    )}
+                  >
+                    {groupItems.map((item) => (
+                      <RenderItem item={item} key={getItemId(item)} />
+                    ))}
+                  </div>
+                </Fragment>
+              ),
+            ([a], [b]) => groupSortingFunction(a, b)
+          )
+        ) : isDefined(RenderWhenEmpty) ? (
+          <RenderWhenEmpty />
+        ) : (
+          <DefaultRenderWhenEmpty langui={langui} />
+        )}
       </div>
 
       {pageCount > 1 && paginationSelectorBottom && (
@@ -190,3 +195,25 @@ export const SmartList = <T,>({
     </>
   );
 };
+
+/*
+ *                                    ╭──────────────────────╮
+ * ───────────────────────────────────╯  PRIVATE COMPONENTS  ╰──────────────────────────────────────
+ */
+
+interface DefaultRenderWhenEmptyProps {
+  langui: AppStaticProps["langui"];
+}
+
+const DefaultRenderWhenEmpty = ({ langui }: DefaultRenderWhenEmptyProps) => (
+  <div className="grid h-full place-content-center">
+    <div
+      className="grid grid-flow-col place-items-center gap-9 rounded-2xl border-2 border-dotted
+      border-dark p-8 text-dark opacity-40"
+    >
+      <Ico icon={Icon.ChevronLeft} className="!text-[300%] mobile:hidden" />
+      <p className="max-w-xs text-2xl"> {langui.no_results_message} </p>
+      <Ico icon={Icon.ChevronRight} className="!text-[300%] desktop:hidden" />
+    </div>
+  </div>
+);

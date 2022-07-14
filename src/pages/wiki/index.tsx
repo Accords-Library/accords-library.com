@@ -19,7 +19,6 @@ import { TextInput } from "components/Inputs/TextInput";
 import { WithLabel } from "components/Inputs/WithLabel";
 import { useMediaHoverable } from "hooks/useMediaQuery";
 import { filterDefined, filterHasAttributes } from "helpers/others";
-import { ContentPlaceholder } from "components/PanelComponents/ContentPlaceholder";
 import { SmartList } from "components/SmartList";
 import { Select } from "components/Inputs/Select";
 import { SelectiveNonNullable } from "helpers/types/SelectiveNonNullable";
@@ -202,12 +201,6 @@ const Wiki = ({
                 item.attributes.categories?.data,
                 ["attributes"] as const
               ).map((category) => category.attributes.short)}
-            />
-          )}
-          renderWhenEmpty={() => (
-            <ContentPlaceholder
-              message={langui.no_results_message ?? "No results"}
-              icon={Icon.ChevronLeft}
             />
           )}
           langui={langui}

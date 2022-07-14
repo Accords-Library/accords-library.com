@@ -6,7 +6,6 @@ import { Icon } from "components/Ico";
 import { Switch } from "components/Inputs/Switch";
 import { TextInput } from "components/Inputs/TextInput";
 import { WithLabel } from "components/Inputs/WithLabel";
-import { ContentPlaceholder } from "components/PanelComponents/ContentPlaceholder";
 import { PanelHeader } from "components/PanelComponents/PanelHeader";
 import {
   ReturnButton,
@@ -119,12 +118,6 @@ const Videos = ({ langui, videos, ...otherProps }: Props): JSX.Element => {
                 }}
               />
             </>
-          )}
-          renderWhenEmpty={() => (
-            <ContentPlaceholder
-              message={langui.no_results_message ?? "No results"}
-              icon={Icon.ChevronLeft}
-            />
           )}
           className="desktop:grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] mobile:grid-cols-2
           thin:grid-cols-1"

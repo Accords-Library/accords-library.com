@@ -20,7 +20,6 @@ import { Icon } from "components/Ico";
 import { filterDefined, filterHasAttributes } from "helpers/others";
 import { GetContentsQuery } from "graphql/generated";
 import { SmartList } from "components/SmartList";
-import { ContentPlaceholder } from "components/PanelComponents/ContentPlaceholder";
 import { SelectiveNonNullable } from "helpers/types/SelectiveNonNullable";
 import { useBoolean } from "hooks/useBoolean";
 import { TranslatedPreviewCard } from "components/Translated";
@@ -257,12 +256,6 @@ const Contents = ({
                 (category) => category.attributes?.short ?? ""
               )}
               keepInfoVisible={keepInfoVisible}
-            />
-          )}
-          renderWhenEmpty={() => (
-            <ContentPlaceholder
-              message={langui.no_results_message ?? "No results"}
-              icon={Icon.ChevronLeft}
             />
           )}
           className="grid-cols-2 items-end desktop:grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))]"

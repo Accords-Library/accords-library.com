@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useMemo, useState } from "react";
+import { Fragment, useCallback, useMemo } from "react";
 import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next";
 import { AppLayout } from "components/AppLayout";
 import { Chip } from "components/Chip";
@@ -49,7 +49,6 @@ import { AnchorIds, useScrollTopOnChange } from "hooks/useScrollTopOnChange";
 import { isUntangibleGroupItem } from "helpers/libraryItem";
 import { useMediaHoverable } from "hooks/useMediaQuery";
 import { WithLabel } from "components/Inputs/WithLabel";
-import { useToggle } from "hooks/useToggle";
 import { Ico, Icon } from "components/Ico";
 import { cJoin, cIf } from "helpers/className";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
@@ -682,8 +681,7 @@ const ContentLine = ({
   slug,
   parentSlug,
 }: ContentLineProps): JSX.Element => {
-  const [opened, setOpened] = useState(false);
-  const toggleOpened = useToggle(setOpened);
+  const { state: isOpened, toggleState: toggleOpened } = useBoolean(false);
 
   const [selectedTranslation] = useSmartLanguage({
     items: content?.translations ?? [],
@@ -700,7 +698,7 @@ const ContentLine = ({
     <div
       className={cJoin(
         "grid gap-2 rounded-lg px-4",
-        cIf(opened, "my-2 h-auto bg-mid py-3 shadow-inner-sm shadow-shade")
+        cIf(isOpened, "my-2 h-auto bg-mid py-3 shadow-inner-sm shadow-shade")
       )}
     >
       <div
@@ -733,7 +731,7 @@ const ContentLine = ({
       </div>
       <div
         className={`grid-flow-col place-content-start place-items-center gap-2 ${
-          opened ? "grid" : "hidden"
+          isOpened ? "grid" : "hidden"
         }`}
       >
         <Ico icon={Icon.SubdirectoryArrowRight} className="text-dark" />

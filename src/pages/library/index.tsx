@@ -28,7 +28,6 @@ import { PreviewCard } from "components/PreviewCard";
 import { useMediaHoverable } from "hooks/useMediaQuery";
 import { ButtonGroup } from "components/Inputs/ButtonGroup";
 import { filterHasAttributes, isDefined, isUndefined } from "helpers/others";
-import { ContentPlaceholder } from "components/PanelComponents/ContentPlaceholder";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { convertPrice } from "helpers/numbers";
 import { SmartList } from "components/SmartList";
@@ -443,12 +442,6 @@ const Library = ({
                   <PreviewCardCTAs id={item.id} langui={langui} />
                 )
               }
-            />
-          )}
-          renderWhenEmpty={() => (
-            <ContentPlaceholder
-              message={langui.no_results_message ?? "No results"}
-              icon={Icon.ChevronLeft}
             />
           )}
           className="grid-cols-2 items-end desktop:grid-cols-[repeat(auto-fill,_minmax(13rem,1fr))]"

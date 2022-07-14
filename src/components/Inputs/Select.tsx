@@ -1,7 +1,7 @@
-import { Fragment, useCallback, useState } from "react";
+import { Fragment, useCallback } from "react";
 import { Ico, Icon } from "components/Ico";
 import { cIf, cJoin } from "helpers/className";
-import { useToggle } from "hooks/useToggle";
+import { useBoolean } from "hooks/useBoolean";
 
 /*
  *                                        ╭─────────────╮
@@ -26,8 +26,11 @@ export const Select = ({
   allowEmpty,
   onChange,
 }: Props): JSX.Element => {
-  const [opened, setOpened] = useState(false);
-  const toggleOpened = useToggle(setOpened);
+  const {
+    state: isOpened,
+    setFalse: setClosed,
+    toggleState: toggleOpened,
+  } = useBoolean(false);
 
   const tryToggling = useCallback(() => {
     const optionCount = options.length + (value === -1 ? 1 : 0);
@@ -38,7 +41,7 @@ export const Select = ({
     <div
       className={cJoin(
         "relative text-center transition-[filter]",
-        cIf(opened, "z-10 drop-shadow-shade-lg"),
+        cIf(isOpened, "z-10 drop-shadow-shade-lg"),
         className
       )}
     >
@@ -47,7 +50,7 @@ export const Select = ({
           `grid cursor-pointer grid-flow-col grid-cols-[1fr_auto_auto] place-items-center
           rounded-[1em] bg-light p-1 outline outline-2 outline-offset-[-2px] outline-mid
           transition-all hover:bg-mid hover:outline-[transparent]`,
-          cIf(opened, "rounded-b-none bg-highlight outline-[transparent]")
+          cIf(isOpened, "rounded-b-none bg-highlight outline-[transparent]")
         )}
       >
         <p onClick={tryToggling} className="w-full">
@@ -58,20 +61,20 @@ export const Select = ({
             icon={Icon.Close}
             className="!text-xs"
             onClick={() => {
+              setClosed();
               onChange(-1);
-              setOpened(false);
             }}
           />
         )}
         <Ico
           onClick={tryToggling}
-          icon={opened ? Icon.ArrowDropUp : Icon.ArrowDropDown}
+          icon={isOpened ? Icon.ArrowDropUp : Icon.ArrowDropDown}
         />
       </div>
       <div
         className={cJoin(
           "left-0 right-0 rounded-b-[1em]",
-          cIf(opened, "absolute", "hidden")
+          cIf(isOpened, "absolute", "hidden")
         )}
       >
         {options.map((option, index) => (
@@ -80,11 +83,11 @@ export const Select = ({
               <div
                 className={cJoin(
                   "cursor-pointer p-1 transition-colors last-of-type:rounded-b-[1em] hover:bg-mid",
-                  cIf(opened, "bg-highlight", "bg-light")
+                  cIf(isOpened, "bg-highlight", "bg-light")
                 )}
                 id={option}
                 onClick={() => {
-                  setOpened(false);
+                  setClosed();
                   onChange(index);
                 }}
               >

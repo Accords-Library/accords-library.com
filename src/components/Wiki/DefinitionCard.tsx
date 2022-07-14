@@ -88,7 +88,7 @@ const DefinitionCard = ({
 
       {source?.url && source.name && (
         <Link href={source.url}>
-          <div className="mt-3 flex place-items-center gap-2">
+          <div className="mt-3 flex place-items-center gap-2 mobile:flex-col mobile:text-center">
             <p>{langui.source}: </p>
             <Button size="small" text={source.name} />
           </div>

@@ -271,7 +271,7 @@ const Contents = ({
               keepInfoVisible={keepInfoVisible}
             />
           )}
-          className="grid-cols-2 items-end desktop:grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))]"
+          className="grid-cols-2 desktop:grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))]"
           groupingFunction={groupingFunction}
           filteringFunction={filteringFunction}
           searchingTerm={searchName}

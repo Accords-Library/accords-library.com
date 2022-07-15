@@ -52,7 +52,7 @@ export const Button = ({
       <div
         className="relative"
         onClick={() => {
-          if (isDefined(href) || isDefined(locale)) {
+          if (!isDefined(target) && (isDefined(href) || isDefined(locale))) {
             router.push(href ?? router.asPath, href, {
               locale: locale,
             });

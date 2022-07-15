@@ -24,6 +24,9 @@ query devGetContents {
           language {
             data {
               id
+              attributes {
+                code
+              }
             }
           }
           title
@@ -32,6 +35,9 @@ query devGetContents {
             source_language {
               data {
                 id
+                attributes {
+                  code
+                }
               }
             }
             status

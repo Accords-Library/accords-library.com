@@ -14,6 +14,7 @@ import {
 } from "graphql/generated";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
+import { Report, Severity } from "helpers/types/Report";
 
 /*
  *                                           ╭────────╮
@@ -45,44 +46,47 @@ const CheckupLibraryItems = ({
           <p className="font-headers">Description</p>
         </div>
 
-        {testReport.lines.map((line, index) => (
-          <div
-            key={index}
-            className="mb-2 grid
+        {testReport.lines
+          .sort((a, b) => a.name.localeCompare(b.name))
+          .sort((a, b) => b.severity - a.severity)
+          .map((line, index) => (
+            <div
+              key={index}
+              className="mb-2 grid
           grid-cols-[2em,3em,2fr,1fr,0.5fr,0.5fr,2fr] items-center justify-items-start gap-2"
-          >
-            <Button
-              href={line.frontendUrl}
-              target="_blank"
-              className="w-4 text-xs"
-              text="F"
-            />
-            <Button
-              href={line.backendUrl}
-              target="_blank"
-              className="w-4 text-xs"
-              text="B"
-            />
-            <p>{line.subitems.join(" -> ")}</p>
-            <p>{line.name}</p>
-            <Chip text={line.type} />
-            <Chip
-              className={
-                line.severity === "Very High"
-                  ? "bg-[#f00] font-bold !opacity-100"
-                  : line.severity === "High"
-                  ? "bg-[#ff6600] font-bold !opacity-100"
-                  : line.severity === "Medium"
-                  ? "bg-[#fff344] !opacity-100"
-                  : ""
-              }
-              text={line.severity}
-            />
-            <ToolTip content={line.recommandation} placement="left">
-              <p>{line.description}</p>
-            </ToolTip>
-          </div>
-        ))}
+            >
+              <Button
+                href={line.frontendUrl}
+                target="_blank"
+                className="w-4 text-xs"
+                text="F"
+              />
+              <Button
+                href={line.backendUrl}
+                target="_blank"
+                className="w-4 text-xs"
+                text="B"
+              />
+              <p>{line.subitems.join(" -> ")}</p>
+              <p>{line.name}</p>
+              <Chip text={line.type} />
+              <Chip
+                className={
+                  line.severity === Severity.VeryHigh
+                    ? "bg-[#f00] font-bold !opacity-100"
+                    : line.severity === Severity.High
+                    ? "bg-[#ff6600] font-bold !opacity-100"
+                    : line.severity === Severity.Medium
+                    ? "bg-[#fff344] !opacity-100"
+                    : ""
+                }
+                text={Severity[line.severity]}
+              />
+              <ToolTip content={line.recommandation} placement="left">
+                <p>{line.description}</p>
+              </ToolTip>
+            </div>
+          ))}
       </ContentPanel>
     ),
     [testReport.lines, testReport.title]
@@ -120,22 +124,6 @@ export const getStaticProps: GetStaticProps = async (context) => {
  * ─────────────────────────────────────╯  PRIVATE METHODS  ╰───────────────────────────────────────
  */
 
-type Report = {
-  title: string;
-  lines: ReportLine[];
-};
-
-type ReportLine = {
-  subitems: string[];
-  name: string;
-  type: "Error" | "Improvement" | "Missing";
-  severity: "High" | "Low" | "Medium" | "Very High" | "Very Low";
-  description: string;
-  recommandation: string;
-  backendUrl: string;
-  frontendUrl: string;
-};
-
 const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
   const report: Report = {
     title: "Contents",
@@ -152,7 +140,7 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
           subitems: [item.attributes.slug],
           name: "No Category",
           type: "Missing",
-          severity: "Medium",
+          severity: Severity.High,
           description: "The Item has no Category.",
           recommandation: "Select a Category in relation with the Item",
           backendUrl: backendUrl,
@@ -168,7 +156,7 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
           subitems: [item.attributes.slug],
           name: "Disconnected Item",
           type: "Error",
-          severity: "Very High",
+          severity: Severity.VeryHigh,
           description:
             "The Item is neither a Root Item, nor is it a subitem of another item.",
           recommandation: "",
@@ -182,7 +170,7 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
           subitems: [item.attributes.slug],
           name: "No Contents",
           type: "Missing",
-          severity: "Low",
+          severity: Severity.Low,
           description: "The Item has no Contents.",
           recommandation: "",
           backendUrl: backendUrl,
@@ -195,7 +183,7 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
           subitems: [item.attributes.slug],
           name: "No Thumbnail",
           type: "Missing",
-          severity: "High",
+          severity: Severity.High,
           description: "The Item has no Thumbnail.",
           recommandation: "",
           backendUrl: backendUrl,
@@ -208,7 +196,7 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
           subitems: [item.attributes.slug],
           name: "No Images",
           type: "Missing",
-          severity: "Low",
+          severity: Severity.Low,
           description: "The Item has no Images.",
           recommandation: "",
           backendUrl: backendUrl,
@@ -228,7 +216,7 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
                   ],
                   name: "Duplicate Language",
                   type: "Error",
-                  severity: "High",
+                  severity: Severity.High,
                   description: "",
                   recommandation: "",
                   backendUrl: backendUrl,
@@ -245,7 +233,7 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
                 ],
                 name: "No Language",
                 type: "Error",
-                severity: "Very High",
+                severity: Severity.VeryHigh,
                 description: "",
                 recommandation: "",
                 backendUrl: backendUrl,
@@ -261,7 +249,7 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
                 ],
                 name: "No Source Language",
                 type: "Error",
-                severity: "Very High",
+                severity: Severity.VeryHigh,
                 description: "",
                 recommandation: "",
                 backendUrl: backendUrl,
@@ -280,7 +268,7 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
                 ],
                 name: "Not Done Status",
                 type: "Improvement",
-                severity: "Low",
+                severity: Severity.Low,
                 description: "",
                 recommandation: "",
                 backendUrl: backendUrl,
@@ -297,7 +285,7 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
                   ],
                   name: "No Scanners",
                   type: "Missing",
-                  severity: "High",
+                  severity: Severity.High,
                   description:
                     "The Item is a Scan but doesn't credit any Scanners.",
                   recommandation: "Add the appropriate Scanners.",
@@ -313,7 +301,7 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
                   ],
                   name: "No Cleaners",
                   type: "Missing",
-                  severity: "High",
+                  severity: Severity.High,
                   description:
                     "The Item is a Scan but doesn't credit any Cleaners.",
                   recommandation: "Add the appropriate Cleaners.",
@@ -332,7 +320,7 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
                   ],
                   name: "Credited Typesetters",
                   type: "Error",
-                  severity: "High",
+                  severity: Severity.High,
                   description:
                     "The Item is a Scan but credits one or more Typesetters.",
                   recommandation:
@@ -350,7 +338,7 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
                   ],
                   name: "No Typesetters",
                   type: "Missing",
-                  severity: "High",
+                  severity: Severity.High,
                   description:
                     "The Item is a Scanlation but doesn't credit any Typesetters.",
                   recommandation: "Add the appropriate Typesetters.",
@@ -366,7 +354,7 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
                   ],
                   name: "Credited Scanners",
                   type: "Error",
-                  severity: "High",
+                  severity: Severity.High,
                   description:
                     "The Item is a Scanlation but credits one or more Scanners.",
                   recommandation:
@@ -387,7 +375,7 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
                   ],
                   name: "No Front",
                   type: "Missing",
-                  severity: "Very High",
+                  severity: Severity.VeryHigh,
                   description: "",
                   recommandation: "",
                   backendUrl: backendUrl,
@@ -403,7 +391,7 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
                   ],
                   name: "No spine",
                   type: "Missing",
-                  severity: "Low",
+                  severity: Severity.Low,
                   description: "",
                   recommandation: "",
                   backendUrl: backendUrl,
@@ -419,7 +407,7 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
                   ],
                   name: "No Back",
                   type: "Missing",
-                  severity: "High",
+                  severity: Severity.High,
                   description: "",
                   recommandation: "",
                   backendUrl: backendUrl,
@@ -435,7 +423,7 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
                   ],
                   name: "No Full",
                   type: "Missing",
-                  severity: "Low",
+                  severity: Severity.Low,
                   description: "",
                   recommandation: "",
                   backendUrl: backendUrl,
@@ -450,7 +438,7 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
                 ],
                 name: "No Cover",
                 type: "Missing",
-                severity: "Medium",
+                severity: Severity.Medium,
                 description: "",
                 recommandation: "",
                 backendUrl: backendUrl,
@@ -468,7 +456,7 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
                   ],
                   name: "No Front",
                   type: "Missing",
-                  severity: "Very High",
+                  severity: Severity.VeryHigh,
                   description: "",
                   recommandation: "",
                   backendUrl: backendUrl,
@@ -484,7 +472,7 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
                   ],
                   name: "No spine",
                   type: "Missing",
-                  severity: "Low",
+                  severity: Severity.Low,
                   description: "",
                   recommandation: "",
                   backendUrl: backendUrl,
@@ -500,7 +488,7 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
                   ],
                   name: "No Back",
                   type: "Missing",
-                  severity: "High",
+                  severity: Severity.High,
                   description: "",
                   recommandation: "",
                   backendUrl: backendUrl,
@@ -516,7 +504,7 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
                   ],
                   name: "No Full",
                   type: "Missing",
-                  severity: "Low",
+                  severity: Severity.Low,
                   description: "",
                   recommandation: "",
                   backendUrl: backendUrl,
@@ -532,7 +520,7 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
                   ],
                   name: "No Flap Front",
                   type: "Missing",
-                  severity: "Medium",
+                  severity: Severity.Medium,
                   description: "",
                   recommandation: "",
                   backendUrl: backendUrl,
@@ -548,7 +536,7 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
                   ],
                   name: "No Flap Back",
                   type: "Missing",
-                  severity: "Medium",
+                  severity: Severity.Medium,
                   description: "",
                   recommandation: "",
                   backendUrl: backendUrl,
@@ -563,7 +551,7 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
                 ],
                 name: "No Dust Jacket",
                 type: "Missing",
-                severity: "Very Low",
+                severity: Severity.VeryLow,
                 description: "",
                 recommandation: "",
                 backendUrl: backendUrl,
@@ -581,7 +569,7 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
                   ],
                   name: "No Front",
                   type: "Missing",
-                  severity: "Very High",
+                  severity: Severity.VeryHigh,
                   description: "",
                   recommandation: "",
                   backendUrl: backendUrl,
@@ -597,7 +585,7 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
                   ],
                   name: "No spine",
                   type: "Missing",
-                  severity: "Low",
+                  severity: Severity.Low,
                   description: "",
                   recommandation: "",
                   backendUrl: backendUrl,
@@ -613,7 +601,7 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
                   ],
                   name: "No Back",
                   type: "Missing",
-                  severity: "High",
+                  severity: Severity.High,
                   description: "",
                   recommandation: "",
                   backendUrl: backendUrl,
@@ -629,7 +617,7 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
                   ],
                   name: "No Full",
                   type: "Missing",
-                  severity: "Low",
+                  severity: Severity.Low,
                   description: "",
                   recommandation: "",
                   backendUrl: backendUrl,
@@ -645,7 +633,7 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
                   ],
                   name: "No Flap Front",
                   type: "Missing",
-                  severity: "Medium",
+                  severity: Severity.Medium,
                   description: "",
                   recommandation: "",
                   backendUrl: backendUrl,
@@ -661,7 +649,7 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
                   ],
                   name: "No Flap Back",
                   type: "Missing",
-                  severity: "Medium",
+                  severity: Severity.Medium,
                   description: "",
                   recommandation: "",
                   backendUrl: backendUrl,
@@ -676,7 +664,7 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
                 ],
                 name: "No Obi Belt",
                 type: "Missing",
-                severity: "Very Low",
+                severity: Severity.VeryLow,
                 description: "",
                 recommandation: "",
                 backendUrl: backendUrl,
@@ -703,7 +691,7 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
                 ],
                 name: "No Text",
                 type: "Missing",
-                severity: "Very High",
+                severity: Severity.VeryHigh,
                 description: "",
                 recommandation: "",
                 backendUrl: backendUrl,
@@ -720,7 +708,7 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
                   ],
                   name: "Duplicate Language",
                   type: "Error",
-                  severity: "High",
+                  severity: Severity.High,
                   description: "",
                   recommandation: "",
                   backendUrl: backendUrl,
@@ -737,7 +725,7 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
                 ],
                 name: "No Language",
                 type: "Error",
-                severity: "Very High",
+                severity: Severity.VeryHigh,
                 description: "",
                 recommandation: "",
                 backendUrl: backendUrl,
@@ -751,7 +739,7 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
           subitems: [item.attributes.slug],
           name: "No Description",
           type: "Missing",
-          severity: "Medium",
+          severity: Severity.Medium,
           description: "The Item has no Description.",
           recommandation: "",
           backendUrl: backendUrl,
@@ -764,7 +752,7 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
           subitems: [item.attributes.slug],
           name: "No URLs",
           type: "Missing",
-          severity: "Very Low",
+          severity: Severity.VeryLow,
           description: "The Item has no URLs.",
           recommandation: "",
           backendUrl: backendUrl,

@@ -407,7 +407,7 @@ const Editor = ({ langui, ...otherProps }: Props): JSX.Element => {
               <h3 className="text-lg">Player&rsquo;s name placeholder</h3>
             }
           >
-            <Button onClick={() => insert("<player>")} icon={Icon.Person} />
+            <Button onClick={() => insert("@player")} icon={Icon.Person} />
           </ToolTip>
 
           <ToolTip

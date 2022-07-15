@@ -199,8 +199,8 @@ export const Markdawn = ({
             Line: {
               component: (compProps) => (
                 <>
-                  <strong className="text-dark opacity-60 mobile:!-mb-4">
-                    {compProps.name}
+                  <strong className="text-dark/60 mobile:!-mb-4 !my-0">
+                    <Markdawn text={compProps.name} />
                   </strong>
                   <p className="whitespace-pre-line">{compProps.children}</p>
                 </>
@@ -427,11 +427,17 @@ enum HeaderLevels {
 const preprocessMarkDawn = (text: string, playerName = ""): string => {
   if (!text) return "";
 
+  const processedPlayerName = playerName
+    .replaceAll("_", "\\_")
+    .replaceAll("*", "\\*");
+
   let preprocessed = text
     .replaceAll("--", "—")
     .replaceAll(
       "@player",
-      isDefinedAndNotEmpty(playerName) ? playerName : "(player)"
+      isDefinedAndNotEmpty(processedPlayerName)
+        ? processedPlayerName
+        : "(player)"
     );
 
   console.log();

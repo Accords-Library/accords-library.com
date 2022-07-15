@@ -61,9 +61,12 @@ const Contents = ({
     toggleState: toggleKeepInfoVisible,
     setState: setKeepInfoVisible,
   } = useBoolean(DEFAULT_FILTERS_STATE.keepInfoVisible);
-  const [combineRelatedContent, setCombineRelatedContent] = useState(
-    DEFAULT_FILTERS_STATE.combineRelatedContent
-  );
+
+  const {
+    state: combineRelatedContent,
+    toggleState: toggleCombineRelatedContent,
+    setState: setCombineRelatedContent,
+  } = useBoolean(DEFAULT_FILTERS_STATE.combineRelatedContent);
   const [searchName, setSearchName] = useState(
     DEFAULT_FILTERS_STATE.searchName
   );
@@ -174,7 +177,7 @@ const Contents = ({
           input={
             <Switch
               value={effectiveCombineRelatedContent}
-              onClick={toggleKeepInfoVisible}
+              onClick={toggleCombineRelatedContent}
             />
           }
         />
@@ -208,9 +211,19 @@ const Contents = ({
       groupingMethod,
       hoverable,
       keepInfoVisible,
-      langui,
+      langui.always_show_info,
+      langui.category,
+      langui.combine_related_contents,
+      langui.contents,
+      langui.contents_description,
+      langui.group_by,
+      langui.reset_all_filters,
+      langui.search_title,
+      langui.type,
       searchName,
+      setCombineRelatedContent,
       setKeepInfoVisible,
+      toggleCombineRelatedContent,
       toggleKeepInfoVisible,
     ]
   );

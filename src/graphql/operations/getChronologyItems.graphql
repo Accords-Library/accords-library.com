@@ -1,4 +1,4 @@
-query getChronologyItems($language_code: String) {
+query getChronologyItems {
   chronologyItems(
     pagination: { limit: -1 }
     sort: ["year:asc", "month:asc", "day:asc"]
@@ -10,7 +10,7 @@ query getChronologyItems($language_code: String) {
         month
         day
         displayed_date
-        events {
+        events(pagination: { limit: -1 }) {
           id
           source {
             data {
@@ -19,9 +19,7 @@ query getChronologyItems($language_code: String) {
               }
             }
           }
-          translations(
-            filters: { language: { code: { eq: $language_code } } }
-          ) {
+          translations(pagination: { limit: -1 }) {
             title
             description
             note

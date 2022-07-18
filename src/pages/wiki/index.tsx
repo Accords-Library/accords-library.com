@@ -46,12 +46,7 @@ interface Props extends AppStaticProps {
   pages: NonNullable<GetWikiPagesPreviewsQuery["wikiPages"]>["data"];
 }
 
-const Wiki = ({
-  langui,
-  languages,
-  pages,
-  ...otherProps
-}: Props): JSX.Element => {
+const Wiki = ({ langui, pages, ...otherProps }: Props): JSX.Element => {
   const hoverable = useMediaHoverable();
 
   const [searchName, setSearchName] = useState(
@@ -188,7 +183,6 @@ const Wiki = ({
               thumbnailAspectRatio={"4/3"}
               thumbnailRounded
               thumbnailForceAspectRatio
-              languages={languages}
               keepInfoVisible={keepInfoVisible}
               topChips={filterHasAttributes(item.attributes.tags?.data, [
                 "attributes",
@@ -220,7 +214,7 @@ const Wiki = ({
         />
       </ContentPanel>
     ),
-    [groupingFunction, keepInfoVisible, languages, langui, pages, searchName]
+    [groupingFunction, keepInfoVisible, langui, pages, searchName]
   );
 
   return (
@@ -229,7 +223,6 @@ const Wiki = ({
       subPanel={subPanel}
       contentPanel={contentPanel}
       subPanelIcon={Icon.Search}
-      languages={languages}
       langui={langui}
       {...otherProps}
     />

@@ -11,7 +11,7 @@ query getWikiPagesPreviews($language_code: String) {
             }
           }
         }
-        categories {
+        categories(pagination: { limit: -1 }) {
           data {
             id
             attributes {
@@ -20,7 +20,7 @@ query getWikiPagesPreviews($language_code: String) {
             }
           }
         }
-        tags {
+        tags(pagination: { limit: -1 }) {
           data {
             id
             attributes {
@@ -38,9 +38,9 @@ query getWikiPagesPreviews($language_code: String) {
             }
           }
         }
-        translations {
+        translations(pagination: { limit: -1 }) {
           title
-          aliases {
+          aliases(pagination: { limit: -1 }) {
             alias
           }
           summary

@@ -7,7 +7,7 @@ import { filterDefined, isDefined } from "helpers/others";
 
 interface Props<T> {
   items: T[];
-  languages: AppStaticProps["languages"];
+  languages?: AppStaticProps["languages"];
   languageExtractor: (item: NonNullable<T>) => string | undefined;
   transform?: (item: NonNullable<T>) => NonNullable<T>;
 }
@@ -27,7 +27,7 @@ const getPreferredLanguage = (
 export const useSmartLanguage = <T>({
   items,
   languageExtractor,
-  languages,
+  languages = [],
   transform = (item) => item,
 }: Props<T>): [
   T | undefined,

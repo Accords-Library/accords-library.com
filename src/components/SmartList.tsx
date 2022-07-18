@@ -25,6 +25,7 @@ interface Props<T> {
   // Grouping
   groupingFunction?: (item: T) => string[];
   groupSortingFunction?: (a: string, b: string) => number;
+  groupCountingFunction?: (item: T) => number;
   // Filtering
   filteringFunction?: (item: T) => boolean;
   // Sorting
@@ -48,6 +49,7 @@ export const SmartList = <T,>({
   searchingCaseInsensitive = true,
   groupingFunction = () => [""],
   groupSortingFunction = (a, b) => a.localeCompare(b),
+  groupCountingFunction = () => 1,
   filteringFunction = () => true,
   sortingFunction = () => 0,
   className,
@@ -159,7 +161,10 @@ export const SmartList = <T,>({
                     >
                       {name}
                       <Chip
-                        text={`${groupItems.length} ${
+                        text={`${groupItems.reduce(
+                          (acc, item) => acc + groupCountingFunction(item),
+                          0
+                        )} ${
                           groupItems.length <= 1
                             ? langui.result?.toLowerCase() ?? ""
                             : langui.results?.toLowerCase() ?? ""

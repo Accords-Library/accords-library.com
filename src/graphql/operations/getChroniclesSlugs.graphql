@@ -1,0 +1,9 @@
+query getChroniclesSlugs {
+  chronicles(pagination: { limit: -1 }) {
+    data {
+      attributes {
+        slug
+      }
+    }
+  }
+}

@@ -142,6 +142,17 @@ const Contents = ({
     [effectiveCombineRelatedContent, searchName]
   );
 
+  const groupCountingFunction = useCallback(
+    (
+      item: SelectiveNonNullable<Props["contents"][number], "attributes" | "id">
+    ) =>
+      item.attributes.group?.data?.attributes?.combine &&
+      effectiveCombineRelatedContent
+        ? item.attributes.group.data.attributes.contents?.data.length ?? 1
+        : 1,
+    [effectiveCombineRelatedContent]
+  );
+
   const subPanel = useMemo(
     () => (
       <SubPanel>
@@ -246,7 +257,6 @@ const Contents = ({
                 language: translation.language.data.attributes.code,
               }))}
               fallback={{ title: prettySlug(item.attributes.slug) }}
-              languages={languages}
               thumbnail={item.attributes.thumbnail?.data?.attributes}
               thumbnailAspectRatio="3/2"
               thumbnailForceAspectRatio
@@ -273,6 +283,7 @@ const Contents = ({
           )}
           className="grid-cols-2 desktop:grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))]"
           groupingFunction={groupingFunction}
+          groupCountingFunction={groupCountingFunction}
           filteringFunction={filteringFunction}
           searchingTerm={searchName}
           searchingBy={(item) =>
@@ -296,9 +307,9 @@ const Contents = ({
       contents,
       effectiveCombineRelatedContent,
       filteringFunction,
+      groupCountingFunction,
       groupingFunction,
       keepInfoVisible,
-      languages,
       langui,
       searchName,
     ]

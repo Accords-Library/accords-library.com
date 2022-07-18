@@ -355,7 +355,6 @@ const Content = ({
                 fallback={{
                   title: prettySlug(previousContent.attributes.slug),
                 }}
-                languages={languages}
                 thumbnail={
                   previousContent.attributes.thumbnail?.data?.attributes
                 }
@@ -409,7 +408,6 @@ const Content = ({
                   language: translation.language.data.attributes.code,
                 }))}
                 fallback={{ title: nextContent.attributes.slug }}
-                languages={languages}
                 thumbnail={nextContent.attributes.thumbnail?.data?.attributes}
                 thumbnailAspectRatio="3/2"
                 topChips={
@@ -446,7 +444,6 @@ const Content = ({
       content.type,
       isMobile,
       languageSwitcherProps,
-      languages,
       langui,
       nextContent?.attributes,
       previousContent?.attributes,

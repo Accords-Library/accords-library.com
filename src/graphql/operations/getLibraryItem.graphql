@@ -30,7 +30,7 @@ query getLibraryItem($slug: String, $language_code: String) {
         price {
           ...pricePicker
         }
-        categories {
+        categories(pagination: { limit: -1 }) {
           data {
             id
             attributes {
@@ -39,7 +39,7 @@ query getLibraryItem($slug: String, $language_code: String) {
             }
           }
         }
-        urls {
+        urls(pagination: { limit: -1 }) {
           url
         }
         size {
@@ -47,7 +47,7 @@ query getLibraryItem($slug: String, $language_code: String) {
           height
           thickness
         }
-        descriptions(filters: { language: { code: { eq: $language_code } } }) {
+        descriptions(pagination: { limit: -1 }) {
           description
         }
         metadata {
@@ -68,7 +68,7 @@ query getLibraryItem($slug: String, $language_code: String) {
             binding_type
             page_count
             page_order
-            languages {
+            languages(pagination: { limit: -1 }) {
               data {
                 attributes {
                   code
@@ -92,7 +92,7 @@ query getLibraryItem($slug: String, $language_code: String) {
             }
           }
           ... on ComponentMetadataGame {
-            platforms {
+            platforms(pagination: { limit: -1 }) {
               data {
                 id
                 attributes {
@@ -100,7 +100,7 @@ query getLibraryItem($slug: String, $language_code: String) {
                 }
               }
             }
-            audio_languages {
+            audio_languages(pagination: { limit: -1 }) {
               data {
                 attributes {
                   code
@@ -108,7 +108,7 @@ query getLibraryItem($slug: String, $language_code: String) {
                 }
               }
             }
-            sub_languages {
+            sub_languages(pagination: { limit: -1 }) {
               data {
                 attributes {
                   code
@@ -116,7 +116,7 @@ query getLibraryItem($slug: String, $language_code: String) {
                 }
               }
             }
-            interface_languages {
+            interface_languages(pagination: { limit: -1 }) {
               data {
                 attributes {
                   code
@@ -196,7 +196,7 @@ query getLibraryItem($slug: String, $language_code: String) {
               price {
                 ...pricePicker
               }
-              categories {
+              categories(pagination: { limit: -1 }) {
                 data {
                   id
                   attributes {
@@ -299,7 +299,7 @@ query getLibraryItem($slug: String, $language_code: String) {
             }
           }
         }
-        submerchs {
+        submerchs(pagination: { limit: -1 }) {
           data {
             id
             attributes {
@@ -339,7 +339,7 @@ query getLibraryItem($slug: String, $language_code: String) {
                 data {
                   attributes {
                     slug
-                    categories {
+                    categories(pagination: { limit: -1 }) {
                       data {
                         id
                         attributes {
@@ -362,7 +362,7 @@ query getLibraryItem($slug: String, $language_code: String) {
                         }
                       }
                     }
-                    translations {
+                    translations(pagination: { limit: -1 }) {
                       language {
                         data {
                           attributes {

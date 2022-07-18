@@ -1,5 +1,5 @@
 query getCurrencies {
-  currencies {
+  currencies(pagination: { limit: -1 }) {
     data {
       id
       attributes {

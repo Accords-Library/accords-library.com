@@ -8,7 +8,7 @@ query getPost($slug: String, $language_code: String) {
         date {
           ...datePicker
         }
-        authors {
+        authors(pagination: { limit: -1 }) {
           data {
             id
             attributes {
@@ -16,7 +16,7 @@ query getPost($slug: String, $language_code: String) {
             }
           }
         }
-        categories {
+        categories(pagination: { limit: -1 }) {
           data {
             id
             attributes {
@@ -33,7 +33,7 @@ query getPost($slug: String, $language_code: String) {
             }
           }
         }
-        translations {
+        translations(pagination: { limit: -1 }) {
           language {
             data {
               attributes {

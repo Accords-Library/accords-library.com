@@ -8,7 +8,7 @@ query getVideosPreview {
         views
         duration
         gone
-        categories {
+        categories(pagination: { limit: -1 }) {
           data {
             id
             attributes {

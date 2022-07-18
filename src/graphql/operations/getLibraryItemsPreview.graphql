@@ -21,7 +21,7 @@ query getLibraryItemsPreview($language_code: String) {
         price {
           ...pricePicker
         }
-        categories {
+        categories(pagination: { limit: -1 }) {
           data {
             id
             attributes {
@@ -47,7 +47,7 @@ query getLibraryItemsPreview($language_code: String) {
             }
           }
           ... on ComponentMetadataGame {
-            platforms {
+            platforms(pagination: { limit: -1 }) {
               data {
                 id
                 attributes {

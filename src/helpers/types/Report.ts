@@ -3,7 +3,7 @@ export type Report = {
   lines: ReportLine[];
 };
 
-export type ReportLine = {
+type ReportLine = {
   subitems: string[];
   name: string;
   type: "Error" | "Improvement" | "Missing";

@@ -4,7 +4,7 @@ query devGetContents {
       id
       attributes {
         slug
-        categories {
+        categories(pagination: { limit: -1 }) {
           data {
             id
           }
@@ -15,12 +15,12 @@ query devGetContents {
           }
         }
 
-        ranged_contents {
+        ranged_contents(pagination: { limit: -1 }) {
           data {
             id
           }
         }
-        translations {
+        translations(pagination: { limit: -1 }) {
           language {
             data {
               id
@@ -41,17 +41,17 @@ query devGetContents {
               }
             }
             status
-            transcribers {
+            transcribers(pagination: { limit: -1 }) {
               data {
                 id
               }
             }
-            translators {
+            translators(pagination: { limit: -1 }) {
               data {
                 id
               }
             }
-            proofreaders {
+            proofreaders(pagination: { limit: -1 }) {
               data {
                 id
               }

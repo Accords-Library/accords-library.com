@@ -7,7 +7,7 @@ query getPostsPreview {
         date {
           ...datePicker
         }
-        categories {
+        categories(pagination: { limit: -1 }) {
           data {
             id
             attributes {
@@ -22,7 +22,7 @@ query getPostsPreview {
             }
           }
         }
-        translations {
+        translations(pagination: { limit: -1 }) {
           language {
             data {
               attributes {

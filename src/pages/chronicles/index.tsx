@@ -5,15 +5,28 @@ import { PanelHeader } from "components/PanelComponents/PanelHeader";
 import { SubPanel } from "components/Panels/SubPanel";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { Icon } from "components/Ico";
+import { getReadySdk } from "graphql/sdk";
+import { GetChroniclesChaptersQuery } from "graphql/generated";
+import { filterHasAttributes } from "helpers/others";
+import { prettySlug } from "helpers/formatters";
+import { TranslatedChroniclesList } from "components/Translated";
 
 /*
  *                                           ╭────────╮
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
  */
 
-interface Props extends AppStaticProps {}
+interface Props extends AppStaticProps {
+  chapters: NonNullable<
+    GetChroniclesChaptersQuery["chroniclesChapters"]
+  >["data"];
+}
 
-const Chronicles = ({ langui, ...otherProps }: Props): JSX.Element => {
+const Chronicles = ({
+  langui,
+  chapters,
+  ...otherProps
+}: Props): JSX.Element => {
   const subPanel = useMemo(
     () => (
       <SubPanel>
@@ -22,9 +35,27 @@ const Chronicles = ({ langui, ...otherProps }: Props): JSX.Element => {
           title={langui.chronicles}
           description={langui.chronicles_description}
         />
+        <div className="grid gap-16">
+          {filterHasAttributes(chapters, [
+            "attributes.chronicles",
+            "id",
+          ] as const).map((chapter) => (
+            <TranslatedChroniclesList
+              key={chapter.id}
+              chronicles={chapter.attributes.chronicles.data}
+              translations={filterHasAttributes(chapter.attributes.titles, [
+                "language.data.attributes.code",
+              ] as const).map((translation) => ({
+                title: translation.title,
+                language: translation.language.data.attributes.code,
+              }))}
+              fallback={{ title: prettySlug(chapter.attributes.slug) }}
+            />
+          ))}
+        </div>
       </SubPanel>
     ),
-    [langui]
+    [chapters, langui]
   );
 
   return (
@@ -44,8 +75,12 @@ export default Chronicles;
  */
 
 export const getStaticProps: GetStaticProps = async (context) => {
+  const sdk = getReadySdk();
+  const chronicles = await sdk.getChroniclesChapters();
+  if (!chronicles.chroniclesChapters?.data) return { notFound: true };
   const props: Props = {
     ...(await getAppStaticProps(context)),
+    chapters: chronicles.chroniclesChapters.data,
   };
   return {
     props: props,

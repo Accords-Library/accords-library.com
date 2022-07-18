@@ -2,13 +2,13 @@ import { PreviewCard } from "./PreviewCard";
 import { PreviewLine } from "./PreviewLine";
 import { ScanSet } from "./Library/ScanSet";
 import { NavOption } from "./PanelComponents/NavOption";
-import { AppStaticProps } from "graphql/getAppStaticProps";
+import { ChroniclePreview } from "./Chronicles/ChroniclePreview";
+import { ChroniclesList } from "./Chronicles/ChroniclesList";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 
 type TranslatedProps<P, K extends keyof P> = Omit<P, K> & {
   translations: (Pick<P, K> & { language: string })[];
   fallback: Pick<P, K>;
-  languages: AppStaticProps["languages"];
 };
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
@@ -18,18 +18,18 @@ type TranslatedPreviewCardProps = TranslatedProps<
   "description" | "pre_title" | "subtitle" | "title"
 >;
 
+const languageExtractor = (item: { language: string }): string => item.language;
+
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
 export const TranslatedPreviewCard = ({
   translations,
-  languages,
   fallback,
   ...otherProps
 }: TranslatedPreviewCardProps): JSX.Element => {
   const [selectedTranslation] = useSmartLanguage({
     items: translations,
-    languages: languages,
-    languageExtractor: (item) => item.language,
+    languageExtractor,
   });
 
   return (
@@ -45,23 +45,18 @@ export const TranslatedPreviewCard = ({
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
-type TranslatedPreviewLineProps = TranslatedProps<
-  Parameters<typeof PreviewLine>[0],
-  "pre_title" | "subtitle" | "title"
->;
-
-// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
-
 export const TranslatedPreviewLine = ({
   translations,
-  languages,
   fallback,
   ...otherProps
-}: TranslatedPreviewLineProps): JSX.Element => {
+}: TranslatedProps<
+  Parameters<typeof PreviewLine>[0],
+  "pre_title" | "subtitle" | "title"
+>): JSX.Element => {
   const [selectedTranslation] = useSmartLanguage({
     items: translations,
-    languages: languages,
-    languageExtractor: (item) => item.language,
+
+    languageExtractor,
   });
 
   return (
@@ -76,29 +71,19 @@ export const TranslatedPreviewLine = ({
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
-type TranslatedScanSetProps = TranslatedProps<
-  Parameters<typeof ScanSet>[0],
-  "title"
->;
-
-// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
-
 export const TranslatedScanSet = ({
   translations,
-  languages,
   fallback,
   ...otherProps
-}: TranslatedScanSetProps): JSX.Element => {
+}: TranslatedProps<Parameters<typeof ScanSet>[0], "title">): JSX.Element => {
   const [selectedTranslation] = useSmartLanguage({
     items: translations,
-    languages: languages,
-    languageExtractor: (item) => item.language,
+    languageExtractor,
   });
 
   return (
     <ScanSet
       title={selectedTranslation?.title ?? fallback.title}
-      languages={languages}
       {...otherProps}
     />
   );
@@ -106,29 +91,69 @@ export const TranslatedScanSet = ({
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
-type TranslatedNavOptionProps = TranslatedProps<
-  Parameters<typeof NavOption>[0],
-  "subtitle" | "title"
->;
-
-// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
-
 export const TranslatedNavOption = ({
   translations,
-  languages,
   fallback,
   ...otherProps
-}: TranslatedNavOptionProps): JSX.Element => {
+}: TranslatedProps<
+  Parameters<typeof NavOption>[0],
+  "subtitle" | "title"
+>): JSX.Element => {
   const [selectedTranslation] = useSmartLanguage({
     items: translations,
-    languages: languages,
-    languageExtractor: (item) => item.language,
+    languageExtractor,
   });
 
   return (
     <NavOption
       title={selectedTranslation?.title ?? fallback.title}
       subtitle={selectedTranslation?.subtitle ?? fallback.subtitle}
+      {...otherProps}
+    />
+  );
+};
+
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
+
+export const TranslatedChroniclePreview = ({
+  translations,
+  fallback,
+  ...otherProps
+}: TranslatedProps<
+  Parameters<typeof ChroniclePreview>[0],
+  "title"
+>): JSX.Element => {
+  const [selectedTranslation] = useSmartLanguage({
+    items: translations,
+    languageExtractor,
+  });
+
+  return (
+    <ChroniclePreview
+      title={selectedTranslation?.title ?? fallback.title}
+      {...otherProps}
+    />
+  );
+};
+
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
+
+export const TranslatedChroniclesList = ({
+  translations,
+  fallback,
+  ...otherProps
+}: TranslatedProps<
+  Parameters<typeof ChroniclesList>[0],
+  "title"
+>): JSX.Element => {
+  const [selectedTranslation] = useSmartLanguage({
+    items: translations,
+    languageExtractor,
+  });
+
+  return (
+    <ChroniclesList
+      title={selectedTranslation?.title ?? fallback.title}
       {...otherProps}
     />
   );

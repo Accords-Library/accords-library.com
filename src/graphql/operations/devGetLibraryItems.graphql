@@ -9,7 +9,7 @@ query devGetLibraryItems {
             id
           }
         }
-        subitems {
+        subitems(pagination: { limit: -1 }) {
           data {
             id
           }
@@ -41,7 +41,7 @@ query devGetLibraryItems {
           month
           day
         }
-        descriptions {
+        descriptions(pagination: { limit: -1 }) {
           description
           language {
             data {
@@ -49,13 +49,13 @@ query devGetLibraryItems {
             }
           }
         }
-        contents {
+        contents(pagination: { limit: -1 }) {
           data {
             id
           }
         }
         digital
-        categories {
+        categories(pagination: { limit: -1 }) {
           data {
             id
           }
@@ -63,7 +63,7 @@ query devGetLibraryItems {
         urls {
           url
         }
-        images {
+        images(pagination: { limit: -1 }) {
           language {
             data {
               id
@@ -75,17 +75,17 @@ query devGetLibraryItems {
             }
           }
           status
-          scanners {
+          scanners(pagination: { limit: -1 }) {
             data {
               id
             }
           }
-          cleaners {
+          cleaners(pagination: { limit: -1 }) {
             data {
               id
             }
           }
-          typesetters {
+          typesetters(pagination: { limit: -1 }) {
             data {
               id
             }

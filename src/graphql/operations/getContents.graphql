@@ -4,7 +4,7 @@ query getContents($language_code: String) {
       id
       attributes {
         slug
-        translations {
+        translations(pagination: { limit: -1 }) {
           pre_title
           title
           subtitle
@@ -16,7 +16,7 @@ query getContents($language_code: String) {
             }
           }
         }
-        categories {
+        categories(pagination: { limit: -1 }) {
           data {
             id
             attributes {
@@ -35,7 +35,7 @@ query getContents($language_code: String) {
             }
           }
         }
-        ranged_contents {
+        ranged_contents(pagination: { limit: -1 }) {
           data {
             id
             attributes {

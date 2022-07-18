@@ -119,7 +119,7 @@ mark {
 }
 
 .formatted pre > code {
-  @apply block whitespace-pre;
+  @apply block whitespace-pre-line;
 }
 
 .formatted ul {

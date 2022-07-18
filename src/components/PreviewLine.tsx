@@ -39,7 +39,11 @@ export const PreviewLine = ({
     >
       {thumbnail ? (
         <div className="aspect-[3/2] h-full">
-          <Img className="h-full object-cover" image={thumbnail} quality={ImageQuality.Medium} />
+          <Img
+            className="h-full object-cover"
+            image={thumbnail}
+            quality={ImageQuality.Medium}
+          />
         </div>
       ) : (
         <div style={{ aspectRatio: thumbnailAspectRatio }}></div>

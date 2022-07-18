@@ -132,7 +132,6 @@ export const MainPanel = ({ langui }: Props): JSX.Element => {
         reduced={mainPanelReduced && isDesktop}
       />
 
-      {/*
       <NavOption
         url="/chronicles"
         icon={Icon.WatchLater}
@@ -140,7 +139,6 @@ export const MainPanel = ({ langui }: Props): JSX.Element => {
         subtitle={langui.chronicles_short_description}
         reduced={mainPanelReduced && isDesktop}
       />
-      */}
 
       <HorizontalLine />
 
@@ -229,6 +227,15 @@ export const MainPanel = ({ langui }: Props): JSX.Element => {
             bg-black transition-colors [mask:url('/icons/github-brands.svg')]
             ![mask-size:contain] ![mask-repeat:no-repeat] ![mask-position:center] hover:bg-dark"
             href="https://github.com/Accords-Library"
+            target="_blank"
+            rel="noopener noreferrer"
+          ></a>
+          <a
+            aria-label="Follow us on Twitter"
+            className="aspect-square w-10
+              bg-black transition-colors [mask:url('/icons/twitter-brands.svg')]
+              ![mask-size:contain] ![mask-repeat:no-repeat] ![mask-position:center] hover:bg-dark"
+            href="https://twitter.com/AccordsLibrary"
             target="_blank"
             rel="noopener noreferrer"
           ></a>

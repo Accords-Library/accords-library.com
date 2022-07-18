@@ -1,0 +1,165 @@
+query getChronicle($slug: String, $language_code: String) {
+  chronicles(filters: { slug: { eq: $slug } }) {
+    data {
+      attributes {
+        slug
+        date_start {
+          year
+          month
+          day
+        }
+        date_end {
+          year
+          month
+          day
+        }
+        chapter {
+          data {
+            attributes {
+              slug
+              titles {
+                title
+                language {
+                  data {
+                    attributes {
+                      code
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+        translations {
+          title
+          summary
+          language {
+            data {
+              attributes {
+                code
+              }
+            }
+          }
+          body {
+            source_language {
+              data {
+                attributes {
+                  code
+                }
+              }
+            }
+            status
+            body
+            authors {
+              data {
+                attributes {
+                  ...recorderChip
+                }
+              }
+            }
+            translators {
+              data {
+                attributes {
+                  ...recorderChip
+                }
+              }
+            }
+            proofreaders {
+              data {
+                attributes {
+                  ...recorderChip
+                }
+              }
+            }
+          }
+        }
+        contents {
+          data {
+            id
+            attributes {
+              slug
+              categories(pagination: { limit: -1 }) {
+                data {
+                  id
+                  attributes {
+                    name
+                    short
+                  }
+                }
+              }
+              type {
+                data {
+                  attributes {
+                    slug
+                    titles(
+                      filters: { language: { code: { eq: $language_code } } }
+                    ) {
+                      title
+                    }
+                  }
+                }
+              }
+              translations(pagination: { limit: -1 }) {
+                language {
+                  data {
+                    attributes {
+                      code
+                    }
+                  }
+                }
+                pre_title
+                title
+                subtitle
+                description
+                text_set {
+                  status
+                  text
+                  source_language {
+                    data {
+                      attributes {
+                        code
+                      }
+                    }
+                  }
+                  transcribers(pagination: { limit: -1 }) {
+                    data {
+                      id
+                      attributes {
+                        ...recorderChip
+                      }
+                    }
+                  }
+                  translators(pagination: { limit: -1 }) {
+                    data {
+                      id
+                      attributes {
+                        ...recorderChip
+                      }
+                    }
+                  }
+                  proofreaders(pagination: { limit: -1 }) {
+                    data {
+                      id
+                      attributes {
+                        ...recorderChip
+                      }
+                    }
+                  }
+                  notes
+                }
+              }
+
+              thumbnail {
+                data {
+                  attributes {
+                    ...uploadImage
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,5 +1,5 @@
 query getLanguages {
-  languages {
+  languages(pagination: { limit: -1 }) {
     data {
       id
       attributes {

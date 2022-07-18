@@ -41,12 +41,7 @@ interface Props extends AppStaticProps {
   posts: NonNullable<GetPostsPreviewQuery["posts"]>["data"];
 }
 
-const News = ({
-  langui,
-  posts,
-  languages,
-  ...otherProps
-}: Props): JSX.Element => {
+const News = ({ langui, posts, ...otherProps }: Props): JSX.Element => {
   const hoverable = useMediaHoverable();
   const [searchName, setSearchName] = useState(
     DEFAULT_FILTERS_STATE.searchName
@@ -121,7 +116,6 @@ const News = ({
                 description: translation.excerpt,
               }))}
               fallback={{ title: prettySlug(post.attributes.slug) }}
-              languages={languages}
               thumbnail={post.attributes.thumbnail?.data?.attributes}
               thumbnailAspectRatio="3/2"
               thumbnailForceAspectRatio
@@ -145,7 +139,7 @@ const News = ({
         />
       </ContentPanel>
     ),
-    [keepInfoVisible, languages, langui, posts, searchName]
+    [keepInfoVisible, langui, posts, searchName]
   );
 
   return (
@@ -155,7 +149,6 @@ const News = ({
       contentPanel={contentPanel}
       subPanelIcon={Icon.Search}
       langui={langui}
-      languages={languages}
       {...otherProps}
     />
   );

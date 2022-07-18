@@ -1,0 +1,77 @@
+query getChroniclesChapters {
+  chroniclesChapters(pagination: { limit: -1 }) {
+    data {
+      id
+      attributes {
+        slug
+        titles(pagination: { limit: -1 }) {
+          title
+          language {
+            data {
+              attributes {
+                code
+              }
+            }
+          }
+        }
+        chronicles(pagination: { limit: -1 }) {
+          data {
+            id
+            attributes {
+              slug
+              contents(pagination: { limit: -1 }) {
+                data {
+                  attributes {
+                    translations(pagination: { limit: -1 }) {
+                      pre_title
+                      title
+                      subtitle
+                      language {
+                        data {
+                          attributes {
+                            code
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+              translations(pagination: { limit: -1 }) {
+                title
+                language {
+                  data {
+                    attributes {
+                      code
+                    }
+                  }
+                }
+              }
+              date_start {
+                year
+                month
+                day
+              }
+              chapter {
+                data {
+                  attributes {
+                    titles(pagination: { limit: -1 }) {
+                      title
+                      language {
+                        data {
+                          attributes {
+                            code
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -276,7 +276,10 @@ export const PreviewCard = ({
           </div>
           {description && <p>{description}</p>}
           {bottomChips && bottomChips.length > 0 && (
-            <div className="grid grid-flow-col place-content-start gap-1 overflow-hidden">
+            <div
+              className="grid grid-flow-col place-content-start gap-1 overflow-x-scroll
+              [scrollbar-width:none] webkit-scrollbar:w-0"
+            >
               {bottomChips.map((text, index) => (
                 <Chip key={index} className="text-sm" text={text} />
               ))}

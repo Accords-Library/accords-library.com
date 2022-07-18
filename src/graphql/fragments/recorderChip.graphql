@@ -6,7 +6,7 @@ fragment recorderChip on Recorder {
   bio(filters: { language: { code: { eq: $language_code } } }) {
     bio
   }
-  languages {
+  languages(pagination: { limit: -1 }) {
     data {
       attributes {
         code

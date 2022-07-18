@@ -199,7 +199,7 @@ export const Markdawn = ({
             Line: {
               component: (compProps) => (
                 <>
-                  <strong className="text-dark/60 mobile:!-mb-4 !my-0">
+                  <strong className="!my-0 text-dark/60 mobile:!-mb-4">
                     <Markdawn text={compProps.name} />
                   </strong>
                   <p className="whitespace-pre-line">{compProps.children}</p>
@@ -439,8 +439,6 @@ const preprocessMarkDawn = (text: string, playerName = ""): string => {
         ? processedPlayerName
         : "(player)"
     );
-
-  console.log();
 
   let scenebreakIndex = 0;
   const visitedSlugs: string[] = [];

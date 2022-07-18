@@ -64,13 +64,14 @@ export const Button = ({
           id={id}
           onClick={onClick}
           className={cJoin(
-            `group grid cursor-pointer select-none grid-flow-col
-            place-content-center place-items-center gap-2 rounded-full border-[1px] border-dark py-3 px-4
+            `group grid cursor-pointer select-none grid-flow-col place-content-center 
+            place-items-center gap-2 rounded-full border-[1px] border-dark py-3 px-4
             leading-none text-dark transition-all`,
             cIf(
               active,
               "!border-black bg-black !text-light drop-shadow-black-lg",
-              "hover:bg-dark hover:text-light hover:drop-shadow-shade-lg"
+              `hover:bg-dark hover:text-light hover:drop-shadow-shade-lg active:hover:!border-black
+              active:hover:bg-black active:hover:!text-light active:hover:drop-shadow-black-lg`
             ),
             cIf(size === "small", "px-3 py-1 text-xs"),
             className

@@ -1,4 +1,5 @@
 import {
+  GetChronicleQuery,
   GetContentTextQuery,
   GetPostQuery,
   GetWikiPageQuery,
@@ -33,6 +34,17 @@ type WikiPage = NonNullable<
 export interface WikiPageWithTranslations
   extends Omit<WikiPage, "translations"> {
   translations: NonNullable<WikiPage["translations"]>;
+}
+
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
+
+type Chronicle = NonNullable<
+  NonNullable<GetChronicleQuery["chronicles"]>["data"][number]["attributes"]
+>;
+
+export interface ChronicleWithTranslations
+  extends Omit<Chronicle, "translations"> {
+  translations: NonNullable<Chronicle["translations"]>;
 }
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─

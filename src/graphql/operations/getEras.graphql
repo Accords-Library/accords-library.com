@@ -1,12 +1,12 @@
-query getEras($language_code: String) {
-  chronologyEras(sort: "starting_year") {
+query getEras {
+  chronologyEras(pagination: { limit: -1 }, sort: "starting_year") {
     data {
       id
       attributes {
         slug
         starting_year
         ending_year
-        title(filters: { language: { code: { eq: $language_code } } }) {
+        title(pagination: { limit: -1 }) {
           title
           description
         }

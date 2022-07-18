@@ -21,7 +21,7 @@ query getVideo($uid: String) {
             }
           }
         }
-        categories {
+        categories(pagination: { limit: -1 }) {
           data {
             id
             attributes {
@@ -32,7 +32,7 @@ query getVideo($uid: String) {
         views
         likes
         source
-        audio_languages {
+        audio_languages(pagination: { limit: -1 }) {
           data {
             id
             attributes {
@@ -40,7 +40,7 @@ query getVideo($uid: String) {
             }
           }
         }
-        sub_languages {
+        sub_languages(pagination: { limit: -1 }) {
           data {
             id
             attributes {

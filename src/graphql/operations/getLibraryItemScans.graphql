@@ -6,7 +6,7 @@ query getLibraryItemScans($slug: String, $language_code: String) {
         slug
         title
         subtitle
-        images {
+        images(pagination: { limit: -1 }) {
           status
           language {
             data {
@@ -22,7 +22,7 @@ query getLibraryItemScans($slug: String, $language_code: String) {
               }
             }
           }
-          scanners {
+          scanners(pagination: { limit: -1 }) {
             data {
               id
               attributes {
@@ -30,7 +30,7 @@ query getLibraryItemScans($slug: String, $language_code: String) {
               }
             }
           }
-          cleaners {
+          cleaners(pagination: { limit: -1 }) {
             data {
               id
               attributes {
@@ -38,7 +38,7 @@ query getLibraryItemScans($slug: String, $language_code: String) {
               }
             }
           }
-          typesetters {
+          typesetters(pagination: { limit: -1 }) {
             data {
               id
               attributes {
@@ -108,7 +108,7 @@ query getLibraryItemScans($slug: String, $language_code: String) {
         price {
           ...pricePicker
         }
-        categories {
+        categories(pagination: { limit: -1 }) {
           data {
             id
             attributes {
@@ -218,7 +218,7 @@ query getLibraryItemScans($slug: String, $language_code: String) {
                 data {
                   attributes {
                     slug
-                    translations {
+                    translations(pagination: { limit: -1 }) {
                       pre_title
                       title
                       subtitle
@@ -249,7 +249,7 @@ query getLibraryItemScans($slug: String, $language_code: String) {
                     }
                   }
                 }
-                scanners {
+                scanners(pagination: { limit: -1 }) {
                   data {
                     id
                     attributes {
@@ -257,7 +257,7 @@ query getLibraryItemScans($slug: String, $language_code: String) {
                     }
                   }
                 }
-                cleaners {
+                cleaners(pagination: { limit: -1 }) {
                   data {
                     id
                     attributes {
@@ -265,7 +265,7 @@ query getLibraryItemScans($slug: String, $language_code: String) {
                     }
                   }
                 }
-                typesetters {
+                typesetters(pagination: { limit: -1 }) {
                   data {
                     id
                     attributes {

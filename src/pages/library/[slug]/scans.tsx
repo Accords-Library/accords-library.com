@@ -144,7 +144,6 @@ const LibrarySlug = ({
                           : undefined,
                     }}
                     border
-                    languages={languages}
                   />
                 )}
             </>
@@ -164,7 +163,6 @@ const LibrarySlug = ({
       item.thumbnail?.data?.attributes,
       item.title,
       itemId,
-      languages,
       langui,
     ]
   );

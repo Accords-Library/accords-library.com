@@ -162,12 +162,8 @@ export default Chronology;
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
-  const chronologyItems = await sdk.getChronologyItems({
-    language_code: context.locale ?? "en",
-  });
-  const chronologyEras = await sdk.getEras({
-    language_code: context.locale ?? "en",
-  });
+  const chronologyItems = await sdk.getChronologyItems();
+  const chronologyEras = await sdk.getEras();
   if (!chronologyItems.chronologyItems || !chronologyEras.chronologyEras)
     return { notFound: true };
   const props: Props = {

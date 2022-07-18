@@ -28,7 +28,9 @@ export const ChroniclesList = ({
   currentSlug,
   title,
 }: Props): JSX.Element => {
-  const { state: isOpen, toggleState: toggleOpen } = useBoolean(false);
+  const { state: isOpen, toggleState: toggleOpen } = useBoolean(
+    chronicles.some((chronicle) => chronicle.attributes?.slug === currentSlug)
+  );
 
   return (
     <div>

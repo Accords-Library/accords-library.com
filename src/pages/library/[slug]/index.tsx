@@ -28,7 +28,7 @@ import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import {
   prettyDate,
-  prettyinlineTitle,
+  prettyInlineTitle,
   prettyItemSubType,
   prettyItemType,
   prettyPrice,
@@ -185,7 +185,7 @@ const LibrarySlug = ({
                   <p>{langui.subitem_of}</p>
                   <Button
                     href={`/library/${item.subitem_of.data[0].attributes.slug}`}
-                    text={prettyinlineTitle(
+                    text={prettyInlineTitle(
                       "",
                       item.subitem_of.data[0].attributes.title,
                       item.subitem_of.data[0].attributes.subtitle
@@ -585,7 +585,7 @@ const LibrarySlug = ({
 
   return (
     <AppLayout
-      navTitle={prettyinlineTitle("", item.title, item.subtitle)}
+      navTitle={prettyInlineTitle("", item.title, item.subtitle)}
       contentPanel={contentPanel}
       subPanel={subPanel}
       thumbnail={item.thumbnail?.data?.attributes ?? undefined}
@@ -708,7 +708,7 @@ const ContentLine = ({
         <a>
           <h3 className="cursor-pointer" onClick={toggleOpened}>
             {selectedTranslation
-              ? prettyinlineTitle(
+              ? prettyInlineTitle(
                   selectedTranslation.pre_title,
                   selectedTranslation.title,
                   selectedTranslation.subtitle

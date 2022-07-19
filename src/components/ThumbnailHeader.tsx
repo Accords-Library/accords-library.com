@@ -4,7 +4,7 @@ import { InsetBox } from "components/InsetBox";
 import { Markdawn } from "components/Markdown/Markdawn";
 import { GetContentTextQuery, UploadImageFragment } from "graphql/generated";
 import { AppStaticProps } from "graphql/getAppStaticProps";
-import { prettyinlineTitle, prettySlug, slugify } from "helpers/formatters";
+import { prettyInlineTitle, prettySlug, slugify } from "helpers/formatters";
 import { getAssetURL, ImageQuality } from "helpers/img";
 import { filterHasAttributes } from "helpers/others";
 import { useLightBox } from "hooks/useLightBox";
@@ -65,7 +65,7 @@ export const ThumbnailHeader = ({
         </div>
         <div
           id={slugify(
-            prettyinlineTitle(pre_title ?? "", title, subtitle ?? "")
+            prettyInlineTitle(pre_title ?? "", title, subtitle ?? "")
           )}
           className="grid place-items-center text-center"
         >

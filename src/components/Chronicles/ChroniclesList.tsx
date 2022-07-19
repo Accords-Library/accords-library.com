@@ -1,7 +1,7 @@
 import { GetChroniclesChaptersQuery } from "graphql/generated";
 import { filterHasAttributes } from "helpers/others";
 import { TranslatedChroniclePreview } from "components/Translated";
-import { prettyinlineTitle, prettySlug } from "helpers/formatters";
+import { prettyInlineTitle, prettySlug } from "helpers/formatters";
 import { Ico, Icon } from "components/Ico";
 import { useBoolean } from "hooks/useBoolean";
 import { compareDate } from "helpers/date";
@@ -76,7 +76,7 @@ export const ChroniclesList = ({
                         content.attributes.translations,
                         ["language.data.attributes.code"] as const
                       ).map((translation) => ({
-                        title: prettyinlineTitle(
+                        title: prettyInlineTitle(
                           translation.pre_title,
                           translation.title,
                           translation.subtitle

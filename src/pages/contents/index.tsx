@@ -11,7 +11,7 @@ import {
 import { SubPanel } from "components/Panels/SubPanel";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
-import { prettyinlineTitle, prettySlug } from "helpers/formatters";
+import { prettyInlineTitle, prettySlug } from "helpers/formatters";
 import { TextInput } from "components/Inputs/TextInput";
 import { WithLabel } from "components/Inputs/WithLabel";
 import { Button } from "components/Inputs/Button";
@@ -124,7 +124,7 @@ const Contents = ({
       if (searchName.length > 1) {
         if (
           filterDefined(item.attributes.translations).find((translation) =>
-            prettyinlineTitle(
+            prettyInlineTitle(
               translation.pre_title,
               translation.title,
               translation.subtitle
@@ -291,7 +291,7 @@ const Contents = ({
             ${item.attributes.slug}
             ${filterDefined(item.attributes.translations)
               .map((translation) =>
-                prettyinlineTitle(
+                prettyInlineTitle(
                   translation.pre_title,
                   translation.title,
                   translation.subtitle

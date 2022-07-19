@@ -14,7 +14,7 @@ import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import {
   prettyDate,
-  prettyinlineTitle,
+  prettyInlineTitle,
   prettyItemSubType,
 } from "helpers/formatters";
 import { LibraryItemUserStatus } from "helpers/types";
@@ -152,12 +152,12 @@ const Library = ({
     ) => {
       switch (sortingMethod) {
         case 0: {
-          const titleA = prettyinlineTitle(
+          const titleA = prettyInlineTitle(
             "",
             a.attributes.title,
             a.attributes.subtitle
           );
-          const titleB = prettyinlineTitle(
+          const titleB = prettyInlineTitle(
             "",
             b.attributes.title,
             b.attributes.subtitle
@@ -449,7 +449,7 @@ const Library = ({
           sortingFunction={sortingFunction}
           groupingFunction={groupingFunction}
           searchingBy={(item) =>
-            prettyinlineTitle(
+            prettyInlineTitle(
               "",
               item.attributes.title,
               item.attributes.subtitle

@@ -15,7 +15,7 @@ import { GetLibraryItemScansQuery } from "graphql/generated";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import {
-  prettyinlineTitle,
+  prettyInlineTitle,
   prettySlug,
   prettyItemSubType,
 } from "helpers/formatters";
@@ -120,7 +120,7 @@ const LibrarySlug = ({
                       ["language.data.attributes"] as const
                     ).map((translation) => ({
                       language: translation.language.data.attributes.code,
-                      title: prettyinlineTitle(
+                      title: prettyInlineTitle(
                         translation.pre_title,
                         translation.title,
                         translation.subtitle
@@ -201,7 +201,7 @@ const LibrarySlug = ({
                   ["language.data.attributes"] as const
                 ).map((translation) => ({
                   language: translation.language.data.attributes.code,
-                  title: prettyinlineTitle(
+                  title: prettyInlineTitle(
                     translation.pre_title,
                     translation.title,
                     translation.subtitle
@@ -232,7 +232,7 @@ const LibrarySlug = ({
 
   return (
     <AppLayout
-      navTitle={prettyinlineTitle("", item.title, item.subtitle)}
+      navTitle={prettyInlineTitle("", item.title, item.subtitle)}
       contentPanel={contentPanel}
       subPanel={subPanel}
       thumbnail={item.thumbnail?.data?.attributes ?? undefined}

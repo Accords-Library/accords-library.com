@@ -45,7 +45,7 @@ export const prettySlug = (slug?: string, parentSlug?: string): string => {
   return "";
 };
 
-export const prettyinlineTitle = (
+export const prettyInlineTitle = (
   pretitle: string | null | undefined,
   title: string | null | undefined,
   subtitle: string | null | undefined

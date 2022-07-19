@@ -19,7 +19,7 @@ import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import { getDescription } from "helpers/description";
 import {
-  prettyinlineTitle,
+  prettyInlineTitle,
   prettyLanguage,
   prettyItemSubType,
   prettySlug,
@@ -288,7 +288,7 @@ const Content = ({
             <HorizontalLine />
             <TableOfContents
               text={selectedTranslation.text_set.text}
-              title={prettyinlineTitle(
+              title={prettyInlineTitle(
                 selectedTranslation.pre_title,
                 selectedTranslation.title,
                 selectedTranslation.subtitle
@@ -459,7 +459,7 @@ const Content = ({
     <AppLayout
       navTitle={
         selectedTranslation
-          ? prettyinlineTitle(
+          ? prettyInlineTitle(
               selectedTranslation.pre_title,
               selectedTranslation.title,
               selectedTranslation.subtitle

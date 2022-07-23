@@ -47,7 +47,7 @@ export const ChroniclesList = ({
         </div>
       </div>
       <div
-        className="grid gap-4 overflow-hidden transition-[max-height]"
+        className="grid gap-4 overflow-hidden transition-[max-height] duration-500"
         style={{ maxHeight: isOpen ? `${8 * chronicles.length}rem` : 0 }}
       >
         {filterHasAttributes(chronicles, [

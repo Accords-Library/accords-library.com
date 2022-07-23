@@ -1,18 +1,14 @@
 import { AppStaticProps } from "../graphql/getAppStaticProps";
 import { convertPrice } from "./numbers";
 import { isDefinedAndNotEmpty, isUndefined } from "./others";
+import { datePickerToDate } from "./date";
 import { DatePickerFragment, PricePickerFragment } from "graphql/generated";
 
 export const prettyDate = (
   datePicker: DatePickerFragment,
   locale = "en",
   dateStyle: Intl.DateTimeFormatOptions["dateStyle"] = "medium"
-): string =>
-  new Date(
-    datePicker.year ?? 0,
-    datePicker.month ?? 0,
-    datePicker.day ?? 1
-  ).toLocaleString(locale, { dateStyle });
+): string => datePickerToDate(datePicker).toLocaleString(locale, { dateStyle });
 
 export const prettyPrice = (
   pricePicker: PricePickerFragment,

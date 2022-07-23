@@ -3,10 +3,8 @@ import { useRouter } from "next/router";
 import React, { Fragment, useMemo } from "react";
 import ReactDOMServer from "react-dom/server";
 import { HorizontalLine } from "components/HorizontalLine";
-import { Ico, Icon } from "components/Ico";
 import { Img } from "components/Img";
 import { InsetBox } from "components/InsetBox";
-import { ToolTip } from "components/ToolTip";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { AppStaticProps } from "graphql/getAppStaticProps";
 import { cJoin } from "helpers/className";
@@ -14,6 +12,7 @@ import { slugify } from "helpers/formatters";
 import { getAssetURL, ImageQuality } from "helpers/img";
 import { isDefined, isDefinedAndNotEmpty, isUndefined } from "helpers/others";
 import { useLightBox } from "hooks/useLightBox";
+import { AnchorShare } from "components/AnchorShare";
 
 /*
  *                                        ╭─────────────╮
@@ -86,7 +85,7 @@ export const Markdawn = ({
               }) => (
                 <h1 id={compProps.id} style={compProps.style}>
                   {compProps.children}
-                  <HeaderToolTip id={compProps.id} />
+                  <AnchorShare id={compProps.id} />
                 </h1>
               ),
             },
@@ -99,7 +98,7 @@ export const Markdawn = ({
               }) => (
                 <h2 id={compProps.id} style={compProps.style}>
                   {compProps.children}
-                  <HeaderToolTip id={compProps.id} />
+                  <AnchorShare id={compProps.id} />
                 </h2>
               ),
             },
@@ -112,7 +111,7 @@ export const Markdawn = ({
               }) => (
                 <h3 id={compProps.id} style={compProps.style}>
                   {compProps.children}
-                  <HeaderToolTip id={compProps.id} />
+                  <AnchorShare id={compProps.id} />
                 </h3>
               ),
             },
@@ -125,7 +124,7 @@ export const Markdawn = ({
               }) => (
                 <h4 id={compProps.id} style={compProps.style}>
                   {compProps.children}
-                  <HeaderToolTip id={compProps.id} />
+                  <AnchorShare id={compProps.id} />
                 </h4>
               ),
             },
@@ -138,7 +137,7 @@ export const Markdawn = ({
               }) => (
                 <h5 id={compProps.id} style={compProps.style}>
                   {compProps.children}
-                  <HeaderToolTip id={compProps.id} />
+                  <AnchorShare id={compProps.id} />
                 </h5>
               ),
             },
@@ -151,7 +150,7 @@ export const Markdawn = ({
               }) => (
                 <h6 id={compProps.id} style={compProps.style}>
                   {compProps.children}
-                  <HeaderToolTip id={compProps.id} />
+                  <AnchorShare id={compProps.id} />
                 </h6>
               ),
             },
@@ -382,33 +381,6 @@ const TocLevel = ({
     </ol>
   );
 };
-
-/*
- *                                      ╭───────────────────╮
- * ─────────────────────────────────────╯  PRIVATE METHODS  ╰───────────────────────────────────────
- */
-
-const HeaderToolTip = (props: { id: string }): JSX.Element => (
-  <ToolTip
-    content={"Copy anchor link"}
-    trigger="mouseenter"
-    className="text-sm"
-  >
-    <ToolTip content={"Copied! 👍"} trigger="click" className="text-sm">
-      <Ico
-        icon={Icon.Link}
-        className="transition-color cursor-pointer hover:text-dark"
-        onClick={() => {
-          navigator.clipboard.writeText(
-            `${process.env.NEXT_PUBLIC_URL_SELF + window.location.pathname}#${
-              props.id
-            }`
-          );
-        }}
-      />
-    </ToolTip>
-  </ToolTip>
-);
 
 /*
  *                                    ╭──────────────────────╮

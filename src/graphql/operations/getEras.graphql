@@ -7,6 +7,13 @@ query getEras {
         starting_year
         ending_year
         title(pagination: { limit: -1 }) {
+          language {
+            data {
+              attributes {
+                code
+              }
+            }
+          }
           title
           description
         }

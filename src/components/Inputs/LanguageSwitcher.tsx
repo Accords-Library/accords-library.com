@@ -19,6 +19,7 @@ interface Props {
   localesIndex: number | undefined;
   onLanguageChanged: (index: number) => void;
   size?: Parameters<typeof Button>[0]["size"];
+  showBadge?: boolean;
 }
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
@@ -30,6 +31,7 @@ export const LanguageSwitcher = ({
   languages,
   size,
   onLanguageChanged,
+  showBadge = true,
 }: Props): JSX.Element => (
   <ToolTip
     content={
@@ -47,7 +49,7 @@ export const LanguageSwitcher = ({
     }
   >
     <Button
-      badgeNumber={locales.size > 1 ? locales.size : undefined}
+      badgeNumber={showBadge && locales.size > 1 ? locales.size : undefined}
       icon={Icon.Translate}
       size={size}
     />

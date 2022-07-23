@@ -2,6 +2,8 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import getConfig from "next/config";
 
 type RequestProps =
+  | HookChronicle
+  | HookChronicleChapter
   | HookChronology
   | HookContent
   | HookContentGroup
@@ -80,6 +82,22 @@ type HookWiki = {
   model: "wiki-page";
   entry: {
     slug: string;
+  };
+};
+
+type HookChronicle = {
+  event: "entry.create" | "entry.delete" | "entry.update";
+  model: "chronicle";
+  entry: {
+    slug: string;
+  };
+};
+
+type HookChronicleChapter = {
+  event: "entry.create" | "entry.delete" | "entry.update";
+  model: "chronicles-chapter";
+  entry: {
+    chronicles: { slug: string }[];
   };
 };
 
@@ -205,6 +223,30 @@ const Revalidate = (
         paths.push(`/${locale}/wiki/${body.entry.slug}`);
       });
 
+      break;
+    }
+
+    case "chronicle": {
+      paths.push(`/chronicles`);
+      paths.push(`/chronicles/${body.entry.slug}`);
+      serverRuntimeConfig.locales?.map((locale: string) => {
+        paths.push(`/${locale}/chronicles`);
+        paths.push(`/${locale}/chronicles/${body.entry.slug}`);
+      });
+      break;
+    }
+
+    case "chronicles-chapter": {
+      paths.push(`/chronicles`);
+      serverRuntimeConfig.locales?.map((locale: string) => {
+        paths.push(`/${locale}/chronicles`);
+      });
+      body.entry.chronicles.map((chronicle) => {
+        paths.push(`/chronicles/${chronicle.slug}`);
+        serverRuntimeConfig.locales?.map((locale: string) => {
+          paths.push(`/${locale}/chronicles/${chronicle.slug}`);
+        });
+      });
       break;
     }
 

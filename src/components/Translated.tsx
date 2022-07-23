@@ -6,7 +6,7 @@ import { ChroniclePreview } from "./Chronicles/ChroniclePreview";
 import { ChroniclesList } from "./Chronicles/ChroniclesList";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 
-type TranslatedProps<P, K extends keyof P> = Omit<P, K> & {
+export type TranslatedProps<P, K extends keyof P> = Omit<P, K> & {
   translations: (Pick<P, K> & { language: string })[];
   fallback: Pick<P, K>;
 };

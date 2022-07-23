@@ -165,10 +165,10 @@ const Library = ({
         case 1: {
           const priceA = a.attributes.price
             ? convertPrice(a.attributes.price, currencies[0])
-            : 99999;
+            : Infinity;
           const priceB = b.attributes.price
             ? convertPrice(b.attributes.price, currencies[0])
-            : 99999;
+            : Infinity;
           return priceA - priceB;
         }
         case 2: {

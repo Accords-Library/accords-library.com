@@ -20,6 +20,13 @@ query getChronologyItems {
             }
           }
           translations(pagination: { limit: -1 }) {
+            language {
+              data {
+                attributes {
+                  code
+                }
+              }
+            }
             title
             description
             note

@@ -25,11 +25,11 @@ export interface OpenGraph {
 
 export const getOpenGraph = (
   langui: AppStaticProps["langui"],
-  title: string,
+  title?: string | null | undefined,
   description?: string | null | undefined,
   thumbnail?: UploadImageFragment | null | undefined
 ): OpenGraph => ({
-  title: `${TITLE_PREFIX}${isDefinedAndNotEmpty(title) && ` - ${title}`}`,
+  title: `${TITLE_PREFIX}${isDefinedAndNotEmpty(title) ? ` - ${title}` : ""}`,
   description: isDefinedAndNotEmpty(description)
     ? description
     : langui.default_description ?? "",

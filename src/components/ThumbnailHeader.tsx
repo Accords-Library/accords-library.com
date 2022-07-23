@@ -107,7 +107,7 @@ export const ThumbnailHeader = ({
       </div>
       {description && (
         <InsetBox className="mt-8">
-          {<Markdawn text={description}></Markdawn>}
+          {<Markdawn text={description} langui={langui} />}
         </InsetBox>
       )}
     </>

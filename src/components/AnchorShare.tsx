@@ -1,6 +1,6 @@
-import { useRouter } from "next/router";
 import { Ico, Icon } from "./Ico";
 import { ToolTip } from "./ToolTip";
+import { AppStaticProps } from "graphql/getAppStaticProps";
 
 /*
  *                                        ╭─────────────╮
@@ -9,18 +9,22 @@ import { ToolTip } from "./ToolTip";
 
 interface Props {
   id: string;
+  langui: AppStaticProps["langui"];
 }
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
-export const AnchorShare = ({ id }: Props): JSX.Element => (
+export const AnchorShare = ({ id, langui }: Props): JSX.Element => (
   <ToolTip
-    content={"Copy anchor link"}
+    content={langui.copy_anchor_link}
     trigger="mouseenter"
     className="text-sm"
   >
-    {/* TODO: Langui Copied! */}
-    <ToolTip content={"Copied! 👍"} trigger="click" className="text-sm">
+    <ToolTip
+      content={langui.anchor_link_copied}
+      trigger="click"
+      className="text-sm"
+    >
       <Ico
         icon={Icon.Link}
         className="transition-color cursor-pointer hover:text-dark"

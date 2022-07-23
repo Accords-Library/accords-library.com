@@ -111,7 +111,7 @@ const Chronicle = ({
             )}
 
             {isDefined(selectedTranslation.body) && (
-              <Markdawn text={selectedTranslation.body.body} />
+              <Markdawn text={selectedTranslation.body.body} langui={langui} />
             )}
           </>
         ) : (
@@ -139,7 +139,10 @@ const Chronicle = ({
                 <HorizontalLine />
 
                 {selectedContentTranslation.text_set?.text && (
-                  <Markdawn text={selectedContentTranslation.text_set.text} />
+                  <Markdawn
+                    text={selectedContentTranslation.text_set.text}
+                    langui={langui}
+                  />
                 )}
               </>
             )}

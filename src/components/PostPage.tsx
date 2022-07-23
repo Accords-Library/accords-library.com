@@ -195,7 +195,7 @@ export const PostPage = ({
         )}
 
         {prependBody}
-        <Markdawn text={body} />
+        <Markdawn text={body} langui={langui} />
         {appendBody}
       </ContentPanel>
     ),

@@ -168,6 +168,8 @@ query getWebsiteInterface($language_code: String) {
         cover
         tags
         no_source_warning
+        copy_anchor_link
+        anchor_link_copied
       }
     }
   }

@@ -210,7 +210,7 @@ const ChronologyEra = ({
       <InsetBox className="my-8 grid gap-4 text-center">
         <h2 className="flex place-content-center gap-3 text-2xl">
           {title}
-          <AnchorShare id={id} />
+          <AnchorShare id={id} langui={langui} />
         </h2>
 
         {isDefinedAndNotEmpty(description) && (
@@ -437,7 +437,7 @@ export const ChronologyEvent = ({
             </p>
 
             <span className="flex-shrink">
-              <AnchorShare id={id} />
+              <AnchorShare id={id} langui={langui} />
             </span>
           </div>
 

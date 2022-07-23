@@ -22,6 +22,7 @@ import { AnchorShare } from "components/AnchorShare";
 interface MarkdawnProps {
   className?: string;
   text: string;
+  langui: AppStaticProps["langui"];
 }
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
@@ -29,6 +30,7 @@ interface MarkdawnProps {
 export const Markdawn = ({
   className,
   text: rawText,
+  langui,
 }: MarkdawnProps): JSX.Element => {
   const { playerName } = useAppLayout();
   const router = useRouter();
@@ -85,7 +87,7 @@ export const Markdawn = ({
               }) => (
                 <h1 id={compProps.id} style={compProps.style}>
                   {compProps.children}
-                  <AnchorShare id={compProps.id} />
+                  <AnchorShare id={compProps.id} langui={langui} />
                 </h1>
               ),
             },
@@ -98,7 +100,7 @@ export const Markdawn = ({
               }) => (
                 <h2 id={compProps.id} style={compProps.style}>
                   {compProps.children}
-                  <AnchorShare id={compProps.id} />
+                  <AnchorShare id={compProps.id} langui={langui} />
                 </h2>
               ),
             },
@@ -111,7 +113,7 @@ export const Markdawn = ({
               }) => (
                 <h3 id={compProps.id} style={compProps.style}>
                   {compProps.children}
-                  <AnchorShare id={compProps.id} />
+                  <AnchorShare id={compProps.id} langui={langui} />
                 </h3>
               ),
             },
@@ -124,7 +126,7 @@ export const Markdawn = ({
               }) => (
                 <h4 id={compProps.id} style={compProps.style}>
                   {compProps.children}
-                  <AnchorShare id={compProps.id} />
+                  <AnchorShare id={compProps.id} langui={langui} />
                 </h4>
               ),
             },
@@ -137,7 +139,7 @@ export const Markdawn = ({
               }) => (
                 <h5 id={compProps.id} style={compProps.style}>
                   {compProps.children}
-                  <AnchorShare id={compProps.id} />
+                  <AnchorShare id={compProps.id} langui={langui} />
                 </h5>
               ),
             },
@@ -150,7 +152,7 @@ export const Markdawn = ({
               }) => (
                 <h6 id={compProps.id} style={compProps.style}>
                   {compProps.children}
-                  <AnchorShare id={compProps.id} />
+                  <AnchorShare id={compProps.id} langui={langui} />
                 </h6>
               ),
             },
@@ -199,7 +201,7 @@ export const Markdawn = ({
               component: (compProps) => (
                 <>
                   <strong className="!my-0 text-dark/60 mobile:!-mb-4">
-                    <Markdawn text={compProps.name} />
+                    <Markdawn text={compProps.name} langui={langui} />
                   </strong>
                   <p className="whitespace-pre-line">{compProps.children}</p>
                 </>

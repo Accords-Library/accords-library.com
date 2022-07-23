@@ -442,7 +442,7 @@ const Editor = ({ langui, ...otherProps }: Props): JSX.Element => {
           <div>
             <h2>Preview</h2>
             <div className="h-[70vh] overflow-scroll rounded-xl bg-mid bg-opacity-40 p-8">
-              <Markdawn className="w-full" text={markdown} />
+              <Markdawn className="w-full" text={markdown} langui={langui} />
             </div>
           </div>
         </div>

@@ -212,7 +212,10 @@ const Content = ({
               <div>
                 <p className="font-headers font-bold">{langui.notes}:</p>
                 <div className="grid place-content-center place-items-center gap-2">
-                  <Markdawn text={selectedTranslation.text_set.notes} />
+                  <Markdawn
+                    text={selectedTranslation.text_set.notes}
+                    langui={langui}
+                  />
                 </div>
               </div>
             )}
@@ -393,7 +396,10 @@ const Content = ({
 
           <HorizontalLine />
 
-          <Markdawn text={selectedTranslation?.text_set?.text ?? ""} />
+          <Markdawn
+            text={selectedTranslation?.text_set?.text ?? ""}
+            langui={langui}
+          />
 
           {nextContent?.attributes && (
             <>

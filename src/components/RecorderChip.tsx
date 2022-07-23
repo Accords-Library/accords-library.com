@@ -55,7 +55,9 @@ export const RecorderChip = ({ recorder, langui }: Props): JSX.Element => (
             )}
           </div>
         </div>
-        {recorder.bio?.[0] && <Markdawn text={recorder.bio[0].bio ?? ""} />}
+        {recorder.bio?.[0] && (
+          <Markdawn text={recorder.bio[0].bio ?? ""} langui={langui} />
+        )}
       </div>
     }
     placement="top"

@@ -1,17 +1,18 @@
 import { AppStaticProps } from "../graphql/getAppStaticProps";
 import { convertPrice } from "./numbers";
-import { isDefinedAndNotEmpty } from "./others";
+import { isDefinedAndNotEmpty, isUndefined } from "./others";
 import { DatePickerFragment, PricePickerFragment } from "graphql/generated";
 
-export const prettyDate = (datePicker: DatePickerFragment): string => {
-  let result = "";
-  if (datePicker.year) result += datePicker.year.toString();
-  if (datePicker.month)
-    result += `/${datePicker.month.toString().padStart(2, "0")}`;
-  if (datePicker.day)
-    result += `/${datePicker.day.toString().padStart(2, "0")}`;
-  return result;
-};
+export const prettyDate = (
+  datePicker: DatePickerFragment,
+  locale = "en",
+  dateStyle: Intl.DateTimeFormatOptions["dateStyle"] = "medium"
+): string =>
+  new Date(
+    datePicker.year ?? 0,
+    datePicker.month ?? 0,
+    datePicker.day ?? 1
+  ).toLocaleString(locale, { dateStyle });
 
 export const prettyPrice = (
   pricePicker: PricePickerFragment,
@@ -19,19 +20,23 @@ export const prettyPrice = (
   targetCurrencyCode?: string
 ): string => {
   if (!targetCurrencyCode) return "";
-  let result = "";
-  currencies.map((currency) => {
-    if (currency.attributes?.code === targetCurrencyCode) {
-      const amountInTargetCurrency = convertPrice(pricePicker, currency);
-      result =
-        currency.attributes.symbol +
-        amountInTargetCurrency.toLocaleString(undefined, {
-          minimumFractionDigits: currency.attributes.display_decimals ? 2 : 0,
-          maximumFractionDigits: currency.attributes.display_decimals ? 2 : 0,
-        });
-    }
+  if (isUndefined(pricePicker.amount)) return "";
+
+  const targetCurrency = currencies.find(
+    (currency) => currency.attributes?.code === targetCurrencyCode
+  );
+
+  if (targetCurrency?.attributes) {
+    const amountInTargetCurrency = convertPrice(pricePicker, targetCurrency);
+    return amountInTargetCurrency.toLocaleString("en", {
+      style: "currency",
+      currency: targetCurrency.attributes.code,
+    });
+  }
+  return pricePicker.amount.toLocaleString("en", {
+    style: "currency",
+    currency: pricePicker.currency?.data?.attributes?.code,
   });
-  return result;
 };
 
 export const prettySlug = (slug?: string, parentSlug?: string): string => {

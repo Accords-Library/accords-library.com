@@ -1,6 +1,6 @@
 import { GetStaticProps } from "next";
 import { useMemo, useState } from "react";
-import { AppLayout } from "components/AppLayout";
+import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { Switch } from "components/Inputs/Switch";
 import { PanelHeader } from "components/PanelComponents/PanelHeader";
 import {
@@ -11,7 +11,7 @@ import { SubPanel } from "components/Panels/SubPanel";
 import { GetPostsPreviewQuery } from "graphql/generated";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
-import { prettyDate, prettySlug } from "helpers/formatters";
+import { prettySlug } from "helpers/formatters";
 import { Icon } from "components/Ico";
 import { WithLabel } from "components/Inputs/WithLabel";
 import { TextInput } from "components/Inputs/TextInput";
@@ -21,6 +21,8 @@ import { filterHasAttributes } from "helpers/others";
 import { SmartList } from "components/SmartList";
 import { useBoolean } from "hooks/useBoolean";
 import { TranslatedPreviewCard } from "components/Translated";
+import { getOpenGraph } from "helpers/openGraph";
+import { compareDate } from "helpers/date";
 
 /*
  *                                         ╭─────────────╮
@@ -37,7 +39,7 @@ const DEFAULT_FILTERS_STATE = {
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
  */
 
-interface Props extends AppStaticProps {
+interface Props extends AppStaticProps, AppLayoutRequired {
   posts: NonNullable<GetPostsPreviewQuery["posts"]>["data"];
 }
 
@@ -63,7 +65,7 @@ const News = ({ langui, posts, ...otherProps }: Props): JSX.Element => {
 
         <TextInput
           className="mb-6 w-full"
-          placeholder={langui.search_title ?? undefined}
+          placeholder={langui.search_title ?? "Search..."}
           value={searchName}
           onChange={setSearchName}
         />
@@ -124,7 +126,8 @@ const News = ({ langui, posts, ...otherProps }: Props): JSX.Element => {
               )}
               keepInfoVisible={keepInfoVisible}
               metadata={{
-                release_date: post.attributes.date,
+                releaseDate: post.attributes.date,
+                releaseDateFormat: "long",
                 position: "Top",
               }}
             />
@@ -144,7 +147,6 @@ const News = ({ langui, posts, ...otherProps }: Props): JSX.Element => {
 
   return (
     <AppLayout
-      navTitle={langui.news}
       subPanel={subPanel}
       contentPanel={contentPanel}
       subPanelIcon={Icon.Search}
@@ -164,9 +166,14 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
   const posts = await sdk.getPostsPreview();
   if (!posts.posts) return { notFound: true };
+  const appStaticProps = await getAppStaticProps(context);
   const props: Props = {
-    ...(await getAppStaticProps(context)),
+    ...appStaticProps,
     posts: sortPosts(posts.posts.data),
+    openGraph: getOpenGraph(
+      appStaticProps.langui,
+      appStaticProps.langui.news ?? "News"
+    ),
   };
   return {
     props: props,
@@ -180,9 +187,5 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
 const sortPosts = (posts: Props["posts"]): Props["posts"] =>
   posts
-    .sort((a, b) => {
-      const dateA = a.attributes?.date ? prettyDate(a.attributes.date) : "9999";
-      const dateB = b.attributes?.date ? prettyDate(b.attributes.date) : "9999";
-      return dateA.localeCompare(dateB);
-    })
+    .sort((a, b) => compareDate(a.attributes?.date, b.attributes?.date))
     .reverse();

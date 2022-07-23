@@ -1,6 +1,6 @@
 import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next";
 import { Fragment, useMemo } from "react";
-import { AppLayout } from "components/AppLayout";
+import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { ScanSetCover } from "components/Library/ScanSetCover";
 import {
   ReturnButton,
@@ -30,13 +30,14 @@ import { PreviewCardCTAs } from "components/Library/PreviewCardCTAs";
 import { PreviewCard } from "components/PreviewCard";
 import { HorizontalLine } from "components/HorizontalLine";
 import { TranslatedNavOption, TranslatedScanSet } from "components/Translated";
+import { getOpenGraph } from "helpers/openGraph";
 
 /*
  *                                           ╭────────╮
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
  */
 
-interface Props extends AppStaticProps {
+interface Props extends AppStaticProps, AppLayoutRequired {
   item: NonNullable<
     NonNullable<
       GetLibraryItemScansQuery["libraryItems"]
@@ -87,7 +88,7 @@ const LibrarySlug = ({
               ] as const).map((category) => category.attributes.short)}
               metadata={{
                 currencies: currencies,
-                release_date: item.release_date,
+                releaseDate: item.release_date,
                 price: item.price,
                 position: "Bottom",
               }}
@@ -232,10 +233,8 @@ const LibrarySlug = ({
 
   return (
     <AppLayout
-      navTitle={prettyInlineTitle("", item.title, item.subtitle)}
       contentPanel={contentPanel}
       subPanel={subPanel}
-      thumbnail={item.thumbnail?.data?.attributes ?? undefined}
       languages={languages}
       langui={langui}
       currencies={currencies}
@@ -262,10 +261,17 @@ export const getStaticProps: GetStaticProps = async (context) => {
   if (!item.libraryItems?.data[0]?.attributes || !item.libraryItems.data[0]?.id)
     return { notFound: true };
   sortRangedContent(item.libraryItems.data[0].attributes.contents);
+  const appStaticProps = await getAppStaticProps(context);
   const props: Props = {
-    ...(await getAppStaticProps(context)),
+    ...appStaticProps,
     item: item.libraryItems.data[0].attributes,
     itemId: item.libraryItems.data[0].id,
+    openGraph: getOpenGraph(
+      appStaticProps.langui,
+      item.libraryItems.data[0].attributes.title,
+      undefined,
+      item.libraryItems.data[0].attributes.thumbnail?.data?.attributes
+    ),
   };
   return {
     props: props,

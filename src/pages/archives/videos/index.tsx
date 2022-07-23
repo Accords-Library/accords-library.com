@@ -1,6 +1,6 @@
 import { GetStaticProps } from "next";
 import { useMemo, useState } from "react";
-import { AppLayout } from "components/AppLayout";
+import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { SmartList } from "components/SmartList";
 import { Icon } from "components/Ico";
 import { Switch } from "components/Inputs/Switch";
@@ -20,11 +20,12 @@ import { PreviewCard } from "components/PreviewCard";
 import { GetVideosPreviewQuery } from "graphql/generated";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
-import { prettyDate } from "helpers/formatters";
 import { filterHasAttributes } from "helpers/others";
 import { getVideoThumbnailURL } from "helpers/videos";
 import { useMediaHoverable } from "hooks/useMediaQuery";
 import { useBoolean } from "hooks/useBoolean";
+import { getOpenGraph } from "helpers/openGraph";
+import { compareDate } from "helpers/date";
 
 /*
  *                                         ╭─────────────╮
@@ -40,7 +41,7 @@ const DEFAULT_FILTERS_STATE = {
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
  */
 
-interface Props extends AppStaticProps {
+interface Props extends AppStaticProps, AppLayoutRequired {
   videos: NonNullable<GetVideosPreviewQuery["videos"]>["data"];
 }
 
@@ -73,7 +74,7 @@ const Videos = ({ langui, videos, ...otherProps }: Props): JSX.Element => {
 
         <TextInput
           className="mb-6 w-full"
-          placeholder={langui.search_title ?? undefined}
+          placeholder={langui.search_title ?? "Search title..."}
           value={searchName}
           onChange={setSearchName}
         />
@@ -107,7 +108,7 @@ const Videos = ({ langui, videos, ...otherProps }: Props): JSX.Element => {
                 thumbnailForceAspectRatio
                 keepInfoVisible={keepInfoVisible}
                 metadata={{
-                  release_date: item.attributes.published_date,
+                  releaseDate: item.attributes.published_date,
                   views: item.attributes.views,
                   author: item.attributes.channel?.data?.attributes?.title,
                   position: "Top",
@@ -132,7 +133,6 @@ const Videos = ({ langui, videos, ...otherProps }: Props): JSX.Element => {
   );
   return (
     <AppLayout
-      navTitle={langui.archives}
       subPanel={subPanel}
       contentPanel={contentPanel}
       langui={langui}
@@ -152,19 +152,18 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const videos = await sdk.getVideosPreview();
   if (!videos.videos) return { notFound: true };
   videos.videos.data
-    .sort((a, b) => {
-      const dateA = a.attributes?.published_date
-        ? prettyDate(a.attributes.published_date)
-        : "9999";
-      const dateB = b.attributes?.published_date
-        ? prettyDate(b.attributes.published_date)
-        : "9999";
-      return dateA.localeCompare(dateB);
-    })
+    .sort((a, b) =>
+      compareDate(a.attributes?.published_date, b.attributes?.published_date)
+    )
     .reverse();
+  const appStaticProps = await getAppStaticProps(context);
   const props: Props = {
-    ...(await getAppStaticProps(context)),
+    ...appStaticProps,
     videos: videos.videos.data,
+    openGraph: getOpenGraph(
+      appStaticProps.langui,
+      appStaticProps.langui.videos ?? "Videos"
+    ),
   };
   return {
     props: props,

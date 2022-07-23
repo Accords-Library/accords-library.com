@@ -1,5 +1,5 @@
 import { Fragment, useCallback, useMemo } from "react";
-import { AppLayout } from "./AppLayout";
+import { AppLayout, AppLayoutRequired } from "./AppLayout";
 import { Chip } from "./Chip";
 import { HorizontalLine } from "./HorizontalLine";
 import { Markdawn, TableOfContents } from "./Markdown/Markdawn";
@@ -13,7 +13,6 @@ import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { PostWithTranslations } from "helpers/types";
 import { filterHasAttributes, getStatusDescription } from "helpers/others";
 import { prettySlug } from "helpers/formatters";
-import { getDescription } from "helpers/description";
 import { AppStaticProps } from "graphql/getAppStaticProps";
 
 /*
@@ -21,7 +20,7 @@ import { AppStaticProps } from "graphql/getAppStaticProps";
  * ───────────────────────────────────────╯  COMPONENT  ╰───────────────────────────────────────────
  */
 
-interface Props {
+interface Props extends AppLayoutRequired {
   post: PostWithTranslations;
   langui: AppStaticProps["langui"];
   languages: AppStaticProps["languages"];
@@ -52,7 +51,7 @@ export const PostPage = ({
   appendBody,
   prependBody,
   displayTitle = true,
-  currencies,
+  ...otherProps
 }: Props): JSX.Element => {
   const [selectedTranslation, LanguageSwitcher, languageSwitcherProps] =
     useSmartLanguage({
@@ -221,16 +220,9 @@ export const PostPage = ({
 
   return (
     <AppLayout
-      navTitle={title}
-      description={getDescription({
-        langui: langui,
-        description: selectedTranslation?.excerpt,
-        categories: post.categories,
-      })}
+      {...otherProps}
       contentPanel={contentPanel}
       subPanel={subPanel}
-      thumbnail={thumbnail ?? undefined}
-      currencies={currencies}
       languages={languages}
       langui={langui}
     />

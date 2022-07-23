@@ -1,25 +1,29 @@
 import { GetStaticProps } from "next";
-import { AppLayout } from "components/AppLayout";
+import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import {
   ReturnButton,
   ReturnButtonType,
 } from "components/PanelComponents/ReturnButton";
 import { ContentPanel } from "components/Panels/ContentPanel";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
+import { getOpenGraph } from "helpers/openGraph";
 
 /*
  *                                           ╭────────╮
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
  */
 
-interface Props extends AppStaticProps {}
+interface Props extends AppStaticProps, AppLayoutRequired {}
 
-const FiveHundred = ({ langui, ...otherProps }: Props): JSX.Element => (
+const FiveHundred = ({
+  langui,
+  openGraph,
+  ...otherProps
+}: Props): JSX.Element => (
   <AppLayout
-    navTitle="500"
     contentPanel={
       <ContentPanel>
-        <h1>500 - Internal Server Error</h1>
+        <h1>{openGraph.title}</h1>
         <ReturnButton
           href="/"
           title="Home"
@@ -28,6 +32,7 @@ const FiveHundred = ({ langui, ...otherProps }: Props): JSX.Element => (
         />
       </ContentPanel>
     }
+    openGraph={openGraph}
     langui={langui}
     {...otherProps}
   />
@@ -40,8 +45,13 @@ export default FiveHundred;
  */
 
 export const getStaticProps: GetStaticProps = async (context) => {
+  const appStaticProps = await getAppStaticProps(context);
   const props: Props = {
-    ...(await getAppStaticProps(context)),
+    ...appStaticProps,
+    openGraph: getOpenGraph(
+      appStaticProps.langui,
+      "500 - Internal Server Error"
+    ),
   };
   return {
     props: props,

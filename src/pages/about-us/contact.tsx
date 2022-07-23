@@ -15,12 +15,7 @@ import { RequestMailProps, ResponseMailProps } from "pages/api/mail";
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
  */
 
-const AboutUs = ({
-  post,
-  langui,
-  languages,
-  currencies,
-}: PostStaticProps): JSX.Element => {
+const AboutUs = ({ langui, ...otherProps }: PostStaticProps): JSX.Element => {
   const router = useRouter();
   const [formResponse, setFormResponse] = useState("");
   const [formState, setFormState] = useState<"completed" | "ongoing" | "stale">(
@@ -177,10 +172,8 @@ const AboutUs = ({
 
   return (
     <PostPage
-      currencies={currencies}
-      languages={languages}
+      {...otherProps}
       langui={langui}
-      post={post}
       returnHref="/about-us/"
       returnTitle={langui.about_us}
       displayToc

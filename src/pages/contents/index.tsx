@@ -1,6 +1,6 @@
 import { GetStaticProps } from "next";
 import { useState, useMemo, useCallback } from "react";
-import { AppLayout } from "components/AppLayout";
+import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { Select } from "components/Inputs/Select";
 import { Switch } from "components/Inputs/Switch";
 import { PanelHeader } from "components/PanelComponents/PanelHeader";
@@ -23,6 +23,7 @@ import { SmartList } from "components/SmartList";
 import { SelectiveNonNullable } from "helpers/types/SelectiveNonNullable";
 import { useBoolean } from "hooks/useBoolean";
 import { TranslatedPreviewCard } from "components/Translated";
+import { getOpenGraph } from "helpers/openGraph";
 
 /*
  *                                         ╭─────────────╮
@@ -41,7 +42,7 @@ const DEFAULT_FILTERS_STATE = {
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
  */
 
-interface Props extends AppStaticProps {
+interface Props extends AppStaticProps, AppLayoutRequired {
   contents: NonNullable<GetContentsQuery["contents"]>["data"];
 }
 
@@ -164,7 +165,7 @@ const Contents = ({
 
         <TextInput
           className="mb-6 w-full"
-          placeholder={langui.search_title ?? undefined}
+          placeholder={langui.search_title ?? "Search..."}
           value={searchName}
           onChange={setSearchName}
         />
@@ -174,7 +175,7 @@ const Contents = ({
           input={
             <Select
               className="w-full"
-              options={[langui.category ?? "", langui.type ?? ""]}
+              options={[langui.category ?? "Category", langui.type ?? "Type"]}
               value={groupingMethod}
               onChange={setGroupingMethod}
               allowEmpty
@@ -317,7 +318,6 @@ const Contents = ({
 
   return (
     <AppLayout
-      navTitle={langui.contents}
       subPanel={subPanel}
       contentPanel={contentPanel}
       subPanelIcon={Icon.Search}
@@ -346,9 +346,14 @@ export const getStaticProps: GetStaticProps = async (context) => {
     return titleA.localeCompare(titleB);
   });
 
+  const appStaticProps = await getAppStaticProps(context);
   const props: Props = {
-    ...(await getAppStaticProps(context)),
+    ...appStaticProps,
     contents: contents.contents.data,
+    openGraph: getOpenGraph(
+      appStaticProps.langui,
+      appStaticProps.langui.contents ?? "Contents"
+    ),
   };
   return {
     props: props,

@@ -1,6 +1,6 @@
 import { GetStaticProps } from "next";
 import { useMemo } from "react";
-import { AppLayout } from "components/AppLayout";
+import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { Chip } from "components/Chip";
 import { Button } from "components/Inputs/Button";
 import {
@@ -13,13 +13,14 @@ import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import { filterDefined, filterHasAttributes } from "helpers/others";
 import { Report, Severity } from "helpers/types/Report";
+import { getOpenGraph } from "helpers/openGraph";
 
 /*
  *                                           ╭────────╮
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
  */
 
-interface Props extends AppStaticProps {
+interface Props extends AppStaticProps, AppLayoutRequired {
   contents: DevGetContentsQuery;
 }
 
@@ -87,13 +88,7 @@ const CheckupContents = ({ contents, ...otherProps }: Props): JSX.Element => {
     [testReport.lines, testReport.title]
   );
 
-  return (
-    <AppLayout
-      navTitle={"Checkup"}
-      contentPanel={contentPanel}
-      {...otherProps}
-    />
-  );
+  return <AppLayout contentPanel={contentPanel} {...otherProps} />;
 };
 export default CheckupContents;
 
@@ -105,9 +100,11 @@ export default CheckupContents;
 export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
   const contents = await sdk.devGetContents();
+  const appStaticProps = await getAppStaticProps(context);
   const props: Props = {
-    ...(await getAppStaticProps(context)),
+    ...appStaticProps,
     contents: contents,
+    openGraph: getOpenGraph(appStaticProps.langui, "Checkup Contents"),
   };
   return {
     props: props,

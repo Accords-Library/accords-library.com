@@ -1,7 +1,7 @@
 import { GetStaticProps } from "next";
 import { useCallback, useMemo, useRef, useState } from "react";
 import TurndownService from "turndown";
-import { AppLayout } from "components/AppLayout";
+import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { Button } from "components/Inputs/Button";
 import { Markdawn, TableOfContents } from "components/Markdown/Markdawn";
 import {
@@ -12,13 +12,14 @@ import { Popup } from "components/Popup";
 import { ToolTip } from "components/ToolTip";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { Icon } from "components/Ico";
+import { getOpenGraph } from "helpers/openGraph";
 
 /*
  *                                           ╭────────╮
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
  */
 
-interface Props extends AppStaticProps {}
+interface Props extends AppStaticProps, AppLayoutRequired {}
 
 const Editor = ({ langui, ...otherProps }: Props): JSX.Element => {
   const handleInput = useCallback((text: string) => {
@@ -465,12 +466,7 @@ const Editor = ({ langui, ...otherProps }: Props): JSX.Element => {
   );
 
   return (
-    <AppLayout
-      navTitle="Markdawn Editor"
-      contentPanel={contentPanel}
-      langui={langui}
-      {...otherProps}
-    />
+    <AppLayout contentPanel={contentPanel} langui={langui} {...otherProps} />
   );
 };
 export default Editor;
@@ -481,8 +477,10 @@ export default Editor;
  */
 
 export const getStaticProps: GetStaticProps = async (context) => {
+  const appStaticProps = await getAppStaticProps(context);
   const props: Props = {
-    ...(await getAppStaticProps(context)),
+    ...appStaticProps,
+    openGraph: getOpenGraph(appStaticProps.langui, "Markdawn Editor"),
   };
   return {
     props: props,

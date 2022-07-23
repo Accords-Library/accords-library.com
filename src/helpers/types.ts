@@ -17,7 +17,7 @@ export interface PostWithTranslations extends Omit<Post, "translations"> {
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
-export type Content = NonNullable<
+type Content = NonNullable<
   NonNullable<GetContentTextQuery["contents"]>["data"][number]["attributes"]
 >;
 

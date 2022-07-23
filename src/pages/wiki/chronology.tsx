@@ -1,6 +1,6 @@
 import { GetStaticProps } from "next";
 import { Fragment, useMemo } from "react";
-import { AppLayout } from "components/AppLayout";
+import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { InsetBox } from "components/InsetBox";
 import { NavOption } from "components/PanelComponents/NavOption";
 import {
@@ -15,13 +15,14 @@ import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import { prettySlug } from "helpers/formatters";
 import { filterHasAttributes, isDefined } from "helpers/others";
+import { getOpenGraph } from "helpers/openGraph";
 
 /*
  *                                           ╭────────╮
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
  */
 
-interface Props extends AppStaticProps {
+interface Props extends AppStaticProps, AppLayoutRequired {
   chronologyItems: NonNullable<
     GetChronologyItemsQuery["chronologyItems"]
   >["data"];
@@ -145,7 +146,6 @@ const Chronology = ({
 
   return (
     <AppLayout
-      navTitle={langui.chronology}
       contentPanel={contentPanel}
       subPanel={subPanel}
       langui={langui}
@@ -166,10 +166,15 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const chronologyEras = await sdk.getEras();
   if (!chronologyItems.chronologyItems || !chronologyEras.chronologyEras)
     return { notFound: true };
+  const appStaticProps = await getAppStaticProps(context);
   const props: Props = {
-    ...(await getAppStaticProps(context)),
+    ...appStaticProps,
     chronologyItems: chronologyItems.chronologyItems.data,
     chronologyEras: chronologyEras.chronologyEras.data,
+    openGraph: getOpenGraph(
+      appStaticProps.langui,
+      appStaticProps.langui.chronology ?? "Chronology"
+    ),
   };
   return {
     props: props,

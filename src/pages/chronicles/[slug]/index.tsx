@@ -4,7 +4,7 @@ import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import { isDefined, filterHasAttributes } from "helpers/others";
 import { ChronicleWithTranslations } from "helpers/types";
-import { AppLayout } from "components/AppLayout";
+import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { ContentPanel } from "components/Panels/ContentPanel";
 import { Markdawn } from "components/Markdown/Markdawn";
@@ -12,20 +12,26 @@ import { SubPanel } from "components/Panels/SubPanel";
 import { ThumbnailHeader } from "components/ThumbnailHeader";
 import { HorizontalLine } from "components/HorizontalLine";
 import { GetChroniclesChaptersQuery } from "graphql/generated";
-import { prettySlug } from "helpers/formatters";
+import { prettyInlineTitle, prettySlug } from "helpers/formatters";
 import {
   ReturnButton,
   ReturnButtonType,
 } from "components/PanelComponents/ReturnButton";
 import { TranslatedChroniclesList } from "components/Translated";
 import { Icon } from "components/Ico";
+import { getOpenGraph } from "helpers/openGraph";
+import {
+  getDefaultPreferredLanguages,
+  staticSmartLanguage,
+} from "helpers/locales";
+import { getDescription } from "helpers/description";
 
 /*
  *                                           ╭────────╮
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
  */
 
-interface Props extends AppStaticProps {
+interface Props extends AppStaticProps, AppLayoutRequired {
   chronicle: ChronicleWithTranslations;
   chapters: NonNullable<
     GetChroniclesChaptersQuery["chroniclesChapters"]
@@ -191,7 +197,6 @@ const Chronicle = ({
 
   return (
     <AppLayout
-      navTitle={langui.chronicles}
       contentPanel={contentPanel}
       subPanel={subPanel}
       langui={langui}
@@ -220,15 +225,92 @@ export const getStaticProps: GetStaticProps = async (context) => {
   });
   const chronicles = await sdk.getChroniclesChapters();
   if (
-    !chronicle.chronicles?.data[0].attributes?.translations ||
+    !chronicle.chronicles?.data[0]?.attributes?.translations ||
     !chronicles.chroniclesChapters?.data
   )
     return { notFound: true };
+  const appStaticProps = await getAppStaticProps(context);
+
+  const { title, description } = (() => {
+    if (context.locale && context.locales) {
+      if (
+        chronicle.chronicles.data[0].attributes.contents?.data[0]?.attributes
+          ?.translations
+      ) {
+        const selectedContentTranslation = staticSmartLanguage({
+          items:
+            chronicle.chronicles.data[0].attributes.contents.data[0].attributes
+              .translations,
+          languageExtractor: (item) => item.language?.data?.attributes?.code,
+          preferredLanguages: getDefaultPreferredLanguages(
+            context.locale,
+            context.locales
+          ),
+        });
+        if (selectedContentTranslation) {
+          return {
+            title: prettyInlineTitle(
+              selectedContentTranslation.pre_title,
+              selectedContentTranslation.title,
+              selectedContentTranslation.subtitle
+            ),
+            description: getDescription(
+              selectedContentTranslation.description,
+              {
+                [appStaticProps.langui.type ?? "Type"]: [
+                  chronicle.chronicles.data[0].attributes.contents.data[0]
+                    .attributes.type?.data?.attributes?.titles?.[0]?.title,
+                ],
+                [appStaticProps.langui.categories ?? "Categories"]:
+                  filterHasAttributes(
+                    chronicle.chronicles.data[0].attributes.contents.data[0]
+                      .attributes.categories?.data,
+                    ["attributes"] as const
+                  ).map((category) => category.attributes.short),
+              }
+            ),
+          };
+        }
+      } else {
+        const selectedTranslation = staticSmartLanguage({
+          items: chronicle.chronicles.data[0].attributes.translations,
+          languageExtractor: (item) => item.language?.data?.attributes?.code,
+          preferredLanguages: getDefaultPreferredLanguages(
+            context.locale,
+            context.locales
+          ),
+        });
+        if (selectedTranslation) {
+          return {
+            title: selectedTranslation.title,
+            description: selectedTranslation.summary,
+          };
+        }
+      }
+    }
+    return {
+      title: prettySlug(chronicle.chronicles.data[0].attributes.slug),
+      description: undefined,
+    };
+  })();
+
+  const thumbnail =
+    chronicle.chronicles.data[0].attributes.translations.length === 0
+      ? chronicle.chronicles.data[0].attributes.contents?.data[0]?.attributes
+          ?.thumbnail?.data?.attributes
+      : undefined;
+
   const props: Props = {
-    ...(await getAppStaticProps(context)),
+    ...appStaticProps,
     chronicle: chronicle.chronicles.data[0]
       .attributes as ChronicleWithTranslations,
     chapters: chronicles.chroniclesChapters.data,
+    openGraph: getOpenGraph(
+      appStaticProps.langui,
+      title,
+      description,
+      thumbnail
+    ),
   };
   return {
     props: props,

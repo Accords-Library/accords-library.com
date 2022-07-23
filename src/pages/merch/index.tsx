@@ -1,19 +1,19 @@
 import { GetStaticProps } from "next";
-import { AppLayout } from "components/AppLayout";
+import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { PanelHeader } from "components/PanelComponents/PanelHeader";
 import { SubPanel } from "components/Panels/SubPanel";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { Icon } from "components/Ico";
+import { getOpenGraph } from "helpers/openGraph";
 
 /*
  *                                           ╭────────╮
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
  */
 
-interface Props extends AppStaticProps {}
+interface Props extends AppStaticProps, AppLayoutRequired {}
 const Merch = ({ langui, ...otherProps }: Props): JSX.Element => (
   <AppLayout
-    navTitle={langui.merch}
     subPanel={
       <SubPanel>
         <PanelHeader
@@ -35,8 +35,13 @@ export default Merch;
  */
 
 export const getStaticProps: GetStaticProps = async (context) => {
+  const appStaticProps = await getAppStaticProps(context);
   const props: Props = {
-    ...(await getAppStaticProps(context)),
+    ...appStaticProps,
+    openGraph: getOpenGraph(
+      appStaticProps.langui,
+      appStaticProps.langui.merch ?? "Merch"
+    ),
   };
   return {
     props: props,

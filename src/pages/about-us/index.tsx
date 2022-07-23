@@ -1,21 +1,21 @@
 import { GetStaticProps } from "next";
-import { AppLayout } from "components/AppLayout";
+import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { Icon } from "components/Ico";
 import { NavOption } from "components/PanelComponents/NavOption";
 import { PanelHeader } from "components/PanelComponents/PanelHeader";
 import { SubPanel } from "components/Panels/SubPanel";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
+import { getOpenGraph } from "helpers/openGraph";
 
 /*
  *                                           ╭────────╮
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
  */
 
-interface Props extends AppStaticProps {}
+interface Props extends AppStaticProps, AppLayoutRequired {}
 
 const AboutUs = ({ langui, ...otherProps }: Props): JSX.Element => (
   <AppLayout
-    navTitle={langui.about_us}
     subPanel={
       <SubPanel>
         <PanelHeader
@@ -49,8 +49,13 @@ export default AboutUs;
  */
 
 export const getStaticProps: GetStaticProps = async (context) => {
+  const appStaticProps = await getAppStaticProps(context);
   const props: Props = {
-    ...(await getAppStaticProps(context)),
+    ...appStaticProps,
+    openGraph: getOpenGraph(
+      appStaticProps.langui,
+      appStaticProps.langui.about_us ?? "About us"
+    ),
   };
   return {
     props: props,

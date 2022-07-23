@@ -9,19 +9,11 @@ import {
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
  */
 
-const AccordsHandbook = ({
-  post,
-  langui,
-  languages,
-  currencies,
-}: PostStaticProps): JSX.Element => (
+const AccordsHandbook = (props: PostStaticProps): JSX.Element => (
   <PostPage
-    currencies={currencies}
-    languages={languages}
-    langui={langui}
-    post={post}
+    {...props}
     returnHref="/about-us/"
-    returnTitle={langui.about_us}
+    returnTitle={props.langui.about_us}
     displayToc
     displayLanguageSwitcher
   />

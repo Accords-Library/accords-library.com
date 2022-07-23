@@ -1,18 +1,19 @@
 import { GetStaticProps } from "next";
 import { useMemo } from "react";
-import { AppLayout } from "components/AppLayout";
+import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { NavOption } from "components/PanelComponents/NavOption";
 import { PanelHeader } from "components/PanelComponents/PanelHeader";
 import { SubPanel } from "components/Panels/SubPanel";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { Icon } from "components/Ico";
+import { getOpenGraph } from "helpers/openGraph";
 
 /*
  *                                           ╭────────╮
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
  */
 
-interface Props extends AppStaticProps {}
+interface Props extends AppStaticProps, AppLayoutRequired {}
 
 const Archives = ({ langui, ...otherProps }: Props): JSX.Element => {
   const subPanel = useMemo(
@@ -28,14 +29,7 @@ const Archives = ({ langui, ...otherProps }: Props): JSX.Element => {
     ),
     [langui]
   );
-  return (
-    <AppLayout
-      navTitle={langui.archives}
-      subPanel={subPanel}
-      langui={langui}
-      {...otherProps}
-    />
-  );
+  return <AppLayout subPanel={subPanel} langui={langui} {...otherProps} />;
 };
 export default Archives;
 
@@ -45,8 +39,13 @@ export default Archives;
  */
 
 export const getStaticProps: GetStaticProps = async (context) => {
+  const appStaticProps = await getAppStaticProps(context);
   const props: Props = {
-    ...(await getAppStaticProps(context)),
+    ...appStaticProps,
+    openGraph: getOpenGraph(
+      appStaticProps.langui,
+      appStaticProps.langui.archives ?? "Archives"
+    ),
   };
   return {
     props: props,

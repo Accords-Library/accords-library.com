@@ -1,6 +1,6 @@
 import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next";
 import { Fragment, useCallback, useMemo } from "react";
-import { AppLayout } from "components/AppLayout";
+import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { Chip } from "components/Chip";
 import { HorizontalLine } from "components/HorizontalLine";
 import { PreviewCardCTAs } from "components/Library/PreviewCardCTAs";
@@ -17,7 +17,6 @@ import { ThumbnailHeader } from "components/ThumbnailHeader";
 import { ToolTip } from "components/ToolTip";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
-import { getDescription } from "helpers/description";
 import {
   prettyInlineTitle,
   prettyLanguage,
@@ -35,13 +34,19 @@ import { useMediaMobile } from "hooks/useMediaQuery";
 import { AnchorIds, useScrollTopOnChange } from "hooks/useScrollTopOnChange";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { TranslatedPreviewLine } from "components/Translated";
+import { getOpenGraph } from "helpers/openGraph";
+import {
+  getDefaultPreferredLanguages,
+  staticSmartLanguage,
+} from "helpers/locales";
+import { getDescription } from "helpers/description";
 
 /*
  *                                           ╭────────╮
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
  */
 
-interface Props extends AppStaticProps {
+interface Props extends AppStaticProps, AppLayoutRequired {
   content: ContentWithTranslations;
 }
 
@@ -260,7 +265,7 @@ const Content = ({
                           ).map((category) => category.attributes.short)}
                           metadata={{
                             currencies: currencies,
-                            release_date: libraryItem.attributes.release_date,
+                            releaseDate: libraryItem.attributes.release_date,
                             price: libraryItem.attributes.price,
                             position: "Bottom",
                           }}
@@ -457,22 +462,6 @@ const Content = ({
 
   return (
     <AppLayout
-      navTitle={
-        selectedTranslation
-          ? prettyInlineTitle(
-              selectedTranslation.pre_title,
-              selectedTranslation.title,
-              selectedTranslation.subtitle
-            )
-          : prettySlug(content.slug)
-      }
-      description={getDescription({
-        langui: langui,
-        description: selectedTranslation?.description,
-        type: content.type,
-        categories: content.categories,
-      })}
-      thumbnail={content.thumbnail?.data?.attributes ?? undefined}
       contentPanel={contentPanel}
       subPanel={subPanel}
       currencies={currencies}
@@ -500,9 +489,57 @@ export const getStaticProps: GetStaticProps = async (context) => {
   if (!content.contents?.data[0]?.attributes?.translations) {
     return { notFound: true };
   }
+  const appStaticProps = await getAppStaticProps(context);
+
+  const { title, description } = (() => {
+    if (context.locale && context.locales) {
+      const selectedTranslation = staticSmartLanguage({
+        items: content.contents.data[0].attributes.translations,
+        languageExtractor: (item) => item.language?.data?.attributes?.code,
+        preferredLanguages: getDefaultPreferredLanguages(
+          context.locale,
+          context.locales
+        ),
+      });
+      if (selectedTranslation) {
+        return {
+          title: prettyInlineTitle(
+            selectedTranslation.pre_title,
+            selectedTranslation.title,
+            selectedTranslation.subtitle
+          ),
+          description: getDescription(selectedTranslation.description, {
+            [appStaticProps.langui.type ?? "Type"]: [
+              content.contents.data[0].attributes.type?.data?.attributes
+                ?.titles?.[0]?.title,
+            ],
+            [appStaticProps.langui.categories ?? "Categories"]:
+              filterHasAttributes(
+                content.contents.data[0].attributes.categories?.data,
+                ["attributes"] as const
+              ).map((category) => category.attributes.short),
+          }),
+        };
+      }
+    }
+    return {
+      title: prettySlug(content.contents.data[0].attributes.slug),
+      description: undefined,
+    };
+  })();
+
+  const thumbnail =
+    content.contents.data[0].attributes.thumbnail?.data?.attributes;
+
   const props: Props = {
-    ...(await getAppStaticProps(context)),
+    ...appStaticProps,
     content: content.contents.data[0].attributes as ContentWithTranslations,
+    openGraph: getOpenGraph(
+      appStaticProps.langui,
+      title,
+      description,
+      thumbnail
+    ),
   };
   return {
     props: props,

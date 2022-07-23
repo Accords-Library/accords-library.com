@@ -20,19 +20,12 @@ query getWikiPage($slug: String, $language_code: String) {
             }
           }
         }
-        tags(pagination: { limit: -1 }) {
+        tags {
           data {
             id
             attributes {
               slug
               titles(filters: { language: { code: { eq: $language_code } } }) {
-                language {
-                  data {
-                    attributes {
-                      code
-                    }
-                  }
-                }
                 title
               }
             }

@@ -19,13 +19,13 @@ import {
   isUndefined,
   iterateMap,
 } from "helpers/others";
-import { getOgImage, ImageQuality } from "helpers/img";
-import { prettyLanguage, prettySlug } from "helpers/formatters";
+import { prettyLanguage } from "helpers/formatters";
 import { cIf, cJoin } from "helpers/className";
 import { AppStaticProps } from "graphql/getAppStaticProps";
-import { UploadImageFragment } from "graphql/generated";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { Button } from "components/Inputs/Button";
+import { OpenGraph } from "helpers/openGraph";
+import { getDefaultPreferredLanguages } from "helpers/locales";
 
 /*
  *                                         ╭─────────────╮
@@ -33,21 +33,20 @@ import { Button } from "components/Inputs/Button";
  */
 
 const SENSIBILITY_SWIPE = 1.1;
-const TITLE_PREFIX = "Accord’s Library";
 
 /*
  *                                        ╭─────────────╮
  * ───────────────────────────────────────╯  COMPONENT  ╰───────────────────────────────────────────
  */
 
-interface Props extends AppStaticProps {
+export interface AppLayoutRequired {
+  openGraph: OpenGraph;
+}
+
+interface Props extends AppStaticProps, AppLayoutRequired {
   subPanel?: React.ReactNode;
   subPanelIcon?: Icon;
   contentPanel?: React.ReactNode;
-  title?: string;
-  navTitle: string | null | undefined;
-  thumbnail?: UploadImageFragment;
-  description?: string;
   contentPanelScroolbar?: boolean;
 }
 
@@ -59,10 +58,7 @@ export const AppLayout = ({
   languages,
   subPanel,
   contentPanel,
-  thumbnail,
-  title,
-  navTitle,
-  description,
+  openGraph,
   subPanelIcon = Icon.Tune,
   contentPanelScroolbar = true,
 }: Props): JSX.Element => {
@@ -136,33 +132,6 @@ export const AppLayout = ({
     [contentPanel, subPanel]
   );
 
-  const metaImage = useMemo(
-    () =>
-      thumbnail
-        ? getOgImage(ImageQuality.Og, thumbnail)
-        : {
-            image: "/default_og.jpg",
-            width: 1200,
-            height: 630,
-            alt: "Accord's Library Logo",
-          },
-    [thumbnail]
-  );
-
-  const { ogTitle, metaTitle } = useMemo(() => {
-    const resultTitle =
-      title ?? navTitle ?? prettySlug(router.asPath.split("/").pop());
-    return {
-      ogTitle: resultTitle,
-      metaTitle: `${TITLE_PREFIX} - ${resultTitle}`,
-    };
-  }, [navTitle, router.asPath, title]);
-
-  const metaDescription = useMemo(
-    () => description ?? langui.default_description ?? "",
-    [description, langui.default_description]
-  );
-
   useLayoutEffect(() => {
     document.getElementsByTagName("html")[0].style.fontSize = `${
       (fontSize ?? 1) * 100
@@ -191,25 +160,13 @@ export const AppLayout = ({
   useEffect(() => {
     if (preferredLanguages) {
       if (preferredLanguages.length === 0) {
-        let defaultPreferredLanguages: string[] = [];
         if (isDefinedAndNotEmpty(router.locale) && router.locales) {
-          if (router.locale === "en") {
-            defaultPreferredLanguages = [router.locale];
-            router.locales.map((locale) => {
-              if (locale !== router.locale)
-                defaultPreferredLanguages.push(locale);
-            });
-          } else {
-            defaultPreferredLanguages = [router.locale, "en"];
-            router.locales.map((locale) => {
-              if (locale !== router.locale && locale !== "en")
-                defaultPreferredLanguages.push(locale);
-            });
-          }
+          setPreferredLanguages(
+            getDefaultPreferredLanguages(router.locale, router.locales)
+          );
         }
-        setPreferredLanguages(defaultPreferredLanguages);
       } else if (router.locale !== preferredLanguages[0]) {
-        router.push(router.asPath, router.asPath, {
+        router.replace(router.asPath, router.asPath, {
           locale: preferredLanguages[0],
         });
       }
@@ -251,27 +208,36 @@ export const AppLayout = ({
         )}
       >
         <Head>
-          <title>{metaTitle}</title>
-          <meta name="description" content={metaDescription} />
+          <title>{openGraph.title}</title>
+          <meta name="description" content={openGraph.description} />
 
-          <meta name="twitter:title" content={metaTitle}></meta>
-          <meta name="twitter:description" content={metaDescription}></meta>
+          <meta name="twitter:title" content={openGraph.title}></meta>
+          <meta
+            name="twitter:description"
+            content={openGraph.description}
+          ></meta>
           <meta name="twitter:card" content="summary_large_image"></meta>
-          <meta name="twitter:image" content={metaImage.image}></meta>
+          <meta name="twitter:image" content={openGraph.thumbnail.image}></meta>
 
-          <meta property="og:title" content={metaTitle} />
-          <meta property="og:description" content={metaDescription} />
-          <meta property="og:image" content={metaImage.image}></meta>
-          <meta property="og:image:secure_url" content={metaImage.image}></meta>
+          <meta property="og:title" content={openGraph.title} />
+          <meta property="og:description" content={openGraph.description} />
+          <meta property="og:image" content={openGraph.thumbnail.image}></meta>
+          <meta
+            property="og:image:secure_url"
+            content={openGraph.thumbnail.image}
+          ></meta>
           <meta
             property="og:image:width"
-            content={metaImage.width.toString()}
+            content={openGraph.thumbnail.width.toString()}
           ></meta>
           <meta
             property="og:image:height"
-            content={metaImage.height.toString()}
+            content={openGraph.thumbnail.height.toString()}
           ></meta>
-          <meta property="og:image:alt" content={metaImage.alt}></meta>
+          <meta
+            property="og:image:alt"
+            content={openGraph.thumbnail.alt}
+          ></meta>
           <meta property="og:image:type" content="image/jpeg"></meta>
         </Head>
 
@@ -370,13 +336,13 @@ export const AppLayout = ({
             className={cJoin(
               "overflow-hidden text-center font-headers font-black",
               cIf(
-                ogTitle && ogTitle.length > 30,
+                openGraph.title.length > 30,
                 "max-h-14 text-xl",
                 "max-h-16 text-2xl"
               )
             )}
           >
-            {ogTitle}
+            {openGraph.title}
           </p>
           {isDefined(subPanel) && !turnSubIntoContent && (
             <Ico

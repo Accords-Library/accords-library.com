@@ -1,6 +1,6 @@
 import { GetStaticProps } from "next";
 import { useState, useMemo, useCallback } from "react";
-import { AppLayout } from "components/AppLayout";
+import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { Select } from "components/Inputs/Select";
 import { Switch } from "components/Inputs/Switch";
 import { PanelHeader } from "components/PanelComponents/PanelHeader";
@@ -12,11 +12,7 @@ import { SubPanel } from "components/Panels/SubPanel";
 import { GetLibraryItemsPreviewQuery } from "graphql/generated";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
-import {
-  prettyDate,
-  prettyInlineTitle,
-  prettyItemSubType,
-} from "helpers/formatters";
+import { prettyInlineTitle, prettyItemSubType } from "helpers/formatters";
 import { LibraryItemUserStatus } from "helpers/types";
 import { Icon } from "components/Ico";
 import { WithLabel } from "components/Inputs/WithLabel";
@@ -33,6 +29,8 @@ import { convertPrice } from "helpers/numbers";
 import { SmartList } from "components/SmartList";
 import { SelectiveNonNullable } from "helpers/types/SelectiveNonNullable";
 import { useBoolean } from "hooks/useBoolean";
+import { getOpenGraph } from "helpers/openGraph";
+import { compareDate } from "helpers/date";
 
 /*
  *                                         ╭─────────────╮
@@ -55,7 +53,7 @@ const DEFAULT_FILTERS_STATE = {
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
  */
 
-interface Props extends AppStaticProps {
+interface Props extends AppStaticProps, AppLayoutRequired {
   items: NonNullable<GetLibraryItemsPreviewQuery["libraryItems"]>["data"];
 }
 
@@ -174,13 +172,10 @@ const Library = ({
           return priceA - priceB;
         }
         case 2: {
-          const dateA = a.attributes.release_date
-            ? prettyDate(a.attributes.release_date)
-            : "9999";
-          const dateB = b.attributes.release_date
-            ? prettyDate(b.attributes.release_date)
-            : "9999";
-          return dateA.localeCompare(dateB);
+          return compareDate(
+            a.attributes.release_date,
+            b.attributes.release_date
+          );
         }
         default:
           return 0;
@@ -268,7 +263,7 @@ const Library = ({
 
         <TextInput
           className="mb-6 w-full"
-          placeholder={langui.search_title ?? undefined}
+          placeholder={langui.search_title ?? "Search..."}
           value={searchName}
           onChange={setSearchName}
         />
@@ -433,7 +428,7 @@ const Library = ({
               )}
               metadata={{
                 currencies: currencies,
-                release_date: item.attributes.release_date,
+                releaseDate: item.attributes.release_date,
                 price: item.attributes.price,
                 position: "Bottom",
               }}
@@ -474,7 +469,6 @@ const Library = ({
 
   return (
     <AppLayout
-      navTitle={langui.library}
       subPanel={subPanel}
       contentPanel={contentPanel}
       subPanelIcon={Icon.Search}
@@ -497,9 +491,14 @@ export const getStaticProps: GetStaticProps = async (context) => {
     language_code: context.locale ?? "en",
   });
   if (!items.libraryItems?.data) return { notFound: true };
+  const appStaticProps = await getAppStaticProps(context);
   const props: Props = {
-    ...(await getAppStaticProps(context)),
+    ...appStaticProps,
     items: items.libraryItems.data,
+    openGraph: getOpenGraph(
+      appStaticProps.langui,
+      appStaticProps.langui.library ?? "Library"
+    ),
   };
   return {
     props: props,

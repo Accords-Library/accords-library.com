@@ -1,6 +1,6 @@
 import { GetStaticProps } from "next";
 import { useMemo } from "react";
-import { AppLayout } from "components/AppLayout";
+import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { PanelHeader } from "components/PanelComponents/PanelHeader";
 import { SubPanel } from "components/Panels/SubPanel";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
@@ -10,13 +10,14 @@ import { GetChroniclesChaptersQuery } from "graphql/generated";
 import { filterHasAttributes } from "helpers/others";
 import { prettySlug } from "helpers/formatters";
 import { TranslatedChroniclesList } from "components/Translated";
+import { getOpenGraph } from "helpers/openGraph";
 
 /*
  *                                           ╭────────╮
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
  */
 
-interface Props extends AppStaticProps {
+interface Props extends AppStaticProps, AppLayoutRequired {
   chapters: NonNullable<
     GetChroniclesChaptersQuery["chroniclesChapters"]
   >["data"];
@@ -58,14 +59,7 @@ const Chronicles = ({
     [chapters, langui]
   );
 
-  return (
-    <AppLayout
-      navTitle={langui.chronicles}
-      subPanel={subPanel}
-      langui={langui}
-      {...otherProps}
-    />
-  );
+  return <AppLayout subPanel={subPanel} langui={langui} {...otherProps} />;
 };
 export default Chronicles;
 
@@ -78,9 +72,14 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
   const chronicles = await sdk.getChroniclesChapters();
   if (!chronicles.chroniclesChapters?.data) return { notFound: true };
+  const appStaticProps = await getAppStaticProps(context);
   const props: Props = {
-    ...(await getAppStaticProps(context)),
+    ...appStaticProps,
     chapters: chronicles.chroniclesChapters.data,
+    openGraph: getOpenGraph(
+      appStaticProps.langui,
+      appStaticProps.langui.chronicles ?? "Chronicles"
+    ),
   };
   return {
     props: props,

@@ -9,17 +9,9 @@ import {
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
  */
 
-const Home = ({
-  post,
-  langui,
-  languages,
-  currencies,
-}: PostStaticProps): JSX.Element => (
+const Home = (props: PostStaticProps): JSX.Element => (
   <PostPage
-    currencies={currencies}
-    languages={languages}
-    langui={langui}
-    post={post}
+    {...props}
     prependBody={
       <div className="grid w-full place-content-center place-items-center gap-5 text-center">
         <div

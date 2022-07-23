@@ -1,6 +1,6 @@
 import { GetStaticProps } from "next";
 import { useCallback, useMemo, useRef, useState } from "react";
-import { AppLayout } from "components/AppLayout";
+import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { Button } from "components/Inputs/Button";
 import { ButtonGroup } from "components/Inputs/ButtonGroup";
 import {
@@ -9,6 +9,7 @@ import {
 } from "components/Panels/ContentPanel";
 import { ToolTip } from "components/ToolTip";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
+import { getOpenGraph } from "helpers/openGraph";
 
 /*
  *                                         ╭─────────────╮
@@ -22,7 +23,7 @@ const SIZE_MULTIPLIER = 1000;
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
  */
 
-interface Props extends AppStaticProps {}
+interface Props extends AppStaticProps, AppLayoutRequired {}
 
 const replaceSelection = (
   text: string,
@@ -566,7 +567,6 @@ const Transcript = (props: Props): JSX.Element => {
 
   return (
     <AppLayout
-      navTitle="Transcript"
       contentPanel={contentPanel}
       {...props}
       contentPanelScroolbar={false}
@@ -581,8 +581,13 @@ export default Transcript;
  */
 
 export const getStaticProps: GetStaticProps = async (context) => {
+  const appStaticProps = await getAppStaticProps(context);
   const props: Props = {
-    ...(await getAppStaticProps(context)),
+    ...appStaticProps,
+    openGraph: getOpenGraph(
+      appStaticProps.langui,
+      "Japanese Transcription Tool"
+    ),
   };
   return {
     props: props,

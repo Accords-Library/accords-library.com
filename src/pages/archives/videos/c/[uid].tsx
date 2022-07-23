@@ -1,6 +1,6 @@
 import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next";
 import { Fragment, useMemo } from "react";
-import { AppLayout } from "components/AppLayout";
+import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { Switch } from "components/Inputs/Switch";
 import { PanelHeader } from "components/PanelComponents/PanelHeader";
 import {
@@ -22,13 +22,14 @@ import { useMediaHoverable } from "hooks/useMediaQuery";
 import { WithLabel } from "components/Inputs/WithLabel";
 import { filterHasAttributes, isDefined } from "helpers/others";
 import { useBoolean } from "hooks/useBoolean";
+import { getOpenGraph } from "helpers/openGraph";
 
 /*
  *                                           ╭────────╮
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
  */
 
-interface Props extends AppStaticProps {
+interface Props extends AppStaticProps, AppLayoutRequired {
   channel: NonNullable<
     GetVideoChannelQuery["videoChannels"]
   >["data"][number]["attributes"];
@@ -91,7 +92,7 @@ const Channel = ({ langui, channel, ...otherProps }: Props): JSX.Element => {
                 thumbnailAspectRatio="16/9"
                 keepInfoVisible={keepInfoVisible}
                 metadata={{
-                  release_date: video.attributes.published_date,
+                  releaseDate: video.attributes.published_date,
                   views: video.attributes.views,
                   author: channel?.title,
                   position: "Top",
@@ -116,7 +117,6 @@ const Channel = ({ langui, channel, ...otherProps }: Props): JSX.Element => {
 
   return (
     <AppLayout
-      navTitle={langui.archives}
       subPanel={subPanel}
       contentPanel={contentPanel}
       langui={langui}
@@ -140,9 +140,14 @@ export const getStaticProps: GetStaticProps = async (context) => {
         : "",
   });
   if (!channel.videoChannels?.data[0].attributes) return { notFound: true };
+  const appStaticProps = await getAppStaticProps(context);
   const props: Props = {
-    ...(await getAppStaticProps(context)),
+    ...appStaticProps,
     channel: channel.videoChannels.data[0].attributes,
+    openGraph: getOpenGraph(
+      appStaticProps.langui,
+      channel.videoChannels.data[0].attributes.title
+    ),
   };
   return {
     props: props,

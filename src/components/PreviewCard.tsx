@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { useMemo } from "react";
+import { useRouter } from "next/router";
 import { Chip } from "./Chip";
 import { Ico, Icon } from "./Ico";
 import { Img } from "./Img";
@@ -41,7 +42,8 @@ interface Props {
   stackNumber?: number;
   metadata?: {
     currencies?: AppStaticProps["currencies"];
-    release_date?: DatePickerFragment | null;
+    releaseDate?: DatePickerFragment | null;
+    releaseDateFormat?: Intl.DateTimeFormatOptions["dateStyle"];
     price?: PricePickerFragment | null;
     views?: number;
     author?: string;
@@ -78,19 +80,20 @@ export const PreviewCard = ({
 }: Props): JSX.Element => {
   const { currency } = useAppLayout();
   const isHoverable = useMediaHoverable();
+  const router = useRouter();
 
   const metadataJSX = useMemo(
     () => (
       <>
-        {metadata && (metadata.release_date || metadata.price) && (
+        {metadata && (metadata.releaseDate || metadata.price) && (
           <div className="flex w-full flex-row flex-wrap gap-x-3">
-            {metadata.release_date && (
+            {metadata.releaseDate && (
               <p className="text-sm mobile:text-xs">
                 <Ico
                   icon={Icon.Event}
                   className="mr-1 translate-y-[.15em] !text-base"
                 />
-                {prettyDate(metadata.release_date)}
+                {prettyDate(metadata.releaseDate, router.locale)}
               </p>
             )}
             {metadata.price && metadata.currencies && (
@@ -124,7 +127,7 @@ export const PreviewCard = ({
         )}
       </>
     ),
-    [currency, metadata]
+    [currency, metadata, router.locale]
   );
 
   return (
@@ -278,7 +281,7 @@ export const PreviewCard = ({
           {bottomChips && bottomChips.length > 0 && (
             <div
               className="grid grid-flow-col place-content-start gap-1 overflow-x-scroll
-              [scrollbar-width:none] webkit-scrollbar:w-0"
+              [scrollbar-width:none] webkit-scrollbar:h-0"
             >
               {bottomChips.map((text, index) => (
                 <Chip key={index} className="text-sm" text={text} />

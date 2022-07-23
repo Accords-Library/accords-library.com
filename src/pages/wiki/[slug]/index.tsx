@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from "react";
 import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next";
-import { AppLayout } from "components/AppLayout";
+import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { Chip } from "components/Chip";
 import { HorizontalLine } from "components/HorizontalLine";
 import { Img } from "components/Img";
@@ -26,13 +26,19 @@ import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { prettySlug } from "helpers/formatters";
 import { useLightBox } from "hooks/useLightBox";
 import { getAssetURL, ImageQuality } from "helpers/img";
+import { getOpenGraph } from "helpers/openGraph";
+import {
+  getDefaultPreferredLanguages,
+  staticSmartLanguage,
+} from "helpers/locales";
+import { getDescription } from "helpers/description";
 
 /*
  *                                           ╭────────╮
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
  */
 
-interface Props extends AppStaticProps {
+interface Props extends AppStaticProps, AppLayoutRequired {
   page: WikiPageWithTranslations;
 }
 
@@ -217,7 +223,6 @@ const WikiPage = ({
 
   return (
     <AppLayout
-      navTitle={langui.news}
       subPanel={subPanel}
       contentPanel={contentPanel}
       languages={languages}
@@ -245,9 +250,58 @@ export const getStaticProps: GetStaticProps = async (context) => {
   });
   if (!page.wikiPages?.data[0].attributes?.translations)
     return { notFound: true };
+  const appStaticProps = await getAppStaticProps(context);
+
+  const { title, description } = (() => {
+    const chipsGroups = {
+      [appStaticProps.langui.tags ?? "Tags"]: filterHasAttributes(
+        page.wikiPages.data[0].attributes.tags?.data,
+        ["attributes"] as const
+      ).map(
+        (tag) =>
+          tag.attributes.titles?.[0]?.title ?? prettySlug(tag.attributes.slug)
+      ),
+      [appStaticProps.langui.categories ?? "Categories"]: filterHasAttributes(
+        page.wikiPages.data[0].attributes.categories?.data,
+        ["attributes"] as const
+      ).map((category) => category.attributes.short),
+    };
+
+    if (context.locale && context.locales) {
+      const selectedTranslation = staticSmartLanguage({
+        items: page.wikiPages.data[0].attributes.translations,
+        languageExtractor: (item) => item.language?.data?.attributes?.code,
+        preferredLanguages: getDefaultPreferredLanguages(
+          context.locale,
+          context.locales
+        ),
+      });
+      if (selectedTranslation) {
+        return {
+          title: selectedTranslation.title,
+          description: getDescription(selectedTranslation.summary, chipsGroups),
+        };
+      }
+    }
+
+    return {
+      title: prettySlug(page.wikiPages.data[0].attributes.slug),
+      description: getDescription(undefined, chipsGroups),
+    };
+  })();
+
+  const thumbnail =
+    page.wikiPages.data[0].attributes.thumbnail?.data?.attributes;
+
   const props: Props = {
-    ...(await getAppStaticProps(context)),
+    ...appStaticProps,
     page: page.wikiPages.data[0].attributes as WikiPageWithTranslations,
+    openGraph: getOpenGraph(
+      appStaticProps.langui,
+      title,
+      description,
+      thumbnail
+    ),
   };
   return {
     props: props,

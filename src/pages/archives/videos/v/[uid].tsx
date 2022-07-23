@@ -1,6 +1,7 @@
 import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next";
 import { useMemo } from "react";
-import { AppLayout } from "components/AppLayout";
+import { useRouter } from "next/router";
+import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { HorizontalLine } from "components/HorizontalLine";
 import { Ico, Icon } from "components/Ico";
 import { Button } from "components/Inputs/Button";
@@ -23,13 +24,14 @@ import { prettyDate, prettyShortenNumber } from "helpers/formatters";
 import { filterHasAttributes, isDefined } from "helpers/others";
 import { getVideoFile } from "helpers/videos";
 import { useMediaMobile } from "hooks/useMediaQuery";
+import { getOpenGraph } from "helpers/openGraph";
 
 /*
  *                                           ╭────────╮
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
  */
 
-interface Props extends AppStaticProps {
+interface Props extends AppStaticProps, AppLayoutRequired {
   video: NonNullable<
     NonNullable<GetVideoQuery["videos"]>["data"][number]["attributes"]
   >;
@@ -38,6 +40,8 @@ interface Props extends AppStaticProps {
 const Video = ({ langui, video, ...otherProps }: Props): JSX.Element => {
   const isMobile = useMediaMobile();
   const { setSubPanelOpen } = useAppLayout();
+  const router = useRouter();
+
   const subPanel = useMemo(
     () => (
       <SubPanel>
@@ -118,7 +122,7 @@ const Video = ({ langui, video, ...otherProps }: Props): JSX.Element => {
                     icon={Icon.Event}
                     className="mr-1 translate-y-[.15em] !text-base"
                   />
-                  {prettyDate(video.published_date)}
+                  {prettyDate(video.published_date, router.locale)}
                 </p>
                 <p>
                   <Ico
@@ -184,6 +188,7 @@ const Video = ({ langui, video, ...otherProps }: Props): JSX.Element => {
     [
       isMobile,
       langui,
+      router.locale,
       video.channel?.data?.attributes,
       video.description,
       video.gone,
@@ -198,7 +203,6 @@ const Video = ({ langui, video, ...otherProps }: Props): JSX.Element => {
 
   return (
     <AppLayout
-      navTitle={langui.archives}
       subPanel={subPanel}
       contentPanel={contentPanel}
       langui={langui}
@@ -222,9 +226,14 @@ export const getStaticProps: GetStaticProps = async (context) => {
         : "",
   });
   if (!videos.videos?.data[0]?.attributes) return { notFound: true };
+  const appStaticProps = await getAppStaticProps(context);
   const props: Props = {
-    ...(await getAppStaticProps(context)),
+    ...appStaticProps,
     video: videos.videos.data[0].attributes,
+    openGraph: getOpenGraph(
+      appStaticProps.langui,
+      videos.videos.data[0].attributes.title
+    ),
   };
   return {
     props: props,

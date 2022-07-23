@@ -1,6 +1,6 @@
 import { GetStaticProps } from "next";
 import { useMemo } from "react";
-import { AppLayout } from "components/AppLayout";
+import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { Chip } from "components/Chip";
 import { Button } from "components/Inputs/Button";
 import {
@@ -15,13 +15,14 @@ import {
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import { Report, Severity } from "helpers/types/Report";
+import { getOpenGraph } from "helpers/openGraph";
 
 /*
  *                                           ╭────────╮
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
  */
 
-interface Props extends AppStaticProps {
+interface Props extends AppStaticProps, AppLayoutRequired {
   libraryItems: DevGetLibraryItemsQuery;
 }
 
@@ -92,13 +93,7 @@ const CheckupLibraryItems = ({
     [testReport.lines, testReport.title]
   );
 
-  return (
-    <AppLayout
-      navTitle={"Checkup"}
-      contentPanel={contentPanel}
-      {...otherProps}
-    />
-  );
+  return <AppLayout contentPanel={contentPanel} {...otherProps} />;
 };
 export default CheckupLibraryItems;
 
@@ -110,9 +105,11 @@ export default CheckupLibraryItems;
 export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
   const libraryItems = await sdk.devGetLibraryItems();
+  const appStaticProps = await getAppStaticProps(context);
   const props: Props = {
-    ...(await getAppStaticProps(context)),
+    ...appStaticProps,
     libraryItems: libraryItems,
+    openGraph: getOpenGraph(appStaticProps.langui, "Checkup Library Items"),
   };
   return {
     props: props,

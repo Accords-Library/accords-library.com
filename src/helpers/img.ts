@@ -1,5 +1,3 @@
-import { UploadImageFragment } from "graphql/generated";
-
 export enum ImageQuality {
   Small = "small",
   Medium = "medium",
@@ -7,7 +5,7 @@ export enum ImageQuality {
   Og = "og",
 }
 
-interface OgImage {
+export interface OgImage {
   image: string;
   width: number;
   height: number;
@@ -64,21 +62,4 @@ export const getImgSizesByQuality = (
     default:
       return { width: 0, height: 0 };
   }
-};
-
-export const getOgImage = (
-  quality: ImageQuality,
-  image: UploadImageFragment
-): OgImage => {
-  const imgSize = getImgSizesByQuality(
-    image.width ?? 0,
-    image.height ?? 0,
-    quality
-  );
-  return {
-    image: getAssetURL(image.url, quality),
-    width: imgSize.width,
-    height: imgSize.height,
-    alt: image.alternativeText ?? "",
-  };
 };

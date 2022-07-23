@@ -1,6 +1,6 @@
 import { GetStaticProps } from "next";
 import { useCallback, useMemo, useState } from "react";
-import { AppLayout } from "components/AppLayout";
+import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { NavOption } from "components/PanelComponents/NavOption";
 import { PanelHeader } from "components/PanelComponents/PanelHeader";
 import { SubPanel } from "components/Panels/SubPanel";
@@ -25,6 +25,7 @@ import { SelectiveNonNullable } from "helpers/types/SelectiveNonNullable";
 import { prettySlug } from "helpers/formatters";
 import { useBoolean } from "hooks/useBoolean";
 import { TranslatedPreviewCard } from "components/Translated";
+import { getOpenGraph } from "helpers/openGraph";
 
 /*
  *                                         ╭─────────────╮
@@ -42,7 +43,7 @@ const DEFAULT_FILTERS_STATE = {
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
  */
 
-interface Props extends AppStaticProps {
+interface Props extends AppStaticProps, AppLayoutRequired {
   pages: NonNullable<GetWikiPagesPreviewsQuery["wikiPages"]>["data"];
 }
 
@@ -74,7 +75,7 @@ const Wiki = ({ langui, pages, ...otherProps }: Props): JSX.Element => {
 
         <TextInput
           className="mb-6 w-full"
-          placeholder={langui.search_title ?? undefined}
+          placeholder={langui.search_title ?? "Search..."}
           value={searchName}
           onChange={setSearchName}
         />
@@ -84,7 +85,7 @@ const Wiki = ({ langui, pages, ...otherProps }: Props): JSX.Element => {
           input={
             <Select
               className="w-full"
-              options={[langui.category ?? ""]}
+              options={[langui.category ?? "Category"]}
               value={groupingMethod}
               onChange={setGroupingMethod}
               allowEmpty
@@ -219,7 +220,6 @@ const Wiki = ({ langui, pages, ...otherProps }: Props): JSX.Element => {
 
   return (
     <AppLayout
-      navTitle={langui.wiki}
       subPanel={subPanel}
       contentPanel={contentPanel}
       subPanelIcon={Icon.Search}
@@ -241,9 +241,14 @@ export const getStaticProps: GetStaticProps = async (context) => {
     language_code: context.locale ?? "en",
   });
   if (!pages.wikiPages?.data) return { notFound: true };
+  const appStaticProps = await getAppStaticProps(context);
   const props: Props = {
-    ...(await getAppStaticProps(context)),
+    ...appStaticProps,
     pages: sortPages(pages.wikiPages.data),
+    openGraph: getOpenGraph(
+      appStaticProps.langui,
+      appStaticProps.langui.wiki ?? "Wiki"
+    ),
   };
   return {
     props: props,

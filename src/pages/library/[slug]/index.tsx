@@ -1,6 +1,7 @@
 import { Fragment, useCallback, useMemo } from "react";
 import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next";
-import { AppLayout } from "components/AppLayout";
+import { useRouter } from "next/router";
+import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { Chip } from "components/Chip";
 import { Img } from "components/Img";
 import { Button } from "components/Inputs/Button";
@@ -52,15 +53,16 @@ import { WithLabel } from "components/Inputs/WithLabel";
 import { Ico, Icon } from "components/Ico";
 import { cJoin, cIf } from "helpers/className";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
-import { getDescription } from "helpers/description";
 import { useBoolean } from "hooks/useBoolean";
+import { getOpenGraph } from "helpers/openGraph";
+import { getDescription } from "helpers/description";
 
 /*
  *                                           ╭────────╮
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
  */
 
-interface Props extends AppStaticProps {
+interface Props extends AppStaticProps, AppLayoutRequired {
   item: NonNullable<
     NonNullable<
       GetLibraryItemQuery["libraryItems"]
@@ -81,6 +83,7 @@ const LibrarySlug = ({
 }: Props): JSX.Element => {
   const { currency } = useAppLayout();
   const hoverable = useMediaHoverable();
+  const router = useRouter();
   const [openLightBox, LightBox] = useLightBox();
   const { state: keepInfoVisible, toggleState: toggleKeepInfoVisible } =
     useBoolean(false);
@@ -300,7 +303,7 @@ const LibrarySlug = ({
                 {item.release_date && (
                   <div className="grid place-content-start place-items-center">
                     <h3 className="text-xl">{langui.release_date}</h3>
-                    <p>{prettyDate(item.release_date)}</p>
+                    <p>{prettyDate(item.release_date, router.locale)}</p>
                   </div>
                 )}
 
@@ -483,7 +486,7 @@ const LibrarySlug = ({
                       )}
                       metadata={{
                         currencies: currencies,
-                        release_date: subitem.attributes.release_date,
+                        releaseDate: subitem.attributes.release_date,
                         price: subitem.attributes.price,
                         position: "Bottom",
                       }}
@@ -569,8 +572,23 @@ const LibrarySlug = ({
     [
       LightBox,
       langui,
-      item,
+      item.thumbnail?.data?.attributes,
+      item.subitem_of?.data,
+      item.title,
+      item.subtitle,
+      item.metadata,
+      item.descriptions,
+      item.urls,
+      item.gallery,
+      item.release_date,
+      item.price,
+      item.categories,
+      item.size,
+      item.subitems,
+      item.contents,
+      item.slug,
       itemId,
+      router.locale,
       currencies,
       currency,
       isVariantSet,
@@ -585,14 +603,8 @@ const LibrarySlug = ({
 
   return (
     <AppLayout
-      navTitle={prettyInlineTitle("", item.title, item.subtitle)}
       contentPanel={contentPanel}
       subPanel={subPanel}
-      thumbnail={item.thumbnail?.data?.attributes ?? undefined}
-      description={getDescription({
-        langui,
-        description: item.descriptions?.[0]?.description,
-      })}
       currencies={currencies}
       languages={languages}
       langui={langui}
@@ -618,10 +630,42 @@ export const getStaticProps: GetStaticProps = async (context) => {
   });
   if (!item.libraryItems?.data[0]?.attributes) return { notFound: true };
   sortRangedContent(item.libraryItems.data[0].attributes.contents);
+  const appStaticProps = await getAppStaticProps(context);
+
+  const { title, thumbnail } = item.libraryItems.data[0].attributes;
+
+  const description = getDescription(
+    item.libraryItems.data[0].attributes.descriptions?.[0]?.description,
+    {
+      [appStaticProps.langui.categories ?? "Categories"]: filterHasAttributes(
+        item.libraryItems.data[0].attributes.categories?.data,
+        ["attributes.short"]
+      ).map((category) => category.attributes.short),
+      [appStaticProps.langui.type ?? "Type"]: item.libraryItems.data[0]
+        .attributes.metadata?.[0]
+        ? [prettyItemSubType(item.libraryItems.data[0].attributes.metadata[0])]
+        : [],
+      [appStaticProps.langui.release_date ?? "Release date"]: [
+        item.libraryItems.data[0].attributes.release_date
+          ? prettyDate(
+              item.libraryItems.data[0].attributes.release_date,
+              context.locale
+            )
+          : undefined,
+      ],
+    }
+  );
+
   const props: Props = {
-    ...(await getAppStaticProps(context)),
+    ...appStaticProps,
     item: item.libraryItems.data[0].attributes,
     itemId: item.libraryItems.data[0].id,
+    openGraph: getOpenGraph(
+      appStaticProps.langui,
+      title,
+      description,
+      thumbnail?.data?.attributes
+    ),
   };
   return {
     props: props,

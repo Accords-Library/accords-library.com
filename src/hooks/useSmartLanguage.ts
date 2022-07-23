@@ -4,6 +4,7 @@ import { LanguageSwitcher } from "components/Inputs/LanguageSwitcher";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { AppStaticProps } from "graphql/getAppStaticProps";
 import { filterDefined, isDefined } from "helpers/others";
+import { getPreferredLanguage } from "helpers/locales";
 
 interface Props<T> {
   items: T[];
@@ -11,18 +12,6 @@ interface Props<T> {
   languageExtractor: (item: NonNullable<T>) => string | undefined;
   transform?: (item: NonNullable<T>) => NonNullable<T>;
 }
-
-const getPreferredLanguage = (
-  preferredLanguages: (string | undefined)[],
-  availableLanguages: Map<string, number>
-): number | undefined => {
-  for (const locale of preferredLanguages) {
-    if (isDefined(locale) && availableLanguages.has(locale)) {
-      return availableLanguages.get(locale);
-    }
-  }
-  return undefined;
-};
 
 export const useSmartLanguage = <T>({
   items,

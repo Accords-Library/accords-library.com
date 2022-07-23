@@ -1,52 +1,28 @@
-import { prettySlug } from "./formatters";
-import { isDefined } from "./others";
-import { Content } from "./types";
-import { AppStaticProps } from "graphql/getAppStaticProps";
+import { isDefined, isDefinedAndNotEmpty } from "./others";
 
-interface Description {
-  langui: AppStaticProps["langui"];
-  description?: string | null | undefined;
-  type?: Content["type"];
-  categories?: Content["categories"];
-}
+export const getDescription = (
+  description: string | null | undefined,
+  chipsGroups?: Record<string, (string | undefined)[]>
+): string => {
+  let result = "";
 
-export const getDescription = ({
-  langui,
-  description: text,
-  type,
-  categories,
-}: Description): string => {
-  let description = "";
-
-  // TEXT
-  if (text) {
-    description += prettyMarkdown(text);
-    description += "\n\n";
+  if (isDefinedAndNotEmpty(description)) {
+    result += prettyMarkdown(description);
+    if (isDefined(chipsGroups)) {
+      result += "\n\n";
+    }
   }
 
-  // TYPE
-  if (type?.data) {
-    description += `${langui.type}: `;
-
-    description += `(${
-      type.data.attributes?.titles?.[0]?.title ??
-      prettySlug(type.data.attributes?.slug)
-    })`;
-
-    description += "\n";
+  for (const key in chipsGroups) {
+    if (Object.hasOwn(chipsGroups, key)) {
+      const chipsGroup = chipsGroups[key];
+      if (chipsGroup.length > 0) {
+        result += `${key}: ${prettyChip(chipsGroup)}\n`;
+      }
+    }
   }
 
-  // CATEGORIES
-  if (categories?.data && categories.data.length > 0) {
-    description += `${langui.categories}: `;
-    description += prettyChip(
-      categories.data.map((category) => category.attributes?.short)
-    );
-
-    description += "\n";
-  }
-
-  return description;
+  return result;
 };
 
 const prettyMarkdown = (markdown: string): string =>

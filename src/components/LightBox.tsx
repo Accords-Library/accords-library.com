@@ -84,7 +84,7 @@ export const LightBox = ({
               </div>
 
               <Img
-                className="max-h-full [grid-area:image]"
+                className="max-h-full min-h-fit [grid-area:image]"
                 image={images[index]}
               />
 

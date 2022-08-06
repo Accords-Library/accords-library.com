@@ -190,12 +190,18 @@ const Revalidate = (
         paths.push(`/library/${body.entry.library_item.slug}`);
         paths.push(`/library/${body.entry.library_item.slug}/scans`);
       }
+      if (body.entry.content) {
+        paths.push(`/contents/${body.entry.content.slug}`);
+      }
       serverRuntimeConfig.locales?.map((locale: string) => {
         if (body.entry.library_item) {
           paths.push(`/${locale}/library/${body.entry.library_item.slug}`);
           paths.push(
             `/${locale}/library/${body.entry.library_item.slug}/scans`
           );
+        }
+        if (body.entry.content) {
+          paths.push(`/${locale}/contents/${body.entry.content.slug}`);
         }
       });
       break;

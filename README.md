@@ -92,6 +92,8 @@ NEXT_PUBLIC_URL_IMG=https://url-to.img-accords-library.com
 NEXT_PUBLIC_URL_WATCH=https://url-to.watch-accords-library.com
 NEXT_PUBLIC_URL_SELF=https://url-to-front-accords-library.com
 NEXT_PUBLIC_URL_SEARCH=https://url-to.search-accords-library.com
+NEXT_PUBLIC_UMAMI_URL=https://url-to.umami-accords-library.com
+NEXT_PUBLIC_UMAMI_ID=abcdef0123456789
 ```
 
 Run in dev mode:

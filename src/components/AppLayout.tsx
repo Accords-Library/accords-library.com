@@ -211,34 +211,35 @@ export const AppLayout = ({
           <title>{openGraph.title}</title>
           <meta name="description" content={openGraph.description} />
 
-          <meta name="twitter:title" content={openGraph.title}></meta>
-          <meta
-            name="twitter:description"
-            content={openGraph.description}
-          ></meta>
-          <meta name="twitter:card" content="summary_large_image"></meta>
-          <meta name="twitter:image" content={openGraph.thumbnail.image}></meta>
+          <meta name="twitter:title" content={openGraph.title} />
+          <meta name="twitter:description" content={openGraph.description} />
+          <meta name="twitter:card" content="summary_large_image" />
+          <meta name="twitter:image" content={openGraph.thumbnail.image} />
 
           <meta property="og:title" content={openGraph.title} />
           <meta property="og:description" content={openGraph.description} />
-          <meta property="og:image" content={openGraph.thumbnail.image}></meta>
+          <meta property="og:image" content={openGraph.thumbnail.image} />
           <meta
             property="og:image:secure_url"
             content={openGraph.thumbnail.image}
-          ></meta>
+          />
           <meta
             property="og:image:width"
             content={openGraph.thumbnail.width.toString()}
-          ></meta>
+          />
           <meta
             property="og:image:height"
             content={openGraph.thumbnail.height.toString()}
-          ></meta>
-          <meta
-            property="og:image:alt"
-            content={openGraph.thumbnail.alt}
-          ></meta>
-          <meta property="og:image:type" content="image/jpeg"></meta>
+          />
+          <meta property="og:image:alt" content={openGraph.thumbnail.alt} />
+          <meta property="og:image:type" content="image/jpeg" />
+
+          <script
+            async
+            defer
+            data-website-id={process.env.NEXT_PUBLIC_UMAMI_ID}
+            src={`${process.env.NEXT_PUBLIC_UMAMI_URL}/umami.js`}
+          />
         </Head>
 
         {/* Background when navbar is opened */}

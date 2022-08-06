@@ -1,4 +1,4 @@
-import { isDefined, isDefinedAndNotEmpty } from "./others";
+import { filterDefined, isDefined, isDefinedAndNotEmpty } from "./others";
 
 export const getDescription = (
   description: string | null | undefined,
@@ -15,7 +15,7 @@ export const getDescription = (
 
   for (const key in chipsGroups) {
     if (Object.hasOwn(chipsGroups, key)) {
-      const chipsGroup = chipsGroups[key];
+      const chipsGroup = filterDefined(chipsGroups[key]);
       if (chipsGroup.length > 0) {
         result += `${key}: ${prettyChip(chipsGroup)}\n`;
       }

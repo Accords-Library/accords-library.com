@@ -70,7 +70,12 @@ export const LightBox = ({
             }
           }}
         >
-          <Popup setState={setState} state={state} padding={false} fillViewport>
+          <Popup
+            onClose={() => setState(false)}
+            state={state}
+            padding={false}
+            fillViewport
+          >
             <div
               {...handlers}
               className={`grid h-full w-full grid-cols-[4em,1fr,4em] place-items-center 

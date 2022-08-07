@@ -26,6 +26,8 @@ import { useAppLayout } from "contexts/AppLayoutContext";
 import { Button } from "components/Inputs/Button";
 import { OpenGraph } from "helpers/openGraph";
 import { getDefaultPreferredLanguages } from "helpers/locales";
+import useIsClient from "hooks/useIsClient";
+import { useBoolean } from "hooks/useBoolean";
 
 /*
  *                                         ╭─────────────╮
@@ -190,6 +192,21 @@ export const AppLayout = ({
     }
     return "grid-cols-[20rem_0px_1fr]";
   }, [mainPanelReduced, subPanel]);
+
+  const isClient = useIsClient();
+  const { state: hasDisgardSafariWarning, setTrue: disgardSafariWarning } =
+    useBoolean(false);
+  const isSafari = useMemo<boolean>(() => {
+    if (isClient) {
+      const useAgent = navigator.userAgent.toLowerCase();
+      return (
+        useAgent.includes("safari") ||
+        useAgent.includes("iphone") ||
+        useAgent.includes("ipad")
+      );
+    }
+    return false;
+  }, [isClient]);
 
   return (
     <div
@@ -357,7 +374,35 @@ export const AppLayout = ({
           )}
         </div>
 
-        <Popup state={configPanelOpen ?? false} setState={setConfigPanelOpen}>
+        <Popup state={isSafari && !hasDisgardSafariWarning} onClose={() => null}>
+          <h1 className="text-2xl">Hi, you are using Safari!</h1>
+          <p className="max-w-lg text-center">
+            In most cases this wouldn't be a problem but our website is—for some
+            obscure reason—performing terribly on Safari (WebKit). Because of
+            that, we have decided to display this message instead of letting you
+            have a slow and painful experience. We are looking into the problem,
+            and are hoping to fix this soon.
+          </p>
+          <p>
+            In the meanwhile, if you are using an iPhone/iPad, please try using
+            another device.
+          </p>
+          <p>
+            If you are on macOS, please use another browser such as Firefox or
+            Chrome.
+          </p>
+
+          <Button
+            text="Let me in regardless"
+            className="mt-8"
+            onClick={disgardSafariWarning}
+          />
+        </Popup>
+
+        <Popup
+          state={configPanelOpen ?? false}
+          onClose={() => setConfigPanelOpen(false)}
+        >
           <h2 className="text-2xl">{langui.settings}</h2>
 
           <div

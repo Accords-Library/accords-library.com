@@ -9,9 +9,7 @@ import { cIf, cJoin } from "helpers/className";
  */
 
 interface Props {
-  setState:
-    | Dispatch<SetStateAction<boolean | undefined>>
-    | Dispatch<SetStateAction<boolean>>;
+  onClose: () => void;
   state: boolean;
   children: React.ReactNode;
   fillViewport?: boolean;
@@ -22,7 +20,7 @@ interface Props {
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
 export const Popup = ({
-  setState,
+  onClose,
   state,
   children,
   fillViewport,
@@ -36,13 +34,7 @@ export const Popup = ({
   }, [setMenuGestures, state]);
 
   return (
-    <Hotkeys
-      keyName="escape"
-      allowRepeat
-      onKeyDown={() => {
-        setState(false);
-      }}
-    >
+    <Hotkeys keyName="escape" allowRepeat onKeyDown={onClose}>
       <div
         className={cJoin(
           "fixed inset-0 z-50 grid place-content-center transition-[backdrop-filter] duration-500",
@@ -58,9 +50,7 @@ export const Popup = ({
             "fixed inset-0 bg-shade transition-all duration-500",
             cIf(state, "bg-opacity-50", "bg-opacity-0")
           )}
-          onClick={() => {
-            setState(false);
-          }}
+          onClick={onClose}
         />
 
         <div

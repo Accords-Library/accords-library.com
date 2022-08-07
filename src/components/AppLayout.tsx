@@ -374,14 +374,17 @@ export const AppLayout = ({
           )}
         </div>
 
-        <Popup state={isSafari && !hasDisgardSafariWarning} onClose={() => null}>
+        <Popup
+          state={isSafari && !hasDisgardSafariWarning}
+          onClose={() => null}
+        >
           <h1 className="text-2xl">Hi, you are using Safari!</h1>
           <p className="max-w-lg text-center">
-            In most cases this wouldn't be a problem but our website is—for some
-            obscure reason—performing terribly on Safari (WebKit). Because of
-            that, we have decided to display this message instead of letting you
-            have a slow and painful experience. We are looking into the problem,
-            and are hoping to fix this soon.
+            In most cases this wouldn&rsquo;t be a problem but our website
+            is—for some obscure reason—performing terribly on Safari (WebKit).
+            Because of that, we have decided to display this message instead of
+            letting you have a slow and painful experience. We are looking into
+            the problem, and are hoping to fix this soon.
           </p>
           <p>
             In the meanwhile, if you are using an iPhone/iPad, please try using

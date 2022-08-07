@@ -28,6 +28,7 @@ import { OpenGraph } from "helpers/openGraph";
 import { getDefaultPreferredLanguages } from "helpers/locales";
 import useIsClient from "hooks/useIsClient";
 import { useBoolean } from "hooks/useBoolean";
+import UAParser from "ua-parser-js";
 
 /*
  *                                         ╭─────────────╮
@@ -198,11 +199,9 @@ export const AppLayout = ({
     useBoolean(false);
   const isSafari = useMemo<boolean>(() => {
     if (isClient) {
-      const useAgent = navigator.userAgent.toLowerCase();
+      const parser = new UAParser();
       return (
-        useAgent.includes("safari") ||
-        useAgent.includes("iphone") ||
-        useAgent.includes("ipad")
+        parser.getBrowser().name === "Safari" || parser.getOS().name === "iOS"
       );
     }
     return false;

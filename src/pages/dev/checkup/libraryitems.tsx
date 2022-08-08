@@ -58,15 +58,15 @@ const CheckupLibraryItems = ({
             >
               <Button
                 href={line.frontendUrl}
-                target="_blank"
                 className="w-4 text-xs"
                 text="F"
+                alwaysNewTab
               />
               <Button
                 href={line.backendUrl}
-                target="_blank"
                 className="w-4 text-xs"
                 text="B"
+                alwaysNewTab
               />
               <p>{line.subitems.join(" -> ")}</p>
               <p>{line.name}</p>

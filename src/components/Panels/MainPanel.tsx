@@ -1,5 +1,4 @@
 import Markdown from "markdown-to-jsx";
-import Link from "next/link";
 import { HorizontalLine } from "components/HorizontalLine";
 import { Button } from "components/Inputs/Button";
 import { NavOption } from "components/PanelComponents/NavOption";
@@ -11,6 +10,7 @@ import { useMediaDesktop } from "hooks/useMediaQuery";
 import { Icon } from "components/Ico";
 import { cIf, cJoin } from "helpers/className";
 import { isDefinedAndNotEmpty } from "helpers/others";
+import { Link } from "components/Inputs/Link";
 
 /*
  *                                        ╭─────────────╮
@@ -54,7 +54,7 @@ export const MainPanel = ({ langui }: Props): JSX.Element => {
 
       <div>
         <div className="grid place-items-center">
-          <Link href="/" passHref>
+          <Link href="/" className="flex w-full justify-center">
             <div
               className={cJoin(
                 `mb-4 aspect-square cursor-pointer bg-black transition-colors

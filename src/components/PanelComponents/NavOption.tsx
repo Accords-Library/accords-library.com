@@ -4,6 +4,7 @@ import { Ico, Icon } from "components/Ico";
 import { ToolTip } from "components/ToolTip";
 import { cJoin, cIf } from "helpers/className";
 import { isDefinedAndNotEmpty } from "helpers/others";
+import { Link } from "components/Inputs/Link";
 
 /*
  *                                        ╭─────────────╮
@@ -51,17 +52,9 @@ export const NavOption = ({
       className="text-left"
       disabled={!reduced}
     >
-      <div
-        onClick={(event) => {
-          if (onClick) onClick(event);
-          if (url) {
-            if (url.startsWith("#")) {
-              router.replace(url);
-            } else {
-              router.push(url);
-            }
-          }
-        }}
+      <Link
+        href={url}
+        onClick={onClick}
         className={cJoin(
           `relative grid w-full cursor-pointer auto-cols-fr grid-flow-col grid-cols-[auto]
           justify-center gap-x-5 rounded-2xl p-4 transition-all hover:bg-mid hover:shadow-inner-sm
@@ -84,7 +77,7 @@ export const NavOption = ({
             )}
           </div>
         )}
-      </div>
+      </Link>
     </ToolTip>
   );
 };

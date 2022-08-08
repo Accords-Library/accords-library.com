@@ -24,5 +24,14 @@ module.exports = {
       hreflang: "ja",
     },
   ],
-  exclude: ["/en/*", "/fr/*", "/ja/*", "/es/*", "/pt-br/*", "/404", "/500", "/dev/*"],
+  exclude: [
+    "/en/*",
+    "/fr/*",
+    "/ja/*",
+    "/es/*",
+    "/pt-br/*",
+    "/404",
+    "/500",
+    "/dev/*",
+  ],
 };

@@ -1,5 +1,4 @@
 import { useCallback } from "react";
-import Link from "next/link";
 import { Chip } from "components/Chip";
 import { ToolTip } from "components/ToolTip";
 import { AppStaticProps } from "graphql/getAppStaticProps";
@@ -87,12 +86,10 @@ const DefinitionCard = ({
       <p>{selectedTranslation?.definition}</p>
 
       {source?.url && source.name && (
-        <Link href={source.url}>
-          <div className="mt-3 flex place-items-center gap-2 mobile:flex-col mobile:text-center">
-            <p>{langui.source}: </p>
-            <Button size="small" text={source.name} />
-          </div>
-        </Link>
+        <div className="mt-3 flex place-items-center gap-2 mobile:flex-col mobile:text-center">
+          <p>{langui.source}: </p>
+          <Button href={source.url} size="small" text={source.name} />
+        </div>
       )}
     </>
   );

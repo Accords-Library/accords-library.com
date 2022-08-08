@@ -230,8 +230,8 @@ const LibrarySlug = ({
                           <Fragment key={index}>
                             <Button
                               href={url.url}
-                              target={"_blank"}
                               text={prettyURL(url.url)}
+                              alwaysNewTab
                             />
                           </Fragment>
                         )

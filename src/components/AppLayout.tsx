@@ -2,6 +2,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { useSwipeable } from "react-swipeable";
+import UAParser from "ua-parser-js";
 import { Ico, Icon } from "./Ico";
 import { ButtonGroup } from "./Inputs/ButtonGroup";
 import { OrderableList } from "./Inputs/OrderableList";
@@ -28,7 +29,6 @@ import { OpenGraph } from "helpers/openGraph";
 import { getDefaultPreferredLanguages } from "helpers/locales";
 import useIsClient from "hooks/useIsClient";
 import { useBoolean } from "hooks/useBoolean";
-import UAParser from "ua-parser-js";
 
 /*
  *                                         ╭─────────────╮

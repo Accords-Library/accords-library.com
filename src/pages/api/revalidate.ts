@@ -6,7 +6,7 @@ type RequestProps =
   | HookChronicleChapter
   | HookChronology
   | HookContent
-  | HookContentGroup
+  | HookContentFolder
   | HookCustom
   | HookLibraryItem
   | HookPostContent
@@ -62,10 +62,15 @@ type HookLibraryItem = {
   };
 };
 
-type HookContentGroup = {
+type HookContentFolder = {
   event: "entry.create" | "entry.delete" | "entry.update";
-  model: "contents-group";
+  model: "contents-folder";
   entry: {
+    slug: string;
+    parent_folder?: {
+      slug: string;
+    };
+    subfolders: { slug: string }[];
     contents: {
       slug: string;
     }[];
@@ -127,7 +132,7 @@ const Revalidate = (
     case "post": {
       paths.push(`/news`);
       paths.push(`/news/${body.entry.slug}`);
-      serverRuntimeConfig.locales?.map((locale: string) => {
+      serverRuntimeConfig.locales?.forEach((locale: string) => {
         paths.push(`/${locale}/news`);
         paths.push(`/${locale}/news/${body.entry.slug}`);
       });
@@ -138,14 +143,14 @@ const Revalidate = (
       paths.push(`/library`);
       paths.push(`/library/${body.entry.slug}`);
       paths.push(`/library/${body.entry.slug}/scans`);
-      body.entry.subitem_of.map((parentItem) => {
+      body.entry.subitem_of.forEach((parentItem) => {
         paths.push(`/library/${parentItem.slug}`);
       });
-      serverRuntimeConfig.locales?.map((locale: string) => {
+      serverRuntimeConfig.locales?.forEach((locale: string) => {
         paths.push(`/${locale}/library`);
         paths.push(`/${locale}/library/${body.entry.slug}`);
         paths.push(`/${locale}/library/${body.entry.slug}/scans`);
-        body.entry.subitem_of.map((parentItem) => {
+        body.entry.subitem_of.forEach((parentItem) => {
           paths.push(`/${locale}/library/${parentItem.slug}`);
         });
       });
@@ -155,19 +160,19 @@ const Revalidate = (
     case "content": {
       paths.push(`/contents`);
       paths.push(`/contents/${body.entry.slug}`);
-      serverRuntimeConfig.locales?.map((locale: string) => {
+      serverRuntimeConfig.locales?.forEach((locale: string) => {
         paths.push(`/${locale}/contents`);
         paths.push(`/${locale}/contents/${body.entry.slug}`);
       });
       if (body.entry.ranged_contents.length > 0) {
-        body.entry.ranged_contents.map((ranged_content) => {
+        body.entry.ranged_contents.forEach((ranged_content) => {
           const parentSlug = ranged_content.slug.slice(
             0,
             ranged_content.slug.length - body.entry.slug.length - 1
           );
           paths.push(`/library/${parentSlug}`);
           paths.push(`/library/${parentSlug}/scans`);
-          serverRuntimeConfig.locales?.map((locale: string) => {
+          serverRuntimeConfig.locales?.forEach((locale: string) => {
             paths.push(`/${locale}/library/${parentSlug}`);
             paths.push(`/${locale}/library/${parentSlug}/scans`);
           });
@@ -179,7 +184,7 @@ const Revalidate = (
     case "chronology-era":
     case "chronology-item": {
       paths.push(`/wiki/chronology`);
-      serverRuntimeConfig.locales?.map((locale: string) => {
+      serverRuntimeConfig.locales?.forEach((locale: string) => {
         paths.push(`/${locale}/wiki/chronology`);
       });
       break;
@@ -193,7 +198,7 @@ const Revalidate = (
       if (body.entry.content) {
         paths.push(`/contents/${body.entry.content.slug}`);
       }
-      serverRuntimeConfig.locales?.map((locale: string) => {
+      serverRuntimeConfig.locales?.forEach((locale: string) => {
         if (body.entry.library_item) {
           paths.push(`/${locale}/library/${body.entry.library_item.slug}`);
           paths.push(
@@ -207,16 +212,36 @@ const Revalidate = (
       break;
     }
 
-    case "contents-group": {
-      paths.push(`/contents`);
-      serverRuntimeConfig.locales?.map((locale: string) => {
-        paths.push(`/${locale}/contents`);
-      });
-      body.entry.contents.map((content) => {
-        paths.push(`/contents/${content.slug}`);
-        serverRuntimeConfig.locales?.map((locale: string) => {
-          paths.push(`/${locale}/contents/${content.slug}`);
-        });
+    case "contents-folder": {
+      if (body.entry.slug === "root") {
+        paths.push(`/contents`);
+      }
+      paths.push(`/contents/folder/${body.entry.slug}`);
+      if (body.entry.parent_folder) {
+        paths.push(`/contents/folder/${body.entry.parent_folder.slug}`);
+      }
+      body.entry.subfolders.forEach((subfolder) =>
+        paths.push(`/contents/folder/${subfolder.slug}`)
+      );
+      body.entry.contents.forEach((content) =>
+        paths.push(`/contents/${content.slug}`)
+      );
+      serverRuntimeConfig.locales?.forEach((locale: string) => {
+        if (body.entry.slug === "root") {
+          paths.push(`/${locale}/contents`);
+        }
+        paths.push(`/${locale}/contents/folder/${body.entry.slug}`);
+        if (body.entry.parent_folder) {
+          paths.push(
+            `/${locale}/contents/folder/${body.entry.parent_folder.slug}`
+          );
+        }
+        body.entry.subfolders.forEach((subfolder) =>
+          paths.push(`/${locale}/contents/folder/${subfolder.slug}`)
+        );
+        body.entry.contents.forEach((content) =>
+          paths.push(`/${locale}/contents/${content.slug}`)
+        );
       });
       break;
     }
@@ -224,7 +249,7 @@ const Revalidate = (
     case "wiki-page": {
       paths.push(`/wiki`);
       paths.push(`/wiki/${body.entry.slug}`);
-      serverRuntimeConfig.locales?.map((locale: string) => {
+      serverRuntimeConfig.locales?.forEach((locale: string) => {
         paths.push(`/${locale}/wiki`);
         paths.push(`/${locale}/wiki/${body.entry.slug}`);
       });
@@ -235,7 +260,7 @@ const Revalidate = (
     case "chronicle": {
       paths.push(`/chronicles`);
       paths.push(`/chronicles/${body.entry.slug}`);
-      serverRuntimeConfig.locales?.map((locale: string) => {
+      serverRuntimeConfig.locales?.forEach((locale: string) => {
         paths.push(`/${locale}/chronicles`);
         paths.push(`/${locale}/chronicles/${body.entry.slug}`);
       });
@@ -244,12 +269,12 @@ const Revalidate = (
 
     case "chronicles-chapter": {
       paths.push(`/chronicles`);
-      serverRuntimeConfig.locales?.map((locale: string) => {
+      serverRuntimeConfig.locales?.forEach((locale: string) => {
         paths.push(`/${locale}/chronicles`);
       });
-      body.entry.chronicles.map((chronicle) => {
+      body.entry.chronicles.forEach((chronicle) => {
         paths.push(`/chronicles/${chronicle.slug}`);
-        serverRuntimeConfig.locales?.map((locale: string) => {
+        serverRuntimeConfig.locales?.forEach((locale: string) => {
           paths.push(`/${locale}/chronicles/${chronicle.slug}`);
         });
       });

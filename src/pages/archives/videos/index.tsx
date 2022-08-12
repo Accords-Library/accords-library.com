@@ -99,33 +99,31 @@ const Videos = ({ langui, videos, ...otherProps }: Props): JSX.Element => {
           items={filterHasAttributes(videos, ["id", "attributes"] as const)}
           getItemId={(item) => item.id}
           renderItem={({ item }) => (
-            <>
-              <PreviewCard
-                href={`/archives/videos/v/${item.attributes.uid}`}
-                title={item.attributes.title}
-                thumbnail={getVideoThumbnailURL(item.attributes.uid)}
-                thumbnailAspectRatio="16/9"
-                thumbnailForceAspectRatio
-                keepInfoVisible={keepInfoVisible}
-                metadata={{
-                  releaseDate: item.attributes.published_date,
-                  views: item.attributes.views,
-                  author: item.attributes.channel?.data?.attributes?.title,
-                  position: "Top",
-                }}
-                hoverlay={{
-                  __typename: "Video",
-                  duration: item.attributes.duration,
-                }}
-              />
-            </>
+            <PreviewCard
+              href={`/archives/videos/v/${item.attributes.uid}`}
+              title={item.attributes.title}
+              thumbnail={getVideoThumbnailURL(item.attributes.uid)}
+              thumbnailAspectRatio="16/9"
+              thumbnailForceAspectRatio
+              keepInfoVisible={keepInfoVisible}
+              metadata={{
+                releaseDate: item.attributes.published_date,
+                views: item.attributes.views,
+                author: item.attributes.channel?.data?.attributes?.title,
+                position: "Top",
+              }}
+              hoverlay={{
+                __typename: "Video",
+                duration: item.attributes.duration,
+              }}
+            />
           )}
+          langui={langui}
           className="desktop:grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] mobile:grid-cols-2
           thin:grid-cols-1"
-          paginationItemPerPage={20}
+          paginationItemPerPage={25}
           searchingTerm={searchName}
           searchingBy={(item) => item.attributes.title}
-          langui={langui}
         />
       </ContentPanel>
     ),

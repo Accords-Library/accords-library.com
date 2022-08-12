@@ -21,6 +21,7 @@ interface Props {
   onClick?: MouseEventHandler<HTMLDivElement>;
   draggable?: boolean;
   badgeNumber?: number;
+  disabled?: boolean;
   size?: "normal" | "small";
 }
 
@@ -37,6 +38,7 @@ export const Button = ({
   href,
   alwaysNewTab = false,
   badgeNumber,
+  disabled,
   size = "normal",
 }: Props): JSX.Element => (
   <ConditionalWrapper
@@ -49,6 +51,7 @@ export const Button = ({
         draggable={draggable}
         id={id}
         onClick={onClick}
+        onFocus={(event) => event.target.blur()}
         className={cJoin(
           `group grid cursor-pointer select-none grid-flow-col place-content-center 
             place-items-center gap-2 rounded-full border-[1px] border-dark py-3 px-4
@@ -60,6 +63,7 @@ export const Button = ({
               active:hover:bg-black active:hover:!text-light active:hover:drop-shadow-black-lg`
           ),
           cIf(size === "small", "px-3 py-1 text-xs"),
+          cIf(disabled, "cursor-not-allowed"),
           className
         )}
       >

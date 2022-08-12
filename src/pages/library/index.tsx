@@ -451,6 +451,7 @@ const Library = ({
             )
           }
           filteringFunction={filteringFunction}
+          paginationItemPerPage={25}
           langui={langui}
         />
       </ContentPanel>

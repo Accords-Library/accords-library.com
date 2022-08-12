@@ -4,7 +4,9 @@ import { ScanSet } from "./Library/ScanSet";
 import { NavOption } from "./PanelComponents/NavOption";
 import { ChroniclePreview } from "./Chronicles/ChroniclePreview";
 import { ChroniclesList } from "./Chronicles/ChroniclesList";
+import { Button } from "./Inputs/Button";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
+import { PreviewFolder } from "pages/contents/folder/[slug]";
 
 export type TranslatedProps<P, K extends keyof P> = Omit<P, K> & {
   translations: (Pick<P, K> & { language: string })[];
@@ -153,6 +155,46 @@ export const TranslatedChroniclesList = ({
 
   return (
     <ChroniclesList
+      title={selectedTranslation?.title ?? fallback.title}
+      {...otherProps}
+    />
+  );
+};
+
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
+
+export const TranslatedButton = ({
+  translations,
+  fallback,
+  ...otherProps
+}: TranslatedProps<Parameters<typeof Button>[0], "text">): JSX.Element => {
+  const [selectedTranslation] = useSmartLanguage({
+    items: translations,
+    languageExtractor,
+  });
+
+  return (
+    <Button text={selectedTranslation?.text ?? fallback.text} {...otherProps} />
+  );
+};
+
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
+
+export const TranslatedPreviewFolder = ({
+  translations,
+  fallback,
+  ...otherProps
+}: TranslatedProps<
+  Parameters<typeof PreviewFolder>[0],
+  "title"
+>): JSX.Element => {
+  const [selectedTranslation] = useSmartLanguage({
+    items: translations,
+    languageExtractor,
+  });
+
+  return (
+    <PreviewFolder
       title={selectedTranslation?.title ?? fallback.title}
       {...otherProps}
     />

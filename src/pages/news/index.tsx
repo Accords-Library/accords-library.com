@@ -139,6 +139,7 @@ const News = ({ langui, posts, ...otherProps }: Props): JSX.Element => {
               ?.map((translation) => translation?.title)
               .join(" ")}`
           }
+          paginationItemPerPage={25}
         />
       </ContentPanel>
     ),

@@ -25,7 +25,7 @@ import { cIf, cJoin } from "helpers/className";
 import { AppStaticProps } from "graphql/getAppStaticProps";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { Button } from "components/Inputs/Button";
-import { OpenGraph } from "helpers/openGraph";
+import { OpenGraph, TITLE_PREFIX } from "helpers/openGraph";
 import { getDefaultPreferredLanguages } from "helpers/locales";
 import useIsClient from "hooks/useIsClient";
 import { useBoolean } from "hooks/useBoolean";
@@ -359,7 +359,11 @@ export const AppLayout = ({
               )
             )}
           >
-            {openGraph.title}
+            {isDefinedAndNotEmpty(
+              openGraph.title.substring(TITLE_PREFIX.length)
+            )
+              ? openGraph.title.substring(TITLE_PREFIX.length)
+              : "Accord’s Library"}
           </p>
           {isDefined(subPanel) && !turnSubIntoContent && (
             <Ico

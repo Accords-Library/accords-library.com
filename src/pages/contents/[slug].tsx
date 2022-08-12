@@ -33,7 +33,10 @@ import { ContentWithTranslations } from "helpers/types";
 import { useMediaMobile } from "hooks/useMediaQuery";
 import { AnchorIds, useScrollTopOnChange } from "hooks/useScrollTopOnChange";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
-import { TranslatedPreviewLine } from "components/Translated";
+import {
+  TranslatedPreviewFolder,
+  TranslatedPreviewLine,
+} from "components/Translated";
 import { getOpenGraph } from "helpers/openGraph";
 import {
   getDefaultPreferredLanguages,
@@ -74,32 +77,51 @@ const Content = ({
 
   const { previousContent, nextContent } = useMemo(
     () => ({
-      previousContent: content.group?.data?.attributes?.contents
-        ? getPreviousContent(
-            content.group.data.attributes.contents.data,
-            content.slug
-          )
-        : undefined,
-      nextContent: content.group?.data?.attributes?.contents
-        ? getNextContent(
-            content.group.data.attributes.contents.data,
-            content.slug
-          )
-        : undefined,
+      previousContent:
+        content.folders?.data[0]?.attributes?.contents &&
+        content.folders.data[0].attributes.sequence
+          ? getPreviousContent(
+              content.folders.data[0].attributes.contents.data,
+              content.slug
+            )
+          : undefined,
+      nextContent:
+        content.folders?.data[0]?.attributes?.contents &&
+        content.folders.data[0].attributes.sequence
+          ? getNextContent(
+              content.folders.data[0].attributes.contents.data,
+              content.slug
+            )
+          : undefined,
     }),
-    [content.group, content.slug]
+    [content.folders, content.slug]
   );
 
   const subPanel = useMemo(
     () => (
       <SubPanel>
-        <ReturnButton
-          href={`/contents`}
-          title={langui.contents}
-          langui={langui}
-          displayOn={ReturnButtonType.Desktop}
-          horizontalLine
-        />
+        {content.folders?.data && content.folders.data.length > 0 && (
+          <>
+            <h2 className="mb-2 text-xl">{langui.folders}</h2>
+            {filterHasAttributes(content.folders.data, [
+              "attributes",
+              "id",
+            ] as const).map((folder) => (
+              <TranslatedPreviewFolder
+                key={folder.id}
+                href={`/contents/folder/${folder.attributes.slug}`}
+                translations={filterHasAttributes(folder.attributes.titles, [
+                  "language.data.attributes.code",
+                ] as const).map((title) => ({
+                  language: title.language.data.attributes.code,
+                  title: title.title,
+                }))}
+                fallback={{ title: prettySlug(folder.attributes.slug) }}
+              />
+            ))}
+            <HorizontalLine />
+          </>
+        )}
 
         {selectedTranslation?.text_set?.source_language?.data?.attributes
           ?.code !== undefined && (
@@ -308,6 +330,7 @@ const Content = ({
       </SubPanel>
     ),
     [
+      content.folders?.data,
       content.ranged_contents?.data,
       currencies,
       languages,
@@ -320,7 +343,7 @@ const Content = ({
     () => (
       <ContentPanel>
         <ReturnButton
-          href={`/contents`}
+          href={`/contents/folder`}
           title={langui.contents}
           langui={langui}
           displayOn={ReturnButtonType.Mobile}
@@ -579,19 +602,19 @@ export const getStaticPaths: GetStaticPaths = async (context) => {
  * ─────────────────────────────────────╯  PRIVATE METHODS  ╰───────────────────────────────────────
  */
 
-type Group = NonNullable<
+type FolderContents = NonNullable<
   NonNullable<
     NonNullable<
-      NonNullable<ContentWithTranslations["group"]>["data"]
+      NonNullable<ContentWithTranslations["folders"]>["data"][number]
     >["attributes"]
   >["contents"]
 >["data"];
 
-const getPreviousContent = (group: Group, currentSlug: string) => {
-  for (let index = 0; index < group.length; index++) {
-    const content = group[index];
+const getPreviousContent = (contents: FolderContents, currentSlug: string) => {
+  for (let index = 0; index < contents.length; index++) {
+    const content = contents[index];
     if (content.attributes?.slug === currentSlug && index > 0) {
-      return group[index - 1];
+      return contents[index - 1];
     }
   }
   return undefined;
@@ -599,11 +622,14 @@ const getPreviousContent = (group: Group, currentSlug: string) => {
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
-const getNextContent = (group: Group, currentSlug: string) => {
-  for (let index = 0; index < group.length; index++) {
-    const content = group[index];
-    if (content.attributes?.slug === currentSlug && index < group.length - 1) {
-      return group[index + 1];
+const getNextContent = (contents: FolderContents, currentSlug: string) => {
+  for (let index = 0; index < contents.length; index++) {
+    const content = contents[index];
+    if (
+      content.attributes?.slug === currentSlug &&
+      index < contents.length - 1
+    ) {
+      return contents[index + 1];
     }
   }
   return undefined;

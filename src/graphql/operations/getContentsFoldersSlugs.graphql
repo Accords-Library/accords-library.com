@@ -1,0 +1,9 @@
+query getContentsFoldersSlugs {
+  contentsFolders(pagination: { limit: -1 }) {
+    data {
+      attributes {
+        slug
+      }
+    }
+  }
+}

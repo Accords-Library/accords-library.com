@@ -30,6 +30,11 @@ module.exports = {
         destination: "https://gallery.accords-library.com/posts",
         permanent: false,
       },
+      {
+        source: "/contents/folder",
+        destination: "/contents",
+        permanent: false,
+      },
     ];
   },
 };

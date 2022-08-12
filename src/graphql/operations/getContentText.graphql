@@ -214,9 +214,22 @@ query getContentText($slug: String, $language_code: String) {
             }
           }
         }
-        group {
+        folders(pagination: { limit: -1 }) {
           data {
+            id
             attributes {
+              slug
+              titles(pagination: { limit: -1 }) {
+                language {
+                  data {
+                    attributes {
+                      code
+                    }
+                  }
+                }
+                title
+              }
+              sequence
               contents(pagination: { limit: -1 }) {
                 data {
                   attributes {

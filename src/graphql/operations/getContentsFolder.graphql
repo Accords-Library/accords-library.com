@@ -1,0 +1,132 @@
+query getContentsFolder($slug: String, $language_code: String) {
+  contentsFolders(filters: { slug: { eq: $slug } }) {
+    data {
+      attributes {
+        slug
+        titles(pagination: { limit: -1 }) {
+          id
+          language {
+            data {
+              attributes {
+                code
+              }
+            }
+          }
+          title
+        }
+        parent_folder {
+          data {
+            attributes {
+              slug
+              titles(pagination: { limit: -1 }) {
+                id
+                language {
+                  data {
+                    attributes {
+                      code
+                    }
+                  }
+                }
+                title
+              }
+            }
+          }
+        }
+        contents(pagination: { limit: -1 }) {
+          data {
+            id
+            attributes {
+              slug
+              translations(pagination: { limit: -1 }) {
+                pre_title
+                title
+                subtitle
+                language {
+                  data {
+                    attributes {
+                      code
+                    }
+                  }
+                }
+              }
+              categories(pagination: { limit: -1 }) {
+                data {
+                  id
+                  attributes {
+                    name
+                    short
+                  }
+                }
+              }
+              type {
+                data {
+                  attributes {
+                    slug
+                    titles(
+                      filters: { language: { code: { eq: $language_code } } }
+                    ) {
+                      title
+                    }
+                  }
+                }
+              }
+              ranged_contents(pagination: { limit: -1 }) {
+                data {
+                  id
+                  attributes {
+                    slug
+                    scan_set {
+                      id
+                    }
+                    library_item {
+                      data {
+                        attributes {
+                          slug
+                          title
+                          subtitle
+                          thumbnail {
+                            data {
+                              attributes {
+                                ...uploadImage
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+              thumbnail {
+                data {
+                  attributes {
+                    ...uploadImage
+                  }
+                }
+              }
+            }
+          }
+        }
+        subfolders(pagination: { limit: -1 }) {
+          data {
+            id
+            attributes {
+              slug
+              titles(pagination: { limit: -1 }) {
+                id
+                language {
+                  data {
+                    attributes {
+                      code
+                    }
+                  }
+                }
+                title
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

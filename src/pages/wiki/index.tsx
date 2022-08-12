@@ -212,6 +212,7 @@ const Wiki = ({ langui, pages, ...otherProps }: Props): JSX.Element => {
               .join(" ")
           }
           groupingFunction={groupingFunction}
+          paginationItemPerPage={25}
         />
       </ContentPanel>
     ),

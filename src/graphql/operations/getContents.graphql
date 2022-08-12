@@ -62,18 +62,6 @@ query getContents($language_code: String) {
             }
           }
         }
-        group {
-          data {
-            attributes {
-              combine
-              contents(pagination: { limit: -1 }) {
-                data {
-                  id
-                }
-              }
-            }
-          }
-        }
         thumbnail {
           data {
             attributes {

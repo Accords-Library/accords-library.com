@@ -36,7 +36,7 @@ export const Link = ({
         } else if (isValidClick && href) {
           if (event.button !== MouseButton.Right) {
             if (alwaysNewTab) {
-              window.open(href, "_blank");
+              window.open(href, "_blank", "noopener");
             } else if (event.button === MouseButton.Left) {
               if (href.startsWith("#")) {
                 router.replace(href);

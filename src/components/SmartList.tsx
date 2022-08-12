@@ -4,8 +4,21 @@ import { PageSelector } from "./Inputs/PageSelector";
 import { Ico, Icon } from "./Ico";
 import { AppStaticProps } from "graphql/getAppStaticProps";
 import { cJoin } from "helpers/className";
-import { isDefined, isDefinedAndNotEmpty, iterateMap } from "helpers/others";
+import { isDefined, isDefinedAndNotEmpty } from "helpers/others";
 import { AnchorIds, useScrollTopOnChange } from "hooks/useScrollTopOnChange";
+
+interface Group<T> {
+  name: string;
+  items: T[];
+  totalCount: number;
+}
+
+const defaultGroupSortingFunction = <T,>(a: Group<T>, b: Group<T>) =>
+  a.name.localeCompare(b.name);
+const defaultGroupCountingFunction = () => 1;
+const defaultFilteringFunction = () => true;
+const defaultSortingFunction = () => 0;
+const defaultGroupingFunction = () => [""];
 
 interface Props<T> {
   // Items
@@ -24,7 +37,7 @@ interface Props<T> {
   searchingCaseInsensitive?: boolean;
   // Grouping
   groupingFunction?: (item: T) => string[];
-  groupSortingFunction?: (a: string, b: string) => number;
+  groupSortingFunction?: (a: Group<T>, b: Group<T>) => number;
   groupCountingFunction?: (item: T) => number;
   // Filtering
   filteringFunction?: (item: T) => boolean;
@@ -40,28 +53,28 @@ export const SmartList = <T,>({
   getItemId,
   renderItem: RenderItem,
   renderWhenEmpty: RenderWhenEmpty,
-  paginationItemPerPage = 0,
+  paginationItemPerPage = Infinity,
   paginationSelectorTop = true,
   paginationSelectorBottom = true,
   paginationScroolTop = true,
   searchingTerm,
   searchingBy,
   searchingCaseInsensitive = true,
-  groupingFunction = () => [""],
-  groupSortingFunction = (a, b) => a.localeCompare(b),
-  groupCountingFunction = () => 1,
-  filteringFunction = () => true,
-  sortingFunction = () => 0,
+  groupingFunction = defaultGroupingFunction,
+  groupSortingFunction = defaultGroupSortingFunction,
+  groupCountingFunction = defaultGroupCountingFunction,
+  filteringFunction = defaultFilteringFunction,
+  sortingFunction = defaultSortingFunction,
   className,
   langui,
 }: Props<T>): JSX.Element => {
   const [page, setPage] = useState(0);
 
   useScrollTopOnChange(AnchorIds.ContentPanel, [page], paginationScroolTop);
-
-  type Group = Map<string, T[]>;
-
-  useEffect(() => setPage(0), [searchingTerm]);
+  useEffect(
+    () => setPage(0),
+    [searchingTerm, groupingFunction, groupSortingFunction, items]
+  );
 
   const searchFilter = useCallback(() => {
     if (isDefinedAndNotEmpty(searchingTerm) && isDefined(searchingBy)) {
@@ -85,87 +98,104 @@ export const SmartList = <T,>({
     [filteredItems, sortingFunction]
   );
 
-  const paginatedItems = useMemo(() => {
-    if (paginationItemPerPage > 0) {
-      const memo = [];
-      for (
-        let index = 0;
-        paginationItemPerPage * index < sortedItem.length;
-        index++
-      ) {
-        memo.push(
-          sortedItem.slice(
-            index * paginationItemPerPage,
-            (index + 1) * paginationItemPerPage
-          )
-        );
-      }
-      return memo;
-    }
-    return [sortedItem];
-  }, [paginationItemPerPage, sortedItem]);
+  const groups = useMemo(() => {
+    const memo: Group<T>[] = [];
 
-  const groupedList = useMemo(() => {
-    const groups: Group = new Map();
-    paginatedItems[page]?.forEach((item) => {
+    sortedItem.forEach((item) => {
       groupingFunction(item).forEach((category) => {
-        if (groups.has(category)) {
-          groups.get(category)?.push(item);
+        const index = memo.findIndex((group) => group.name === category);
+        if (index === -1) {
+          memo.push({
+            name: category,
+            items: [item],
+            totalCount: groupCountingFunction(item),
+          });
         } else {
-          groups.set(category, [item]);
+          memo[index].items.push(item);
+          memo[index].totalCount += groupCountingFunction(item);
         }
       });
     });
-    return groups;
-  }, [groupingFunction, page, paginatedItems]);
+    return memo.sort(groupSortingFunction);
+  }, [
+    groupCountingFunction,
+    groupSortingFunction,
+    groupingFunction,
+    sortedItem,
+  ]);
 
-  const pageCount = useMemo(
-    () =>
-      paginationItemPerPage > 0
-        ? Math.floor(filteredItems.length / paginationItemPerPage)
-        : 1,
-    [paginationItemPerPage, filteredItems.length]
-  );
+  const pages = useMemo(() => {
+    const memo: Group<T>[][] = [];
+    let currentPage: Group<T>[] = [];
+    let remainingSlots = paginationItemPerPage;
+    let loopSafeguard = 1000;
 
-  const changePage = useCallback(
-    (newPage: number) =>
-      setPage(() => {
-        if (newPage <= 0) {
-          return 0;
+    const newPage = () => {
+      memo.push(currentPage);
+      currentPage = [];
+      remainingSlots = paginationItemPerPage;
+    };
+
+    for (const group of groups) {
+      let remainingItems = group.items.length;
+      while (remainingItems > 0 && loopSafeguard >= 0) {
+        loopSafeguard--;
+        const currentIndex = group.items.length - remainingItems;
+
+        if (
+          remainingSlots <= 0 ||
+          (currentIndex === 0 &&
+            remainingItems > remainingSlots &&
+            remainingItems <= paginationItemPerPage)
+        ) {
+          newPage();
         }
-        if (newPage >= pageCount) {
-          return pageCount;
-        }
-        return newPage;
-      }),
-    [pageCount]
-  );
+
+        const slicedGroup: Group<T> = {
+          name: group.name,
+          items: group.items.slice(currentIndex, currentIndex + remainingSlots),
+          totalCount: group.totalCount,
+        };
+
+        remainingItems -= slicedGroup.items.length;
+        remainingSlots -= slicedGroup.items.length;
+        currentPage.push(slicedGroup);
+      }
+    }
+
+    if (currentPage.length > 0) {
+      newPage();
+    }
+
+    return memo;
+  }, [groups, paginationItemPerPage]);
 
   return (
     <>
-      {pageCount > 1 && paginationSelectorTop && (
-        <PageSelector className="mb-12" page={page} onChange={changePage} />
+      {pages.length > 1 && paginationSelectorTop && (
+        <PageSelector
+          className="mb-12"
+          page={page}
+          pagesCount={pages.length}
+          onChange={setPage}
+        />
       )}
 
       <div className="mb-8">
-        {groupedList.size > 0 ? (
-          iterateMap(
-            groupedList,
-            (name, groupItems) =>
-              groupItems.length > 0 && (
-                <Fragment key={name}>
-                  {name.length > 0 && (
+        {pages[page]?.length > 0 ? (
+          pages[page]?.map(
+            (group) =>
+              group.items.length > 0 && (
+                <Fragment key={group.name}>
+                  {group.name.length > 0 && (
                     <h2
                       className="flex flex-row place-items-center gap-2 pb-2 pt-10 text-2xl
-                first-of-type:pt-0"
+                      first-of-type:pt-0"
                     >
-                      {name}
+                      {group.name}
                       <Chip
-                        text={`${groupItems.reduce(
-                          (acc, item) => acc + groupCountingFunction(item),
-                          0
-                        )} ${
-                          groupItems.length <= 1
+                        text={`${group.totalCount} ${
+                          group.items.length <= 1
                             ? langui.result?.toLowerCase() ?? ""
                             : langui.results?.toLowerCase() ?? ""
                         }`}
@@ -179,13 +209,12 @@ export const SmartList = <T,>({
                       className
                     )}
                   >
-                    {groupItems.map((item) => (
+                    {group.items.map((item) => (
                       <RenderItem item={item} key={getItemId(item)} />
                     ))}
                   </div>
                 </Fragment>
-              ),
-            ([a], [b]) => groupSortingFunction(a, b)
+              )
           )
         ) : isDefined(RenderWhenEmpty) ? (
           <RenderWhenEmpty />
@@ -194,8 +223,13 @@ export const SmartList = <T,>({
         )}
       </div>
 
-      {pageCount > 1 && paginationSelectorBottom && (
-        <PageSelector className="mb-12" page={page} onChange={changePage} />
+      {pages.length > 1 && paginationSelectorBottom && (
+        <PageSelector
+          className="mb-12"
+          page={page}
+          pagesCount={pages.length}
+          onChange={setPage}
+        />
       )}
     </>
   );
@@ -217,7 +251,7 @@ const DefaultRenderWhenEmpty = ({ langui }: DefaultRenderWhenEmptyProps) => (
       border-dark p-8 text-dark opacity-40"
     >
       <Ico icon={Icon.ChevronLeft} className="!text-[300%] mobile:hidden" />
-      <p className="max-w-xs text-2xl"> {langui.no_results_message} </p>
+      <p className="max-w-xs text-2xl">{langui.no_results_message}</p>
       <Ico icon={Icon.ChevronRight} className="!text-[300%] desktop:hidden" />
     </div>
   </div>

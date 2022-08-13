@@ -5,6 +5,7 @@ import { NavOption } from "./PanelComponents/NavOption";
 import { ChroniclePreview } from "./Chronicles/ChroniclePreview";
 import { ChroniclesList } from "./Chronicles/ChroniclesList";
 import { Button } from "./Inputs/Button";
+import { ReturnButton } from "./PanelComponents/ReturnButton";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { PreviewFolder } from "pages/contents/folder/[slug]";
 
@@ -195,6 +196,29 @@ export const TranslatedPreviewFolder = ({
 
   return (
     <PreviewFolder
+      title={selectedTranslation?.title ?? fallback.title}
+      {...otherProps}
+    />
+  );
+};
+
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
+
+export const TranslatedReturnButton = ({
+  translations,
+  fallback,
+  ...otherProps
+}: TranslatedProps<
+  Parameters<typeof ReturnButton>[0],
+  "title"
+>): JSX.Element => {
+  const [selectedTranslation] = useSmartLanguage({
+    items: translations,
+    languageExtractor,
+  });
+
+  return (
+    <ReturnButton
       title={selectedTranslation?.title ?? fallback.title}
       {...otherProps}
     />

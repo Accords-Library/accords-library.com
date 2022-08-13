@@ -35,6 +35,9 @@ type HookContent = {
   model: "content";
   entry: {
     slug: string;
+    folder?: {
+      slug: string;
+    };
     ranged_contents: {
       slug: string;
     }[];
@@ -160,9 +163,15 @@ const Revalidate = (
     case "content": {
       paths.push(`/contents`);
       paths.push(`/contents/${body.entry.slug}`);
+      if (body.entry.folder?.slug) {
+        paths.push(`/contents/folder/${body.entry.folder.slug}`);
+      }
       serverRuntimeConfig.locales?.forEach((locale: string) => {
         paths.push(`/${locale}/contents`);
         paths.push(`/${locale}/contents/${body.entry.slug}`);
+        if (body.entry.folder?.slug) {
+          paths.push(`/${locale}/contents/folder/${body.entry.folder.slug}`);
+        }
       });
       if (body.entry.ranged_contents.length > 0) {
         body.entry.ranged_contents.forEach((ranged_content) => {

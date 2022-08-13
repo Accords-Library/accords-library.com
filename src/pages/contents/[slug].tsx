@@ -5,10 +5,7 @@ import { Chip } from "components/Chip";
 import { HorizontalLine } from "components/HorizontalLine";
 import { PreviewCardCTAs } from "components/Library/PreviewCardCTAs";
 import { Markdawn, TableOfContents } from "components/Markdown/Markdawn";
-import {
-  ReturnButton,
-  ReturnButtonType,
-} from "components/PanelComponents/ReturnButton";
+import { ReturnButtonType } from "components/PanelComponents/ReturnButton";
 import { ContentPanel } from "components/Panels/ContentPanel";
 import { SubPanel } from "components/Panels/SubPanel";
 import { PreviewCard } from "components/PreviewCard";
@@ -34,8 +31,8 @@ import { useMediaMobile } from "hooks/useMediaQuery";
 import { AnchorIds, useScrollTopOnChange } from "hooks/useScrollTopOnChange";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 import {
-  TranslatedPreviewFolder,
   TranslatedPreviewLine,
+  TranslatedReturnButton,
 } from "components/Translated";
 import { getOpenGraph } from "helpers/openGraph";
 import {
@@ -78,50 +75,56 @@ const Content = ({
   const { previousContent, nextContent } = useMemo(
     () => ({
       previousContent:
-        content.folders?.data[0]?.attributes?.contents &&
-        content.folders.data[0].attributes.sequence
+        content.folder?.data?.attributes?.contents &&
+        content.folder.data.attributes.sequence
           ? getPreviousContent(
-              content.folders.data[0].attributes.contents.data,
+              content.folder.data.attributes.contents.data,
               content.slug
             )
           : undefined,
       nextContent:
-        content.folders?.data[0]?.attributes?.contents &&
-        content.folders.data[0].attributes.sequence
+        content.folder?.data?.attributes?.contents &&
+        content.folder.data.attributes.sequence
           ? getNextContent(
-              content.folders.data[0].attributes.contents.data,
+              content.folder.data.attributes.contents.data,
               content.slug
             )
           : undefined,
     }),
-    [content.folders, content.slug]
+    [content.folder, content.slug]
+  );
+
+  const returnButtonProps = useMemo(
+    () => ({
+      href: content.folder?.data?.attributes
+        ? `/contents/folder/${content.folder.data.attributes.slug}`
+        : "/contents",
+
+      translations: filterHasAttributes(
+        content.folder?.data?.attributes?.titles,
+        ["language.data.attributes.code"] as const
+      ).map((title) => ({
+        language: title.language.data.attributes.code,
+        title: title.title,
+      })),
+      fallback: {
+        title: content.folder?.data?.attributes
+          ? prettySlug(content.folder.data.attributes.slug)
+          : langui.contents,
+      },
+      langui,
+    }),
+    [content.folder?.data?.attributes, langui]
   );
 
   const subPanel = useMemo(
     () => (
       <SubPanel>
-        {content.folders?.data && content.folders.data.length > 0 && (
-          <>
-            <h2 className="mb-2 text-xl">{langui.folders}</h2>
-            {filterHasAttributes(content.folders.data, [
-              "attributes",
-              "id",
-            ] as const).map((folder) => (
-              <TranslatedPreviewFolder
-                key={folder.id}
-                href={`/contents/folder/${folder.attributes.slug}`}
-                translations={filterHasAttributes(folder.attributes.titles, [
-                  "language.data.attributes.code",
-                ] as const).map((title) => ({
-                  language: title.language.data.attributes.code,
-                  title: title.title,
-                }))}
-                fallback={{ title: prettySlug(folder.attributes.slug) }}
-              />
-            ))}
-            <HorizontalLine />
-          </>
-        )}
+        <TranslatedReturnButton
+          {...returnButtonProps}
+          displayOn={ReturnButtonType.Desktop}
+          horizontalLine
+        />
 
         {selectedTranslation?.text_set?.source_language?.data?.attributes
           ?.code !== undefined && (
@@ -330,11 +333,11 @@ const Content = ({
       </SubPanel>
     ),
     [
-      content.folders?.data,
       content.ranged_contents?.data,
       currencies,
       languages,
       langui,
+      returnButtonProps,
       selectedTranslation,
     ]
   );
@@ -342,10 +345,8 @@ const Content = ({
   const contentPanel = useMemo(
     () => (
       <ContentPanel>
-        <ReturnButton
-          href={`/contents/folder`}
-          title={langui.contents}
-          langui={langui}
+        <TranslatedReturnButton
+          {...returnButtonProps}
           displayOn={ReturnButtonType.Mobile}
           className="mb-10"
         />
@@ -481,6 +482,7 @@ const Content = ({
       langui,
       nextContent?.attributes,
       previousContent?.attributes,
+      returnButtonProps,
       selectedTranslation?.description,
       selectedTranslation?.pre_title,
       selectedTranslation?.subtitle,
@@ -605,7 +607,7 @@ export const getStaticPaths: GetStaticPaths = async (context) => {
 type FolderContents = NonNullable<
   NonNullable<
     NonNullable<
-      NonNullable<ContentWithTranslations["folders"]>["data"][number]
+      NonNullable<ContentWithTranslations["folder"]>["data"]
     >["attributes"]
   >["contents"]
 >["data"];

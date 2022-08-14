@@ -41,7 +41,7 @@ export const PreviewLine = ({
       <div className="aspect-[3/2] h-full">
         <Img
           className="h-full object-cover"
-          image={thumbnail}
+          src={thumbnail}
           quality={ImageQuality.Medium}
         />
       </div>

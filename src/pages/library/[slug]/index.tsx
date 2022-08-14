@@ -172,7 +172,7 @@ const LibrarySlug = ({
           >
             {item.thumbnail?.data?.attributes ? (
               <Img
-                image={item.thumbnail.data.attributes}
+                src={item.thumbnail.data.attributes}
                 quality={ImageQuality.Large}
                 className="h-full w-full object-contain"
               />
@@ -273,7 +273,7 @@ const LibrarySlug = ({
                       <Img
                         className="h-full w-full rounded-lg
                         bg-light object-cover drop-shadow-shade-md"
-                        image={galleryItem.attributes}
+                        src={galleryItem.attributes}
                       />
                     </div>
                   </Fragment>

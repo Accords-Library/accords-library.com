@@ -24,3 +24,13 @@ export const randomInt = (min: number, max: number): number =>
 
 export const isInteger = (value: string): boolean =>
   /^[+-]?[0-9]+$/u.test(value);
+
+export const clamp = (
+  value: number,
+  minValue: number,
+  maxValue: number
+): number => {
+  if (value > maxValue) return maxValue;
+  if (value < minValue) return minValue;
+  return value;
+};

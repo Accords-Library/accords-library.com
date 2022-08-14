@@ -148,7 +148,7 @@ export const PreviewCard = ({
             {thumbnail && (
               <Img
                 className="opacity-30"
-                image={thumbnail}
+                src={thumbnail}
                 quality={ImageQuality.Medium}
               />
             )}
@@ -164,7 +164,7 @@ export const PreviewCard = ({
             {thumbnail && (
               <Img
                 className="opacity-70"
-                image={thumbnail}
+                src={thumbnail}
                 quality={ImageQuality.Medium}
               />
             )}
@@ -193,7 +193,7 @@ export const PreviewCard = ({
               ),
               cIf(thumbnailForceAspectRatio, "h-full w-full object-cover")
             )}
-            image={thumbnail}
+            src={thumbnail}
             quality={ImageQuality.Medium}
           />
           {stackNumber > 0 && (

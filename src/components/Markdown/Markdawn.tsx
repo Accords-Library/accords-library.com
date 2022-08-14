@@ -284,7 +284,7 @@ export const Markdawn = ({
                   }}
                 >
                   <Img
-                    image={
+                    src={
                       compProps.src.startsWith("/uploads/")
                         ? getAssetURL(compProps.src, ImageQuality.Small)
                         : compProps.src

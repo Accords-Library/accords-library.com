@@ -1,47 +1,40 @@
-import { ImageProps } from "next/image";
-import { MouseEventHandler } from "react";
+import { DetailedHTMLProps, ImgHTMLAttributes } from "react";
 import { UploadImageFragment } from "graphql/generated";
-import { getAssetURL, getImgSizesByQuality, ImageQuality } from "helpers/img";
+import { getAssetURL, ImageQuality } from "helpers/img";
 
 /*
  *                                         ╭─────────────╮
  * ────────────────────────────────────────╯  CONSTANTS  ╰──────────────────────────────────────────
  */
 
-interface Props {
-  className?: string;
-  image?: UploadImageFragment | string;
+interface Props
+  extends Omit<
+    DetailedHTMLProps<ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>,
+    "src"
+  > {
+  src: UploadImageFragment | string;
   quality?: ImageQuality;
-  alt?: ImageProps["alt"];
-  onClick?: MouseEventHandler<HTMLImageElement>;
 }
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
 export const Img = ({
   className,
-  image,
+  src: rawSrc,
   quality = ImageQuality.Small,
   alt,
-  onClick,
+  loading = "lazy",
+  ...otherProps
 }: Props): JSX.Element => {
-  if (typeof image === "string") {
-    return (
-      <img className={className} src={image} alt={alt ?? ""} loading="lazy" />
-    );
-  } else if (image?.width && image.height) {
-    const imgSize = getImgSizesByQuality(image.width, image.height, quality);
-    return (
-      <img
-        className={className}
-        src={getAssetURL(image.url, quality)}
-        alt={alt ?? image.alternativeText ?? ""}
-        width={imgSize.width}
-        height={imgSize.height}
-        loading="lazy"
-        onClick={onClick}
-      />
-    );
-  }
-  return <></>;
+  const src =
+    typeof rawSrc === "string" ? rawSrc : getAssetURL(rawSrc.url, quality);
+  return (
+    <img
+      className={className}
+      src={src}
+      alt={alt}
+      loading={loading}
+      {...otherProps}
+    />
+  );
 };

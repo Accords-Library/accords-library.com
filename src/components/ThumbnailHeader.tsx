@@ -53,7 +53,7 @@ export const ThumbnailHeader = ({
           {thumbnail ? (
             <Img
               className="cursor-pointer rounded-xl"
-              image={thumbnail}
+              src={thumbnail}
               quality={ImageQuality.Medium}
               onClick={() => {
                 openLightBox([getAssetURL(thumbnail.url, ImageQuality.Large)]);

@@ -29,7 +29,7 @@ export const RecorderChip = ({ recorder, langui }: Props): JSX.Element => (
           {recorder.avatar?.data?.attributes && (
             <Img
               className="w-20 rounded-full border-4 border-mid"
-              image={recorder.avatar.data.attributes}
+              src={recorder.avatar.data.attributes}
               quality={ImageQuality.Small}
             />
           )}

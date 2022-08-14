@@ -235,7 +235,7 @@ export const ScanSet = ({
                   openLightBox(images, index);
                 }}
               >
-                <Img image={page.attributes} quality={ImageQuality.Small} />
+                <Img src={page.attributes} quality={ImageQuality.Small} />
               </div>
             ))}
           </div>

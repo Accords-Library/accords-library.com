@@ -112,7 +112,7 @@ const WikiPage = ({
             >
               {page.thumbnail?.data?.attributes && (
                 <Img
-                  image={page.thumbnail.data.attributes}
+                  src={page.thumbnail.data.attributes}
                   quality={ImageQuality.Medium}
                   className="w-full cursor-pointer"
                   onClick={() => {

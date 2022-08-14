@@ -180,7 +180,7 @@ export const ScanSetCover = ({
                   openLightBox(imgs, index);
                 }}
               >
-                <Img image={image} quality={ImageQuality.Small} />
+                <Img src={image} quality={ImageQuality.Small} />
               </div>
             ))}
           </div>

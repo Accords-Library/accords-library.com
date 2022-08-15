@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import getConfig from "next/config";
+import { i18n } from "../../../next.config";
 
 type RequestProps =
   | HookChronicle
@@ -119,7 +119,6 @@ const Revalidate = (
   res: NextApiResponse<ResponseMailProps>
 ): void => {
   const body = req.body as RequestProps;
-  const { serverRuntimeConfig } = getConfig();
 
   // Check for secret to confirm this is a valid request
   if (
@@ -135,7 +134,7 @@ const Revalidate = (
     case "post": {
       paths.push(`/news`);
       paths.push(`/news/${body.entry.slug}`);
-      serverRuntimeConfig.locales?.forEach((locale: string) => {
+      i18n.locales.forEach((locale: string) => {
         paths.push(`/${locale}/news`);
         paths.push(`/${locale}/news/${body.entry.slug}`);
       });
@@ -149,7 +148,7 @@ const Revalidate = (
       body.entry.subitem_of.forEach((parentItem) => {
         paths.push(`/library/${parentItem.slug}`);
       });
-      serverRuntimeConfig.locales?.forEach((locale: string) => {
+      i18n.locales.forEach((locale: string) => {
         paths.push(`/${locale}/library`);
         paths.push(`/${locale}/library/${body.entry.slug}`);
         paths.push(`/${locale}/library/${body.entry.slug}/scans`);
@@ -166,7 +165,7 @@ const Revalidate = (
       if (body.entry.folder?.slug) {
         paths.push(`/contents/folder/${body.entry.folder.slug}`);
       }
-      serverRuntimeConfig.locales?.forEach((locale: string) => {
+      i18n.locales.forEach((locale: string) => {
         paths.push(`/${locale}/contents`);
         paths.push(`/${locale}/contents/${body.entry.slug}`);
         if (body.entry.folder?.slug) {
@@ -181,7 +180,7 @@ const Revalidate = (
           );
           paths.push(`/library/${parentSlug}`);
           paths.push(`/library/${parentSlug}/scans`);
-          serverRuntimeConfig.locales?.forEach((locale: string) => {
+          i18n.locales.forEach((locale: string) => {
             paths.push(`/${locale}/library/${parentSlug}`);
             paths.push(`/${locale}/library/${parentSlug}/scans`);
           });
@@ -193,7 +192,7 @@ const Revalidate = (
     case "chronology-era":
     case "chronology-item": {
       paths.push(`/wiki/chronology`);
-      serverRuntimeConfig.locales?.forEach((locale: string) => {
+      i18n.locales.forEach((locale: string) => {
         paths.push(`/${locale}/wiki/chronology`);
       });
       break;
@@ -207,7 +206,7 @@ const Revalidate = (
       if (body.entry.content) {
         paths.push(`/contents/${body.entry.content.slug}`);
       }
-      serverRuntimeConfig.locales?.forEach((locale: string) => {
+      i18n.locales.forEach((locale: string) => {
         if (body.entry.library_item) {
           paths.push(`/${locale}/library/${body.entry.library_item.slug}`);
           paths.push(
@@ -235,7 +234,7 @@ const Revalidate = (
       body.entry.contents.forEach((content) =>
         paths.push(`/contents/${content.slug}`)
       );
-      serverRuntimeConfig.locales?.forEach((locale: string) => {
+      i18n.locales.forEach((locale: string) => {
         if (body.entry.slug === "root") {
           paths.push(`/${locale}/contents`);
         }
@@ -258,7 +257,7 @@ const Revalidate = (
     case "wiki-page": {
       paths.push(`/wiki`);
       paths.push(`/wiki/${body.entry.slug}`);
-      serverRuntimeConfig.locales?.forEach((locale: string) => {
+      i18n.locales.forEach((locale: string) => {
         paths.push(`/${locale}/wiki`);
         paths.push(`/${locale}/wiki/${body.entry.slug}`);
       });
@@ -269,7 +268,7 @@ const Revalidate = (
     case "chronicle": {
       paths.push(`/chronicles`);
       paths.push(`/chronicles/${body.entry.slug}`);
-      serverRuntimeConfig.locales?.forEach((locale: string) => {
+      i18n.locales.forEach((locale: string) => {
         paths.push(`/${locale}/chronicles`);
         paths.push(`/${locale}/chronicles/${body.entry.slug}`);
       });
@@ -278,12 +277,12 @@ const Revalidate = (
 
     case "chronicles-chapter": {
       paths.push(`/chronicles`);
-      serverRuntimeConfig.locales?.forEach((locale: string) => {
+      i18n.locales.forEach((locale: string) => {
         paths.push(`/${locale}/chronicles`);
       });
       body.entry.chronicles.forEach((chronicle) => {
         paths.push(`/chronicles/${chronicle.slug}`);
-        serverRuntimeConfig.locales?.forEach((locale: string) => {
+        i18n.locales.forEach((locale: string) => {
           paths.push(`/${locale}/chronicles/${chronicle.slug}`);
         });
       });

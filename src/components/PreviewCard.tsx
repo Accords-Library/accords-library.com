@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { useRouter } from "next/router";
 import { Chip } from "./Chip";
 import { Ico, Icon } from "./Ico";
@@ -20,6 +20,8 @@ import {
 } from "helpers/formatters";
 import { ImageQuality } from "helpers/img";
 import { useMediaHoverable } from "hooks/useMediaQuery";
+import { useSmartLanguage } from "hooks/useSmartLanguage";
+import { TranslatedProps } from "helpers/types/TranslatedProps";
 
 /*
  *                                        ╭─────────────╮
@@ -294,5 +296,36 @@ export const PreviewCard = ({
         {infoAppend}
       </div>
     </Link>
+  );
+};
+
+/*
+ *                                    ╭──────────────────────╮
+ * ───────────────────────────────────╯  TRANSLATED VARIANT  ╰──────────────────────────────────────
+ */
+
+export const TranslatedPreviewCard = ({
+  translations,
+  fallback,
+  ...otherProps
+}: TranslatedProps<
+  Props,
+  "description" | "pre_title" | "subtitle" | "title"
+>): JSX.Element => {
+  const [selectedTranslation] = useSmartLanguage({
+    items: translations,
+    languageExtractor: useCallback(
+      (item: { language: string }): string => item.language,
+      []
+    ),
+  });
+  return (
+    <PreviewCard
+      pre_title={selectedTranslation?.pre_title ?? fallback.pre_title}
+      title={selectedTranslation?.title ?? fallback.title}
+      subtitle={selectedTranslation?.subtitle ?? fallback.subtitle}
+      description={selectedTranslation?.description ?? fallback.description}
+      {...otherProps}
+    />
   );
 };

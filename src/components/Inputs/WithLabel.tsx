@@ -8,13 +8,17 @@ import { isDefinedAndNotEmpty } from "helpers/others";
 
 interface Props {
   label: string | null | undefined;
-  input: JSX.Element;
   disabled?: boolean;
+  children: React.ReactNode;
 }
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
-export const WithLabel = ({ label, input, disabled }: Props): JSX.Element => (
+export const WithLabel = ({
+  label,
+  children,
+  disabled,
+}: Props): JSX.Element => (
   <div
     className={cJoin(
       "flex flex-row place-content-between place-items-center gap-2",
@@ -28,6 +32,6 @@ export const WithLabel = ({ label, input, disabled }: Props): JSX.Element => (
         {label}:
       </p>
     )}
-    {input}
+    {children}
   </div>
 );

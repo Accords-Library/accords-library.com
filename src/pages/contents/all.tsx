@@ -1,5 +1,6 @@
 import { GetStaticProps } from "next";
 import { useState, useMemo, useCallback } from "react";
+import { useBoolean } from "usehooks-ts";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { Select } from "components/Inputs/Select";
 import { Switch } from "components/Inputs/Switch";
@@ -21,10 +22,9 @@ import { filterDefined, filterHasAttributes } from "helpers/others";
 import { GetContentsQuery } from "graphql/generated";
 import { SmartList } from "components/SmartList";
 import { SelectiveNonNullable } from "helpers/types/SelectiveNonNullable";
-import { useBoolean } from "hooks/useBoolean";
-import { TranslatedPreviewCard } from "components/Translated";
 import { getOpenGraph } from "helpers/openGraph";
 import { HorizontalLine } from "components/HorizontalLine";
+import { TranslatedPreviewCard } from "components/PreviewCard";
 
 /*
  *                                         ╭─────────────╮
@@ -58,9 +58,9 @@ const Contents = ({
     DEFAULT_FILTERS_STATE.groupingMethod
   );
   const {
-    state: keepInfoVisible,
-    toggleState: toggleKeepInfoVisible,
-    setState: setKeepInfoVisible,
+    value: keepInfoVisible,
+    toggle: toggleKeepInfoVisible,
+    setValue: setKeepInfoVisible,
   } = useBoolean(DEFAULT_FILTERS_STATE.keepInfoVisible);
 
   const [searchName, setSearchName] = useState(
@@ -150,26 +150,20 @@ const Contents = ({
           onChange={setSearchName}
         />
 
-        <WithLabel
-          label={langui.group_by}
-          input={
-            <Select
-              className="w-full"
-              options={[langui.category ?? "Category", langui.type ?? "Type"]}
-              value={groupingMethod}
-              onChange={setGroupingMethod}
-              allowEmpty
-            />
-          }
-        />
+        <WithLabel label={langui.group_by}>
+          <Select
+            className="w-full"
+            options={[langui.category ?? "Category", langui.type ?? "Type"]}
+            value={groupingMethod}
+            onChange={setGroupingMethod}
+            allowEmpty
+          />
+        </WithLabel>
 
         {hoverable && (
-          <WithLabel
-            label={langui.always_show_info}
-            input={
-              <Switch onClick={toggleKeepInfoVisible} value={keepInfoVisible} />
-            }
-          />
+          <WithLabel label={langui.always_show_info}>
+            <Switch onClick={toggleKeepInfoVisible} value={keepInfoVisible} />
+          </WithLabel>
         )}
 
         <Button

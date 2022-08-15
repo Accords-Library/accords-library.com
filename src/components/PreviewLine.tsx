@@ -1,8 +1,11 @@
+import { useCallback } from "react";
 import { Chip } from "./Chip";
 import { Img } from "./Img";
 import { Link } from "./Inputs/Link";
 import { UploadImageFragment } from "graphql/generated";
 import { ImageQuality } from "helpers/img";
+import { TranslatedProps } from "helpers/types/TranslatedProps";
+import { useSmartLanguage } from "hooks/useSmartLanguage";
 
 /*
  *                                        ╭─────────────╮
@@ -22,7 +25,7 @@ interface Props {
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
-export const PreviewLine = ({
+const PreviewLine = ({
   href,
   thumbnail,
   pre_title,
@@ -73,3 +76,30 @@ export const PreviewLine = ({
     </div>
   </Link>
 );
+
+/*
+ *                                    ╭──────────────────────╮
+ * ───────────────────────────────────╯  TRANSLATED VARIANT  ╰──────────────────────────────────────
+ */
+
+export const TranslatedPreviewLine = ({
+  translations,
+  fallback,
+  ...otherProps
+}: TranslatedProps<Props, "pre_title" | "subtitle" | "title">): JSX.Element => {
+  const [selectedTranslation] = useSmartLanguage({
+    items: translations,
+    languageExtractor: useCallback(
+      (item: { language: string }): string => item.language,
+      []
+    ),
+  });
+  return (
+    <PreviewLine
+      pre_title={selectedTranslation?.pre_title ?? fallback.pre_title}
+      title={selectedTranslation?.title ?? fallback.title}
+      subtitle={selectedTranslation?.subtitle ?? fallback.subtitle}
+      {...otherProps}
+    />
+  );
+};

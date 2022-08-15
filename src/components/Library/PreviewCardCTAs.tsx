@@ -39,7 +39,7 @@ export const PreviewCardCTAs = ({
             onClick={(event) => {
               event.preventDefault();
               setLibraryItemUserStatus((current) => {
-                const newLibraryItemUserStatus = current ? { ...current } : {};
+                const newLibraryItemUserStatus = { ...current };
                 newLibraryItemUserStatus[id] =
                   newLibraryItemUserStatus[id] === LibraryItemUserStatus.Want
                     ? LibraryItemUserStatus.None
@@ -57,7 +57,7 @@ export const PreviewCardCTAs = ({
             onClick={(event) => {
               event.preventDefault();
               setLibraryItemUserStatus((current) => {
-                const newLibraryItemUserStatus = current ? { ...current } : {};
+                const newLibraryItemUserStatus = { ...current };
                 newLibraryItemUserStatus[id] =
                   newLibraryItemUserStatus[id] === LibraryItemUserStatus.Have
                     ? LibraryItemUserStatus.None

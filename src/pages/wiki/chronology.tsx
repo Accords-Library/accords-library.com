@@ -24,13 +24,14 @@ import {
   isDefinedAndNotEmpty,
 } from "helpers/others";
 import { getOpenGraph } from "helpers/openGraph";
-import { TranslatedNavOption, TranslatedProps } from "components/Translated";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { ToolTip } from "components/ToolTip";
 import { Chip } from "components/Chip";
 import { Ico, Icon } from "components/Ico";
 import { AnchorShare } from "components/AnchorShare";
 import { datePickerToDate } from "helpers/date";
+import { TranslatedProps } from "helpers/types/TranslatedProps";
+import { TranslatedNavOption } from "components/PanelComponents/NavOption";
 
 /*
  *                                           ╭────────╮

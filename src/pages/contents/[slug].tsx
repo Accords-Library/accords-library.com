@@ -5,7 +5,10 @@ import { Chip } from "components/Chip";
 import { HorizontalLine } from "components/HorizontalLine";
 import { PreviewCardCTAs } from "components/Library/PreviewCardCTAs";
 import { Markdawn, TableOfContents } from "components/Markdown/Markdawn";
-import { ReturnButtonType } from "components/PanelComponents/ReturnButton";
+import {
+  ReturnButtonType,
+  TranslatedReturnButton,
+} from "components/PanelComponents/ReturnButton";
 import { ContentPanel } from "components/Panels/ContentPanel";
 import { SubPanel } from "components/Panels/SubPanel";
 import { PreviewCard } from "components/PreviewCard";
@@ -30,16 +33,13 @@ import { ContentWithTranslations } from "helpers/types";
 import { useMediaMobile } from "hooks/useMediaQuery";
 import { AnchorIds, useScrollTopOnChange } from "hooks/useScrollTopOnChange";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
-import {
-  TranslatedPreviewLine,
-  TranslatedReturnButton,
-} from "components/Translated";
 import { getOpenGraph } from "helpers/openGraph";
 import {
   getDefaultPreferredLanguages,
   staticSmartLanguage,
 } from "helpers/locales";
 import { getDescription } from "helpers/description";
+import { TranslatedPreviewLine } from "components/PreviewLine";
 
 /*
  *                                           ╭────────╮

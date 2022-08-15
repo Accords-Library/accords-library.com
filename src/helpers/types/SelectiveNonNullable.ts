@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 type JoinDot<K extends string, P extends string> = `${K}${"" extends K
   ? ""
   : "."}${P}`;

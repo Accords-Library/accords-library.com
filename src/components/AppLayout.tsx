@@ -3,12 +3,12 @@ import { useRouter } from "next/router";
 import { useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { useSwipeable } from "react-swipeable";
 import UAParser from "ua-parser-js";
+import { useBoolean, useIsClient } from "usehooks-ts";
 import { Ico, Icon } from "./Ico";
 import { ButtonGroup } from "./Inputs/ButtonGroup";
 import { OrderableList } from "./Inputs/OrderableList";
 import { Select } from "./Inputs/Select";
 import { TextInput } from "./Inputs/TextInput";
-import { ContentPlaceholder } from "./PanelComponents/ContentPlaceholder";
 import { MainPanel } from "./Panels/MainPanel";
 import { Popup } from "./Popup";
 import { AnchorIds } from "hooks/useScrollTopOnChange";
@@ -27,8 +27,6 @@ import { useAppLayout } from "contexts/AppLayoutContext";
 import { Button } from "components/Inputs/Button";
 import { OpenGraph, TITLE_PREFIX } from "helpers/openGraph";
 import { getDefaultPreferredLanguages } from "helpers/locales";
-import useIsClient from "hooks/useIsClient";
-import { useBoolean } from "hooks/useBoolean";
 
 /*
  *                                         ╭─────────────╮
@@ -195,7 +193,7 @@ export const AppLayout = ({
   }, [mainPanelReduced, subPanel]);
 
   const isClient = useIsClient();
-  const { state: hasDisgardSafariWarning, setTrue: disgardSafariWarning } =
+  const { value: hasDisgardSafariWarning, setTrue: disgardSafariWarning } =
     useBoolean(false);
   const isSafari = useMemo<boolean>(() => {
     if (isClient) {
@@ -548,3 +546,29 @@ export const AppLayout = ({
     </div>
   );
 };
+
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
+
+interface ContentPlaceholderProps {
+  message: string;
+  icon?: Icon;
+}
+
+const ContentPlaceholder = ({
+  message,
+  icon,
+}: ContentPlaceholderProps): JSX.Element => (
+  <div className="grid h-full place-content-center">
+    <div
+      className="grid grid-flow-col place-items-center gap-9 rounded-2xl border-2 border-dotted
+        border-dark p-8 text-dark opacity-40"
+    >
+      {isDefined(icon) && <Ico icon={icon} className="!text-[300%]" />}
+      <p
+        className={cJoin("w-64 text-2xl", cIf(!isDefined(icon), "text-center"))}
+      >
+        {message}
+      </p>
+    </div>
+  </div>
+);

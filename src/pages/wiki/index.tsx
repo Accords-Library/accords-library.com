@@ -1,5 +1,6 @@
 import { GetStaticProps } from "next";
 import { useCallback, useMemo, useState } from "react";
+import { useBoolean } from "usehooks-ts";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { NavOption } from "components/PanelComponents/NavOption";
 import { PanelHeader } from "components/PanelComponents/PanelHeader";
@@ -23,9 +24,8 @@ import { SmartList } from "components/SmartList";
 import { Select } from "components/Inputs/Select";
 import { SelectiveNonNullable } from "helpers/types/SelectiveNonNullable";
 import { prettySlug } from "helpers/formatters";
-import { useBoolean } from "hooks/useBoolean";
-import { TranslatedPreviewCard } from "components/Translated";
 import { getOpenGraph } from "helpers/openGraph";
+import { TranslatedPreviewCard } from "components/PreviewCard";
 
 /*
  *                                         ╭─────────────╮
@@ -59,9 +59,9 @@ const Wiki = ({ langui, pages, ...otherProps }: Props): JSX.Element => {
   );
 
   const {
-    state: keepInfoVisible,
-    toggleState: toggleKeepInfoVisible,
-    setState: setKeepInfoVisible,
+    value: keepInfoVisible,
+    toggle: toggleKeepInfoVisible,
+    setValue: setKeepInfoVisible,
   } = useBoolean(DEFAULT_FILTERS_STATE.keepInfoVisible);
 
   const subPanel = useMemo(
@@ -80,26 +80,20 @@ const Wiki = ({ langui, pages, ...otherProps }: Props): JSX.Element => {
           onChange={setSearchName}
         />
 
-        <WithLabel
-          label={langui.group_by}
-          input={
-            <Select
-              className="w-full"
-              options={[langui.category ?? "Category"]}
-              value={groupingMethod}
-              onChange={setGroupingMethod}
-              allowEmpty
-            />
-          }
-        />
+        <WithLabel label={langui.group_by}>
+          <Select
+            className="w-full"
+            options={[langui.category ?? "Category"]}
+            value={groupingMethod}
+            onChange={setGroupingMethod}
+            allowEmpty
+          />
+        </WithLabel>
 
         {hoverable && (
-          <WithLabel
-            label={langui.always_show_info}
-            input={
-              <Switch value={keepInfoVisible} onClick={toggleKeepInfoVisible} />
-            }
-          />
+          <WithLabel label={langui.always_show_info}>
+            <Switch value={keepInfoVisible} onClick={toggleKeepInfoVisible} />
+          </WithLabel>
         )}
 
         <Button

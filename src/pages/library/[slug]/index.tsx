@@ -1,6 +1,7 @@
 import { Fragment, useCallback, useMemo } from "react";
 import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next";
 import { useRouter } from "next/router";
+import { useBoolean } from "usehooks-ts";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { Chip } from "components/Chip";
 import { Img } from "components/Img";
@@ -53,7 +54,6 @@ import { WithLabel } from "components/Inputs/WithLabel";
 import { Ico, Icon } from "components/Ico";
 import { cJoin, cIf } from "helpers/className";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
-import { useBoolean } from "hooks/useBoolean";
 import { getOpenGraph } from "helpers/openGraph";
 import { getDescription } from "helpers/description";
 
@@ -85,7 +85,7 @@ const LibrarySlug = ({
   const hoverable = useMediaHoverable();
   const router = useRouter();
   const [openLightBox, LightBox] = useLightBox();
-  const { state: keepInfoVisible, toggleState: toggleKeepInfoVisible } =
+  const { value: keepInfoVisible, toggle: toggleKeepInfoVisible } =
     useBoolean(false);
 
   useScrollTopOnChange(AnchorIds.ContentPanel, [item]);
@@ -446,15 +446,12 @@ const LibrarySlug = ({
               </h2>
 
               {hoverable && (
-                <WithLabel
-                  label={langui.always_show_info}
-                  input={
-                    <Switch
-                      onClick={toggleKeepInfoVisible}
-                      value={keepInfoVisible}
-                    />
-                  }
-                />
+                <WithLabel label={langui.always_show_info}>
+                  <Switch
+                    onClick={toggleKeepInfoVisible}
+                    value={keepInfoVisible}
+                  />
+                </WithLabel>
               )}
 
               <div
@@ -725,7 +722,7 @@ const ContentLine = ({
   slug,
   parentSlug,
 }: ContentLineProps): JSX.Element => {
-  const { state: isOpened, toggleState: toggleOpened } = useBoolean(false);
+  const { value: isOpened, toggle: toggleOpened } = useBoolean(false);
 
   const [selectedTranslation] = useSmartLanguage({
     items: content?.translations ?? [],

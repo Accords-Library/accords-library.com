@@ -1,10 +1,13 @@
+import { useCallback } from "react";
+import { useBoolean } from "usehooks-ts";
+import { TranslatedChroniclePreview } from "./ChroniclePreview";
 import { GetChroniclesChaptersQuery } from "graphql/generated";
 import { filterHasAttributes } from "helpers/others";
-import { TranslatedChroniclePreview } from "components/Translated";
 import { prettyInlineTitle, prettySlug } from "helpers/formatters";
 import { Ico, Icon } from "components/Ico";
-import { useBoolean } from "hooks/useBoolean";
 import { compareDate } from "helpers/date";
+import { TranslatedProps } from "helpers/types/TranslatedProps";
+import { useSmartLanguage } from "hooks/useSmartLanguage";
 
 /*
  *                                        ╭─────────────╮
@@ -23,12 +26,12 @@ interface Props {
   title: string;
 }
 
-export const ChroniclesList = ({
+const ChroniclesList = ({
   chronicles,
   currentSlug,
   title,
 }: Props): JSX.Element => {
-  const { state: isOpen, toggleState: toggleOpen } = useBoolean(
+  const { value: isOpen, toggle: toggleOpen } = useBoolean(
     chronicles.some((chronicle) => chronicle.attributes?.slug === currentSlug)
   );
 
@@ -110,5 +113,31 @@ export const ChroniclesList = ({
           ))}
       </div>
     </div>
+  );
+};
+
+/*
+ *                                    ╭──────────────────────╮
+ * ───────────────────────────────────╯  TRANSLATED VARIANT  ╰──────────────────────────────────────
+ */
+
+export const TranslatedChroniclesList = ({
+  translations,
+  fallback,
+  ...otherProps
+}: TranslatedProps<Props, "title">): JSX.Element => {
+  const [selectedTranslation] = useSmartLanguage({
+    items: translations,
+    languageExtractor: useCallback(
+      (item: { language: string }): string => item.language,
+      []
+    ),
+  });
+
+  return (
+    <ChroniclesList
+      title={selectedTranslation?.title ?? fallback.title}
+      {...otherProps}
+    />
   );
 };

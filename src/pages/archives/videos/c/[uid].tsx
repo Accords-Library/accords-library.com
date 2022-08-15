@@ -1,5 +1,6 @@
 import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next";
 import { Fragment, useMemo } from "react";
+import { useBoolean } from "usehooks-ts";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { Switch } from "components/Inputs/Switch";
 import { PanelHeader } from "components/PanelComponents/PanelHeader";
@@ -21,7 +22,6 @@ import { Icon } from "components/Ico";
 import { useMediaHoverable } from "hooks/useMediaQuery";
 import { WithLabel } from "components/Inputs/WithLabel";
 import { filterHasAttributes, isDefined } from "helpers/others";
-import { useBoolean } from "hooks/useBoolean";
 import { getOpenGraph } from "helpers/openGraph";
 
 /*
@@ -36,7 +36,7 @@ interface Props extends AppStaticProps, AppLayoutRequired {
 }
 
 const Channel = ({ langui, channel, ...otherProps }: Props): JSX.Element => {
-  const { state: keepInfoVisible, toggleState: toggleKeepInfoVisible } =
+  const { value: keepInfoVisible, toggle: toggleKeepInfoVisible } =
     useBoolean(true);
   const hoverable = useMediaHoverable();
 
@@ -58,12 +58,9 @@ const Channel = ({ langui, channel, ...otherProps }: Props): JSX.Element => {
         />
 
         {hoverable && (
-          <WithLabel
-            label={langui.always_show_info}
-            input={
-              <Switch value={keepInfoVisible} onClick={toggleKeepInfoVisible} />
-            }
-          />
+          <WithLabel label={langui.always_show_info}>
+            <Switch value={keepInfoVisible} onClick={toggleKeepInfoVisible} />
+          </WithLabel>
         )}
       </SubPanel>
     ),

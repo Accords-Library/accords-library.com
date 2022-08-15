@@ -1,9 +1,11 @@
-import React, { MouseEventHandler } from "react";
+import React, { MouseEventHandler, useCallback } from "react";
 import { Link } from "./Link";
 import { Ico, Icon } from "components/Ico";
 import { cIf, cJoin } from "helpers/className";
 import { ConditionalWrapper, Wrapper } from "helpers/component";
 import { isDefined, isDefinedAndNotEmpty } from "helpers/others";
+import { TranslatedProps } from "helpers/types/TranslatedProps";
+import { useSmartLanguage } from "hooks/useSmartLanguage";
 
 /*
  *                                        ╭─────────────╮
@@ -88,6 +90,29 @@ export const Button = ({
     </div>
   </ConditionalWrapper>
 );
+
+/*
+ *                                    ╭──────────────────────╮
+ * ───────────────────────────────────╯  TRANSLATED VARIANT  ╰──────────────────────────────────────
+ */
+
+export const TranslatedButton = ({
+  translations,
+  fallback,
+  ...otherProps
+}: TranslatedProps<Props, "text">): JSX.Element => {
+  const [selectedTranslation] = useSmartLanguage({
+    items: translations,
+    languageExtractor: useCallback(
+      (item: { language: string }): string => item.language,
+      []
+    ),
+  });
+
+  return (
+    <Button text={selectedTranslation?.text ?? fallback.text} {...otherProps} />
+  );
+};
 
 /*
  *                                    ╭──────────────────────╮

@@ -1,7 +1,7 @@
 import { Fragment, useCallback } from "react";
+import { useBoolean } from "usehooks-ts";
 import { Ico, Icon } from "components/Ico";
 import { cIf, cJoin } from "helpers/className";
-import { useBoolean } from "hooks/useBoolean";
 
 /*
  *                                        ╭─────────────╮
@@ -27,9 +27,9 @@ export const Select = ({
   onChange,
 }: Props): JSX.Element => {
   const {
-    state: isOpened,
+    value: isOpened,
     setFalse: setClosed,
-    toggleState: toggleOpened,
+    toggle: toggleOpened,
   } = useBoolean(false);
 
   const tryToggling = useCallback(() => {
@@ -39,6 +39,9 @@ export const Select = ({
 
   return (
     <div
+      onClickCapture={() => {
+        setClosed();
+      }}
       className={cJoin(
         "relative text-center transition-[filter]",
         cIf(isOpened, "z-10 drop-shadow-shade-lg"),

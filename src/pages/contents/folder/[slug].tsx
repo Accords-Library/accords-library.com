@@ -1,5 +1,5 @@
 import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import {
   ContentPanel,
@@ -16,16 +16,14 @@ import {
 } from "helpers/locales";
 import { prettySlug } from "helpers/formatters";
 import { SmartList } from "components/SmartList";
-import {
-  TranslatedButton,
-  TranslatedPreviewCard,
-  TranslatedPreviewFolder,
-} from "components/Translated";
 import { Ico, Icon } from "components/Ico";
-import { Button } from "components/Inputs/Button";
+import { Button, TranslatedButton } from "components/Inputs/Button";
 import { Link } from "components/Inputs/Link";
 import { PanelHeader } from "components/PanelComponents/PanelHeader";
 import { SubPanel } from "components/Panels/SubPanel";
+import { TranslatedProps } from "helpers/types/TranslatedProps";
+import { useSmartLanguage } from "hooks/useSmartLanguage";
+import { TranslatedPreviewCard } from "components/PreviewCard";
 
 /*
  *                                           ╭────────╮
@@ -303,6 +301,30 @@ export const PreviewFolder = ({
     )}
   </Link>
 );
+
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
+
+export const TranslatedPreviewFolder = ({
+  translations,
+  fallback,
+  ...otherProps
+}: TranslatedProps<PreviewFolderProps, "title">): JSX.Element => {
+  const [selectedTranslation] = useSmartLanguage({
+    items: translations,
+    languageExtractor: useCallback(
+      (item: { language: string }): string => item.language,
+      []
+    ),
+  });
+  return (
+    <PreviewFolder
+      title={selectedTranslation?.title ?? fallback.title}
+      {...otherProps}
+    />
+  );
+};
+
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
 interface NoContentNorFolderMessageProps {
   langui: AppStaticProps["langui"];

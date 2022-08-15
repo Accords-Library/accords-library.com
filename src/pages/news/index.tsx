@@ -1,5 +1,6 @@
 import { GetStaticProps } from "next";
 import { useMemo, useState } from "react";
+import { useBoolean } from "usehooks-ts";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { Switch } from "components/Inputs/Switch";
 import { PanelHeader } from "components/PanelComponents/PanelHeader";
@@ -19,10 +20,9 @@ import { Button } from "components/Inputs/Button";
 import { useMediaHoverable } from "hooks/useMediaQuery";
 import { filterHasAttributes } from "helpers/others";
 import { SmartList } from "components/SmartList";
-import { useBoolean } from "hooks/useBoolean";
-import { TranslatedPreviewCard } from "components/Translated";
 import { getOpenGraph } from "helpers/openGraph";
 import { compareDate } from "helpers/date";
+import { TranslatedPreviewCard } from "components/PreviewCard";
 
 /*
  *                                         ╭─────────────╮
@@ -49,9 +49,9 @@ const News = ({ langui, posts, ...otherProps }: Props): JSX.Element => {
     DEFAULT_FILTERS_STATE.searchName
   );
   const {
-    state: keepInfoVisible,
-    toggleState: toggleKeepInfoVisible,
-    setState: setKeepInfoVisible,
+    value: keepInfoVisible,
+    toggle: toggleKeepInfoVisible,
+    setValue: setKeepInfoVisible,
   } = useBoolean(DEFAULT_FILTERS_STATE.keepInfoVisible);
 
   const subPanel = useMemo(
@@ -71,12 +71,9 @@ const News = ({ langui, posts, ...otherProps }: Props): JSX.Element => {
         />
 
         {hoverable && (
-          <WithLabel
-            label={langui.always_show_info}
-            input={
-              <Switch onClick={toggleKeepInfoVisible} value={keepInfoVisible} />
-            }
-          />
+          <WithLabel label={langui.always_show_info}>
+            <Switch onClick={toggleKeepInfoVisible} value={keepInfoVisible} />
+          </WithLabel>
         )}
 
         <Button

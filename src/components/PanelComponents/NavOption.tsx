@@ -1,10 +1,12 @@
 import { useRouter } from "next/router";
-import { MouseEventHandler, useMemo } from "react";
+import { MouseEventHandler, useCallback, useMemo } from "react";
 import { Ico, Icon } from "components/Ico";
 import { ToolTip } from "components/ToolTip";
 import { cJoin, cIf } from "helpers/className";
 import { isDefinedAndNotEmpty } from "helpers/others";
 import { Link } from "components/Inputs/Link";
+import { TranslatedProps } from "helpers/types/TranslatedProps";
+import { useSmartLanguage } from "hooks/useSmartLanguage";
 
 /*
  *                                        ╭─────────────╮
@@ -79,5 +81,31 @@ export const NavOption = ({
         )}
       </Link>
     </ToolTip>
+  );
+};
+
+/*
+ *                                    ╭──────────────────────╮
+ * ───────────────────────────────────╯  TRANSLATED VARIANT  ╰──────────────────────────────────────
+ */
+
+export const TranslatedNavOption = ({
+  translations,
+  fallback,
+  ...otherProps
+}: TranslatedProps<Props, "subtitle" | "title">): JSX.Element => {
+  const [selectedTranslation] = useSmartLanguage({
+    items: translations,
+    languageExtractor: useCallback(
+      (item: { language: string }): string => item.language,
+      []
+    ),
+  });
+  return (
+    <NavOption
+      title={selectedTranslation?.title ?? fallback.title}
+      subtitle={selectedTranslation?.subtitle ?? fallback.subtitle}
+      {...otherProps}
+    />
   );
 };

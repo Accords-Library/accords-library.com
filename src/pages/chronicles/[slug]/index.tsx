@@ -17,7 +17,6 @@ import {
   ReturnButton,
   ReturnButtonType,
 } from "components/PanelComponents/ReturnButton";
-import { TranslatedChroniclesList } from "components/Translated";
 import { Icon } from "components/Ico";
 import { getOpenGraph } from "helpers/openGraph";
 import {
@@ -25,6 +24,7 @@ import {
   staticSmartLanguage,
 } from "helpers/locales";
 import { getDescription } from "helpers/description";
+import { TranslatedChroniclesList } from "components/Chronicles/ChroniclesList";
 
 /*
  *                                           ╭────────╮

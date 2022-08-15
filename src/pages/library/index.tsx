@@ -1,5 +1,6 @@
 import { GetStaticProps } from "next";
 import { useState, useMemo, useCallback } from "react";
+import { useBoolean } from "usehooks-ts";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { Select } from "components/Inputs/Select";
 import { Switch } from "components/Inputs/Switch";
@@ -28,7 +29,6 @@ import { useAppLayout } from "contexts/AppLayoutContext";
 import { convertPrice } from "helpers/numbers";
 import { SmartList } from "components/SmartList";
 import { SelectiveNonNullable } from "helpers/types/SelectiveNonNullable";
-import { useBoolean } from "hooks/useBoolean";
 import { getOpenGraph } from "helpers/openGraph";
 import { compareDate } from "helpers/date";
 
@@ -71,27 +71,27 @@ const Library = ({
   );
 
   const {
-    state: showSubitems,
-    toggleState: toggleShowSubitems,
-    setState: setShowSubitems,
+    value: showSubitems,
+    toggle: toggleShowSubitems,
+    setValue: setShowSubitems,
   } = useBoolean(DEFAULT_FILTERS_STATE.showSubitems);
 
   const {
-    state: showPrimaryItems,
-    toggleState: toggleShowPrimaryItems,
-    setState: setShowPrimaryItems,
+    value: showPrimaryItems,
+    toggle: toggleShowPrimaryItems,
+    setValue: setShowPrimaryItems,
   } = useBoolean(DEFAULT_FILTERS_STATE.showPrimaryItems);
 
   const {
-    state: showSecondaryItems,
-    toggleState: toggleShowSecondaryItems,
-    setState: setShowSecondaryItems,
+    value: showSecondaryItems,
+    toggle: toggleShowSecondaryItems,
+    setValue: setShowSecondaryItems,
   } = useBoolean(DEFAULT_FILTERS_STATE.showSecondaryItems);
 
   const {
-    state: keepInfoVisible,
-    toggleState: toggleKeepInfoVisible,
-    setState: setKeepInfoVisible,
+    value: keepInfoVisible,
+    toggle: toggleKeepInfoVisible,
+    setValue: setKeepInfoVisible,
   } = useBoolean(DEFAULT_FILTERS_STATE.keepInfoVisible);
 
   const [sortingMethod, setSortingMethod] = useState<number>(
@@ -268,68 +268,52 @@ const Library = ({
           onChange={setSearchName}
         />
 
-        <WithLabel
-          label={langui.group_by}
-          input={
-            <Select
-              className="w-full"
-              options={[
-                langui.category ?? "Category",
-                langui.type ?? "Type",
-                langui.release_year ?? "Year",
-              ]}
-              value={groupingMethod}
-              onChange={setGroupingMethod}
-              allowEmpty
-            />
-          }
-        />
+        <WithLabel label={langui.group_by}>
+          <Select
+            className="w-full"
+            options={[
+              langui.category ?? "Category",
+              langui.type ?? "Type",
+              langui.release_year ?? "Year",
+            ]}
+            value={groupingMethod}
+            onChange={setGroupingMethod}
+            allowEmpty
+          />
+        </WithLabel>
 
-        <WithLabel
-          label={langui.order_by}
-          input={
-            <Select
-              className="w-full"
-              options={[
-                langui.name ?? "Name",
-                langui.price ?? "Price",
-                langui.release_date ?? "Release date",
-              ]}
-              value={sortingMethod}
-              onChange={setSortingMethod}
-            />
-          }
-        />
+        <WithLabel label={langui.order_by}>
+          <Select
+            className="w-full"
+            options={[
+              langui.name ?? "Name",
+              langui.price ?? "Price",
+              langui.release_date ?? "Release date",
+            ]}
+            value={sortingMethod}
+            onChange={setSortingMethod}
+          />
+        </WithLabel>
 
-        <WithLabel
-          label={langui.show_subitems}
-          input={<Switch value={showSubitems} onClick={toggleShowSubitems} />}
-        />
+        <WithLabel label={langui.show_subitems}>
+          <Switch value={showSubitems} onClick={toggleShowSubitems} />
+        </WithLabel>
 
-        <WithLabel
-          label={langui.show_primary_items}
-          input={
-            <Switch value={showPrimaryItems} onClick={toggleShowPrimaryItems} />
-          }
-        />
+        <WithLabel label={langui.show_primary_items}>
+          <Switch value={showPrimaryItems} onClick={toggleShowPrimaryItems} />
+        </WithLabel>
 
-        <WithLabel
-          label={langui.show_secondary_items}
-          input={
-            <Switch
-              value={showSecondaryItems}
-              onClick={toggleShowSecondaryItems}
-            />
-          }
-        />
+        <WithLabel label={langui.show_secondary_items}>
+          <Switch
+            value={showSecondaryItems}
+            onClick={toggleShowSecondaryItems}
+          />
+        </WithLabel>
 
         {hoverable && (
-          <WithLabel
-            label={langui.always_show_info}
-            input={
-              <Switch value={keepInfoVisible} onClick={toggleKeepInfoVisible} />
-            }
-          />
+          <WithLabel label={langui.always_show_info}>
+            <Switch value={keepInfoVisible} onClick={toggleKeepInfoVisible} />
+          </WithLabel>
         )}
 
         <ButtonGroup

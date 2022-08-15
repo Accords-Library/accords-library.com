@@ -4,7 +4,7 @@ const locales = ["en", "es", "fr", "pt-br", "ja"];
 
 /* END CONFIG */
 
-/** @type {import('next').NextConfig} */
+/* @type {import('next').NextConfig} */
 module.exports = {
   swcMinify: true,
   reactStrictMode: true,
@@ -14,9 +14,6 @@ module.exports = {
   },
   images: {
     domains: ["img.accords-library.com", "watch.accords-library.com"],
-  },
-  serverRuntimeConfig: {
-    locales: locales,
   },
   async redirects() {
     return [

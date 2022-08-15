@@ -1,6 +1,9 @@
+import { useCallback } from "react";
 import { Link } from "components/Inputs/Link";
 import { DatePickerFragment } from "graphql/generated";
 import { cIf, cJoin } from "helpers/className";
+import { TranslatedProps } from "helpers/types/TranslatedProps";
+import { useSmartLanguage } from "hooks/useSmartLanguage";
 
 /*
  *                                        ╭─────────────╮
@@ -14,7 +17,7 @@ interface Props {
   isActive?: boolean;
 }
 
-export const ChroniclePreview = ({
+const ChroniclePreview = ({
   date,
   url,
   title,
@@ -39,6 +42,35 @@ export const ChroniclePreview = ({
     <p className="text-lg leading-tight">{title}</p>
   </Link>
 );
+
+/*
+ *                                    ╭──────────────────────╮
+ * ───────────────────────────────────╯  TRANSLATED VARIANT  ╰──────────────────────────────────────
+ */
+
+export const TranslatedChroniclePreview = ({
+  translations,
+  fallback,
+  ...otherProps
+}: TranslatedProps<
+  Parameters<typeof ChroniclePreview>[0],
+  "title"
+>): JSX.Element => {
+  const [selectedTranslation] = useSmartLanguage({
+    items: translations,
+    languageExtractor: useCallback(
+      (item: { language: string }): string => item.language,
+      []
+    ),
+  });
+
+  return (
+    <ChroniclePreview
+      title={selectedTranslation?.title ?? fallback.title}
+      {...otherProps}
+    />
+  );
+};
 
 /*
  *                                      ╭───────────────────╮

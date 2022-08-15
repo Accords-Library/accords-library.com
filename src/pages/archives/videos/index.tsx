@@ -1,5 +1,6 @@
 import { GetStaticProps } from "next";
 import { useMemo, useState } from "react";
+import { useBoolean } from "usehooks-ts";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { SmartList } from "components/SmartList";
 import { Icon } from "components/Ico";
@@ -23,7 +24,6 @@ import { getReadySdk } from "graphql/sdk";
 import { filterHasAttributes } from "helpers/others";
 import { getVideoThumbnailURL } from "helpers/videos";
 import { useMediaHoverable } from "hooks/useMediaQuery";
-import { useBoolean } from "hooks/useBoolean";
 import { getOpenGraph } from "helpers/openGraph";
 import { compareDate } from "helpers/date";
 
@@ -48,7 +48,7 @@ interface Props extends AppStaticProps, AppLayoutRequired {
 const Videos = ({ langui, videos, ...otherProps }: Props): JSX.Element => {
   const hoverable = useMediaHoverable();
 
-  const { state: keepInfoVisible, toggleState: toggleKeepInfoVisible } =
+  const { value: keepInfoVisible, toggle: toggleKeepInfoVisible } =
     useBoolean(true);
 
   const [searchName, setSearchName] = useState(
@@ -80,12 +80,9 @@ const Videos = ({ langui, videos, ...otherProps }: Props): JSX.Element => {
         />
 
         {hoverable && (
-          <WithLabel
-            label={langui.always_show_info}
-            input={
-              <Switch value={keepInfoVisible} onClick={toggleKeepInfoVisible} />
-            }
-          />
+          <WithLabel label={langui.always_show_info}>
+            <Switch value={keepInfoVisible} onClick={toggleKeepInfoVisible} />
+          </WithLabel>
         )}
       </SubPanel>
     ),

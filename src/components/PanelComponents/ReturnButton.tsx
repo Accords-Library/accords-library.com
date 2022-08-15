@@ -1,9 +1,12 @@
+import { useCallback } from "react";
 import { HorizontalLine } from "components/HorizontalLine";
 import { Icon } from "components/Ico";
 import { Button } from "components/Inputs/Button";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { AppStaticProps } from "graphql/getAppStaticProps";
-import { cJoin } from "helpers/className";
+import { cIf, cJoin } from "helpers/className";
+import { TranslatedProps } from "helpers/types/TranslatedProps";
+import { useSmartLanguage } from "hooks/useSmartLanguage";
 
 /*
  *                                        ╭─────────────╮
@@ -40,11 +43,8 @@ export const ReturnButton = ({
   return (
     <div
       className={cJoin(
-        displayOn === ReturnButtonType.Mobile
-          ? "desktop:hidden"
-          : displayOn === ReturnButtonType.Desktop
-          ? "mobile:hidden"
-          : "",
+        cIf(displayOn === ReturnButtonType.Mobile, "desktop:hidden"),
+        cIf(displayOn === ReturnButtonType.Desktop, "mobile:hidden"),
         className
       )}
     >
@@ -56,5 +56,31 @@ export const ReturnButton = ({
       />
       {horizontalLine === true && <HorizontalLine />}
     </div>
+  );
+};
+
+/*
+ *                                    ╭──────────────────────╮
+ * ───────────────────────────────────╯  TRANSLATED VARIANT  ╰──────────────────────────────────────
+ */
+
+export const TranslatedReturnButton = ({
+  translations,
+  fallback,
+  ...otherProps
+}: TranslatedProps<Props, "title">): JSX.Element => {
+  const [selectedTranslation] = useSmartLanguage({
+    items: translations,
+    languageExtractor: useCallback(
+      (item: { language: string }): string => item.language,
+      []
+    ),
+  });
+
+  return (
+    <ReturnButton
+      title={selectedTranslation?.title ?? fallback.title}
+      {...otherProps}
+    />
   );
 };

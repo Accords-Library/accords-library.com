@@ -9,8 +9,8 @@ import { getReadySdk } from "graphql/sdk";
 import { GetChroniclesChaptersQuery } from "graphql/generated";
 import { filterHasAttributes } from "helpers/others";
 import { prettySlug } from "helpers/formatters";
-import { TranslatedChroniclesList } from "components/Translated";
 import { getOpenGraph } from "helpers/openGraph";
+import { TranslatedChroniclesList } from "components/Chronicles/ChroniclesList";
 
 /*
  *                                           ╭────────╮

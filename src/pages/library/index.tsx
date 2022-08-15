@@ -120,7 +120,7 @@ const Library = ({
       if (item.attributes.primary && !showPrimaryItems) return false;
       if (!item.attributes.primary && !showSecondaryItems) return false;
 
-      if (isDefined(filterUserStatus) && item.id && libraryItemUserStatus) {
+      if (isDefined(filterUserStatus) && item.id) {
         if (isUntangibleGroupItem(item.attributes.metadata?.[0])) {
           return false;
         }

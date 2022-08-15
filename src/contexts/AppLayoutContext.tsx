@@ -1,64 +1,77 @@
 import React, { ReactNode, useContext, useState } from "react";
+import { useLocalStorage } from "usehooks-ts";
 import { isDefined } from "helpers/others";
 import { LibraryItemUserStatus, RequiredNonNullable } from "helpers/types";
 import { useDarkMode } from "hooks/useDarkMode";
-import { useStateWithLocalStorage } from "hooks/useStateWithLocalStorage";
 
 interface AppLayoutState {
-  subPanelOpen: boolean | undefined;
+  subPanelOpen: boolean;
   toggleSubPanelOpen: () => void;
   setSubPanelOpen: React.Dispatch<
     React.SetStateAction<AppLayoutState["subPanelOpen"]>
   >;
-  configPanelOpen: boolean | undefined;
+
+  configPanelOpen: boolean;
   toggleConfigPanelOpen: () => void;
   setConfigPanelOpen: React.Dispatch<
     React.SetStateAction<AppLayoutState["configPanelOpen"]>
   >;
-  searchPanelOpen: boolean | undefined;
+
+  searchPanelOpen: boolean;
   toggleSearchPanelOpen: () => void;
   setSearchPanelOpen: React.Dispatch<
     React.SetStateAction<AppLayoutState["searchPanelOpen"]>
   >;
-  mainPanelReduced: boolean | undefined;
+
+  mainPanelReduced: boolean;
   toggleMainPanelReduced: () => void;
   setMainPanelReduced: React.Dispatch<
     React.SetStateAction<AppLayoutState["mainPanelReduced"]>
   >;
-  mainPanelOpen: boolean | undefined;
+
+  mainPanelOpen: boolean;
   toggleMainPanelOpen: () => void;
   setMainPanelOpen: React.Dispatch<
     React.SetStateAction<AppLayoutState["mainPanelOpen"]>
   >;
-  darkMode: boolean | undefined;
+
+  darkMode: boolean;
   toggleDarkMode: () => void;
   setDarkMode: React.Dispatch<React.SetStateAction<AppLayoutState["darkMode"]>>;
-  selectedThemeMode: boolean | undefined;
+
+  selectedThemeMode: boolean;
   toggleSelectedThemeMode: () => void;
   setSelectedThemeMode: React.Dispatch<
     React.SetStateAction<AppLayoutState["selectedThemeMode"]>
   >;
-  fontSize: number | undefined;
+
+  fontSize: number;
   setFontSize: React.Dispatch<React.SetStateAction<AppLayoutState["fontSize"]>>;
-  dyslexic: boolean | undefined;
+
+  dyslexic: boolean;
   toggleDyslexic: () => void;
   setDyslexic: React.Dispatch<React.SetStateAction<AppLayoutState["dyslexic"]>>;
-  currency: string | undefined;
+
+  currency: string;
   setCurrency: React.Dispatch<React.SetStateAction<AppLayoutState["currency"]>>;
-  playerName: string | undefined;
+
+  playerName: string;
   setPlayerName: React.Dispatch<
     React.SetStateAction<AppLayoutState["playerName"]>
   >;
-  preferredLanguages: string[] | undefined;
+
+  preferredLanguages: string[];
   setPreferredLanguages: React.Dispatch<
     React.SetStateAction<AppLayoutState["preferredLanguages"]>
   >;
+
   menuGestures: boolean;
   toggleMenuGestures: () => void;
   setMenuGestures: React.Dispatch<
     React.SetStateAction<AppLayoutState["menuGestures"]>
   >;
-  libraryItemUserStatus: Record<string, LibraryItemUserStatus> | undefined;
+
+  libraryItemUserStatus: Record<string, LibraryItemUserStatus>;
   setLibraryItemUserStatus: React.Dispatch<
     React.SetStateAction<AppLayoutState["libraryItemUserStatus"]>
   >;
@@ -68,38 +81,51 @@ const initialState: RequiredNonNullable<AppLayoutState> = {
   subPanelOpen: false,
   toggleSubPanelOpen: () => null,
   setSubPanelOpen: () => null,
+
   configPanelOpen: false,
   setConfigPanelOpen: () => null,
   toggleConfigPanelOpen: () => null,
+
   searchPanelOpen: false,
   setSearchPanelOpen: () => null,
   toggleSearchPanelOpen: () => null,
+
   mainPanelReduced: false,
   setMainPanelReduced: () => null,
   toggleMainPanelReduced: () => null,
+
   mainPanelOpen: false,
   toggleMainPanelOpen: () => null,
   setMainPanelOpen: () => null,
+
   darkMode: false,
   toggleDarkMode: () => null,
   setDarkMode: () => null,
+
   selectedThemeMode: false,
   toggleSelectedThemeMode: () => null,
   setSelectedThemeMode: () => null,
+
   fontSize: 1,
   setFontSize: () => null,
+
   dyslexic: false,
   toggleDyslexic: () => null,
   setDyslexic: () => null,
+
   currency: "USD",
   setCurrency: () => null,
+
   playerName: "",
   setPlayerName: () => null,
+
   preferredLanguages: [],
   setPreferredLanguages: () => null,
+
   menuGestures: true,
   toggleMenuGestures: () => null,
   setMenuGestures: () => null,
+
   libraryItemUserStatus: {},
   setLibraryItemUserStatus: () => null,
 };
@@ -113,22 +139,22 @@ interface Props {
 }
 
 export const AppContextProvider = (props: Props): JSX.Element => {
-  const [subPanelOpen, setSubPanelOpen] = useStateWithLocalStorage(
+  const [subPanelOpen, setSubPanelOpen] = useLocalStorage(
     "subPanelOpen",
     initialState.subPanelOpen
   );
 
-  const [configPanelOpen, setConfigPanelOpen] = useStateWithLocalStorage(
+  const [configPanelOpen, setConfigPanelOpen] = useLocalStorage(
     "configPanelOpen",
     initialState.configPanelOpen
   );
 
-  const [mainPanelReduced, setMainPanelReduced] = useStateWithLocalStorage(
+  const [mainPanelReduced, setMainPanelReduced] = useLocalStorage(
     "mainPanelReduced",
     initialState.mainPanelReduced
   );
 
-  const [mainPanelOpen, setMainPanelOpen] = useStateWithLocalStorage(
+  const [mainPanelOpen, setMainPanelOpen] = useLocalStorage(
     "mainPanelOpen",
     initialState.mainPanelOpen
   );
@@ -136,43 +162,42 @@ export const AppContextProvider = (props: Props): JSX.Element => {
   const [darkMode, selectedThemeMode, setDarkMode, setSelectedThemeMode] =
     useDarkMode("darkMode", initialState.darkMode);
 
-  const [fontSize, setFontSize] = useStateWithLocalStorage(
+  const [fontSize, setFontSize] = useLocalStorage(
     "fontSize",
     initialState.fontSize
   );
 
-  const [dyslexic, setDyslexic] = useStateWithLocalStorage(
+  const [dyslexic, setDyslexic] = useLocalStorage(
     "dyslexic",
     initialState.dyslexic
   );
 
-  const [currency, setCurrency] = useStateWithLocalStorage(
+  const [currency, setCurrency] = useLocalStorage(
     "currency",
     initialState.currency
   );
 
-  const [playerName, setPlayerName] = useStateWithLocalStorage(
+  const [playerName, setPlayerName] = useLocalStorage(
     "playerName",
     initialState.playerName
   );
 
-  const [preferredLanguages, setPreferredLanguages] = useStateWithLocalStorage(
+  const [preferredLanguages, setPreferredLanguages] = useLocalStorage(
     "preferredLanguages",
     initialState.preferredLanguages
   );
 
   const [menuGestures, setMenuGestures] = useState(false);
 
-  const [searchPanelOpen, setSearchPanelOpen] = useStateWithLocalStorage(
+  const [searchPanelOpen, setSearchPanelOpen] = useLocalStorage(
     "searchPanelOpen",
     initialState.searchPanelOpen
   );
 
-  const [libraryItemUserStatus, setLibraryItemUserStatus] =
-    useStateWithLocalStorage(
-      "libraryItemUserStatus",
-      initialState.libraryItemUserStatus
-    );
+  const [libraryItemUserStatus, setLibraryItemUserStatus] = useLocalStorage(
+    "libraryItemUserStatus",
+    initialState.libraryItemUserStatus
+  );
 
   const toggleSubPanelOpen = () => {
     setSubPanelOpen((current) => (isDefined(current) ? !current : current));

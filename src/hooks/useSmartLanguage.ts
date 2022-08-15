@@ -42,7 +42,7 @@ export const useSmartLanguage = <T>({
   useEffect(() => {
     setSelectedTranslationIndex(
       getPreferredLanguage(
-        preferredLanguages ?? [router.locale],
+        preferredLanguages,
         availableLocales
       )
     );

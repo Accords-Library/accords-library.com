@@ -109,7 +109,7 @@ export const AppLayout = ({
     onSwipedLeft: (SwipeEventData) => {
       if (menuGestures) {
         if (SwipeEventData.velocity < SENSIBILITY_SWIPE) return;
-        if (mainPanelOpen === true) {
+        if (mainPanelOpen) {
           setMainPanelOpen(false);
         } else if (isDefined(subPanel) && isDefined(contentPanel)) {
           setSubPanelOpen(true);
@@ -119,7 +119,7 @@ export const AppLayout = ({
     onSwipedRight: (SwipeEventData) => {
       if (menuGestures) {
         if (SwipeEventData.velocity < SENSIBILITY_SWIPE) return;
-        if (subPanelOpen === true) {
+        if (subPanelOpen) {
           setSubPanelOpen(false);
         } else {
           setMainPanelOpen(true);
@@ -135,7 +135,7 @@ export const AppLayout = ({
 
   useLayoutEffect(() => {
     document.getElementsByTagName("html")[0].style.fontSize = `${
-      (fontSize ?? 1) * 100
+      fontSize * 100
     }%`;
   }, [fontSize]);
 
@@ -159,18 +159,16 @@ export const AppLayout = ({
   }, [currencyOptions, currencySelect, setCurrency]);
 
   useEffect(() => {
-    if (preferredLanguages) {
-      if (preferredLanguages.length === 0) {
-        if (isDefinedAndNotEmpty(router.locale) && router.locales) {
-          setPreferredLanguages(
-            getDefaultPreferredLanguages(router.locale, router.locales)
-          );
-        }
-      } else if (router.locale !== preferredLanguages[0]) {
-        router.replace(router.asPath, router.asPath, {
-          locale: preferredLanguages[0],
-        });
+    if (preferredLanguages.length === 0) {
+      if (isDefinedAndNotEmpty(router.locale) && router.locales) {
+        setPreferredLanguages(
+          getDefaultPreferredLanguages(router.locale, router.locales)
+        );
       }
+    } else if (router.locale !== preferredLanguages[0]) {
+      router.replace(router.asPath, router.asPath, {
+        locale: preferredLanguages[0],
+      });
     }
   }, [
     preferredLanguages,
@@ -182,11 +180,11 @@ export const AppLayout = ({
 
   const gridCol = useMemo(() => {
     if (isDefined(subPanel)) {
-      if (mainPanelReduced === true) {
+      if (mainPanelReduced) {
         return "grid-cols-[6rem_20rem_1fr]";
       }
       return "grid-cols-[20rem_20rem_1fr]";
-    } else if (mainPanelReduced === true) {
+    } else if (mainPanelReduced) {
       return "grid-cols-[6rem_0px_1fr]";
     }
     return "grid-cols-[20rem_0px_1fr]";
@@ -262,7 +260,7 @@ export const AppLayout = ({
             `absolute inset-0 transition-[backdrop-filter] duration-500 [grid-area:content]
             mobile:z-10`,
             cIf(
-              (mainPanelOpen === true || subPanelOpen === true) && isMobile,
+              (mainPanelOpen || subPanelOpen) && isMobile,
               "[backdrop-filter:blur(2px)]",
               "pointer-events-none touch-none"
             )
@@ -272,7 +270,7 @@ export const AppLayout = ({
             className={cJoin(
               "absolute inset-0 bg-shade transition-opacity duration-500",
               cIf(
-                (mainPanelOpen === true || subPanelOpen === true) && isMobile,
+                (mainPanelOpen || subPanelOpen) && isMobile,
                 "opacity-60",
                 "opacity-0"
               )
@@ -312,7 +310,7 @@ export const AppLayout = ({
               mobile:border-r-0 mobile:border-l-[1px] mobile:[grid-area:content]`,
               turnSubIntoContent
                 ? "mobile:w-full mobile:border-l-0"
-                : subPanelOpen === true
+                : subPanelOpen
                 ? ""
                 : "mobile:translate-x-[100vw]"
             )}
@@ -328,7 +326,7 @@ export const AppLayout = ({
             transition-transform duration-300 [grid-area:main] [scrollbar-width:none]
             webkit-scrollbar:w-0 mobile:z-10 mobile:w-[90%] mobile:justify-self-start
             mobile:[grid-area:content]`,
-            cIf(mainPanelOpen === false, "mobile:-translate-x-full")
+            cIf(!mainPanelOpen, "mobile:-translate-x-full")
           )}
         >
           <MainPanel langui={langui} />
@@ -340,7 +338,7 @@ export const AppLayout = ({
           border-t-[1px] border-dotted border-black bg-light [grid-area:navbar] desktop:hidden"
         >
           <Ico
-            icon={mainPanelOpen === true ? Icon.Close : Icon.Menu}
+            icon={mainPanelOpen ? Icon.Close : Icon.Menu}
             className="mt-[.1em] cursor-pointer !text-2xl"
             onClick={() => {
               toggleMainPanelOpen();
@@ -365,7 +363,7 @@ export const AppLayout = ({
           </p>
           {isDefined(subPanel) && !turnSubIntoContent && (
             <Ico
-              icon={subPanelOpen === true ? Icon.Close : subPanelIcon}
+              icon={subPanelOpen ? Icon.Close : subPanelIcon}
               className="mt-[.1em] cursor-pointer !text-2xl"
               onClick={() => {
                 toggleSubPanelOpen();
@@ -404,7 +402,7 @@ export const AppLayout = ({
         </Popup>
 
         <Popup
-          state={configPanelOpen ?? false}
+          state={configPanelOpen}
           onClose={() => setConfigPanelOpen(false)}
         >
           <h2 className="text-2xl">{langui.settings}</h2>
@@ -416,7 +414,7 @@ export const AppLayout = ({
             {router.locales && (
               <div>
                 <h3 className="text-xl">{langui.languages}</h3>
-                {preferredLanguages && preferredLanguages.length > 0 && (
+                {preferredLanguages.length > 0 && (
                   <OrderableList
                     items={
                       new Map(
@@ -453,14 +451,14 @@ export const AppLayout = ({
                         setDarkMode(false);
                         setSelectedThemeMode(true);
                       },
-                      active: selectedThemeMode === true && darkMode === false,
+                      active: selectedThemeMode && darkMode,
                       text: langui.light,
                     },
                     {
                       onClick: () => {
                         setSelectedThemeMode(false);
                       },
-                      active: selectedThemeMode === false,
+                      active: selectedThemeMode,
                       text: langui.auto,
                     },
                     {
@@ -468,7 +466,7 @@ export const AppLayout = ({
                         setDarkMode(true);
                         setSelectedThemeMode(true);
                       },
-                      active: selectedThemeMode === true && darkMode === true,
+                      active: selectedThemeMode && darkMode,
                       text: langui.dark,
                     },
                   ]}
@@ -492,20 +490,17 @@ export const AppLayout = ({
                 <ButtonGroup
                   buttonsProps={[
                     {
-                      onClick: () => setFontSize((fontSize ?? 1) / 1.05),
+                      onClick: () => setFontSize(fontSize / 1.05),
                       icon: Icon.TextDecrease,
                     },
                     {
                       onClick: () => setFontSize(1),
-                      text: `${((fontSize ?? 1) * 100).toLocaleString(
-                        undefined,
-                        {
-                          maximumFractionDigits: 0,
-                        }
-                      )}%`,
+                      text: `${(fontSize * 100).toLocaleString(undefined, {
+                        maximumFractionDigits: 0,
+                      })}%`,
                     },
                     {
-                      onClick: () => setFontSize((fontSize ?? 1) * 1.05),
+                      onClick: () => setFontSize(fontSize * 1.05),
                       icon: Icon.TextIncrease,
                     },
                   ]}
@@ -516,13 +511,13 @@ export const AppLayout = ({
                 <h3 className="text-xl">{langui.font}</h3>
                 <div className="grid gap-2">
                   <Button
-                    active={dyslexic === false}
+                    active={!dyslexic}
                     onClick={() => setDyslexic(false)}
                     className="font-zenMaruGothic"
                     text="Zen Maru Gothic"
                   />
                   <Button
-                    active={dyslexic === true}
+                    active={dyslexic}
                     onClick={() => setDyslexic(true)}
                     className="font-openDyslexic"
                     text="OpenDyslexic"
@@ -535,7 +530,7 @@ export const AppLayout = ({
                 <TextInput
                   placeholder="<player>"
                   className="w-48"
-                  value={playerName ?? ""}
+                  value={playerName}
                   onChange={setPlayerName}
                 />
               </div>

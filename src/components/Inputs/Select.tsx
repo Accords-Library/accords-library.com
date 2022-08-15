@@ -1,5 +1,5 @@
-import { Fragment, useCallback } from "react";
-import { useBoolean } from "usehooks-ts";
+import { Fragment, useCallback, useRef } from "react";
+import { useBoolean, useOnClickOutside } from "usehooks-ts";
 import { Ico, Icon } from "components/Ico";
 import { cIf, cJoin } from "helpers/className";
 
@@ -37,11 +37,12 @@ export const Select = ({
     if (optionCount > 1) toggleOpened();
   }, [options.length, value, toggleOpened]);
 
+  const ref = useRef<HTMLDivElement>(null);
+  useOnClickOutside(ref, setClosed);
+
   return (
     <div
-      onClickCapture={() => {
-        setClosed();
-      }}
+      ref={ref}
       className={cJoin(
         "relative text-center transition-[filter]",
         cIf(isOpened, "z-10 drop-shadow-shade-lg"),

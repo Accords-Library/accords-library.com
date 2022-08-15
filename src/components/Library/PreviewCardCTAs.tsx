@@ -35,7 +35,7 @@ export const PreviewCardCTAs = ({
           <Button
             icon={Icon.Favorite}
             text={expand ? langui.want_it : undefined}
-            active={libraryItemUserStatus?.[id] === LibraryItemUserStatus.Want}
+            active={libraryItemUserStatus[id] === LibraryItemUserStatus.Want}
             onClick={(event) => {
               event.preventDefault();
               setLibraryItemUserStatus((current) => {
@@ -53,7 +53,7 @@ export const PreviewCardCTAs = ({
           <Button
             icon={Icon.BackHand}
             text={expand ? langui.have_it : undefined}
-            active={libraryItemUserStatus?.[id] === LibraryItemUserStatus.Have}
+            active={libraryItemUserStatus[id] === LibraryItemUserStatus.Have}
             onClick={(event) => {
               event.preventDefault();
               setLibraryItemUserStatus((current) => {

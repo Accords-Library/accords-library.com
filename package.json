@@ -43,7 +43,7 @@
     "@graphql-codegen/typescript": "2.7.3",
     "@graphql-codegen/typescript-graphql-request": "^4.5.3",
     "@graphql-codegen/typescript-operations": "^2.5.3",
-    "@types/node": "18.7.4",
+    "@types/node": "18.7.5",
     "@types/nodemailer": "^6.4.5",
     "@types/react": "18.0.17",
     "@types/react-dom": "^18.0.6",

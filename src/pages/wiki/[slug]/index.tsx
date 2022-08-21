@@ -69,7 +69,6 @@ const WikiPage = ({
           title={langui.wiki}
           langui={langui}
           displayOn={ReturnButtonType.Desktop}
-          horizontalLine
         />
       </SubPanel>
     ),

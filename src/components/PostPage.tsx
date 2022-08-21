@@ -86,12 +86,13 @@ export const PostPage = ({
               title={returnTitle}
               langui={langui}
               displayOn={ReturnButtonType.Desktop}
-              horizontalLine
             />
           )}
 
           {displayCredits && (
             <>
+              <HorizontalLine />
+
               {selectedTranslation && (
                 <div className="grid grid-flow-col place-content-center place-items-center gap-2">
                   <p className="font-headers font-bold">{langui.status}:</p>
@@ -126,13 +127,16 @@ export const PostPage = ({
                   </div>
                 </div>
               )}
-
-              <HorizontalLine />
             </>
           )}
 
           {displayToc && (
-            <TableOfContents text={body} title={title} langui={langui} />
+            <TableOfContents
+              text={body}
+              title={title}
+              langui={langui}
+              horizontalLine
+            />
           )}
         </SubPanel>
       ) : undefined,
@@ -158,7 +162,7 @@ export const PostPage = ({
             title={returnTitle}
             langui={langui}
             displayOn={ReturnButtonType.Mobile}
-            horizontalLine
+            className="mb-10"
           />
         )}
 

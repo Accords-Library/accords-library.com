@@ -57,6 +57,7 @@ import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { getOpenGraph } from "helpers/openGraph";
 import { getDescription } from "helpers/description";
 import { useIntersectionList } from "hooks/useIntersectionList";
+import { HorizontalLine } from "components/HorizontalLine";
 
 /*
  *                                         ╭─────────────╮
@@ -130,8 +131,9 @@ const LibrarySlug = ({
           title={langui.library}
           langui={langui}
           displayOn={ReturnButtonType.Desktop}
-          horizontalLine
         />
+
+        <HorizontalLine />
 
         <div className="grid gap-4">
           <NavOption

@@ -172,8 +172,10 @@ const Chronicle = ({
           href="/chronicles"
           title={langui.chronicles}
           langui={langui}
-          horizontalLine
         />
+
+        <HorizontalLine />
+
         <div className="grid gap-16">
           {filterHasAttributes(chapters, [
             "attributes.chronicles",

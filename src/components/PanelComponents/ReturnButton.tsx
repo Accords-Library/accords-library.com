@@ -1,5 +1,4 @@
 import { useCallback } from "react";
-import { HorizontalLine } from "components/HorizontalLine";
 import { Icon } from "components/Ico";
 import { Button } from "components/Inputs/Button";
 import { useAppLayout } from "contexts/AppLayoutContext";
@@ -18,7 +17,6 @@ interface Props {
   title: string | null | undefined;
   langui: AppStaticProps["langui"];
   displayOn: ReturnButtonType;
-  horizontalLine?: boolean;
   className?: string;
 }
 
@@ -35,7 +33,6 @@ export const ReturnButton = ({
   title,
   langui,
   displayOn,
-  horizontalLine,
   className,
 }: Props): JSX.Element => {
   const { setSubPanelOpen } = useAppLayout();
@@ -54,7 +51,6 @@ export const ReturnButton = ({
         text={`${langui.return_to} ${title}`}
         icon={Icon.NavigateBefore}
       />
-      {horizontalLine === true && <HorizontalLine />}
     </div>
   );
 };

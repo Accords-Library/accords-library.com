@@ -33,6 +33,7 @@ import { datePickerToDate } from "helpers/date";
 import { TranslatedProps } from "helpers/types/TranslatedProps";
 import { TranslatedNavOption } from "components/PanelComponents/NavOption";
 import { useIntersectionList } from "hooks/useIntersectionList";
+import { HorizontalLine } from "components/HorizontalLine";
 
 /*
  *                                           ╭────────╮
@@ -71,8 +72,9 @@ const Chronology = ({
           title={langui.wiki}
           langui={langui}
           displayOn={ReturnButtonType.Desktop}
-          horizontalLine
         />
+
+        <HorizontalLine />
 
         {filterHasAttributes(chronologyEras, ["attributes", "id"] as const).map(
           (era, index) => (

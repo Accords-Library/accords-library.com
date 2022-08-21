@@ -15,7 +15,8 @@ const DEFAULT_OG_THUMBNAIL = {
   alt: "Accord's Library Logo",
 };
 
-export const TITLE_PREFIX = "Accord’s Library - ";
+export const TITLE_PREFIX = "Accord’s Library";
+export const TITLE_SEPARATOR = " - "
 
 export interface OpenGraph {
   title: string;
@@ -29,7 +30,7 @@ export const getOpenGraph = (
   description?: string | null | undefined,
   thumbnail?: UploadImageFragment | null | undefined
 ): OpenGraph => ({
-  title: `${TITLE_PREFIX}${isDefinedAndNotEmpty(title) ? `${title}` : ""}`,
+  title: `${TITLE_PREFIX}${isDefinedAndNotEmpty(title) ? `${TITLE_SEPARATOR}${title}` : ""}`,
   description: isDefinedAndNotEmpty(description)
     ? description
     : langui.default_description ?? "",

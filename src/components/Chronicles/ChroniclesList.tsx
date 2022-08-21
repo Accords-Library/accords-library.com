@@ -64,7 +64,6 @@ const ChroniclesList = ({
             <div
               key={chronicle.id}
               id={`chronicle-${chronicle.attributes.slug}`}
-              className="scroll-m-[45vh]"
             >
               {chronicle.attributes.translations.length === 0 &&
               chronicle.attributes.contents.data.length === 1

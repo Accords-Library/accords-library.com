@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 * {
-  @apply box-border scroll-m-8 scroll-smooth font-body font-medium;
+  @apply box-border scroll-m-[40vh] scroll-smooth font-body font-medium;
 }
 
 h1,

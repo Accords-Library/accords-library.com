@@ -56,6 +56,20 @@ import { cJoin, cIf } from "helpers/className";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { getOpenGraph } from "helpers/openGraph";
 import { getDescription } from "helpers/description";
+import { useIntersectionList } from "hooks/useIntersectionList";
+
+/*
+ *                                         ╭─────────────╮
+ * ────────────────────────────────────────╯  CONSTANTS  ╰──────────────────────────────────────────
+ */
+
+const intersectionIds = [
+  "summary",
+  "gallery",
+  "details",
+  "subitems",
+  "contents",
+];
 
 /*
  *                                           ╭────────╮
@@ -90,6 +104,8 @@ const LibrarySlug = ({
 
   useScrollTopOnChange(AnchorIds.ContentPanel, [item]);
 
+  const currentIntersection = useIntersectionList(intersectionIds);
+
   const isVariantSet = useMemo(
     () =>
       item.metadata?.[0]?.__typename === "ComponentMetadataGroup" &&
@@ -118,29 +134,57 @@ const LibrarySlug = ({
         />
 
         <div className="grid gap-4">
-          <NavOption title={langui.summary} url="#summary" border />
+          <NavOption
+            title={langui.summary}
+            url={`#${intersectionIds[0]}`}
+            border
+            active={currentIntersection === 0}
+          />
 
           {item.gallery && item.gallery.data.length > 0 && (
-            <NavOption title={langui.gallery} url="#gallery" border />
+            <NavOption
+              title={langui.gallery}
+              url={`#${intersectionIds[1]}`}
+              border
+              active={currentIntersection === 1}
+            />
           )}
 
-          <NavOption title={langui.details} url="#details" border />
+          <NavOption
+            title={langui.details}
+            url={`#${intersectionIds[2]}`}
+            border
+            active={currentIntersection === 2}
+          />
 
           {item.subitems && item.subitems.data.length > 0 && (
             <NavOption
               title={isVariantSet ? langui.variants : langui.subitems}
-              url={isVariantSet ? "#variants" : "#subitems"}
+              url={`#${intersectionIds[3]}`}
               border
+              active={currentIntersection === 3}
             />
           )}
 
           {item.contents && item.contents.data.length > 0 && (
-            <NavOption title={langui.contents} url="#contents" border />
+            <NavOption
+              title={langui.contents}
+              url={`#${intersectionIds[4]}`}
+              border
+              active={currentIntersection === 4}
+            />
           )}
         </div>
       </SubPanel>
     ),
-    [isVariantSet, item.contents, item.gallery, item.subitems, langui]
+    [
+      currentIntersection,
+      isVariantSet,
+      item.contents,
+      item.gallery,
+      item.subitems,
+      langui,
+    ]
   );
 
   const contentPanel = useMemo(
@@ -181,7 +225,7 @@ const LibrarySlug = ({
             )}
           </div>
 
-          <InsetBox id="summary" className="grid place-items-center">
+          <InsetBox id={intersectionIds[0]} className="grid place-items-center">
             <div className="grid w-[clamp(0px,100%,42rem)] place-items-center gap-8">
               {item.subitem_of?.data[0]?.attributes && (
                 <div className="grid place-items-center">
@@ -246,7 +290,10 @@ const LibrarySlug = ({
           </InsetBox>
 
           {item.gallery && item.gallery.data.length > 0 && (
-            <div id="gallery" className="grid w-full place-items-center  gap-8">
+            <div
+              id={intersectionIds[1]}
+              className="grid w-full place-items-center  gap-8"
+            >
               <h2 className="text-2xl">{langui.gallery}</h2>
               <div
                 className="grid w-full grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] items-end
@@ -282,7 +329,7 @@ const LibrarySlug = ({
             </div>
           )}
 
-          <InsetBox id="details" className="grid place-items-center">
+          <InsetBox id={intersectionIds[2]} className="grid place-items-center">
             <div className="place-items grid w-[clamp(0px,100%,42rem)] gap-8">
               <h2 className="text-center text-2xl">{langui.details}</h2>
               <div
@@ -438,7 +485,7 @@ const LibrarySlug = ({
 
           {item.subitems && item.subitems.data.length > 0 && (
             <div
-              id={isVariantSet ? "variants" : "subitems"}
+              id={intersectionIds[3]}
               className="grid w-full place-items-center gap-8"
             >
               <h2 className="text-2xl">
@@ -500,7 +547,10 @@ const LibrarySlug = ({
           )}
 
           {item.contents && item.contents.data.length > 0 && (
-            <div id="contents" className="grid w-full place-items-center gap-8">
+            <div
+              id={intersectionIds[4]}
+              className="grid w-full place-items-center gap-8"
+            >
               <h2 className="-mb-6 text-2xl">{langui.contents}</h2>
               {displayOpenScans && (
                 <Button

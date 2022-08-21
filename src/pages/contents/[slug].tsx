@@ -123,128 +123,145 @@ const Content = ({
         <TranslatedReturnButton
           {...returnButtonProps}
           displayOn={ReturnButtonType.Desktop}
-          horizontalLine
         />
 
         {selectedTranslation?.text_set?.source_language?.data?.attributes
           ?.code !== undefined && (
-          <div className="grid gap-5">
-            <h2 className="text-xl">
+          <>
+            <HorizontalLine />
+            <div className="grid gap-5">
+              <h2 className="text-xl">
+                {selectedTranslation.text_set.source_language.data.attributes
+                  .code === selectedTranslation.language?.data?.attributes?.code
+                  ? langui.transcript_notice
+                  : langui.translation_notice}
+              </h2>
+
               {selectedTranslation.text_set.source_language.data.attributes
-                .code === selectedTranslation.language?.data?.attributes?.code
-                ? langui.transcript_notice
-                : langui.translation_notice}
-            </h2>
-
-            {selectedTranslation.text_set.source_language.data.attributes
-              .code !==
-              selectedTranslation.language?.data?.attributes?.code && (
-              <div className="grid place-items-center gap-2">
-                <p className="font-headers font-bold">
-                  {langui.source_language}:
-                </p>
-                <Chip
-                  text={prettyLanguage(
-                    selectedTranslation.text_set.source_language.data.attributes
-                      .code,
-                    languages
-                  )}
-                />
-              </div>
-            )}
-
-            <div className="grid grid-flow-col place-content-center place-items-center gap-2">
-              <p className="font-headers font-bold">{langui.status}:</p>
-
-              <ToolTip
-                content={getStatusDescription(
-                  selectedTranslation.text_set.status,
-                  langui
-                )}
-                maxWidth={"20rem"}
-              >
-                <Chip text={selectedTranslation.text_set.status} />
-              </ToolTip>
-            </div>
-
-            {selectedTranslation.text_set.transcribers &&
-              selectedTranslation.text_set.transcribers.data.length > 0 && (
-                <div>
+                .code !==
+                selectedTranslation.language?.data?.attributes?.code && (
+                <div className="grid place-items-center gap-2">
                   <p className="font-headers font-bold">
-                    {langui.transcribers}:
+                    {langui.source_language}:
                   </p>
-                  <div className="grid place-content-center place-items-center gap-2">
-                    {filterHasAttributes(
-                      selectedTranslation.text_set.transcribers.data,
-                      ["attributes", "id"] as const
-                    ).map((recorder) => (
-                      <Fragment key={recorder.id}>
-                        <RecorderChip
-                          langui={langui}
-                          recorder={recorder.attributes}
-                        />
-                      </Fragment>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-            {selectedTranslation.text_set.translators &&
-              selectedTranslation.text_set.translators.data.length > 0 && (
-                <div>
-                  <p className="font-headers font-bold">
-                    {langui.translators}:
-                  </p>
-                  <div className="grid place-content-center place-items-center gap-2">
-                    {filterHasAttributes(
-                      selectedTranslation.text_set.translators.data,
-                      ["attributes", "id"] as const
-                    ).map((recorder) => (
-                      <Fragment key={recorder.id}>
-                        <RecorderChip
-                          langui={langui}
-                          recorder={recorder.attributes}
-                        />
-                      </Fragment>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-            {selectedTranslation.text_set.proofreaders &&
-              selectedTranslation.text_set.proofreaders.data.length > 0 && (
-                <div>
-                  <p className="font-headers font-bold">
-                    {langui.proofreaders}:
-                  </p>
-                  <div className="grid place-content-center place-items-center gap-2">
-                    {filterHasAttributes(
-                      selectedTranslation.text_set.proofreaders.data,
-                      ["attributes", "id"] as const
-                    ).map((recorder) => (
-                      <Fragment key={recorder.id}>
-                        <RecorderChip
-                          langui={langui}
-                          recorder={recorder.attributes}
-                        />
-                      </Fragment>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-            {isDefinedAndNotEmpty(selectedTranslation.text_set.notes) && (
-              <div>
-                <p className="font-headers font-bold">{langui.notes}:</p>
-                <div className="grid place-content-center place-items-center gap-2">
-                  <Markdawn
-                    text={selectedTranslation.text_set.notes}
-                    langui={langui}
+                  <Chip
+                    text={prettyLanguage(
+                      selectedTranslation.text_set.source_language.data
+                        .attributes.code,
+                      languages
+                    )}
                   />
                 </div>
+              )}
+
+              <div className="grid grid-flow-col place-content-center place-items-center gap-2">
+                <p className="font-headers font-bold">{langui.status}:</p>
+
+                <ToolTip
+                  content={getStatusDescription(
+                    selectedTranslation.text_set.status,
+                    langui
+                  )}
+                  maxWidth={"20rem"}
+                >
+                  <Chip text={selectedTranslation.text_set.status} />
+                </ToolTip>
               </div>
-            )}
-          </div>
+
+              {selectedTranslation.text_set.transcribers &&
+                selectedTranslation.text_set.transcribers.data.length > 0 && (
+                  <div>
+                    <p className="font-headers font-bold">
+                      {langui.transcribers}:
+                    </p>
+                    <div className="grid place-content-center place-items-center gap-2">
+                      {filterHasAttributes(
+                        selectedTranslation.text_set.transcribers.data,
+                        ["attributes", "id"] as const
+                      ).map((recorder) => (
+                        <Fragment key={recorder.id}>
+                          <RecorderChip
+                            langui={langui}
+                            recorder={recorder.attributes}
+                          />
+                        </Fragment>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+              {selectedTranslation.text_set.translators &&
+                selectedTranslation.text_set.translators.data.length > 0 && (
+                  <div>
+                    <p className="font-headers font-bold">
+                      {langui.translators}:
+                    </p>
+                    <div className="grid place-content-center place-items-center gap-2">
+                      {filterHasAttributes(
+                        selectedTranslation.text_set.translators.data,
+                        ["attributes", "id"] as const
+                      ).map((recorder) => (
+                        <Fragment key={recorder.id}>
+                          <RecorderChip
+                            langui={langui}
+                            recorder={recorder.attributes}
+                          />
+                        </Fragment>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+              {selectedTranslation.text_set.proofreaders &&
+                selectedTranslation.text_set.proofreaders.data.length > 0 && (
+                  <div>
+                    <p className="font-headers font-bold">
+                      {langui.proofreaders}:
+                    </p>
+                    <div className="grid place-content-center place-items-center gap-2">
+                      {filterHasAttributes(
+                        selectedTranslation.text_set.proofreaders.data,
+                        ["attributes", "id"] as const
+                      ).map((recorder) => (
+                        <Fragment key={recorder.id}>
+                          <RecorderChip
+                            langui={langui}
+                            recorder={recorder.attributes}
+                          />
+                        </Fragment>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+              {isDefinedAndNotEmpty(selectedTranslation.text_set.notes) && (
+                <div>
+                  <p className="font-headers font-bold">{langui.notes}:</p>
+                  <div className="grid place-content-center place-items-center gap-2">
+                    <Markdawn
+                      text={selectedTranslation.text_set.notes}
+                      langui={langui}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+          </>
+        )}
+
+        {selectedTranslation?.text_set?.text && (
+          <>
+            <TableOfContents
+              text={selectedTranslation.text_set.text}
+              title={prettyInlineTitle(
+                selectedTranslation.pre_title,
+                selectedTranslation.title,
+                selectedTranslation.subtitle
+              )}
+              langui={langui}
+              horizontalLine
+            />
+          </>
         )}
 
         {content.ranged_contents?.data &&
@@ -315,21 +332,6 @@ const Content = ({
               </div>
             </>
           )}
-
-        {selectedTranslation?.text_set?.text && (
-          <>
-            <HorizontalLine />
-            <TableOfContents
-              text={selectedTranslation.text_set.text}
-              title={prettyInlineTitle(
-                selectedTranslation.pre_title,
-                selectedTranslation.title,
-                selectedTranslation.subtitle
-              )}
-              langui={langui}
-            />
-          </>
-        )}
       </SubPanel>
     ),
     [

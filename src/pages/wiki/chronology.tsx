@@ -32,6 +32,7 @@ import { AnchorShare } from "components/AnchorShare";
 import { datePickerToDate } from "helpers/date";
 import { TranslatedProps } from "helpers/types/TranslatedProps";
 import { TranslatedNavOption } from "components/PanelComponents/NavOption";
+import { useIntersectionList } from "hooks/useIntersectionList";
 
 /*
  *                                           ╭────────╮
@@ -52,6 +53,16 @@ const Chronology = ({
   languages,
   ...otherProps
 }: Props): JSX.Element => {
+  const ids = useMemo(
+    () =>
+      filterHasAttributes(chronologyEras, ["attributes"] as const).map(
+        (era) => era.attributes.slug
+      ),
+    [chronologyEras]
+  );
+
+  const currentIntersection = useIntersectionList(ids);
+
   const subPanel = useMemo(
     () => (
       <SubPanel>
@@ -64,7 +75,7 @@ const Chronology = ({
         />
 
         {filterHasAttributes(chronologyEras, ["attributes", "id"] as const).map(
-          (era) => (
+          (era, index) => (
             <Fragment key={era.id}>
               <TranslatedNavOption
                 translations={filterHasAttributes(era.attributes.title, [
@@ -80,13 +91,14 @@ const Chronology = ({
                 }}
                 url={`#${era.attributes.slug}`}
                 border
+                active={currentIntersection === index}
               />
             </Fragment>
           )
         )}
       </SubPanel>
     ),
-    [chronologyEras, langui]
+    [chronologyEras, currentIntersection, langui]
   );
 
   const contentPanel = useMemo(

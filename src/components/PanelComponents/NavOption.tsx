@@ -20,6 +20,7 @@ interface Props {
   subtitle?: string | null | undefined;
   border?: boolean;
   reduced?: boolean;
+  active?: boolean;
   onClick?: MouseEventHandler<HTMLDivElement>;
 }
 
@@ -32,12 +33,13 @@ export const NavOption = ({
   subtitle,
   border = false,
   reduced = false,
+  active = false,
   onClick,
 }: Props): JSX.Element => {
   const router = useRouter();
   const isActive = useMemo(
-    () => router.asPath.startsWith(url),
-    [url, router.asPath]
+    () => active || router.asPath.startsWith(url),
+    [active, router.asPath, url]
   );
 
   return (

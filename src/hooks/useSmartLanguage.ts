@@ -41,10 +41,7 @@ export const useSmartLanguage = <T>({
 
   useEffect(() => {
     setSelectedTranslationIndex(
-      getPreferredLanguage(
-        preferredLanguages,
-        availableLocales
-      )
+      getPreferredLanguage(preferredLanguages, availableLocales)
     );
   }, [preferredLanguages, availableLocales, router.locale]);
 

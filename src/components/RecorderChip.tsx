@@ -28,7 +28,7 @@ export const RecorderChip = ({ recorder, langui }: Props): JSX.Element => (
         <div className="grid grid-flow-col place-content-start place-items-center gap-6">
           {recorder.avatar?.data?.attributes && (
             <Img
-              className="w-20 rounded-full border-4 border-mid aspect-square object-cover"
+              className="aspect-square w-20 rounded-full border-4 border-mid object-cover"
               src={recorder.avatar.data.attributes}
               quality={ImageQuality.Small}
             />

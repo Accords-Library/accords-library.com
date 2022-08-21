@@ -7,12 +7,14 @@ import { Img } from "components/Img";
 import { InsetBox } from "components/InsetBox";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { AppStaticProps } from "graphql/getAppStaticProps";
-import { cJoin } from "helpers/className";
+import { cIf, cJoin } from "helpers/className";
 import { slugify } from "helpers/formatters";
 import { getAssetURL, ImageQuality } from "helpers/img";
 import { isDefined, isDefinedAndNotEmpty, isUndefined } from "helpers/others";
 import { useLightBox } from "hooks/useLightBox";
 import { AnchorShare } from "components/AnchorShare";
+import { useIntersectionList } from "hooks/useIntersectionList";
+import { Ico, Icon } from "components/Ico";
 
 /*
  *                                        ╭─────────────╮
@@ -79,92 +81,30 @@ export const Markdawn = ({
               },
             },
 
-            h1: {
+            Header: {
               component: (compProps: {
                 id: string;
                 style: React.CSSProperties;
-                children: React.ReactNode;
+                children: string;
+                level: string;
               }) => (
-                <h1 id={compProps.id} style={compProps.style}>
-                  {compProps.children}
-                  <AnchorShare id={compProps.id} langui={langui} />
-                </h1>
-              ),
-            },
-
-            h2: {
-              component: (compProps: {
-                id: string;
-                style: React.CSSProperties;
-                children: React.ReactNode;
-              }) => (
-                <h2 id={compProps.id} style={compProps.style}>
-                  {compProps.children}
-                  <AnchorShare id={compProps.id} langui={langui} />
-                </h2>
-              ),
-            },
-
-            h3: {
-              component: (compProps: {
-                id: string;
-                style: React.CSSProperties;
-                children: React.ReactNode;
-              }) => (
-                <h3 id={compProps.id} style={compProps.style}>
-                  {compProps.children}
-                  <AnchorShare id={compProps.id} langui={langui} />
-                </h3>
-              ),
-            },
-
-            h4: {
-              component: (compProps: {
-                id: string;
-                style: React.CSSProperties;
-                children: React.ReactNode;
-              }) => (
-                <h4 id={compProps.id} style={compProps.style}>
-                  {compProps.children}
-                  <AnchorShare id={compProps.id} langui={langui} />
-                </h4>
-              ),
-            },
-
-            h5: {
-              component: (compProps: {
-                id: string;
-                style: React.CSSProperties;
-                children: React.ReactNode;
-              }) => (
-                <h5 id={compProps.id} style={compProps.style}>
-                  {compProps.children}
-                  <AnchorShare id={compProps.id} langui={langui} />
-                </h5>
-              ),
-            },
-
-            h6: {
-              component: (compProps: {
-                id: string;
-                style: React.CSSProperties;
-                children: React.ReactNode;
-              }) => (
-                <h6 id={compProps.id} style={compProps.style}>
-                  {compProps.children}
-                  <AnchorShare id={compProps.id} langui={langui} />
-                </h6>
+                <Header
+                  title={compProps.children}
+                  langui={langui}
+                  level={parseInt(compProps.level, 10)}
+                  slug={compProps.id}
+                />
               ),
             },
 
             SceneBreak: {
               component: (compProps: { id: string }) => (
-                <div
-                  id={compProps.id}
-                  className={"mt-16 mb-20 h-0 text-center text-3xl text-dark"}
-                >
-                  * * *
-                </div>
+                <Header
+                  title={"* * *"}
+                  langui={langui}
+                  level={6}
+                  slug={compProps.id}
+                />
               ),
             },
 
@@ -310,14 +250,14 @@ interface TableOfContentsProps {
   text: string;
   title?: string;
   langui: AppStaticProps["langui"];
+  horizontalLine?: boolean;
 }
-
-// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
 export const TableOfContents = ({
   text,
   title,
   langui,
+  horizontalLine = false,
 }: TableOfContentsProps): JSX.Element => {
   const router = useRouter();
   const toc = useMemo(
@@ -327,15 +267,23 @@ export const TableOfContents = ({
 
   return (
     <>
-      <h3 className="text-xl">{langui.table_of_contents}</h3>
-      <div className="max-w-[14.5rem] text-left">
-        <p className="relative my-2 overflow-x-hidden text-ellipsis whitespace-nowrap text-left">
-          <a onClick={async () => router.replace(`#${toc.slug}`)}>
-            {<abbr title={toc.title}>{toc.title}</abbr>}
-          </a>
-        </p>
-        <TocLevel tocchildren={toc.children} parentNumbering="" />
-      </div>
+      {toc.children.length > 0 && (
+        <>
+          {horizontalLine && <HorizontalLine />}
+          <h3 className="text-xl">{langui.table_of_contents}</h3>
+          <div className="max-w-[14.5rem] text-left">
+            <p
+              className="relative my-2 overflow-x-hidden text-ellipsis whitespace-nowrap
+                text-left"
+            >
+              <a onClick={async () => router.replace(`#${toc.slug}`)}>
+                {<abbr title={toc.title}>{toc.title}</abbr>}
+              </a>
+            </p>
+            <TocLevel tocchildren={toc.children} parentNumbering="" />
+          </div>
+        </>
+      )}
     </>
   );
 };
@@ -344,6 +292,80 @@ export const TableOfContents = ({
  *                                    ╭──────────────────────╮
  * ───────────────────────────────────╯  PRIVATE COMPONENTS  ╰──────────────────────────────────────
  */
+
+interface HeaderProps {
+  level: number;
+  title: string;
+  slug: string;
+  langui: AppStaticProps["langui"];
+}
+
+const Header = ({ level, title, slug, langui }: HeaderProps): JSX.Element => {
+  const innerComponent = useMemo(
+    () => (
+      <>
+        <div className="mt-8 mr-2 mb-12 flex place-items-center gap-4">
+          {title === "* * *" ? (
+            <div className="space-x-3 text-dark">
+              <Ico icon={Icon.Emergency} />
+              <Ico icon={Icon.Emergency} />
+              <Ico icon={Icon.Emergency} />
+            </div>
+          ) : (
+            <div className="font-headers">{title}</div>
+          )}
+          <AnchorShare
+            className="opacity-0 transition-opacity group-hover:opacity-100"
+            id={slug}
+            langui={langui}
+          />
+        </div>
+      </>
+    ),
+    [langui, slug, title]
+  );
+
+  const className = "group";
+
+  switch (level) {
+    case 1:
+      return (
+        <h1 id={slug} className={className}>
+          {innerComponent}
+        </h1>
+      );
+    case 2:
+      return (
+        <h2 id={slug} className={className}>
+          {innerComponent}
+        </h2>
+      );
+    case 3:
+      return (
+        <h3 id={slug} className={className}>
+          {innerComponent}
+        </h3>
+      );
+    case 4:
+      return (
+        <h4 id={slug} className={className}>
+          {innerComponent}
+        </h4>
+      );
+    case 5:
+      return (
+        <h5 id={slug} className={className}>
+          {innerComponent}
+        </h5>
+      );
+    default:
+      return (
+        <h6 id={slug} className={className}>
+          {innerComponent}
+        </h6>
+      );
+  }
+};
 
 interface TocInterface {
   title: string;
@@ -354,19 +376,35 @@ interface TocInterface {
 interface LevelProps {
   tocchildren: TocInterface[];
   parentNumbering: string;
+  allowIntersection?: boolean;
 }
 
 const TocLevel = ({
   tocchildren,
   parentNumbering,
+  allowIntersection = true,
 }: LevelProps): JSX.Element => {
   const router = useRouter();
+
+  const ids = useMemo(
+    () => tocchildren.map((child) => child.slug),
+    [tocchildren]
+  );
+  const currentIntersection = useIntersectionList(ids);
 
   return (
     <ol className="pl-4 text-left">
       {tocchildren.map((child, childIndex) => (
         <Fragment key={child.slug}>
-          <li className="my-2 w-full overflow-x-hidden text-ellipsis whitespace-nowrap">
+          <li
+            className={cJoin(
+              "my-2 w-full overflow-x-hidden text-ellipsis whitespace-nowrap",
+              cIf(
+                allowIntersection && currentIntersection === childIndex,
+                "text-dark"
+              )
+            )}
+          >
             <span className="text-dark">{`${parentNumbering}${
               childIndex + 1
             }.`}</span>{" "}
@@ -377,6 +415,9 @@ const TocLevel = ({
           <TocLevel
             tocchildren={child.children}
             parentNumbering={`${parentNumbering}${childIndex + 1}.`}
+            allowIntersection={
+              allowIntersection && currentIntersection === childIndex
+            }
           />
         </Fragment>
       ))}
@@ -385,18 +426,9 @@ const TocLevel = ({
 };
 
 /*
- *                                    ╭──────────────────────╮
- * ───────────────────────────────────╯  PRIVATE COMPONENTS  ╰──────────────────────────────────────
+ *                                      ╭───────────────────╮
+ * ─────────────────────────────────────╯  PRIVATE METHODS  ╰───────────────────────────────────────
  */
-
-enum HeaderLevels {
-  H1 = 1,
-  H2 = 2,
-  H3 = 3,
-  H4 = 4,
-  H5 = 5,
-  H6 = 6,
-}
 
 const preprocessMarkDawn = (text: string, playerName = ""): string => {
   if (!text) return "";
@@ -425,28 +457,8 @@ const preprocessMarkDawn = (text: string, playerName = ""): string => {
         return `<SceneBreak id="scene-break-${scenebreakIndex}">`;
       }
 
-      if (line.startsWith("# ")) {
-        return markdawnHeadersParser(HeaderLevels.H1, line, visitedSlugs);
-      }
-
-      if (line.startsWith("## ")) {
-        return markdawnHeadersParser(HeaderLevels.H2, line, visitedSlugs);
-      }
-
-      if (line.startsWith("### ")) {
-        return markdawnHeadersParser(HeaderLevels.H3, line, visitedSlugs);
-      }
-
-      if (line.startsWith("#### ")) {
-        return markdawnHeadersParser(HeaderLevels.H4, line, visitedSlugs);
-      }
-
-      if (line.startsWith("##### ")) {
-        return markdawnHeadersParser(HeaderLevels.H5, line, visitedSlugs);
-      }
-
-      if (line.startsWith("###### ")) {
-        return markdawnHeadersParser(HeaderLevels.H6, line, visitedSlugs);
+      if (/^[#]+ /u.test(line)) {
+        return markdawnHeadersParser(line.indexOf(" "), line, visitedSlugs);
       }
 
       return line;
@@ -459,7 +471,7 @@ const preprocessMarkDawn = (text: string, playerName = ""): string => {
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
 const markdawnHeadersParser = (
-  headerLevel: HeaderLevels,
+  headerLevel: number,
   line: string,
   visitedSlugs: string[]
 ): string => {
@@ -472,7 +484,7 @@ const markdawnHeadersParser = (
     index++;
   }
   visitedSlugs.push(newSlug);
-  return `<h${headerLevel} id="${newSlug}">${lineText}</h${headerLevel}>`;
+  return `<Header level="${headerLevel}" id="${newSlug}">${lineText}</Header>`;
 };
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
@@ -497,10 +509,7 @@ const getTocFromMarkdawn = (text: string, title?: string): TocInterface => {
     line.slice(line.indexOf(`id="`) + 4, line.indexOf(`">`));
 
   text.split("\n").map((line) => {
-    if (line.startsWith("<h1 id=")) {
-      toc.title = getTitle(line);
-      toc.slug = getSlug(line);
-    } else if (line.startsWith("<h2 id=")) {
+    if (line.startsWith('<Header level="2"')) {
       toc.children.push({
         title: getTitle(line),
         slug: getSlug(line),
@@ -511,7 +520,7 @@ const getTocFromMarkdawn = (text: string, title?: string): TocInterface => {
       h4 = -1;
       h5 = -1;
       scenebreak = 0;
-    } else if (h2 >= 0 && line.startsWith("<h3 id=")) {
+    } else if (h2 >= 0 && line.startsWith('<Header level="3"')) {
       toc.children[h2].children.push({
         title: getTitle(line),
         slug: getSlug(line),
@@ -521,7 +530,7 @@ const getTocFromMarkdawn = (text: string, title?: string): TocInterface => {
       h4 = -1;
       h5 = -1;
       scenebreak = 0;
-    } else if (h3 >= 0 && line.startsWith("<h4 id=")) {
+    } else if (h3 >= 0 && line.startsWith('<Header level="4"')) {
       toc.children[h2].children[h3].children.push({
         title: getTitle(line),
         slug: getSlug(line),
@@ -530,7 +539,7 @@ const getTocFromMarkdawn = (text: string, title?: string): TocInterface => {
       h4++;
       h5 = -1;
       scenebreak = 0;
-    } else if (h4 >= 0 && line.startsWith("<h5 id=")) {
+    } else if (h4 >= 0 && line.startsWith('<Header level="5"')) {
       toc.children[h2].children[h3].children[h4].children.push({
         title: getTitle(line),
         slug: getSlug(line),
@@ -538,7 +547,7 @@ const getTocFromMarkdawn = (text: string, title?: string): TocInterface => {
       });
       h5++;
       scenebreak = 0;
-    } else if (h5 >= 0 && line.startsWith("<h6 id=")) {
+    } else if (h5 >= 0 && line.startsWith('<Header level="6"')) {
       toc.children[h2].children[h3].children[h4].children[h5].children.push({
         title: getTitle(line),
         slug: getSlug(line),

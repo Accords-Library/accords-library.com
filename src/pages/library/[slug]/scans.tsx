@@ -44,6 +44,7 @@ import { isInteger } from "helpers/numbers";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { TranslatedProps } from "helpers/types/TranslatedProps";
 import { TranslatedNavOption } from "components/PanelComponents/NavOption";
+import { useIntersectionList } from "hooks/useIntersectionList";
 
 /*
  *                                           ╭────────╮
@@ -70,6 +71,15 @@ const LibrarySlug = ({
   ...otherProps
 }: Props): JSX.Element => {
   const [openLightBox, LightBox] = useLightBox();
+
+  const ids = useMemo(
+    () =>
+      filterHasAttributes(item.contents?.data, [
+        "attributes.slug",
+      ] as const).map((content) => content.attributes.slug),
+    [item.contents?.data]
+  );
+  const currentIntersection = useIntersectionList(ids);
 
   const subPanel = useMemo(
     () => (
@@ -121,7 +131,7 @@ const LibrarySlug = ({
         </p>
 
         {filterHasAttributes(item.contents?.data, ["attributes"] as const).map(
-          (content) => (
+          (content, index) => (
             <>
               {content.attributes.scan_set &&
                 content.attributes.scan_set.length > 0 && (
@@ -158,6 +168,7 @@ const LibrarySlug = ({
                           : undefined,
                     }}
                     border
+                    active={index === currentIntersection}
                   />
                 )}
             </>
@@ -167,6 +178,7 @@ const LibrarySlug = ({
     ),
     [
       currencies,
+      currentIntersection,
       item.categories?.data,
       item.contents?.data,
       item.metadata,

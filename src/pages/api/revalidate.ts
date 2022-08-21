@@ -161,6 +161,7 @@ const Revalidate = (
 
     case "content": {
       paths.push(`/contents`);
+      paths.push(`/contents/all`);
       paths.push(`/contents/${body.entry.slug}`);
       if (body.entry.folder?.slug) {
         paths.push(`/contents/folder/${body.entry.folder.slug}`);

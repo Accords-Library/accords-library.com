@@ -5,6 +5,8 @@ import { Img } from "./Img";
 import { Button } from "./Inputs/Button";
 import { Popup } from "./Popup";
 import { Icon } from "components/Ico";
+import { useIs3ColumnsLayout } from "hooks/useContainerQuery";
+import { cIf, cJoin } from "helpers/className";
 
 /*
  *                                         ╭─────────────╮
@@ -40,6 +42,7 @@ export const LightBox = ({
   const handlePrevious = useCallback(() => {
     if (index > 0) setIndex(index - 1);
   }, [index, setIndex]);
+  const is3ColumnsLayout = useIs3ColumnsLayout();
 
   const handleNext = useCallback(() => {
     if (index < images.length - 1) setIndex(index + 1);
@@ -78,11 +81,16 @@ export const LightBox = ({
           >
             <div
               {...handlers}
-              className={`grid h-full w-full grid-cols-[4em,1fr,4em] place-items-center 
-              overflow-hidden [grid-template-areas:"left_image_right"] first-letter:gap-4 
-              mobile:grid-cols-2 mobile:[grid-template-areas:"image_image""left_right"]`}
+              className={cJoin(
+                `grid h-full w-full place-items-center overflow-hidden first-letter:gap-4`,
+                cIf(
+                  is3ColumnsLayout,
+                  `grid-cols-[4em,1fr,4em] [grid-template-areas:"left_image_right"]`,
+                  `grid-cols-2 [grid-template-areas:"image_image""left_right"]`
+                )
+              )}
             >
-              <div className="[grid-area:left]">
+              <div className="ml-4 [grid-area:left]">
                 {index > 0 && (
                   <Button onClick={handlePrevious} icon={Icon.ChevronLeft} />
                 )}
@@ -93,7 +101,7 @@ export const LightBox = ({
                 src={images[index]}
               />
 
-              <div className="[grid-area:right]">
+              <div className="mr-4 [grid-area:right]">
                 {index < images.length - 1 && (
                   <Button onClick={handleNext} icon={Icon.ChevronRight} />
                 )}

@@ -5,12 +5,11 @@ import { NavOption } from "components/PanelComponents/NavOption";
 import { ToolTip } from "components/ToolTip";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { AppStaticProps } from "graphql/getAppStaticProps";
-
-import { useMediaDesktop } from "hooks/useMediaQuery";
 import { Icon } from "components/Ico";
 import { cIf, cJoin } from "helpers/className";
 import { isDefinedAndNotEmpty } from "helpers/others";
 import { Link } from "components/Inputs/Link";
+import { useIs3ColumnsLayout } from "hooks/useContainerQuery";
 
 /*
  *                                        ╭─────────────╮
@@ -24,7 +23,7 @@ interface Props {
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
 export const MainPanel = ({ langui }: Props): JSX.Element => {
-  const isDesktop = useMediaDesktop();
+  const is3ColumnsLayout = useIs3ColumnsLayout();
   const {
     mainPanelReduced = false,
     toggleMainPanelReduced,
@@ -35,22 +34,24 @@ export const MainPanel = ({ langui }: Props): JSX.Element => {
     <div
       className={cJoin(
         "grid content-start justify-center gap-y-2 p-8 text-center",
-        cIf(mainPanelReduced && isDesktop, "px-4")
+        cIf(mainPanelReduced && is3ColumnsLayout, "px-4")
       )}
     >
       {/* Reduce/expand main menu */}
-      <div
-        className={cJoin(
-          "fixed top-1/2 mobile:hidden",
-          cIf(mainPanelReduced, "left-[4.65rem]", "left-[18.65rem]")
-        )}
-        onClick={toggleMainPanelReduced}
-      >
-        <Button
-          className="bg-light !px-2"
-          icon={mainPanelReduced ? Icon.ChevronRight : Icon.ChevronLeft}
-        />
-      </div>
+      {is3ColumnsLayout && (
+        <div
+          className={cJoin(
+            "fixed top-1/2",
+            cIf(mainPanelReduced, "left-[4.65rem]", "left-[18.65rem]")
+          )}
+          onClick={toggleMainPanelReduced}
+        >
+          <Button
+            className="bg-light !px-2"
+            icon={mainPanelReduced ? Icon.ChevronRight : Icon.ChevronLeft}
+          />
+        </div>
+      )}
 
       <div>
         <div className="grid place-items-center">
@@ -60,19 +61,23 @@ export const MainPanel = ({ langui }: Props): JSX.Element => {
                 `mb-4 aspect-square cursor-pointer bg-black transition-colors
                 [mask:url('/icons/accords.svg')] ![mask-size:contain] ![mask-repeat:no-repeat]
                 ![mask-position:center] hover:bg-dark`,
-                cIf(mainPanelReduced && isDesktop, "w-12", "w-1/2")
+                cIf(mainPanelReduced && is3ColumnsLayout, "w-12", "w-1/2")
               )}
             ></div>
           </Link>
 
-          {(!mainPanelReduced || !isDesktop) && (
+          {(!mainPanelReduced || !is3ColumnsLayout) && (
             <h2 className="mb-4 text-3xl">Accord&rsquo;s Library</h2>
           )}
 
           <div
             className={cJoin(
               "flex flex-wrap gap-2",
-              cIf(mainPanelReduced && isDesktop, "flex-col gap-3", "flex-row")
+              cIf(
+                mainPanelReduced && is3ColumnsLayout,
+                "flex-col gap-3",
+                "flex-row"
+              )
             )}
           >
             <ToolTip
@@ -113,7 +118,7 @@ export const MainPanel = ({ langui }: Props): JSX.Element => {
         icon={Icon.LibraryBooks}
         title={langui.library}
         subtitle={langui.library_short_description}
-        reduced={mainPanelReduced && isDesktop}
+        reduced={mainPanelReduced && is3ColumnsLayout}
       />
 
       <NavOption
@@ -121,7 +126,7 @@ export const MainPanel = ({ langui }: Props): JSX.Element => {
         icon={Icon.Workspaces}
         title={langui.contents}
         subtitle={langui.contents_short_description}
-        reduced={mainPanelReduced && isDesktop}
+        reduced={mainPanelReduced && is3ColumnsLayout}
       />
 
       <NavOption
@@ -129,7 +134,7 @@ export const MainPanel = ({ langui }: Props): JSX.Element => {
         icon={Icon.TravelExplore}
         title={langui.wiki}
         subtitle={langui.wiki_short_description}
-        reduced={mainPanelReduced && isDesktop}
+        reduced={mainPanelReduced && is3ColumnsLayout}
       />
 
       <NavOption
@@ -137,7 +142,7 @@ export const MainPanel = ({ langui }: Props): JSX.Element => {
         icon={Icon.WatchLater}
         title={langui.chronicles}
         subtitle={langui.chronicles_short_description}
-        reduced={mainPanelReduced && isDesktop}
+        reduced={mainPanelReduced && is3ColumnsLayout}
       />
 
       <HorizontalLine />
@@ -146,7 +151,7 @@ export const MainPanel = ({ langui }: Props): JSX.Element => {
         url="/news"
         icon={Icon.Feed}
         title={langui.news}
-        reduced={mainPanelReduced && isDesktop}
+        reduced={mainPanelReduced && is3ColumnsLayout}
       />
 
       {/*
@@ -154,7 +159,7 @@ export const MainPanel = ({ langui }: Props): JSX.Element => {
         url="/merch"
         icon={Icon.Store}
         title={langui.merch}
-        reduced={mainPanelReduced && isDesktop}
+        reduced={mainPanelReduced && is3ColumnsLayout}
       />
       */}
 
@@ -162,29 +167,29 @@ export const MainPanel = ({ langui }: Props): JSX.Element => {
         url="https://gallery.accords-library.com/posts/"
         icon={Icon.Collections}
         title={langui.gallery}
-        reduced={mainPanelReduced && isDesktop}
+        reduced={mainPanelReduced && is3ColumnsLayout}
       />
 
       <NavOption
         url="/archives"
         icon={Icon.Inventory}
         title={langui.archives}
-        reduced={mainPanelReduced && isDesktop}
+        reduced={mainPanelReduced && is3ColumnsLayout}
       />
 
       <NavOption
         url="/about-us"
         icon={Icon.Info}
         title={langui.about_us}
-        reduced={mainPanelReduced && isDesktop}
+        reduced={mainPanelReduced && is3ColumnsLayout}
       />
 
-      {mainPanelReduced && isDesktop ? "" : <HorizontalLine />}
+      {mainPanelReduced && is3ColumnsLayout ? "" : <HorizontalLine />}
 
       <div
         className={cJoin(
           "text-center",
-          cIf(mainPanelReduced && isDesktop, "hidden")
+          cIf(mainPanelReduced && is3ColumnsLayout, "hidden")
         )}
       >
         {isDefinedAndNotEmpty(langui.licensing_notice) && (

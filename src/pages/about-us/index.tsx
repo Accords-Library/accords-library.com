@@ -6,6 +6,7 @@ import { PanelHeader } from "components/PanelComponents/PanelHeader";
 import { SubPanel } from "components/Panels/SubPanel";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getOpenGraph } from "helpers/openGraph";
+import { HorizontalLine } from "components/HorizontalLine";
 
 /*
  *                                           ╭────────╮
@@ -23,6 +24,9 @@ const AboutUs = ({ langui, ...otherProps }: Props): JSX.Element => (
           title={langui.about_us}
           description={langui.about_us_description}
         />
+
+        <HorizontalLine />
+
         <NavOption
           title={langui.accords_handbook}
           url="/about-us/accords-handbook"

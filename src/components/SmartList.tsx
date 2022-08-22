@@ -6,6 +6,7 @@ import { AppStaticProps } from "graphql/getAppStaticProps";
 import { cJoin } from "helpers/className";
 import { isDefined, isDefinedAndNotEmpty } from "helpers/others";
 import { AnchorIds, useScrollTopOnChange } from "hooks/useScrollTopOnChange";
+import { useIs3ColumnsLayout } from "hooks/useContainerQuery";
 
 interface Group<T> {
   name: string;
@@ -205,7 +206,7 @@ export const SmartList = <T,>({
                   <div
                     className={cJoin(
                       `grid items-start gap-8 border-b-[3px] border-dotted pb-12
-                      last-of-type:border-0 mobile:gap-4`,
+                      last-of-type:border-0`,
                       className
                     )}
                   >
@@ -244,15 +245,22 @@ interface DefaultRenderWhenEmptyProps {
   langui: AppStaticProps["langui"];
 }
 
-const DefaultRenderWhenEmpty = ({ langui }: DefaultRenderWhenEmptyProps) => (
-  <div className="grid h-full place-content-center">
-    <div
-      className="grid grid-flow-col place-items-center gap-9 rounded-2xl border-2 border-dotted
-      border-dark p-8 text-dark opacity-40"
-    >
-      <Ico icon={Icon.ChevronLeft} className="!text-[300%] mobile:hidden" />
-      <p className="max-w-xs text-2xl">{langui.no_results_message}</p>
-      <Ico icon={Icon.ChevronRight} className="!text-[300%] desktop:hidden" />
+const DefaultRenderWhenEmpty = ({ langui }: DefaultRenderWhenEmptyProps) => {
+  const is3ColumnsLayout = useIs3ColumnsLayout();
+  return (
+    <div className="grid h-full place-content-center">
+      <div
+        className="grid grid-flow-col place-items-center gap-9 rounded-2xl border-2 border-dotted
+        border-dark p-8 text-dark opacity-40"
+      >
+        {is3ColumnsLayout && (
+          <Ico icon={Icon.ChevronLeft} className="!text-[300%]" />
+        )}
+        <p className="max-w-xs text-2xl">{langui.no_results_message}</p>
+        {!is3ColumnsLayout && (
+          <Ico icon={Icon.ChevronRight} className="!text-[300%]" />
+        )}
+      </div>
     </div>
-  </div>
-);
+  );
+};

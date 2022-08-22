@@ -11,6 +11,7 @@ import { filterHasAttributes } from "helpers/others";
 import { prettySlug } from "helpers/formatters";
 import { getOpenGraph } from "helpers/openGraph";
 import { TranslatedChroniclesList } from "components/Chronicles/ChroniclesList";
+import { HorizontalLine } from "components/HorizontalLine";
 
 /*
  *                                           ╭────────╮
@@ -36,6 +37,9 @@ const Chronicles = ({
           title={langui.chronicles}
           description={langui.chronicles_description}
         />
+
+        <HorizontalLine />
+
         <div className="grid gap-16">
           {filterHasAttributes(chapters, [
             "attributes.chronicles",

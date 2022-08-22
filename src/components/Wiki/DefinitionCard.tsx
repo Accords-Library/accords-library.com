@@ -5,6 +5,8 @@ import { AppStaticProps } from "graphql/getAppStaticProps";
 import { getStatusDescription } from "helpers/others";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { Button } from "components/Inputs/Button";
+import { useIsContentPanelNoMoreThan } from "hooks/useContainerQuery";
+import { cIf, cJoin } from "helpers/className";
 
 /*
  *                                        ╭─────────────╮
@@ -37,6 +39,7 @@ const DefinitionCard = ({
   index,
   categories,
 }: Props): JSX.Element => {
+  const isContentPanelNoMoreThanMd = useIsContentPanelNoMoreThan("md");
   const [selectedTranslation, LanguageSwitcher, languageSwitcherProps] =
     useSmartLanguage({
       items: translations,
@@ -86,7 +89,12 @@ const DefinitionCard = ({
       <p>{selectedTranslation?.definition}</p>
 
       {source?.url && source.name && (
-        <div className="mt-3 flex place-items-center gap-2 mobile:flex-col mobile:text-center">
+        <div
+          className={cJoin(
+            "mt-3 flex place-items-center gap-2",
+            cIf(isContentPanelNoMoreThanMd, "flex-col text-center")
+          )}
+        >
           <p>{langui.source}: </p>
           <Button href={source.url} size="small" text={source.name} />
         </div>

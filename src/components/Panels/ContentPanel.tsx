@@ -1,4 +1,5 @@
-import { cJoin } from "helpers/className";
+import { cIf, cJoin } from "helpers/className";
+import { useIsContentPanelAtLeast } from "hooks/useContainerQuery";
 
 /*
  *                                        ╭─────────────╮
@@ -23,20 +24,24 @@ export const ContentPanel = ({
   width = ContentPanelWidthSizes.Default,
   children,
   className,
-}: Props): JSX.Element => (
-  <div className="grid h-full">
-    <main
-      className={cJoin(
-        "justify-self-center px-4 pt-10 pb-20 desktop:px-10 desktop:pt-20 desktop:pb-32",
-        width === ContentPanelWidthSizes.Default
-          ? "max-w-2xl"
-          : width === ContentPanelWidthSizes.Large
-          ? "max-w-4xl"
-          : "w-full",
-        className
-      )}
-    >
-      {children}
-    </main>
-  </div>
-);
+}: Props): JSX.Element => {
+  const isContentPanelAtLeast3xl = useIsContentPanelAtLeast("3xl");
+  return (
+    <div className="grid h-full">
+      <main
+        className={cJoin(
+          "justify-self-center px-4 pt-10 pb-20",
+          cIf(isContentPanelAtLeast3xl, "px-10 pt-20 pb-32"),
+          width === ContentPanelWidthSizes.Default
+            ? "max-w-2xl"
+            : width === ContentPanelWidthSizes.Large
+            ? "max-w-4xl"
+            : "w-full",
+          className
+        )}
+      >
+        {children}
+      </main>
+    </div>
+  );
+};

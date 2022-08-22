@@ -3,9 +3,10 @@ import { Icon } from "components/Ico";
 import { Button } from "components/Inputs/Button";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { AppStaticProps } from "graphql/getAppStaticProps";
-import { cIf, cJoin } from "helpers/className";
 import { TranslatedProps } from "helpers/types/TranslatedProps";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
+import { useIs3ColumnsLayout } from "hooks/useContainerQuery";
+import { isDefined } from "helpers/others";
 
 /*
  *                                        ╭─────────────╮
@@ -16,14 +17,8 @@ interface Props {
   href: string;
   title: string | null | undefined;
   langui: AppStaticProps["langui"];
-  displayOn: ReturnButtonType;
+  displayOnlyOn?: "1ColumnLayout" | "3ColumnsLayout";
   className?: string;
-}
-
-export enum ReturnButtonType {
-  Mobile = "mobile",
-  Desktop = "desktop",
-  Both = "both",
 }
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
@@ -32,26 +27,27 @@ export const ReturnButton = ({
   href,
   title,
   langui,
-  displayOn,
+  displayOnlyOn,
   className,
 }: Props): JSX.Element => {
   const { setSubPanelOpen } = useAppLayout();
+  const is3ColumnsLayout = useIs3ColumnsLayout();
 
   return (
-    <div
-      className={cJoin(
-        cIf(displayOn === ReturnButtonType.Mobile, "desktop:hidden"),
-        cIf(displayOn === ReturnButtonType.Desktop, "mobile:hidden"),
-        className
+    <>
+      {((is3ColumnsLayout && displayOnlyOn === "3ColumnsLayout") ||
+        (!is3ColumnsLayout && displayOnlyOn === "1ColumnLayout") ||
+        !isDefined(displayOnlyOn)) && (
+        <div className={className}>
+          <Button
+            onClick={() => setSubPanelOpen(false)}
+            href={href}
+            text={`${langui.return_to} ${title}`}
+            icon={Icon.NavigateBefore}
+          />
+        </div>
       )}
-    >
-      <Button
-        onClick={() => setSubPanelOpen(false)}
-        href={href}
-        text={`${langui.return_to} ${title}`}
-        icon={Icon.NavigateBefore}
-      />
-    </div>
+    </>
   );
 };
 

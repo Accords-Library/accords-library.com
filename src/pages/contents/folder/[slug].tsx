@@ -24,6 +24,9 @@ import { SubPanel } from "components/Panels/SubPanel";
 import { TranslatedProps } from "helpers/types/TranslatedProps";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { TranslatedPreviewCard } from "components/PreviewCard";
+import { HorizontalLine } from "components/HorizontalLine";
+import { useIsContentPanelAtLeast } from "hooks/useContainerQuery";
+import { cJoin, cIf } from "helpers/className";
 
 /*
  *                                           ╭────────╮
@@ -44,6 +47,8 @@ const ContentsFolder = ({
   folder,
   ...otherProps
 }: Props): JSX.Element => {
+  const isContentPanelAtLeast4xl = useIsContentPanelAtLeast("4xl");
+
   const subPanel = useMemo(
     () => (
       <SubPanel>
@@ -52,6 +57,8 @@ const ContentsFolder = ({
           title={langui.contents}
           description={langui.contents_description}
         />
+
+        <HorizontalLine />
 
         <Button
           href="/contents/all"
@@ -126,8 +133,14 @@ const ContentsFolder = ({
               fallback={{ title: prettySlug(item.attributes.slug) }}
             />
           )}
-          className="grid-cols-2 items-stretch
-          desktop:grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))]"
+          className={cJoin(
+            "items-end",
+            cIf(
+              isContentPanelAtLeast4xl,
+              "grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] gap-x-6 gap-y-8",
+              "grid-cols-2 gap-4"
+            )
+          )}
           renderWhenEmpty={() => <></>}
           langui={langui}
           groupingFunction={() => [langui.folders ?? "Folders"]}
@@ -169,7 +182,11 @@ const ContentsFolder = ({
               keepInfoVisible
             />
           )}
-          className="grid-cols-2 desktop:grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))]"
+          className={cIf(
+            isContentPanelAtLeast4xl,
+            "grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] gap-x-6 gap-y-8",
+            "grid-cols-2 gap-x-3 gap-y-5"
+          )}
           renderWhenEmpty={() => <></>}
           langui={langui}
           groupingFunction={() => [langui.contents ?? "Contents"]}
@@ -182,11 +199,12 @@ const ContentsFolder = ({
       </ContentPanel>
     ),
     [
-      folder.contents,
+      folder.contents?.data,
       folder.parent_folder?.data?.attributes,
       folder.slug,
-      folder.subfolders,
+      folder.subfolders?.data,
       folder.titles,
+      isContentPanelAtLeast4xl,
       langui,
     ]
   );
@@ -284,15 +302,11 @@ interface PreviewFolderProps {
   title: string | null | undefined;
 }
 
-export const PreviewFolder = ({
-  href,
-  title,
-}: PreviewFolderProps): JSX.Element => (
+const PreviewFolder = ({ href, title }: PreviewFolderProps): JSX.Element => (
   <Link
     href={href}
     className="flex w-full cursor-pointer flex-row place-content-center place-items-center gap-4
-    rounded-md bg-light p-6 px-8 transition-transform drop-shadow-shade-xl hover:scale-[1.02]
-    mobile:px-6 mobile:py-6"
+    rounded-md bg-light p-6 transition-transform drop-shadow-shade-xl hover:scale-[1.02]"
   >
     {title && (
       <p className="text-center font-headers text-lg font-bold leading-none">
@@ -304,7 +318,7 @@ export const PreviewFolder = ({
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
-export const TranslatedPreviewFolder = ({
+const TranslatedPreviewFolder = ({
   translations,
   fallback,
   ...otherProps

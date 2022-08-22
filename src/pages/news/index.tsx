@@ -17,12 +17,15 @@ import { Icon } from "components/Ico";
 import { WithLabel } from "components/Inputs/WithLabel";
 import { TextInput } from "components/Inputs/TextInput";
 import { Button } from "components/Inputs/Button";
-import { useMediaHoverable } from "hooks/useMediaQuery";
+import { useDeviceSupportsHover } from "hooks/useMediaQuery";
 import { filterHasAttributes } from "helpers/others";
 import { SmartList } from "components/SmartList";
 import { getOpenGraph } from "helpers/openGraph";
 import { compareDate } from "helpers/date";
 import { TranslatedPreviewCard } from "components/PreviewCard";
+import { HorizontalLine } from "components/HorizontalLine";
+import { cIf } from "helpers/className";
+import { useIsContentPanelAtLeast } from "hooks/useContainerQuery";
 
 /*
  *                                         ╭─────────────╮
@@ -44,7 +47,8 @@ interface Props extends AppStaticProps, AppLayoutRequired {
 }
 
 const News = ({ langui, posts, ...otherProps }: Props): JSX.Element => {
-  const hoverable = useMediaHoverable();
+  const isContentPanelAtLeast4xl = useIsContentPanelAtLeast("4xl");
+  const hoverable = useDeviceSupportsHover();
   const [searchName, setSearchName] = useState(
     DEFAULT_FILTERS_STATE.searchName
   );
@@ -62,6 +66,8 @@ const News = ({ langui, posts, ...otherProps }: Props): JSX.Element => {
           title={langui.news}
           description={langui.news_description}
         />
+
+        <HorizontalLine />
 
         <TextInput
           className="mb-6 w-full"
@@ -129,7 +135,11 @@ const News = ({ langui, posts, ...otherProps }: Props): JSX.Element => {
               }}
             />
           )}
-          className="grid-cols-1 desktop:grid-cols-[repeat(auto-fill,_minmax(20rem,1fr))]"
+          className={cIf(
+            isContentPanelAtLeast4xl,
+            "grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] gap-x-6 gap-y-8",
+            "grid-cols-2 gap-x-4 gap-y-6"
+          )}
           searchingTerm={searchName}
           searchingBy={(post) =>
             `${prettySlug(post.attributes.slug)} ${post.attributes.translations
@@ -140,7 +150,7 @@ const News = ({ langui, posts, ...otherProps }: Props): JSX.Element => {
         />
       </ContentPanel>
     ),
-    [keepInfoVisible, langui, posts, searchName]
+    [keepInfoVisible, langui, posts, searchName, isContentPanelAtLeast4xl]
   );
 
   return (

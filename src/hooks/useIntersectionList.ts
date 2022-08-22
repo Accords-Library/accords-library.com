@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { throttle } from "throttle-debounce";
 import { useIsClient } from "usehooks-ts";
-import { useOnScroll, AnchorIds } from "./useScrollTopOnChange";
+import { useOnScroll } from "./useOnScroll";
+import { AnchorIds } from "./useScrollTopOnChange";
 import { isDefined } from "helpers/others";
 
 export const useIntersectionList = (ids: string[]): number => {
@@ -16,7 +17,7 @@ export const useIntersectionList = (ids: string[]): number => {
 
   const refreshCurrentIntersection = useCallback(
     (scroll: number) => {
-      console.log("update");
+      console.log("useIntersectionList");
 
       if (!isDefined(contentPanel)) {
         setCurrentIntersection(-1);

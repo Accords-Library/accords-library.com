@@ -9,6 +9,7 @@ import {
 import { cIf, cJoin } from "helpers/className";
 import { randomInt } from "helpers/numbers";
 import { RequestMailProps, ResponseMailProps } from "pages/api/mail";
+import { useIs1ColumnLayout } from "hooks/useContainerQuery";
 
 /*
  *                                           ╭────────╮
@@ -17,6 +18,7 @@ import { RequestMailProps, ResponseMailProps } from "pages/api/mail";
 
 const AboutUs = ({ langui, ...otherProps }: PostStaticProps): JSX.Element => {
   const router = useRouter();
+  const is1ColumnLayout = useIs1ColumnLayout();
   const [formResponse, setFormResponse] = useState("");
   const [formState, setFormState] = useState<"completed" | "ongoing" | "stale">(
     "stale"
@@ -100,7 +102,7 @@ const AboutUs = ({ langui, ...otherProps }: PostStaticProps): JSX.Element => {
           <label htmlFor="name">{langui.name}:</label>
           <input
             type="text"
-            className="mobile:w-full"
+            className={cIf(is1ColumnLayout, "w-full")}
             name="name"
             id="name"
             required
@@ -112,7 +114,7 @@ const AboutUs = ({ langui, ...otherProps }: PostStaticProps): JSX.Element => {
           <label htmlFor="email">{langui.email}:</label>
           <input
             type="email"
-            className="mobile:w-full"
+            className={cIf(is1ColumnLayout, "w-full")}
             name="email"
             id="email"
             required

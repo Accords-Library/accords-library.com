@@ -7,10 +7,7 @@ import { Ico, Icon } from "components/Ico";
 import { Button } from "components/Inputs/Button";
 import { InsetBox } from "components/InsetBox";
 import { NavOption } from "components/PanelComponents/NavOption";
-import {
-  ReturnButton,
-  ReturnButtonType,
-} from "components/PanelComponents/ReturnButton";
+import { ReturnButton } from "components/PanelComponents/ReturnButton";
 import {
   ContentPanel,
   ContentPanelWidthSizes,
@@ -23,8 +20,8 @@ import { getReadySdk } from "graphql/sdk";
 import { prettyDate, prettyShortenNumber } from "helpers/formatters";
 import { filterHasAttributes, isDefined } from "helpers/others";
 import { getVideoFile } from "helpers/videos";
-import { useMediaMobile } from "hooks/useMediaQuery";
 import { getOpenGraph } from "helpers/openGraph";
+import { useIsContentPanelAtLeast } from "hooks/useContainerQuery";
 
 /*
  *                                           ╭────────╮
@@ -38,7 +35,7 @@ interface Props extends AppStaticProps, AppLayoutRequired {
 }
 
 const Video = ({ langui, video, ...otherProps }: Props): JSX.Element => {
-  const isMobile = useMediaMobile();
+  const isContentPanelAtLeast4xl = useIsContentPanelAtLeast("4xl");
   const { setSubPanelOpen } = useAppLayout();
   const router = useRouter();
 
@@ -49,8 +46,7 @@ const Video = ({ langui, video, ...otherProps }: Props): JSX.Element => {
           href="/archives/videos/"
           title={langui.videos}
           langui={langui}
-          displayOn={ReturnButtonType.Desktop}
-          className="mb-10"
+          displayOnlyOn={"3ColumnsLayout"}
         />
 
         <HorizontalLine />
@@ -87,7 +83,7 @@ const Video = ({ langui, video, ...otherProps }: Props): JSX.Element => {
           href="/library/"
           title={langui.library}
           langui={langui}
-          displayOn={ReturnButtonType.Mobile}
+          displayOnlyOn={"1ColumnLayout"}
           className="mb-10"
         />
 
@@ -129,9 +125,9 @@ const Video = ({ langui, video, ...otherProps }: Props): JSX.Element => {
                     icon={Icon.Visibility}
                     className="mr-1 translate-y-[.15em] !text-base"
                   />
-                  {isMobile
-                    ? prettyShortenNumber(video.views)
-                    : video.views.toLocaleString()}
+                  {isContentPanelAtLeast4xl
+                    ? video.views.toLocaleString()
+                    : prettyShortenNumber(video.views)}
                 </p>
                 {video.channel?.data?.attributes && (
                   <p>
@@ -139,9 +135,9 @@ const Video = ({ langui, video, ...otherProps }: Props): JSX.Element => {
                       icon={Icon.ThumbUp}
                       className="mr-1 translate-y-[.15em] !text-base"
                     />
-                    {isMobile
-                      ? prettyShortenNumber(video.likes)
-                      : video.likes.toLocaleString()}
+                    {isContentPanelAtLeast4xl
+                      ? video.likes.toLocaleString()
+                      : prettyShortenNumber(video.likes)}
                   </p>
                 )}
                 <a
@@ -186,7 +182,7 @@ const Video = ({ langui, video, ...otherProps }: Props): JSX.Element => {
       </ContentPanel>
     ),
     [
-      isMobile,
+      isContentPanelAtLeast4xl,
       langui,
       router.locale,
       video.channel?.data?.attributes,

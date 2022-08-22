@@ -15,6 +15,8 @@ import { useLightBox } from "hooks/useLightBox";
 import { AnchorShare } from "components/AnchorShare";
 import { useIntersectionList } from "hooks/useIntersectionList";
 import { Ico, Icon } from "components/Ico";
+import { useIsContentPanelAtLeast } from "hooks/useContainerQuery";
+import { useDeviceSupportsHover } from "hooks/useMediaQuery";
 
 /*
  *                                        ╭─────────────╮
@@ -36,6 +38,7 @@ export const Markdawn = ({
 }: MarkdawnProps): JSX.Element => {
   const { playerName } = useAppLayout();
   const router = useRouter();
+  const isContentPanelAtLeastLg = useIsContentPanelAtLeast("lg");
   const [openLightBox, LightBox] = useLightBox();
 
   /* eslint-disable no-irregular-whitespace */
@@ -131,7 +134,16 @@ export const Markdawn = ({
 
             Transcript: {
               component: (compProps) => (
-                <div className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 mobile:grid-cols-1">
+                <div
+                  className={cJoin(
+                    "grid gap-x-6 gap-y-2",
+                    cIf(
+                      isContentPanelAtLeastLg,
+                      "grid-cols-[auto_1fr]",
+                      "grid-cols-1"
+                    )
+                  )}
+                >
                   {compProps.children}
                 </div>
               ),
@@ -140,7 +152,12 @@ export const Markdawn = ({
             Line: {
               component: (compProps) => (
                 <>
-                  <strong className="!my-0 text-dark/60 mobile:!-mb-4">
+                  <strong
+                    className={cJoin(
+                      "!my-0 text-dark/60",
+                      cIf(!isContentPanelAtLeastLg, "!-mb-4")
+                    )}
+                  >
                     <Markdawn text={compProps.name} langui={langui} />
                   </strong>
                   <p className="whitespace-pre-line">{compProps.children}</p>
@@ -301,12 +318,13 @@ interface HeaderProps {
 }
 
 const Header = ({ level, title, slug, langui }: HeaderProps): JSX.Element => {
+  const isHoverable = useDeviceSupportsHover();
   const innerComponent = useMemo(
     () => (
       <>
-        <div className="mt-8 mr-2 mb-12 flex place-items-center gap-4">
+        <div className="ml-10 flex place-items-center gap-4">
           {title === "* * *" ? (
-            <div className="space-x-3 text-dark">
+            <div className="mt-8 mb-12 space-x-3 text-dark">
               <Ico icon={Icon.Emergency} />
               <Ico icon={Icon.Emergency} />
               <Ico icon={Icon.Emergency} />
@@ -315,52 +333,53 @@ const Header = ({ level, title, slug, langui }: HeaderProps): JSX.Element => {
             <div className="font-headers">{title}</div>
           )}
           <AnchorShare
-            className="opacity-0 transition-opacity group-hover:opacity-100"
+            className={cIf(
+              isHoverable,
+              "opacity-0 transition-opacity group-hover:opacity-100"
+            )}
             id={slug}
             langui={langui}
           />
         </div>
       </>
     ),
-    [langui, slug, title]
+    [isHoverable, langui, slug, title]
   );
-
-  const className = "group";
 
   switch (level) {
     case 1:
       return (
-        <h1 id={slug} className={className}>
+        <h1 id={slug} className="group">
           {innerComponent}
         </h1>
       );
     case 2:
       return (
-        <h2 id={slug} className={className}>
+        <h2 id={slug} className="group">
           {innerComponent}
         </h2>
       );
     case 3:
       return (
-        <h3 id={slug} className={className}>
+        <h3 id={slug} className="group">
           {innerComponent}
         </h3>
       );
     case 4:
       return (
-        <h4 id={slug} className={className}>
+        <h4 id={slug} className="group">
           {innerComponent}
         </h4>
       );
     case 5:
       return (
-        <h5 id={slug} className={className}>
+        <h5 id={slug} className="group">
           {innerComponent}
         </h5>
       );
     default:
       return (
-        <h6 id={slug} className={className}>
+        <h6 id={slug} className="group">
           {innerComponent}
         </h6>
       );

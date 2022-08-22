@@ -1,13 +1,10 @@
 import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next";
-import { Fragment, useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useBoolean } from "usehooks-ts";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { Switch } from "components/Inputs/Switch";
 import { PanelHeader } from "components/PanelComponents/PanelHeader";
-import {
-  ReturnButton,
-  ReturnButtonType,
-} from "components/PanelComponents/ReturnButton";
+import { ReturnButton } from "components/PanelComponents/ReturnButton";
 import {
   ContentPanel,
   ContentPanelWidthSizes,
@@ -19,10 +16,25 @@ import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import { getVideoThumbnailURL } from "helpers/videos";
 import { Icon } from "components/Ico";
-import { useMediaHoverable } from "hooks/useMediaQuery";
+import { useDeviceSupportsHover } from "hooks/useMediaQuery";
 import { WithLabel } from "components/Inputs/WithLabel";
 import { filterHasAttributes, isDefined } from "helpers/others";
 import { getOpenGraph } from "helpers/openGraph";
+import { compareDate } from "helpers/date";
+import { HorizontalLine } from "components/HorizontalLine";
+import { SmartList } from "components/SmartList";
+import { cIf } from "helpers/className";
+import { useIsContentPanelAtLeast } from "hooks/useContainerQuery";
+import { TextInput } from "components/Inputs/TextInput";
+
+/*
+ *                                         ╭─────────────╮
+ * ────────────────────────────────────────╯  CONSTANTS  ╰──────────────────────────────────────────
+ */
+
+const DEFAULT_FILTERS_STATE = {
+  searchName: "",
+};
 
 /*
  *                                           ╭────────╮
@@ -38,7 +50,12 @@ interface Props extends AppStaticProps, AppLayoutRequired {
 const Channel = ({ langui, channel, ...otherProps }: Props): JSX.Element => {
   const { value: keepInfoVisible, toggle: toggleKeepInfoVisible } =
     useBoolean(true);
-  const hoverable = useMediaHoverable();
+  const hoverable = useDeviceSupportsHover();
+  const isContentPanelAtLeast4xl = useIsContentPanelAtLeast("4xl");
+
+  const [searchName, setSearchName] = useState(
+    DEFAULT_FILTERS_STATE.searchName
+  );
 
   const subPanel = useMemo(
     () => (
@@ -47,7 +64,7 @@ const Channel = ({ langui, channel, ...otherProps }: Props): JSX.Element => {
           href="/archives/videos/"
           title={langui.videos}
           langui={langui}
-          displayOn={ReturnButtonType.Desktop}
+          displayOnlyOn={"3ColumnsLayout"}
           className="mb-10"
         />
 
@@ -57,6 +74,15 @@ const Channel = ({ langui, channel, ...otherProps }: Props): JSX.Element => {
           description={langui.archives_description}
         />
 
+        <HorizontalLine />
+
+        <TextInput
+          className="mb-6 w-full"
+          placeholder={langui.search_title ?? "Search title..."}
+          value={searchName}
+          onChange={setSearchName}
+        />
+
         {hoverable && (
           <WithLabel label={langui.always_show_info}>
             <Switch value={keepInfoVisible} onClick={toggleKeepInfoVisible} />
@@ -64,51 +90,58 @@ const Channel = ({ langui, channel, ...otherProps }: Props): JSX.Element => {
         )}
       </SubPanel>
     ),
-    [hoverable, keepInfoVisible, langui, toggleKeepInfoVisible]
+    [hoverable, keepInfoVisible, langui, searchName, toggleKeepInfoVisible]
   );
 
   const contentPanel = useMemo(
     () => (
       <ContentPanel width={ContentPanelWidthSizes.Full}>
-        <div className="mb-8">
-          <h1 className="text-3xl">{channel?.title}</h1>
-          <p>{channel?.subscribers.toLocaleString()} subscribers</p>
-        </div>
-        <div
-          className="grid items-start gap-8 border-b-[3px] border-dotted pb-12 last-of-type:border-0
-        desktop:grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] mobile:grid-cols-2"
-        >
-          {filterHasAttributes(channel?.videos?.data, [
+        <SmartList
+          items={filterHasAttributes(channel?.videos?.data, [
+            "id",
             "attributes",
-          ] as const).map((video) => (
-            <Fragment key={video.id}>
-              <PreviewCard
-                href={`/archives/videos/v/${video.attributes.uid}`}
-                title={video.attributes.title}
-                thumbnail={getVideoThumbnailURL(video.attributes.uid)}
-                thumbnailAspectRatio="16/9"
-                keepInfoVisible={keepInfoVisible}
-                metadata={{
-                  releaseDate: video.attributes.published_date,
-                  views: video.attributes.views,
-                  author: channel?.title,
-                  position: "Top",
-                }}
-                hoverlay={{
-                  __typename: "Video",
-                  duration: video.attributes.duration,
-                }}
-              />
-            </Fragment>
-          ))}
-        </div>
+          ] as const)}
+          getItemId={(item) => item.id}
+          renderItem={({ item }) => (
+            <PreviewCard
+              href={`/archives/videos/v/${item.attributes.uid}`}
+              title={item.attributes.title}
+              thumbnail={getVideoThumbnailURL(item.attributes.uid)}
+              thumbnailAspectRatio="16/9"
+              thumbnailForceAspectRatio
+              keepInfoVisible={keepInfoVisible}
+              metadata={{
+                releaseDate: item.attributes.published_date,
+                views: item.attributes.views,
+                author: channel?.title,
+                position: "Top",
+              }}
+              hoverlay={{
+                __typename: "Video",
+                duration: item.attributes.duration,
+              }}
+            />
+          )}
+          langui={langui}
+          className={cIf(
+            isContentPanelAtLeast4xl,
+            "grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] gap-x-6 gap-y-8",
+            "grid-cols-2 gap-x-3 gap-y-5"
+          )}
+          groupingFunction={() => [channel?.title ?? ""]}
+          paginationItemPerPage={25}
+          searchingTerm={searchName}
+          searchingBy={(item) => item.attributes.title}
+        />
       </ContentPanel>
     ),
     [
-      channel?.subscribers,
       channel?.title,
       channel?.videos?.data,
+      isContentPanelAtLeast4xl,
       keepInfoVisible,
+      langui,
+      searchName,
     ]
   );
 
@@ -137,6 +170,13 @@ export const getStaticProps: GetStaticProps = async (context) => {
         : "",
   });
   if (!channel.videoChannels?.data[0].attributes) return { notFound: true };
+
+  channel.videoChannels.data[0].attributes.videos?.data
+    .sort((a, b) =>
+      compareDate(a.attributes?.published_date, b.attributes?.published_date)
+    )
+    .reverse();
+
   const appStaticProps = await getAppStaticProps(context);
   const props: Props = {
     ...appStaticProps,
@@ -157,6 +197,7 @@ export const getStaticPaths: GetStaticPaths = async (context) => {
   const sdk = getReadySdk();
   const channels = await sdk.getVideoChannelsSlugs();
   const paths: GetStaticPathsResult["paths"] = [];
+
   if (channels.videoChannels?.data)
     filterHasAttributes(channels.videoChannels.data, [
       "attributes",

@@ -56,12 +56,12 @@ export const Popup = ({
         <div
           className={cJoin(
             "grid place-items-center gap-4 transition-transform",
-            cIf(padding, "p-10 mobile:p-6"),
+            cIf(padding, "p-10"),
             cIf(state, "scale-100", "scale-0"),
             cIf(
               fillViewport,
               "absolute inset-10",
-              "relative max-h-[80vh] overflow-y-auto mobile:w-[85vw]"
+              "relative max-h-[80vh] overflow-y-auto"
             ),
             cIf(!hideBackground, "rounded-lg bg-light shadow-2xl shadow-shade")
           )}

@@ -23,9 +23,7 @@ query getVideoChannel($channel: String) {
                 }
               }
               published_date {
-                year
-                month
-                day
+                ...datePicker
               }
             }
           }

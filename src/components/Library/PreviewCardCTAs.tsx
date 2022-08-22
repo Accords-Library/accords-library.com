@@ -27,7 +27,7 @@ export const PreviewCardCTAs = ({
   return (
     <>
       <div
-        className={`flex flex-row place-content-center place-items-center ${
+        className={`flex flex-row flex-wrap place-content-center place-items-center ${
           expand ? "gap-4" : "gap-2"
         }`}
       >

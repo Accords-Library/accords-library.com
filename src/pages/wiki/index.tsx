@@ -18,7 +18,7 @@ import { Button } from "components/Inputs/Button";
 import { Switch } from "components/Inputs/Switch";
 import { TextInput } from "components/Inputs/TextInput";
 import { WithLabel } from "components/Inputs/WithLabel";
-import { useMediaHoverable } from "hooks/useMediaQuery";
+import { useDeviceSupportsHover } from "hooks/useMediaQuery";
 import { filterDefined, filterHasAttributes } from "helpers/others";
 import { SmartList } from "components/SmartList";
 import { Select } from "components/Inputs/Select";
@@ -26,6 +26,8 @@ import { SelectiveNonNullable } from "helpers/types/SelectiveNonNullable";
 import { prettySlug } from "helpers/formatters";
 import { getOpenGraph } from "helpers/openGraph";
 import { TranslatedPreviewCard } from "components/PreviewCard";
+import { useIsContentPanelAtLeast } from "hooks/useContainerQuery";
+import { cIf } from "helpers/className";
 
 /*
  *                                         ╭─────────────╮
@@ -48,7 +50,8 @@ interface Props extends AppStaticProps, AppLayoutRequired {
 }
 
 const Wiki = ({ langui, pages, ...otherProps }: Props): JSX.Element => {
-  const hoverable = useMediaHoverable();
+  const hoverable = useDeviceSupportsHover();
+  const isContentPanelAtLeast4xl = useIsContentPanelAtLeast("4xl");
 
   const [searchName, setSearchName] = useState(
     DEFAULT_FILTERS_STATE.searchName
@@ -72,6 +75,8 @@ const Wiki = ({ langui, pages, ...otherProps }: Props): JSX.Element => {
           title={langui.wiki}
           description={langui.wiki_description}
         />
+
+        <HorizontalLine />
 
         <TextInput
           className="mb-6 w-full"
@@ -105,6 +110,7 @@ const Wiki = ({ langui, pages, ...otherProps }: Props): JSX.Element => {
             setKeepInfoVisible(DEFAULT_FILTERS_STATE.keepInfoVisible);
           }}
         />
+
         <HorizontalLine />
 
         <p className="mb-4 font-headers text-xl font-bold">
@@ -193,7 +199,11 @@ const Wiki = ({ langui, pages, ...otherProps }: Props): JSX.Element => {
             />
           )}
           langui={langui}
-          className="grid-cols-2 desktop:grid-cols-[repeat(auto-fill,_minmax(20rem,1fr))]"
+          className={cIf(
+            isContentPanelAtLeast4xl,
+            "grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] gap-x-6 gap-y-8",
+            "grid-cols-2 gap-x-3 gap-y-5"
+          )}
           searchingTerm={searchName}
           searchingBy={(item) =>
             filterDefined(item.attributes.translations)
@@ -210,7 +220,14 @@ const Wiki = ({ langui, pages, ...otherProps }: Props): JSX.Element => {
         />
       </ContentPanel>
     ),
-    [groupingFunction, keepInfoVisible, langui, pages, searchName]
+    [
+      groupingFunction,
+      keepInfoVisible,
+      langui,
+      pages,
+      searchName,
+      isContentPanelAtLeast4xl,
+    ]
   );
 
   return (

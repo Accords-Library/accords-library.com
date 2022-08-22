@@ -17,12 +17,6 @@ const colors = {
   },
 };
 
-const breaks = {
-  thin: { raw: "(max-width: 25rem)" },
-  mobile: { raw: "(max-width: 60rem)" },
-  desktop: { raw: "(min-width: 60rem)" },
-};
-
 const fonts = {
   openDyslexic: "OpenDyslexic",
   vollkorn: "Vollkorn",
@@ -43,9 +37,16 @@ const fontFamilies = {
   },
 };
 
+const layout = {
+  // all values in rem
+  mainMenuReduced: 6,
+  mainMenu: 20,
+  subMenu: 20,
+};
+
 module.exports = {
   colors,
-  breaks,
+  layout,
   fonts,
   fontFamilies,
 };

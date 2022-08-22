@@ -35,7 +35,7 @@ mark {
 }
 
 *::-webkit-scrollbar {
-  @apply w-3 mobile:w-0;
+  @apply w-3;
 }
 
 *::-webkit-scrollbar-track {

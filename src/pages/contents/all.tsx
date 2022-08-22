@@ -16,7 +16,7 @@ import { prettyInlineTitle, prettySlug } from "helpers/formatters";
 import { TextInput } from "components/Inputs/TextInput";
 import { WithLabel } from "components/Inputs/WithLabel";
 import { Button } from "components/Inputs/Button";
-import { useMediaHoverable } from "hooks/useMediaQuery";
+import { useDeviceSupportsHover } from "hooks/useMediaQuery";
 import { Icon } from "components/Ico";
 import { filterDefined, filterHasAttributes } from "helpers/others";
 import { GetContentsQuery } from "graphql/generated";
@@ -25,6 +25,8 @@ import { SelectiveNonNullable } from "helpers/types/SelectiveNonNullable";
 import { getOpenGraph } from "helpers/openGraph";
 import { HorizontalLine } from "components/HorizontalLine";
 import { TranslatedPreviewCard } from "components/PreviewCard";
+import { useIsContentPanelAtLeast } from "hooks/useContainerQuery";
+import { cJoin, cIf } from "helpers/className";
 
 /*
  *                                         ╭─────────────╮
@@ -52,7 +54,8 @@ const Contents = ({
   languages,
   ...otherProps
 }: Props): JSX.Element => {
-  const hoverable = useMediaHoverable();
+  const hoverable = useDeviceSupportsHover();
+  const isContentPanelAtLeast4xl = useIsContentPanelAtLeast("4xl");
 
   const [groupingMethod, setGroupingMethod] = useState<number>(
     DEFAULT_FILTERS_STATE.groupingMethod
@@ -134,6 +137,8 @@ const Contents = ({
           title={langui.contents}
           description={langui.contents_description}
         />
+
+        <HorizontalLine />
 
         <Button
           href="/contents"
@@ -232,7 +237,14 @@ const Contents = ({
               keepInfoVisible={keepInfoVisible}
             />
           )}
-          className="grid-cols-2 desktop:grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))]"
+          className={cJoin(
+            "items-end",
+            cIf(
+              isContentPanelAtLeast4xl,
+              "grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] gap-x-6 gap-y-8",
+              "grid-cols-2 gap-x-3 gap-y-5"
+            )
+          )}
           groupingFunction={groupingFunction}
           filteringFunction={filteringFunction}
           searchingTerm={searchName}
@@ -255,6 +267,7 @@ const Contents = ({
       </ContentPanel>
     ),
     [
+      isContentPanelAtLeast4xl,
       contents,
       filteringFunction,
       groupingFunction,

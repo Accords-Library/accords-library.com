@@ -10,10 +10,7 @@ import { Switch } from "components/Inputs/Switch";
 import { InsetBox } from "components/InsetBox";
 import { PreviewCardCTAs } from "components/Library/PreviewCardCTAs";
 import { NavOption } from "components/PanelComponents/NavOption";
-import {
-  ReturnButton,
-  ReturnButtonType,
-} from "components/PanelComponents/ReturnButton";
+import { ReturnButton } from "components/PanelComponents/ReturnButton";
 import {
   ContentPanel,
   ContentPanelWidthSizes,
@@ -49,7 +46,7 @@ import {
 import { useLightBox } from "hooks/useLightBox";
 import { AnchorIds, useScrollTopOnChange } from "hooks/useScrollTopOnChange";
 import { isUntangibleGroupItem } from "helpers/libraryItem";
-import { useMediaHoverable } from "hooks/useMediaQuery";
+import { useDeviceSupportsHover } from "hooks/useMediaQuery";
 import { WithLabel } from "components/Inputs/WithLabel";
 import { Ico, Icon } from "components/Ico";
 import { cJoin, cIf } from "helpers/className";
@@ -58,6 +55,7 @@ import { getOpenGraph } from "helpers/openGraph";
 import { getDescription } from "helpers/description";
 import { useIntersectionList } from "hooks/useIntersectionList";
 import { HorizontalLine } from "components/HorizontalLine";
+import { useIsContentPanelNoMoreThan } from "hooks/useContainerQuery";
 
 /*
  *                                         ╭─────────────╮
@@ -97,14 +95,15 @@ const LibrarySlug = ({
   ...otherProps
 }: Props): JSX.Element => {
   const { currency } = useAppLayout();
-  const hoverable = useMediaHoverable();
+  const isContentPanelNoMoreThan3xl = useIsContentPanelNoMoreThan("3xl");
+  const isContentPanelNoMoreThanSm = useIsContentPanelNoMoreThan("sm");
+  const hoverable = useDeviceSupportsHover();
   const router = useRouter();
   const [openLightBox, LightBox] = useLightBox();
   const { value: keepInfoVisible, toggle: toggleKeepInfoVisible } =
     useBoolean(false);
 
   useScrollTopOnChange(AnchorIds.ContentPanel, [item]);
-
   const currentIntersection = useIntersectionList(intersectionIds);
 
   const isVariantSet = useMemo(
@@ -130,7 +129,7 @@ const LibrarySlug = ({
           href="/library/"
           title={langui.library}
           langui={langui}
-          displayOn={ReturnButtonType.Desktop}
+          displayOnlyOn="3ColumnsLayout"
         />
 
         <HorizontalLine />
@@ -198,13 +197,15 @@ const LibrarySlug = ({
           href="/library/"
           title={langui.library}
           langui={langui}
-          displayOn={ReturnButtonType.Mobile}
+          displayOnlyOn="1ColumnLayout"
           className="mb-10"
         />
         <div className="grid place-items-center gap-12">
           <div
-            className="relative h-[50vh] w-full
-          cursor-pointer drop-shadow-shade-xl desktop:mb-16 mobile:h-[60vh]"
+            className={cJoin(
+              "relative h-[50vh] w-full cursor-pointer drop-shadow-shade-xl",
+              cIf(isContentPanelNoMoreThan3xl, "h-[60vh]", "mb-16")
+            )}
             onClick={() => {
               if (item.thumbnail?.data?.attributes) {
                 openLightBox([
@@ -332,11 +333,16 @@ const LibrarySlug = ({
           )}
 
           <InsetBox id={intersectionIds[2]} className="grid place-items-center">
-            <div className="place-items grid w-[clamp(0px,100%,42rem)] gap-8">
+            <div className="place-items grid w-[clamp(0px,100%,42rem)] gap-10">
               <h2 className="text-center text-2xl">{langui.details}</h2>
               <div
-                className="grid place-items-center gap-y-8
-              desktop:grid-flow-col desktop:place-content-between"
+                className={cJoin(
+                  "grid place-items-center gap-y-8",
+                  cIf(
+                    !isContentPanelNoMoreThan3xl,
+                    "grid-flow-col place-content-between"
+                  )
+                )}
               >
                 {item.metadata?.[0] && (
                   <div className="grid place-content-start place-items-center">
@@ -391,15 +397,32 @@ const LibrarySlug = ({
               )}
 
               {item.size && (
-                <div className="grid gap-8 mobile:place-items-center">
+                <div
+                  className={cJoin(
+                    "grid gap-4",
+                    cIf(isContentPanelNoMoreThan3xl, "place-items-center")
+                  )}
+                >
                   <h3 className="text-xl">{langui.size}</h3>
                   <div
-                    className="grid w-full grid-flow-col place-content-between thin:grid-flow-row
-                  thin:place-content-center thin:gap-8"
+                    className={cJoin(
+                      "grid w-full",
+                      cIf(
+                        isContentPanelNoMoreThanSm,
+                        "grid-flow-row place-content-center gap-8",
+                        "grid-flow-col place-content-between"
+                      )
+                    )}
                   >
                     <div
-                      className="grid place-items-center gap-x-4 desktop:grid-flow-col 
-                    desktop:place-items-start"
+                      className={cJoin(
+                        "grid gap-x-4",
+                        cIf(
+                          isContentPanelNoMoreThan3xl,
+                          "place-items-center",
+                          "grid-flow-col place-items-start"
+                        )
+                      )}
                     >
                       <p className="font-bold">{langui.width}:</p>
                       <div>
@@ -408,8 +431,14 @@ const LibrarySlug = ({
                       </div>
                     </div>
                     <div
-                      className="grid place-items-center gap-x-4 desktop:grid-flow-col
-                    desktop:place-items-start"
+                      className={cJoin(
+                        "grid gap-x-4",
+                        cIf(
+                          isContentPanelNoMoreThan3xl,
+                          "place-items-center",
+                          "grid-flow-col place-items-start"
+                        )
+                      )}
                     >
                       <p className="font-bold">{langui.height}:</p>
                       <div>
@@ -419,8 +448,14 @@ const LibrarySlug = ({
                     </div>
                     {isDefined(item.size.thickness) && (
                       <div
-                        className="grid place-items-center gap-x-4 desktop:grid-flow-col
-                      desktop:place-items-start"
+                        className={cJoin(
+                          "grid gap-x-4",
+                          cIf(
+                            isContentPanelNoMoreThan3xl,
+                            "place-items-center",
+                            "grid-flow-col place-items-start"
+                          )
+                        )}
                       >
                         <p className="font-bold">{langui.thickness}:</p>
                         <div>
@@ -435,7 +470,12 @@ const LibrarySlug = ({
 
               {item.metadata?.[0]?.__typename !== "ComponentMetadataGroup" &&
                 item.metadata?.[0]?.__typename !== "ComponentMetadataOther" && (
-                  <>
+                  <div
+                    className={cJoin(
+                      "grid gap-4",
+                      cIf(isContentPanelNoMoreThan3xl, "place-items-center")
+                    )}
+                  >
                     <h3 className="text-xl">{langui.type_information}</h3>
                     <div className="grid w-full grid-cols-2 place-content-between">
                       {item.metadata?.[0]?.__typename ===
@@ -480,7 +520,7 @@ const LibrarySlug = ({
                         </>
                       )}
                     </div>
-                  </>
+                  </div>
                 )}
             </div>
           </InsetBox>
@@ -504,8 +544,8 @@ const LibrarySlug = ({
               )}
 
               <div
-                className="grid w-full grid-cols-[repeat(auto-fill,minmax(15rem,1fr))]
-              items-end gap-8 mobile:grid-cols-2 thin:grid-cols-1"
+                className="grid w-full grid-cols-[repeat(auto-fill,minmax(13rem,1fr))]
+              items-end gap-8"
               >
                 {filterHasAttributes(item.subitems.data, [
                   "id",
@@ -560,7 +600,7 @@ const LibrarySlug = ({
                   text={langui.view_scans}
                 />
               )}
-              <div className="grid w-full gap-4">
+              <div className="max-w- grid w-full gap-4">
                 {filterHasAttributes(item.contents.data, [
                   "attributes",
                 ] as const).map((rangedContent) => (
@@ -610,6 +650,7 @@ const LibrarySlug = ({
                       isDefined(rangedContent.attributes.scan_set) &&
                       rangedContent.attributes.scan_set.length > 0
                     }
+                    condensed={isContentPanelNoMoreThan3xl}
                   />
                 ))}
               </div>
@@ -621,6 +662,7 @@ const LibrarySlug = ({
     [
       LightBox,
       langui,
+      isContentPanelNoMoreThan3xl,
       item.thumbnail?.data?.attributes,
       item.subitem_of?.data,
       item.title,
@@ -640,6 +682,7 @@ const LibrarySlug = ({
       router.locale,
       currencies,
       currency,
+      isContentPanelNoMoreThanSm,
       isVariantSet,
       hoverable,
       toggleKeepInfoVisible,
@@ -763,6 +806,7 @@ interface ContentLineProps {
   langui: AppStaticProps["langui"];
   languages: AppStaticProps["languages"];
   hasScanSet: boolean;
+  condensed: boolean;
 }
 
 const ContentLine = ({
@@ -773,9 +817,9 @@ const ContentLine = ({
   hasScanSet,
   slug,
   parentSlug,
+  condensed,
 }: ContentLineProps): JSX.Element => {
   const { value: isOpened, toggle: toggleOpened } = useBoolean(false);
-
   const [selectedTranslation] = useSmartLanguage({
     items: content?.translations ?? [],
     languages: languages,
@@ -787,6 +831,56 @@ const ContentLine = ({
     ),
   });
 
+  if (condensed) {
+    return (
+      <div className="my-4 grid gap-2">
+        <div className="flex gap-2">
+          {content?.type && <Chip text={content.type} />}
+          <p className="h-4 w-full border-b-2 border-dotted border-black opacity-30"></p>
+          <p>{rangeStart}</p>
+        </div>
+
+        <h3 className="flex flex-wrap place-items-center gap-2">
+          {selectedTranslation
+            ? prettyInlineTitle(
+                selectedTranslation.pre_title,
+                selectedTranslation.title,
+                selectedTranslation.subtitle
+              )
+            : content
+            ? prettySlug(content.slug, parentSlug)
+            : prettySlug(slug, parentSlug)}
+        </h3>
+        <div className="flex flex-row flex-wrap gap-1">
+          {content?.categories?.map((category, index) => (
+            <Chip key={index} text={category} />
+          ))}
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          {hasScanSet || isDefined(content) ? (
+            <>
+              {hasScanSet && (
+                <Button
+                  href={`/library/${parentSlug}/scans#${slug}`}
+                  text={langui.view_scans}
+                />
+              )}
+              {isDefined(content) && (
+                <Button
+                  href={`/contents/${content.slug}`}
+                  text={langui.open_content}
+                />
+              )}
+            </>
+          ) : (
+            /* TODO: Add to langui */
+            "The content is not available"
+          )}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div
       className={cJoin(
@@ -794,10 +888,7 @@ const ContentLine = ({
         cIf(isOpened, "my-2 h-auto bg-mid py-3 shadow-inner-sm shadow-shade")
       )}
     >
-      <div
-        className="grid grid-cols-[auto_auto_1fr_auto_12ch] place-items-center
-        gap-4 thin:grid-cols-[auto_auto_1fr_auto]"
-      >
+      <div className="grid grid-cols-[auto_auto_1fr_auto_12ch] place-items-center gap-4">
         <a>
           <h3 className="cursor-pointer" onClick={toggleOpened}>
             {selectedTranslation
@@ -819,7 +910,7 @@ const ContentLine = ({
         <p className="h-4 w-full border-b-2 border-dotted border-black opacity-30"></p>
         <p>{rangeStart}</p>
         {content?.type && (
-          <Chip className="justify-self-end thin:hidden" text={content.type} />
+          <Chip className="justify-self-end" text={content.type} />
         )}
       </div>
       <div
@@ -845,6 +936,7 @@ const ContentLine = ({
             )}
           </>
         ) : (
+          /* TODO: Add to langui */
           "The content is not available"
         )}
       </div>

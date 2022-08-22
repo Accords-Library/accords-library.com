@@ -1,10 +1,7 @@
 import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next";
 import { Fragment, useCallback, useMemo } from "react";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
-import {
-  ReturnButton,
-  ReturnButtonType,
-} from "components/PanelComponents/ReturnButton";
+import { ReturnButton } from "components/PanelComponents/ReturnButton";
 import {
   ContentPanel,
   ContentPanelWidthSizes,
@@ -45,6 +42,11 @@ import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { TranslatedProps } from "helpers/types/TranslatedProps";
 import { TranslatedNavOption } from "components/PanelComponents/NavOption";
 import { useIntersectionList } from "hooks/useIntersectionList";
+import {
+  useIs1ColumnLayout,
+  useIsContentPanelNoMoreThan,
+} from "hooks/useContainerQuery";
+import { cIf, cJoin } from "helpers/className";
 
 /*
  *                                           ╭────────╮
@@ -71,6 +73,7 @@ const LibrarySlug = ({
   ...otherProps
 }: Props): JSX.Element => {
   const [openLightBox, LightBox] = useLightBox();
+  const is1ColumnLayout = useIs1ColumnLayout();
 
   const ids = useMemo(
     () =>
@@ -89,11 +92,11 @@ const LibrarySlug = ({
           title={langui.item}
           langui={langui}
           className="mb-4"
-          displayOn={ReturnButtonType.Desktop}
+          displayOnlyOn="3ColumnsLayout"
         />
 
         <div className="grid place-items-center">
-          <div className="mobile:w-[80%]">
+          <div className={cIf(is1ColumnLayout, "w-3/4")}>
             <PreviewCard
               href={`/library/${item.slug}`}
               title={item.title}
@@ -190,6 +193,7 @@ const LibrarySlug = ({
       item.title,
       itemId,
       langui,
+      is1ColumnLayout,
     ]
   );
 
@@ -202,7 +206,7 @@ const LibrarySlug = ({
           href={`/library/${item.slug}`}
           title={langui.item}
           langui={langui}
-          displayOn={ReturnButtonType.Mobile}
+          displayOnlyOn="1ColumnLayout"
           className="mb-10"
         />
 
@@ -370,6 +374,7 @@ const ScanSet = ({
   langui,
   content,
 }: ScanSetProps): JSX.Element => {
+  const is1ColumnLayout = useIsContentPanelNoMoreThan("2xl");
   const [selectedScan, LanguageSwitcher, languageSwitcherProps] =
     useSmartLanguage({
       items: scanSet,
@@ -533,8 +538,15 @@ const ScanSet = ({
           </div>
 
           <div
-            className="grid items-end gap-8 border-b-[3px] border-dotted pb-12 last-of-type:border-0
-             desktop:grid-cols-[repeat(auto-fill,_minmax(10rem,1fr))] mobile:grid-cols-2"
+            className={cJoin(
+              `grid items-end gap-8 border-b-[3px] border-dotted pb-12
+            last-of-type:border-0`,
+              cIf(
+                is1ColumnLayout,
+                "grid-cols-2 gap-[4vmin]",
+                "grid-cols-[repeat(auto-fill,_minmax(10rem,1fr))]"
+              )
+            )}
           >
             {pages.map((page, index) => (
               <div
@@ -602,6 +614,7 @@ const ScanSetCover = ({
   languages,
   langui,
 }: ScanSetCoverProps): JSX.Element => {
+  const is1ColumnLayout = useIsContentPanelNoMoreThan("4xl");
   const [selectedScan, LanguageSwitcher, languageSwitcherProps] =
     useSmartLanguage({
       items: images,
@@ -727,9 +740,15 @@ const ScanSetCover = ({
           </div>
 
           <div
-            className="grid items-end gap-8 border-b-[3px] border-dotted pb-12
-              last-of-type:border-0 desktop:grid-cols-[repeat(auto-fill,_minmax(10rem,1fr))]
-              mobile:grid-cols-2"
+            className={cJoin(
+              `grid items-end gap-8 border-b-[3px] border-dotted pb-12
+            last-of-type:border-0`,
+              cIf(
+                is1ColumnLayout,
+                "grid-cols-2 gap-[4vmin]",
+                "grid-cols-[repeat(auto-fill,_minmax(10rem,1fr))]"
+              )
+            )}
           >
             {coverImages.map((image, index) => (
               <div

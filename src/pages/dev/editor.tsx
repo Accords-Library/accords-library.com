@@ -210,7 +210,7 @@ const Editor = ({ langui, ...otherProps }: Props): JSX.Element => {
               target.select();
               event.preventDefault();
             }}
-            className="h-[50vh] w-[50vw] mobile:w-[75vw]"
+            className="h-[50vh] w-[50vw]"
           />
         </Popup>
 

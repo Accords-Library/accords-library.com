@@ -13,10 +13,7 @@ import { ThumbnailHeader } from "components/ThumbnailHeader";
 import { HorizontalLine } from "components/HorizontalLine";
 import { GetChroniclesChaptersQuery } from "graphql/generated";
 import { prettyInlineTitle, prettySlug } from "helpers/formatters";
-import {
-  ReturnButton,
-  ReturnButtonType,
-} from "components/PanelComponents/ReturnButton";
+import { ReturnButton } from "components/PanelComponents/ReturnButton";
 import { Icon } from "components/Ico";
 import { getOpenGraph } from "helpers/openGraph";
 import {
@@ -93,7 +90,7 @@ const Chronicle = ({
     () => (
       <ContentPanel>
         <ReturnButton
-          displayOn={ReturnButtonType.Mobile}
+          displayOnlyOn={"1ColumnLayout"}
           href="/chronicles"
           title={langui.chronicles}
           langui={langui}
@@ -136,13 +133,14 @@ const Chronicle = ({
                   langui={langui}
                 />
 
-                <HorizontalLine />
-
                 {selectedContentTranslation.text_set?.text && (
-                  <Markdawn
-                    text={selectedContentTranslation.text_set.text}
-                    langui={langui}
-                  />
+                  <>
+                    <HorizontalLine />
+                    <Markdawn
+                      text={selectedContentTranslation.text_set.text}
+                      langui={langui}
+                    />
+                  </>
                 )}
               </>
             )}
@@ -168,7 +166,7 @@ const Chronicle = ({
     () => (
       <SubPanel>
         <ReturnButton
-          displayOn={ReturnButtonType.Desktop}
+          displayOnlyOn={"3ColumnsLayout"}
           href="/chronicles"
           title={langui.chronicles}
           langui={langui}

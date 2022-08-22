@@ -5,10 +5,7 @@ import { Chip } from "components/Chip";
 import { HorizontalLine } from "components/HorizontalLine";
 import { PreviewCardCTAs } from "components/Library/PreviewCardCTAs";
 import { Markdawn, TableOfContents } from "components/Markdown/Markdawn";
-import {
-  ReturnButtonType,
-  TranslatedReturnButton,
-} from "components/PanelComponents/ReturnButton";
+import { TranslatedReturnButton } from "components/PanelComponents/ReturnButton";
 import { ContentPanel } from "components/Panels/ContentPanel";
 import { SubPanel } from "components/Panels/SubPanel";
 import { PreviewCard } from "components/PreviewCard";
@@ -30,7 +27,6 @@ import {
   isDefinedAndNotEmpty,
 } from "helpers/others";
 import { ContentWithTranslations } from "helpers/types";
-import { useMediaMobile } from "hooks/useMediaQuery";
 import { AnchorIds, useScrollTopOnChange } from "hooks/useScrollTopOnChange";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { getOpenGraph } from "helpers/openGraph";
@@ -40,6 +36,11 @@ import {
 } from "helpers/locales";
 import { getDescription } from "helpers/description";
 import { TranslatedPreviewLine } from "components/PreviewLine";
+import {
+  useIs1ColumnLayout,
+  useIsContentPanelAtLeast,
+} from "hooks/useContainerQuery";
+import { cIf } from "helpers/className";
 
 /*
  *                                           ╭────────╮
@@ -57,7 +58,8 @@ const Content = ({
   currencies,
   ...otherProps
 }: Props): JSX.Element => {
-  const isMobile = useMediaMobile();
+  const isContentPanelAtLeast2xl = useIsContentPanelAtLeast("2xl");
+  const is1ColumnLayout = useIs1ColumnLayout();
 
   const [selectedTranslation, LanguageSwitcher, languageSwitcherProps] =
     useSmartLanguage({
@@ -122,7 +124,7 @@ const Content = ({
       <SubPanel>
         <TranslatedReturnButton
           {...returnButtonProps}
-          displayOn={ReturnButtonType.Desktop}
+          displayOnlyOn="3ColumnsLayout"
         />
 
         {selectedTranslation?.text_set?.source_language?.data?.attributes
@@ -282,7 +284,7 @@ const Content = ({
                     return (
                       <div
                         key={libraryItem.attributes.slug}
-                        className="mobile:w-[80%]"
+                        className={cIf(is1ColumnLayout, "w-3/4")}
                       >
                         <PreviewCard
                           href={`/library/${libraryItem.attributes.slug}`}
@@ -341,6 +343,7 @@ const Content = ({
       langui,
       returnButtonProps,
       selectedTranslation,
+      is1ColumnLayout,
     ]
   );
 
@@ -349,7 +352,7 @@ const Content = ({
       <ContentPanel>
         <TranslatedReturnButton
           {...returnButtonProps}
-          displayOn={ReturnButtonType.Mobile}
+          displayOnlyOn="1ColumnLayout"
           className="mb-10"
         />
 
@@ -394,9 +397,8 @@ const Content = ({
                 }
                 thumbnailAspectRatio="3/2"
                 topChips={
-                  isMobile
-                    ? undefined
-                    : previousContent.attributes.type?.data?.attributes
+                  isContentPanelAtLeast2xl &&
+                  previousContent.attributes.type?.data?.attributes
                     ? [
                         previousContent.attributes.type.data.attributes
                           .titles?.[0]
@@ -410,22 +412,25 @@ const Content = ({
                     : undefined
                 }
                 bottomChips={
-                  isMobile
-                    ? undefined
-                    : previousContent.attributes.categories?.data.map(
+                  isContentPanelAtLeast2xl
+                    ? previousContent.attributes.categories?.data.map(
                         (category) => category.attributes?.short ?? ""
                       )
+                    : undefined
                 }
               />
             </div>
           )}
 
-          <HorizontalLine />
-
-          <Markdawn
-            text={selectedTranslation?.text_set?.text ?? ""}
-            langui={langui}
-          />
+          {selectedTranslation?.text_set?.text && (
+            <>
+              <HorizontalLine />
+              <Markdawn
+                text={selectedTranslation.text_set.text}
+                langui={langui}
+              />
+            </>
+          )}
 
           {nextContent?.attributes && (
             <>
@@ -448,9 +453,8 @@ const Content = ({
                 thumbnail={nextContent.attributes.thumbnail?.data?.attributes}
                 thumbnailAspectRatio="3/2"
                 topChips={
-                  isMobile
-                    ? undefined
-                    : nextContent.attributes.type?.data?.attributes
+                  isContentPanelAtLeast2xl &&
+                  nextContent.attributes.type?.data?.attributes
                     ? [
                         nextContent.attributes.type.data.attributes.titles?.[0]
                           ? nextContent.attributes.type.data.attributes
@@ -462,11 +466,11 @@ const Content = ({
                     : undefined
                 }
                 bottomChips={
-                  isMobile
-                    ? undefined
-                    : nextContent.attributes.categories?.data.map(
+                  isContentPanelAtLeast2xl
+                    ? nextContent.attributes.categories?.data.map(
                         (category) => category.attributes?.short ?? ""
                       )
+                    : undefined
                 }
               />
             </>
@@ -479,7 +483,7 @@ const Content = ({
       content.categories,
       content.thumbnail?.data?.attributes,
       content.type,
-      isMobile,
+      isContentPanelAtLeast2xl,
       languageSwitcherProps,
       langui,
       nextContent?.attributes,

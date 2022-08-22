@@ -3,10 +3,7 @@ import { Fragment, useCallback, useMemo } from "react";
 import { useRouter } from "next/router";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { InsetBox } from "components/InsetBox";
-import {
-  ReturnButton,
-  ReturnButtonType,
-} from "components/PanelComponents/ReturnButton";
+import { ReturnButton } from "components/PanelComponents/ReturnButton";
 import { ContentPanel } from "components/Panels/ContentPanel";
 import { SubPanel } from "components/Panels/SubPanel";
 import {
@@ -71,7 +68,7 @@ const Chronology = ({
           href="/wiki"
           title={langui.wiki}
           langui={langui}
-          displayOn={ReturnButtonType.Desktop}
+          displayOnlyOn="3ColumnsLayout"
         />
 
         <HorizontalLine />
@@ -110,7 +107,7 @@ const Chronology = ({
           href="/wiki"
           title={langui.wiki}
           langui={langui}
-          displayOn={ReturnButtonType.Mobile}
+          displayOnlyOn="1ColumnLayout"
           className="mb-10"
         />
 

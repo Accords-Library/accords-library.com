@@ -75,6 +75,21 @@ interface AppLayoutState {
   setLibraryItemUserStatus: React.Dispatch<
     React.SetStateAction<AppLayoutState["libraryItemUserStatus"]>
   >;
+
+  screenWidth: number;
+  setScreenWidth: React.Dispatch<
+    React.SetStateAction<AppLayoutState["screenWidth"]>
+  >;
+
+  contentPanelWidth: number;
+  setContentPanelWidth: React.Dispatch<
+    React.SetStateAction<AppLayoutState["contentPanelWidth"]>
+  >;
+
+  subPanelWidth: number;
+  setSubPanelWidth: React.Dispatch<
+    React.SetStateAction<AppLayoutState["subPanelWidth"]>
+  >;
 }
 
 const initialState: RequiredNonNullable<AppLayoutState> = {
@@ -128,6 +143,15 @@ const initialState: RequiredNonNullable<AppLayoutState> = {
 
   libraryItemUserStatus: {},
   setLibraryItemUserStatus: () => null,
+
+  screenWidth: 0,
+  setScreenWidth: () => null,
+
+  contentPanelWidth: 0,
+  setContentPanelWidth: () => null,
+
+  subPanelWidth: 0,
+  setSubPanelWidth: () => null,
 };
 
 const AppContext = React.createContext<AppLayoutState>(initialState);
@@ -237,6 +261,10 @@ export const AppContextProvider = (props: Props): JSX.Element => {
     setDyslexic((current) => (isDefined(current) ? !current : current));
   };
 
+  const [screenWidth, setScreenWidth] = useState(0);
+  const [contentPanelWidth, setContentPanelWidth] = useState(0);
+  const [subPanelWidth, setSubPanelWidth] = useState(0);
+
   return (
     <AppContext.Provider
       value={{
@@ -254,6 +282,9 @@ export const AppContextProvider = (props: Props): JSX.Element => {
         preferredLanguages,
         menuGestures,
         libraryItemUserStatus,
+        screenWidth,
+        contentPanelWidth,
+        subPanelWidth,
         setSubPanelOpen,
         setConfigPanelOpen,
         setSearchPanelOpen,
@@ -277,6 +308,9 @@ export const AppContextProvider = (props: Props): JSX.Element => {
         toggleMenuGestures,
         toggleSelectedThemeMode,
         toggleDyslexic,
+        setContentPanelWidth,
+        setScreenWidth,
+        setSubPanelWidth,
       }}
     >
       {props.children}

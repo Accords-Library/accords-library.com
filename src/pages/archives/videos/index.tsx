@@ -8,10 +8,7 @@ import { Switch } from "components/Inputs/Switch";
 import { TextInput } from "components/Inputs/TextInput";
 import { WithLabel } from "components/Inputs/WithLabel";
 import { PanelHeader } from "components/PanelComponents/PanelHeader";
-import {
-  ReturnButton,
-  ReturnButtonType,
-} from "components/PanelComponents/ReturnButton";
+import { ReturnButton } from "components/PanelComponents/ReturnButton";
 import {
   ContentPanel,
   ContentPanelWidthSizes,
@@ -23,9 +20,12 @@ import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import { filterHasAttributes } from "helpers/others";
 import { getVideoThumbnailURL } from "helpers/videos";
-import { useMediaHoverable } from "hooks/useMediaQuery";
+import { useDeviceSupportsHover } from "hooks/useMediaQuery";
 import { getOpenGraph } from "helpers/openGraph";
 import { compareDate } from "helpers/date";
+import { HorizontalLine } from "components/HorizontalLine";
+import { cIf } from "helpers/className";
+import { useIsContentPanelAtLeast } from "hooks/useContainerQuery";
 
 /*
  *                                         ╭─────────────╮
@@ -46,7 +46,8 @@ interface Props extends AppStaticProps, AppLayoutRequired {
 }
 
 const Videos = ({ langui, videos, ...otherProps }: Props): JSX.Element => {
-  const hoverable = useMediaHoverable();
+  const hoverable = useDeviceSupportsHover();
+  const isContentPanelAtLeast4xl = useIsContentPanelAtLeast("4xl");
 
   const { value: keepInfoVisible, toggle: toggleKeepInfoVisible } =
     useBoolean(true);
@@ -62,7 +63,7 @@ const Videos = ({ langui, videos, ...otherProps }: Props): JSX.Element => {
           href="/archives/"
           title={"Archives"}
           langui={langui}
-          displayOn={ReturnButtonType.Desktop}
+          displayOnlyOn={"3ColumnsLayout"}
           className="mb-10"
         />
 
@@ -71,6 +72,8 @@ const Videos = ({ langui, videos, ...otherProps }: Props): JSX.Element => {
           title="Videos"
           description={langui.archives_description}
         />
+
+        <HorizontalLine />
 
         <TextInput
           className="mb-6 w-full"
@@ -116,15 +119,18 @@ const Videos = ({ langui, videos, ...otherProps }: Props): JSX.Element => {
             />
           )}
           langui={langui}
-          className="desktop:grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] mobile:grid-cols-2
-          thin:grid-cols-1"
+          className={cIf(
+            isContentPanelAtLeast4xl,
+            "grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] gap-x-6 gap-y-8",
+            "grid-cols-2 gap-x-3 gap-y-5"
+          )}
           paginationItemPerPage={25}
           searchingTerm={searchName}
           searchingBy={(item) => item.attributes.title}
         />
       </ContentPanel>
     ),
-    [keepInfoVisible, langui, searchName, videos]
+    [isContentPanelAtLeast4xl, keepInfoVisible, langui, searchName, videos]
   );
   return (
     <AppLayout

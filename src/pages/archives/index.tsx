@@ -7,6 +7,7 @@ import { SubPanel } from "components/Panels/SubPanel";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { Icon } from "components/Ico";
 import { getOpenGraph } from "helpers/openGraph";
+import { HorizontalLine } from "components/HorizontalLine";
 
 /*
  *                                           ╭────────╮
@@ -24,6 +25,7 @@ const Archives = ({ langui, ...otherProps }: Props): JSX.Element => {
           title={langui.archives}
           description={langui.archives_description}
         />
+        <HorizontalLine />
         <NavOption title={"Videos"} url="/archives/videos/" border />
       </SubPanel>
     ),

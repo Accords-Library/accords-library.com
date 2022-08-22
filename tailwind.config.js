@@ -1,5 +1,5 @@
 const plugin = require("tailwindcss/plugin");
-const { breaks, colors, fonts, fontFamilies } = require("./design.config.js");
+const { colors, fonts, fontFamilies } = require("./design.config.js");
 
 const rgb = (color) => [color.r, color.g, color.b].join(" ");
 
@@ -23,9 +23,6 @@ module.exports = {
       ...fonts,
     },
     screens: {
-      desktop: breaks.desktop,
-      mobile: breaks.mobile,
-      thin: breaks.thin,
       hoverable: { raw: "(hover: hover)" },
       notHoverable: { raw: "(hover: none)" },
     },

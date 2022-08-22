@@ -4,6 +4,7 @@ import { useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { useSwipeable } from "react-swipeable";
 import UAParser from "ua-parser-js";
 import { useBoolean, useIsClient } from "usehooks-ts";
+import { layout } from "../../design.config";
 import { Ico, Icon } from "./Ico";
 import { ButtonGroup } from "./Inputs/ButtonGroup";
 import { OrderableList } from "./Inputs/OrderableList";
@@ -12,7 +13,6 @@ import { TextInput } from "./Inputs/TextInput";
 import { MainPanel } from "./Panels/MainPanel";
 import { Popup } from "./Popup";
 import { AnchorIds } from "hooks/useScrollTopOnChange";
-import { useMediaMobile } from "hooks/useMediaQuery";
 import {
   filterHasAttributes,
   isDefined,
@@ -27,6 +27,11 @@ import { useAppLayout } from "contexts/AppLayoutContext";
 import { Button } from "components/Inputs/Button";
 import { OpenGraph, TITLE_PREFIX, TITLE_SEPARATOR } from "helpers/openGraph";
 import { getDefaultPreferredLanguages } from "helpers/locales";
+import {
+  useIs1ColumnLayout,
+  useIsScreenAtLeast,
+} from "hooks/useContainerQuery";
+import { useOnResize } from "hooks/useOnResize";
 
 /*
  *                                         ╭─────────────╮
@@ -88,10 +93,18 @@ export const AppLayout = ({
     setSubPanelOpen,
     toggleMainPanelOpen,
     toggleSubPanelOpen,
+    setScreenWidth,
+    setContentPanelWidth,
+    setSubPanelWidth,
   } = useAppLayout();
 
   const router = useRouter();
-  const isMobile = useMediaMobile();
+  const is1ColumnLayout = useIs1ColumnLayout();
+  const isScreenAtLeastXs = useIsScreenAtLeast("xs");
+
+  useOnResize(AnchorIds.Body, (width) => setScreenWidth(width));
+  useOnResize(AnchorIds.ContentPanel, (width) => setContentPanelWidth(width));
+  useOnResize(AnchorIds.SubPanel, (width) => setSubPanelWidth(width));
 
   useEffect(() => {
     router.events.on("routeChangeStart", () => {
@@ -178,18 +191,6 @@ export const AppLayout = ({
     setPreferredLanguages,
   ]);
 
-  const gridCol = useMemo(() => {
-    if (isDefined(subPanel)) {
-      if (mainPanelReduced) {
-        return "grid-cols-[6rem_20rem_1fr]";
-      }
-      return "grid-cols-[20rem_20rem_1fr]";
-    } else if (mainPanelReduced) {
-      return "grid-cols-[6rem_0px_1fr]";
-    }
-    return "grid-cols-[20rem_0px_1fr]";
-  }, [mainPanelReduced, subPanel]);
-
   const isClient = useIsClient();
   const { value: hasDisgardSafariWarning, setTrue: disgardSafariWarning } =
     useBoolean(false);
@@ -212,12 +213,22 @@ export const AppLayout = ({
     >
       <div
         {...handlers}
+        id={AnchorIds.Body}
         className={cJoin(
           `fixed inset-0 m-0 grid touch-pan-y bg-light p-0 text-black
-          [grid-template-areas:'main_sub_content'] mobile:grid-cols-[1fr]
-          mobile:grid-rows-[1fr_5rem] mobile:[grid-template-areas:'content''navbar']`,
-          gridCol
+        [grid-template-areas:'main_sub_content']`,
+          cIf(
+            is1ColumnLayout,
+            "grid-rows-[1fr_5rem] [grid-template-areas:'content''navbar']"
+          )
         )}
+        style={{
+          gridTemplateColumns: is1ColumnLayout
+            ? "1fr"
+            : `${
+                mainPanelReduced ? layout.mainMenuReduced : layout.mainMenu
+              }rem ${isDefined(subPanel) ? layout.subMenu : 0}rem 1fr`,
+        }}
       >
         <Head>
           <title>{openGraph.title}</title>
@@ -257,11 +268,11 @@ export const AppLayout = ({
         {/* Background when navbar is opened */}
         <div
           className={cJoin(
-            `absolute inset-0 transition-[backdrop-filter] duration-500 [grid-area:content]
-            mobile:z-10`,
+            `absolute inset-0 transition-[backdrop-filter] duration-500
+            [grid-area:content]`,
             cIf(
-              (mainPanelOpen || subPanelOpen) && isMobile,
-              "[backdrop-filter:blur(2px)]",
+              (mainPanelOpen || subPanelOpen) && is1ColumnLayout,
+              "z-10 [backdrop-filter:blur(2px)]",
               "pointer-events-none touch-none"
             )
           )}
@@ -270,7 +281,7 @@ export const AppLayout = ({
             className={cJoin(
               "absolute inset-0 bg-shade transition-opacity duration-500",
               cIf(
-                (mainPanelOpen || subPanelOpen) && isMobile,
+                (mainPanelOpen || subPanelOpen) && is1ColumnLayout,
                 "opacity-60",
                 "opacity-0"
               )
@@ -303,16 +314,26 @@ export const AppLayout = ({
         {/* Sub panel */}
         {isDefined(subPanel) && (
           <div
+            id={AnchorIds.SubPanel}
             className={cJoin(
               `texture-paper-dots overflow-y-scroll border-r-[1px] border-dark/50 bg-light
-              transition-transform duration-300 [grid-area:sub] [scrollbar-width:none]
-              webkit-scrollbar:w-0 mobile:z-10 mobile:w-[90%] mobile:justify-self-end
-              mobile:border-r-0 mobile:border-l-[1px] mobile:[grid-area:content]`,
-              turnSubIntoContent
-                ? "mobile:w-full mobile:border-l-0"
-                : subPanelOpen
-                ? ""
-                : "mobile:translate-x-[100vw]"
+              transition-transform duration-300 [scrollbar-width:none]
+              webkit-scrollbar:w-0`,
+              cIf(
+                is1ColumnLayout,
+                `z-10 justify-self-end border-r-0
+                [grid-area:content]`,
+                "[grid-area:sub]"
+              ),
+              cIf(
+                is1ColumnLayout && isScreenAtLeastXs,
+                "w-[min(30rem,90%)] border-l-[1px]"
+              ),
+              cIf(
+                is1ColumnLayout && !subPanelOpen && !turnSubIntoContent,
+                "translate-x-[100vw]"
+              ),
+              cIf(is1ColumnLayout && turnSubIntoContent, "w-full border-l-0")
             )}
           >
             {subPanel}
@@ -323,10 +344,14 @@ export const AppLayout = ({
         <div
           className={cJoin(
             `texture-paper-dots overflow-y-scroll border-r-[1px] border-dark/50 bg-light
-            transition-transform duration-300 [grid-area:main] [scrollbar-width:none]
-            webkit-scrollbar:w-0 mobile:z-10 mobile:w-[90%] mobile:justify-self-start
-            mobile:[grid-area:content]`,
-            cIf(!mainPanelOpen, "mobile:-translate-x-full")
+            transition-transform duration-300 [scrollbar-width:none] webkit-scrollbar:w-0`,
+            cIf(
+              is1ColumnLayout,
+              "z-10 justify-self-start [grid-area:content]",
+              "[grid-area:main]"
+            ),
+            cIf(is1ColumnLayout && isScreenAtLeastXs, "w-[min(30rem,90%)]"),
+            cIf(!mainPanelOpen && is1ColumnLayout, "-translate-x-full")
           )}
         >
           <MainPanel langui={langui} />
@@ -334,8 +359,11 @@ export const AppLayout = ({
 
         {/* Navbar */}
         <div
-          className="texture-paper-dots grid grid-cols-[5rem_1fr_5rem] place-items-center
-          border-t-[1px] border-dotted border-black bg-light [grid-area:navbar] desktop:hidden"
+          className={cJoin(
+            `texture-paper-dots grid grid-cols-[5rem_1fr_5rem] place-items-center
+          border-t-[1px] border-dotted border-black bg-light [grid-area:navbar]`,
+            cIf(!is1ColumnLayout, "hidden")
+          )}
         >
           <Ico
             icon={mainPanelOpen ? Icon.Close : Icon.Menu}
@@ -410,8 +438,10 @@ export const AppLayout = ({
           <h2 className="text-2xl">{langui.settings}</h2>
 
           <div
-            className="mt-4 grid justify-items-center gap-16
-            text-center desktop:grid-cols-[auto_auto]"
+            className={cJoin(
+              `mt-4 grid justify-items-center gap-16 text-center`,
+              cIf(!is1ColumnLayout, "grid-cols-[auto_auto]")
+            )}
           >
             {router.locales && (
               <div>
@@ -443,7 +473,12 @@ export const AppLayout = ({
                 )}
               </div>
             )}
-            <div className="grid place-items-center gap-8 text-center desktop:grid-cols-2">
+            <div
+              className={cJoin(
+                "grid place-items-center gap-8 text-center",
+                cIf(!is1ColumnLayout, "grid-cols-2")
+              )}
+            >
               <div>
                 <h3 className="text-xl">{langui.theme}</h3>
                 <ButtonGroup

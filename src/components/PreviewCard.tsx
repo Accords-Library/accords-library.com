@@ -19,7 +19,7 @@ import {
   prettyShortenNumber,
 } from "helpers/formatters";
 import { ImageQuality } from "helpers/img";
-import { useMediaHoverable } from "hooks/useMediaQuery";
+import { useDeviceSupportsHover } from "hooks/useMediaQuery";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { TranslatedProps } from "helpers/types/TranslatedProps";
 
@@ -81,7 +81,7 @@ export const PreviewCard = ({
   infoAppend,
 }: Props): JSX.Element => {
   const { currency } = useAppLayout();
-  const isHoverable = useMediaHoverable();
+  const isHoverable = useDeviceSupportsHover();
   const router = useRouter();
 
   const metadataJSX = useMemo(
@@ -90,7 +90,7 @@ export const PreviewCard = ({
         {metadata && (metadata.releaseDate || metadata.price) && (
           <div className="flex w-full flex-row flex-wrap gap-x-3">
             {metadata.releaseDate && (
-              <p className="text-sm mobile:text-xs">
+              <p className="text-sm">
                 <Ico
                   icon={Icon.Event}
                   className="mr-1 translate-y-[.15em] !text-base"
@@ -99,7 +99,7 @@ export const PreviewCard = ({
               </p>
             )}
             {metadata.price && metadata.currencies && (
-              <p className="justify-self-end text-sm mobile:text-xs">
+              <p className="justify-self-end text-sm">
                 <Ico
                   icon={Icon.ShoppingCart}
                   className="mr-1 translate-y-[.15em] !text-base"
@@ -108,7 +108,7 @@ export const PreviewCard = ({
               </p>
             )}
             {metadata.views && (
-              <p className="text-sm mobile:text-xs">
+              <p className="text-sm">
                 <Ico
                   icon={Icon.Visibility}
                   className="mr-1 translate-y-[.15em] !text-base"
@@ -117,7 +117,7 @@ export const PreviewCard = ({
               </p>
             )}
             {metadata.author && (
-              <p className="text-sm mobile:text-xs">
+              <p className="text-sm">
                 <Ico
                   icon={Icon.Person}
                   className="mr-1 translate-y-[.15em] !text-base"

@@ -1,9 +1,6 @@
 import { GetStaticProps } from "next";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
-import {
-  ReturnButton,
-  ReturnButtonType,
-} from "components/PanelComponents/ReturnButton";
+import { ReturnButton } from "components/PanelComponents/ReturnButton";
 import { ContentPanel } from "components/Panels/ContentPanel";
 import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getOpenGraph } from "helpers/openGraph";
@@ -24,12 +21,7 @@ const FourOhFour = ({
     contentPanel={
       <ContentPanel>
         <h1>{openGraph.title}</h1>
-        <ReturnButton
-          href="/"
-          title="Home"
-          langui={langui}
-          displayOn={ReturnButtonType.Both}
-        />
+        <ReturnButton href="/" title="Home" langui={langui} />
       </ContentPanel>
     }
     openGraph={openGraph}

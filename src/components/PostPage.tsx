@@ -3,7 +3,7 @@ import { AppLayout, AppLayoutRequired } from "./AppLayout";
 import { Chip } from "./Chip";
 import { HorizontalLine } from "./HorizontalLine";
 import { Markdawn, TableOfContents } from "./Markdown/Markdawn";
-import { ReturnButton, ReturnButtonType } from "./PanelComponents/ReturnButton";
+import { ReturnButton } from "./PanelComponents/ReturnButton";
 import { ContentPanel } from "./Panels/ContentPanel";
 import { SubPanel } from "./Panels/SubPanel";
 import { RecorderChip } from "./RecorderChip";
@@ -85,7 +85,7 @@ export const PostPage = ({
               href={returnHref}
               title={returnTitle}
               langui={langui}
-              displayOn={ReturnButtonType.Desktop}
+              displayOnlyOn={"3ColumnsLayout"}
             />
           )}
 
@@ -161,7 +161,7 @@ export const PostPage = ({
             href={returnHref}
             title={returnTitle}
             langui={langui}
-            displayOn={ReturnButtonType.Mobile}
+            displayOnlyOn={"1ColumnLayout"}
             className="mb-10"
           />
         )}
@@ -180,8 +180,6 @@ export const PostPage = ({
                 ) : undefined
               }
             />
-
-            <HorizontalLine />
           </>
         ) : (
           <>
@@ -199,7 +197,13 @@ export const PostPage = ({
         )}
 
         {prependBody}
-        <Markdawn text={body} langui={langui} />
+        {body && (
+          <>
+            {displayThumbnailHeader && <HorizontalLine />}
+            <Markdawn text={body} langui={langui} />
+          </>
+        )}
+
         {appendBody}
       </ContentPanel>
     ),

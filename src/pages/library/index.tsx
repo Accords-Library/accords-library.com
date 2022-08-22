@@ -22,7 +22,7 @@ import { Button } from "components/Inputs/Button";
 import { PreviewCardCTAs } from "components/Library/PreviewCardCTAs";
 import { isUntangibleGroupItem } from "helpers/libraryItem";
 import { PreviewCard } from "components/PreviewCard";
-import { useMediaHoverable } from "hooks/useMediaQuery";
+import { useDeviceSupportsHover } from "hooks/useMediaQuery";
 import { ButtonGroup } from "components/Inputs/ButtonGroup";
 import { filterHasAttributes, isDefined, isUndefined } from "helpers/others";
 import { useAppLayout } from "contexts/AppLayoutContext";
@@ -31,6 +31,9 @@ import { SmartList } from "components/SmartList";
 import { SelectiveNonNullable } from "helpers/types/SelectiveNonNullable";
 import { getOpenGraph } from "helpers/openGraph";
 import { compareDate } from "helpers/date";
+import { HorizontalLine } from "components/HorizontalLine";
+import { useIsContentPanelAtLeast } from "hooks/useContainerQuery";
+import { cIf, cJoin } from "helpers/className";
 
 /*
  *                                         ╭─────────────╮
@@ -63,8 +66,9 @@ const Library = ({
   currencies,
   ...otherProps
 }: Props): JSX.Element => {
-  const hoverable = useMediaHoverable();
+  const hoverable = useDeviceSupportsHover();
   const { libraryItemUserStatus } = useAppLayout();
+  const isContentPanelAtLeast4xl = useIsContentPanelAtLeast("4xl");
 
   const [searchName, setSearchName] = useState(
     DEFAULT_FILTERS_STATE.searchName
@@ -261,6 +265,8 @@ const Library = ({
           description={langui.library_description}
         />
 
+        <HorizontalLine />
+
         <TextInput
           className="mb-6 w-full"
           placeholder={langui.search_title ?? "Search..."}
@@ -423,7 +429,13 @@ const Library = ({
               }
             />
           )}
-          className="grid-cols-2 items-end desktop:grid-cols-[repeat(auto-fill,_minmax(13rem,1fr))]"
+          className={cJoin(
+            "grid-cols-2 items-end",
+            cIf(
+              isContentPanelAtLeast4xl,
+              "grid-cols-[repeat(auto-fill,_minmax(13rem,1fr))]"
+            )
+          )}
           searchingTerm={searchName}
           sortingFunction={sortingFunction}
           groupingFunction={groupingFunction}
@@ -444,6 +456,7 @@ const Library = ({
       currencies,
       filteringFunction,
       groupingFunction,
+      isContentPanelAtLeast4xl,
       items,
       keepInfoVisible,
       langui,

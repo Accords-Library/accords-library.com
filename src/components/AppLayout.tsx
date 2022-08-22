@@ -488,14 +488,14 @@ export const AppLayout = ({
                         setDarkMode(false);
                         setSelectedThemeMode(true);
                       },
-                      active: selectedThemeMode && darkMode,
+                      active: selectedThemeMode && !darkMode,
                       text: langui.light,
                     },
                     {
                       onClick: () => {
                         setSelectedThemeMode(false);
                       },
-                      active: selectedThemeMode,
+                      active: !selectedThemeMode,
                       text: langui.auto,
                     },
                     {

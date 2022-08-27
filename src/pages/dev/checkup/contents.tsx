@@ -9,18 +9,18 @@ import {
 } from "components/Panels/ContentPanel";
 import { ToolTip } from "components/ToolTip";
 import { DevGetContentsQuery } from "graphql/generated";
-import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import { filterDefined, filterHasAttributes } from "helpers/others";
 import { Report, Severity } from "helpers/types/Report";
 import { getOpenGraph } from "helpers/openGraph";
+import { getLangui } from "graphql/fetchLocalData";
 
 /*
  *                                           ╭────────╮
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
  */
 
-interface Props extends AppStaticProps, AppLayoutRequired {
+interface Props extends AppLayoutRequired {
   contents: DevGetContentsQuery;
 }
 
@@ -99,12 +99,11 @@ export default CheckupContents;
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
+  const langui = getLangui(context.locale);
   const contents = await sdk.devGetContents();
-  const appStaticProps = await getAppStaticProps(context);
   const props: Props = {
-    ...appStaticProps,
     contents: contents,
-    openGraph: getOpenGraph(appStaticProps.langui, "Checkup Contents"),
+    openGraph: getOpenGraph(langui, "Checkup Contents"),
   };
   return {
     props: props,

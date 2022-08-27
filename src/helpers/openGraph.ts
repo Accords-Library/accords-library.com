@@ -5,8 +5,8 @@ import {
   getAssetURL,
 } from "./img";
 import { isDefinedAndNotEmpty } from "./others";
+import { Langui } from "./localData";
 import { UploadImageFragment } from "graphql/generated";
-import { AppStaticProps } from "graphql/getAppStaticProps";
 
 const DEFAULT_OG_THUMBNAIL = {
   image: `${process.env.NEXT_PUBLIC_URL_SELF}/default_og.jpg`,
@@ -25,7 +25,7 @@ export interface OpenGraph {
 }
 
 export const getOpenGraph = (
-  langui: AppStaticProps["langui"],
+  langui: Langui,
   title?: string | null | undefined,
   description?: string | null | undefined,
   thumbnail?: UploadImageFragment | null | undefined

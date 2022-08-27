@@ -2,7 +2,6 @@ import { useCallback } from "react";
 import { Icon } from "components/Ico";
 import { Button } from "components/Inputs/Button";
 import { useAppLayout } from "contexts/AppLayoutContext";
-import { AppStaticProps } from "graphql/getAppStaticProps";
 import { TranslatedProps } from "helpers/types/TranslatedProps";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { useIs3ColumnsLayout } from "hooks/useContainerQuery";
@@ -16,7 +15,7 @@ import { isDefined } from "helpers/others";
 interface Props {
   href: string;
   title: string | null | undefined;
-  langui: AppStaticProps["langui"];
+
   displayOnlyOn?: "1ColumnLayout" | "3ColumnsLayout";
   className?: string;
 }
@@ -26,11 +25,10 @@ interface Props {
 export const ReturnButton = ({
   href,
   title,
-  langui,
   displayOnlyOn,
   className,
 }: Props): JSX.Element => {
-  const { setSubPanelOpen } = useAppLayout();
+  const { setSubPanelOpen, langui } = useAppLayout();
   const is3ColumnsLayout = useIs3ColumnsLayout();
 
   return (

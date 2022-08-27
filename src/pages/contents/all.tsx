@@ -10,7 +10,6 @@ import {
   ContentPanelWidthSizes,
 } from "components/Panels/ContentPanel";
 import { SubPanel } from "components/Panels/SubPanel";
-import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import { prettyInlineTitle, prettySlug } from "helpers/formatters";
 import { TextInput } from "components/Inputs/TextInput";
@@ -27,6 +26,8 @@ import { HorizontalLine } from "components/HorizontalLine";
 import { TranslatedPreviewCard } from "components/PreviewCard";
 import { useIsContentPanelAtLeast } from "hooks/useContainerQuery";
 import { cJoin, cIf } from "helpers/className";
+import { useAppLayout } from "contexts/AppLayoutContext";
+import { getLangui } from "graphql/fetchLocalData";
 
 /*
  *                                         ╭─────────────╮
@@ -44,17 +45,13 @@ const DEFAULT_FILTERS_STATE = {
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
  */
 
-interface Props extends AppStaticProps, AppLayoutRequired {
+interface Props extends AppLayoutRequired {
   contents: NonNullable<GetContentsQuery["contents"]>["data"];
 }
 
-const Contents = ({
-  langui,
-  contents,
-  languages,
-  ...otherProps
-}: Props): JSX.Element => {
+const Contents = ({ contents, ...otherProps }: Props): JSX.Element => {
   const hoverable = useDeviceSupportsHover();
+  const { langui } = useAppLayout();
   const isContentPanelAtLeast4xl = useIsContentPanelAtLeast("4xl");
 
   const [groupingMethod, setGroupingMethod] = useState<number>(
@@ -142,6 +139,7 @@ const Contents = ({
 
         <Button
           href="/contents"
+          /* TODO: Langui */
           text={"Switch to folder view"}
           icon={Icon.Folder}
         />
@@ -262,7 +260,6 @@ const Contents = ({
               .join(" ")}`
           }
           paginationItemPerPage={50}
-          langui={langui}
         />
       </ContentPanel>
     ),
@@ -272,7 +269,6 @@ const Contents = ({
       filteringFunction,
       groupingFunction,
       keepInfoVisible,
-      langui,
       searchName,
     ]
   );
@@ -282,8 +278,6 @@ const Contents = ({
       subPanel={subPanel}
       contentPanel={contentPanel}
       subPanelIcon={Icon.Search}
-      languages={languages}
-      langui={langui}
       {...otherProps}
     />
   );
@@ -297,6 +291,7 @@ export default Contents;
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
+  const langui = getLangui(context.locale);
   const contents = await sdk.getContents({
     language_code: context.locale ?? "en",
   });
@@ -307,14 +302,9 @@ export const getStaticProps: GetStaticProps = async (context) => {
     return titleA.localeCompare(titleB);
   });
 
-  const appStaticProps = await getAppStaticProps(context);
   const props: Props = {
-    ...appStaticProps,
     contents: contents.contents.data,
-    openGraph: getOpenGraph(
-      appStaticProps.langui,
-      appStaticProps.langui.contents ?? "Contents"
-    ),
+    openGraph: getOpenGraph(langui, langui.contents ?? "Contents"),
   };
   return {
     props: props,

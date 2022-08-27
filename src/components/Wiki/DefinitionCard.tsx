@@ -1,12 +1,12 @@
 import { useCallback } from "react";
 import { Chip } from "components/Chip";
 import { ToolTip } from "components/ToolTip";
-import { AppStaticProps } from "graphql/getAppStaticProps";
 import { getStatusDescription } from "helpers/others";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { Button } from "components/Inputs/Button";
 import { useIsContentPanelNoMoreThan } from "hooks/useContainerQuery";
 import { cIf, cJoin } from "helpers/className";
+import { useAppLayout } from "contexts/AppLayoutContext";
 
 /*
  *                                        ╭─────────────╮
@@ -23,8 +23,6 @@ interface Props {
     definition: string | null | undefined;
     status: string | undefined;
   }[];
-  languages: AppStaticProps["languages"];
-  langui: AppStaticProps["langui"];
   index: number;
   categories: string[];
 }
@@ -34,16 +32,14 @@ interface Props {
 const DefinitionCard = ({
   source,
   translations = [],
-  languages,
-  langui,
   index,
   categories,
 }: Props): JSX.Element => {
   const isContentPanelNoMoreThanMd = useIsContentPanelNoMoreThan("md");
+  const { langui } = useAppLayout();
   const [selectedTranslation, LanguageSwitcher, languageSwitcherProps] =
     useSmartLanguage({
       items: translations,
-      languages: languages,
       languageExtractor: useCallback(
         (item: Props["translations"][number]) => item.language,
         []

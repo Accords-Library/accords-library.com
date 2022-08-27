@@ -4,19 +4,21 @@ import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { NavOption } from "components/PanelComponents/NavOption";
 import { PanelHeader } from "components/PanelComponents/PanelHeader";
 import { SubPanel } from "components/Panels/SubPanel";
-import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { Icon } from "components/Ico";
 import { getOpenGraph } from "helpers/openGraph";
 import { HorizontalLine } from "components/HorizontalLine";
+import { useAppLayout } from "contexts/AppLayoutContext";
+import { getLangui } from "graphql/fetchLocalData";
 
 /*
  *                                           ╭────────╮
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
  */
 
-interface Props extends AppStaticProps, AppLayoutRequired {}
+interface Props extends AppLayoutRequired {}
 
-const Archives = ({ langui, ...otherProps }: Props): JSX.Element => {
+const Archives = (props: Props): JSX.Element => {
+  const { langui } = useAppLayout();
   const subPanel = useMemo(
     () => (
       <SubPanel>
@@ -31,7 +33,7 @@ const Archives = ({ langui, ...otherProps }: Props): JSX.Element => {
     ),
     [langui]
   );
-  return <AppLayout subPanel={subPanel} langui={langui} {...otherProps} />;
+  return <AppLayout subPanel={subPanel} {...props} />;
 };
 export default Archives;
 
@@ -40,14 +42,10 @@ export default Archives;
  * ───────────────────────────────────╯  NEXT DATA FETCHING  ╰──────────────────────────────────────
  */
 
-export const getStaticProps: GetStaticProps = async (context) => {
-  const appStaticProps = await getAppStaticProps(context);
+export const getStaticProps: GetStaticProps = (context) => {
+  const langui = getLangui(context.locale);
   const props: Props = {
-    ...appStaticProps,
-    openGraph: getOpenGraph(
-      appStaticProps.langui,
-      appStaticProps.langui.archives ?? "Archives"
-    ),
+    openGraph: getOpenGraph(langui, langui.archives ?? "Archives"),
   };
   return {
     props: props,

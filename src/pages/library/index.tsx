@@ -11,7 +11,6 @@ import {
 } from "components/Panels/ContentPanel";
 import { SubPanel } from "components/Panels/SubPanel";
 import { GetLibraryItemsPreviewQuery } from "graphql/generated";
-import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import { prettyInlineTitle, prettyItemSubType } from "helpers/formatters";
 import { LibraryItemUserStatus } from "helpers/types";
@@ -34,6 +33,8 @@ import { compareDate } from "helpers/date";
 import { HorizontalLine } from "components/HorizontalLine";
 import { useIsContentPanelAtLeast } from "hooks/useContainerQuery";
 import { cIf, cJoin } from "helpers/className";
+import { useCurrencies } from "hooks/useLocalData";
+import { getLangui } from "graphql/fetchLocalData";
 
 /*
  *                                         ╭─────────────╮
@@ -56,17 +57,14 @@ const DEFAULT_FILTERS_STATE = {
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
  */
 
-interface Props extends AppStaticProps, AppLayoutRequired {
+interface Props extends AppLayoutRequired {
   items: NonNullable<GetLibraryItemsPreviewQuery["libraryItems"]>["data"];
 }
 
-const Library = ({
-  langui,
-  items,
-  currencies,
-  ...otherProps
-}: Props): JSX.Element => {
+const Library = ({ items, ...otherProps }: Props): JSX.Element => {
   const hoverable = useDeviceSupportsHover();
+  const currencies = useCurrencies();
+  const { langui } = useAppLayout();
   const { libraryItemUserStatus } = useAppLayout();
   const isContentPanelAtLeast4xl = useIsContentPanelAtLeast("4xl");
 
@@ -417,14 +415,13 @@ const Library = ({
                 (category) => category.attributes?.short ?? ""
               )}
               metadata={{
-                currencies: currencies,
                 releaseDate: item.attributes.release_date,
                 price: item.attributes.price,
                 position: "Bottom",
               }}
               infoAppend={
                 !isUntangibleGroupItem(item.attributes.metadata?.[0]) && (
-                  <PreviewCardCTAs id={item.id} langui={langui} />
+                  <PreviewCardCTAs id={item.id} />
                 )
               }
             />
@@ -448,18 +445,15 @@ const Library = ({
           }
           filteringFunction={filteringFunction}
           paginationItemPerPage={25}
-          langui={langui}
         />
       </ContentPanel>
     ),
     [
-      currencies,
       filteringFunction,
       groupingFunction,
       isContentPanelAtLeast4xl,
       items,
       keepInfoVisible,
-      langui,
       searchName,
       sortingFunction,
     ]
@@ -470,8 +464,6 @@ const Library = ({
       subPanel={subPanel}
       contentPanel={contentPanel}
       subPanelIcon={Icon.Search}
-      currencies={currencies}
-      langui={langui}
       {...otherProps}
     />
   );
@@ -485,18 +477,15 @@ export default Library;
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
+  const langui = getLangui(context.locale);
   const items = await sdk.getLibraryItemsPreview({
     language_code: context.locale ?? "en",
   });
   if (!items.libraryItems?.data) return { notFound: true };
-  const appStaticProps = await getAppStaticProps(context);
+
   const props: Props = {
-    ...appStaticProps,
     items: items.libraryItems.data,
-    openGraph: getOpenGraph(
-      appStaticProps.langui,
-      appStaticProps.langui.library ?? "Library"
-    ),
+    openGraph: getOpenGraph(langui, langui.library ?? "Library"),
   };
   return {
     props: props,

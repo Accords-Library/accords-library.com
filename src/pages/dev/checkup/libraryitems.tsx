@@ -12,17 +12,17 @@ import {
   DevGetLibraryItemsQuery,
   Enum_Componentcollectionscomponentlibraryimages_Status,
 } from "graphql/generated";
-import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import { Report, Severity } from "helpers/types/Report";
 import { getOpenGraph } from "helpers/openGraph";
+import { getLangui } from "graphql/fetchLocalData";
 
 /*
  *                                           ╭────────╮
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
  */
 
-interface Props extends AppStaticProps, AppLayoutRequired {
+interface Props extends AppLayoutRequired {
   libraryItems: DevGetLibraryItemsQuery;
 }
 
@@ -104,12 +104,12 @@ export default CheckupLibraryItems;
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
+  const langui = getLangui(context.locale);
   const libraryItems = await sdk.devGetLibraryItems();
-  const appStaticProps = await getAppStaticProps(context);
+
   const props: Props = {
-    ...appStaticProps,
     libraryItems: libraryItems,
-    openGraph: getOpenGraph(appStaticProps.langui, "Checkup Library Items"),
+    openGraph: getOpenGraph(langui, "Checkup Library Items"),
   };
   return {
     props: props,

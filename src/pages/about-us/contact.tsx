@@ -10,14 +10,16 @@ import { cIf, cJoin } from "helpers/className";
 import { randomInt } from "helpers/numbers";
 import { RequestMailProps, ResponseMailProps } from "pages/api/mail";
 import { useIs1ColumnLayout } from "hooks/useContainerQuery";
+import { useAppLayout } from "contexts/AppLayoutContext";
 
 /*
  *                                           ╭────────╮
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
  */
 
-const AboutUs = ({ langui, ...otherProps }: PostStaticProps): JSX.Element => {
+const AboutUs = (props: PostStaticProps): JSX.Element => {
   const router = useRouter();
+  const { langui } = useAppLayout();
   const is1ColumnLayout = useIs1ColumnLayout();
   const [formResponse, setFormResponse] = useState("");
   const [formState, setFormState] = useState<"completed" | "ongoing" | "stale">(
@@ -174,8 +176,7 @@ const AboutUs = ({ langui, ...otherProps }: PostStaticProps): JSX.Element => {
 
   return (
     <PostPage
-      {...otherProps}
-      langui={langui}
+      {...props}
       returnHref="/about-us/"
       returnTitle={langui.about_us}
       displayToc

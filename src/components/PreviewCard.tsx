@@ -10,7 +10,6 @@ import {
   PricePickerFragment,
   UploadImageFragment,
 } from "graphql/generated";
-import { AppStaticProps } from "graphql/getAppStaticProps";
 import { cIf, cJoin } from "helpers/className";
 import {
   prettyDate,
@@ -22,6 +21,7 @@ import { ImageQuality } from "helpers/img";
 import { useDeviceSupportsHover } from "hooks/useMediaQuery";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { TranslatedProps } from "helpers/types/TranslatedProps";
+import { useCurrencies } from "hooks/useLocalData";
 
 /*
  *                                        ╭─────────────╮
@@ -43,7 +43,6 @@ interface Props {
   keepInfoVisible?: boolean;
   stackNumber?: number;
   metadata?: {
-    currencies?: AppStaticProps["currencies"];
     releaseDate?: DatePickerFragment | null;
     releaseDateFormat?: Intl.DateTimeFormatOptions["dateStyle"];
     price?: PricePickerFragment | null;
@@ -83,6 +82,7 @@ export const PreviewCard = ({
   const { currency } = useAppLayout();
   const isHoverable = useDeviceSupportsHover();
   const router = useRouter();
+  const currencies = useCurrencies();
 
   const metadataJSX = useMemo(
     () => (
@@ -98,13 +98,13 @@ export const PreviewCard = ({
                 {prettyDate(metadata.releaseDate, router.locale)}
               </p>
             )}
-            {metadata.price && metadata.currencies && (
+            {metadata.price && (
               <p className="justify-self-end text-sm">
                 <Ico
                   icon={Icon.ShoppingCart}
                   className="mr-1 translate-y-[.15em] !text-base"
                 />
-                {prettyPrice(metadata.price, metadata.currencies, currency)}
+                {prettyPrice(metadata.price, currencies, currency)}
               </p>
             )}
             {metadata.views && (
@@ -129,7 +129,7 @@ export const PreviewCard = ({
         )}
       </>
     ),
-    [currency, metadata, router.locale]
+    [currencies, currency, metadata, router.locale]
   );
 
   return (

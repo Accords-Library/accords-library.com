@@ -11,7 +11,6 @@ import {
   GetChronologyItemsQuery,
   GetErasQuery,
 } from "graphql/generated";
-import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import { prettySlug } from "helpers/formatters";
 import {
@@ -31,13 +30,15 @@ import { TranslatedProps } from "helpers/types/TranslatedProps";
 import { TranslatedNavOption } from "components/PanelComponents/NavOption";
 import { useIntersectionList } from "hooks/useIntersectionList";
 import { HorizontalLine } from "components/HorizontalLine";
+import { useAppLayout } from "contexts/AppLayoutContext";
+import { getLangui } from "graphql/fetchLocalData";
 
 /*
  *                                           ╭────────╮
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
  */
 
-interface Props extends AppStaticProps, AppLayoutRequired {
+interface Props extends AppLayoutRequired {
   chronologyItems: NonNullable<
     GetChronologyItemsQuery["chronologyItems"]
   >["data"];
@@ -47,10 +48,9 @@ interface Props extends AppStaticProps, AppLayoutRequired {
 const Chronology = ({
   chronologyItems,
   chronologyEras,
-  langui,
-  languages,
   ...otherProps
 }: Props): JSX.Element => {
+  const { langui } = useAppLayout();
   const ids = useMemo(
     () =>
       filterHasAttributes(chronologyEras, ["attributes"] as const).map(
@@ -67,7 +67,6 @@ const Chronology = ({
         <ReturnButton
           href="/wiki"
           title={langui.wiki}
-          langui={langui}
           displayOnlyOn="3ColumnsLayout"
         />
 
@@ -106,7 +105,6 @@ const Chronology = ({
         <ReturnButton
           href="/wiki"
           title={langui.wiki}
-          langui={langui}
           displayOnlyOn="1ColumnLayout"
           className="mb-10"
         />
@@ -131,22 +129,18 @@ const Chronology = ({
                   item.attributes.year >= era.attributes.starting_year &&
                   item.attributes.year < era.attributes.ending_year
               )}
-              langui={langui}
-              languages={languages}
             />
           )
         )}
       </ContentPanel>
     ),
-    [chronologyEras, chronologyItems, languages, langui]
+    [chronologyEras, chronologyItems, langui]
   );
 
   return (
     <AppLayout
       contentPanel={contentPanel}
       subPanel={subPanel}
-      langui={langui}
-      languages={languages}
       {...otherProps}
     />
   );
@@ -160,19 +154,16 @@ export default Chronology;
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
+  const langui = getLangui(context.locale);
   const chronologyItems = await sdk.getChronologyItems();
   const chronologyEras = await sdk.getEras();
   if (!chronologyItems.chronologyItems || !chronologyEras.chronologyEras)
     return { notFound: true };
-  const appStaticProps = await getAppStaticProps(context);
+
   const props: Props = {
-    ...appStaticProps,
     chronologyItems: chronologyItems.chronologyItems.data,
     chronologyEras: chronologyEras.chronologyEras.data,
-    openGraph: getOpenGraph(
-      appStaticProps.langui,
-      appStaticProps.langui.chronology ?? "Chronology"
-    ),
+    openGraph: getOpenGraph(langui, langui.chronology ?? "Chronology"),
   };
   return {
     props: props,
@@ -189,8 +180,6 @@ interface ChronologyEraProps {
   title: string;
   description?: string | null | undefined;
   chronologyItems: Props["chronologyItems"];
-  langui: AppStaticProps["langui"];
-  languages: AppStaticProps["languages"];
 }
 
 const ChronologyEra = ({
@@ -198,8 +187,6 @@ const ChronologyEra = ({
   title,
   description,
   chronologyItems,
-  langui,
-  languages,
 }: ChronologyEraProps) => {
   const yearGroups = useMemo(() => {
     const memo: Props["chronologyItems"][] = [];
@@ -222,7 +209,7 @@ const ChronologyEra = ({
       <InsetBox className="my-8 grid gap-4 text-center">
         <h2 className="flex place-content-center gap-3 text-2xl">
           {title}
-          <AnchorShare id={id} langui={langui} />
+          <AnchorShare id={id} />
         </h2>
 
         {isDefinedAndNotEmpty(description) && (
@@ -231,12 +218,7 @@ const ChronologyEra = ({
       </InsetBox>
       <div>
         {yearGroups.map((item, index) => (
-          <ChronologyYear
-            key={index}
-            items={item}
-            langui={langui}
-            languages={languages}
-          />
+          <ChronologyYear key={index} items={item} />
         ))}
       </div>
     </div>
@@ -271,11 +253,9 @@ const TranslatedChronologyEra = ({
 
 interface ChronologyYearProps {
   items: NonNullable<Props["chronologyItems"]>;
-  langui: AppStaticProps["langui"];
-  languages: AppStaticProps["languages"];
 }
 
-const ChronologyYear = ({ items, langui, languages }: ChronologyYearProps) => (
+const ChronologyYear = ({ items }: ChronologyYearProps) => (
   <div
     className="rounded-2xl target:my-4 target:bg-mid target:py-4"
     id={generateAnchor(items[0].attributes?.year)}
@@ -284,8 +264,6 @@ const ChronologyYear = ({ items, langui, languages }: ChronologyYearProps) => (
       (item, index) => (
         <ChronologyDate
           key={index}
-          langui={langui}
-          languages={languages}
           date={{
             year: item.attributes.year,
             month: item.attributes.month,
@@ -315,15 +293,11 @@ interface ChronologyDateProps {
       NonNullable<Props["chronologyItems"]>[number]["attributes"]
     >["events"]
   >;
-  langui: AppStaticProps["langui"];
-  languages: AppStaticProps["languages"];
 }
 
 export const ChronologyDate = ({
   date,
   events,
-  langui,
-  languages,
 }: ChronologyDateProps): JSX.Element => {
   const router = useRouter();
   return (
@@ -368,8 +342,6 @@ export const ChronologyDate = ({
               id={generateAnchor(date.year, date.month, date.day)}
               key={event.id}
               event={event}
-              langui={langui}
-              languages={languages}
             />
           )
         )}
@@ -388,17 +360,15 @@ interface ChronologyEventProps {
       >["events"]
     >[number]
   >;
-  langui: AppStaticProps["langui"];
-  languages: AppStaticProps["languages"];
+
   id: string;
 }
 
 export const ChronologyEvent = ({
   event,
-  langui,
-  languages,
   id,
 }: ChronologyEventProps): JSX.Element => {
+  const { langui } = useAppLayout();
   const [selectedTranslation, LanguageSwitcher, languageSwitcherProps] =
     useSmartLanguage({
       items: event.translations ?? [],
@@ -410,7 +380,6 @@ export const ChronologyEvent = ({
         ) => item?.language?.data?.attributes?.code,
         []
       ),
-      languages: languages,
     });
 
   return (
@@ -449,7 +418,7 @@ export const ChronologyEvent = ({
             </p>
 
             <span className="flex-shrink">
-              <AnchorShare id={id} langui={langui} />
+              <AnchorShare id={id} />
             </span>
           </div>
 

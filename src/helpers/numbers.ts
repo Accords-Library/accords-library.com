@@ -1,8 +1,9 @@
-import { GetCurrenciesQuery, PricePickerFragment } from "graphql/generated";
+import { Currencies } from "./localData";
+import { PricePickerFragment } from "graphql/generated";
 
 export const convertPrice = (
   pricePicker: PricePickerFragment,
-  targetCurrency: NonNullable<GetCurrenciesQuery["currencies"]>["data"][number]
+  targetCurrency: Currencies[number]
 ): number => {
   if (
     pricePicker.amount &&

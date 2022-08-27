@@ -15,28 +15,28 @@ import {
 import { SubPanel } from "components/Panels/SubPanel";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { GetVideoQuery } from "graphql/generated";
-import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import { prettyDate, prettyShortenNumber } from "helpers/formatters";
 import { filterHasAttributes, isDefined } from "helpers/others";
 import { getVideoFile } from "helpers/videos";
 import { getOpenGraph } from "helpers/openGraph";
 import { useIsContentPanelAtLeast } from "hooks/useContainerQuery";
+import { getLangui } from "graphql/fetchLocalData";
 
 /*
  *                                           ╭────────╮
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
  */
 
-interface Props extends AppStaticProps, AppLayoutRequired {
+interface Props extends AppLayoutRequired {
   video: NonNullable<
     NonNullable<GetVideoQuery["videos"]>["data"][number]["attributes"]
   >;
 }
 
-const Video = ({ langui, video, ...otherProps }: Props): JSX.Element => {
+const Video = ({ video, ...otherProps }: Props): JSX.Element => {
   const isContentPanelAtLeast4xl = useIsContentPanelAtLeast("4xl");
-  const { setSubPanelOpen } = useAppLayout();
+  const { setSubPanelOpen, langui } = useAppLayout();
   const router = useRouter();
 
   const subPanel = useMemo(
@@ -45,7 +45,6 @@ const Video = ({ langui, video, ...otherProps }: Props): JSX.Element => {
         <ReturnButton
           href="/archives/videos/"
           title={langui.videos}
-          langui={langui}
           displayOnlyOn={"3ColumnsLayout"}
         />
 
@@ -82,7 +81,6 @@ const Video = ({ langui, video, ...otherProps }: Props): JSX.Element => {
         <ReturnButton
           href="/library/"
           title={langui.library}
-          langui={langui}
           displayOnlyOn={"1ColumnLayout"}
           className="mb-10"
         />
@@ -201,7 +199,6 @@ const Video = ({ langui, video, ...otherProps }: Props): JSX.Element => {
     <AppLayout
       subPanel={subPanel}
       contentPanel={contentPanel}
-      langui={langui}
       {...otherProps}
     />
   );
@@ -215,6 +212,7 @@ export default Video;
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
+  const langui = getLangui(context.locale);
   const videos = await sdk.getVideo({
     uid:
       context.params && isDefined(context.params.uid)
@@ -222,14 +220,10 @@ export const getStaticProps: GetStaticProps = async (context) => {
         : "",
   });
   if (!videos.videos?.data[0]?.attributes) return { notFound: true };
-  const appStaticProps = await getAppStaticProps(context);
+
   const props: Props = {
-    ...appStaticProps,
     video: videos.videos.data[0].attributes,
-    openGraph: getOpenGraph(
-      appStaticProps.langui,
-      videos.videos.data[0].attributes.title
-    ),
+    openGraph: getOpenGraph(langui, videos.videos.data[0].attributes.title),
   };
   return {
     props: props,

@@ -1,9 +1,8 @@
 import { Icon } from "components/Ico";
 import { Button } from "components/Inputs/Button";
 import { ToolTip } from "components/ToolTip";
-import { useAppLayout } from "contexts/AppLayoutContext";
-import { AppStaticProps } from "graphql/getAppStaticProps";
 import { LibraryItemUserStatus } from "helpers/types";
+import { useAppLayout } from "contexts/AppLayoutContext";
 
 /*
  *                                        ╭─────────────╮
@@ -13,17 +12,13 @@ import { LibraryItemUserStatus } from "helpers/types";
 interface Props {
   id: string;
   expand?: boolean;
-  langui: AppStaticProps["langui"];
 }
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
-export const PreviewCardCTAs = ({
-  id,
-  expand = false,
-  langui,
-}: Props): JSX.Element => {
-  const { libraryItemUserStatus, setLibraryItemUserStatus } = useAppLayout();
+export const PreviewCardCTAs = ({ id, expand = false }: Props): JSX.Element => {
+  const { libraryItemUserStatus, setLibraryItemUserStatus, langui } =
+    useAppLayout();
   return (
     <>
       <div

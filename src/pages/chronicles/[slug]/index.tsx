@@ -1,6 +1,5 @@
 import { GetStaticProps, GetStaticPaths, GetStaticPathsResult } from "next";
 import { useCallback, useMemo } from "react";
-import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import { isDefined, filterHasAttributes } from "helpers/others";
 import { ChronicleWithTranslations } from "helpers/types";
@@ -22,13 +21,15 @@ import {
 } from "helpers/locales";
 import { getDescription } from "helpers/description";
 import { TranslatedChroniclesList } from "components/Chronicles/ChroniclesList";
+import { useAppLayout } from "contexts/AppLayoutContext";
+import { getLangui } from "graphql/fetchLocalData";
 
 /*
  *                                           ╭────────╮
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
  */
 
-interface Props extends AppStaticProps, AppLayoutRequired {
+interface Props extends AppLayoutRequired {
   chronicle: ChronicleWithTranslations;
   chapters: NonNullable<
     GetChroniclesChaptersQuery["chroniclesChapters"]
@@ -38,14 +39,12 @@ interface Props extends AppStaticProps, AppLayoutRequired {
 const Chronicle = ({
   chronicle,
   chapters,
-  langui,
-  languages,
   ...otherProps
 }: Props): JSX.Element => {
+  const { langui } = useAppLayout();
   const [selectedTranslation, LanguageSwitcher, languageSwitcherProps] =
     useSmartLanguage({
       items: chronicle.translations,
-      languages: languages,
       languageExtractor: useCallback(
         (item: ChronicleWithTranslations["translations"][number]) =>
           item?.language?.data?.attributes?.code,
@@ -71,7 +70,6 @@ const Chronicle = ({
     ContentLanguageSwitcherProps,
   ] = useSmartLanguage({
     items: primaryContent?.translations ?? [],
-    languages: languages,
     languageExtractor: useCallback(
       (
         item: NonNullable<
@@ -93,7 +91,6 @@ const Chronicle = ({
           displayOnlyOn={"1ColumnLayout"}
           href="/chronicles"
           title={langui.chronicles}
-          langui={langui}
           className="mb-10"
         />
 
@@ -108,7 +105,7 @@ const Chronicle = ({
             )}
 
             {isDefined(selectedTranslation.body) && (
-              <Markdawn text={selectedTranslation.body.body} langui={langui} />
+              <Markdawn text={selectedTranslation.body.body} />
             )}
           </>
         ) : (
@@ -130,16 +127,12 @@ const Chronicle = ({
                   type={primaryContent?.type}
                   description={selectedContentTranslation.description}
                   thumbnail={primaryContent?.thumbnail?.data?.attributes}
-                  langui={langui}
                 />
 
                 {selectedContentTranslation.text_set?.text && (
                   <>
                     <HorizontalLine />
-                    <Markdawn
-                      text={selectedContentTranslation.text_set.text}
-                      langui={langui}
-                    />
+                    <Markdawn text={selectedContentTranslation.text_set.text} />
                   </>
                 )}
               </>
@@ -169,7 +162,6 @@ const Chronicle = ({
           displayOnlyOn={"3ColumnsLayout"}
           href="/chronicles"
           title={langui.chronicles}
-          langui={langui}
         />
 
         <HorizontalLine />
@@ -202,8 +194,6 @@ const Chronicle = ({
     <AppLayout
       contentPanel={contentPanel}
       subPanel={subPanel}
-      langui={langui}
-      languages={languages}
       subPanelIcon={Icon.FormatListNumbered}
       {...otherProps}
     />
@@ -218,6 +208,7 @@ export default Chronicle;
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
+  const langui = getLangui(context.locale);
   const slug =
     context.params && isDefined(context.params.slug)
       ? context.params.slug.toString()
@@ -232,7 +223,6 @@ export const getStaticProps: GetStaticProps = async (context) => {
     !chronicles.chroniclesChapters?.data
   )
     return { notFound: true };
-  const appStaticProps = await getAppStaticProps(context);
 
   const { title, description } = (() => {
     if (context.locale && context.locales) {
@@ -260,16 +250,15 @@ export const getStaticProps: GetStaticProps = async (context) => {
             description: getDescription(
               selectedContentTranslation.description,
               {
-                [appStaticProps.langui.type ?? "Type"]: [
+                [langui.type ?? "Type"]: [
                   chronicle.chronicles.data[0].attributes.contents.data[0]
                     .attributes.type?.data?.attributes?.titles?.[0]?.title,
                 ],
-                [appStaticProps.langui.categories ?? "Categories"]:
-                  filterHasAttributes(
-                    chronicle.chronicles.data[0].attributes.contents.data[0]
-                      .attributes.categories?.data,
-                    ["attributes"] as const
-                  ).map((category) => category.attributes.short),
+                [langui.categories ?? "Categories"]: filterHasAttributes(
+                  chronicle.chronicles.data[0].attributes.contents.data[0]
+                    .attributes.categories?.data,
+                  ["attributes"] as const
+                ).map((category) => category.attributes.short),
               }
             ),
           };
@@ -304,16 +293,10 @@ export const getStaticProps: GetStaticProps = async (context) => {
       : undefined;
 
   const props: Props = {
-    ...appStaticProps,
     chronicle: chronicle.chronicles.data[0]
       .attributes as ChronicleWithTranslations,
     chapters: chronicles.chroniclesChapters.data,
-    openGraph: getOpenGraph(
-      appStaticProps.langui,
-      title,
-      description,
-      thumbnail
-    ),
+    openGraph: getOpenGraph(langui, title, description, thumbnail),
   };
   return {
     props: props,

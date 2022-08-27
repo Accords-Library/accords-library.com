@@ -1,9 +1,10 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useEffect, useLayoutEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSwipeable } from "react-swipeable";
 import UAParser from "ua-parser-js";
 import { useBoolean, useIsClient } from "usehooks-ts";
+import Script from "next/script";
 import { layout } from "../../design.config";
 import { Ico, Icon } from "./Ico";
 import { ButtonGroup } from "./Inputs/ButtonGroup";
@@ -13,20 +14,12 @@ import { TextInput } from "./Inputs/TextInput";
 import { MainPanel } from "./Panels/MainPanel";
 import { Popup } from "./Popup";
 import { AnchorIds } from "hooks/useScrollTopOnChange";
-import {
-  filterHasAttributes,
-  isDefined,
-  isDefinedAndNotEmpty,
-  isUndefined,
-  iterateMap,
-} from "helpers/others";
+import { filterHasAttributes, isDefined, isUndefined } from "helpers/others";
 import { prettyLanguage } from "helpers/formatters";
 import { cIf, cJoin } from "helpers/className";
-import { AppStaticProps } from "graphql/getAppStaticProps";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { Button } from "components/Inputs/Button";
 import { OpenGraph, TITLE_PREFIX, TITLE_SEPARATOR } from "helpers/openGraph";
-import { getDefaultPreferredLanguages } from "helpers/locales";
 import {
   useIs1ColumnLayout,
   useIsScreenAtLeast,
@@ -49,7 +42,7 @@ export interface AppLayoutRequired {
   openGraph: OpenGraph;
 }
 
-interface Props extends AppStaticProps, AppLayoutRequired {
+interface Props extends AppLayoutRequired {
   subPanel?: React.ReactNode;
   subPanelIcon?: Icon;
   contentPanel?: React.ReactNode;
@@ -59,9 +52,6 @@ interface Props extends AppStaticProps, AppLayoutRequired {
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
 export const AppLayout = ({
-  langui,
-  currencies,
-  languages,
   subPanel,
   contentPanel,
   openGraph,
@@ -96,6 +86,9 @@ export const AppLayout = ({
     setScreenWidth,
     setContentPanelWidth,
     setSubPanelWidth,
+    langui,
+    currencies,
+    languages,
   } = useAppLayout();
 
   const router = useRouter();
@@ -105,18 +98,6 @@ export const AppLayout = ({
   useOnResize(AnchorIds.Body, (width) => setScreenWidth(width));
   useOnResize(AnchorIds.ContentPanel, (width) => setContentPanelWidth(width));
   useOnResize(AnchorIds.SubPanel, (width) => setSubPanelWidth(width));
-
-  useEffect(() => {
-    router.events.on("routeChangeStart", () => {
-      setConfigPanelOpen(false);
-      setMainPanelOpen(false);
-      setSubPanelOpen(false);
-    });
-
-    router.events.on("hashChangeStart", () => {
-      setSubPanelOpen(false);
-    });
-  }, [router.events, setConfigPanelOpen, setMainPanelOpen, setSubPanelOpen]);
 
   const handlers = useSwipeable({
     onSwipedLeft: (SwipeEventData) => {
@@ -146,12 +127,6 @@ export const AppLayout = ({
     [contentPanel, subPanel]
   );
 
-  useLayoutEffect(() => {
-    document.getElementsByTagName("html")[0].style.fontSize = `${
-      fontSize * 100
-    }%`;
-  }, [fontSize]);
-
   const currencyOptions = useMemo(
     () =>
       filterHasAttributes(currencies, ["attributes"] as const).map(
@@ -170,26 +145,6 @@ export const AppLayout = ({
   useEffect(() => {
     if (currencySelect >= 0) setCurrency(currencyOptions[currencySelect]);
   }, [currencyOptions, currencySelect, setCurrency]);
-
-  useEffect(() => {
-    if (preferredLanguages.length === 0) {
-      if (isDefinedAndNotEmpty(router.locale) && router.locales) {
-        setPreferredLanguages(
-          getDefaultPreferredLanguages(router.locale, router.locales)
-        );
-      }
-    } else if (router.locale !== preferredLanguages[0]) {
-      router.replace(router.asPath, router.asPath, {
-        locale: preferredLanguages[0],
-      });
-    }
-  }, [
-    preferredLanguages,
-    router,
-    router.locale,
-    router.locales,
-    setPreferredLanguages,
-  ]);
 
   const isClient = useIsClient();
   const { value: hasDisgardSafariWarning, setTrue: disgardSafariWarning } =
@@ -256,14 +211,14 @@ export const AppLayout = ({
           />
           <meta property="og:image:alt" content={openGraph.thumbnail.alt} />
           <meta property="og:image:type" content="image/jpeg" />
-
-          <script
-            async
-            defer
-            data-website-id={process.env.NEXT_PUBLIC_UMAMI_ID}
-            src={`${process.env.NEXT_PUBLIC_UMAMI_URL}/umami.js`}
-          />
         </Head>
+
+        <Script
+          async
+          defer
+          data-website-id={process.env.NEXT_PUBLIC_UMAMI_ID}
+          src={`${process.env.NEXT_PUBLIC_UMAMI_URL}/umami.js`}
+        />
 
         {/* Background when navbar is opened */}
         <div
@@ -354,7 +309,7 @@ export const AppLayout = ({
             cIf(!mainPanelOpen && is1ColumnLayout, "-translate-x-full")
           )}
         >
-          <MainPanel langui={langui} />
+          <MainPanel />
         </div>
 
         {/* Navbar */}
@@ -448,24 +403,24 @@ export const AppLayout = ({
                 <h3 className="text-xl">{langui.languages}</h3>
                 {preferredLanguages.length > 0 && (
                   <OrderableList
-                    items={
-                      new Map(
-                        preferredLanguages.map((locale) => [
-                          locale,
-                          prettyLanguage(locale, languages),
-                        ])
-                      )
-                    }
-                    insertLabels={
-                      new Map([
-                        [0, langui.primary_language],
-                        [1, langui.secondary_language],
-                      ])
-                    }
+                    items={preferredLanguages.map((locale) => ({
+                      code: locale,
+                      name: prettyLanguage(locale, languages),
+                    }))}
+                    insertLabels={[
+                      {
+                        insertAt: 0,
+                        name: langui.primary_language ?? "Primary language",
+                      },
+                      {
+                        insertAt: 1,
+                        name:
+                          langui.secondary_language ?? "Secondary languages",
+                      },
+                    ]}
                     onChange={(items) => {
-                      const newPreferredLanguages = iterateMap(
-                        items,
-                        (code) => code
+                      const newPreferredLanguages = items.map(
+                        (item) => item.code
                       );
                       setPreferredLanguages(newPreferredLanguages);
                     }}

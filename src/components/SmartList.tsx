@@ -2,11 +2,11 @@ import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import { Chip } from "./Chip";
 import { PageSelector } from "./Inputs/PageSelector";
 import { Ico, Icon } from "./Ico";
-import { AppStaticProps } from "graphql/getAppStaticProps";
 import { cJoin } from "helpers/className";
 import { isDefined, isDefinedAndNotEmpty } from "helpers/others";
 import { AnchorIds, useScrollTopOnChange } from "hooks/useScrollTopOnChange";
 import { useIs3ColumnsLayout } from "hooks/useContainerQuery";
+import { useAppLayout } from "contexts/AppLayoutContext";
 
 interface Group<T> {
   name: string;
@@ -46,7 +46,6 @@ interface Props<T> {
   sortingFunction?: (a: T, b: T) => number;
   // Other
   className?: string;
-  langui: AppStaticProps["langui"];
 }
 
 export const SmartList = <T,>({
@@ -67,10 +66,9 @@ export const SmartList = <T,>({
   filteringFunction = defaultFilteringFunction,
   sortingFunction = defaultSortingFunction,
   className,
-  langui,
 }: Props<T>): JSX.Element => {
   const [page, setPage] = useState(0);
-
+  const { langui } = useAppLayout();
   useScrollTopOnChange(AnchorIds.ContentPanel, [page], paginationScroolTop);
   useEffect(
     () => setPage(0),
@@ -220,7 +218,7 @@ export const SmartList = <T,>({
         ) : isDefined(RenderWhenEmpty) ? (
           <RenderWhenEmpty />
         ) : (
-          <DefaultRenderWhenEmpty langui={langui} />
+          <DefaultRenderWhenEmpty />
         )}
       </div>
 
@@ -241,12 +239,9 @@ export const SmartList = <T,>({
  * ───────────────────────────────────╯  PRIVATE COMPONENTS  ╰──────────────────────────────────────
  */
 
-interface DefaultRenderWhenEmptyProps {
-  langui: AppStaticProps["langui"];
-}
-
-const DefaultRenderWhenEmpty = ({ langui }: DefaultRenderWhenEmptyProps) => {
+const DefaultRenderWhenEmpty = () => {
   const is3ColumnsLayout = useIs3ColumnsLayout();
+  const { langui } = useAppLayout();
   return (
     <div className="grid h-full place-content-center">
       <div

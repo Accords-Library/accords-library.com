@@ -3,21 +3,25 @@ import {
   getPostStaticProps,
   PostStaticProps,
 } from "graphql/getPostStaticProps";
+import { useAppLayout } from "contexts/AppLayoutContext";
 
 /*
  *                                           ╭────────╮
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
  */
 
-const SharingPolicy = (props: PostStaticProps): JSX.Element => (
-  <PostPage
-    {...props}
-    returnHref="/about-us/"
-    returnTitle={props.langui.about_us}
-    displayToc
-    displayLanguageSwitcher
-  />
-);
+const SharingPolicy = (props: PostStaticProps): JSX.Element => {
+  const { langui } = useAppLayout();
+  return (
+    <PostPage
+      {...props}
+      returnHref="/about-us/"
+      returnTitle={langui.about_us}
+      displayToc
+      displayLanguageSwitcher
+    />
+  );
+};
 export default SharingPolicy;
 
 /*

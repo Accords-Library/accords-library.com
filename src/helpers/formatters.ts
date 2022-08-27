@@ -1,7 +1,7 @@
-import { AppStaticProps } from "../graphql/getAppStaticProps";
 import { convertPrice } from "./numbers";
 import { isDefinedAndNotEmpty, isUndefined } from "./others";
 import { datePickerToDate } from "./date";
+import { Currencies, Languages, Langui } from "./localData";
 import { DatePickerFragment, PricePickerFragment } from "graphql/generated";
 
 export const prettyDate = (
@@ -12,7 +12,7 @@ export const prettyDate = (
 
 export const prettyPrice = (
   pricePicker: PricePickerFragment,
-  currencies: AppStaticProps["currencies"],
+  currencies: Currencies,
   targetCurrencyCode?: string
 ): string => {
   if (!targetCurrencyCode) return "";
@@ -58,10 +58,7 @@ export const prettyInlineTitle = (
   return result;
 };
 
-export const prettyItemType = (
-  metadata: any,
-  langui: AppStaticProps["langui"]
-): string => {
+export const prettyItemType = (metadata: any, langui: Langui): string => {
   switch (metadata.__typename) {
     case "ComponentMetadataAudio":
       return langui.audio ?? "Audio";
@@ -242,10 +239,7 @@ export const prettyDuration = (seconds: number): string => {
   return result;
 };
 
-export const prettyLanguage = (
-  code: string,
-  languages: AppStaticProps["languages"]
-): string => {
+export const prettyLanguage = (code: string, languages: Languages): string => {
   let result = code;
   languages.forEach((language) => {
     if (language.attributes?.code === code)

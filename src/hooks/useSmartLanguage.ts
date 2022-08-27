@@ -1,14 +1,13 @@
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
+import { useLanguages } from "./useLocalData";
 import { LanguageSwitcher } from "components/Inputs/LanguageSwitcher";
 import { useAppLayout } from "contexts/AppLayoutContext";
-import { AppStaticProps } from "graphql/getAppStaticProps";
 import { filterDefined, isDefined } from "helpers/others";
 import { getPreferredLanguage } from "helpers/locales";
 
 interface Props<T> {
   items: T[];
-  languages?: AppStaticProps["languages"];
   languageExtractor: (item: NonNullable<T>) => string | undefined;
   transform?: (item: NonNullable<T>) => NonNullable<T>;
 }
@@ -16,7 +15,6 @@ interface Props<T> {
 export const useSmartLanguage = <T>({
   items,
   languageExtractor,
-  languages = [],
   transform = (item) => item,
 }: Props<T>): [
   T | undefined,
@@ -24,6 +22,7 @@ export const useSmartLanguage = <T>({
   Parameters<typeof LanguageSwitcher>[0]
 ] => {
   const { preferredLanguages } = useAppLayout();
+  const languages = useLanguages();
   const router = useRouter();
 
   const availableLocales = useMemo(() => {

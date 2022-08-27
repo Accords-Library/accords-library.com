@@ -239,10 +239,7 @@ export const prettyDuration = (seconds: number): string => {
   return result;
 };
 
-export const prettyLanguage = (
-  code: string,
-  languages: Languages
-): string => {
+export const prettyLanguage = (code: string, languages: Languages): string => {
   let result = code;
   languages.forEach((language) => {
     if (language.attributes?.code === code)

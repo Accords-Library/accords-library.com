@@ -41,11 +41,7 @@ const AboutUs = (props: Props): JSX.Element => {
             url="/about-us/sharing-policy"
             border
           />
-          <NavOption
-            title={langui.contact_us}
-            url="/about-us/contact"
-            border
-          />
+          <NavOption title={langui.contact_us} url="/about-us/contact" border />
         </SubPanel>
       }
       {...props}

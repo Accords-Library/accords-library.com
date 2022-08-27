@@ -112,12 +112,6 @@ export const iterateMap = <K, V, U>(
   return toList.map(([key, value], index) => callbackfn(key, value, index));
 };
 
-export const mapMoveEntry = <K, V>(
-  map: Map<K, V>,
-  sourceIndex: number,
-  targetIndex: number
-): Map<K, V> => new Map(arrayMove([...map], sourceIndex, targetIndex));
-
 export const arrayMove = <T>(
   arr: T[],
   sourceIndex: number,

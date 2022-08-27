@@ -24,6 +24,7 @@ import {
   useIs1ColumnLayout,
   useIsScreenAtLeast,
 } from "hooks/useContainerQuery";
+import { useOnResize } from "hooks/useOnResize";
 
 /*
  *                                         ╭─────────────╮
@@ -82,6 +83,9 @@ export const AppLayout = ({
     setSubPanelOpen,
     toggleMainPanelOpen,
     toggleSubPanelOpen,
+    setScreenWidth,
+    setContentPanelWidth,
+    setSubPanelWidth,
     langui,
     currencies,
     languages,
@@ -90,6 +94,10 @@ export const AppLayout = ({
   const router = useRouter();
   const is1ColumnLayout = useIs1ColumnLayout();
   const isScreenAtLeastXs = useIsScreenAtLeast("xs");
+
+  useOnResize(AnchorIds.Body, (width) => setScreenWidth(width));
+  useOnResize(AnchorIds.ContentPanel, (width) => setContentPanelWidth(width));
+  useOnResize(AnchorIds.SubPanel, (width) => setSubPanelWidth(width));
 
   const handlers = useSwipeable({
     onSwipedLeft: (SwipeEventData) => {

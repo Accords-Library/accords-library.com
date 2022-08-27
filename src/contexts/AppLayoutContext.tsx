@@ -5,16 +5,15 @@ import React, {
   useLayoutEffect,
   useState,
 } from "react";
-import { useLocalStorage } from "usehooks-ts";
 import { useRouter } from "next/router";
+import { useLocalStorage } from "usehooks-ts";
 import { isDefined, isDefinedAndNotEmpty } from "helpers/others";
 import { LibraryItemUserStatus, RequiredNonNullable } from "helpers/types";
 import { useDarkMode } from "hooks/useDarkMode";
 import { Currencies, Languages, Langui } from "helpers/localData";
 import { useCurrencies, useLanguages, useLangui } from "hooks/useLocalData";
 import { getDefaultPreferredLanguages } from "helpers/locales";
-import { useOnResize } from "hooks/useOnResize";
-import { AnchorIds } from "hooks/useScrollTopOnChange";
+import { useStateWithLocalStorage } from "hooks/useStateWithLocalStorage";
 
 interface AppLayoutState {
   subPanelOpen: boolean;
@@ -27,12 +26,6 @@ interface AppLayoutState {
   toggleConfigPanelOpen: () => void;
   setConfigPanelOpen: React.Dispatch<
     React.SetStateAction<AppLayoutState["configPanelOpen"]>
-  >;
-
-  searchPanelOpen: boolean;
-  toggleSearchPanelOpen: () => void;
-  setSearchPanelOpen: React.Dispatch<
-    React.SetStateAction<AppLayoutState["searchPanelOpen"]>
   >;
 
   mainPanelReduced: boolean;
@@ -89,8 +82,19 @@ interface AppLayoutState {
   >;
 
   screenWidth: number;
+  setScreenWidth: React.Dispatch<
+    React.SetStateAction<AppLayoutState["screenWidth"]>
+  >;
+
   contentPanelWidth: number;
+  setContentPanelWidth: React.Dispatch<
+    React.SetStateAction<AppLayoutState["contentPanelWidth"]>
+  >;
+
   subPanelWidth: number;
+  setSubPanelWidth: React.Dispatch<
+    React.SetStateAction<AppLayoutState["subPanelWidth"]>
+  >;
 
   langui: Langui;
   languages: Languages;
@@ -105,10 +109,6 @@ const initialState: RequiredNonNullable<AppLayoutState> = {
   configPanelOpen: false,
   setConfigPanelOpen: () => null,
   toggleConfigPanelOpen: () => null,
-
-  searchPanelOpen: false,
-  setSearchPanelOpen: () => null,
-  toggleSearchPanelOpen: () => null,
 
   mainPanelReduced: false,
   setMainPanelReduced: () => null,
@@ -150,8 +150,13 @@ const initialState: RequiredNonNullable<AppLayoutState> = {
   setLibraryItemUserStatus: () => null,
 
   screenWidth: 0,
+  setScreenWidth: () => null,
+
   contentPanelWidth: 0,
+  setContentPanelWidth: () => null,
+
   subPanelWidth: 0,
+  setSubPanelWidth: () => null,
 
   currencies: [],
   languages: [],
@@ -167,7 +172,9 @@ interface Props {
 }
 
 export const AppContextProvider = (props: Props): JSX.Element => {
-  const [subPanelOpen, setSubPanelOpen] = useLocalStorage(
+  const router = useRouter();
+
+  const [subPanelOpen, setSubPanelOpen] = useStateWithLocalStorage(
     "subPanelOpen",
     initialState.subPanelOpen
   );
@@ -182,7 +189,7 @@ export const AppContextProvider = (props: Props): JSX.Element => {
     initialState.mainPanelReduced
   );
 
-  const [mainPanelOpen, setMainPanelOpen] = useLocalStorage(
+  const [mainPanelOpen, setMainPanelOpen] = useStateWithLocalStorage(
     "mainPanelOpen",
     initialState.mainPanelOpen
   );
@@ -217,11 +224,6 @@ export const AppContextProvider = (props: Props): JSX.Element => {
 
   const [menuGestures, setMenuGestures] = useState(false);
 
-  const [searchPanelOpen, setSearchPanelOpen] = useLocalStorage(
-    "searchPanelOpen",
-    initialState.searchPanelOpen
-  );
-
   const [libraryItemUserStatus, setLibraryItemUserStatus] = useLocalStorage(
     "libraryItemUserStatus",
     initialState.libraryItemUserStatus
@@ -233,10 +235,6 @@ export const AppContextProvider = (props: Props): JSX.Element => {
 
   const toggleConfigPanelOpen = () => {
     setConfigPanelOpen((current) => (isDefined(current) ? !current : current));
-  };
-
-  const toggleSearchPanelOpen = () => {
-    setSearchPanelOpen((current) => (isDefined(current) ? !current : current));
   };
 
   const toggleMainPanelReduced = () => {
@@ -273,9 +271,7 @@ export const AppContextProvider = (props: Props): JSX.Element => {
   const languages = useLanguages();
   const currencies = useCurrencies();
 
-  const router = useRouter();
   useEffect(() => {
-    console.log("I'm in preferredLanguages update");
     if (preferredLanguages.length === 0) {
       if (isDefinedAndNotEmpty(router.locale) && router.locales) {
         setPreferredLanguages(
@@ -283,10 +279,17 @@ export const AppContextProvider = (props: Props): JSX.Element => {
         );
       }
     } else if (router.locale !== preferredLanguages[0]) {
-      console.log("I'm rerouting you");
-      router.replace(router.asPath, router.asPath, {
-        locale: preferredLanguages[0],
-      });
+      /*
+       * Using a timeout to the code getting stuck into a loop when reaching the website with a
+       * different preferredLanguages[0] from router.locale
+       */
+      setTimeout(
+        async () =>
+          router.replace(router.asPath, router.asPath, {
+            locale: preferredLanguages[0],
+          }),
+        250
+      );
     }
   }, [
     preferredLanguages,
@@ -314,16 +317,11 @@ export const AppContextProvider = (props: Props): JSX.Element => {
     }%`;
   }, [fontSize]);
 
-  useOnResize(AnchorIds.Body, (width) => setScreenWidth(width));
-  useOnResize(AnchorIds.ContentPanel, (width) => setContentPanelWidth(width));
-  useOnResize(AnchorIds.SubPanel, (width) => setSubPanelWidth(width));
-
   return (
     <AppContext.Provider
       value={{
         subPanelOpen,
         configPanelOpen,
-        searchPanelOpen,
         mainPanelReduced,
         mainPanelOpen,
         darkMode,
@@ -340,7 +338,6 @@ export const AppContextProvider = (props: Props): JSX.Element => {
         subPanelWidth,
         setSubPanelOpen,
         setConfigPanelOpen,
-        setSearchPanelOpen,
         setMainPanelReduced,
         setMainPanelOpen,
         setDarkMode,
@@ -354,13 +351,15 @@ export const AppContextProvider = (props: Props): JSX.Element => {
         setLibraryItemUserStatus,
         toggleSubPanelOpen,
         toggleConfigPanelOpen,
-        toggleSearchPanelOpen,
         toggleMainPanelReduced,
         toggleMainPanelOpen,
         toggleDarkMode,
         toggleMenuGestures,
         toggleSelectedThemeMode,
         toggleDyslexic,
+        setScreenWidth,
+        setContentPanelWidth,
+        setSubPanelWidth,
         languages,
         langui,
         currencies,

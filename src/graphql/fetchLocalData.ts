@@ -13,6 +13,7 @@ const LOCAL_DATA_FOLDER = `${process.cwd()}/public/local-data`;
 const writeLocalData = (name: LocalDataFile, localData: unknown) => {
   const path = `${LOCAL_DATA_FOLDER}/${name}.json`;
   writeFileSync(path, JSON.stringify(localData), { encoding: "utf-8" });
+  console.log(`${path} has been written!`)
 };
 
 const readLocalData = <T>(name: LocalDataFile): T => {

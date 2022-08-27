@@ -2,31 +2,34 @@ import { GetStaticProps } from "next";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { PanelHeader } from "components/PanelComponents/PanelHeader";
 import { SubPanel } from "components/Panels/SubPanel";
-import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { Icon } from "components/Ico";
 import { getOpenGraph } from "helpers/openGraph";
+import { useAppLayout } from "contexts/AppLayoutContext";
+import { getLangui } from "graphql/fetchLocalData";
 
 /*
  *                                           ╭────────╮
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
  */
 
-interface Props extends AppStaticProps, AppLayoutRequired {}
-const Merch = ({ langui, ...otherProps }: Props): JSX.Element => (
-  <AppLayout
-    subPanel={
-      <SubPanel>
-        <PanelHeader
-          icon={Icon.Store}
-          title={langui.merch}
-          description={langui.merch_description}
-        />
-      </SubPanel>
-    }
-    langui={langui}
-    {...otherProps}
-  />
-);
+interface Props extends AppLayoutRequired {}
+const Merch = (props: Props): JSX.Element => {
+  const { langui } = useAppLayout();
+  return (
+    <AppLayout
+      subPanel={
+        <SubPanel>
+          <PanelHeader
+            icon={Icon.Store}
+            title={langui.merch}
+            description={langui.merch_description}
+          />
+        </SubPanel>
+      }
+      {...props}
+    />
+  );
+};
 export default Merch;
 
 /*
@@ -34,14 +37,10 @@ export default Merch;
  * ───────────────────────────────────╯  NEXT DATA FETCHING  ╰──────────────────────────────────────
  */
 
-export const getStaticProps: GetStaticProps = async (context) => {
-  const appStaticProps = await getAppStaticProps(context);
+export const getStaticProps: GetStaticProps = (context) => {
+  const langui = getLangui(context.locale);
   const props: Props = {
-    ...appStaticProps,
-    openGraph: getOpenGraph(
-      appStaticProps.langui,
-      appStaticProps.langui.merch ?? "Merch"
-    ),
+    openGraph: getOpenGraph(langui, langui.merch ?? "Merch"),
   };
   return {
     props: props,

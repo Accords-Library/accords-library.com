@@ -12,7 +12,6 @@ import {
 import { SubPanel } from "components/Panels/SubPanel";
 import { PreviewCard } from "components/PreviewCard";
 import { GetVideoChannelQuery } from "graphql/generated";
-import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import { getVideoThumbnailURL } from "helpers/videos";
 import { Icon } from "components/Ico";
@@ -26,6 +25,8 @@ import { SmartList } from "components/SmartList";
 import { cIf } from "helpers/className";
 import { useIsContentPanelAtLeast } from "hooks/useContainerQuery";
 import { TextInput } from "components/Inputs/TextInput";
+import { useAppLayout } from "contexts/AppLayoutContext";
+import { getLangui } from "graphql/fetchLocalData";
 
 /*
  *                                         ╭─────────────╮
@@ -41,15 +42,16 @@ const DEFAULT_FILTERS_STATE = {
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
  */
 
-interface Props extends AppStaticProps, AppLayoutRequired {
+interface Props extends AppLayoutRequired {
   channel: NonNullable<
     GetVideoChannelQuery["videoChannels"]
   >["data"][number]["attributes"];
 }
 
-const Channel = ({ langui, channel, ...otherProps }: Props): JSX.Element => {
+const Channel = ({ channel, ...otherProps }: Props): JSX.Element => {
   const { value: keepInfoVisible, toggle: toggleKeepInfoVisible } =
     useBoolean(true);
+  const { langui } = useAppLayout();
   const hoverable = useDeviceSupportsHover();
   const isContentPanelAtLeast4xl = useIsContentPanelAtLeast("4xl");
 
@@ -63,7 +65,6 @@ const Channel = ({ langui, channel, ...otherProps }: Props): JSX.Element => {
         <ReturnButton
           href="/archives/videos/"
           title={langui.videos}
-          langui={langui}
           displayOnlyOn={"3ColumnsLayout"}
           className="mb-10"
         />
@@ -122,7 +123,6 @@ const Channel = ({ langui, channel, ...otherProps }: Props): JSX.Element => {
               }}
             />
           )}
-          langui={langui}
           className={cIf(
             isContentPanelAtLeast4xl,
             "grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] gap-x-6 gap-y-8",
@@ -140,7 +140,6 @@ const Channel = ({ langui, channel, ...otherProps }: Props): JSX.Element => {
       channel?.videos?.data,
       isContentPanelAtLeast4xl,
       keepInfoVisible,
-      langui,
       searchName,
     ]
   );
@@ -149,7 +148,6 @@ const Channel = ({ langui, channel, ...otherProps }: Props): JSX.Element => {
     <AppLayout
       subPanel={subPanel}
       contentPanel={contentPanel}
-      langui={langui}
       {...otherProps}
     />
   );
@@ -163,6 +161,7 @@ export default Channel;
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
+  const langui = getLangui(context.locale);
   const channel = await sdk.getVideoChannel({
     channel:
       context.params && isDefined(context.params.uid)
@@ -177,12 +176,10 @@ export const getStaticProps: GetStaticProps = async (context) => {
     )
     .reverse();
 
-  const appStaticProps = await getAppStaticProps(context);
   const props: Props = {
-    ...appStaticProps,
     channel: channel.videoChannels.data[0].attributes,
     openGraph: getOpenGraph(
-      appStaticProps.langui,
+      langui,
       channel.videoChannels.data[0].attributes.title
     ),
   };

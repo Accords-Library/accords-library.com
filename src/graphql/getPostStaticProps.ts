@@ -1,8 +1,8 @@
 import { GetStaticProps } from "next";
-import { AppStaticProps, getAppStaticProps } from "./getAppStaticProps";
 import { getReadySdk } from "./sdk";
+import { getLangui } from "./fetchLocalData";
 import { PostWithTranslations } from "helpers/types";
-import { OpenGraph, getOpenGraph } from "helpers/openGraph";
+import { getOpenGraph } from "helpers/openGraph";
 import { prettyDate, prettySlug } from "helpers/formatters";
 import {
   getDefaultPreferredLanguages,
@@ -10,16 +10,17 @@ import {
 } from "helpers/locales";
 import { filterHasAttributes, isDefined } from "helpers/others";
 import { getDescription } from "helpers/description";
+import { AppLayoutRequired } from "components/AppLayout";
 
-export interface PostStaticProps extends AppStaticProps {
+export interface PostStaticProps extends AppLayoutRequired {
   post: PostWithTranslations;
-  openGraph: OpenGraph;
 }
 
 export const getPostStaticProps =
   (slug: string): GetStaticProps =>
   async (context) => {
     const sdk = getReadySdk();
+    const langui = getLangui(context.locale);
     const post = await sdk.getPost({
       slug: slug,
       language_code: context.locale ?? "en",
@@ -31,7 +32,6 @@ export const getPostStaticProps =
       isDefined(context.locale) &&
       isDefined(context.locales)
     ) {
-      const appStaticProps = await getAppStaticProps(context);
       const selectedTranslation = staticSmartLanguage({
         items: post.posts.data[0].attributes.translations,
         languageExtractor: (item) => item.language?.data?.attributes?.code,
@@ -44,10 +44,10 @@ export const getPostStaticProps =
       const title = selectedTranslation?.title ?? prettySlug(slug);
 
       const description = getDescription(selectedTranslation?.excerpt, {
-        [appStaticProps.langui.release_date ?? "Release date"]: [
+        [langui.release_date ?? "Release date"]: [
           prettyDate(post.posts.data[0].attributes.date, context.locale),
         ],
-        [appStaticProps.langui.categories ?? "Categories"]: filterHasAttributes(
+        [langui.categories ?? "Categories"]: filterHasAttributes(
           post.posts.data[0].attributes.categories?.data,
           ["attributes"] as const
         ).map((category) => category.attributes.short),
@@ -58,14 +58,8 @@ export const getPostStaticProps =
         post.posts.data[0].attributes.thumbnail?.data?.attributes;
 
       const props: PostStaticProps = {
-        ...appStaticProps,
         post: post.posts.data[0].attributes as PostWithTranslations,
-        openGraph: getOpenGraph(
-          appStaticProps.langui,
-          title,
-          description,
-          thumbnail
-        ),
+        openGraph: getOpenGraph(langui, title, description, thumbnail),
       };
       return {
         props: props,

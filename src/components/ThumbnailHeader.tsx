@@ -3,11 +3,11 @@ import { Img } from "components/Img";
 import { InsetBox } from "components/InsetBox";
 import { Markdawn } from "components/Markdown/Markdawn";
 import { GetContentTextQuery, UploadImageFragment } from "graphql/generated";
-import { AppStaticProps } from "graphql/getAppStaticProps";
 import { prettyInlineTitle, prettySlug, slugify } from "helpers/formatters";
 import { getAssetURL, ImageQuality } from "helpers/img";
 import { filterHasAttributes } from "helpers/others";
 import { useLightBox } from "hooks/useLightBox";
+import { useAppLayout } from "contexts/AppLayoutContext";
 
 /*
  *                                        ╭─────────────╮
@@ -26,14 +26,13 @@ interface Props {
     NonNullable<GetContentTextQuery["contents"]>["data"][number]["attributes"]
   >["categories"];
   thumbnail?: UploadImageFragment | null | undefined;
-  langui: AppStaticProps["langui"];
+
   languageSwitcher?: JSX.Element;
 }
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
 export const ThumbnailHeader = ({
-  langui,
   pre_title,
   title,
   subtitle,
@@ -44,6 +43,7 @@ export const ThumbnailHeader = ({
   languageSwitcher,
 }: Props): JSX.Element => {
   const [openLightBox, LightBox] = useLightBox();
+  const { langui } = useAppLayout();
 
   return (
     <>
@@ -106,9 +106,7 @@ export const ThumbnailHeader = ({
         {languageSwitcher}
       </div>
       {description && (
-        <InsetBox className="mt-8">
-          {<Markdawn text={description} langui={langui} />}
-        </InsetBox>
+        <InsetBox className="mt-8">{<Markdawn text={description} />}</InsetBox>
       )}
     </>
   );

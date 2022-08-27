@@ -4,7 +4,6 @@ import { Button } from "components/Inputs/Button";
 import { NavOption } from "components/PanelComponents/NavOption";
 import { ToolTip } from "components/ToolTip";
 import { useAppLayout } from "contexts/AppLayoutContext";
-import { AppStaticProps } from "graphql/getAppStaticProps";
 import { Icon } from "components/Ico";
 import { cIf, cJoin } from "helpers/className";
 import { isDefinedAndNotEmpty } from "helpers/others";
@@ -16,18 +15,13 @@ import { useIs3ColumnsLayout } from "hooks/useContainerQuery";
  * ───────────────────────────────────────╯  COMPONENT  ╰───────────────────────────────────────────
  */
 
-interface Props {
-  langui: AppStaticProps["langui"];
-}
-
-// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
-
-export const MainPanel = ({ langui }: Props): JSX.Element => {
+export const MainPanel = (): JSX.Element => {
   const is3ColumnsLayout = useIs3ColumnsLayout();
   const {
     mainPanelReduced = false,
     toggleMainPanelReduced,
     setConfigPanelOpen,
+    langui,
   } = useAppLayout();
 
   return (

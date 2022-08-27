@@ -23,7 +23,6 @@ import {
   Enum_Componentmetadatabooks_Page_Order,
   GetLibraryItemQuery,
 } from "graphql/generated";
-import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import {
   prettyDate,
@@ -56,6 +55,8 @@ import { getDescription } from "helpers/description";
 import { useIntersectionList } from "hooks/useIntersectionList";
 import { HorizontalLine } from "components/HorizontalLine";
 import { useIsContentPanelNoMoreThan } from "hooks/useContainerQuery";
+import { useCurrencies } from "hooks/useLocalData";
+import { getLangui } from "graphql/fetchLocalData";
 
 /*
  *                                         ╭─────────────╮
@@ -75,7 +76,7 @@ const intersectionIds = [
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
  */
 
-interface Props extends AppStaticProps, AppLayoutRequired {
+interface Props extends AppLayoutRequired {
   item: NonNullable<
     NonNullable<
       GetLibraryItemQuery["libraryItems"]
@@ -86,15 +87,10 @@ interface Props extends AppStaticProps, AppLayoutRequired {
   >["data"][number]["id"];
 }
 
-const LibrarySlug = ({
-  item,
-  itemId,
-  langui,
-  currencies,
-  languages,
-  ...otherProps
-}: Props): JSX.Element => {
+const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
   const { currency } = useAppLayout();
+  const { langui } = useAppLayout();
+  const currencies = useCurrencies();
   const isContentPanelNoMoreThan3xl = useIsContentPanelNoMoreThan("3xl");
   const isContentPanelNoMoreThanSm = useIsContentPanelNoMoreThan("sm");
   const hoverable = useDeviceSupportsHover();
@@ -128,7 +124,6 @@ const LibrarySlug = ({
         <ReturnButton
           href="/library/"
           title={langui.library}
-          langui={langui}
           displayOnlyOn="3ColumnsLayout"
         />
 
@@ -196,7 +191,6 @@ const LibrarySlug = ({
         <ReturnButton
           href="/library/"
           title={langui.library}
-          langui={langui}
           displayOnlyOn="1ColumnLayout"
           className="mb-10"
         />
@@ -252,7 +246,7 @@ const LibrarySlug = ({
 
               {!isUntangibleGroupItem(item.metadata?.[0]) &&
                 isDefinedAndNotEmpty(itemId) && (
-                  <PreviewCardCTAs id={itemId} langui={langui} expand />
+                  <PreviewCardCTAs id={itemId} expand />
                 )}
 
               {item.descriptions?.[0] && (
@@ -571,7 +565,6 @@ const LibrarySlug = ({
                         (category) => category.attributes?.short ?? ""
                       )}
                       metadata={{
-                        currencies: currencies,
                         releaseDate: subitem.attributes.release_date,
                         price: subitem.attributes.price,
                         position: "Bottom",
@@ -579,7 +572,7 @@ const LibrarySlug = ({
                       infoAppend={
                         !isUntangibleGroupItem(
                           subitem.attributes.metadata?.[0]
-                        ) && <PreviewCardCTAs id={subitem.id} langui={langui} />
+                        ) && <PreviewCardCTAs id={subitem.id} />
                       }
                     />
                   </Fragment>
@@ -635,7 +628,6 @@ const LibrarySlug = ({
                           }
                         : undefined
                     }
-                    langui={langui}
                     rangeStart={
                       rangedContent.attributes.range[0]?.__typename ===
                       "ComponentRangePageRange"
@@ -645,7 +637,6 @@ const LibrarySlug = ({
                     slug={rangedContent.attributes.slug}
                     parentSlug={item.slug}
                     key={rangedContent.id}
-                    languages={languages}
                     hasScanSet={
                       isDefined(rangedContent.attributes.scan_set) &&
                       rangedContent.attributes.scan_set.length > 0
@@ -689,7 +680,6 @@ const LibrarySlug = ({
       keepInfoVisible,
       displayOpenScans,
       openLightBox,
-      languages,
     ]
   );
 
@@ -697,9 +687,6 @@ const LibrarySlug = ({
     <AppLayout
       contentPanel={contentPanel}
       subPanel={subPanel}
-      currencies={currencies}
-      languages={languages}
-      langui={langui}
       {...otherProps}
     />
   );
@@ -713,6 +700,7 @@ export default LibrarySlug;
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
+  const langui = getLangui(context.locale);
   const item = await sdk.getLibraryItem({
     slug:
       context.params && isDefined(context.params.slug)
@@ -722,22 +710,21 @@ export const getStaticProps: GetStaticProps = async (context) => {
   });
   if (!item.libraryItems?.data[0]?.attributes) return { notFound: true };
   sortRangedContent(item.libraryItems.data[0].attributes.contents);
-  const appStaticProps = await getAppStaticProps(context);
 
   const { title, thumbnail } = item.libraryItems.data[0].attributes;
 
   const description = getDescription(
     item.libraryItems.data[0].attributes.descriptions?.[0]?.description,
     {
-      [appStaticProps.langui.categories ?? "Categories"]: filterHasAttributes(
+      [langui.categories ?? "Categories"]: filterHasAttributes(
         item.libraryItems.data[0].attributes.categories?.data,
         ["attributes.short"]
       ).map((category) => category.attributes.short),
-      [appStaticProps.langui.type ?? "Type"]: item.libraryItems.data[0]
-        .attributes.metadata?.[0]
+      [langui.type ?? "Type"]: item.libraryItems.data[0].attributes
+        .metadata?.[0]
         ? [prettyItemSubType(item.libraryItems.data[0].attributes.metadata[0])]
         : [],
-      [appStaticProps.langui.release_date ?? "Release date"]: [
+      [langui.release_date ?? "Release date"]: [
         item.libraryItems.data[0].attributes.release_date
           ? prettyDate(
               item.libraryItems.data[0].attributes.release_date,
@@ -749,11 +736,10 @@ export const getStaticProps: GetStaticProps = async (context) => {
   );
 
   const props: Props = {
-    ...appStaticProps,
     item: item.libraryItems.data[0].attributes,
     itemId: item.libraryItems.data[0].id,
     openGraph: getOpenGraph(
-      appStaticProps.langui,
+      langui,
       title,
       description,
       thumbnail?.data?.attributes
@@ -803,8 +789,7 @@ interface ContentLineProps {
   rangeStart: string;
   parentSlug: string;
   slug: string;
-  langui: AppStaticProps["langui"];
-  languages: AppStaticProps["languages"];
+
   hasScanSet: boolean;
   condensed: boolean;
 }
@@ -812,17 +797,15 @@ interface ContentLineProps {
 const ContentLine = ({
   rangeStart,
   content,
-  langui,
-  languages,
   hasScanSet,
   slug,
   parentSlug,
   condensed,
 }: ContentLineProps): JSX.Element => {
+  const { langui } = useAppLayout();
   const { value: isOpened, toggle: toggleOpened } = useBoolean(false);
   const [selectedTranslation] = useSmartLanguage({
     items: content?.translations ?? [],
-    languages: languages,
     languageExtractor: useCallback(
       (
         item: NonNullable<ContentLineProps["content"]>["translations"][number]

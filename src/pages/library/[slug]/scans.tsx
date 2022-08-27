@@ -11,7 +11,6 @@ import {
   GetLibraryItemScansQuery,
   UploadImageFragment,
 } from "graphql/generated";
-import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import {
   prettyInlineTitle,
@@ -47,13 +46,15 @@ import {
   useIsContentPanelNoMoreThan,
 } from "hooks/useContainerQuery";
 import { cIf, cJoin } from "helpers/className";
+import { useAppLayout } from "contexts/AppLayoutContext";
+import { getLangui } from "graphql/fetchLocalData";
 
 /*
  *                                           ╭────────╮
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
  */
 
-interface Props extends AppStaticProps, AppLayoutRequired {
+interface Props extends AppLayoutRequired {
   item: NonNullable<
     NonNullable<
       GetLibraryItemScansQuery["libraryItems"]
@@ -64,16 +65,10 @@ interface Props extends AppStaticProps, AppLayoutRequired {
   >;
 }
 
-const LibrarySlug = ({
-  item,
-  itemId,
-  langui,
-  languages,
-  currencies,
-  ...otherProps
-}: Props): JSX.Element => {
+const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
   const [openLightBox, LightBox] = useLightBox();
   const is1ColumnLayout = useIs1ColumnLayout();
+  const { langui } = useAppLayout();
 
   const ids = useMemo(
     () =>
@@ -90,7 +85,6 @@ const LibrarySlug = ({
         <ReturnButton
           href={`/library/${item.slug}`}
           title={langui.item}
-          langui={langui}
           className="mb-4"
           displayOnlyOn="3ColumnsLayout"
         />
@@ -113,14 +107,13 @@ const LibrarySlug = ({
                 "attributes",
               ] as const).map((category) => category.attributes.short)}
               metadata={{
-                currencies: currencies,
                 releaseDate: item.release_date,
                 price: item.price,
                 position: "Bottom",
               }}
               infoAppend={
                 !isUntangibleGroupItem(item.metadata?.[0]) && (
-                  <PreviewCardCTAs id={itemId} langui={langui} />
+                  <PreviewCardCTAs id={itemId} />
                 )
               }
             />
@@ -180,7 +173,6 @@ const LibrarySlug = ({
       </SubPanel>
     ),
     [
-      currencies,
       currentIntersection,
       item.categories?.data,
       item.contents?.data,
@@ -205,18 +197,12 @@ const LibrarySlug = ({
         <ReturnButton
           href={`/library/${item.slug}`}
           title={langui.item}
-          langui={langui}
           displayOnlyOn="1ColumnLayout"
           className="mb-10"
         />
 
         {item.images && (
-          <ScanSetCover
-            images={item.images}
-            openLightBox={openLightBox}
-            languages={languages}
-            langui={langui}
-          />
+          <ScanSetCover images={item.images} openLightBox={openLightBox} />
         )}
 
         {item.contents?.data.map((content) => (
@@ -240,8 +226,6 @@ const LibrarySlug = ({
                 fallback={{
                   title: prettySlug(content.attributes.slug, item.slug),
                 }}
-                languages={languages}
-                langui={langui}
                 content={content.attributes.content}
               />
             )}
@@ -255,7 +239,6 @@ const LibrarySlug = ({
       item.contents?.data,
       item.images,
       item.slug,
-      languages,
       langui,
     ]
   );
@@ -264,9 +247,6 @@ const LibrarySlug = ({
     <AppLayout
       contentPanel={contentPanel}
       subPanel={subPanel}
-      languages={languages}
-      langui={langui}
-      currencies={currencies}
       {...otherProps}
     />
   );
@@ -280,6 +260,7 @@ export default LibrarySlug;
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
+  const langui = getLangui(context.locale);
   const item = await sdk.getLibraryItemScans({
     slug:
       context.params && isDefined(context.params.slug)
@@ -290,13 +271,12 @@ export const getStaticProps: GetStaticProps = async (context) => {
   if (!item.libraryItems?.data[0]?.attributes || !item.libraryItems.data[0]?.id)
     return { notFound: true };
   sortRangedContent(item.libraryItems.data[0].attributes.contents);
-  const appStaticProps = await getAppStaticProps(context);
+
   const props: Props = {
-    ...appStaticProps,
     item: item.libraryItems.data[0].attributes,
     itemId: item.libraryItems.data[0].id,
     openGraph: getOpenGraph(
-      appStaticProps.langui,
+      langui,
       item.libraryItems.data[0].attributes.title,
       undefined,
       item.libraryItems.data[0].attributes.thumbnail?.data?.attributes
@@ -352,8 +332,7 @@ interface ScanSetProps {
   >;
   id: string;
   title: string;
-  languages: AppStaticProps["languages"];
-  langui: AppStaticProps["langui"];
+
   content: NonNullable<
     NonNullable<
       NonNullable<
@@ -370,15 +349,13 @@ const ScanSet = ({
   scanSet,
   id,
   title,
-  languages,
-  langui,
   content,
 }: ScanSetProps): JSX.Element => {
   const is1ColumnLayout = useIsContentPanelNoMoreThan("2xl");
+  const { langui } = useAppLayout();
   const [selectedScan, LanguageSwitcher, languageSwitcherProps] =
     useSmartLanguage({
       items: scanSet,
-      languages: languages,
       languageExtractor: useCallback(
         (item: NonNullable<ScanSetProps["scanSet"][number]>) =>
           item.language?.data?.attributes?.code,
@@ -479,10 +456,7 @@ const ScanSet = ({
                     "attributes",
                   ] as const).map((scanner) => (
                     <Fragment key={scanner.id}>
-                      <RecorderChip
-                        langui={langui}
-                        recorder={scanner.attributes}
-                      />
+                      <RecorderChip recorder={scanner.attributes} />
                     </Fragment>
                   ))}
                 </div>
@@ -498,10 +472,7 @@ const ScanSet = ({
                     "attributes",
                   ] as const).map((cleaner) => (
                     <Fragment key={cleaner.id}>
-                      <RecorderChip
-                        langui={langui}
-                        recorder={cleaner.attributes}
-                      />
+                      <RecorderChip recorder={cleaner.attributes} />
                     </Fragment>
                   ))}
                 </div>
@@ -520,10 +491,7 @@ const ScanSet = ({
                       "attributes",
                     ] as const).map((typesetter) => (
                       <Fragment key={typesetter.id}>
-                        <RecorderChip
-                          langui={langui}
-                          recorder={typesetter.attributes}
-                        />
+                        <RecorderChip recorder={typesetter.attributes} />
                       </Fragment>
                     ))}
                   </div>
@@ -604,21 +572,17 @@ interface ScanSetCoverProps {
       >["data"][number]["attributes"]
     >["images"]
   >;
-  languages: AppStaticProps["languages"];
-  langui: AppStaticProps["langui"];
 }
 
 const ScanSetCover = ({
   openLightBox,
   images,
-  languages,
-  langui,
 }: ScanSetCoverProps): JSX.Element => {
   const is1ColumnLayout = useIsContentPanelNoMoreThan("4xl");
+  const { langui } = useAppLayout();
   const [selectedScan, LanguageSwitcher, languageSwitcherProps] =
     useSmartLanguage({
       items: images,
-      languages: languages,
       languageExtractor: useCallback(
         (item: NonNullable<ScanSetCoverProps["images"][number]>) =>
           item.language?.data?.attributes?.code,
@@ -687,10 +651,7 @@ const ScanSetCover = ({
                     "attributes",
                   ] as const).map((scanner) => (
                     <Fragment key={scanner.id}>
-                      <RecorderChip
-                        langui={langui}
-                        recorder={scanner.attributes}
-                      />
+                      <RecorderChip recorder={scanner.attributes} />
                     </Fragment>
                   ))}
                 </div>
@@ -706,10 +667,7 @@ const ScanSetCover = ({
                     "attributes",
                   ] as const).map((cleaner) => (
                     <Fragment key={cleaner.id}>
-                      <RecorderChip
-                        langui={langui}
-                        recorder={cleaner.attributes}
-                      />
+                      <RecorderChip recorder={cleaner.attributes} />
                     </Fragment>
                   ))}
                 </div>
@@ -728,10 +686,7 @@ const ScanSetCover = ({
                       "attributes",
                     ] as const).map((typesetter) => (
                       <Fragment key={typesetter.id}>
-                        <RecorderChip
-                          langui={langui}
-                          recorder={typesetter.attributes}
-                        />
+                        <RecorderChip recorder={typesetter.attributes} />
                       </Fragment>
                     ))}
                   </div>

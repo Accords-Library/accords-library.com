@@ -1,9 +1,14 @@
-query getWebsiteInterface($language_code: String) {
-  websiteInterfaces(
-    filters: { ui_language: { code: { eq: $language_code } } }
-  ) {
+query localDataGetWebsiteInterfaces {
+  websiteInterfaces(pagination: { limit: -1 }) {
     data {
       attributes {
+        ui_language {
+          data {
+            attributes {
+              code
+            }
+          }
+        }
         library
         contents
         wiki

@@ -3,18 +3,15 @@ import {
   getPostStaticProps,
   PostStaticProps,
 } from "graphql/getPostStaticProps";
-import { getOpenGraph } from "helpers/openGraph";
 
 /*
  *                                           ╭────────╮
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
  */
 
-const Home = ({ langui, ...otherProps }: PostStaticProps): JSX.Element => (
+const Home = ({ ...otherProps }: PostStaticProps): JSX.Element => (
   <PostPage
     {...otherProps}
-    openGraph={getOpenGraph(langui)}
-    langui={langui}
     prependBody={
       <div className="grid w-full place-content-center place-items-center gap-5 text-center">
         <div

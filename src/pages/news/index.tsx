@@ -10,7 +10,6 @@ import {
 } from "components/Panels/ContentPanel";
 import { SubPanel } from "components/Panels/SubPanel";
 import { GetPostsPreviewQuery } from "graphql/generated";
-import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import { prettySlug } from "helpers/formatters";
 import { Icon } from "components/Ico";
@@ -26,6 +25,8 @@ import { TranslatedPreviewCard } from "components/PreviewCard";
 import { HorizontalLine } from "components/HorizontalLine";
 import { cIf } from "helpers/className";
 import { useIsContentPanelAtLeast } from "hooks/useContainerQuery";
+import { useAppLayout } from "contexts/AppLayoutContext";
+import { getLangui } from "graphql/fetchLocalData";
 
 /*
  *                                         ╭─────────────╮
@@ -42,12 +43,13 @@ const DEFAULT_FILTERS_STATE = {
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
  */
 
-interface Props extends AppStaticProps, AppLayoutRequired {
+interface Props extends AppLayoutRequired {
   posts: NonNullable<GetPostsPreviewQuery["posts"]>["data"];
 }
 
-const News = ({ langui, posts, ...otherProps }: Props): JSX.Element => {
+const News = ({ posts, ...otherProps }: Props): JSX.Element => {
   const isContentPanelAtLeast4xl = useIsContentPanelAtLeast("4xl");
+  const { langui } = useAppLayout();
   const hoverable = useDeviceSupportsHover();
   const [searchName, setSearchName] = useState(
     DEFAULT_FILTERS_STATE.searchName
@@ -109,7 +111,6 @@ const News = ({ langui, posts, ...otherProps }: Props): JSX.Element => {
         <SmartList
           items={filterHasAttributes(posts, ["attributes", "id"] as const)}
           getItemId={(post) => post.id}
-          langui={langui}
           renderItem={({ item: post }) => (
             <TranslatedPreviewCard
               href={`/news/${post.attributes.slug}`}
@@ -150,7 +151,7 @@ const News = ({ langui, posts, ...otherProps }: Props): JSX.Element => {
         />
       </ContentPanel>
     ),
-    [keepInfoVisible, langui, posts, searchName, isContentPanelAtLeast4xl]
+    [keepInfoVisible, posts, searchName, isContentPanelAtLeast4xl]
   );
 
   return (
@@ -158,7 +159,6 @@ const News = ({ langui, posts, ...otherProps }: Props): JSX.Element => {
       subPanel={subPanel}
       contentPanel={contentPanel}
       subPanelIcon={Icon.Search}
-      langui={langui}
       {...otherProps}
     />
   );
@@ -172,16 +172,13 @@ export default News;
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
+  const langui = getLangui(context.locale);
   const posts = await sdk.getPostsPreview();
   if (!posts.posts) return { notFound: true };
-  const appStaticProps = await getAppStaticProps(context);
+
   const props: Props = {
-    ...appStaticProps,
     posts: sortPosts(posts.posts.data),
-    openGraph: getOpenGraph(
-      appStaticProps.langui,
-      appStaticProps.langui.news ?? "News"
-    ),
+    openGraph: getOpenGraph(langui, langui.news ?? "News"),
   };
   return {
     props: props,

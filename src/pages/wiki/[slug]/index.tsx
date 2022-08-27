@@ -11,7 +11,6 @@ import {
 } from "components/Panels/ContentPanel";
 import { SubPanel } from "components/Panels/SubPanel";
 import DefinitionCard from "components/Wiki/DefinitionCard";
-import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import {
   filterHasAttributes,
@@ -31,26 +30,23 @@ import {
 import { getDescription } from "helpers/description";
 import { cIf, cJoin } from "helpers/className";
 import { useIs3ColumnsLayout } from "hooks/useContainerQuery";
+import { useAppLayout } from "contexts/AppLayoutContext";
+import { getLangui } from "graphql/fetchLocalData";
 
 /*
  *                                           ╭────────╮
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
  */
 
-interface Props extends AppStaticProps, AppLayoutRequired {
+interface Props extends AppLayoutRequired {
   page: WikiPageWithTranslations;
 }
 
-const WikiPage = ({
-  page,
-  langui,
-  languages,
-  ...otherProps
-}: Props): JSX.Element => {
+const WikiPage = ({ page, ...otherProps }: Props): JSX.Element => {
+  const { langui } = useAppLayout();
   const [selectedTranslation, LanguageSwitcher, languageSwitcherProps] =
     useSmartLanguage({
       items: page.translations,
-      languages: languages,
       languageExtractor: useCallback(
         (item: NonNullable<Props["page"]["translations"][number]>) =>
           item.language?.data?.attributes?.code,
@@ -67,7 +63,6 @@ const WikiPage = ({
         <ReturnButton
           href={`/wiki`}
           title={langui.wiki}
-          langui={langui}
           displayOnlyOn={"3ColumnsLayout"}
         />
       </SubPanel>
@@ -83,7 +78,6 @@ const WikiPage = ({
         <ReturnButton
           href={`/wiki`}
           title={langui.wiki}
-          langui={langui}
           displayOnlyOn={"1ColumnLayout"}
           className="mb-10"
         />
@@ -200,8 +194,6 @@ const WikiPage = ({
                       })
                     )}
                     index={index + 1}
-                    languages={languages}
-                    langui={langui}
                     categories={filterHasAttributes(
                       definition.categories?.data,
                       ["attributes"] as const
@@ -219,7 +211,6 @@ const WikiPage = ({
       LightBox,
       is3ColumnsLayout,
       languageSwitcherProps,
-      languages,
       langui,
       openLightBox,
       page.categories?.data,
@@ -234,8 +225,6 @@ const WikiPage = ({
     <AppLayout
       subPanel={subPanel}
       contentPanel={contentPanel}
-      languages={languages}
-      langui={langui}
       {...otherProps}
     />
   );
@@ -249,6 +238,7 @@ export default WikiPage;
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
+  const langui = getLangui(context.locale);
   const slug =
     context.params && isDefined(context.params.slug)
       ? context.params.slug.toString()
@@ -259,18 +249,17 @@ export const getStaticProps: GetStaticProps = async (context) => {
   });
   if (!page.wikiPages?.data[0].attributes?.translations)
     return { notFound: true };
-  const appStaticProps = await getAppStaticProps(context);
 
   const { title, description } = (() => {
     const chipsGroups = {
-      [appStaticProps.langui.tags ?? "Tags"]: filterHasAttributes(
+      [langui.tags ?? "Tags"]: filterHasAttributes(
         page.wikiPages.data[0].attributes.tags?.data,
         ["attributes"] as const
       ).map(
         (tag) =>
           tag.attributes.titles?.[0]?.title ?? prettySlug(tag.attributes.slug)
       ),
-      [appStaticProps.langui.categories ?? "Categories"]: filterHasAttributes(
+      [langui.categories ?? "Categories"]: filterHasAttributes(
         page.wikiPages.data[0].attributes.categories?.data,
         ["attributes"] as const
       ).map((category) => category.attributes.short),
@@ -303,14 +292,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
     page.wikiPages.data[0].attributes.thumbnail?.data?.attributes;
 
   const props: Props = {
-    ...appStaticProps,
     page: page.wikiPages.data[0].attributes as WikiPageWithTranslations,
-    openGraph: getOpenGraph(
-      appStaticProps.langui,
-      title,
-      description,
-      thumbnail
-    ),
+    openGraph: getOpenGraph(langui, title, description, thumbnail),
   };
   return {
     props: props,

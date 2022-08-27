@@ -1,4 +1,4 @@
-query getCurrencies {
+query localDataGetCurrencies {
   currencies(pagination: { limit: -1 }) {
     data {
       id

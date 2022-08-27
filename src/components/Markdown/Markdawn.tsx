@@ -6,7 +6,6 @@ import { HorizontalLine } from "components/HorizontalLine";
 import { Img } from "components/Img";
 import { InsetBox } from "components/InsetBox";
 import { useAppLayout } from "contexts/AppLayoutContext";
-import { AppStaticProps } from "graphql/getAppStaticProps";
 import { cIf, cJoin } from "helpers/className";
 import { slugify } from "helpers/formatters";
 import { getAssetURL, ImageQuality } from "helpers/img";
@@ -26,7 +25,6 @@ import { useDeviceSupportsHover } from "hooks/useMediaQuery";
 interface MarkdawnProps {
   className?: string;
   text: string;
-  langui: AppStaticProps["langui"];
 }
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
@@ -34,7 +32,6 @@ interface MarkdawnProps {
 export const Markdawn = ({
   className,
   text: rawText,
-  langui,
 }: MarkdawnProps): JSX.Element => {
   const { playerName } = useAppLayout();
   const router = useRouter();
@@ -93,7 +90,6 @@ export const Markdawn = ({
               }) => (
                 <Header
                   title={compProps.children}
-                  langui={langui}
                   level={parseInt(compProps.level, 10)}
                   slug={compProps.id}
                 />
@@ -102,12 +98,7 @@ export const Markdawn = ({
 
             SceneBreak: {
               component: (compProps: { id: string }) => (
-                <Header
-                  title={"* * *"}
-                  langui={langui}
-                  level={6}
-                  slug={compProps.id}
-                />
+                <Header title={"* * *"} level={6} slug={compProps.id} />
               ),
             },
 
@@ -158,7 +149,7 @@ export const Markdawn = ({
                       cIf(!isContentPanelAtLeastLg, "!-mb-4")
                     )}
                   >
-                    <Markdawn text={compProps.name} langui={langui} />
+                    <Markdawn text={compProps.name} />
                   </strong>
                   <p className="whitespace-pre-line">{compProps.children}</p>
                 </>
@@ -266,17 +257,18 @@ export const Markdawn = ({
 interface TableOfContentsProps {
   text: string;
   title?: string;
-  langui: AppStaticProps["langui"];
+
   horizontalLine?: boolean;
 }
 
 export const TableOfContents = ({
   text,
   title,
-  langui,
+
   horizontalLine = false,
 }: TableOfContentsProps): JSX.Element => {
   const router = useRouter();
+  const { langui } = useAppLayout();
   const toc = useMemo(
     () => getTocFromMarkdawn(preprocessMarkDawn(text), title),
     [text, title]
@@ -314,10 +306,9 @@ interface HeaderProps {
   level: number;
   title: string;
   slug: string;
-  langui: AppStaticProps["langui"];
 }
 
-const Header = ({ level, title, slug, langui }: HeaderProps): JSX.Element => {
+const Header = ({ level, title, slug }: HeaderProps): JSX.Element => {
   const isHoverable = useDeviceSupportsHover();
   const innerComponent = useMemo(
     () => (
@@ -338,12 +329,11 @@ const Header = ({ level, title, slug, langui }: HeaderProps): JSX.Element => {
               "opacity-0 transition-opacity group-hover:opacity-100"
             )}
             id={slug}
-            langui={langui}
           />
         </div>
       </>
     ),
-    [isHoverable, langui, slug, title]
+    [isHoverable, slug, title]
   );
 
   switch (level) {

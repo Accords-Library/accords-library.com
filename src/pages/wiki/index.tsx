@@ -5,7 +5,6 @@ import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { NavOption } from "components/PanelComponents/NavOption";
 import { PanelHeader } from "components/PanelComponents/PanelHeader";
 import { SubPanel } from "components/Panels/SubPanel";
-import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { Icon } from "components/Ico";
 import { getReadySdk } from "graphql/sdk";
 import { GetWikiPageQuery, GetWikiPagesPreviewsQuery } from "graphql/generated";
@@ -28,6 +27,8 @@ import { getOpenGraph } from "helpers/openGraph";
 import { TranslatedPreviewCard } from "components/PreviewCard";
 import { useIsContentPanelAtLeast } from "hooks/useContainerQuery";
 import { cIf } from "helpers/className";
+import { useAppLayout } from "contexts/AppLayoutContext";
+import { getLangui } from "graphql/fetchLocalData";
 
 /*
  *                                         ╭─────────────╮
@@ -45,12 +46,13 @@ const DEFAULT_FILTERS_STATE = {
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
  */
 
-interface Props extends AppStaticProps, AppLayoutRequired {
+interface Props extends AppLayoutRequired {
   pages: NonNullable<GetWikiPagesPreviewsQuery["wikiPages"]>["data"];
 }
 
-const Wiki = ({ langui, pages, ...otherProps }: Props): JSX.Element => {
+const Wiki = ({ pages, ...otherProps }: Props): JSX.Element => {
   const hoverable = useDeviceSupportsHover();
+  const { langui } = useAppLayout();
   const isContentPanelAtLeast4xl = useIsContentPanelAtLeast("4xl");
 
   const [searchName, setSearchName] = useState(
@@ -198,7 +200,6 @@ const Wiki = ({ langui, pages, ...otherProps }: Props): JSX.Element => {
               ).map((category) => category.attributes.short)}
             />
           )}
-          langui={langui}
           className={cIf(
             isContentPanelAtLeast4xl,
             "grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] gap-x-6 gap-y-8",
@@ -223,7 +224,6 @@ const Wiki = ({ langui, pages, ...otherProps }: Props): JSX.Element => {
     [
       groupingFunction,
       keepInfoVisible,
-      langui,
       pages,
       searchName,
       isContentPanelAtLeast4xl,
@@ -235,7 +235,6 @@ const Wiki = ({ langui, pages, ...otherProps }: Props): JSX.Element => {
       subPanel={subPanel}
       contentPanel={contentPanel}
       subPanelIcon={Icon.Search}
-      langui={langui}
       {...otherProps}
     />
   );
@@ -249,18 +248,15 @@ export default Wiki;
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
+  const langui = getLangui(context.locale);
   const pages = await sdk.getWikiPagesPreviews({
     language_code: context.locale ?? "en",
   });
   if (!pages.wikiPages?.data) return { notFound: true };
-  const appStaticProps = await getAppStaticProps(context);
+
   const props: Props = {
-    ...appStaticProps,
     pages: sortPages(pages.wikiPages.data),
-    openGraph: getOpenGraph(
-      appStaticProps.langui,
-      appStaticProps.langui.wiki ?? "Wiki"
-    ),
+    openGraph: getOpenGraph(langui, langui.wiki ?? "Wiki"),
   };
   return {
     props: props,

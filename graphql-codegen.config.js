@@ -9,7 +9,7 @@ module.exports = {
     },
   },
   documents: [
-    "src/graphql/operations/*.graphql",
+    "src/graphql/operations/**/*.graphql",
     "src/graphql/fragments/*.graphql",
   ],
   generates: {

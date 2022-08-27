@@ -1,30 +1,33 @@
 import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next";
 import { PostPage } from "components/PostPage";
-import { AppStaticProps } from "graphql/getAppStaticProps";
 import {
   getPostStaticProps,
   PostStaticProps,
 } from "graphql/getPostStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import { filterHasAttributes, isDefined } from "helpers/others";
+import { useAppLayout } from "contexts/AppLayoutContext";
 
 /*
  *                                           ╭────────╮
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
  */
 
-interface Props extends AppStaticProps, PostStaticProps {}
+interface Props extends PostStaticProps {}
 
-const LibrarySlug = (props: Props): JSX.Element => (
-  <PostPage
-    returnHref="/news"
-    returnTitle={props.langui.news}
-    displayCredits
-    displayThumbnailHeader
-    displayToc
-    {...props}
-  />
-);
+const LibrarySlug = (props: Props): JSX.Element => {
+  const { langui } = useAppLayout();
+  return (
+    <PostPage
+      returnHref="/news"
+      returnTitle={langui.news}
+      displayCredits
+      displayThumbnailHeader
+      displayToc
+      {...props}
+    />
+  );
+};
 export default LibrarySlug;
 
 /*

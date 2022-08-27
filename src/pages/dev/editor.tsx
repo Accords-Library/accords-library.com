@@ -10,18 +10,18 @@ import {
 } from "components/Panels/ContentPanel";
 import { Popup } from "components/Popup";
 import { ToolTip } from "components/ToolTip";
-import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { Icon } from "components/Ico";
 import { getOpenGraph } from "helpers/openGraph";
+import { getLangui } from "graphql/fetchLocalData";
 
 /*
  *                                           ╭────────╮
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
  */
 
-interface Props extends AppStaticProps, AppLayoutRequired {}
+interface Props extends AppLayoutRequired {}
 
-const Editor = ({ langui, ...otherProps }: Props): JSX.Element => {
+const Editor = (props: Props): JSX.Element => {
   const handleInput = useCallback((text: string) => {
     setMarkdown(text);
   }, []);
@@ -445,13 +445,13 @@ const Editor = ({ langui, ...otherProps }: Props): JSX.Element => {
           <div>
             <h2>Preview</h2>
             <div className="h-[70vh] overflow-scroll rounded-xl bg-mid bg-opacity-40 p-8">
-              <Markdawn className="w-full" text={markdown} langui={langui} />
+              <Markdawn className="w-full" text={markdown} />
             </div>
           </div>
         </div>
 
         <div className="mt-8">
-          <TableOfContents text={markdown} langui={langui} />
+          <TableOfContents text={markdown} />
         </div>
       </ContentPanel>
     ),
@@ -460,7 +460,6 @@ const Editor = ({ langui, ...otherProps }: Props): JSX.Element => {
       converterOpened,
       handleInput,
       insert,
-      langui,
       markdown,
       preline,
       toggleWrap,
@@ -468,9 +467,7 @@ const Editor = ({ langui, ...otherProps }: Props): JSX.Element => {
     ]
   );
 
-  return (
-    <AppLayout contentPanel={contentPanel} langui={langui} {...otherProps} />
-  );
+  return <AppLayout contentPanel={contentPanel} {...props} />;
 };
 export default Editor;
 
@@ -479,11 +476,10 @@ export default Editor;
  * ───────────────────────────────────╯  NEXT DATA FETCHING  ╰──────────────────────────────────────
  */
 
-export const getStaticProps: GetStaticProps = async (context) => {
-  const appStaticProps = await getAppStaticProps(context);
+export const getStaticProps: GetStaticProps = (context) => {
+  const langui = getLangui(context.locale);
   const props: Props = {
-    ...appStaticProps,
-    openGraph: getOpenGraph(appStaticProps.langui, "Markdawn Editor"),
+    openGraph: getOpenGraph(langui, "Markdawn Editor"),
   };
   return {
     props: props,

@@ -13,7 +13,7 @@ import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { PostWithTranslations } from "helpers/types";
 import { filterHasAttributes, getStatusDescription } from "helpers/others";
 import { prettySlug } from "helpers/formatters";
-import { AppStaticProps } from "graphql/getAppStaticProps";
+import { useAppLayout } from "contexts/AppLayoutContext";
 
 /*
  *                                        ╭─────────────╮
@@ -22,9 +22,6 @@ import { AppStaticProps } from "graphql/getAppStaticProps";
 
 interface Props extends AppLayoutRequired {
   post: PostWithTranslations;
-  langui: AppStaticProps["langui"];
-  languages: AppStaticProps["languages"];
-  currencies: AppStaticProps["currencies"];
   returnHref?: string;
   returnTitle?: string | null | undefined;
   displayCredits?: boolean;
@@ -40,8 +37,6 @@ interface Props extends AppLayoutRequired {
 
 export const PostPage = ({
   post,
-  langui,
-  languages,
   returnHref,
   returnTitle,
   displayCredits,
@@ -53,10 +48,10 @@ export const PostPage = ({
   displayTitle = true,
   ...otherProps
 }: Props): JSX.Element => {
+  const { langui } = useAppLayout();
   const [selectedTranslation, LanguageSwitcher, languageSwitcherProps] =
     useSmartLanguage({
       items: post.translations,
-      languages: languages,
       languageExtractor: useCallback(
         (item: NonNullable<PostWithTranslations["translations"][number]>) =>
           item.language?.data?.attributes?.code,
@@ -84,7 +79,6 @@ export const PostPage = ({
             <ReturnButton
               href={returnHref}
               title={returnTitle}
-              langui={langui}
               displayOnlyOn={"3ColumnsLayout"}
             />
           )}
@@ -118,10 +112,7 @@ export const PostPage = ({
                       "attributes",
                     ] as const).map((author) => (
                       <Fragment key={author.id}>
-                        <RecorderChip
-                          langui={langui}
-                          recorder={author.attributes}
-                        />
+                        <RecorderChip recorder={author.attributes} />
                       </Fragment>
                     ))}
                   </div>
@@ -131,12 +122,7 @@ export const PostPage = ({
           )}
 
           {displayToc && (
-            <TableOfContents
-              text={body}
-              title={title}
-              langui={langui}
-              horizontalLine
-            />
+            <TableOfContents text={body} title={title} horizontalLine />
           )}
         </SubPanel>
       ) : undefined,
@@ -160,7 +146,6 @@ export const PostPage = ({
           <ReturnButton
             href={returnHref}
             title={returnTitle}
-            langui={langui}
             displayOnlyOn={"1ColumnLayout"}
             className="mb-10"
           />
@@ -172,7 +157,6 @@ export const PostPage = ({
               thumbnail={thumbnail}
               title={title}
               description={excerpt}
-              langui={langui}
               categories={post.categories}
               languageSwitcher={
                 languageSwitcherProps.locales.size > 1 ? (
@@ -200,7 +184,7 @@ export const PostPage = ({
         {body && (
           <>
             {displayThumbnailHeader && <HorizontalLine />}
-            <Markdawn text={body} langui={langui} />
+            <Markdawn text={body} />
           </>
         )}
 
@@ -216,7 +200,6 @@ export const PostPage = ({
       displayTitle,
       excerpt,
       languageSwitcherProps,
-      langui,
       post.categories,
       prependBody,
       returnHref,
@@ -231,8 +214,6 @@ export const PostPage = ({
       {...otherProps}
       contentPanel={contentPanel}
       subPanel={subPanel}
-      languages={languages}
-      langui={langui}
     />
   );
 };

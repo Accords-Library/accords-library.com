@@ -1,4 +1,4 @@
-query getLanguages {
+query localDataGetLanguages {
   languages(pagination: { limit: -1 }) {
     data {
       id

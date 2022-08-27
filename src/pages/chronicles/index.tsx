@@ -3,7 +3,6 @@ import { useMemo } from "react";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { PanelHeader } from "components/PanelComponents/PanelHeader";
 import { SubPanel } from "components/Panels/SubPanel";
-import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { Icon } from "components/Ico";
 import { getReadySdk } from "graphql/sdk";
 import { GetChroniclesChaptersQuery } from "graphql/generated";
@@ -12,23 +11,22 @@ import { prettySlug } from "helpers/formatters";
 import { getOpenGraph } from "helpers/openGraph";
 import { TranslatedChroniclesList } from "components/Chronicles/ChroniclesList";
 import { HorizontalLine } from "components/HorizontalLine";
+import { useAppLayout } from "contexts/AppLayoutContext";
+import { getLangui } from "graphql/fetchLocalData";
 
 /*
  *                                           ╭────────╮
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
  */
 
-interface Props extends AppStaticProps, AppLayoutRequired {
+interface Props extends AppLayoutRequired {
   chapters: NonNullable<
     GetChroniclesChaptersQuery["chroniclesChapters"]
   >["data"];
 }
 
-const Chronicles = ({
-  langui,
-  chapters,
-  ...otherProps
-}: Props): JSX.Element => {
+const Chronicles = ({ chapters, ...otherProps }: Props): JSX.Element => {
+  const { langui } = useAppLayout();
   const subPanel = useMemo(
     () => (
       <SubPanel>
@@ -63,7 +61,7 @@ const Chronicles = ({
     [chapters, langui]
   );
 
-  return <AppLayout subPanel={subPanel} langui={langui} {...otherProps} />;
+  return <AppLayout subPanel={subPanel} {...otherProps} />;
 };
 export default Chronicles;
 
@@ -74,16 +72,13 @@ export default Chronicles;
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
+  const langui = getLangui(context.locale);
   const chronicles = await sdk.getChroniclesChapters();
   if (!chronicles.chroniclesChapters?.data) return { notFound: true };
-  const appStaticProps = await getAppStaticProps(context);
+
   const props: Props = {
-    ...appStaticProps,
     chapters: chronicles.chroniclesChapters.data,
-    openGraph: getOpenGraph(
-      appStaticProps.langui,
-      appStaticProps.langui.chronicles ?? "Chronicles"
-    ),
+    openGraph: getOpenGraph(langui, langui.chronicles ?? "Chronicles"),
   };
   return {
     props: props,

@@ -1,5 +1,5 @@
-import { AppStaticProps } from "../graphql/getAppStaticProps";
 import { PathDot, SelectiveNonNullable } from "./types/SelectiveNonNullable";
+import { Langui } from "./localData";
 import {
   Enum_Componentsetstextset_Status,
   GetLibraryItemQuery,
@@ -35,7 +35,7 @@ export const sortRangedContent = (contents: SortRangedContentProps): void => {
 
 export const getStatusDescription = (
   status: string,
-  langui: AppStaticProps["langui"]
+  langui: Langui
 ): string | null | undefined => {
   switch (status) {
     case Enum_Componentsetstextset_Status.Incomplete:
@@ -118,7 +118,11 @@ export const mapMoveEntry = <K, V>(
   targetIndex: number
 ): Map<K, V> => new Map(arrayMove([...map], sourceIndex, targetIndex));
 
-const arrayMove = <T>(arr: T[], sourceIndex: number, targetIndex: number) => {
+export const arrayMove = <T>(
+  arr: T[],
+  sourceIndex: number,
+  targetIndex: number
+): T[] => {
   arr.splice(targetIndex, 0, arr.splice(sourceIndex, 1)[0]);
   return arr;
 };

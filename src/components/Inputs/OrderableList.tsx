@@ -1,6 +1,6 @@
-import { Fragment, useCallback, useState } from "react";
+import { Fragment, useCallback } from "react";
 import { Ico, Icon } from "components/Ico";
-import { isDefinedAndNotEmpty, iterateMap, mapMoveEntry } from "helpers/others";
+import { arrayMove, isDefinedAndNotEmpty } from "helpers/others";
 
 /*
  *                                        ╭─────────────╮
@@ -9,35 +9,32 @@ import { isDefinedAndNotEmpty, iterateMap, mapMoveEntry } from "helpers/others";
 
 interface Props {
   className?: string;
-  items: Map<string, string>;
-  insertLabels?: Map<number, string | null | undefined>;
-  onChange?: (items: Map<string, string>) => void;
+  items: { code: string; name: string }[];
+  insertLabels?: { insertAt: number; name: string }[];
+  onChange?: (props: Props["items"]) => void;
 }
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
 export const OrderableList = ({
   onChange,
-  items: propsItems,
+  items,
   insertLabels,
 }: Props): JSX.Element => {
-  const [items, setItems] = useState<Map<string, string>>(propsItems);
-
   const updateOrder = useCallback(
     (sourceIndex: number, targetIndex: number) => {
-      const newItems = mapMoveEntry(items, sourceIndex, targetIndex);
-      setItems(newItems);
-      onChange?.(newItems);
+      console.log("updateOrder");
+      onChange?.(arrayMove(items, sourceIndex, targetIndex));
     },
     [items, onChange]
   );
 
   return (
     <div className="grid gap-2">
-      {iterateMap(items, (key, value, index) => (
-        <Fragment key={key}>
-          {insertLabels && isDefinedAndNotEmpty(insertLabels.get(index)) && (
-            <p>{insertLabels.get(index)}</p>
+      {items.map((item, index) => (
+        <Fragment key={index}>
+          {insertLabels && isDefinedAndNotEmpty(insertLabels[index]?.name) && (
+            <p>{insertLabels[index].name}</p>
           )}
           <div
             onDragStart={(event) => {
@@ -81,7 +78,7 @@ export const OrderableList = ({
                   }}
                 />
               )}
-              {index < items.size - 1 && (
+              {index < items.length - 1 && (
                 <Ico
                   icon={Icon.ArrowDropDown}
                   className="row-start-2 cursor-pointer"
@@ -91,7 +88,7 @@ export const OrderableList = ({
                 />
               )}
             </div>
-            {value}
+            {item.name}
           </div>
         </Fragment>
       ))}

@@ -12,7 +12,6 @@ import { PreviewCard } from "components/PreviewCard";
 import { RecorderChip } from "components/RecorderChip";
 import { ThumbnailHeader } from "components/ThumbnailHeader";
 import { ToolTip } from "components/ToolTip";
-import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import {
   prettyInlineTitle,
@@ -41,30 +40,26 @@ import {
   useIsContentPanelAtLeast,
 } from "hooks/useContainerQuery";
 import { cIf } from "helpers/className";
+import { getLangui } from "graphql/fetchLocalData";
+import { useAppLayout } from "contexts/AppLayoutContext";
 
 /*
  *                                           ╭────────╮
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
  */
 
-interface Props extends AppStaticProps, AppLayoutRequired {
+interface Props extends AppLayoutRequired {
   content: ContentWithTranslations;
 }
 
-const Content = ({
-  langui,
-  content,
-  languages,
-  currencies,
-  ...otherProps
-}: Props): JSX.Element => {
+const Content = ({ content, ...otherProps }: Props): JSX.Element => {
   const isContentPanelAtLeast2xl = useIsContentPanelAtLeast("2xl");
   const is1ColumnLayout = useIs1ColumnLayout();
+  const { langui, languages } = useAppLayout();
 
   const [selectedTranslation, LanguageSwitcher, languageSwitcherProps] =
     useSmartLanguage({
       items: content.translations,
-      languages: languages,
       languageExtractor: useCallback(
         (item: NonNullable<Props["content"]["translations"][number]>) =>
           item.language?.data?.attributes?.code,
@@ -182,10 +177,7 @@ const Content = ({
                         ["attributes", "id"] as const
                       ).map((recorder) => (
                         <Fragment key={recorder.id}>
-                          <RecorderChip
-                            langui={langui}
-                            recorder={recorder.attributes}
-                          />
+                          <RecorderChip recorder={recorder.attributes} />
                         </Fragment>
                       ))}
                     </div>
@@ -204,10 +196,7 @@ const Content = ({
                         ["attributes", "id"] as const
                       ).map((recorder) => (
                         <Fragment key={recorder.id}>
-                          <RecorderChip
-                            langui={langui}
-                            recorder={recorder.attributes}
-                          />
+                          <RecorderChip recorder={recorder.attributes} />
                         </Fragment>
                       ))}
                     </div>
@@ -226,10 +215,7 @@ const Content = ({
                         ["attributes", "id"] as const
                       ).map((recorder) => (
                         <Fragment key={recorder.id}>
-                          <RecorderChip
-                            langui={langui}
-                            recorder={recorder.attributes}
-                          />
+                          <RecorderChip recorder={recorder.attributes} />
                         </Fragment>
                       ))}
                     </div>
@@ -240,10 +226,7 @@ const Content = ({
                 <div>
                   <p className="font-headers font-bold">{langui.notes}:</p>
                   <div className="grid place-content-center place-items-center gap-2">
-                    <Markdawn
-                      text={selectedTranslation.text_set.notes}
-                      langui={langui}
-                    />
+                    <Markdawn text={selectedTranslation.text_set.notes} />
                   </div>
                 </div>
               )}
@@ -260,7 +243,6 @@ const Content = ({
                 selectedTranslation.title,
                 selectedTranslation.subtitle
               )}
-              langui={langui}
               horizontalLine
             />
           </>
@@ -311,7 +293,6 @@ const Content = ({
                             ["attributes"] as const
                           ).map((category) => category.attributes.short)}
                           metadata={{
-                            currencies: currencies,
                             releaseDate: libraryItem.attributes.release_date,
                             price: libraryItem.attributes.price,
                             position: "Bottom",
@@ -319,12 +300,7 @@ const Content = ({
                           infoAppend={
                             !isUntangibleGroupItem(
                               libraryItem.attributes.metadata?.[0]
-                            ) && (
-                              <PreviewCardCTAs
-                                id={libraryItem.id}
-                                langui={langui}
-                              />
-                            )
+                            ) && <PreviewCardCTAs id={libraryItem.id} />
                           }
                         />
                       </div>
@@ -338,7 +314,6 @@ const Content = ({
     ),
     [
       content.ranged_contents?.data,
-      currencies,
       languages,
       langui,
       returnButtonProps,
@@ -365,7 +340,6 @@ const Content = ({
             description={selectedTranslation?.description}
             type={content.type}
             categories={content.categories}
-            langui={langui}
             languageSwitcher={
               languageSwitcherProps.locales.size > 1 ? (
                 <LanguageSwitcher {...languageSwitcherProps} />
@@ -425,10 +399,7 @@ const Content = ({
           {selectedTranslation?.text_set?.text && (
             <>
               <HorizontalLine />
-              <Markdawn
-                text={selectedTranslation.text_set.text}
-                langui={langui}
-              />
+              <Markdawn text={selectedTranslation.text_set.text} />
             </>
           )}
 
@@ -501,9 +472,6 @@ const Content = ({
     <AppLayout
       contentPanel={contentPanel}
       subPanel={subPanel}
-      currencies={currencies}
-      languages={languages}
-      langui={langui}
       {...otherProps}
     />
   );
@@ -517,6 +485,7 @@ export default Content;
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
+  const langui = getLangui(context.locale);
   const slug = context.params?.slug ? context.params.slug.toString() : "";
   const content = await sdk.getContentText({
     slug: slug,
@@ -526,7 +495,6 @@ export const getStaticProps: GetStaticProps = async (context) => {
   if (!content.contents?.data[0]?.attributes?.translations) {
     return { notFound: true };
   }
-  const appStaticProps = await getAppStaticProps(context);
 
   const { title, description } = (() => {
     if (context.locale && context.locales) {
@@ -546,15 +514,14 @@ export const getStaticProps: GetStaticProps = async (context) => {
             selectedTranslation.subtitle
           ),
           description: getDescription(selectedTranslation.description, {
-            [appStaticProps.langui.type ?? "Type"]: [
+            [langui.type ?? "Type"]: [
               content.contents.data[0].attributes.type?.data?.attributes
                 ?.titles?.[0]?.title,
             ],
-            [appStaticProps.langui.categories ?? "Categories"]:
-              filterHasAttributes(
-                content.contents.data[0].attributes.categories?.data,
-                ["attributes"] as const
-              ).map((category) => category.attributes.short),
+            [langui.categories ?? "Categories"]: filterHasAttributes(
+              content.contents.data[0].attributes.categories?.data,
+              ["attributes"] as const
+            ).map((category) => category.attributes.short),
           }),
         };
       }
@@ -569,14 +536,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
     content.contents.data[0].attributes.thumbnail?.data?.attributes;
 
   const props: Props = {
-    ...appStaticProps,
     content: content.contents.data[0].attributes as ContentWithTranslations,
-    openGraph: getOpenGraph(
-      appStaticProps.langui,
-      title,
-      description,
-      thumbnail
-    ),
+    openGraph: getOpenGraph(langui, title, description, thumbnail),
   };
   return {
     props: props,

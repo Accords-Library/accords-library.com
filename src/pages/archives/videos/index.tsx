@@ -16,7 +16,6 @@ import {
 import { SubPanel } from "components/Panels/SubPanel";
 import { PreviewCard } from "components/PreviewCard";
 import { GetVideosPreviewQuery } from "graphql/generated";
-import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import { filterHasAttributes } from "helpers/others";
 import { getVideoThumbnailURL } from "helpers/videos";
@@ -26,6 +25,8 @@ import { compareDate } from "helpers/date";
 import { HorizontalLine } from "components/HorizontalLine";
 import { cIf } from "helpers/className";
 import { useIsContentPanelAtLeast } from "hooks/useContainerQuery";
+import { useAppLayout } from "contexts/AppLayoutContext";
+import { getLangui } from "graphql/fetchLocalData";
 
 /*
  *                                         ╭─────────────╮
@@ -41,11 +42,12 @@ const DEFAULT_FILTERS_STATE = {
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
  */
 
-interface Props extends AppStaticProps, AppLayoutRequired {
+interface Props extends AppLayoutRequired {
   videos: NonNullable<GetVideosPreviewQuery["videos"]>["data"];
 }
 
-const Videos = ({ langui, videos, ...otherProps }: Props): JSX.Element => {
+const Videos = ({ videos, ...otherProps }: Props): JSX.Element => {
+  const { langui } = useAppLayout();
   const hoverable = useDeviceSupportsHover();
   const isContentPanelAtLeast4xl = useIsContentPanelAtLeast("4xl");
 
@@ -62,7 +64,6 @@ const Videos = ({ langui, videos, ...otherProps }: Props): JSX.Element => {
         <ReturnButton
           href="/archives/"
           title={"Archives"}
-          langui={langui}
           displayOnlyOn={"3ColumnsLayout"}
           className="mb-10"
         />
@@ -118,7 +119,6 @@ const Videos = ({ langui, videos, ...otherProps }: Props): JSX.Element => {
               }}
             />
           )}
-          langui={langui}
           className={cIf(
             isContentPanelAtLeast4xl,
             "grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] gap-x-6 gap-y-8",
@@ -130,13 +130,12 @@ const Videos = ({ langui, videos, ...otherProps }: Props): JSX.Element => {
         />
       </ContentPanel>
     ),
-    [isContentPanelAtLeast4xl, keepInfoVisible, langui, searchName, videos]
+    [isContentPanelAtLeast4xl, keepInfoVisible, searchName, videos]
   );
   return (
     <AppLayout
       subPanel={subPanel}
       contentPanel={contentPanel}
-      langui={langui}
       {...otherProps}
     />
   );
@@ -150,6 +149,7 @@ export default Videos;
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
+  const langui = getLangui(context.locale);
   const videos = await sdk.getVideosPreview();
   if (!videos.videos) return { notFound: true };
   videos.videos.data
@@ -157,14 +157,10 @@ export const getStaticProps: GetStaticProps = async (context) => {
       compareDate(a.attributes?.published_date, b.attributes?.published_date)
     )
     .reverse();
-  const appStaticProps = await getAppStaticProps(context);
+
   const props: Props = {
-    ...appStaticProps,
     videos: videos.videos.data,
-    openGraph: getOpenGraph(
-      appStaticProps.langui,
-      appStaticProps.langui.videos ?? "Videos"
-    ),
+    openGraph: getOpenGraph(langui, langui.videos ?? "Videos"),
   };
   return {
     props: props,

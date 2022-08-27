@@ -3,21 +3,25 @@ import {
   getPostStaticProps,
   PostStaticProps,
 } from "graphql/getPostStaticProps";
+import { useAppLayout } from "contexts/AppLayoutContext";
 
 /*
  *                                           ╭────────╮
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
  */
 
-const AccordsHandbook = (props: PostStaticProps): JSX.Element => (
-  <PostPage
-    {...props}
-    returnHref="/about-us/"
-    returnTitle={props.langui.about_us}
-    displayToc
-    displayLanguageSwitcher
-  />
-);
+const AccordsHandbook = (props: PostStaticProps): JSX.Element => {
+  const { langui } = useAppLayout();
+  return (
+    <PostPage
+      {...props}
+      returnHref="/about-us/"
+      returnTitle={langui.about_us}
+      displayToc
+      displayLanguageSwitcher
+    />
+  );
+};
 export default AccordsHandbook;
 
 /*

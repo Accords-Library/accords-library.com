@@ -1,8 +1,20 @@
-import React, { ReactNode, useContext, useState } from "react";
+import React, {
+  ReactNode,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useState,
+} from "react";
 import { useLocalStorage } from "usehooks-ts";
-import { isDefined } from "helpers/others";
+import { useRouter } from "next/router";
+import { isDefined, isDefinedAndNotEmpty } from "helpers/others";
 import { LibraryItemUserStatus, RequiredNonNullable } from "helpers/types";
 import { useDarkMode } from "hooks/useDarkMode";
+import { Currencies, Languages, Langui } from "helpers/localData";
+import { useCurrencies, useLanguages, useLangui } from "hooks/useLocalData";
+import { getDefaultPreferredLanguages } from "helpers/locales";
+import { useOnResize } from "hooks/useOnResize";
+import { AnchorIds } from "hooks/useScrollTopOnChange";
 
 interface AppLayoutState {
   subPanelOpen: boolean;
@@ -77,19 +89,12 @@ interface AppLayoutState {
   >;
 
   screenWidth: number;
-  setScreenWidth: React.Dispatch<
-    React.SetStateAction<AppLayoutState["screenWidth"]>
-  >;
-
   contentPanelWidth: number;
-  setContentPanelWidth: React.Dispatch<
-    React.SetStateAction<AppLayoutState["contentPanelWidth"]>
-  >;
-
   subPanelWidth: number;
-  setSubPanelWidth: React.Dispatch<
-    React.SetStateAction<AppLayoutState["subPanelWidth"]>
-  >;
+
+  langui: Langui;
+  languages: Languages;
+  currencies: Currencies;
 }
 
 const initialState: RequiredNonNullable<AppLayoutState> = {
@@ -145,13 +150,12 @@ const initialState: RequiredNonNullable<AppLayoutState> = {
   setLibraryItemUserStatus: () => null,
 
   screenWidth: 0,
-  setScreenWidth: () => null,
-
   contentPanelWidth: 0,
-  setContentPanelWidth: () => null,
-
   subPanelWidth: 0,
-  setSubPanelWidth: () => null,
+
+  currencies: [],
+  languages: [],
+  langui: {},
 };
 
 const AppContext = React.createContext<AppLayoutState>(initialState);
@@ -265,6 +269,55 @@ export const AppContextProvider = (props: Props): JSX.Element => {
   const [contentPanelWidth, setContentPanelWidth] = useState(0);
   const [subPanelWidth, setSubPanelWidth] = useState(0);
 
+  const langui = useLangui();
+  const languages = useLanguages();
+  const currencies = useCurrencies();
+
+  const router = useRouter();
+  useEffect(() => {
+    console.log("I'm in preferredLanguages update");
+    if (preferredLanguages.length === 0) {
+      if (isDefinedAndNotEmpty(router.locale) && router.locales) {
+        setPreferredLanguages(
+          getDefaultPreferredLanguages(router.locale, router.locales)
+        );
+      }
+    } else if (router.locale !== preferredLanguages[0]) {
+      console.log("I'm rerouting you");
+      router.replace(router.asPath, router.asPath, {
+        locale: preferredLanguages[0],
+      });
+    }
+  }, [
+    preferredLanguages,
+    router,
+    router.locale,
+    router.locales,
+    setPreferredLanguages,
+  ]);
+
+  useEffect(() => {
+    router.events.on("routeChangeStart", () => {
+      setConfigPanelOpen(false);
+      setMainPanelOpen(false);
+      setSubPanelOpen(false);
+    });
+
+    router.events.on("hashChangeStart", () => {
+      setSubPanelOpen(false);
+    });
+  }, [router.events, setConfigPanelOpen, setMainPanelOpen, setSubPanelOpen]);
+
+  useLayoutEffect(() => {
+    document.getElementsByTagName("html")[0].style.fontSize = `${
+      fontSize * 100
+    }%`;
+  }, [fontSize]);
+
+  useOnResize(AnchorIds.Body, (width) => setScreenWidth(width));
+  useOnResize(AnchorIds.ContentPanel, (width) => setContentPanelWidth(width));
+  useOnResize(AnchorIds.SubPanel, (width) => setSubPanelWidth(width));
+
   return (
     <AppContext.Provider
       value={{
@@ -308,9 +361,9 @@ export const AppContextProvider = (props: Props): JSX.Element => {
         toggleMenuGestures,
         toggleSelectedThemeMode,
         toggleDyslexic,
-        setContentPanelWidth,
-        setScreenWidth,
-        setSubPanelWidth,
+        languages,
+        langui,
+        currencies,
       }}
     >
       {props.children}

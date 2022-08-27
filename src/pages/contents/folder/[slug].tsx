@@ -5,7 +5,6 @@ import {
   ContentPanel,
   ContentPanelWidthSizes,
 } from "components/Panels/ContentPanel";
-import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getOpenGraph } from "helpers/openGraph";
 import { getReadySdk } from "graphql/sdk";
 import { filterHasAttributes } from "helpers/others";
@@ -27,13 +26,15 @@ import { TranslatedPreviewCard } from "components/PreviewCard";
 import { HorizontalLine } from "components/HorizontalLine";
 import { useIsContentPanelAtLeast } from "hooks/useContainerQuery";
 import { cJoin, cIf } from "helpers/className";
+import { useAppLayout } from "contexts/AppLayoutContext";
+import { getLangui } from "graphql/fetchLocalData";
 
 /*
  *                                           ╭────────╮
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
  */
 
-interface Props extends AppStaticProps, AppLayoutRequired {
+interface Props extends AppLayoutRequired {
   folder: NonNullable<
     NonNullable<
       GetContentsFolderQuery["contentsFolders"]
@@ -42,11 +43,11 @@ interface Props extends AppStaticProps, AppLayoutRequired {
 }
 
 const ContentsFolder = ({
-  langui,
   openGraph,
   folder,
   ...otherProps
 }: Props): JSX.Element => {
+  const { langui } = useAppLayout();
   const isContentPanelAtLeast4xl = useIsContentPanelAtLeast("4xl");
 
   const subPanel = useMemo(
@@ -62,6 +63,7 @@ const ContentsFolder = ({
 
         <Button
           href="/contents/all"
+          /* TODO: Langui */
           text={"Switch to grid view"}
           icon={Icon.Apps}
         />
@@ -142,7 +144,6 @@ const ContentsFolder = ({
             )
           )}
           renderWhenEmpty={() => <></>}
-          langui={langui}
           groupingFunction={() => [langui.folders ?? "Folders"]}
         />
 
@@ -188,14 +189,11 @@ const ContentsFolder = ({
             "grid-cols-2 gap-x-3 gap-y-5"
           )}
           renderWhenEmpty={() => <></>}
-          langui={langui}
           groupingFunction={() => [langui.contents ?? "Contents"]}
         />
 
         {folder.contents?.data.length === 0 &&
-          folder.subfolders?.data.length === 0 && (
-            <NoContentNorFolderMessage langui={langui} />
-          )}
+          folder.subfolders?.data.length === 0 && <NoContentNorFolderMessage />}
       </ContentPanel>
     ),
     [
@@ -214,7 +212,6 @@ const ContentsFolder = ({
       subPanel={subPanel}
       contentPanel={contentPanel}
       openGraph={openGraph}
-      langui={langui}
       {...otherProps}
     />
   );
@@ -228,6 +225,7 @@ export default ContentsFolder;
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
+  const langui = getLangui(context.locale);
   const slug = context.params?.slug ? context.params.slug.toString() : "";
   const contentsFolder = await sdk.getContentsFolder({
     slug: slug,
@@ -238,11 +236,10 @@ export const getStaticProps: GetStaticProps = async (context) => {
   }
 
   const folder = contentsFolder.contentsFolders.data[0].attributes;
-  const appStaticProps = await getAppStaticProps(context);
 
   const title = (() => {
     if (slug === "root") {
-      return appStaticProps.langui.contents ?? "Contents";
+      return langui.contents ?? "Contents";
     }
     if (context.locale && context.locales) {
       const selectedTranslation = staticSmartLanguage({
@@ -261,8 +258,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   })();
 
   const props: Props = {
-    ...appStaticProps,
-    openGraph: getOpenGraph(appStaticProps.langui, title),
+    openGraph: getOpenGraph(langui, title),
     folder,
   };
   return {
@@ -340,19 +336,16 @@ const TranslatedPreviewFolder = ({
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
-interface NoContentNorFolderMessageProps {
-  langui: AppStaticProps["langui"];
-}
-
-const NoContentNorFolderMessage = ({
-  langui,
-}: NoContentNorFolderMessageProps) => (
-  <div className="grid place-content-center">
-    <div
-      className="grid grid-flow-col place-items-center gap-9 rounded-2xl border-2 border-dotted
+const NoContentNorFolderMessage = () => {
+  const { langui } = useAppLayout();
+  return (
+    <div className="grid place-content-center">
+      <div
+        className="grid grid-flow-col place-items-center gap-9 rounded-2xl border-2 border-dotted
       border-dark p-8 text-dark opacity-40"
-    >
-      <p className="max-w-xs text-2xl">{langui.empty_folder_message}</p>
+      >
+        <p className="max-w-xs text-2xl">{langui.empty_folder_message}</p>
+      </div>
     </div>
-  </div>
-);
+  );
+};

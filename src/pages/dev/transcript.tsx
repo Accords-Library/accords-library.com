@@ -8,8 +8,8 @@ import {
   ContentPanelWidthSizes,
 } from "components/Panels/ContentPanel";
 import { ToolTip } from "components/ToolTip";
-import { AppStaticProps, getAppStaticProps } from "graphql/getAppStaticProps";
 import { getOpenGraph } from "helpers/openGraph";
+import { getLangui } from "graphql/fetchLocalData";
 
 /*
  *                                         ╭─────────────╮
@@ -23,7 +23,7 @@ const SIZE_MULTIPLIER = 1000;
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
  */
 
-interface Props extends AppStaticProps, AppLayoutRequired {}
+interface Props extends AppLayoutRequired {}
 
 const replaceSelection = (
   text: string,
@@ -580,14 +580,10 @@ export default Transcript;
  * ───────────────────────────────────╯  NEXT DATA FETCHING  ╰──────────────────────────────────────
  */
 
-export const getStaticProps: GetStaticProps = async (context) => {
-  const appStaticProps = await getAppStaticProps(context);
+export const getStaticProps: GetStaticProps = (context) => {
+  const langui = getLangui(context.locale);
   const props: Props = {
-    ...appStaticProps,
-    openGraph: getOpenGraph(
-      appStaticProps.langui,
-      "Japanese Transcription Tool"
-    ),
+    openGraph: getOpenGraph(langui, "Japanese Transcription Tool"),
   };
   return {
     props: props,

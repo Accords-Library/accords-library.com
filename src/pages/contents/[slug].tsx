@@ -458,11 +458,9 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   const thumbnail = content.contents.data[0].attributes.thumbnail?.data?.attributes;
 
-  if (content.contents.data[0].attributes.folder?.data?.attributes?.contents?.data) {
-    content.contents.data[0].attributes.folder.data.attributes.contents.data.sort((a, b) =>
-      a.attributes && b.attributes ? naturalCompare(a.attributes.slug, b.attributes.slug) : 0
-    );
-  }
+  content.contents.data[0].attributes.folder?.data?.attributes?.contents?.data.sort((a, b) =>
+    a.attributes && b.attributes ? naturalCompare(a.attributes.slug, b.attributes.slug) : 0
+  );
 
   const props: Props = {
     content: content.contents.data[0].attributes as ContentWithTranslations,

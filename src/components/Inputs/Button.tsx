@@ -21,6 +21,7 @@ interface Props {
   text?: string | null | undefined;
   alwaysNewTab?: boolean;
   onClick?: MouseEventHandler<HTMLDivElement>;
+  onMouseUp?: MouseEventHandler<HTMLDivElement>;
   draggable?: boolean;
   badgeNumber?: number;
   disabled?: boolean;
@@ -33,6 +34,7 @@ export const Button = ({
   draggable,
   id,
   onClick,
+  onMouseUp,
   active,
   className,
   icon,
@@ -52,6 +54,7 @@ export const Button = ({
         draggable={draggable}
         id={id}
         onClick={onClick}
+        onMouseUp={onMouseUp}
         onFocus={(event) => event.target.blur()}
         className={cJoin(
           `group grid cursor-pointer select-none grid-flow-col place-content-center 

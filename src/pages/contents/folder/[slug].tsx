@@ -215,22 +215,13 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   const folder = contentsFolder.contentsFolders.data[0].attributes;
 
-  const subFolders = {
-    // eslint-disable-next-line id-denylist
-    data: filterHasAttributes(folder.subfolders?.data, ["attributes.slug"]).sort((a, b) =>
-      naturalCompare(a.attributes.slug, b.attributes.slug)
-    ),
-  };
+  folder.subfolders?.data.sort((a, b) =>
+    a.attributes && b.attributes ? naturalCompare(a.attributes.slug, b.attributes.slug) : 0
+  );
 
-  const contents = {
-    // eslint-disable-next-line id-denylist
-    data: filterHasAttributes(folder.contents?.data, ["attributes.slug"]).sort((a, b) =>
-      naturalCompare(a.attributes.slug, b.attributes.slug)
-    ),
-  };
-
-  folder.contents = contents;
-  folder.subfolders = subFolders;
+  folder.contents?.data.sort((a, b) =>
+    a.attributes && b.attributes ? naturalCompare(a.attributes.slug, b.attributes.slug) : 0
+  );
 
   const title = (() => {
     if (slug === "root") {

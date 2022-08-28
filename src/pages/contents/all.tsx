@@ -139,7 +139,7 @@ const Contents = ({ contents, ...otherProps }: Props): JSX.Element => {
             if (isDefinedAndNotEmpty(name)) {
               umami("[Contents/All] Change search term");
             } else {
-              umami("[News] Clear search term");
+              umami("[Contents/All] Clear search term");
             }
           }}
         />

@@ -1,6 +1,7 @@
 import { GetStaticProps } from "next";
 import { useState, useMemo, useCallback } from "react";
 import { useBoolean } from "usehooks-ts";
+import naturalCompare from "string-natural-compare";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { Select } from "components/Inputs/Select";
 import { Switch } from "components/Inputs/Switch";
@@ -23,7 +24,12 @@ import { isUntangibleGroupItem } from "helpers/libraryItem";
 import { PreviewCard } from "components/PreviewCard";
 import { useDeviceSupportsHover } from "hooks/useMediaQuery";
 import { ButtonGroup } from "components/Inputs/ButtonGroup";
-import { filterHasAttributes, isDefined, isUndefined } from "helpers/others";
+import {
+  filterHasAttributes,
+  isDefined,
+  isDefinedAndNotEmpty,
+  isUndefined,
+} from "helpers/others";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { convertPrice } from "helpers/numbers";
 import { SmartList } from "components/SmartList";
@@ -162,7 +168,7 @@ const Library = ({ items, ...otherProps }: Props): JSX.Element => {
             b.attributes.title,
             b.attributes.subtitle
           );
-          return titleA.localeCompare(titleB);
+          return naturalCompare(titleA, titleB);
         }
         case 1: {
           const priceA = a.attributes.price
@@ -269,7 +275,14 @@ const Library = ({ items, ...otherProps }: Props): JSX.Element => {
           className="mb-6 w-full"
           placeholder={langui.search_title ?? "Search..."}
           value={searchName}
-          onChange={setSearchName}
+          onChange={(name) => {
+            setSearchName(name);
+            if (isDefinedAndNotEmpty(name)) {
+              umami("[Library] Change search term");
+            } else {
+              umami("[Library] Clear search term");
+            }
+          }}
         />
 
         <WithLabel label={langui.group_by}>
@@ -281,7 +294,14 @@ const Library = ({ items, ...otherProps }: Props): JSX.Element => {
               langui.release_year ?? "Year",
             ]}
             value={groupingMethod}
-            onChange={setGroupingMethod}
+            onChange={(value) => {
+              setGroupingMethod(value);
+              umami(
+                `[Library] Change grouping method (${
+                  ["none", "category", "type", "year"][value + 1]
+                })`
+              );
+            }}
             allowEmpty
           />
         </WithLabel>
@@ -295,28 +315,64 @@ const Library = ({ items, ...otherProps }: Props): JSX.Element => {
               langui.release_date ?? "Release date",
             ]}
             value={sortingMethod}
-            onChange={setSortingMethod}
+            onChange={(value) => {
+              setSortingMethod(value);
+              umami(
+                `[Library] Change sorting method (${
+                  ["name", "price", "release date"][value]
+                })`
+              );
+            }}
           />
         </WithLabel>
 
         <WithLabel label={langui.show_subitems}>
-          <Switch value={showSubitems} onClick={toggleShowSubitems} />
+          <Switch
+            value={showSubitems}
+            onClick={() => {
+              toggleShowSubitems();
+              umami(`[Library] ${showSubitems ? "Hide" : "Show"} subitems`);
+            }}
+          />
         </WithLabel>
 
         <WithLabel label={langui.show_primary_items}>
-          <Switch value={showPrimaryItems} onClick={toggleShowPrimaryItems} />
+          <Switch
+            value={showPrimaryItems}
+            onClick={() => {
+              toggleShowPrimaryItems();
+              umami(
+                `[Library] ${showPrimaryItems ? "Hide" : "Show"} primary items`
+              );
+            }}
+          />
         </WithLabel>
 
         <WithLabel label={langui.show_secondary_items}>
           <Switch
             value={showSecondaryItems}
-            onClick={toggleShowSecondaryItems}
+            onClick={() => {
+              toggleShowSecondaryItems();
+              umami(
+                `[Library] ${
+                  showSecondaryItems ? "Hide" : "Show"
+                } secondary items`
+              );
+            }}
           />
         </WithLabel>
 
         {hoverable && (
           <WithLabel label={langui.always_show_info}>
-            <Switch value={keepInfoVisible} onClick={toggleKeepInfoVisible} />
+            <Switch
+              value={keepInfoVisible}
+              onClick={() => {
+                toggleKeepInfoVisible();
+                umami(
+                  `[Library] Always ${keepInfoVisible ? "hide" : "show"} info`
+                );
+              }}
+            />
           </WithLabel>
         )}
 
@@ -326,25 +382,37 @@ const Library = ({ items, ...otherProps }: Props): JSX.Element => {
             {
               tooltip: langui.only_display_items_i_want,
               icon: Icon.Favorite,
-              onClick: () => setFilterUserStatus(LibraryItemUserStatus.Want),
+              onClick: () => {
+                setFilterUserStatus(LibraryItemUserStatus.Want);
+                umami("[Library] Set filter status (I want)");
+              },
               active: filterUserStatus === LibraryItemUserStatus.Want,
             },
             {
               tooltip: langui.only_display_items_i_have,
               icon: Icon.BackHand,
-              onClick: () => setFilterUserStatus(LibraryItemUserStatus.Have),
+              onClick: () => {
+                setFilterUserStatus(LibraryItemUserStatus.Have);
+                umami("[Library] Set filter status (I have)");
+              },
               active: filterUserStatus === LibraryItemUserStatus.Have,
             },
             {
               tooltip: langui.only_display_unmarked_items,
               icon: Icon.RadioButtonUnchecked,
-              onClick: () => setFilterUserStatus(LibraryItemUserStatus.None),
+              onClick: () => {
+                setFilterUserStatus(LibraryItemUserStatus.None);
+                umami("[Library] Set filter status (unmarked)");
+              },
               active: filterUserStatus === LibraryItemUserStatus.None,
             },
             {
               tooltip: langui.only_display_unmarked_items,
               text: langui.all,
-              onClick: () => setFilterUserStatus(undefined),
+              onClick: () => {
+                setFilterUserStatus(undefined);
+                umami("[Library] Set filter status (all)");
+              },
               active: isUndefined(filterUserStatus),
             },
           ]}
@@ -363,6 +431,7 @@ const Library = ({ items, ...otherProps }: Props): JSX.Element => {
             setGroupingMethod(DEFAULT_FILTERS_STATE.groupingMethod);
             setKeepInfoVisible(DEFAULT_FILTERS_STATE.keepInfoVisible);
             setFilterUserStatus(DEFAULT_FILTERS_STATE.filterUserStatus);
+            umami("[Library] Reset all filters");
           }}
         />
       </SubPanel>

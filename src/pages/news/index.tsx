@@ -17,7 +17,7 @@ import { WithLabel } from "components/Inputs/WithLabel";
 import { TextInput } from "components/Inputs/TextInput";
 import { Button } from "components/Inputs/Button";
 import { useDeviceSupportsHover } from "hooks/useMediaQuery";
-import { filterHasAttributes } from "helpers/others";
+import { filterHasAttributes, isDefinedAndNotEmpty } from "helpers/others";
 import { SmartList } from "components/SmartList";
 import { getOpenGraph } from "helpers/openGraph";
 import { compareDate } from "helpers/date";
@@ -75,12 +75,27 @@ const News = ({ posts, ...otherProps }: Props): JSX.Element => {
           className="mb-6 w-full"
           placeholder={langui.search_title ?? "Search..."}
           value={searchName}
-          onChange={setSearchName}
+          onChange={(name) => {
+            setSearchName(name);
+            if (isDefinedAndNotEmpty(name)) {
+              umami("[News] Change search term");
+            } else {
+              umami("[News] Clear search term");
+            }
+          }}
         />
 
         {hoverable && (
           <WithLabel label={langui.always_show_info}>
-            <Switch onClick={toggleKeepInfoVisible} value={keepInfoVisible} />
+            <Switch
+              value={keepInfoVisible}
+              onClick={() => {
+                toggleKeepInfoVisible();
+                umami(
+                  `[News] Always ${keepInfoVisible ? "hide" : "show"} info`
+                );
+              }}
+            />
           </WithLabel>
         )}
 
@@ -91,6 +106,7 @@ const News = ({ posts, ...otherProps }: Props): JSX.Element => {
           onClick={() => {
             setSearchName(DEFAULT_FILTERS_STATE.searchName);
             setKeepInfoVisible(DEFAULT_FILTERS_STATE.keepInfoVisible);
+            umami("[News] Reset all filters");
           }}
         />
       </SubPanel>

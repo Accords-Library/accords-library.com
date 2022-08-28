@@ -1,4 +1,5 @@
 import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
+import naturalCompare from "string-natural-compare";
 import { Chip } from "./Chip";
 import { PageSelector } from "./Inputs/PageSelector";
 import { Ico, Icon } from "./Ico";
@@ -15,7 +16,7 @@ interface Group<T> {
 }
 
 const defaultGroupSortingFunction = <T,>(a: Group<T>, b: Group<T>) =>
-  a.name.localeCompare(b.name);
+  naturalCompare(a.name, b.name);
 const defaultGroupCountingFunction = () => 1;
 const defaultFilteringFunction = () => true;
 const defaultSortingFunction = () => 0;

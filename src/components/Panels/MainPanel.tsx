@@ -38,9 +38,16 @@ export const MainPanel = (): JSX.Element => {
             "fixed top-1/2",
             cIf(mainPanelReduced, "left-[4.65rem]", "left-[18.65rem]")
           )}
-          onClick={toggleMainPanelReduced}
         >
           <Button
+            onClick={() => {
+              if (mainPanelReduced) {
+                umami("[MainPanel] Expand");
+              } else {
+                umami("[MainPanel] Reduce");
+              }
+              toggleMainPanelReduced();
+            }}
             className="bg-light !px-2"
             icon={mainPanelReduced ? Icon.ChevronRight : Icon.ChevronLeft}
           />
@@ -83,24 +90,11 @@ export const MainPanel = (): JSX.Element => {
               <Button
                 onClick={() => {
                   setConfigPanelOpen(true);
+                  umami("[Settings] Open settings");
                 }}
                 icon={Icon.Settings}
               />
             </ToolTip>
-
-            {/* <ToolTip
-              content={<h3 className="text-2xl">{langui.open_search}</h3>}
-              placement="right"
-              className="text-left"
-              disabled={!mainPanelReduced}
-            >
-              <Button
-                onClick={() => {
-                  setSearchPanelOpen(true);
-                }}
-                icon={Icon.Search}
-              />
-            </ToolTip> */}
           </div>
         </div>
       </div>
@@ -193,6 +187,7 @@ export const MainPanel = (): JSX.Element => {
         )}
         <div className="mt-4 mb-8 grid place-content-center">
           <a
+            onClick={() => umami("[MainPanel] Visit license")}
             aria-label="Read more about the license we use for this website"
             className="group grid grid-flow-col place-content-center gap-1 transition-[filter]"
             href="https://creativecommons.org/licenses/by-sa/4.0/"
@@ -222,15 +217,17 @@ export const MainPanel = (): JSX.Element => {
         <div className="mt-12 mb-4 grid h-4 grid-flow-col place-content-center gap-8">
           <a
             aria-label="Browse our GitHub repository, which include this website source code"
+            onClick={() => umami("[MainPanel] Visit GitHub")}
             className="aspect-square w-10
-            bg-black transition-colors [mask:url('/icons/github-brands.svg')]
-            ![mask-size:contain] ![mask-repeat:no-repeat] ![mask-position:center] hover:bg-dark"
+              bg-black transition-colors [mask:url('/icons/github-brands.svg')]
+              ![mask-size:contain] ![mask-repeat:no-repeat] ![mask-position:center] hover:bg-dark"
             href="https://github.com/Accords-Library"
             target="_blank"
             rel="noopener noreferrer"
           ></a>
           <a
             aria-label="Follow us on Twitter"
+            onClick={() => umami("[MainPanel] Visit Twitter")}
             className="aspect-square w-10
               bg-black transition-colors [mask:url('/icons/twitter-brands.svg')]
               ![mask-size:contain] ![mask-repeat:no-repeat] ![mask-position:center] hover:bg-dark"
@@ -240,9 +237,10 @@ export const MainPanel = (): JSX.Element => {
           ></a>
           <a
             aria-label="Join our Discord server!"
+            onClick={() => umami("[MainPanel] Visit Discord")}
             className="aspect-square w-10
-            bg-black transition-colors [mask:url('/icons/discord-brands.svg')]
-            ![mask-size:contain] ![mask-repeat:no-repeat] ![mask-position:center] hover:bg-dark"
+              bg-black transition-colors [mask:url('/icons/discord-brands.svg')]
+              ![mask-size:contain] ![mask-repeat:no-repeat] ![mask-position:center] hover:bg-dark"
             href="/discord"
             target="_blank"
             rel="noopener noreferrer"

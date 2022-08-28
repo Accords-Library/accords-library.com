@@ -18,7 +18,11 @@ import { Switch } from "components/Inputs/Switch";
 import { TextInput } from "components/Inputs/TextInput";
 import { WithLabel } from "components/Inputs/WithLabel";
 import { useDeviceSupportsHover } from "hooks/useMediaQuery";
-import { filterDefined, filterHasAttributes } from "helpers/others";
+import {
+  filterDefined,
+  filterHasAttributes,
+  isDefinedAndNotEmpty,
+} from "helpers/others";
 import { SmartList } from "components/SmartList";
 import { Select } from "components/Inputs/Select";
 import { SelectiveNonNullable } from "helpers/types/SelectiveNonNullable";
@@ -84,7 +88,14 @@ const Wiki = ({ pages, ...otherProps }: Props): JSX.Element => {
           className="mb-6 w-full"
           placeholder={langui.search_title ?? "Search..."}
           value={searchName}
-          onChange={setSearchName}
+          onChange={(name) => {
+            setSearchName(name);
+            if (isDefinedAndNotEmpty(name)) {
+              umami("[Wiki] Change search term");
+            } else {
+              umami("[Wiki] Clear search term");
+            }
+          }}
         />
 
         <WithLabel label={langui.group_by}>
@@ -92,14 +103,29 @@ const Wiki = ({ pages, ...otherProps }: Props): JSX.Element => {
             className="w-full"
             options={[langui.category ?? "Category"]}
             value={groupingMethod}
-            onChange={setGroupingMethod}
+            onChange={(value) => {
+              setGroupingMethod(value);
+              umami(
+                `[Wiki] Change grouping method (${
+                  ["none", "category"][value + 1]
+                })`
+              );
+            }}
             allowEmpty
           />
         </WithLabel>
 
         {hoverable && (
           <WithLabel label={langui.always_show_info}>
-            <Switch value={keepInfoVisible} onClick={toggleKeepInfoVisible} />
+            <Switch
+              value={keepInfoVisible}
+              onClick={() => {
+                toggleKeepInfoVisible();
+                umami(
+                  `[Wiki] Always ${keepInfoVisible ? "hide" : "show"} info`
+                );
+              }}
+            />
           </WithLabel>
         )}
 
@@ -109,7 +135,9 @@ const Wiki = ({ pages, ...otherProps }: Props): JSX.Element => {
           icon={Icon.Replay}
           onClick={() => {
             setSearchName(DEFAULT_FILTERS_STATE.searchName);
+            setGroupingMethod(DEFAULT_FILTERS_STATE.groupingMethod);
             setKeepInfoVisible(DEFAULT_FILTERS_STATE.keepInfoVisible);
+            umami("[Wiki] Reset all filters");
           }}
         />
 

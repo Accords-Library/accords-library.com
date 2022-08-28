@@ -471,7 +471,7 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
                     )}
                   >
                     <h3 className="text-xl">{langui.type_information}</h3>
-                    <div className="grid w-full grid-cols-2 place-content-between">
+                    <div className="flex flex-wrap place-content-between gap-x-8">
                       {item.metadata?.[0]?.__typename ===
                         "ComponentMetadataBooks" && (
                         <>

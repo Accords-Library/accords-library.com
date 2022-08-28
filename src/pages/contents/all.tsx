@@ -1,6 +1,7 @@
 import { GetStaticProps } from "next";
 import { useState, useMemo, useCallback } from "react";
 import { useBoolean } from "usehooks-ts";
+import naturalCompare from "string-natural-compare";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { Select } from "components/Inputs/Select";
 import { Switch } from "components/Inputs/Switch";
@@ -17,7 +18,11 @@ import { WithLabel } from "components/Inputs/WithLabel";
 import { Button } from "components/Inputs/Button";
 import { useDeviceSupportsHover } from "hooks/useMediaQuery";
 import { Icon } from "components/Ico";
-import { filterDefined, filterHasAttributes } from "helpers/others";
+import {
+  filterDefined,
+  filterHasAttributes,
+  isDefinedAndNotEmpty,
+} from "helpers/others";
 import { GetContentsQuery } from "graphql/generated";
 import { SmartList } from "components/SmartList";
 import { SelectiveNonNullable } from "helpers/types/SelectiveNonNullable";
@@ -150,7 +155,14 @@ const Contents = ({ contents, ...otherProps }: Props): JSX.Element => {
           className="mb-6 w-full"
           placeholder={langui.search_title ?? "Search..."}
           value={searchName}
-          onChange={setSearchName}
+          onChange={(name) => {
+            setSearchName(name);
+            if (isDefinedAndNotEmpty(name)) {
+              umami("[Contents/All] Change search term");
+            } else {
+              umami("[News] Clear search term");
+            }
+          }}
         />
 
         <WithLabel label={langui.group_by}>
@@ -158,14 +170,31 @@ const Contents = ({ contents, ...otherProps }: Props): JSX.Element => {
             className="w-full"
             options={[langui.category ?? "Category", langui.type ?? "Type"]}
             value={groupingMethod}
-            onChange={setGroupingMethod}
+            onChange={(value) => {
+              setGroupingMethod(value);
+              umami(
+                `[Contents/All] Change grouping method (${
+                  ["none", "category", "type"][value + 1]
+                })`
+              );
+            }}
             allowEmpty
           />
         </WithLabel>
 
         {hoverable && (
           <WithLabel label={langui.always_show_info}>
-            <Switch onClick={toggleKeepInfoVisible} value={keepInfoVisible} />
+            <Switch
+              value={keepInfoVisible}
+              onClick={() => {
+                toggleKeepInfoVisible();
+                umami(
+                  `[Contents/All] Always ${
+                    keepInfoVisible ? "hide" : "show"
+                  } info`
+                );
+              }}
+            />
           </WithLabel>
         )}
 
@@ -177,6 +206,7 @@ const Contents = ({ contents, ...otherProps }: Props): JSX.Element => {
             setSearchName(DEFAULT_FILTERS_STATE.searchName);
             setGroupingMethod(DEFAULT_FILTERS_STATE.groupingMethod);
             setKeepInfoVisible(DEFAULT_FILTERS_STATE.keepInfoVisible);
+            umami("[Contents/All] Reset all filters");
           }}
         />
       </SubPanel>
@@ -299,7 +329,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   contents.contents.data.sort((a, b) => {
     const titleA = a.attributes?.slug ?? "";
     const titleB = b.attributes?.slug ?? "";
-    return titleA.localeCompare(titleB);
+    return naturalCompare(titleA, titleB);
   });
 
   const props: Props = {

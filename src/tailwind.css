@@ -164,7 +164,7 @@ input[type="submit"] {
   @apply grid cursor-pointer place-content-center place-items-center rounded-full border-[1px]
   border-dark px-4 pt-[0.4rem] pb-[0.5rem] text-dark transition-all hover:bg-dark hover:text-light
   hover:drop-shadow-shade-lg active:border-black active:bg-black active:text-light
-  active:drop-shadow-black-lg;
+  active:drop-shadow-black-lg outline-none;
 }
 
 .texture-paper-dots {

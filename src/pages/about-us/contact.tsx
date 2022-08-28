@@ -75,17 +75,19 @@ const AboutUs = (props: PostStaticProps): JSX.Element => {
                   case "OKAY":
                     setFormResponse(langui.response_email_success ?? "");
                     setFormState("completed");
-
+                    umami("[Contact] Send email (success)");
                     break;
 
                   case "EENVELOPE":
                     setFormResponse(langui.response_invalid_email ?? "");
                     setFormState("stale");
+                    umami("[Contact] Send email (invalid email)");
                     break;
 
                   default:
                     setFormResponse(response.message ?? "");
                     setFormState("stale");
+                    umami("[Contact] Send email (error)");
                     break;
                 }
               });

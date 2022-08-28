@@ -40,7 +40,10 @@ export const LanguageSwitcher = ({
             <Fragment key={index}>
               <Button
                 active={value === localesIndex}
-                onClick={() => onLanguageChanged(value)}
+                onClick={() => {
+                  onLanguageChanged(value);
+                  umami(`[Language Switcher] Switch language (${locale})`);
+                }}
                 text={prettyLanguage(locale, languages)}
               />
             </Fragment>

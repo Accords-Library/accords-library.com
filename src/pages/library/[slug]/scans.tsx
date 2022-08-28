@@ -1,5 +1,5 @@
 import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next";
-import { Fragment, useCallback, useEffect, useMemo } from "react";
+import { Fragment, useCallback, useMemo } from "react";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { ReturnButton } from "components/PanelComponents/ReturnButton";
 import {

@@ -382,13 +382,19 @@ export const AppLayout = ({
           <Button
             text="Let me in regardless"
             className="mt-8"
-            onClick={disgardSafariWarning}
+            onClick={() => {
+              disgardSafariWarning();
+              umami("[Safari] Disgard warning");
+            }}
           />
         </Popup>
 
         <Popup
           state={configPanelOpen}
-          onClose={() => setConfigPanelOpen(false)}
+          onClose={() => {
+            setConfigPanelOpen(false);
+            umami("[Settings] Close settings");
+          }}
         >
           <h2 className="text-2xl">{langui.settings}</h2>
 
@@ -423,6 +429,7 @@ export const AppLayout = ({
                         (item) => item.code
                       );
                       setPreferredLanguages(newPreferredLanguages);
+                      umami("[Settings] Change preferred languages");
                     }}
                   />
                 )}
@@ -442,6 +449,7 @@ export const AppLayout = ({
                       onClick: () => {
                         setDarkMode(false);
                         setSelectedThemeMode(true);
+                        umami("[Settings] Change theme (light)");
                       },
                       active: selectedThemeMode && !darkMode,
                       text: langui.light,
@@ -449,6 +457,7 @@ export const AppLayout = ({
                     {
                       onClick: () => {
                         setSelectedThemeMode(false);
+                        umami("[Settings] Change theme (auto)");
                       },
                       active: !selectedThemeMode,
                       text: langui.auto,
@@ -457,6 +466,7 @@ export const AppLayout = ({
                       onClick: () => {
                         setDarkMode(true);
                         setSelectedThemeMode(true);
+                        umami("[Settings] Change theme (dark)");
                       },
                       active: selectedThemeMode && darkMode,
                       text: langui.dark,
@@ -471,7 +481,12 @@ export const AppLayout = ({
                   <Select
                     options={currencyOptions}
                     value={currencySelect}
-                    onChange={setCurrencySelect}
+                    onChange={(newCurrency) => {
+                      setCurrencySelect(newCurrency);
+                      umami(
+                        `[Settings] Change currency (${currencyOptions[newCurrency]})}`
+                      );
+                    }}
                     className="w-28"
                   />
                 </div>
@@ -482,17 +497,41 @@ export const AppLayout = ({
                 <ButtonGroup
                   buttonsProps={[
                     {
-                      onClick: () => setFontSize(fontSize / 1.05),
+                      onClick: () => {
+                        setFontSize((current) => current / 1.05);
+                        umami(
+                          `[Settings] Change font size (${(
+                            (fontSize / 1.05) *
+                            100
+                          ).toLocaleString(undefined, {
+                            maximumFractionDigits: 0,
+                          })}%)`
+                        );
+                      },
                       icon: Icon.TextDecrease,
                     },
                     {
-                      onClick: () => setFontSize(1),
+                      onClick: () => {
+                        setFontSize(1);
+                        umami("[Settings] Change font size (100%)");
+                      },
                       text: `${(fontSize * 100).toLocaleString(undefined, {
                         maximumFractionDigits: 0,
                       })}%`,
                     },
                     {
-                      onClick: () => setFontSize(fontSize * 1.05),
+                      onClick: () => {
+                        setFontSize((current) => current * 1.05);
+                        umami(
+                          `[Settings] Change font size (${(
+                            fontSize *
+                            1.05 *
+                            100
+                          ).toLocaleString(undefined, {
+                            maximumFractionDigits: 0,
+                          })}%)`
+                        );
+                      },
                       icon: Icon.TextIncrease,
                     },
                   ]}
@@ -504,13 +543,19 @@ export const AppLayout = ({
                 <div className="grid gap-2">
                   <Button
                     active={!dyslexic}
-                    onClick={() => setDyslexic(false)}
+                    onClick={() => {
+                      setDyslexic(false);
+                      umami("[Settings] Change font (Zen Maru Gothic)");
+                    }}
                     className="font-zenMaruGothic"
                     text="Zen Maru Gothic"
                   />
                   <Button
                     active={dyslexic}
-                    onClick={() => setDyslexic(true)}
+                    onClick={() => {
+                      setDyslexic(true);
+                      umami("[Settings] Change font (OpenDyslexic)");
+                    }}
                     className="font-openDyslexic"
                     text="OpenDyslexic"
                   />
@@ -523,7 +568,10 @@ export const AppLayout = ({
                   placeholder="<player>"
                   className="w-48"
                   value={playerName}
-                  onChange={setPlayerName}
+                  onChange={(newName) => {
+                    setPlayerName(newName);
+                    umami("[Settings] Change username");
+                  }}
                 />
               </div>
             </div>

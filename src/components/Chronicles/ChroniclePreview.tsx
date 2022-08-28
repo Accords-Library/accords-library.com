@@ -2,7 +2,7 @@ import { useCallback } from "react";
 import { Link } from "components/Inputs/Link";
 import { DatePickerFragment } from "graphql/generated";
 import { cIf, cJoin } from "helpers/className";
-import { TranslatedProps } from "helpers/types/TranslatedProps";
+import { TranslatedProps } from "types/TranslatedProps";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 
 /*

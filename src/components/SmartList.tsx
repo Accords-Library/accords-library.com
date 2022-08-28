@@ -5,9 +5,10 @@ import { PageSelector } from "./Inputs/PageSelector";
 import { Ico, Icon } from "./Ico";
 import { cJoin } from "helpers/className";
 import { isDefined, isDefinedAndNotEmpty } from "helpers/others";
-import { AnchorIds, useScrollTopOnChange } from "hooks/useScrollTopOnChange";
+import { useScrollTopOnChange } from "hooks/useScrollTopOnChange";
 import { useIs3ColumnsLayout } from "hooks/useContainerQuery";
 import { useAppLayout } from "contexts/AppLayoutContext";
+import { Ids } from "types/ids";
 
 interface Group<T> {
   name: string;
@@ -70,7 +71,7 @@ export const SmartList = <T,>({
 }: Props<T>): JSX.Element => {
   const [page, setPage] = useState(0);
   const { langui } = useAppLayout();
-  useScrollTopOnChange(AnchorIds.ContentPanel, [page], paginationScroolTop);
+  useScrollTopOnChange(Ids.ContentPanel, [page], paginationScroolTop);
   useEffect(
     () => setPage(0),
     [searchingTerm, groupingFunction, groupSortingFunction, items]

@@ -1,14 +1,9 @@
 import { DependencyList, useEffect } from "react";
-
-export enum AnchorIds {
-  Body = "bodyqs65d4a98d56az48z64d",
-  ContentPanel = "contentPanel495922447721572",
-  SubPanel = "subPanelz9e8rs2d3f18zer98ze",
-}
+import { Ids } from "types/ids";
 
 // Scroll to top of element "id" when "deps" update.
 export const useScrollTopOnChange = (
-  id: AnchorIds,
+  id: Ids,
   deps: DependencyList,
   enabled = true
 ): void => {

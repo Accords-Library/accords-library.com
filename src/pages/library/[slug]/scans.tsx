@@ -38,7 +38,7 @@ import { ToolTip } from "components/ToolTip";
 import { getAssetFilename, getAssetURL, ImageQuality } from "helpers/img";
 import { isInteger } from "helpers/numbers";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
-import { TranslatedProps } from "helpers/types/TranslatedProps";
+import { TranslatedProps } from "types/TranslatedProps";
 import { TranslatedNavOption } from "components/PanelComponents/NavOption";
 import { useIntersectionList } from "hooks/useIntersectionList";
 import {

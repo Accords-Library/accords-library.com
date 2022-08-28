@@ -26,7 +26,7 @@ import {
   isDefinedAndNotEmpty,
 } from "helpers/others";
 import { ContentWithTranslations } from "helpers/types";
-import { AnchorIds, useScrollTopOnChange } from "hooks/useScrollTopOnChange";
+import { useScrollTopOnChange } from "hooks/useScrollTopOnChange";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { getOpenGraph } from "helpers/openGraph";
 import {
@@ -42,6 +42,7 @@ import {
 import { cIf } from "helpers/className";
 import { getLangui } from "graphql/fetchLocalData";
 import { useAppLayout } from "contexts/AppLayoutContext";
+import { Ids } from "types/ids";
 
 /*
  *                                           ╭────────╮
@@ -67,7 +68,7 @@ const Content = ({ content, ...otherProps }: Props): JSX.Element => {
       ),
     });
 
-  useScrollTopOnChange(AnchorIds.ContentPanel, [selectedTranslation]);
+  useScrollTopOnChange(Ids.ContentPanel, [selectedTranslation]);
 
   const { previousContent, nextContent } = useMemo(
     () => ({

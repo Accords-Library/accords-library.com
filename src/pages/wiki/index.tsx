@@ -25,7 +25,7 @@ import {
 } from "helpers/others";
 import { SmartList } from "components/SmartList";
 import { Select } from "components/Inputs/Select";
-import { SelectiveNonNullable } from "helpers/types/SelectiveNonNullable";
+import { SelectiveNonNullable } from "types/SelectiveNonNullable";
 import { prettySlug } from "helpers/formatters";
 import { getOpenGraph } from "helpers/openGraph";
 import { TranslatedPreviewCard } from "components/PreviewCard";

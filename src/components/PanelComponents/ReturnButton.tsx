@@ -2,7 +2,7 @@ import { useCallback } from "react";
 import { Icon } from "components/Ico";
 import { Button } from "components/Inputs/Button";
 import { useAppLayout } from "contexts/AppLayoutContext";
-import { TranslatedProps } from "helpers/types/TranslatedProps";
+import { TranslatedProps } from "types/TranslatedProps";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { useIs3ColumnsLayout } from "hooks/useContainerQuery";
 import { isDefined } from "helpers/others";

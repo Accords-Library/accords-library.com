@@ -6,7 +6,7 @@ import { filterHasAttributes } from "helpers/others";
 import { prettyInlineTitle, prettySlug } from "helpers/formatters";
 import { Ico, Icon } from "components/Ico";
 import { compareDate } from "helpers/date";
-import { TranslatedProps } from "helpers/types/TranslatedProps";
+import { TranslatedProps } from "types/TranslatedProps";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 
 /*

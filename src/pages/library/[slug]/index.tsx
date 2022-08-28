@@ -43,7 +43,7 @@ import {
   sortRangedContent,
 } from "helpers/others";
 import { useLightBox } from "hooks/useLightBox";
-import { AnchorIds, useScrollTopOnChange } from "hooks/useScrollTopOnChange";
+import { useScrollTopOnChange } from "hooks/useScrollTopOnChange";
 import { isUntangibleGroupItem } from "helpers/libraryItem";
 import { useDeviceSupportsHover } from "hooks/useMediaQuery";
 import { WithLabel } from "components/Inputs/WithLabel";
@@ -57,6 +57,7 @@ import { HorizontalLine } from "components/HorizontalLine";
 import { useIsContentPanelNoMoreThan } from "hooks/useContainerQuery";
 import { useCurrencies } from "hooks/useLocalData";
 import { getLangui } from "graphql/fetchLocalData";
+import { Ids } from "types/ids";
 
 /*
  *                                         ╭─────────────╮
@@ -99,7 +100,7 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
   const { value: keepInfoVisible, toggle: toggleKeepInfoVisible } =
     useBoolean(false);
 
-  useScrollTopOnChange(AnchorIds.ContentPanel, [item]);
+  useScrollTopOnChange(Ids.ContentPanel, [item]);
   const currentIntersection = useIntersectionList(intersectionIds);
 
   const isVariantSet = useMemo(

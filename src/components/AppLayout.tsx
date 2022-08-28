@@ -13,7 +13,6 @@ import { Select } from "./Inputs/Select";
 import { TextInput } from "./Inputs/TextInput";
 import { MainPanel } from "./Panels/MainPanel";
 import { Popup } from "./Popup";
-import { AnchorIds } from "hooks/useScrollTopOnChange";
 import { filterHasAttributes, isDefined, isUndefined } from "helpers/others";
 import { prettyLanguage } from "helpers/formatters";
 import { cIf, cJoin } from "helpers/className";
@@ -25,6 +24,7 @@ import {
   useIsScreenAtLeast,
 } from "hooks/useContainerQuery";
 import { useOnResize } from "hooks/useOnResize";
+import { Ids } from "types/ids";
 
 /*
  *                                         ╭─────────────╮
@@ -95,9 +95,9 @@ export const AppLayout = ({
   const is1ColumnLayout = useIs1ColumnLayout();
   const isScreenAtLeastXs = useIsScreenAtLeast("xs");
 
-  useOnResize(AnchorIds.Body, (width) => setScreenWidth(width));
-  useOnResize(AnchorIds.ContentPanel, (width) => setContentPanelWidth(width));
-  useOnResize(AnchorIds.SubPanel, (width) => setSubPanelWidth(width));
+  useOnResize(Ids.Body, (width) => setScreenWidth(width));
+  useOnResize(Ids.ContentPanel, (width) => setContentPanelWidth(width));
+  useOnResize(Ids.SubPanel, (width) => setSubPanelWidth(width));
 
   const handlers = useSwipeable({
     onSwipedLeft: (SwipeEventData) => {
@@ -168,7 +168,7 @@ export const AppLayout = ({
     >
       <div
         {...handlers}
-        id={AnchorIds.Body}
+        id={Ids.Body}
         className={cJoin(
           `fixed inset-0 m-0 grid touch-pan-y bg-light p-0 text-black
         [grid-template-areas:'main_sub_content']`,
@@ -250,7 +250,7 @@ export const AppLayout = ({
 
         {/* Content panel */}
         <div
-          id={AnchorIds.ContentPanel}
+          id={Ids.ContentPanel}
           className={cJoin(
             "texture-paper-dots bg-light [grid-area:content]",
             cIf(contentPanelScroolbar, "overflow-y-scroll")
@@ -269,7 +269,7 @@ export const AppLayout = ({
         {/* Sub panel */}
         {isDefined(subPanel) && (
           <div
-            id={AnchorIds.SubPanel}
+            id={Ids.SubPanel}
             className={cJoin(
               `texture-paper-dots overflow-y-scroll border-r-[1px] border-dark/50 bg-light
               transition-transform duration-300 [scrollbar-width:none]

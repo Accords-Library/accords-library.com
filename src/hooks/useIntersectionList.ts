@@ -2,8 +2,8 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { throttle } from "throttle-debounce";
 import { useIsClient } from "usehooks-ts";
 import { useOnScroll } from "./useOnScroll";
-import { AnchorIds } from "./useScrollTopOnChange";
 import { isDefined } from "helpers/others";
+import { Ids } from "types/ids";
 
 export const useIntersectionList = (ids: string[]): number => {
   const [currentIntersection, setCurrentIntersection] = useState(-1);
@@ -11,7 +11,7 @@ export const useIntersectionList = (ids: string[]): number => {
   const isClient = useIsClient();
 
   const contentPanel = useMemo(
-    () => (isClient ? document.getElementById(AnchorIds.ContentPanel) : null),
+    () => (isClient ? document.getElementById(Ids.ContentPanel) : null),
     [isClient]
   );
 
@@ -44,7 +44,7 @@ export const useIntersectionList = (ids: string[]): number => {
     [refreshCurrentIntersection]
   );
 
-  useOnScroll(AnchorIds.ContentPanel, throttledRefreshCurrentIntersection);
+  useOnScroll(Ids.ContentPanel, throttledRefreshCurrentIntersection);
 
   useEffect(() => refreshCurrentIntersection(0), [refreshCurrentIntersection]);
 

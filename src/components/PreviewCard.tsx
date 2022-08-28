@@ -20,7 +20,7 @@ import {
 import { ImageQuality } from "helpers/img";
 import { useDeviceSupportsHover } from "hooks/useMediaQuery";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
-import { TranslatedProps } from "helpers/types/TranslatedProps";
+import { TranslatedProps } from "types/TranslatedProps";
 import { useCurrencies } from "hooks/useLocalData";
 
 /*

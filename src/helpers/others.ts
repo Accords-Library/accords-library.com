@@ -1,4 +1,4 @@
-import { PathDot, SelectiveNonNullable } from "./types/SelectiveNonNullable";
+import { PathDot, SelectiveNonNullable } from "../types/SelectiveNonNullable";
 import { Langui } from "./localData";
 import {
   Enum_Componentsetstextset_Status,

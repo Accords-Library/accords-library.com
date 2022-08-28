@@ -1,9 +1,9 @@
 import { useMemo, useCallback, useEffect } from "react";
 import { useIsClient } from "usehooks-ts";
-import { AnchorIds } from "./useScrollTopOnChange";
+import { Ids } from "types/ids";
 
 export const useOnScroll = (
-  id: AnchorIds,
+  id: Ids,
   onScroll: (scroll: number) => void
 ): void => {
   const isClient = useIsClient();

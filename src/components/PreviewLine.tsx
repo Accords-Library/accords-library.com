@@ -4,7 +4,7 @@ import { Img } from "./Img";
 import { Link } from "./Inputs/Link";
 import { UploadImageFragment } from "graphql/generated";
 import { ImageQuality } from "helpers/img";
-import { TranslatedProps } from "helpers/types/TranslatedProps";
+import { TranslatedProps } from "types/TranslatedProps";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 
 /*

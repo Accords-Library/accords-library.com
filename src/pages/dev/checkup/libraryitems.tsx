@@ -13,7 +13,7 @@ import {
   Enum_Componentcollectionscomponentlibraryimages_Status,
 } from "graphql/generated";
 import { getReadySdk } from "graphql/sdk";
-import { Report, Severity } from "helpers/types/Report";
+import { Report, Severity } from "types/Report";
 import { getOpenGraph } from "helpers/openGraph";
 import { getLangui } from "graphql/fetchLocalData";
 

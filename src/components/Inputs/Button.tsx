@@ -4,7 +4,7 @@ import { Ico, Icon } from "components/Ico";
 import { cIf, cJoin } from "helpers/className";
 import { ConditionalWrapper, Wrapper } from "helpers/component";
 import { isDefined, isDefinedAndNotEmpty } from "helpers/others";
-import { TranslatedProps } from "helpers/types/TranslatedProps";
+import { TranslatedProps } from "types/TranslatedProps";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 
 /*

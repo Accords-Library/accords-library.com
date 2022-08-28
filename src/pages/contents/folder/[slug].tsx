@@ -21,7 +21,7 @@ import { Button, TranslatedButton } from "components/Inputs/Button";
 import { Link } from "components/Inputs/Link";
 import { PanelHeader } from "components/PanelComponents/PanelHeader";
 import { SubPanel } from "components/Panels/SubPanel";
-import { TranslatedProps } from "helpers/types/TranslatedProps";
+import { TranslatedProps } from "types/TranslatedProps";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { TranslatedPreviewCard } from "components/PreviewCard";
 import { HorizontalLine } from "components/HorizontalLine";

@@ -26,7 +26,7 @@ import { Chip } from "components/Chip";
 import { Ico, Icon } from "components/Ico";
 import { AnchorShare } from "components/AnchorShare";
 import { datePickerToDate } from "helpers/date";
-import { TranslatedProps } from "helpers/types/TranslatedProps";
+import { TranslatedProps } from "types/TranslatedProps";
 import { TranslatedNavOption } from "components/PanelComponents/NavOption";
 import { useIntersectionList } from "hooks/useIntersectionList";
 import { HorizontalLine } from "components/HorizontalLine";

@@ -25,7 +25,7 @@ import {
 } from "helpers/others";
 import { GetContentsQuery } from "graphql/generated";
 import { SmartList } from "components/SmartList";
-import { SelectiveNonNullable } from "helpers/types/SelectiveNonNullable";
+import { SelectiveNonNullable } from "types/SelectiveNonNullable";
 import { getOpenGraph } from "helpers/openGraph";
 import { HorizontalLine } from "components/HorizontalLine";
 import { TranslatedPreviewCard } from "components/PreviewCard";

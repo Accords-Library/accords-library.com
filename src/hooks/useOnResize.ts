@@ -1,4 +1,4 @@
-import { useMemo, useCallback, useEffect } from "react";
+import { useEffect } from "react";
 import { useIsClient } from "usehooks-ts";
 import { isDefined } from "helpers/others";
 
@@ -7,23 +7,19 @@ export const useOnResize = (
   onResize: (width: number, height: number) => void
 ): void => {
   const isClient = useIsClient();
-  const elem = useMemo(
-    () => (isClient ? document.querySelector(`#${id}`) : null),
-    [id, isClient]
-  );
-
-  const listener = useCallback(() => {
-    console.log("useOnResize");
-    if (elem?.clientWidth && elem.clientHeight) {
-      onResize(elem.clientWidth, elem.clientHeight);
-    }
-  }, [elem?.clientHeight, elem?.clientWidth, onResize]);
 
   useEffect(() => {
-    const ro = new ResizeObserver(listener);
+    console.log("[useOnResize]", id);
+    const elem = isClient ? document.querySelector(`#${id}`) : null;
+    const ro = new ResizeObserver((resizeObserverEntry) =>
+      onResize(
+        resizeObserverEntry[0].contentRect.width,
+        resizeObserverEntry[0].contentRect.height
+      )
+    );
     if (isDefined(elem)) {
       ro.observe(elem);
     }
     return () => ro.disconnect();
-  }, [elem, listener]);
+  }, [id, isClient, onResize]);
 };

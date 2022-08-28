@@ -5,12 +5,24 @@ export enum ImageQuality {
   Og = "og",
 }
 
+interface ImageProperties {
+  maxSize: number;
+  extension: "jpg" | "webp";
+}
+
 export interface OgImage {
   image: string;
   width: number;
   height: number;
   alt: string;
 }
+
+export const imageQualityProperties: Record<ImageQuality, ImageProperties> = {
+  small: { maxSize: 512, extension: "webp" },
+  medium: { maxSize: 1024, extension: "webp" },
+  large: { maxSize: 2048, extension: "webp" },
+  og: { maxSize: 512, extension: "jpg" },
+};
 
 export const getAssetFilename = (path: string): string => {
   let result = path.split("/");
@@ -23,13 +35,13 @@ export const getAssetFilename = (path: string): string => {
 };
 
 export const getAssetURL = (url: string, quality: ImageQuality): string => {
-  let newUrl = url;
-  newUrl = newUrl.replace(/^\/uploads/u, `/${quality}`);
-  newUrl = newUrl.replace(/.jpg$/u, ".webp");
-  newUrl = newUrl.replace(/.jpeg$/u, ".webp");
-  newUrl = newUrl.replace(/.png$/u, ".webp");
-  if (quality === ImageQuality.Og) newUrl = newUrl.replace(/.webp$/u, ".jpg");
-  return process.env.NEXT_PUBLIC_URL_IMG + newUrl;
+  const indexEndPath = url.indexOf("/uploads/") + "/uploads/".length;
+  const indexStartExtension = url.lastIndexOf(".");
+  const assetPathWithoutExtension = url.slice(
+    indexEndPath,
+    indexStartExtension
+  );
+  return `${process.env.NEXT_PUBLIC_URL_IMG}/${quality}/${assetPathWithoutExtension}.${imageQualityProperties[quality].extension}`;
 };
 
 const getImgSizesByMaxSize = (
@@ -49,17 +61,5 @@ export const getImgSizesByQuality = (
   width: number,
   height: number,
   quality: ImageQuality
-): { width: number; height: number } => {
-  switch (quality) {
-    case ImageQuality.Og:
-      return getImgSizesByMaxSize(width, height, 512);
-    case ImageQuality.Small:
-      return getImgSizesByMaxSize(width, height, 512);
-    case ImageQuality.Medium:
-      return getImgSizesByMaxSize(width, height, 1024);
-    case ImageQuality.Large:
-      return getImgSizesByMaxSize(width, height, 2048);
-    default:
-      return { width: 0, height: 0 };
-  }
-};
+): { width: number; height: number } =>
+  getImgSizesByMaxSize(width, height, imageQualityProperties[quality].maxSize);

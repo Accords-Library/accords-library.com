@@ -14,6 +14,7 @@ import { Currencies, Languages, Langui } from "helpers/localData";
 import { useCurrencies, useLanguages, useLangui } from "hooks/useLocalData";
 import { getDefaultPreferredLanguages } from "helpers/locales";
 import { useStateWithLocalStorage } from "hooks/useStateWithLocalStorage";
+import { useScrollIntoView } from "hooks/useScrollIntoView";
 
 interface AppLayoutState {
   subPanelOpen: boolean;
@@ -301,12 +302,14 @@ export const AppContextProvider = (props: Props): JSX.Element => {
 
   useEffect(() => {
     router.events.on("routeChangeStart", () => {
+      console.log("[Router Events] on routeChangeStart");
       setConfigPanelOpen(false);
       setMainPanelOpen(false);
       setSubPanelOpen(false);
     });
 
     router.events.on("hashChangeStart", () => {
+      console.log("[Router Events] on hashChangeStart");
       setSubPanelOpen(false);
     });
   }, [router.events, setConfigPanelOpen, setMainPanelOpen, setSubPanelOpen]);
@@ -316,6 +319,8 @@ export const AppContextProvider = (props: Props): JSX.Element => {
       fontSize * 100
     }%`;
   }, [fontSize]);
+
+  useScrollIntoView();
 
   return (
     <AppContext.Provider

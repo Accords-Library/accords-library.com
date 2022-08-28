@@ -1,12 +1,12 @@
 import { useRouter } from "next/router";
-import { useEffect } from "react";
-import { useBoolean, useCounter } from "usehooks-ts";
+import { useEffect, useState } from "react";
+import { useCounter } from "usehooks-ts";
 import { isDefined } from "helpers/others";
 
 export const useScrollIntoView = (): void => {
   const router = useRouter();
   const { count, increment } = useCounter(0);
-  const { value: hasReachedElem, setTrue: setHasReachedElem } = useBoolean();
+  const [hasReachedElem, setHasReachedElem] = useState(false);
   useEffect(() => {
     if (!hasReachedElem) {
       const indexHash = router.asPath.indexOf("#");
@@ -17,7 +17,7 @@ export const useScrollIntoView = (): void => {
         if (isDefined(element)) {
           console.log(`[useScrollIntoView] ${hash} found`);
           element.scrollIntoView();
-          setHasReachedElem();
+          setHasReachedElem(true);
         } else {
           console.log(`[useScrollIntoView] ${hash} not found`);
           setTimeout(() => {
@@ -27,4 +27,6 @@ export const useScrollIntoView = (): void => {
       }
     }
   }, [increment, router.asPath, count, hasReachedElem, setHasReachedElem]);
+
+  useEffect(() => setHasReachedElem(false), [router.asPath]);
 };

@@ -172,9 +172,9 @@
           "anchor_link_copied": "Copied! 👍",
           "folders": "Folders",
           "empty_folder_message": "This folder is empty",
-          "switch_to_grid_view": null,
-          "switch_to_folder_view": null,
-          "content_is_not_available": null
+          "switch_to_grid_view": "Switch to grid view",
+          "switch_to_folder_view": "Switch to folder view",
+          "content_is_not_available": "This content is not available"
         }
       },
       {

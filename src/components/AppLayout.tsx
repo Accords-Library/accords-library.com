@@ -22,6 +22,7 @@ import { OpenGraph, TITLE_PREFIX, TITLE_SEPARATOR } from "helpers/openGraph";
 import { useIs1ColumnLayout, useIsScreenAtLeast } from "hooks/useContainerQuery";
 import { useOnResize } from "hooks/useOnResize";
 import { Ids } from "types/ids";
+import { sendAnalytics } from "helpers/analytics";
 
 /*
  *                                         ╭─────────────╮
@@ -324,7 +325,7 @@ export const AppLayout = ({
             className="mt-8"
             onClick={() => {
               disgardSafariWarning();
-              umami("[Safari] Disgard warning");
+              sendAnalytics("Safari", "Disgard warning");
             }}
           />
         </Popup>
@@ -333,7 +334,7 @@ export const AppLayout = ({
           state={configPanelOpen}
           onClose={() => {
             setConfigPanelOpen(false);
-            umami("[Settings] Close settings");
+            sendAnalytics("Settings", "Close settings");
           }}>
           <h2 className="text-2xl">{langui.settings}</h2>
 
@@ -364,7 +365,7 @@ export const AppLayout = ({
                     onChange={(items) => {
                       const newPreferredLanguages = items.map((item) => item.code);
                       setPreferredLanguages(newPreferredLanguages);
-                      umami("[Settings] Change preferred languages");
+                      sendAnalytics("Settings", "Change preferred languages");
                     }}
                   />
                 )}
@@ -383,7 +384,7 @@ export const AppLayout = ({
                       onClick: () => {
                         setDarkMode(false);
                         setSelectedThemeMode(true);
-                        umami("[Settings] Change theme (light)");
+                        sendAnalytics("Settings", "Change theme (light)");
                       },
                       active: selectedThemeMode && !darkMode,
                       text: langui.light,
@@ -391,7 +392,7 @@ export const AppLayout = ({
                     {
                       onClick: () => {
                         setSelectedThemeMode(false);
-                        umami("[Settings] Change theme (auto)");
+                        sendAnalytics("Settings", "Change theme (auto)");
                       },
                       active: !selectedThemeMode,
                       text: langui.auto,
@@ -400,7 +401,7 @@ export const AppLayout = ({
                       onClick: () => {
                         setDarkMode(true);
                         setSelectedThemeMode(true);
-                        umami("[Settings] Change theme (dark)");
+                        sendAnalytics("Settings", "Change theme (dark)");
                       },
                       active: selectedThemeMode && darkMode,
                       text: langui.dark,
@@ -417,7 +418,10 @@ export const AppLayout = ({
                     value={currencySelect}
                     onChange={(newCurrency) => {
                       setCurrencySelect(newCurrency);
-                      umami(`[Settings] Change currency (${currencyOptions[newCurrency]})}`);
+                      sendAnalytics(
+                        "Settings",
+                        `Change currency (${currencyOptions[newCurrency]})}`
+                      );
                     }}
                     className="w-28"
                   />
@@ -431,13 +435,11 @@ export const AppLayout = ({
                     {
                       onClick: () => {
                         setFontSize((current) => current / 1.05);
-                        umami(
-                          `[Settings] Change font size (${((fontSize / 1.05) * 100).toLocaleString(
-                            undefined,
-                            {
-                              maximumFractionDigits: 0,
-                            }
-                          )}%)`
+                        sendAnalytics(
+                          "Settings",
+                          `Change font size (${((fontSize / 1.05) * 100).toLocaleString(undefined, {
+                            maximumFractionDigits: 0,
+                          })}%)`
                         );
                       },
                       icon: Icon.TextDecrease,
@@ -445,7 +447,7 @@ export const AppLayout = ({
                     {
                       onClick: () => {
                         setFontSize(1);
-                        umami("[Settings] Change font size (100%)");
+                        sendAnalytics("Settings", "Change font size (100%)");
                       },
                       text: `${(fontSize * 100).toLocaleString(undefined, {
                         maximumFractionDigits: 0,
@@ -454,13 +456,11 @@ export const AppLayout = ({
                     {
                       onClick: () => {
                         setFontSize((current) => current * 1.05);
-                        umami(
-                          `[Settings] Change font size (${(fontSize * 1.05 * 100).toLocaleString(
-                            undefined,
-                            {
-                              maximumFractionDigits: 0,
-                            }
-                          )}%)`
+                        sendAnalytics(
+                          "Settings",
+                          `Change font size (${(fontSize * 1.05 * 100).toLocaleString(undefined, {
+                            maximumFractionDigits: 0,
+                          })}%)`
                         );
                       },
                       icon: Icon.TextIncrease,
@@ -476,7 +476,7 @@ export const AppLayout = ({
                     active={!dyslexic}
                     onClick={() => {
                       setDyslexic(false);
-                      umami("[Settings] Change font (Zen Maru Gothic)");
+                      sendAnalytics("Settings", "Change font (Zen Maru Gothic)");
                     }}
                     className="font-zenMaruGothic"
                     text="Zen Maru Gothic"
@@ -485,7 +485,7 @@ export const AppLayout = ({
                     active={dyslexic}
                     onClick={() => {
                       setDyslexic(true);
-                      umami("[Settings] Change font (OpenDyslexic)");
+                      sendAnalytics("Settings", "Change font (OpenDyslexic)");
                     }}
                     className="font-openDyslexic"
                     text="OpenDyslexic"
@@ -501,7 +501,7 @@ export const AppLayout = ({
                   value={playerName}
                   onChange={(newName) => {
                     setPlayerName(newName);
-                    umami("[Settings] Change username");
+                    sendAnalytics("Settings", "Change username");
                   }}
                 />
               </div>

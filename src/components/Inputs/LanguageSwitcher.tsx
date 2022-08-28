@@ -6,6 +6,7 @@ import { cJoin } from "helpers/className";
 import { prettyLanguage } from "helpers/formatters";
 import { iterateMap } from "helpers/others";
 import { useLanguages } from "hooks/useLocalData";
+import { sendAnalytics } from "helpers/analytics";
 
 /*
  *                                        ╭─────────────╮
@@ -42,7 +43,7 @@ export const LanguageSwitcher = ({
                 active={value === localesIndex}
                 onClick={() => {
                   onLanguageChanged(value);
-                  umami(`[Language Switcher] Switch language (${locale})`);
+                  sendAnalytics("Language Switcher", `Switch language (${locale})`);
                 }}
                 text={prettyLanguage(locale, languages)}
               />

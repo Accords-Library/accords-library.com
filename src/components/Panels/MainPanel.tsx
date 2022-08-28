@@ -9,6 +9,7 @@ import { cIf, cJoin } from "helpers/className";
 import { isDefinedAndNotEmpty } from "helpers/others";
 import { Link } from "components/Inputs/Link";
 import { useIs3ColumnsLayout } from "hooks/useContainerQuery";
+import { sendAnalytics } from "helpers/analytics";
 
 /*
  *                                        ╭─────────────╮
@@ -40,9 +41,9 @@ export const MainPanel = (): JSX.Element => {
           <Button
             onClick={() => {
               if (mainPanelReduced) {
-                umami("[MainPanel] Expand");
+                sendAnalytics("MainPanel", "Expand");
               } else {
-                umami("[MainPanel] Reduce");
+                sendAnalytics("MainPanel", "Reduce");
               }
               toggleMainPanelReduced();
             }}
@@ -81,7 +82,7 @@ export const MainPanel = (): JSX.Element => {
               <Button
                 onClick={() => {
                   setConfigPanelOpen(true);
-                  umami("[Settings] Open settings");
+                  sendAnalytics("Settings", "Open settings");
                 }}
                 icon={Icon.Settings}
               />
@@ -173,7 +174,7 @@ export const MainPanel = (): JSX.Element => {
         )}
         <div className="mt-4 mb-8 grid place-content-center">
           <a
-            onClick={() => umami("[MainPanel] Visit license")}
+            onClick={() => sendAnalytics("MainPanel", "Visit license")}
             aria-label="Read more about the license we use for this website"
             className="group grid grid-flow-col place-content-center gap-1 transition-[filter]"
             href="https://creativecommons.org/licenses/by-sa/4.0/">
@@ -202,7 +203,7 @@ export const MainPanel = (): JSX.Element => {
         <div className="mt-12 mb-4 grid h-4 grid-flow-col place-content-center gap-8">
           <a
             aria-label="Browse our GitHub repository, which include this website source code"
-            onClick={() => umami("[MainPanel] Visit GitHub")}
+            onClick={() => sendAnalytics("MainPanel", "Visit GitHub")}
             className="aspect-square w-10
               bg-black transition-colors [mask:url('/icons/github-brands.svg')]
               ![mask-size:contain] ![mask-repeat:no-repeat] ![mask-position:center] hover:bg-dark"
@@ -211,7 +212,7 @@ export const MainPanel = (): JSX.Element => {
             rel="noopener noreferrer"></a>
           <a
             aria-label="Follow us on Twitter"
-            onClick={() => umami("[MainPanel] Visit Twitter")}
+            onClick={() => sendAnalytics("MainPanel", "Visit Twitter")}
             className="aspect-square w-10
               bg-black transition-colors [mask:url('/icons/twitter-brands.svg')]
               ![mask-size:contain] ![mask-repeat:no-repeat] ![mask-position:center] hover:bg-dark"
@@ -220,7 +221,7 @@ export const MainPanel = (): JSX.Element => {
             rel="noopener noreferrer"></a>
           <a
             aria-label="Join our Discord server!"
-            onClick={() => umami("[MainPanel] Visit Discord")}
+            onClick={() => sendAnalytics("MainPanel", "Visit Discord")}
             className="aspect-square w-10
               bg-black transition-colors [mask:url('/icons/discord-brands.svg')]
               ![mask-size:contain] ![mask-repeat:no-repeat] ![mask-position:center] hover:bg-dark"

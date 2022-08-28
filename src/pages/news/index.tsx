@@ -24,6 +24,7 @@ import { cIf } from "helpers/className";
 import { useIsContentPanelAtLeast } from "hooks/useContainerQuery";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { getLangui } from "graphql/fetchLocalData";
+import { sendAnalytics } from "helpers/analytics";
 
 /*
  *                                         ╭─────────────╮
@@ -69,9 +70,9 @@ const News = ({ posts, ...otherProps }: Props): JSX.Element => {
           onChange={(name) => {
             setSearchName(name);
             if (isDefinedAndNotEmpty(name)) {
-              umami("[News] Change search term");
+              sendAnalytics("News", "Change search term");
             } else {
-              umami("[News] Clear search term");
+              sendAnalytics("News", "Clear search term");
             }
           }}
         />
@@ -82,7 +83,7 @@ const News = ({ posts, ...otherProps }: Props): JSX.Element => {
               value={keepInfoVisible}
               onClick={() => {
                 toggleKeepInfoVisible();
-                umami(`[News] Always ${keepInfoVisible ? "hide" : "show"} info`);
+                sendAnalytics("News", `Always ${keepInfoVisible ? "hide" : "show"} info`);
               }}
             />
           </WithLabel>
@@ -95,7 +96,7 @@ const News = ({ posts, ...otherProps }: Props): JSX.Element => {
           onClick={() => {
             setSearchName(DEFAULT_FILTERS_STATE.searchName);
             setKeepInfoVisible(DEFAULT_FILTERS_STATE.keepInfoVisible);
-            umami("[News] Reset all filters");
+            sendAnalytics("News", "Reset all filters");
           }}
         />
       </SubPanel>

@@ -8,6 +8,7 @@ import { randomInt } from "helpers/numbers";
 import { RequestMailProps, ResponseMailProps } from "pages/api/mail";
 import { useIs1ColumnLayout } from "hooks/useContainerQuery";
 import { useAppLayout } from "contexts/AppLayoutContext";
+import { sendAnalytics } from "helpers/analytics";
 
 /*
  *                                           ╭────────╮
@@ -66,19 +67,19 @@ const AboutUs = (props: PostStaticProps): JSX.Element => {
                   case "OKAY":
                     setFormResponse(langui.response_email_success ?? "");
                     setFormState("completed");
-                    umami("[Contact] Send email (success)");
+                    sendAnalytics("Contact", "Send email (success)");
                     break;
 
                   case "EENVELOPE":
                     setFormResponse(langui.response_invalid_email ?? "");
                     setFormState("stale");
-                    umami("[Contact] Send email (invalid email)");
+                    sendAnalytics("Contact", "Send email (invalid email)");
                     break;
 
                   default:
                     setFormResponse(response.message ?? "");
                     setFormState("stale");
-                    umami("[Contact] Send email (error)");
+                    sendAnalytics("Contact", "Send email (error)");
                     break;
                 }
               });

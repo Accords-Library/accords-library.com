@@ -26,6 +26,7 @@ import { useIsContentPanelAtLeast } from "hooks/useContainerQuery";
 import { cJoin, cIf } from "helpers/className";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { getLangui } from "graphql/fetchLocalData";
+import { sendAnalytics } from "helpers/analytics";
 
 /*
  *                                         ╭─────────────╮
@@ -137,9 +138,9 @@ const Contents = ({ contents, ...otherProps }: Props): JSX.Element => {
           onChange={(name) => {
             setSearchName(name);
             if (isDefinedAndNotEmpty(name)) {
-              umami("[Contents/All] Change search term");
+              sendAnalytics("Contents/All", "Change search term");
             } else {
-              umami("[Contents/All] Clear search term");
+              sendAnalytics("Contents/All", "Clear search term");
             }
           }}
         />
@@ -151,8 +152,9 @@ const Contents = ({ contents, ...otherProps }: Props): JSX.Element => {
             value={groupingMethod}
             onChange={(value) => {
               setGroupingMethod(value);
-              umami(
-                `[Contents/All] Change grouping method (${["none", "category", "type"][value + 1]})`
+              sendAnalytics(
+                "Contents/All",
+                `Change grouping method (${["none", "category", "type"][value + 1]})`
               );
             }}
             allowEmpty
@@ -165,7 +167,7 @@ const Contents = ({ contents, ...otherProps }: Props): JSX.Element => {
               value={keepInfoVisible}
               onClick={() => {
                 toggleKeepInfoVisible();
-                umami(`[Contents/All] Always ${keepInfoVisible ? "hide" : "show"} info`);
+                sendAnalytics("Contents/All", `Always ${keepInfoVisible ? "hide" : "show"} info`);
               }}
             />
           </WithLabel>
@@ -179,7 +181,7 @@ const Contents = ({ contents, ...otherProps }: Props): JSX.Element => {
             setSearchName(DEFAULT_FILTERS_STATE.searchName);
             setGroupingMethod(DEFAULT_FILTERS_STATE.groupingMethod);
             setKeepInfoVisible(DEFAULT_FILTERS_STATE.keepInfoVisible);
-            umami("[Contents/All] Reset all filters");
+            sendAnalytics("Contents/All", "Reset all filters");
           }}
         />
       </SubPanel>

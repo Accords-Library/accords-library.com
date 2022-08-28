@@ -33,6 +33,7 @@ import { useIsContentPanelAtLeast } from "hooks/useContainerQuery";
 import { cIf, cJoin } from "helpers/className";
 import { useCurrencies } from "hooks/useLocalData";
 import { getLangui } from "graphql/fetchLocalData";
+import { sendAnalytics } from "helpers/analytics";
 
 /*
  *                                         ╭─────────────╮
@@ -238,9 +239,9 @@ const Library = ({ items, ...otherProps }: Props): JSX.Element => {
           onChange={(name) => {
             setSearchName(name);
             if (isDefinedAndNotEmpty(name)) {
-              umami("[Library] Change search term");
+              sendAnalytics("Library", "Change search term");
             } else {
-              umami("[Library] Clear search term");
+              sendAnalytics("Library", "Clear search term");
             }
           }}
         />
@@ -256,10 +257,9 @@ const Library = ({ items, ...otherProps }: Props): JSX.Element => {
             value={groupingMethod}
             onChange={(value) => {
               setGroupingMethod(value);
-              umami(
-                `[Library] Change grouping method (${
-                  ["none", "category", "type", "year"][value + 1]
-                })`
+              sendAnalytics(
+                "Library",
+                `Change grouping method (${["none", "category", "type", "year"][value + 1]})`
               );
             }}
             allowEmpty
@@ -277,8 +277,9 @@ const Library = ({ items, ...otherProps }: Props): JSX.Element => {
             value={sortingMethod}
             onChange={(value) => {
               setSortingMethod(value);
-              umami(
-                `[Library] Change sorting method (${["name", "price", "release date"][value]})`
+              sendAnalytics(
+                "Library",
+                `Change sorting method (${["name", "price", "release date"][value]})`
               );
             }}
           />
@@ -289,7 +290,7 @@ const Library = ({ items, ...otherProps }: Props): JSX.Element => {
             value={showSubitems}
             onClick={() => {
               toggleShowSubitems();
-              umami(`[Library] ${showSubitems ? "Hide" : "Show"} subitems`);
+              sendAnalytics("Library", `${showSubitems ? "Hide" : "Show"} subitems`);
             }}
           />
         </WithLabel>
@@ -299,7 +300,7 @@ const Library = ({ items, ...otherProps }: Props): JSX.Element => {
             value={showPrimaryItems}
             onClick={() => {
               toggleShowPrimaryItems();
-              umami(`[Library] ${showPrimaryItems ? "Hide" : "Show"} primary items`);
+              sendAnalytics("Library", `${showPrimaryItems ? "Hide" : "Show"} primary items`);
             }}
           />
         </WithLabel>
@@ -309,7 +310,7 @@ const Library = ({ items, ...otherProps }: Props): JSX.Element => {
             value={showSecondaryItems}
             onClick={() => {
               toggleShowSecondaryItems();
-              umami(`[Library] ${showSecondaryItems ? "Hide" : "Show"} secondary items`);
+              sendAnalytics("Library", `${showSecondaryItems ? "Hide" : "Show"} secondary items`);
             }}
           />
         </WithLabel>
@@ -320,7 +321,7 @@ const Library = ({ items, ...otherProps }: Props): JSX.Element => {
               value={keepInfoVisible}
               onClick={() => {
                 toggleKeepInfoVisible();
-                umami(`[Library] Always ${keepInfoVisible ? "hide" : "show"} info`);
+                sendAnalytics("Library", `Always ${keepInfoVisible ? "hide" : "show"} info`);
               }}
             />
           </WithLabel>
@@ -334,7 +335,7 @@ const Library = ({ items, ...otherProps }: Props): JSX.Element => {
               icon: Icon.Favorite,
               onClick: () => {
                 setFilterUserStatus(LibraryItemUserStatus.Want);
-                umami("[Library] Set filter status (I want)");
+                sendAnalytics("Library", "Set filter status (I want)");
               },
               active: filterUserStatus === LibraryItemUserStatus.Want,
             },
@@ -343,7 +344,7 @@ const Library = ({ items, ...otherProps }: Props): JSX.Element => {
               icon: Icon.BackHand,
               onClick: () => {
                 setFilterUserStatus(LibraryItemUserStatus.Have);
-                umami("[Library] Set filter status (I have)");
+                sendAnalytics("Library", "Set filter status (I have)");
               },
               active: filterUserStatus === LibraryItemUserStatus.Have,
             },
@@ -352,7 +353,7 @@ const Library = ({ items, ...otherProps }: Props): JSX.Element => {
               icon: Icon.RadioButtonUnchecked,
               onClick: () => {
                 setFilterUserStatus(LibraryItemUserStatus.None);
-                umami("[Library] Set filter status (unmarked)");
+                sendAnalytics("Library", "Set filter status (unmarked)");
               },
               active: filterUserStatus === LibraryItemUserStatus.None,
             },
@@ -361,7 +362,7 @@ const Library = ({ items, ...otherProps }: Props): JSX.Element => {
               text: langui.all,
               onClick: () => {
                 setFilterUserStatus(undefined);
-                umami("[Library] Set filter status (all)");
+                sendAnalytics("Library", "Set filter status (all)");
               },
               active: isUndefined(filterUserStatus),
             },
@@ -381,7 +382,7 @@ const Library = ({ items, ...otherProps }: Props): JSX.Element => {
             setGroupingMethod(DEFAULT_FILTERS_STATE.groupingMethod);
             setKeepInfoVisible(DEFAULT_FILTERS_STATE.keepInfoVisible);
             setFilterUserStatus(DEFAULT_FILTERS_STATE.filterUserStatus);
-            umami("[Library] Reset all filters");
+            sendAnalytics("Library", "Reset all filters");
           }}
         />
       </SubPanel>

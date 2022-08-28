@@ -1,5 +1,7 @@
 export {};
 
+type Umami = (eventName: string) => void;
+
 declare global {
-  function umami(eventName: string): void;
+  const umami: Umami;
 }

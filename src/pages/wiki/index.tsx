@@ -26,6 +26,7 @@ import { useIsContentPanelAtLeast } from "hooks/useContainerQuery";
 import { cIf } from "helpers/className";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { getLangui } from "graphql/fetchLocalData";
+import { sendAnalytics } from "helpers/analytics";
 
 /*
  *                                         ╭─────────────╮
@@ -82,9 +83,9 @@ const Wiki = ({ pages, ...otherProps }: Props): JSX.Element => {
           onChange={(name) => {
             setSearchName(name);
             if (isDefinedAndNotEmpty(name)) {
-              umami("[Wiki] Change search term");
+              sendAnalytics("Wiki", "Change search term");
             } else {
-              umami("[Wiki] Clear search term");
+              sendAnalytics("Wiki", "Clear search term");
             }
           }}
         />
@@ -96,7 +97,7 @@ const Wiki = ({ pages, ...otherProps }: Props): JSX.Element => {
             value={groupingMethod}
             onChange={(value) => {
               setGroupingMethod(value);
-              umami(`[Wiki] Change grouping method (${["none", "category"][value + 1]})`);
+              sendAnalytics("Wiki", `Change grouping method (${["none", "category"][value + 1]})`);
             }}
             allowEmpty
           />
@@ -108,7 +109,7 @@ const Wiki = ({ pages, ...otherProps }: Props): JSX.Element => {
               value={keepInfoVisible}
               onClick={() => {
                 toggleKeepInfoVisible();
-                umami(`[Wiki] Always ${keepInfoVisible ? "hide" : "show"} info`);
+                sendAnalytics("Wiki", `Always ${keepInfoVisible ? "hide" : "show"} info`);
               }}
             />
           </WithLabel>
@@ -122,7 +123,7 @@ const Wiki = ({ pages, ...otherProps }: Props): JSX.Element => {
             setSearchName(DEFAULT_FILTERS_STATE.searchName);
             setGroupingMethod(DEFAULT_FILTERS_STATE.groupingMethod);
             setKeepInfoVisible(DEFAULT_FILTERS_STATE.keepInfoVisible);
-            umami("[Wiki] Reset all filters");
+            sendAnalytics("Wiki", "Reset all filters");
           }}
         />
 

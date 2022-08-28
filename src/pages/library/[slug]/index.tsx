@@ -11,10 +11,7 @@ import { InsetBox } from "components/InsetBox";
 import { PreviewCardCTAs } from "components/Library/PreviewCardCTAs";
 import { NavOption } from "components/PanelComponents/NavOption";
 import { ReturnButton } from "components/PanelComponents/ReturnButton";
-import {
-  ContentPanel,
-  ContentPanelWidthSizes,
-} from "components/Panels/ContentPanel";
+import { ContentPanel, ContentPanelWidthSizes } from "components/Panels/ContentPanel";
 import { SubPanel } from "components/Panels/SubPanel";
 import { PreviewCard } from "components/PreviewCard";
 import { useAppLayout } from "contexts/AppLayoutContext";
@@ -64,13 +61,7 @@ import { Ids } from "types/ids";
  * ────────────────────────────────────────╯  CONSTANTS  ╰──────────────────────────────────────────
  */
 
-const intersectionIds = [
-  "summary",
-  "gallery",
-  "details",
-  "subitems",
-  "contents",
-];
+const intersectionIds = ["summary", "gallery", "details", "subitems", "contents"];
 
 /*
  *                                           ╭────────╮
@@ -78,14 +69,8 @@ const intersectionIds = [
  */
 
 interface Props extends AppLayoutRequired {
-  item: NonNullable<
-    NonNullable<
-      GetLibraryItemQuery["libraryItems"]
-    >["data"][number]["attributes"]
-  >;
-  itemId: NonNullable<
-    GetLibraryItemQuery["libraryItems"]
-  >["data"][number]["id"];
+  item: NonNullable<NonNullable<GetLibraryItemQuery["libraryItems"]>["data"][number]["attributes"]>;
+  itemId: NonNullable<GetLibraryItemQuery["libraryItems"]>["data"][number]["id"];
 }
 
 const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
@@ -97,8 +82,7 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
   const hoverable = useDeviceSupportsHover();
   const router = useRouter();
   const [openLightBox, LightBox] = useLightBox();
-  const { value: keepInfoVisible, toggle: toggleKeepInfoVisible } =
-    useBoolean(false);
+  const { value: keepInfoVisible, toggle: toggleKeepInfoVisible } = useBoolean(false);
 
   useScrollTopOnChange(Ids.ContentPanel, [item]);
   const currentIntersection = useIntersectionList(intersectionIds);
@@ -113,8 +97,7 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
   const displayOpenScans = useMemo(
     () =>
       item.contents?.data.some(
-        (content) =>
-          content.attributes?.scan_set && content.attributes.scan_set.length > 0
+        (content) => content.attributes?.scan_set && content.attributes.scan_set.length > 0
       ),
     [item.contents?.data]
   );
@@ -122,11 +105,7 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
   const subPanel = useMemo(
     () => (
       <SubPanel>
-        <ReturnButton
-          href="/library/"
-          title={langui.library}
-          displayOnlyOn="3ColumnsLayout"
-        />
+        <ReturnButton href="/library/" title={langui.library} displayOnlyOn="3ColumnsLayout" />
 
         <HorizontalLine />
 
@@ -174,14 +153,7 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
         </div>
       </SubPanel>
     ),
-    [
-      currentIntersection,
-      isVariantSet,
-      item.contents,
-      item.gallery,
-      item.subitems,
-      langui,
-    ]
+    [currentIntersection, isVariantSet, item.contents, item.gallery, item.subitems, langui]
   );
 
   const contentPanel = useMemo(
@@ -203,15 +175,9 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
             )}
             onClick={() => {
               if (item.thumbnail?.data?.attributes) {
-                openLightBox([
-                  getAssetURL(
-                    item.thumbnail.data.attributes.url,
-                    ImageQuality.Large
-                  ),
-                ]);
+                openLightBox([getAssetURL(item.thumbnail.data.attributes.url, ImageQuality.Large)]);
               }
-            }}
-          >
+            }}>
             {item.thumbnail?.data?.attributes ? (
               <Img
                 src={item.thumbnail.data.attributes}
@@ -245,39 +211,28 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
                 )}
               </div>
 
-              {!isUntangibleGroupItem(item.metadata?.[0]) &&
-                isDefinedAndNotEmpty(itemId) && (
-                  <PreviewCardCTAs id={itemId} expand />
-                )}
+              {!isUntangibleGroupItem(item.metadata?.[0]) && isDefinedAndNotEmpty(itemId) && (
+                <PreviewCardCTAs id={itemId} expand />
+              )}
 
               {item.descriptions?.[0] && (
-                <p className="text-justify">
-                  {item.descriptions[0].description}
-                </p>
+                <p className="text-justify">{item.descriptions[0].description}</p>
               )}
               {!(
                 item.metadata &&
                 item.metadata[0]?.__typename === "ComponentMetadataGroup" &&
-                (item.metadata[0].subtype?.data?.attributes?.slug ===
-                  "variant-set" ||
-                  item.metadata[0].subtype?.data?.attributes?.slug ===
-                    "relation-set")
+                (item.metadata[0].subtype?.data?.attributes?.slug === "variant-set" ||
+                  item.metadata[0].subtype?.data?.attributes?.slug === "relation-set")
               ) && (
                 <>
                   {item.urls?.length ? (
                     <div className="flex flex-row place-items-center gap-3">
                       <p>{langui.available_at}</p>
-                      {filterHasAttributes(item.urls, ["url"] as const).map(
-                        (url, index) => (
-                          <Fragment key={index}>
-                            <Button
-                              href={url.url}
-                              text={prettyURL(url.url)}
-                              alwaysNewTab
-                            />
-                          </Fragment>
-                        )
-                      )}
+                      {filterHasAttributes(item.urls, ["url"] as const).map((url, index) => (
+                        <Fragment key={index}>
+                          <Button href={url.url} text={prettyURL(url.url)} alwaysNewTab />
+                        </Fragment>
+                      ))}
                     </div>
                   ) : (
                     <p>{langui.item_not_available}</p>
@@ -288,41 +243,34 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
           </InsetBox>
 
           {item.gallery && item.gallery.data.length > 0 && (
-            <div
-              id={intersectionIds[1]}
-              className="grid w-full place-items-center  gap-8"
-            >
+            <div id={intersectionIds[1]} className="grid w-full place-items-center  gap-8">
               <h2 className="text-2xl">{langui.gallery}</h2>
               <div
                 className="grid w-full grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] items-end
-              gap-8"
-              >
-                {filterHasAttributes(item.gallery.data, [
-                  "id",
-                  "attributes",
-                ] as const).map((galleryItem, index) => (
-                  <Fragment key={galleryItem.id}>
-                    <div
-                      className="relative aspect-square cursor-pointer
+              gap-8">
+                {filterHasAttributes(item.gallery.data, ["id", "attributes"] as const).map(
+                  (galleryItem, index) => (
+                    <Fragment key={galleryItem.id}>
+                      <div
+                        className="relative aspect-square cursor-pointer
                       transition-transform hover:scale-[1.02]"
-                      onClick={() => {
-                        const images: string[] = filterHasAttributes(
-                          item.gallery?.data,
-                          ["attributes"] as const
-                        ).map((image) =>
-                          getAssetURL(image.attributes.url, ImageQuality.Large)
-                        );
-                        openLightBox(images, index);
-                      }}
-                    >
-                      <Img
-                        className="h-full w-full rounded-lg
+                        onClick={() => {
+                          const images: string[] = filterHasAttributes(item.gallery?.data, [
+                            "attributes",
+                          ] as const).map((image) =>
+                            getAssetURL(image.attributes.url, ImageQuality.Large)
+                          );
+                          openLightBox(images, index);
+                        }}>
+                        <Img
+                          className="h-full w-full rounded-lg
                         bg-light object-cover drop-shadow-shade-md"
-                        src={galleryItem.attributes}
-                      />
-                    </div>
-                  </Fragment>
-                ))}
+                          src={galleryItem.attributes}
+                        />
+                      </div>
+                    </Fragment>
+                  )
+                )}
               </div>
             </div>
           )}
@@ -333,12 +281,8 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
               <div
                 className={cJoin(
                   "grid place-items-center gap-y-8",
-                  cIf(
-                    !isContentPanelNoMoreThan3xl,
-                    "grid-flow-col place-content-between"
-                  )
-                )}
-              >
+                  cIf(!isContentPanelNoMoreThan3xl, "grid-flow-col place-content-between")
+                )}>
                 {item.metadata?.[0] && (
                   <div className="grid place-content-start place-items-center">
                     <h3 className="text-xl">{langui.type}</h3>
@@ -367,8 +311,7 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
                         item.price.currency?.data?.attributes?.code
                       )}
                     </p>
-                    {item.price.currency?.data?.attributes?.code !==
-                      currency && (
+                    {item.price.currency?.data?.attributes?.code !== currency && (
                       <p>
                         {prettyPrice(item.price, currencies, currency)} <br />(
                         {langui.calculated?.toLowerCase()})
@@ -382,11 +325,11 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
                 <div className="flex flex-col place-items-center gap-2">
                   <h3 className="text-xl">{langui.categories}</h3>
                   <div className="flex flex-row flex-wrap place-content-center gap-2">
-                    {filterHasAttributes(item.categories.data, [
-                      "attributes",
-                    ] as const).map((category) => (
-                      <Chip key={category.id} text={category.attributes.name} />
-                    ))}
+                    {filterHasAttributes(item.categories.data, ["attributes"] as const).map(
+                      (category) => (
+                        <Chip key={category.id} text={category.attributes.name} />
+                      )
+                    )}
                   </div>
                 </div>
               )}
@@ -396,8 +339,7 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
                   className={cJoin(
                     "grid gap-4",
                     cIf(isContentPanelNoMoreThan3xl, "place-items-center")
-                  )}
-                >
+                  )}>
                   <h3 className="text-xl">{langui.size}</h3>
                   <div
                     className={cJoin(
@@ -407,8 +349,7 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
                         "grid-flow-row place-content-center gap-8",
                         "grid-flow-col place-content-between"
                       )
-                    )}
-                  >
+                    )}>
                     <div
                       className={cJoin(
                         "grid gap-x-4",
@@ -417,8 +358,7 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
                           "place-items-center",
                           "grid-flow-col place-items-start"
                         )
-                      )}
-                    >
+                      )}>
                       <p className="font-bold">{langui.width}:</p>
                       <div>
                         <p>{item.size.width} mm</p>
@@ -433,8 +373,7 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
                           "place-items-center",
                           "grid-flow-col place-items-start"
                         )
-                      )}
-                    >
+                      )}>
                       <p className="font-bold">{langui.height}:</p>
                       <div>
                         <p>{item.size.height} mm</p>
@@ -450,8 +389,7 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
                             "place-items-center",
                             "grid-flow-col place-items-start"
                           )
-                        )}
-                      >
+                        )}>
                         <p className="font-bold">{langui.thickness}:</p>
                         <div>
                           <p>{item.size.thickness} mm</p>
@@ -469,12 +407,10 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
                     className={cJoin(
                       "grid gap-4",
                       cIf(isContentPanelNoMoreThan3xl, "place-items-center")
-                    )}
-                  >
+                    )}>
                     <h3 className="text-xl">{langui.type_information}</h3>
                     <div className="flex flex-wrap place-content-between gap-x-8">
-                      {item.metadata?.[0]?.__typename ===
-                        "ComponentMetadataBooks" && (
+                      {item.metadata?.[0]?.__typename === "ComponentMetadataBooks" && (
                         <>
                           <div className="flex flex-row place-content-start gap-4">
                             <p className="font-bold">{langui.pages}:</p>
@@ -507,9 +443,7 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
                           <div className="flex flex-row place-content-start gap-4">
                             <p className="font-bold">{langui.languages}:</p>
                             {item.metadata[0]?.languages?.data.map((lang) => (
-                              <p key={lang.attributes?.code}>
-                                {lang.attributes?.name}
-                              </p>
+                              <p key={lang.attributes?.code}>{lang.attributes?.name}</p>
                             ))}
                           </div>
                         </>
@@ -521,130 +455,109 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
           </InsetBox>
 
           {item.subitems && item.subitems.data.length > 0 && (
-            <div
-              id={intersectionIds[3]}
-              className="grid w-full place-items-center gap-8"
-            >
-              <h2 className="text-2xl">
-                {isVariantSet ? langui.variants : langui.subitems}
-              </h2>
+            <div id={intersectionIds[3]} className="grid w-full place-items-center gap-8">
+              <h2 className="text-2xl">{isVariantSet ? langui.variants : langui.subitems}</h2>
 
               {hoverable && (
                 <WithLabel label={langui.always_show_info}>
-                  <Switch
-                    onClick={toggleKeepInfoVisible}
-                    value={keepInfoVisible}
-                  />
+                  <Switch onClick={toggleKeepInfoVisible} value={keepInfoVisible} />
                 </WithLabel>
               )}
 
               <div
                 className="grid w-full grid-cols-[repeat(auto-fill,minmax(13rem,1fr))]
-              items-end gap-8"
-              >
-                {filterHasAttributes(item.subitems.data, [
-                  "id",
-                  "attributes",
-                ] as const).map((subitem) => (
-                  <Fragment key={subitem.id}>
-                    <PreviewCard
-                      href={`/library/${subitem.attributes.slug}`}
-                      title={subitem.attributes.title}
-                      subtitle={subitem.attributes.subtitle}
-                      thumbnail={subitem.attributes.thumbnail?.data?.attributes}
-                      thumbnailAspectRatio="21/29.7"
-                      thumbnailRounded={false}
-                      keepInfoVisible={keepInfoVisible}
-                      topChips={
-                        subitem.attributes.metadata &&
-                        subitem.attributes.metadata.length > 0 &&
-                        subitem.attributes.metadata[0]
-                          ? [prettyItemSubType(subitem.attributes.metadata[0])]
-                          : []
-                      }
-                      bottomChips={subitem.attributes.categories?.data.map(
-                        (category) => category.attributes?.short ?? ""
-                      )}
-                      metadata={{
-                        releaseDate: subitem.attributes.release_date,
-                        price: subitem.attributes.price,
-                        position: "Bottom",
-                      }}
-                      infoAppend={
-                        !isUntangibleGroupItem(
-                          subitem.attributes.metadata?.[0]
-                        ) && <PreviewCardCTAs id={subitem.id} />
-                      }
-                    />
-                  </Fragment>
-                ))}
+              items-end gap-8">
+                {filterHasAttributes(item.subitems.data, ["id", "attributes"] as const).map(
+                  (subitem) => (
+                    <Fragment key={subitem.id}>
+                      <PreviewCard
+                        href={`/library/${subitem.attributes.slug}`}
+                        title={subitem.attributes.title}
+                        subtitle={subitem.attributes.subtitle}
+                        thumbnail={subitem.attributes.thumbnail?.data?.attributes}
+                        thumbnailAspectRatio="21/29.7"
+                        thumbnailRounded={false}
+                        keepInfoVisible={keepInfoVisible}
+                        topChips={
+                          subitem.attributes.metadata &&
+                          subitem.attributes.metadata.length > 0 &&
+                          subitem.attributes.metadata[0]
+                            ? [prettyItemSubType(subitem.attributes.metadata[0])]
+                            : []
+                        }
+                        bottomChips={subitem.attributes.categories?.data.map(
+                          (category) => category.attributes?.short ?? ""
+                        )}
+                        metadata={{
+                          releaseDate: subitem.attributes.release_date,
+                          price: subitem.attributes.price,
+                          position: "Bottom",
+                        }}
+                        infoAppend={
+                          !isUntangibleGroupItem(subitem.attributes.metadata?.[0]) && (
+                            <PreviewCardCTAs id={subitem.id} />
+                          )
+                        }
+                      />
+                    </Fragment>
+                  )
+                )}
               </div>
             </div>
           )}
 
           {item.contents && item.contents.data.length > 0 && (
-            <div
-              id={intersectionIds[4]}
-              className="grid w-full place-items-center gap-8"
-            >
+            <div id={intersectionIds[4]} className="grid w-full place-items-center gap-8">
               <h2 className="-mb-6 text-2xl">{langui.contents}</h2>
               {displayOpenScans && (
-                <Button
-                  href={`/library/${item.slug}/scans`}
-                  text={langui.view_scans}
-                />
+                <Button href={`/library/${item.slug}/scans`} text={langui.view_scans} />
               )}
               <div className="max-w- grid w-full gap-4">
-                {filterHasAttributes(item.contents.data, [
-                  "attributes",
-                ] as const).map((rangedContent) => (
-                  <ContentLine
-                    content={
-                      rangedContent.attributes.content?.data?.attributes
-                        ? {
-                            translations: filterDefined(
-                              rangedContent.attributes.content.data.attributes
-                                .translations
-                            ).map((translation) => ({
-                              pre_title: translation.pre_title,
-                              title: translation.title,
-                              subtitle: translation.subtitle,
-                              language:
-                                translation.language?.data?.attributes?.code,
-                            })),
-                            categories: filterHasAttributes(
-                              rangedContent.attributes.content.data.attributes
-                                .categories?.data,
-                              ["attributes"]
-                            ).map((category) => category.attributes.short),
-                            type:
-                              rangedContent.attributes.content.data.attributes
-                                .type?.data?.attributes?.titles?.[0]?.title ??
-                              prettySlug(
-                                rangedContent.attributes.content.data.attributes
-                                  .type?.data?.attributes?.slug
-                              ),
-                            slug: rangedContent.attributes.content.data
-                              .attributes.slug,
-                          }
-                        : undefined
-                    }
-                    rangeStart={
-                      rangedContent.attributes.range[0]?.__typename ===
-                      "ComponentRangePageRange"
-                        ? `${rangedContent.attributes.range[0].starting_page}`
-                        : ""
-                    }
-                    slug={rangedContent.attributes.slug}
-                    parentSlug={item.slug}
-                    key={rangedContent.id}
-                    hasScanSet={
-                      isDefined(rangedContent.attributes.scan_set) &&
-                      rangedContent.attributes.scan_set.length > 0
-                    }
-                    condensed={isContentPanelNoMoreThan3xl}
-                  />
-                ))}
+                {filterHasAttributes(item.contents.data, ["attributes"] as const).map(
+                  (rangedContent) => (
+                    <ContentLine
+                      content={
+                        rangedContent.attributes.content?.data?.attributes
+                          ? {
+                              translations: filterDefined(
+                                rangedContent.attributes.content.data.attributes.translations
+                              ).map((translation) => ({
+                                pre_title: translation.pre_title,
+                                title: translation.title,
+                                subtitle: translation.subtitle,
+                                language: translation.language?.data?.attributes?.code,
+                              })),
+                              categories: filterHasAttributes(
+                                rangedContent.attributes.content.data.attributes.categories?.data,
+                                ["attributes"]
+                              ).map((category) => category.attributes.short),
+                              type:
+                                rangedContent.attributes.content.data.attributes.type?.data
+                                  ?.attributes?.titles?.[0]?.title ??
+                                prettySlug(
+                                  rangedContent.attributes.content.data.attributes.type?.data
+                                    ?.attributes?.slug
+                                ),
+                              slug: rangedContent.attributes.content.data.attributes.slug,
+                            }
+                          : undefined
+                      }
+                      rangeStart={
+                        rangedContent.attributes.range[0]?.__typename === "ComponentRangePageRange"
+                          ? `${rangedContent.attributes.range[0].starting_page}`
+                          : ""
+                      }
+                      slug={rangedContent.attributes.slug}
+                      parentSlug={item.slug}
+                      key={rangedContent.id}
+                      hasScanSet={
+                        isDefined(rangedContent.attributes.scan_set) &&
+                        rangedContent.attributes.scan_set.length > 0
+                      }
+                      condensed={isContentPanelNoMoreThan3xl}
+                    />
+                  )
+                )}
               </div>
             </div>
           )}
@@ -684,13 +597,7 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
     ]
   );
 
-  return (
-    <AppLayout
-      contentPanel={contentPanel}
-      subPanel={subPanel}
-      {...otherProps}
-    />
-  );
+  return <AppLayout contentPanel={contentPanel} subPanel={subPanel} {...otherProps} />;
 };
 export default LibrarySlug;
 
@@ -703,10 +610,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
   const langui = getLangui(context.locale);
   const item = await sdk.getLibraryItem({
-    slug:
-      context.params && isDefined(context.params.slug)
-        ? context.params.slug.toString()
-        : "",
+    slug: context.params && isDefined(context.params.slug) ? context.params.slug.toString() : "",
     language_code: context.locale ?? "en",
   });
   if (!item.libraryItems?.data[0]?.attributes) return { notFound: true };
@@ -721,16 +625,12 @@ export const getStaticProps: GetStaticProps = async (context) => {
         item.libraryItems.data[0].attributes.categories?.data,
         ["attributes.short"]
       ).map((category) => category.attributes.short),
-      [langui.type ?? "Type"]: item.libraryItems.data[0].attributes
-        .metadata?.[0]
+      [langui.type ?? "Type"]: item.libraryItems.data[0].attributes.metadata?.[0]
         ? [prettyItemSubType(item.libraryItems.data[0].attributes.metadata[0])]
         : [],
       [langui.release_date ?? "Release date"]: [
         item.libraryItems.data[0].attributes.release_date
-          ? prettyDate(
-              item.libraryItems.data[0].attributes.release_date,
-              context.locale
-            )
+          ? prettyDate(item.libraryItems.data[0].attributes.release_date, context.locale)
           : undefined,
       ],
     }
@@ -739,12 +639,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const props: Props = {
     item: item.libraryItems.data[0].attributes,
     itemId: item.libraryItems.data[0].id,
-    openGraph: getOpenGraph(
-      langui,
-      title,
-      description,
-      thumbnail?.data?.attributes
-    ),
+    openGraph: getOpenGraph(langui, title, description, thumbnail?.data?.attributes),
   };
   return {
     props: props,
@@ -757,9 +652,7 @@ export const getStaticPaths: GetStaticPaths = async (context) => {
   const sdk = getReadySdk();
   const libraryItems = await sdk.getLibraryItemsSlugs();
   const paths: GetStaticPathsResult["paths"] = [];
-  filterHasAttributes(libraryItems.libraryItems?.data, [
-    "attributes",
-  ] as const).map((item) => {
+  filterHasAttributes(libraryItems.libraryItems?.data, ["attributes"] as const).map((item) => {
     context.locales?.map((local) =>
       paths.push({ params: { slug: item.attributes.slug }, locale: local })
     );
@@ -808,9 +701,7 @@ const ContentLine = ({
   const [selectedTranslation] = useSmartLanguage({
     items: content?.translations ?? [],
     languageExtractor: useCallback(
-      (
-        item: NonNullable<ContentLineProps["content"]>["translations"][number]
-      ) => item.language,
+      (item: NonNullable<ContentLineProps["content"]>["translations"][number]) => item.language,
       []
     ),
   });
@@ -844,21 +735,14 @@ const ContentLine = ({
           {hasScanSet || isDefined(content) ? (
             <>
               {hasScanSet && (
-                <Button
-                  href={`/library/${parentSlug}/scans#${slug}`}
-                  text={langui.view_scans}
-                />
+                <Button href={`/library/${parentSlug}/scans#${slug}`} text={langui.view_scans} />
               )}
               {isDefined(content) && (
-                <Button
-                  href={`/contents/${content.slug}`}
-                  text={langui.open_content}
-                />
+                <Button href={`/contents/${content.slug}`} text={langui.open_content} />
               )}
             </>
           ) : (
-            /* TODO: Add to langui */
-            "The content is not available"
+            langui.content_is_not_available
           )}
         </div>
       </div>
@@ -870,8 +754,7 @@ const ContentLine = ({
       className={cJoin(
         "grid gap-2 rounded-lg px-4",
         cIf(isOpened, "my-2 h-auto bg-mid py-3 shadow-inner-sm shadow-shade")
-      )}
-    >
+      )}>
       <div className="grid grid-cols-[auto_auto_1fr_auto_12ch] place-items-center gap-4">
         <a>
           <h3 className="cursor-pointer" onClick={toggleOpened}>
@@ -893,35 +776,25 @@ const ContentLine = ({
         </div>
         <p className="h-4 w-full border-b-2 border-dotted border-black opacity-30"></p>
         <p>{rangeStart}</p>
-        {content?.type && (
-          <Chip className="justify-self-end" text={content.type} />
-        )}
+        {content?.type && <Chip className="justify-self-end" text={content.type} />}
       </div>
       <div
         className={`grid-flow-col place-content-start place-items-center gap-2 ${
           isOpened ? "grid" : "hidden"
-        }`}
-      >
+        }`}>
         <Ico icon={Icon.SubdirectoryArrowRight} className="text-dark" />
 
         {hasScanSet || isDefined(content) ? (
           <>
             {hasScanSet && (
-              <Button
-                href={`/library/${parentSlug}/scans#${slug}`}
-                text={langui.view_scans}
-              />
+              <Button href={`/library/${parentSlug}/scans#${slug}`} text={langui.view_scans} />
             )}
             {isDefined(content) && (
-              <Button
-                href={`/contents/${content.slug}`}
-                text={langui.open_content}
-              />
+              <Button href={`/contents/${content.slug}`} text={langui.open_content} />
             )}
           </>
         ) : (
-          /* TODO: Add to langui */
-          "The content is not available"
+          langui.content_is_not_available
         )}
       </div>
     </div>

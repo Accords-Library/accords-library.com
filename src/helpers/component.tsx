@@ -15,8 +15,4 @@ export const ConditionalWrapper = <T,>({
   wrapper: Wrapper,
   wrapperProps,
 }: ConditionalWrapperProps<T>): JSX.Element =>
-  isWrapping ? (
-    <Wrapper {...wrapperProps}>{children}</Wrapper>
-  ) : (
-    <>{children}</>
-  );
+  isWrapping ? <Wrapper {...wrapperProps}>{children}</Wrapper> : <>{children}</>;

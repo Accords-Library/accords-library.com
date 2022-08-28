@@ -5,9 +5,7 @@ import {
 } from "graphql/generated";
 
 export type Langui = NonNullable<
-  NonNullable<
-    LocalDataGetWebsiteInterfacesQuery["websiteInterfaces"]
-  >["data"][number]["attributes"]
+  NonNullable<LocalDataGetWebsiteInterfacesQuery["websiteInterfaces"]>["data"][number]["attributes"]
 >;
 
 export const processLangui = (
@@ -15,24 +13,19 @@ export const processLangui = (
   locale: string | undefined
 ): Langui =>
   websiteInterfaces?.websiteInterfaces?.data.find(
-    (langui) =>
-      langui.attributes?.ui_language?.data?.attributes?.code === locale
+    (langui) => langui.attributes?.ui_language?.data?.attributes?.code === locale
   )?.attributes ?? {};
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
-export type Currencies = NonNullable<
-  LocalDataGetCurrenciesQuery["currencies"]
->["data"];
+export type Currencies = NonNullable<LocalDataGetCurrenciesQuery["currencies"]>["data"];
 
 export const processCurrencies = (
   currencies: LocalDataGetCurrenciesQuery | undefined
 ): Currencies => {
   if (currencies?.currencies?.data) {
     currencies.currencies.data.sort((a, b) =>
-      a.attributes && b.attributes
-        ? a.attributes.code.localeCompare(b.attributes.code)
-        : 0
+      a.attributes && b.attributes ? a.attributes.code.localeCompare(b.attributes.code) : 0
     );
   }
   return currencies?.currencies?.data ?? [];
@@ -40,13 +33,9 @@ export const processCurrencies = (
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
-export type Languages = NonNullable<
-  LocalDataGetLanguagesQuery["languages"]
->["data"];
+export type Languages = NonNullable<LocalDataGetLanguagesQuery["languages"]>["data"];
 
-export const processLanguages = (
-  languages: LocalDataGetLanguagesQuery | undefined
-): Languages => {
+export const processLanguages = (languages: LocalDataGetLanguagesQuery | undefined): Languages => {
   if (languages?.languages?.data) {
     languages.languages.data.sort((a, b) =>
       a.attributes && b.attributes

@@ -1,8 +1,5 @@
 query getChronologyItems {
-  chronologyItems(
-    pagination: { limit: -1 }
-    sort: ["year:asc", "month:asc", "day:asc"]
-  ) {
+  chronologyItems(pagination: { limit: -1 }, sort: ["year:asc", "month:asc", "day:asc"]) {
     data {
       id
       attributes {

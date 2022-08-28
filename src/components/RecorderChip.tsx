@@ -40,13 +40,13 @@ export const RecorderChip = ({ recorder }: Props): JSX.Element => {
               {recorder.languages?.data && recorder.languages.data.length > 0 && (
                 <div className="flex flex-row flex-wrap gap-1">
                   <p>{langui.languages}:</p>
-                  {filterHasAttributes(recorder.languages.data, [
-                    "attributes",
-                  ] as const).map((language) => (
-                    <Fragment key={language.__typename}>
-                      <Chip text={language.attributes.code.toUpperCase()} />
-                    </Fragment>
-                  ))}
+                  {filterHasAttributes(recorder.languages.data, ["attributes"] as const).map(
+                    (language) => (
+                      <Fragment key={language.__typename}>
+                        <Chip text={language.attributes.code.toUpperCase()} />
+                      </Fragment>
+                    )
+                  )}
                 </div>
               )}
               {recorder.pronouns && (
@@ -60,15 +60,10 @@ export const RecorderChip = ({ recorder }: Props): JSX.Element => {
           {recorder.bio?.[0] && <Markdawn text={recorder.bio[0].bio ?? ""} />}
         </div>
       }
-      placement="top"
-    >
+      placement="top">
       <Chip
         key={recorder.anonymous_code}
-        text={
-          recorder.anonymize
-            ? `Recorder#${recorder.anonymous_code}`
-            : recorder.username
-        }
+        text={recorder.anonymize ? `Recorder#${recorder.anonymous_code}` : recorder.username}
       />
     </ToolTip>
   );

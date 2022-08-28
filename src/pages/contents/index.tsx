@@ -1,7 +1,5 @@
 import { GetStaticProps } from "next";
-import ContentsFolder, {
-  getStaticProps as folderGetStaticProps,
-} from "./folder/[slug]";
+import ContentsFolder, { getStaticProps as folderGetStaticProps } from "./folder/[slug]";
 
 /*
  *                                           ╭────────╮

@@ -5,11 +5,7 @@ export const convertPrice = (
   pricePicker: PricePickerFragment,
   targetCurrency: Currencies[number]
 ): number => {
-  if (
-    pricePicker.amount &&
-    pricePicker.currency?.data?.attributes &&
-    targetCurrency.attributes
-  )
+  if (pricePicker.amount && pricePicker.currency?.data?.attributes && targetCurrency.attributes)
     return (
       (pricePicker.amount * pricePicker.currency.data.attributes.rate_to_usd) /
       targetCurrency.attributes.rate_to_usd
@@ -23,5 +19,4 @@ export const convertMmToInch = (mm: number | null | undefined): string =>
 export const randomInt = (min: number, max: number): number =>
   Math.floor(Math.random() * (max - min)) + min;
 
-export const isInteger = (value: string): boolean =>
-  /^[+-]?[0-9]+$/u.test(value);
+export const isInteger = (value: string): boolean => /^[+-]?[0-9]+$/u.test(value);

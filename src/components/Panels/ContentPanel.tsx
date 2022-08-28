@@ -38,8 +38,7 @@ export const ContentPanel = ({
             ? "max-w-4xl"
             : "w-full",
           className
-        )}
-      >
+        )}>
         {children}
       </main>
     </div>

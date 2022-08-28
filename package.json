@@ -3,10 +3,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev -p 12499",
-    "precommit": "npm run generate && npm run fetch-local-data && npm run prettier && npm run unused-exports && npm run eslint && npm run tsc && echo ALL PRECOMMIT CHECKS PASSED SUCCESSFULLY, LET\\'S FUCKING GO!",
+    "precommit": "npm run fetch-local-data && npm run prettier && npm run unused-exports && npm run eslint && npm run tsc && echo ALL PRECOMMIT CHECKS PASSED SUCCESSFULLY, LET\\'S FUCKING GO!",
     "unused-exports": "ts-unused-exports ./tsconfig.json --excludePathsFromReport=src/pages --ignoreFiles=generated",
-    "fetch-local-data": "esrun src/graphql/fetchLocalData.ts",
-    "prebuild": "npm run generate && npm run fetch-local-data",
+    "fetch-local-data": "npm run generate && esrun src/graphql/fetchLocalData.ts",
+    "prebuild": "npm run fetch-local-data",
     "build": "next build",
     "postbuild": "next-sitemap --config next-sitemap.config.js",
     "start": "next start -p 12500",

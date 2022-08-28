@@ -14,11 +14,7 @@ interface Props {
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
-export const PanelHeader = ({
-  icon,
-  description,
-  title,
-}: Props): JSX.Element => (
+export const PanelHeader = ({ icon, description, title }: Props): JSX.Element => (
   <>
     <div className="grid w-full place-items-center">
       {icon && <Ico icon={icon} className="mb-3 !text-4xl" />}

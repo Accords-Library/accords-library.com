@@ -20,25 +20,15 @@ import {
   prettySlug,
 } from "helpers/formatters";
 import { isUntangibleGroupItem } from "helpers/libraryItem";
-import {
-  filterHasAttributes,
-  getStatusDescription,
-  isDefinedAndNotEmpty,
-} from "helpers/others";
-import { ContentWithTranslations } from "helpers/types";
+import { filterHasAttributes, getStatusDescription, isDefinedAndNotEmpty } from "helpers/others";
+import { ContentWithTranslations } from "types/types";
 import { useScrollTopOnChange } from "hooks/useScrollTopOnChange";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { getOpenGraph } from "helpers/openGraph";
-import {
-  getDefaultPreferredLanguages,
-  staticSmartLanguage,
-} from "helpers/locales";
+import { getDefaultPreferredLanguages, staticSmartLanguage } from "helpers/locales";
 import { getDescription } from "helpers/description";
 import { TranslatedPreviewLine } from "components/PreviewLine";
-import {
-  useIs1ColumnLayout,
-  useIsContentPanelAtLeast,
-} from "hooks/useContainerQuery";
+import { useIs1ColumnLayout, useIsContentPanelAtLeast } from "hooks/useContainerQuery";
 import { cIf } from "helpers/className";
 import { getLangui } from "graphql/fetchLocalData";
 import { useAppLayout } from "contexts/AppLayoutContext";
@@ -58,35 +48,26 @@ const Content = ({ content, ...otherProps }: Props): JSX.Element => {
   const is1ColumnLayout = useIs1ColumnLayout();
   const { langui, languages } = useAppLayout();
 
-  const [selectedTranslation, LanguageSwitcher, languageSwitcherProps] =
-    useSmartLanguage({
-      items: content.translations,
-      languageExtractor: useCallback(
-        (item: NonNullable<Props["content"]["translations"][number]>) =>
-          item.language?.data?.attributes?.code,
-        []
-      ),
-    });
+  const [selectedTranslation, LanguageSwitcher, languageSwitcherProps] = useSmartLanguage({
+    items: content.translations,
+    languageExtractor: useCallback(
+      (item: NonNullable<Props["content"]["translations"][number]>) =>
+        item.language?.data?.attributes?.code,
+      []
+    ),
+  });
 
   useScrollTopOnChange(Ids.ContentPanel, [selectedTranslation]);
 
   const { previousContent, nextContent } = useMemo(
     () => ({
       previousContent:
-        content.folder?.data?.attributes?.contents &&
-        content.folder.data.attributes.sequence
-          ? getPreviousContent(
-              content.folder.data.attributes.contents.data,
-              content.slug
-            )
+        content.folder?.data?.attributes?.contents && content.folder.data.attributes.sequence
+          ? getPreviousContent(content.folder.data.attributes.contents.data, content.slug)
           : undefined,
       nextContent:
-        content.folder?.data?.attributes?.contents &&
-        content.folder.data.attributes.sequence
-          ? getNextContent(
-              content.folder.data.attributes.contents.data,
-              content.slug
-            )
+        content.folder?.data?.attributes?.contents && content.folder.data.attributes.sequence
+          ? getNextContent(content.folder.data.attributes.contents.data, content.slug)
           : undefined,
     }),
     [content.folder, content.slug]
@@ -98,10 +79,9 @@ const Content = ({ content, ...otherProps }: Props): JSX.Element => {
         ? `/contents/folder/${content.folder.data.attributes.slug}`
         : "/contents",
 
-      translations: filterHasAttributes(
-        content.folder?.data?.attributes?.titles,
-        ["language.data.attributes.code"] as const
-      ).map((title) => ({
+      translations: filterHasAttributes(content.folder?.data?.attributes?.titles, [
+        "language.data.attributes.code",
+      ] as const).map((title) => ({
         language: title.language.data.attributes.code,
         title: title.title,
       })),
@@ -118,34 +98,26 @@ const Content = ({ content, ...otherProps }: Props): JSX.Element => {
   const subPanel = useMemo(
     () => (
       <SubPanel>
-        <TranslatedReturnButton
-          {...returnButtonProps}
-          displayOnlyOn="3ColumnsLayout"
-        />
+        <TranslatedReturnButton {...returnButtonProps} displayOnlyOn="3ColumnsLayout" />
 
-        {selectedTranslation?.text_set?.source_language?.data?.attributes
-          ?.code !== undefined && (
+        {selectedTranslation?.text_set?.source_language?.data?.attributes?.code !== undefined && (
           <>
             <HorizontalLine />
             <div className="grid gap-5">
               <h2 className="text-xl">
-                {selectedTranslation.text_set.source_language.data.attributes
-                  .code === selectedTranslation.language?.data?.attributes?.code
+                {selectedTranslation.text_set.source_language.data.attributes.code ===
+                selectedTranslation.language?.data?.attributes?.code
                   ? langui.transcript_notice
                   : langui.translation_notice}
               </h2>
 
-              {selectedTranslation.text_set.source_language.data.attributes
-                .code !==
+              {selectedTranslation.text_set.source_language.data.attributes.code !==
                 selectedTranslation.language?.data?.attributes?.code && (
                 <div className="grid place-items-center gap-2">
-                  <p className="font-headers font-bold">
-                    {langui.source_language}:
-                  </p>
+                  <p className="font-headers font-bold">{langui.source_language}:</p>
                   <Chip
                     text={prettyLanguage(
-                      selectedTranslation.text_set.source_language.data
-                        .attributes.code,
+                      selectedTranslation.text_set.source_language.data.attributes.code,
                       languages
                     )}
                   />
@@ -156,12 +128,8 @@ const Content = ({ content, ...otherProps }: Props): JSX.Element => {
                 <p className="font-headers font-bold">{langui.status}:</p>
 
                 <ToolTip
-                  content={getStatusDescription(
-                    selectedTranslation.text_set.status,
-                    langui
-                  )}
-                  maxWidth={"20rem"}
-                >
+                  content={getStatusDescription(selectedTranslation.text_set.status, langui)}
+                  maxWidth={"20rem"}>
                   <Chip text={selectedTranslation.text_set.status} />
                 </ToolTip>
               </div>
@@ -169,14 +137,12 @@ const Content = ({ content, ...otherProps }: Props): JSX.Element => {
               {selectedTranslation.text_set.transcribers &&
                 selectedTranslation.text_set.transcribers.data.length > 0 && (
                   <div>
-                    <p className="font-headers font-bold">
-                      {langui.transcribers}:
-                    </p>
+                    <p className="font-headers font-bold">{langui.transcribers}:</p>
                     <div className="grid place-content-center place-items-center gap-2">
-                      {filterHasAttributes(
-                        selectedTranslation.text_set.transcribers.data,
-                        ["attributes", "id"] as const
-                      ).map((recorder) => (
+                      {filterHasAttributes(selectedTranslation.text_set.transcribers.data, [
+                        "attributes",
+                        "id",
+                      ] as const).map((recorder) => (
                         <Fragment key={recorder.id}>
                           <RecorderChip recorder={recorder.attributes} />
                         </Fragment>
@@ -188,14 +154,12 @@ const Content = ({ content, ...otherProps }: Props): JSX.Element => {
               {selectedTranslation.text_set.translators &&
                 selectedTranslation.text_set.translators.data.length > 0 && (
                   <div>
-                    <p className="font-headers font-bold">
-                      {langui.translators}:
-                    </p>
+                    <p className="font-headers font-bold">{langui.translators}:</p>
                     <div className="grid place-content-center place-items-center gap-2">
-                      {filterHasAttributes(
-                        selectedTranslation.text_set.translators.data,
-                        ["attributes", "id"] as const
-                      ).map((recorder) => (
+                      {filterHasAttributes(selectedTranslation.text_set.translators.data, [
+                        "attributes",
+                        "id",
+                      ] as const).map((recorder) => (
                         <Fragment key={recorder.id}>
                           <RecorderChip recorder={recorder.attributes} />
                         </Fragment>
@@ -207,14 +171,12 @@ const Content = ({ content, ...otherProps }: Props): JSX.Element => {
               {selectedTranslation.text_set.proofreaders &&
                 selectedTranslation.text_set.proofreaders.data.length > 0 && (
                   <div>
-                    <p className="font-headers font-bold">
-                      {langui.proofreaders}:
-                    </p>
+                    <p className="font-headers font-bold">{langui.proofreaders}:</p>
                     <div className="grid place-content-center place-items-center gap-2">
-                      {filterHasAttributes(
-                        selectedTranslation.text_set.proofreaders.data,
-                        ["attributes", "id"] as const
-                      ).map((recorder) => (
+                      {filterHasAttributes(selectedTranslation.text_set.proofreaders.data, [
+                        "attributes",
+                        "id",
+                      ] as const).map((recorder) => (
                         <Fragment key={recorder.id}>
                           <RecorderChip recorder={recorder.attributes} />
                         </Fragment>
@@ -249,68 +211,56 @@ const Content = ({ content, ...otherProps }: Props): JSX.Element => {
           </>
         )}
 
-        {content.ranged_contents?.data &&
-          content.ranged_contents.data.length > 0 && (
-            <>
-              <HorizontalLine />
-              <div>
-                <p className="font-headers text-2xl font-bold">
-                  {langui.source}
-                </p>
-                <div className="mt-6 grid place-items-center gap-6">
-                  {filterHasAttributes(content.ranged_contents.data, [
-                    "attributes.library_item.data.attributes",
-                    "attributes.library_item.data.id",
-                  ] as const).map((rangedContent) => {
-                    const libraryItem =
-                      rangedContent.attributes.library_item.data;
-                    return (
-                      <div
-                        key={libraryItem.attributes.slug}
-                        className={cIf(is1ColumnLayout, "w-3/4")}
-                      >
-                        <PreviewCard
-                          href={`/library/${libraryItem.attributes.slug}`}
-                          title={libraryItem.attributes.title}
-                          subtitle={libraryItem.attributes.subtitle}
-                          thumbnail={
-                            libraryItem.attributes.thumbnail?.data?.attributes
-                          }
-                          thumbnailAspectRatio="21/29.7"
-                          thumbnailRounded={false}
-                          topChips={
-                            libraryItem.attributes.metadata &&
-                            libraryItem.attributes.metadata.length > 0 &&
-                            libraryItem.attributes.metadata[0]
-                              ? [
-                                  prettyItemSubType(
-                                    libraryItem.attributes.metadata[0]
-                                  ),
-                                ]
-                              : []
-                          }
-                          bottomChips={filterHasAttributes(
-                            libraryItem.attributes.categories?.data,
-                            ["attributes"] as const
-                          ).map((category) => category.attributes.short)}
-                          metadata={{
-                            releaseDate: libraryItem.attributes.release_date,
-                            price: libraryItem.attributes.price,
-                            position: "Bottom",
-                          }}
-                          infoAppend={
-                            !isUntangibleGroupItem(
-                              libraryItem.attributes.metadata?.[0]
-                            ) && <PreviewCardCTAs id={libraryItem.id} />
-                          }
-                        />
-                      </div>
-                    );
-                  })}
-                </div>
+        {content.ranged_contents?.data && content.ranged_contents.data.length > 0 && (
+          <>
+            <HorizontalLine />
+            <div>
+              <p className="font-headers text-2xl font-bold">{langui.source}</p>
+              <div className="mt-6 grid place-items-center gap-6">
+                {filterHasAttributes(content.ranged_contents.data, [
+                  "attributes.library_item.data.attributes",
+                  "attributes.library_item.data.id",
+                ] as const).map((rangedContent) => {
+                  const libraryItem = rangedContent.attributes.library_item.data;
+                  return (
+                    <div
+                      key={libraryItem.attributes.slug}
+                      className={cIf(is1ColumnLayout, "w-3/4")}>
+                      <PreviewCard
+                        href={`/library/${libraryItem.attributes.slug}`}
+                        title={libraryItem.attributes.title}
+                        subtitle={libraryItem.attributes.subtitle}
+                        thumbnail={libraryItem.attributes.thumbnail?.data?.attributes}
+                        thumbnailAspectRatio="21/29.7"
+                        thumbnailRounded={false}
+                        topChips={
+                          libraryItem.attributes.metadata &&
+                          libraryItem.attributes.metadata.length > 0 &&
+                          libraryItem.attributes.metadata[0]
+                            ? [prettyItemSubType(libraryItem.attributes.metadata[0])]
+                            : []
+                        }
+                        bottomChips={filterHasAttributes(libraryItem.attributes.categories?.data, [
+                          "attributes",
+                        ] as const).map((category) => category.attributes.short)}
+                        metadata={{
+                          releaseDate: libraryItem.attributes.release_date,
+                          price: libraryItem.attributes.price,
+                          position: "Bottom",
+                        }}
+                        infoAppend={
+                          !isUntangibleGroupItem(libraryItem.attributes.metadata?.[0]) && (
+                            <PreviewCardCTAs id={libraryItem.id} />
+                          )
+                        }
+                      />
+                    </div>
+                  );
+                })}
               </div>
-            </>
-          )}
+            </div>
+          </>
+        )}
       </SubPanel>
     ),
     [
@@ -350,15 +300,12 @@ const Content = ({ content, ...otherProps }: Props): JSX.Element => {
 
           {previousContent?.attributes && (
             <div className="mt-12 mb-8 w-full">
-              <h2 className="mb-4 text-center text-2xl">
-                {langui.previous_content}
-              </h2>
+              <h2 className="mb-4 text-center text-2xl">{langui.previous_content}</h2>
               <TranslatedPreviewLine
                 href={`/contents/${previousContent.attributes.slug}`}
-                translations={filterHasAttributes(
-                  previousContent.attributes.translations,
-                  ["language.data.attributes.code"] as const
-                ).map((translation) => ({
+                translations={filterHasAttributes(previousContent.attributes.translations, [
+                  "language.data.attributes.code",
+                ] as const).map((translation) => ({
                   pre_title: translation.pre_title,
                   title: translation.title,
                   subtitle: translation.subtitle,
@@ -367,22 +314,14 @@ const Content = ({ content, ...otherProps }: Props): JSX.Element => {
                 fallback={{
                   title: prettySlug(previousContent.attributes.slug),
                 }}
-                thumbnail={
-                  previousContent.attributes.thumbnail?.data?.attributes
-                }
+                thumbnail={previousContent.attributes.thumbnail?.data?.attributes}
                 thumbnailAspectRatio="3/2"
                 topChips={
-                  isContentPanelAtLeast2xl &&
-                  previousContent.attributes.type?.data?.attributes
+                  isContentPanelAtLeast2xl && previousContent.attributes.type?.data?.attributes
                     ? [
-                        previousContent.attributes.type.data.attributes
-                          .titles?.[0]
-                          ? previousContent.attributes.type.data.attributes
-                              .titles[0]?.title
-                          : prettySlug(
-                              previousContent.attributes.type.data.attributes
-                                .slug
-                            ),
+                        previousContent.attributes.type.data.attributes.titles?.[0]
+                          ? previousContent.attributes.type.data.attributes.titles[0]?.title
+                          : prettySlug(previousContent.attributes.type.data.attributes.slug),
                       ]
                     : undefined
                 }
@@ -407,15 +346,12 @@ const Content = ({ content, ...otherProps }: Props): JSX.Element => {
           {nextContent?.attributes && (
             <>
               <HorizontalLine />
-              <h2 className="mb-4 text-center text-2xl">
-                {langui.followup_content}
-              </h2>
+              <h2 className="mb-4 text-center text-2xl">{langui.followup_content}</h2>
               <TranslatedPreviewLine
                 href={`/contents/${nextContent.attributes.slug}`}
-                translations={filterHasAttributes(
-                  nextContent.attributes.translations,
-                  ["language.data.attributes.code"] as const
-                ).map((translation) => ({
+                translations={filterHasAttributes(nextContent.attributes.translations, [
+                  "language.data.attributes.code",
+                ] as const).map((translation) => ({
                   pre_title: translation.pre_title,
                   title: translation.title,
                   subtitle: translation.subtitle,
@@ -425,15 +361,11 @@ const Content = ({ content, ...otherProps }: Props): JSX.Element => {
                 thumbnail={nextContent.attributes.thumbnail?.data?.attributes}
                 thumbnailAspectRatio="3/2"
                 topChips={
-                  isContentPanelAtLeast2xl &&
-                  nextContent.attributes.type?.data?.attributes
+                  isContentPanelAtLeast2xl && nextContent.attributes.type?.data?.attributes
                     ? [
                         nextContent.attributes.type.data.attributes.titles?.[0]
-                          ? nextContent.attributes.type.data.attributes
-                              .titles[0]?.title
-                          : prettySlug(
-                              nextContent.attributes.type.data.attributes.slug
-                            ),
+                          ? nextContent.attributes.type.data.attributes.titles[0]?.title
+                          : prettySlug(nextContent.attributes.type.data.attributes.slug),
                       ]
                     : undefined
                 }
@@ -469,13 +401,7 @@ const Content = ({ content, ...otherProps }: Props): JSX.Element => {
     ]
   );
 
-  return (
-    <AppLayout
-      contentPanel={contentPanel}
-      subPanel={subPanel}
-      {...otherProps}
-    />
-  );
+  return <AppLayout contentPanel={contentPanel} subPanel={subPanel} {...otherProps} />;
 };
 export default Content;
 
@@ -502,10 +428,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
       const selectedTranslation = staticSmartLanguage({
         items: content.contents.data[0].attributes.translations,
         languageExtractor: (item) => item.language?.data?.attributes?.code,
-        preferredLanguages: getDefaultPreferredLanguages(
-          context.locale,
-          context.locales
-        ),
+        preferredLanguages: getDefaultPreferredLanguages(context.locale, context.locales),
       });
       if (selectedTranslation) {
         return {
@@ -516,8 +439,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
           ),
           description: getDescription(selectedTranslation.description, {
             [langui.type ?? "Type"]: [
-              content.contents.data[0].attributes.type?.data?.attributes
-                ?.titles?.[0]?.title,
+              content.contents.data[0].attributes.type?.data?.attributes?.titles?.[0]?.title,
             ],
             [langui.categories ?? "Categories"]: filterHasAttributes(
               content.contents.data[0].attributes.categories?.data,
@@ -533,8 +455,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     };
   })();
 
-  const thumbnail =
-    content.contents.data[0].attributes.thumbnail?.data?.attributes;
+  const thumbnail = content.contents.data[0].attributes.thumbnail?.data?.attributes;
 
   const props: Props = {
     content: content.contents.data[0].attributes as ContentWithTranslations,
@@ -551,16 +472,14 @@ export const getStaticPaths: GetStaticPaths = async (context) => {
   const sdk = getReadySdk();
   const contents = await sdk.getContentsSlugs();
   const paths: GetStaticPathsResult["paths"] = [];
-  filterHasAttributes(contents.contents?.data, ["attributes"] as const).map(
-    (item) => {
-      context.locales?.map((local) => {
-        paths.push({
-          params: { slug: item.attributes.slug },
-          locale: local,
-        });
+  filterHasAttributes(contents.contents?.data, ["attributes"] as const).map((item) => {
+    context.locales?.map((local) => {
+      paths.push({
+        params: { slug: item.attributes.slug },
+        locale: local,
       });
-    }
-  );
+    });
+  });
   return {
     paths,
     fallback: "blocking",
@@ -574,9 +493,7 @@ export const getStaticPaths: GetStaticPaths = async (context) => {
 
 type FolderContents = NonNullable<
   NonNullable<
-    NonNullable<
-      NonNullable<ContentWithTranslations["folder"]>["data"]
-    >["attributes"]
+    NonNullable<NonNullable<ContentWithTranslations["folder"]>["data"]>["attributes"]
   >["contents"]
 >["data"];
 
@@ -595,10 +512,7 @@ const getPreviousContent = (contents: FolderContents, currentSlug: string) => {
 const getNextContent = (contents: FolderContents, currentSlug: string) => {
   for (let index = 0; index < contents.length; index++) {
     const content = contents[index];
-    if (
-      content.attributes?.slug === currentSlug &&
-      index < contents.length - 1
-    ) {
+    if (content.attributes?.slug === currentSlug && index < contents.length - 1) {
       return contents[index + 1];
     }
   }

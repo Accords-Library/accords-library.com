@@ -16,11 +16,7 @@ export const useSmartLanguage = <T>({
   items,
   languageExtractor,
   transform = (item) => item,
-}: Props<T>): [
-  T | undefined,
-  typeof LanguageSwitcher,
-  Parameters<typeof LanguageSwitcher>[0]
-] => {
+}: Props<T>): [T | undefined, typeof LanguageSwitcher, Parameters<typeof LanguageSwitcher>[0]] => {
   const { preferredLanguages } = useAppLayout();
   const languages = useLanguages();
   const router = useRouter();
@@ -34,14 +30,10 @@ export const useSmartLanguage = <T>({
     return memo;
   }, [items, languageExtractor]);
 
-  const [selectedTranslationIndex, setSelectedTranslationIndex] = useState<
-    number | undefined
-  >();
+  const [selectedTranslationIndex, setSelectedTranslationIndex] = useState<number | undefined>();
 
   useEffect(() => {
-    setSelectedTranslationIndex(
-      getPreferredLanguage(preferredLanguages, availableLocales)
-    );
+    setSelectedTranslationIndex(getPreferredLanguage(preferredLanguages, availableLocales));
   }, [preferredLanguages, availableLocales, router.locale]);
 
   const selectedTranslation = useMemo(() => {

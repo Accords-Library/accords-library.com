@@ -17,27 +17,19 @@ interface Props {
   isActive?: boolean;
 }
 
-const ChroniclePreview = ({
-  date,
-  url,
-  title,
-  isActive,
-}: Props): JSX.Element => (
+const ChroniclePreview = ({ date, url, title, isActive }: Props): JSX.Element => (
   <Link
     href={url}
     className={cJoin(
-      `flex w-full cursor-pointer gap-4 rounded-2xl py-4 px-5
-      text-left align-top outline outline-2 outline-offset-[-2px] outline-mid transition-all
-      hover:bg-mid hover:shadow-inner-sm hover:shadow-shade
-      hover:outline-[transparent] hover:active:shadow-inner hover:active:shadow-shade`,
+      `flex w-full cursor-pointer gap-4 rounded-2xl py-4 px-5 text-left align-top outline outline-2
+      outline-offset-[-2px] outline-mid transition-all hover:bg-mid hover:shadow-inner-sm
+      hover:shadow-shade hover:outline-[transparent] hover:active:shadow-inner
+      hover:active:shadow-shade`,
       cIf(isActive, "bg-mid shadow-inner-sm shadow-shade outline-[transparent]")
-    )}
-  >
+    )}>
     <div className="text-right">
       <p>{date.year}</p>
-      <p className="text-sm text-dark">
-        {prettyMonthDay(date.month, date.day)}
-      </p>
+      <p className="text-sm text-dark">{prettyMonthDay(date.month, date.day)}</p>
     </div>
     <p className="text-lg leading-tight">{title}</p>
   </Link>
@@ -52,24 +44,13 @@ export const TranslatedChroniclePreview = ({
   translations,
   fallback,
   ...otherProps
-}: TranslatedProps<
-  Parameters<typeof ChroniclePreview>[0],
-  "title"
->): JSX.Element => {
+}: TranslatedProps<Parameters<typeof ChroniclePreview>[0], "title">): JSX.Element => {
   const [selectedTranslation] = useSmartLanguage({
     items: translations,
-    languageExtractor: useCallback(
-      (item: { language: string }): string => item.language,
-      []
-    ),
+    languageExtractor: useCallback((item: { language: string }): string => item.language, []),
   });
 
-  return (
-    <ChroniclePreview
-      title={selectedTranslation?.title ?? fallback.title}
-      {...otherProps}
-    />
-  );
+  return <ChroniclePreview title={selectedTranslation?.title ?? fallback.title} {...otherProps} />;
 };
 
 /*

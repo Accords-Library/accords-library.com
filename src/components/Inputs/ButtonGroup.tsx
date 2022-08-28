@@ -18,18 +18,14 @@ interface Props {
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
-export const ButtonGroup = ({
-  buttonsProps,
-  className,
-}: Props): JSX.Element => (
+export const ButtonGroup = ({ buttonsProps, className }: Props): JSX.Element => (
   <div className={cJoin("grid grid-flow-col", className)}>
     {buttonsProps.map((buttonProps, index) => (
       <ConditionalWrapper
         key={index}
         isWrapping={isDefinedAndNotEmpty(buttonProps.tooltip)}
         wrapper={ToolTipWrapper}
-        wrapperProps={{ text: buttonProps.tooltip ?? "" }}
-      >
+        wrapperProps={{ text: buttonProps.tooltip ?? "" }}>
         <Button
           {...buttonProps}
           className={

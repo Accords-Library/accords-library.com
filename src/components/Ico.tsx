@@ -17,11 +17,7 @@ interface Props {
 export const Ico = ({ onClick, icon, className }: Props): JSX.Element => (
   <span
     onClick={onClick}
-    className={cJoin(
-      "material-icons [font-size:inherit] [line-height:inherit]",
-      className
-    )}
-  >
+    className={cJoin("material-icons [font-size:inherit] [line-height:inherit]", className)}>
     {icon}
   </span>
 );

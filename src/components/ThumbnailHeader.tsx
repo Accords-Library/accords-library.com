@@ -64,11 +64,8 @@ export const ThumbnailHeader = ({
           )}
         </div>
         <div
-          id={slugify(
-            prettyInlineTitle(pre_title ?? "", title, subtitle ?? "")
-          )}
-          className="grid place-items-center text-center"
-        >
+          id={slugify(prettyInlineTitle(pre_title ?? "", title, subtitle ?? ""))}
+          className="grid place-items-center text-center">
           <p className="text-2xl">{pre_title}</p>
           <h1 className="text-3xl">{title}</h1>
           <h2 className="text-2xl">{subtitle}</h2>
@@ -82,8 +79,7 @@ export const ThumbnailHeader = ({
             <div className="flex flex-row flex-wrap">
               <Chip
                 text={
-                  type.data.attributes.titles?.[0]?.title ??
-                  prettySlug(type.data.attributes.slug)
+                  type.data.attributes.titles?.[0]?.title ?? prettySlug(type.data.attributes.slug)
                 }
               />
             </div>
@@ -94,20 +90,17 @@ export const ThumbnailHeader = ({
           <div className="flex flex-col place-items-center gap-2">
             <h3 className="text-xl">{langui.categories}</h3>
             <div className="flex flex-row flex-wrap place-content-center gap-2">
-              {filterHasAttributes(categories.data, [
-                "attributes",
-                "id",
-              ] as const).map((category) => (
-                <Chip key={category.id} text={category.attributes.name} />
-              ))}
+              {filterHasAttributes(categories.data, ["attributes", "id"] as const).map(
+                (category) => (
+                  <Chip key={category.id} text={category.attributes.name} />
+                )
+              )}
             </div>
           </div>
         )}
         {languageSwitcher}
       </div>
-      {description && (
-        <InsetBox className="mt-8">{<Markdawn text={description} />}</InsetBox>
-      )}
+      {description && <InsetBox className="mt-8">{<Markdawn text={description} />}</InsetBox>}
     </>
   );
 };

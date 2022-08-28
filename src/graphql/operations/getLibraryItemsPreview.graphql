@@ -37,9 +37,7 @@ query getLibraryItemsPreview($language_code: String) {
               data {
                 attributes {
                   slug
-                  titles(
-                    filters: { language: { code: { eq: $language_code } } }
-                  ) {
+                  titles(filters: { language: { code: { eq: $language_code } } }) {
                     title
                   }
                 }
@@ -61,9 +59,7 @@ query getLibraryItemsPreview($language_code: String) {
               data {
                 attributes {
                   slug
-                  titles(
-                    filters: { language: { code: { eq: $language_code } } }
-                  ) {
+                  titles(filters: { language: { code: { eq: $language_code } } }) {
                     title
                   }
                 }
@@ -75,9 +71,7 @@ query getLibraryItemsPreview($language_code: String) {
               data {
                 attributes {
                   slug
-                  titles(
-                    filters: { language: { code: { eq: $language_code } } }
-                  ) {
+                  titles(filters: { language: { code: { eq: $language_code } } }) {
                     title
                   }
                 }
@@ -89,9 +83,7 @@ query getLibraryItemsPreview($language_code: String) {
               data {
                 attributes {
                   slug
-                  titles(
-                    filters: { language: { code: { eq: $language_code } } }
-                  ) {
+                  titles(filters: { language: { code: { eq: $language_code } } }) {
                     title
                   }
                 }
@@ -101,9 +93,7 @@ query getLibraryItemsPreview($language_code: String) {
               data {
                 attributes {
                   slug
-                  titles(
-                    filters: { language: { code: { eq: $language_code } } }
-                  ) {
+                  titles(filters: { language: { code: { eq: $language_code } } }) {
                     title
                   }
                 }

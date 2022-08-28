@@ -5,28 +5,18 @@ import { Chip } from "components/Chip";
 import { HorizontalLine } from "components/HorizontalLine";
 import { Img } from "components/Img";
 import { ReturnButton } from "components/PanelComponents/ReturnButton";
-import {
-  ContentPanel,
-  ContentPanelWidthSizes,
-} from "components/Panels/ContentPanel";
+import { ContentPanel, ContentPanelWidthSizes } from "components/Panels/ContentPanel";
 import { SubPanel } from "components/Panels/SubPanel";
 import DefinitionCard from "components/Wiki/DefinitionCard";
 import { getReadySdk } from "graphql/sdk";
-import {
-  filterHasAttributes,
-  isDefined,
-  isDefinedAndNotEmpty,
-} from "helpers/others";
-import { WikiPageWithTranslations } from "helpers/types";
+import { filterHasAttributes, isDefined, isDefinedAndNotEmpty } from "helpers/others";
+import { WikiPageWithTranslations } from "types/types";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
-import { prettySlug } from "helpers/formatters";
+import { prettySlug, sJoin } from "helpers/formatters";
 import { useLightBox } from "hooks/useLightBox";
 import { getAssetURL, ImageQuality } from "helpers/img";
 import { getOpenGraph } from "helpers/openGraph";
-import {
-  getDefaultPreferredLanguages,
-  staticSmartLanguage,
-} from "helpers/locales";
+import { getDefaultPreferredLanguages, staticSmartLanguage } from "helpers/locales";
 import { getDescription } from "helpers/description";
 import { cIf, cJoin } from "helpers/className";
 import { useIs3ColumnsLayout } from "hooks/useContainerQuery";
@@ -44,15 +34,14 @@ interface Props extends AppLayoutRequired {
 
 const WikiPage = ({ page, ...otherProps }: Props): JSX.Element => {
   const { langui } = useAppLayout();
-  const [selectedTranslation, LanguageSwitcher, languageSwitcherProps] =
-    useSmartLanguage({
-      items: page.translations,
-      languageExtractor: useCallback(
-        (item: NonNullable<Props["page"]["translations"][number]>) =>
-          item.language?.data?.attributes?.code,
-        []
-      ),
-    });
+  const [selectedTranslation, LanguageSwitcher, languageSwitcherProps] = useSmartLanguage({
+    items: page.translations,
+    languageExtractor: useCallback(
+      (item: NonNullable<Props["page"]["translations"][number]>) =>
+        item.language?.data?.attributes?.code,
+      []
+    ),
+  });
 
   const [openLightBox, LightBox] = useLightBox();
   const is3ColumnsLayout = useIs3ColumnsLayout();
@@ -60,11 +49,7 @@ const WikiPage = ({ page, ...otherProps }: Props): JSX.Element => {
   const subPanel = useMemo(
     () => (
       <SubPanel>
-        <ReturnButton
-          href={`/wiki`}
-          title={langui.wiki}
-          displayOnlyOn={"3ColumnsLayout"}
-        />
+        <ReturnButton href={`/wiki`} title={langui.wiki} displayOnlyOn={"3ColumnsLayout"} />
       </SubPanel>
     ),
     [langui]
@@ -84,14 +69,11 @@ const WikiPage = ({ page, ...otherProps }: Props): JSX.Element => {
 
         <div className="flex flex-wrap place-content-center gap-3">
           <h1 className="text-center text-3xl">{selectedTranslation?.title}</h1>
-          {selectedTranslation?.aliases &&
-            selectedTranslation.aliases.length > 0 && (
-              <p className="mr-3 text-center text-2xl">
-                {`(${selectedTranslation.aliases
-                  .map((alias) => alias?.alias)
-                  .join("・")})`}
-              </p>
-            )}
+          {selectedTranslation?.aliases && selectedTranslation.aliases.length > 0 && (
+            <p className="mr-3 text-center text-2xl">
+              {`(${selectedTranslation.aliases.map((alias) => alias?.alias).join("・")})`}
+            </p>
+          )}
           <LanguageSwitcher {...languageSwitcherProps} />
         </div>
 
@@ -103,8 +85,7 @@ const WikiPage = ({ page, ...otherProps }: Props): JSX.Element => {
                 className={cJoin(
                   "mb-8 overflow-hidden rounded-lg bg-mid text-center",
                   cIf(is3ColumnsLayout, "float-right ml-8 w-[25rem]")
-                )}
-              >
+                )}>
                 {page.thumbnail?.data?.attributes && (
                   <Img
                     src={page.thumbnail.data.attributes}
@@ -113,10 +94,7 @@ const WikiPage = ({ page, ...otherProps }: Props): JSX.Element => {
                     onClick={() => {
                       if (page.thumbnail?.data?.attributes?.url) {
                         openLightBox([
-                          getAssetURL(
-                            page.thumbnail.data.attributes.url,
-                            ImageQuality.Large
-                          ),
+                          getAssetURL(page.thumbnail.data.attributes.url, ImageQuality.Large),
                         ]);
                       }
                     }}
@@ -125,37 +103,27 @@ const WikiPage = ({ page, ...otherProps }: Props): JSX.Element => {
                 <div className="my-4 grid gap-4 p-4">
                   {page.categories?.data && page.categories.data.length > 0 && (
                     <>
-                      <p className="font-headers text-xl font-bold">
-                        {langui.categories}
-                      </p>
+                      <p className="font-headers text-xl font-bold">{langui.categories}</p>
 
                       <div className="flex flex-row flex-wrap place-content-center gap-2">
-                        {filterHasAttributes(page.categories.data, [
-                          "attributes",
-                        ] as const).map((category) => (
-                          <Chip
-                            key={category.id}
-                            text={category.attributes.name}
-                          />
-                        ))}
+                        {filterHasAttributes(page.categories.data, ["attributes"] as const).map(
+                          (category) => (
+                            <Chip key={category.id} text={category.attributes.name} />
+                          )
+                        )}
                       </div>
                     </>
                   )}
 
                   {page.tags?.data && page.tags.data.length > 0 && (
                     <>
-                      <p className="font-headers text-xl font-bold">
-                        {langui.tags}
-                      </p>
+                      <p className="font-headers text-xl font-bold">{langui.tags}</p>
                       <div className="flex flex-row flex-wrap place-content-center gap-2">
-                        {filterHasAttributes(page.tags.data, [
-                          "attributes",
-                        ] as const).map((tag) => (
+                        {filterHasAttributes(page.tags.data, ["attributes"] as const).map((tag) => (
                           <Chip
                             key={tag.id}
                             text={
-                              tag.attributes.titles?.[0]?.title ??
-                              prettySlug(tag.attributes.slug)
+                              tag.attributes.titles?.[0]?.title ?? prettySlug(tag.attributes.slug)
                             }
                           />
                         ))}
@@ -167,40 +135,41 @@ const WikiPage = ({ page, ...otherProps }: Props): JSX.Element => {
 
               {isDefinedAndNotEmpty(selectedTranslation.summary) && (
                 <div className="mb-12">
-                  <p className="font-headers text-lg font-bold">
-                    {langui.summary}
-                  </p>
+                  <p className="font-headers text-lg font-bold">{langui.summary}</p>
                   <p>{selectedTranslation.summary}</p>
                 </div>
               )}
 
-              {filterHasAttributes(page.definitions, [
-                "translations",
-              ] as const).map((definition, index) => (
-                <div key={index} className="mb-12">
-                  <DefinitionCard
-                    source={{
-                      name: definition.source?.data?.attributes?.name,
-                      url: definition.source?.data?.attributes?.content?.data
-                        ?.attributes?.slug
-                        ? `/contents/${definition.source.data.attributes.content.data.attributes.slug}`
-                        : `/library/${definition.source?.data?.attributes?.ranged_content?.data?.attributes?.library_item?.data?.attributes?.slug}`,
-                    }}
-                    translations={definition.translations.map(
-                      (translation) => ({
+              {filterHasAttributes(page.definitions, ["translations"] as const).map(
+                (definition, index) => (
+                  <div key={index} className="mb-12">
+                    <DefinitionCard
+                      source={{
+                        name: definition.source?.data?.attributes?.name,
+                        url: definition.source?.data?.attributes?.content?.data?.attributes?.slug
+                          ? sJoin(
+                              "/contents/",
+                              definition.source.data.attributes.content.data.attributes.slug
+                            )
+                          : cJoin(
+                              "/library/",
+                              definition.source?.data?.attributes?.ranged_content?.data?.attributes
+                                ?.library_item?.data?.attributes?.slug
+                            ),
+                      }}
+                      translations={definition.translations.map((translation) => ({
                         language: translation?.language?.data?.attributes?.code,
                         definition: translation?.definition,
                         status: translation?.status,
-                      })
-                    )}
-                    index={index + 1}
-                    categories={filterHasAttributes(
-                      definition.categories?.data,
-                      ["attributes"] as const
-                    ).map((category) => category.attributes.short)}
-                  />
-                </div>
-              ))}
+                      }))}
+                      index={index + 1}
+                      categories={filterHasAttributes(definition.categories?.data, [
+                        "attributes",
+                      ] as const).map((category) => category.attributes.short)}
+                    />
+                  </div>
+                )
+              )}
             </div>
           </>
         )}
@@ -221,13 +190,7 @@ const WikiPage = ({ page, ...otherProps }: Props): JSX.Element => {
     ]
   );
 
-  return (
-    <AppLayout
-      subPanel={subPanel}
-      contentPanel={contentPanel}
-      {...otherProps}
-    />
-  );
+  return <AppLayout subPanel={subPanel} contentPanel={contentPanel} {...otherProps} />;
 };
 export default WikiPage;
 
@@ -240,24 +203,19 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
   const langui = getLangui(context.locale);
   const slug =
-    context.params && isDefined(context.params.slug)
-      ? context.params.slug.toString()
-      : "";
+    context.params && isDefined(context.params.slug) ? context.params.slug.toString() : "";
   const page = await sdk.getWikiPage({
     language_code: context.locale ?? "en",
     slug: slug,
   });
-  if (!page.wikiPages?.data[0].attributes?.translations)
-    return { notFound: true };
+  if (!page.wikiPages?.data[0].attributes?.translations) return { notFound: true };
 
   const { title, description } = (() => {
     const chipsGroups = {
-      [langui.tags ?? "Tags"]: filterHasAttributes(
-        page.wikiPages.data[0].attributes.tags?.data,
-        ["attributes"] as const
-      ).map(
-        (tag) =>
-          tag.attributes.titles?.[0]?.title ?? prettySlug(tag.attributes.slug)
+      [langui.tags ?? "Tags"]: filterHasAttributes(page.wikiPages.data[0].attributes.tags?.data, [
+        "attributes",
+      ] as const).map(
+        (tag) => tag.attributes.titles?.[0]?.title ?? prettySlug(tag.attributes.slug)
       ),
       [langui.categories ?? "Categories"]: filterHasAttributes(
         page.wikiPages.data[0].attributes.categories?.data,
@@ -269,10 +227,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
       const selectedTranslation = staticSmartLanguage({
         items: page.wikiPages.data[0].attributes.translations,
         languageExtractor: (item) => item.language?.data?.attributes?.code,
-        preferredLanguages: getDefaultPreferredLanguages(
-          context.locale,
-          context.locales
-        ),
+        preferredLanguages: getDefaultPreferredLanguages(context.locale, context.locales),
       });
       if (selectedTranslation) {
         return {
@@ -288,8 +243,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     };
   })();
 
-  const thumbnail =
-    page.wikiPages.data[0].attributes.thumbnail?.data?.attributes;
+  const thumbnail = page.wikiPages.data[0].attributes.thumbnail?.data?.attributes;
 
   const props: Props = {
     page: page.wikiPages.data[0].attributes as WikiPageWithTranslations,
@@ -306,16 +260,14 @@ export const getStaticPaths: GetStaticPaths = async (context) => {
   const sdk = getReadySdk();
   const contents = await sdk.getWikiPagesSlugs();
   const paths: GetStaticPathsResult["paths"] = [];
-  filterHasAttributes(contents.wikiPages?.data, ["attributes"] as const).map(
-    (wikiPage) => {
-      context.locales?.map((local) =>
-        paths.push({
-          params: { slug: wikiPage.attributes.slug },
-          locale: local,
-        })
-      );
-    }
-  );
+  filterHasAttributes(contents.wikiPages?.data, ["attributes"] as const).map((wikiPage) => {
+    context.locales?.map((local) =>
+      paths.push({
+        params: { slug: wikiPage.attributes.slug },
+        locale: local,
+      })
+    );
+  });
   return {
     paths,
     fallback: "blocking",

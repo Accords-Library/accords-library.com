@@ -9,10 +9,7 @@ import { TextInput } from "components/Inputs/TextInput";
 import { WithLabel } from "components/Inputs/WithLabel";
 import { PanelHeader } from "components/PanelComponents/PanelHeader";
 import { ReturnButton } from "components/PanelComponents/ReturnButton";
-import {
-  ContentPanel,
-  ContentPanelWidthSizes,
-} from "components/Panels/ContentPanel";
+import { ContentPanel, ContentPanelWidthSizes } from "components/Panels/ContentPanel";
 import { SubPanel } from "components/Panels/SubPanel";
 import { PreviewCard } from "components/PreviewCard";
 import { GetVideosPreviewQuery } from "graphql/generated";
@@ -51,12 +48,9 @@ const Videos = ({ videos, ...otherProps }: Props): JSX.Element => {
   const hoverable = useDeviceSupportsHover();
   const isContentPanelAtLeast4xl = useIsContentPanelAtLeast("4xl");
 
-  const { value: keepInfoVisible, toggle: toggleKeepInfoVisible } =
-    useBoolean(true);
+  const { value: keepInfoVisible, toggle: toggleKeepInfoVisible } = useBoolean(true);
 
-  const [searchName, setSearchName] = useState(
-    DEFAULT_FILTERS_STATE.searchName
-  );
+  const [searchName, setSearchName] = useState(DEFAULT_FILTERS_STATE.searchName);
 
   const subPanel = useMemo(
     () => (
@@ -68,11 +62,7 @@ const Videos = ({ videos, ...otherProps }: Props): JSX.Element => {
           className="mb-10"
         />
 
-        <PanelHeader
-          icon={Icon.Movie}
-          title="Videos"
-          description={langui.archives_description}
-        />
+        <PanelHeader icon={Icon.Movie} title="Videos" description={langui.archives_description} />
 
         <HorizontalLine />
 
@@ -132,13 +122,7 @@ const Videos = ({ videos, ...otherProps }: Props): JSX.Element => {
     ),
     [isContentPanelAtLeast4xl, keepInfoVisible, searchName, videos]
   );
-  return (
-    <AppLayout
-      subPanel={subPanel}
-      contentPanel={contentPanel}
-      {...otherProps}
-    />
-  );
+  return <AppLayout subPanel={subPanel} contentPanel={contentPanel} {...otherProps} />;
 };
 export default Videos;
 
@@ -153,9 +137,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const videos = await sdk.getVideosPreview();
   if (!videos.videos) return { notFound: true };
   videos.videos.data
-    .sort((a, b) =>
-      compareDate(a.attributes?.published_date, b.attributes?.published_date)
-    )
+    .sort((a, b) => compareDate(a.attributes?.published_date, b.attributes?.published_date))
     .reverse();
 
   const props: Props = {

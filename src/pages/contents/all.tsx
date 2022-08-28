@@ -6,10 +6,7 @@ import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { Select } from "components/Inputs/Select";
 import { Switch } from "components/Inputs/Switch";
 import { PanelHeader } from "components/PanelComponents/PanelHeader";
-import {
-  ContentPanel,
-  ContentPanelWidthSizes,
-} from "components/Panels/ContentPanel";
+import { ContentPanel, ContentPanelWidthSizes } from "components/Panels/ContentPanel";
 import { SubPanel } from "components/Panels/SubPanel";
 import { getReadySdk } from "graphql/sdk";
 import { prettyInlineTitle, prettySlug } from "helpers/formatters";
@@ -18,11 +15,7 @@ import { WithLabel } from "components/Inputs/WithLabel";
 import { Button } from "components/Inputs/Button";
 import { useDeviceSupportsHover } from "hooks/useMediaQuery";
 import { Icon } from "components/Ico";
-import {
-  filterDefined,
-  filterHasAttributes,
-  isDefinedAndNotEmpty,
-} from "helpers/others";
+import { filterDefined, filterHasAttributes, isDefinedAndNotEmpty } from "helpers/others";
 import { GetContentsQuery } from "graphql/generated";
 import { SmartList } from "components/SmartList";
 import { SelectiveNonNullable } from "types/SelectiveNonNullable";
@@ -68,9 +61,7 @@ const Contents = ({ contents, ...otherProps }: Props): JSX.Element => {
     setValue: setKeepInfoVisible,
   } = useBoolean(DEFAULT_FILTERS_STATE.keepInfoVisible);
 
-  const [searchName, setSearchName] = useState(
-    DEFAULT_FILTERS_STATE.searchName
-  );
+  const [searchName, setSearchName] = useState(DEFAULT_FILTERS_STATE.searchName);
 
   const groupingFunction = useCallback(
     (
@@ -81,10 +72,9 @@ const Contents = ({ contents, ...otherProps }: Props): JSX.Element => {
     ): string[] => {
       switch (groupingMethod) {
         case 0: {
-          const categories = filterHasAttributes(
-            item.attributes.categories?.data,
-            ["attributes"] as const
-          );
+          const categories = filterHasAttributes(item.attributes.categories?.data, [
+            "attributes",
+          ] as const);
           if (categories.length > 0) {
             return categories.map((category) => category.attributes.name);
           }
@@ -107,17 +97,11 @@ const Contents = ({ contents, ...otherProps }: Props): JSX.Element => {
   );
 
   const filteringFunction = useCallback(
-    (
-      item: SelectiveNonNullable<Props["contents"][number], "attributes" | "id">
-    ) => {
+    (item: SelectiveNonNullable<Props["contents"][number], "attributes" | "id">) => {
       if (searchName.length > 1) {
         if (
           filterDefined(item.attributes.translations).find((translation) =>
-            prettyInlineTitle(
-              translation.pre_title,
-              translation.title,
-              translation.subtitle
-            )
+            prettyInlineTitle(translation.pre_title, translation.title, translation.subtitle)
               .toLowerCase()
               .includes(searchName.toLowerCase())
           )
@@ -142,12 +126,7 @@ const Contents = ({ contents, ...otherProps }: Props): JSX.Element => {
 
         <HorizontalLine />
 
-        <Button
-          href="/contents"
-          /* TODO: Langui */
-          text={"Switch to folder view"}
-          icon={Icon.Folder}
-        />
+        <Button href="/contents" text={langui.switch_to_folder_view} icon={Icon.Folder} />
 
         <HorizontalLine />
 
@@ -173,9 +152,7 @@ const Contents = ({ contents, ...otherProps }: Props): JSX.Element => {
             onChange={(value) => {
               setGroupingMethod(value);
               umami(
-                `[Contents/All] Change grouping method (${
-                  ["none", "category", "type"][value + 1]
-                })`
+                `[Contents/All] Change grouping method (${["none", "category", "type"][value + 1]})`
               );
             }}
             allowEmpty
@@ -188,11 +165,7 @@ const Contents = ({ contents, ...otherProps }: Props): JSX.Element => {
               value={keepInfoVisible}
               onClick={() => {
                 toggleKeepInfoVisible();
-                umami(
-                  `[Contents/All] Always ${
-                    keepInfoVisible ? "hide" : "show"
-                  } info`
-                );
+                umami(`[Contents/All] Always ${keepInfoVisible ? "hide" : "show"} info`);
               }}
             />
           </WithLabel>
@@ -222,6 +195,7 @@ const Contents = ({ contents, ...otherProps }: Props): JSX.Element => {
       langui.group_by,
       langui.reset_all_filters,
       langui.search_title,
+      langui.switch_to_folder_view,
       langui.type,
       searchName,
       setKeepInfoVisible,
@@ -281,11 +255,7 @@ const Contents = ({ contents, ...otherProps }: Props): JSX.Element => {
             ${item.attributes.slug}
             ${filterDefined(item.attributes.translations)
               .map((translation) =>
-                prettyInlineTitle(
-                  translation.pre_title,
-                  translation.title,
-                  translation.subtitle
-                )
+                prettyInlineTitle(translation.pre_title, translation.title, translation.subtitle)
               )
               .join(" ")}`
           }

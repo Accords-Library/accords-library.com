@@ -1,9 +1,6 @@
 import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next";
 import { PostPage } from "components/PostPage";
-import {
-  getPostStaticProps,
-  PostStaticProps,
-} from "graphql/getPostStaticProps";
+import { getPostStaticProps, PostStaticProps } from "graphql/getPostStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import { filterHasAttributes, isDefined } from "helpers/others";
 import { useAppLayout } from "contexts/AppLayoutContext";
@@ -37,9 +34,7 @@ export default LibrarySlug;
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const slug =
-    context.params && isDefined(context.params.slug)
-      ? context.params.slug.toString()
-      : "";
+    context.params && isDefined(context.params.slug) ? context.params.slug.toString() : "";
   return await getPostStaticProps(slug)(context);
 };
 
@@ -50,13 +45,11 @@ export const getStaticPaths: GetStaticPaths = async (context) => {
   const posts = await sdk.getPostsSlugs();
   const paths: GetStaticPathsResult["paths"] = [];
 
-  filterHasAttributes(posts.posts?.data, ["attributes"] as const).map(
-    (item) => {
-      context.locales?.map((local) =>
-        paths.push({ params: { slug: item.attributes.slug }, locale: local })
-      );
-    }
-  );
+  filterHasAttributes(posts.posts?.data, ["attributes"] as const).map((item) => {
+    context.locales?.map((local) =>
+      paths.push({ params: { slug: item.attributes.slug }, locale: local })
+    );
+  });
   return {
     paths,
     fallback: "blocking",

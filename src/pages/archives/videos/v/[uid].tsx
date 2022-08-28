@@ -8,10 +8,7 @@ import { Button } from "components/Inputs/Button";
 import { InsetBox } from "components/InsetBox";
 import { NavOption } from "components/PanelComponents/NavOption";
 import { ReturnButton } from "components/PanelComponents/ReturnButton";
-import {
-  ContentPanel,
-  ContentPanelWidthSizes,
-} from "components/Panels/ContentPanel";
+import { ContentPanel, ContentPanelWidthSizes } from "components/Panels/ContentPanel";
 import { SubPanel } from "components/Panels/SubPanel";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { GetVideoQuery } from "graphql/generated";
@@ -29,9 +26,7 @@ import { getLangui } from "graphql/fetchLocalData";
  */
 
 interface Props extends AppLayoutRequired {
-  video: NonNullable<
-    NonNullable<GetVideoQuery["videos"]>["data"][number]["attributes"]
-  >;
+  video: NonNullable<NonNullable<GetVideoQuery["videos"]>["data"][number]["attributes"]>;
 }
 
 const Video = ({ video, ...otherProps }: Props): JSX.Element => {
@@ -86,16 +81,9 @@ const Video = ({ video, ...otherProps }: Props): JSX.Element => {
         />
 
         <div className="grid place-items-center gap-12">
-          <div
-            id="video"
-            className="w-full overflow-hidden rounded-xl shadow-lg shadow-shade"
-          >
+          <div id="video" className="w-full overflow-hidden rounded-xl shadow-lg shadow-shade">
             {video.gone ? (
-              <video
-                className="w-full"
-                src={getVideoFile(video.uid)}
-                controls
-              ></video>
+              <video className="w-full" src={getVideoFile(video.uid)} controls></video>
             ) : (
               <iframe
                 src={`https://www.youtube-nocookie.com/embed/${video.uid}`}
@@ -104,49 +92,32 @@ const Video = ({ video, ...otherProps }: Props): JSX.Element => {
                 frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write;
               encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              ></iframe>
+                allowFullScreen></iframe>
             )}
 
             <div className="mt-2 p-6">
               <h1 className="text-2xl">{video.title}</h1>
               <div className="flex w-full flex-row flex-wrap gap-x-6">
                 <p>
-                  <Ico
-                    icon={Icon.Event}
-                    className="mr-1 translate-y-[.15em] !text-base"
-                  />
+                  <Ico icon={Icon.Event} className="mr-1 translate-y-[.15em] !text-base" />
                   {prettyDate(video.published_date, router.locale)}
                 </p>
                 <p>
-                  <Ico
-                    icon={Icon.Visibility}
-                    className="mr-1 translate-y-[.15em] !text-base"
-                  />
+                  <Ico icon={Icon.Visibility} className="mr-1 translate-y-[.15em] !text-base" />
                   {isContentPanelAtLeast4xl
                     ? video.views.toLocaleString()
                     : prettyShortenNumber(video.views)}
                 </p>
                 {video.channel?.data?.attributes && (
                   <p>
-                    <Ico
-                      icon={Icon.ThumbUp}
-                      className="mr-1 translate-y-[.15em] !text-base"
-                    />
+                    <Ico icon={Icon.ThumbUp} className="mr-1 translate-y-[.15em] !text-base" />
                     {isContentPanelAtLeast4xl
                       ? video.likes.toLocaleString()
                       : prettyShortenNumber(video.likes)}
                   </p>
                 )}
-                <a
-                  href={`https://youtu.be/${video.uid}`}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <Button
-                    className="!py-0 !px-3"
-                    text={`${langui.view_on} ${video.source}`}
-                  />
+                <a href={`https://youtu.be/${video.uid}`} target="_blank" rel="noreferrer">
+                  <Button className="!py-0 !px-3" text={`${langui.view_on} ${video.source}`} />
                 </a>
               </div>
             </div>
@@ -195,13 +166,7 @@ const Video = ({ video, ...otherProps }: Props): JSX.Element => {
     ]
   );
 
-  return (
-    <AppLayout
-      subPanel={subPanel}
-      contentPanel={contentPanel}
-      {...otherProps}
-    />
-  );
+  return <AppLayout subPanel={subPanel} contentPanel={contentPanel} {...otherProps} />;
 };
 export default Video;
 
@@ -214,10 +179,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
   const langui = getLangui(context.locale);
   const videos = await sdk.getVideo({
-    uid:
-      context.params && isDefined(context.params.uid)
-        ? context.params.uid.toString()
-        : "",
+    uid: context.params && isDefined(context.params.uid) ? context.params.uid.toString() : "",
   });
   if (!videos.videos?.data[0]?.attributes) return { notFound: true };
 
@@ -237,13 +199,11 @@ export const getStaticPaths: GetStaticPaths = async (context) => {
   const videos = await sdk.getVideosSlugs();
   const paths: GetStaticPathsResult["paths"] = [];
   if (videos.videos?.data)
-    filterHasAttributes(videos.videos.data, ["attributes"] as const).map(
-      (video) => {
-        context.locales?.map((local) => {
-          paths.push({ params: { uid: video.attributes.uid }, locale: local });
-        });
-      }
-    );
+    filterHasAttributes(videos.videos.data, ["attributes"] as const).map((video) => {
+      context.locales?.map((local) => {
+        paths.push({ params: { uid: video.attributes.uid }, locale: local });
+      });
+    });
   return {
     paths,
     fallback: "blocking",

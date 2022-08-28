@@ -22,12 +22,7 @@ interface Props {
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
-export const ReturnButton = ({
-  href,
-  title,
-  displayOnlyOn,
-  className,
-}: Props): JSX.Element => {
+export const ReturnButton = ({ href, title, displayOnlyOn, className }: Props): JSX.Element => {
   const { setSubPanelOpen, langui } = useAppLayout();
   const is3ColumnsLayout = useIs3ColumnsLayout();
 
@@ -61,16 +56,8 @@ export const TranslatedReturnButton = ({
 }: TranslatedProps<Props, "title">): JSX.Element => {
   const [selectedTranslation] = useSmartLanguage({
     items: translations,
-    languageExtractor: useCallback(
-      (item: { language: string }): string => item.language,
-      []
-    ),
+    languageExtractor: useCallback((item: { language: string }): string => item.language, []),
   });
 
-  return (
-    <ReturnButton
-      title={selectedTranslation?.title ?? fallback.title}
-      {...otherProps}
-    />
-  );
+  return <ReturnButton title={selectedTranslation?.title ?? fallback.title} {...otherProps} />;
 };

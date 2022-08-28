@@ -177,6 +177,9 @@ query localDataGetWebsiteInterfaces {
         anchor_link_copied
         folders
         empty_folder_message
+        switch_to_grid_view
+        switch_to_folder_view
+        content_is_not_available
       }
     }
   }

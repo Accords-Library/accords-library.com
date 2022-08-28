@@ -19,18 +19,8 @@ interface Props {
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
-export const Select = ({
-  className,
-  value,
-  options,
-  allowEmpty,
-  onChange,
-}: Props): JSX.Element => {
-  const {
-    value: isOpened,
-    setFalse: setClosed,
-    toggle: toggleOpened,
-  } = useBoolean(false);
+export const Select = ({ className, value, options, allowEmpty, onChange }: Props): JSX.Element => {
+  const { value: isOpened, setFalse: setClosed, toggle: toggleOpened } = useBoolean(false);
 
   const tryToggling = useCallback(() => {
     const optionCount = options.length + (value === -1 ? 1 : 0);
@@ -47,16 +37,14 @@ export const Select = ({
         "relative text-center transition-[filter]",
         cIf(isOpened, "z-10 drop-shadow-shade-lg"),
         className
-      )}
-    >
+      )}>
       <div
         className={cJoin(
           `grid cursor-pointer grid-flow-col grid-cols-[1fr_auto_auto] place-items-center
           rounded-[1em] bg-light p-1 outline outline-2 outline-offset-[-2px] outline-mid
           transition-all hover:bg-mid hover:outline-[transparent]`,
           cIf(isOpened, "rounded-b-none bg-highlight outline-[transparent]")
-        )}
-      >
+        )}>
         <p onClick={tryToggling} className="w-full">
           {value === -1 ? "—" : options[value]}
         </p>
@@ -70,17 +58,9 @@ export const Select = ({
             }}
           />
         )}
-        <Ico
-          onClick={tryToggling}
-          icon={isOpened ? Icon.ArrowDropUp : Icon.ArrowDropDown}
-        />
+        <Ico onClick={tryToggling} icon={isOpened ? Icon.ArrowDropUp : Icon.ArrowDropDown} />
       </div>
-      <div
-        className={cJoin(
-          "left-0 right-0 rounded-b-[1em]",
-          cIf(isOpened, "absolute", "hidden")
-        )}
-      >
+      <div className={cJoin("left-0 right-0 rounded-b-[1em]", cIf(isOpened, "absolute", "hidden"))}>
         {options.map((option, index) => (
           <Fragment key={index}>
             {index !== value && (
@@ -93,8 +73,7 @@ export const Select = ({
                 onClick={() => {
                   setClosed();
                   onChange(index);
-                }}
-              >
+                }}>
                 {option}
               </div>
             )}

@@ -76,9 +76,7 @@ module.exports = {
     plugin(({ addVariant, e }) => {
       addVariant("webkit-scrollbar", ({ modifySelectors, separator }) => {
         modifySelectors(({ className }) => {
-          return `.${e(
-            `webkit-scrollbar${separator}${className}`
-          )}::-webkit-scrollbar`;
+          return `.${e(`webkit-scrollbar${separator}${className}`)}::-webkit-scrollbar`;
         });
       });
     }),

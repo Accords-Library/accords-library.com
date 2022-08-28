@@ -8,10 +8,7 @@ import { getAssetURL, ImageQuality } from "helpers/img";
  */
 
 interface Props
-  extends Omit<
-    DetailedHTMLProps<ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>,
-    "src"
-  > {
+  extends Omit<DetailedHTMLProps<ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>, "src"> {
   src: UploadImageFragment | string;
   quality?: ImageQuality;
 }
@@ -26,15 +23,6 @@ export const Img = ({
   loading = "lazy",
   ...otherProps
 }: Props): JSX.Element => {
-  const src =
-    typeof rawSrc === "string" ? rawSrc : getAssetURL(rawSrc.url, quality);
-  return (
-    <img
-      className={className}
-      src={src}
-      alt={alt}
-      loading={loading}
-      {...otherProps}
-    />
-  );
+  const src = typeof rawSrc === "string" ? rawSrc : getAssetURL(rawSrc.url, quality);
+  return <img className={className} src={src} alt={alt} loading={loading} {...otherProps} />;
 };

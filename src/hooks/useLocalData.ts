@@ -18,10 +18,7 @@ const useFetchLocalData = (name: LocalDataFile) =>
 export const useLangui = (): Langui => {
   const { locale } = useRouter();
   const { data: websiteInterfaces } = useFetchLocalData("websiteInterfaces");
-  return useMemo(
-    () => processLangui(websiteInterfaces, locale),
-    [websiteInterfaces, locale]
-  );
+  return useMemo(() => processLangui(websiteInterfaces, locale), [websiteInterfaces, locale]);
 };
 
 export const useCurrencies = (): Currencies => {

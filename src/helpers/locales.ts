@@ -1,9 +1,6 @@
 import { isDefined } from "./others";
 
-export const getDefaultPreferredLanguages = (
-  routerLocal: string,
-  locales: string[]
-): string[] => {
+export const getDefaultPreferredLanguages = (routerLocal: string, locales: string[]): string[] => {
   let defaultPreferredLanguages: string[] = [];
   if (routerLocal === "en") {
     defaultPreferredLanguages = [routerLocal];
@@ -13,8 +10,7 @@ export const getDefaultPreferredLanguages = (
   } else {
     defaultPreferredLanguages = [routerLocal, "en"];
     locales.map((locale) => {
-      if (locale !== routerLocal && locale !== "en")
-        defaultPreferredLanguages.push(locale);
+      if (locale !== routerLocal && locale !== "en") defaultPreferredLanguages.push(locale);
     });
   }
   return defaultPreferredLanguages;

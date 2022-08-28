@@ -58,7 +58,7 @@ export const prettyInlineTitle = (
   return result;
 };
 
-export const prettyItemType = (metadata: any, langui: Langui): string => {
+export const prettyItemType = (metadata: { __typename: string }, langui: Langui): string => {
   switch (metadata.__typename) {
     case "ComponentMetadataAudio":
       return langui.audio ?? "Audio";
@@ -242,8 +242,7 @@ export const prettyDuration = (seconds: number): string => {
 export const prettyLanguage = (code: string, languages: Languages): string => {
   let result = code;
   languages.forEach((language) => {
-    if (language.attributes?.code === code)
-      result = language.attributes.localized_name;
+    if (language.attributes?.code === code) result = language.attributes.localized_name;
   });
   return result;
 };
@@ -254,8 +253,7 @@ export const prettyURL = (url: string): string => {
 };
 
 const capitalizeString = (string: string): string => {
-  const capitalizeWord = (word: string): string =>
-    word.charAt(0).toUpperCase() + word.substring(1);
+  const capitalizeWord = (word: string): string => word.charAt(0).toUpperCase() + word.substring(1);
 
   let words = string.split(" ");
   words = words.map((word) => capitalizeWord(word));
@@ -281,3 +279,5 @@ export const slugify = (string: string | undefined): string => {
     .trim()
     .replace(/ /gu, "-");
 };
+
+export const sJoin = (...args: (string | null | undefined)[]): string => args.join("");

@@ -1,13 +1,10 @@
 import { GetStaticProps } from "next";
 import { getReadySdk } from "./sdk";
 import { getLangui } from "./fetchLocalData";
-import { PostWithTranslations } from "helpers/types";
+import { PostWithTranslations } from "types/types";
 import { getOpenGraph } from "helpers/openGraph";
 import { prettyDate, prettySlug } from "helpers/formatters";
-import {
-  getDefaultPreferredLanguages,
-  staticSmartLanguage,
-} from "helpers/locales";
+import { getDefaultPreferredLanguages, staticSmartLanguage } from "helpers/locales";
 import { filterHasAttributes, isDefined } from "helpers/others";
 import { getDescription } from "helpers/description";
 import { AppLayoutRequired } from "components/AppLayout";
@@ -35,10 +32,7 @@ export const getPostStaticProps =
       const selectedTranslation = staticSmartLanguage({
         items: post.posts.data[0].attributes.translations,
         languageExtractor: (item) => item.language?.data?.attributes?.code,
-        preferredLanguages: getDefaultPreferredLanguages(
-          context.locale,
-          context.locales
-        ),
+        preferredLanguages: getDefaultPreferredLanguages(context.locale, context.locales),
       });
 
       const title = selectedTranslation?.title ?? prettySlug(slug);

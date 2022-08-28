@@ -47,15 +47,12 @@ export const NavOption = ({
       content={
         <div>
           <h3 className="text-2xl">{title}</h3>
-          {isDefinedAndNotEmpty(subtitle) && (
-            <p className="col-start-2">{subtitle}</p>
-          )}
+          {isDefinedAndNotEmpty(subtitle) && <p className="col-start-2">{subtitle}</p>}
         </div>
       }
       placement="right"
       className="text-left"
-      disabled={!reduced}
-    >
+      disabled={!reduced}>
       <Link
         href={url}
         onClick={onClick}
@@ -69,16 +66,13 @@ export const NavOption = ({
             "outline outline-2 outline-offset-[-2px] outline-mid hover:outline-[transparent]"
           ),
           cIf(isActive, "bg-mid shadow-inner-sm shadow-shade")
-        )}
-      >
+        )}>
         {icon && <Ico icon={icon} className="mt-[-.1em] !text-2xl" />}
 
         {!reduced && (
           <div>
             <h3 className="text-2xl">{title}</h3>
-            {isDefinedAndNotEmpty(subtitle) && (
-              <p className="col-start-2">{subtitle}</p>
-            )}
+            {isDefinedAndNotEmpty(subtitle) && <p className="col-start-2">{subtitle}</p>}
           </div>
         )}
       </Link>
@@ -98,10 +92,7 @@ export const TranslatedNavOption = ({
 }: TranslatedProps<Props, "subtitle" | "title">): JSX.Element => {
   const [selectedTranslation] = useSmartLanguage({
     items: translations,
-    languageExtractor: useCallback(
-      (item: { language: string }): string => item.language,
-      []
-    ),
+    languageExtractor: useCallback((item: { language: string }): string => item.language, []),
   });
   return (
     <NavOption

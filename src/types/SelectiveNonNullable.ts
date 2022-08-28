@@ -1,14 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-type JoinDot<K extends string, P extends string> = `${K}${"" extends K
-  ? ""
-  : "."}${P}`;
+type JoinDot<K extends string, P extends string> = `${K}${"" extends K ? "" : "."}${P}`;
 
 export type PathDot<T, Acc extends string = ""> = T extends object
   ? {
-      [K in keyof T]: K extends string
-        ? JoinDot<Acc, K> | PathDot<T[K], JoinDot<Acc, K>>
-        : never;
+      [K in keyof T]: K extends string ? JoinDot<Acc, K> | PathDot<T[K], JoinDot<Acc, K>> : never;
     }[keyof T]
   : Acc;
 
@@ -34,16 +30,10 @@ type Recursive<T, Path extends unknown[]> = PathHead<Path> extends keyof T
     }
   : T;
 
-type Split<
-  Str,
-  Acc extends string[] = []
-> = Str extends `${infer Head}.${infer Rest}`
+type Split<Str, Acc extends string[] = []> = Str extends `${infer Head}.${infer Rest}`
   ? Split<Rest, [...Acc, Head]>
   : Str extends `${infer Last}`
   ? [...Acc, Last]
   : never;
 
-export type SelectiveNonNullable<T, P extends PathDot<T>> = Recursive<
-  NonNullable<T>,
-  Split<P>
->;
+export type SelectiveNonNullable<T, P extends PathDot<T>> = Recursive<NonNullable<T>, Split<P>>;

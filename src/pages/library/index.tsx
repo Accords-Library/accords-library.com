@@ -6,15 +6,12 @@ import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { Select } from "components/Inputs/Select";
 import { Switch } from "components/Inputs/Switch";
 import { PanelHeader } from "components/PanelComponents/PanelHeader";
-import {
-  ContentPanel,
-  ContentPanelWidthSizes,
-} from "components/Panels/ContentPanel";
+import { ContentPanel, ContentPanelWidthSizes } from "components/Panels/ContentPanel";
 import { SubPanel } from "components/Panels/SubPanel";
 import { GetLibraryItemsPreviewQuery } from "graphql/generated";
 import { getReadySdk } from "graphql/sdk";
 import { prettyInlineTitle, prettyItemSubType } from "helpers/formatters";
-import { LibraryItemUserStatus } from "helpers/types";
+import { LibraryItemUserStatus } from "types/types";
 import { Icon } from "components/Ico";
 import { WithLabel } from "components/Inputs/WithLabel";
 import { TextInput } from "components/Inputs/TextInput";
@@ -24,12 +21,7 @@ import { isUntangibleGroupItem } from "helpers/libraryItem";
 import { PreviewCard } from "components/PreviewCard";
 import { useDeviceSupportsHover } from "hooks/useMediaQuery";
 import { ButtonGroup } from "components/Inputs/ButtonGroup";
-import {
-  filterHasAttributes,
-  isDefined,
-  isDefinedAndNotEmpty,
-  isUndefined,
-} from "helpers/others";
+import { filterHasAttributes, isDefined, isDefinedAndNotEmpty, isUndefined } from "helpers/others";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { convertPrice } from "helpers/numbers";
 import { SmartList } from "components/SmartList";
@@ -74,9 +66,7 @@ const Library = ({ items, ...otherProps }: Props): JSX.Element => {
   const { libraryItemUserStatus } = useAppLayout();
   const isContentPanelAtLeast4xl = useIsContentPanelAtLeast("4xl");
 
-  const [searchName, setSearchName] = useState(
-    DEFAULT_FILTERS_STATE.searchName
-  );
+  const [searchName, setSearchName] = useState(DEFAULT_FILTERS_STATE.searchName);
 
   const {
     value: showSubitems,
@@ -102,27 +92,20 @@ const Library = ({ items, ...otherProps }: Props): JSX.Element => {
     setValue: setKeepInfoVisible,
   } = useBoolean(DEFAULT_FILTERS_STATE.keepInfoVisible);
 
-  const [sortingMethod, setSortingMethod] = useState<number>(
-    DEFAULT_FILTERS_STATE.sortingMethod
-  );
+  const [sortingMethod, setSortingMethod] = useState<number>(DEFAULT_FILTERS_STATE.sortingMethod);
 
   const [groupingMethod, setGroupingMethod] = useState<number>(
     DEFAULT_FILTERS_STATE.groupingMethod
   );
 
-  const [filterUserStatus, setFilterUserStatus] = useState<
-    LibraryItemUserStatus | undefined
-  >(DEFAULT_FILTERS_STATE.filterUserStatus);
+  const [filterUserStatus, setFilterUserStatus] = useState<LibraryItemUserStatus | undefined>(
+    DEFAULT_FILTERS_STATE.filterUserStatus
+  );
 
   const filteringFunction = useCallback(
-    (
-      item: SelectiveNonNullable<Props["items"][number], "attributes" | "id">
-    ) => {
+    (item: SelectiveNonNullable<Props["items"][number], "attributes" | "id">) => {
       if (!showSubitems && !item.attributes.root_item) return false;
-      if (
-        showSubitems &&
-        isUntangibleGroupItem(item.attributes.metadata?.[0])
-      ) {
+      if (showSubitems && isUntangibleGroupItem(item.attributes.metadata?.[0])) {
         return false;
       }
       if (item.attributes.primary && !showPrimaryItems) return false;
@@ -142,13 +125,7 @@ const Library = ({ items, ...otherProps }: Props): JSX.Element => {
       }
       return true;
     },
-    [
-      libraryItemUserStatus,
-      filterUserStatus,
-      showPrimaryItems,
-      showSecondaryItems,
-      showSubitems,
-    ]
+    [libraryItemUserStatus, filterUserStatus, showPrimaryItems, showSecondaryItems, showSubitems]
   );
 
   const sortingFunction = useCallback(
@@ -158,16 +135,8 @@ const Library = ({ items, ...otherProps }: Props): JSX.Element => {
     ) => {
       switch (sortingMethod) {
         case 0: {
-          const titleA = prettyInlineTitle(
-            "",
-            a.attributes.title,
-            a.attributes.subtitle
-          );
-          const titleB = prettyInlineTitle(
-            "",
-            b.attributes.title,
-            b.attributes.subtitle
-          );
+          const titleA = prettyInlineTitle("", a.attributes.title, a.attributes.subtitle);
+          const titleB = prettyInlineTitle("", b.attributes.title, b.attributes.subtitle);
           return naturalCompare(titleA, titleB);
         }
         case 1: {
@@ -180,10 +149,7 @@ const Library = ({ items, ...otherProps }: Props): JSX.Element => {
           return priceA - priceB;
         }
         case 2: {
-          return compareDate(
-            a.attributes.release_date,
-            b.attributes.release_date
-          );
+          return compareDate(a.attributes.release_date, b.attributes.release_date);
         }
         default:
           return 0;
@@ -193,15 +159,12 @@ const Library = ({ items, ...otherProps }: Props): JSX.Element => {
   );
 
   const groupingFunction = useCallback(
-    (
-      item: SelectiveNonNullable<Props["items"][number], "attributes" | "id">
-    ): string[] => {
+    (item: SelectiveNonNullable<Props["items"][number], "attributes" | "id">): string[] => {
       switch (groupingMethod) {
         case 0: {
-          const categories = filterHasAttributes(
-            item.attributes.categories?.data,
-            ["attributes"] as const
-          );
+          const categories = filterHasAttributes(item.attributes.categories?.data, [
+            "attributes",
+          ] as const);
           if (categories.length > 0) {
             return categories.map((category) => category.attributes.name);
           }
@@ -221,10 +184,7 @@ const Library = ({ items, ...otherProps }: Props): JSX.Element => {
               case "ComponentMetadataOther":
                 return [langui.other ?? "Other"];
               case "ComponentMetadataGroup": {
-                switch (
-                  item.attributes.metadata[0]?.subitems_type?.data?.attributes
-                    ?.slug
-                ) {
+                switch (item.attributes.metadata[0]?.subitems_type?.data?.attributes?.slug) {
                   case "audio":
                     return [langui.audio ?? "Audio"];
                   case "video":
@@ -318,9 +278,7 @@ const Library = ({ items, ...otherProps }: Props): JSX.Element => {
             onChange={(value) => {
               setSortingMethod(value);
               umami(
-                `[Library] Change sorting method (${
-                  ["name", "price", "release date"][value]
-                })`
+                `[Library] Change sorting method (${["name", "price", "release date"][value]})`
               );
             }}
           />
@@ -341,9 +299,7 @@ const Library = ({ items, ...otherProps }: Props): JSX.Element => {
             value={showPrimaryItems}
             onClick={() => {
               toggleShowPrimaryItems();
-              umami(
-                `[Library] ${showPrimaryItems ? "Hide" : "Show"} primary items`
-              );
+              umami(`[Library] ${showPrimaryItems ? "Hide" : "Show"} primary items`);
             }}
           />
         </WithLabel>
@@ -353,11 +309,7 @@ const Library = ({ items, ...otherProps }: Props): JSX.Element => {
             value={showSecondaryItems}
             onClick={() => {
               toggleShowSecondaryItems();
-              umami(
-                `[Library] ${
-                  showSecondaryItems ? "Hide" : "Show"
-                } secondary items`
-              );
+              umami(`[Library] ${showSecondaryItems ? "Hide" : "Show"} secondary items`);
             }}
           />
         </WithLabel>
@@ -368,9 +320,7 @@ const Library = ({ items, ...otherProps }: Props): JSX.Element => {
               value={keepInfoVisible}
               onClick={() => {
                 toggleKeepInfoVisible();
-                umami(
-                  `[Library] Always ${keepInfoVisible ? "hide" : "show"} info`
-                );
+                umami(`[Library] Always ${keepInfoVisible ? "hide" : "show"} info`);
               }}
             />
           </WithLabel>
@@ -497,20 +447,13 @@ const Library = ({ items, ...otherProps }: Props): JSX.Element => {
           )}
           className={cJoin(
             "grid-cols-2 items-end",
-            cIf(
-              isContentPanelAtLeast4xl,
-              "grid-cols-[repeat(auto-fill,_minmax(13rem,1fr))]"
-            )
+            cIf(isContentPanelAtLeast4xl, "grid-cols-[repeat(auto-fill,_minmax(13rem,1fr))]")
           )}
           searchingTerm={searchName}
           sortingFunction={sortingFunction}
           groupingFunction={groupingFunction}
           searchingBy={(item) =>
-            prettyInlineTitle(
-              "",
-              item.attributes.title,
-              item.attributes.subtitle
-            )
+            prettyInlineTitle("", item.attributes.title, item.attributes.subtitle)
           }
           filteringFunction={filteringFunction}
           paginationItemPerPage={25}

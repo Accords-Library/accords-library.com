@@ -13,7 +13,7 @@ const LOCAL_DATA_FOLDER = `${process.cwd()}/public/local-data`;
 const writeLocalData = (name: LocalDataFile, localData: unknown) => {
   const path = `${LOCAL_DATA_FOLDER}/${name}.json`;
   writeFileSync(path, JSON.stringify(localData), { encoding: "utf-8" });
-  console.log(`${path} has been written!`)
+  console.log(`${path} has been written!`);
 };
 
 const readLocalData = <T>(name: LocalDataFile): T => {
@@ -24,10 +24,7 @@ const readLocalData = <T>(name: LocalDataFile): T => {
 const sdk = getReadySdk();
 
 (async () => {
-  writeLocalData(
-    "websiteInterfaces",
-    await sdk.localDataGetWebsiteInterfaces()
-  );
+  writeLocalData("websiteInterfaces", await sdk.localDataGetWebsiteInterfaces());
   writeLocalData("currencies", await sdk.localDataGetCurrencies());
   writeLocalData("languages", await sdk.localDataGetLanguages());
 })();
@@ -37,7 +34,6 @@ const sdk = getReadySdk();
 export type LocalDataFile = "currencies" | "languages" | "websiteInterfaces";
 
 export const getLangui = (locale: string | undefined): Langui => {
-  const websiteInterfaces =
-    readLocalData<LocalDataGetWebsiteInterfacesQuery>("websiteInterfaces");
+  const websiteInterfaces = readLocalData<LocalDataGetWebsiteInterfacesQuery>("websiteInterfaces");
   return processLangui(websiteInterfaces, locale);
 };

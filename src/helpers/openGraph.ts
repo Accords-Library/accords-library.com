@@ -1,9 +1,4 @@
-import {
-  OgImage,
-  getImgSizesByQuality,
-  ImageQuality,
-  getAssetURL,
-} from "./img";
+import { OgImage, getImgSizesByQuality, ImageQuality, getAssetURL } from "./img";
 import { isDefinedAndNotEmpty } from "./others";
 import { Langui } from "./localData";
 import { UploadImageFragment } from "graphql/generated";
@@ -30,21 +25,13 @@ export const getOpenGraph = (
   description?: string | null | undefined,
   thumbnail?: UploadImageFragment | null | undefined
 ): OpenGraph => ({
-  title: `${TITLE_PREFIX}${
-    isDefinedAndNotEmpty(title) ? `${TITLE_SEPARATOR}${title}` : ""
-  }`,
-  description: isDefinedAndNotEmpty(description)
-    ? description
-    : langui.default_description ?? "",
+  title: `${TITLE_PREFIX}${isDefinedAndNotEmpty(title) ? `${TITLE_SEPARATOR}${title}` : ""}`,
+  description: isDefinedAndNotEmpty(description) ? description : langui.default_description ?? "",
   thumbnail: thumbnail ? getOgImage(thumbnail) : DEFAULT_OG_THUMBNAIL,
 });
 
 const getOgImage = (image: UploadImageFragment): OgImage => {
-  const imgSize = getImgSizesByQuality(
-    image.width ?? 0,
-    image.height ?? 0,
-    ImageQuality.Og
-  );
+  const imgSize = getImgSizesByQuality(image.width ?? 0, image.height ?? 0, ImageQuality.Og);
   return {
     image: getAssetURL(image.url, ImageQuality.Og),
     width: imgSize.width,

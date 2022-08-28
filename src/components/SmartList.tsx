@@ -72,10 +72,7 @@ export const SmartList = <T,>({
   const [page, setPage] = useState(0);
   const { langui } = useAppLayout();
   useScrollTopOnChange(Ids.ContentPanel, [page], paginationScroolTop);
-  useEffect(
-    () => setPage(0),
-    [searchingTerm, groupingFunction, groupSortingFunction, items]
-  );
+  useEffect(() => setPage(0), [searchingTerm, groupingFunction, groupSortingFunction, items]);
 
   const searchFilter = useCallback(() => {
     if (isDefinedAndNotEmpty(searchingTerm) && isDefined(searchingBy)) {
@@ -118,12 +115,7 @@ export const SmartList = <T,>({
       });
     });
     return memo.sort(groupSortingFunction);
-  }, [
-    groupCountingFunction,
-    groupSortingFunction,
-    groupingFunction,
-    sortedItem,
-  ]);
+  }, [groupCountingFunction, groupSortingFunction, groupingFunction, sortedItem]);
 
   const pages = useMemo(() => {
     const memo: Group<T>[][] = [];
@@ -174,12 +166,7 @@ export const SmartList = <T,>({
   return (
     <>
       {pages.length > 1 && paginationSelectorTop && (
-        <PageSelector
-          className="mb-12"
-          page={page}
-          pagesCount={pages.length}
-          onChange={setPage}
-        />
+        <PageSelector className="mb-12" page={page} pagesCount={pages.length} onChange={setPage} />
       )}
 
       <div className="mb-8">
@@ -191,8 +178,7 @@ export const SmartList = <T,>({
                   {group.name.length > 0 && (
                     <h2
                       className="flex flex-row place-items-center gap-2 pb-2 pt-10 text-2xl
-                      first-of-type:pt-0"
-                    >
+                      first-of-type:pt-0">
                       {group.name}
                       <Chip
                         text={`${group.totalCount} ${
@@ -208,8 +194,7 @@ export const SmartList = <T,>({
                       `grid items-start gap-8 border-b-[3px] border-dotted pb-12
                       last-of-type:border-0`,
                       className
-                    )}
-                  >
+                    )}>
                     {group.items.map((item) => (
                       <RenderItem item={item} key={getItemId(item)} />
                     ))}
@@ -225,12 +210,7 @@ export const SmartList = <T,>({
       </div>
 
       {pages.length > 1 && paginationSelectorBottom && (
-        <PageSelector
-          className="mb-12"
-          page={page}
-          pagesCount={pages.length}
-          onChange={setPage}
-        />
+        <PageSelector className="mb-12" page={page} pagesCount={pages.length} onChange={setPage} />
       )}
     </>
   );
@@ -248,15 +228,10 @@ const DefaultRenderWhenEmpty = () => {
     <div className="grid h-full place-content-center">
       <div
         className="grid grid-flow-col place-items-center gap-9 rounded-2xl border-2 border-dotted
-        border-dark p-8 text-dark opacity-40"
-      >
-        {is3ColumnsLayout && (
-          <Ico icon={Icon.ChevronLeft} className="!text-[300%]" />
-        )}
+        border-dark p-8 text-dark opacity-40">
+        {is3ColumnsLayout && <Ico icon={Icon.ChevronLeft} className="!text-[300%]" />}
         <p className="max-w-xs text-2xl">{langui.no_results_message}</p>
-        {!is3ColumnsLayout && (
-          <Ico icon={Icon.ChevronRight} className="!text-[300%]" />
-        )}
+        {!is3ColumnsLayout && <Ico icon={Icon.ChevronRight} className="!text-[300%]" />}
       </div>
     </div>
   );

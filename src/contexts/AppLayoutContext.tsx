@@ -1,14 +1,8 @@
-import React, {
-  ReactNode,
-  useContext,
-  useEffect,
-  useLayoutEffect,
-  useState,
-} from "react";
+import React, { ReactNode, useContext, useEffect, useLayoutEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useLocalStorage } from "usehooks-ts";
 import { isDefined, isDefinedAndNotEmpty } from "helpers/others";
-import { LibraryItemUserStatus, RequiredNonNullable } from "helpers/types";
+import { LibraryItemUserStatus, RequiredNonNullable } from "types/types";
 import { useDarkMode } from "hooks/useDarkMode";
 import { Currencies, Languages, Langui } from "helpers/localData";
 import { useCurrencies, useLanguages, useLangui } from "hooks/useLocalData";
@@ -19,27 +13,19 @@ import { useScrollIntoView } from "hooks/useScrollIntoView";
 interface AppLayoutState {
   subPanelOpen: boolean;
   toggleSubPanelOpen: () => void;
-  setSubPanelOpen: React.Dispatch<
-    React.SetStateAction<AppLayoutState["subPanelOpen"]>
-  >;
+  setSubPanelOpen: React.Dispatch<React.SetStateAction<AppLayoutState["subPanelOpen"]>>;
 
   configPanelOpen: boolean;
   toggleConfigPanelOpen: () => void;
-  setConfigPanelOpen: React.Dispatch<
-    React.SetStateAction<AppLayoutState["configPanelOpen"]>
-  >;
+  setConfigPanelOpen: React.Dispatch<React.SetStateAction<AppLayoutState["configPanelOpen"]>>;
 
   mainPanelReduced: boolean;
   toggleMainPanelReduced: () => void;
-  setMainPanelReduced: React.Dispatch<
-    React.SetStateAction<AppLayoutState["mainPanelReduced"]>
-  >;
+  setMainPanelReduced: React.Dispatch<React.SetStateAction<AppLayoutState["mainPanelReduced"]>>;
 
   mainPanelOpen: boolean;
   toggleMainPanelOpen: () => void;
-  setMainPanelOpen: React.Dispatch<
-    React.SetStateAction<AppLayoutState["mainPanelOpen"]>
-  >;
+  setMainPanelOpen: React.Dispatch<React.SetStateAction<AppLayoutState["mainPanelOpen"]>>;
 
   darkMode: boolean;
   toggleDarkMode: () => void;
@@ -47,9 +33,7 @@ interface AppLayoutState {
 
   selectedThemeMode: boolean;
   toggleSelectedThemeMode: () => void;
-  setSelectedThemeMode: React.Dispatch<
-    React.SetStateAction<AppLayoutState["selectedThemeMode"]>
-  >;
+  setSelectedThemeMode: React.Dispatch<React.SetStateAction<AppLayoutState["selectedThemeMode"]>>;
 
   fontSize: number;
   setFontSize: React.Dispatch<React.SetStateAction<AppLayoutState["fontSize"]>>;
@@ -62,20 +46,14 @@ interface AppLayoutState {
   setCurrency: React.Dispatch<React.SetStateAction<AppLayoutState["currency"]>>;
 
   playerName: string;
-  setPlayerName: React.Dispatch<
-    React.SetStateAction<AppLayoutState["playerName"]>
-  >;
+  setPlayerName: React.Dispatch<React.SetStateAction<AppLayoutState["playerName"]>>;
 
   preferredLanguages: string[];
-  setPreferredLanguages: React.Dispatch<
-    React.SetStateAction<AppLayoutState["preferredLanguages"]>
-  >;
+  setPreferredLanguages: React.Dispatch<React.SetStateAction<AppLayoutState["preferredLanguages"]>>;
 
   menuGestures: boolean;
   toggleMenuGestures: () => void;
-  setMenuGestures: React.Dispatch<
-    React.SetStateAction<AppLayoutState["menuGestures"]>
-  >;
+  setMenuGestures: React.Dispatch<React.SetStateAction<AppLayoutState["menuGestures"]>>;
 
   libraryItemUserStatus: Record<string, LibraryItemUserStatus>;
   setLibraryItemUserStatus: React.Dispatch<
@@ -83,19 +61,13 @@ interface AppLayoutState {
   >;
 
   screenWidth: number;
-  setScreenWidth: React.Dispatch<
-    React.SetStateAction<AppLayoutState["screenWidth"]>
-  >;
+  setScreenWidth: React.Dispatch<React.SetStateAction<AppLayoutState["screenWidth"]>>;
 
   contentPanelWidth: number;
-  setContentPanelWidth: React.Dispatch<
-    React.SetStateAction<AppLayoutState["contentPanelWidth"]>
-  >;
+  setContentPanelWidth: React.Dispatch<React.SetStateAction<AppLayoutState["contentPanelWidth"]>>;
 
   subPanelWidth: number;
-  setSubPanelWidth: React.Dispatch<
-    React.SetStateAction<AppLayoutState["subPanelWidth"]>
-  >;
+  setSubPanelWidth: React.Dispatch<React.SetStateAction<AppLayoutState["subPanelWidth"]>>;
 
   langui: Langui;
   languages: Languages;
@@ -195,28 +167,18 @@ export const AppContextProvider = (props: Props): JSX.Element => {
     initialState.mainPanelOpen
   );
 
-  const [darkMode, selectedThemeMode, setDarkMode, setSelectedThemeMode] =
-    useDarkMode("darkMode", initialState.darkMode);
-
-  const [fontSize, setFontSize] = useLocalStorage(
-    "fontSize",
-    initialState.fontSize
+  const [darkMode, selectedThemeMode, setDarkMode, setSelectedThemeMode] = useDarkMode(
+    "darkMode",
+    initialState.darkMode
   );
 
-  const [dyslexic, setDyslexic] = useLocalStorage(
-    "dyslexic",
-    initialState.dyslexic
-  );
+  const [fontSize, setFontSize] = useLocalStorage("fontSize", initialState.fontSize);
 
-  const [currency, setCurrency] = useLocalStorage(
-    "currency",
-    initialState.currency
-  );
+  const [dyslexic, setDyslexic] = useLocalStorage("dyslexic", initialState.dyslexic);
 
-  const [playerName, setPlayerName] = useLocalStorage(
-    "playerName",
-    initialState.playerName
-  );
+  const [currency, setCurrency] = useLocalStorage("currency", initialState.currency);
+
+  const [playerName, setPlayerName] = useLocalStorage("playerName", initialState.playerName);
 
   const [preferredLanguages, setPreferredLanguages] = useLocalStorage(
     "preferredLanguages",
@@ -255,9 +217,7 @@ export const AppContextProvider = (props: Props): JSX.Element => {
   };
 
   const toggleSelectedThemeMode = () => {
-    setSelectedThemeMode((current) =>
-      isDefined(current) ? !current : current
-    );
+    setSelectedThemeMode((current) => (isDefined(current) ? !current : current));
   };
 
   const toggleDyslexic = () => {
@@ -275,9 +235,7 @@ export const AppContextProvider = (props: Props): JSX.Element => {
   useEffect(() => {
     if (preferredLanguages.length === 0) {
       if (isDefinedAndNotEmpty(router.locale) && router.locales) {
-        setPreferredLanguages(
-          getDefaultPreferredLanguages(router.locale, router.locales)
-        );
+        setPreferredLanguages(getDefaultPreferredLanguages(router.locale, router.locales));
       }
     } else if (router.locale !== preferredLanguages[0]) {
       /*
@@ -292,13 +250,7 @@ export const AppContextProvider = (props: Props): JSX.Element => {
         250
       );
     }
-  }, [
-    preferredLanguages,
-    router,
-    router.locale,
-    router.locales,
-    setPreferredLanguages,
-  ]);
+  }, [preferredLanguages, router, router.locale, router.locales, setPreferredLanguages]);
 
   useEffect(() => {
     router.events.on("routeChangeStart", () => {
@@ -315,9 +267,7 @@ export const AppContextProvider = (props: Props): JSX.Element => {
   }, [router.events, setConfigPanelOpen, setMainPanelOpen, setSubPanelOpen]);
 
   useLayoutEffect(() => {
-    document.getElementsByTagName("html")[0].style.fontSize = `${
-      fontSize * 100
-    }%`;
+    document.getElementsByTagName("html")[0].style.fontSize = `${fontSize * 100}%`;
   }, [fontSize]);
 
   useScrollIntoView();
@@ -368,8 +318,7 @@ export const AppContextProvider = (props: Props): JSX.Element => {
         languages,
         langui,
         currencies,
-      }}
-    >
+      }}>
       {props.children}
     </AppContext.Provider>
   );

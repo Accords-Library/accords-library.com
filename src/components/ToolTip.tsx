@@ -25,8 +25,7 @@ export const ToolTip = ({
     delay={delay}
     interactive={interactive}
     animation={animation}
-    {...otherProps}
-  >
+    {...otherProps}>
     <div>{children}</div>
   </Tippy>
 );

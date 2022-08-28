@@ -4,10 +4,7 @@ import { useBoolean } from "usehooks-ts";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { Switch } from "components/Inputs/Switch";
 import { PanelHeader } from "components/PanelComponents/PanelHeader";
-import {
-  ContentPanel,
-  ContentPanelWidthSizes,
-} from "components/Panels/ContentPanel";
+import { ContentPanel, ContentPanelWidthSizes } from "components/Panels/ContentPanel";
 import { SubPanel } from "components/Panels/SubPanel";
 import { GetPostsPreviewQuery } from "graphql/generated";
 import { getReadySdk } from "graphql/sdk";
@@ -51,9 +48,7 @@ const News = ({ posts, ...otherProps }: Props): JSX.Element => {
   const isContentPanelAtLeast4xl = useIsContentPanelAtLeast("4xl");
   const { langui } = useAppLayout();
   const hoverable = useDeviceSupportsHover();
-  const [searchName, setSearchName] = useState(
-    DEFAULT_FILTERS_STATE.searchName
-  );
+  const [searchName, setSearchName] = useState(DEFAULT_FILTERS_STATE.searchName);
   const {
     value: keepInfoVisible,
     toggle: toggleKeepInfoVisible,
@@ -63,11 +58,7 @@ const News = ({ posts, ...otherProps }: Props): JSX.Element => {
   const subPanel = useMemo(
     () => (
       <SubPanel>
-        <PanelHeader
-          icon={Icon.Feed}
-          title={langui.news}
-          description={langui.news_description}
-        />
+        <PanelHeader icon={Icon.Feed} title={langui.news} description={langui.news_description} />
 
         <HorizontalLine />
 
@@ -91,9 +82,7 @@ const News = ({ posts, ...otherProps }: Props): JSX.Element => {
               value={keepInfoVisible}
               onClick={() => {
                 toggleKeepInfoVisible();
-                umami(
-                  `[News] Always ${keepInfoVisible ? "hide" : "show"} info`
-                );
+                umami(`[News] Always ${keepInfoVisible ? "hide" : "show"} info`);
               }}
             />
           </WithLabel>
@@ -111,14 +100,7 @@ const News = ({ posts, ...otherProps }: Props): JSX.Element => {
         />
       </SubPanel>
     ),
-    [
-      hoverable,
-      keepInfoVisible,
-      langui,
-      searchName,
-      setKeepInfoVisible,
-      toggleKeepInfoVisible,
-    ]
+    [hoverable, keepInfoVisible, langui, searchName, setKeepInfoVisible, toggleKeepInfoVisible]
   );
 
   const contentPanel = useMemo(
@@ -207,6 +189,4 @@ export const getStaticProps: GetStaticProps = async (context) => {
  */
 
 const sortPosts = (posts: Props["posts"]): Props["posts"] =>
-  posts
-    .sort((a, b) => compareDate(a.attributes?.date, b.attributes?.date))
-    .reverse();
+  posts.sort((a, b) => compareDate(a.attributes?.date, b.attributes?.date)).reverse();

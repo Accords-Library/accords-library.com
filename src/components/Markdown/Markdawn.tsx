@@ -29,10 +29,7 @@ interface MarkdawnProps {
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
-export const Markdawn = ({
-  className,
-  text: rawText,
-}: MarkdawnProps): JSX.Element => {
+export const Markdawn = ({ className, text: rawText }: MarkdawnProps): JSX.Element => {
   const { playerName } = useAppLayout();
   const router = useRouter();
   const isContentPanelAtLeastLg = useIsContentPanelAtLeast("lg");
@@ -59,18 +56,10 @@ export const Markdawn = ({
           slugify: slugify,
           overrides: {
             a: {
-              component: (compProps: {
-                href: string;
-                children: React.ReactNode;
-              }) => {
-                if (
-                  compProps.href.startsWith("/") ||
-                  compProps.href.startsWith("#")
-                ) {
+              component: (compProps: { href: string; children: React.ReactNode }) => {
+                if (compProps.href.startsWith("/") || compProps.href.startsWith("#")) {
                   return (
-                    <a onClick={async () => router.push(compProps.href)}>
-                      {compProps.children}
-                    </a>
+                    <a onClick={async () => router.push(compProps.href)}>{compProps.children}</a>
                   );
                 }
                 return (
@@ -112,11 +101,7 @@ export const Markdawn = ({
                   ? slugify(compProps.target)
                   : slugify(compProps.children?.toString());
                 return (
-                  <a
-                    onClick={async () =>
-                      router.replace(`${compProps.page ?? ""}#${slug}`)
-                    }
-                  >
+                  <a onClick={async () => router.replace(`${compProps.page ?? ""}#${slug}`)}>
                     {compProps.children}
                   </a>
                 );
@@ -128,13 +113,8 @@ export const Markdawn = ({
                 <div
                   className={cJoin(
                     "grid gap-x-6 gap-y-2",
-                    cIf(
-                      isContentPanelAtLeastLg,
-                      "grid-cols-[auto_1fr]",
-                      "grid-cols-1"
-                    )
-                  )}
-                >
+                    cIf(isContentPanelAtLeastLg, "grid-cols-[auto_1fr]", "grid-cols-1")
+                  )}>
                   {compProps.children}
                 </div>
               ),
@@ -147,8 +127,7 @@ export const Markdawn = ({
                     className={cJoin(
                       "!my-0 text-dark/60",
                       cIf(!isContentPanelAtLeastLg, "!-mb-4")
-                    )}
-                  >
+                    )}>
                     <Markdawn text={compProps.name} />
                   </strong>
                   <p className="whitespace-pre-line">{compProps.children}</p>
@@ -157,9 +136,7 @@ export const Markdawn = ({
             },
 
             InsetBox: {
-              component: (compProps) => (
-                <InsetBox className="my-12">{compProps.children}</InsetBox>
-              ),
+              component: (compProps) => <InsetBox className="my-12">{compProps.children}</InsetBox>,
             },
 
             li: {
@@ -167,13 +144,10 @@ export const Markdawn = ({
                 <li
                   className={
                     isDefined(compProps.children) &&
-                    ReactDOMServer.renderToStaticMarkup(
-                      <>{compProps.children}</>
-                    ).length > 100
+                    ReactDOMServer.renderToStaticMarkup(<>{compProps.children}</>).length > 100
                       ? "my-4"
                       : ""
-                  }
-                >
+                  }>
                   {compProps.children}
                 </li>
               ),
@@ -195,10 +169,7 @@ export const Markdawn = ({
             },
 
             blockquote: {
-              component: (compProps: {
-                children: React.ReactNode;
-                cite?: string;
-              }) => (
+              component: (compProps: { children: React.ReactNode; cite?: string }) => (
                 <blockquote>
                   {isDefinedAndNotEmpty(compProps.cite) ? (
                     <>
@@ -229,8 +200,7 @@ export const Markdawn = ({
                         ? getAssetURL(compProps.src, ImageQuality.Large)
                         : compProps.src,
                     ]);
-                  }}
-                >
+                  }}>
                   <Img
                     src={
                       compProps.src.startsWith("/uploads/")
@@ -238,14 +208,12 @@ export const Markdawn = ({
                         : compProps.src
                     }
                     quality={ImageQuality.Medium}
-                    className="drop-shadow-shade-lg"
-                  ></Img>
+                    className="drop-shadow-shade-lg"></Img>
                 </div>
               ),
             },
           },
-        }}
-      >
+        }}>
         {text}
       </Markdown>
     </>
@@ -269,10 +237,7 @@ export const TableOfContents = ({
 }: TableOfContentsProps): JSX.Element => {
   const router = useRouter();
   const { langui } = useAppLayout();
-  const toc = useMemo(
-    () => getTocFromMarkdawn(preprocessMarkDawn(text), title),
-    [text, title]
-  );
+  const toc = useMemo(() => getTocFromMarkdawn(preprocessMarkDawn(text), title), [text, title]);
 
   return (
     <>
@@ -283,8 +248,7 @@ export const TableOfContents = ({
           <div className="max-w-[14.5rem] text-left">
             <p
               className="relative my-2 overflow-x-hidden text-ellipsis whitespace-nowrap
-                text-left"
-            >
+                text-left">
               <a onClick={async () => router.replace(`#${toc.slug}`)}>
                 {<abbr title={toc.title}>{toc.title}</abbr>}
               </a>
@@ -324,10 +288,7 @@ const Header = ({ level, title, slug }: HeaderProps): JSX.Element => {
             <div className="font-headers">{title}</div>
           )}
           <AnchorShare
-            className={cIf(
-              isHoverable,
-              "opacity-0 transition-opacity group-hover:opacity-100"
-            )}
+            className={cIf(isHoverable, "opacity-0 transition-opacity group-hover:opacity-100")}
             id={slug}
           />
         </div>
@@ -395,10 +356,7 @@ const TocLevel = ({
 }: LevelProps): JSX.Element => {
   const router = useRouter();
 
-  const ids = useMemo(
-    () => tocchildren.map((child) => child.slug),
-    [tocchildren]
-  );
+  const ids = useMemo(() => tocchildren.map((child) => child.slug), [tocchildren]);
   const currentIntersection = useIntersectionList(ids);
 
   return (
@@ -408,15 +366,9 @@ const TocLevel = ({
           <li
             className={cJoin(
               "my-2 w-full overflow-x-hidden text-ellipsis whitespace-nowrap",
-              cIf(
-                allowIntersection && currentIntersection === childIndex,
-                "text-dark"
-              )
-            )}
-          >
-            <span className="text-dark">{`${parentNumbering}${
-              childIndex + 1
-            }.`}</span>{" "}
+              cIf(allowIntersection && currentIntersection === childIndex, "text-dark")
+            )}>
+            <span className="text-dark">{`${parentNumbering}${childIndex + 1}.`}</span>{" "}
             <a onClick={async () => router.replace(`#${child.slug}`)}>
               {<abbr title={child.title}>{child.title}</abbr>}
             </a>
@@ -424,9 +376,7 @@ const TocLevel = ({
           <TocLevel
             tocchildren={child.children}
             parentNumbering={`${parentNumbering}${childIndex + 1}.`}
-            allowIntersection={
-              allowIntersection && currentIntersection === childIndex
-            }
+            allowIntersection={allowIntersection && currentIntersection === childIndex}
           />
         </Fragment>
       ))}
@@ -442,17 +392,13 @@ const TocLevel = ({
 const preprocessMarkDawn = (text: string, playerName = ""): string => {
   if (!text) return "";
 
-  const processedPlayerName = playerName
-    .replaceAll("_", "\\_")
-    .replaceAll("*", "\\*");
+  const processedPlayerName = playerName.replaceAll("_", "\\_").replaceAll("*", "\\*");
 
   let preprocessed = text
     .replaceAll("--", "—")
     .replaceAll(
       "@player",
-      isDefinedAndNotEmpty(processedPlayerName)
-        ? processedPlayerName
-        : "(player)"
+      isDefinedAndNotEmpty(processedPlayerName) ? processedPlayerName : "(player)"
     );
 
   let scenebreakIndex = 0;
@@ -511,8 +457,7 @@ const getTocFromMarkdawn = (text: string, title?: string): TocInterface => {
   let scenebreak = 0;
   let scenebreakIndex = 0;
 
-  const getTitle = (line: string): string =>
-    line.slice(line.indexOf(`">`) + 2, line.indexOf("</"));
+  const getTitle = (line: string): string => line.slice(line.indexOf(`">`) + 2, line.indexOf("</"));
 
   const getSlug = (line: string): string =>
     line.slice(line.indexOf(`id="`) + 4, line.indexOf(`">`));
@@ -573,9 +518,7 @@ const getTocFromMarkdawn = (text: string, title?: string): TocInterface => {
       };
 
       if (h5 >= 0) {
-        toc.children[h2].children[h3].children[h4].children[h5].children.push(
-          child
-        );
+        toc.children[h2].children[h3].children[h4].children[h5].children.push(child);
       } else if (h4 >= 0) {
         toc.children[h2].children[h3].children[h4].children.push(child);
       } else if (h3 >= 0) {

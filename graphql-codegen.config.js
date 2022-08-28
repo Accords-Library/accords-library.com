@@ -8,17 +8,10 @@ module.exports = {
       headers: { Authorization: `Bearer ${process.env.ACCESS_TOKEN}` },
     },
   },
-  documents: [
-    "src/graphql/operations/**/*.graphql",
-    "src/graphql/fragments/*.graphql",
-  ],
+  documents: ["src/graphql/operations/**/*.graphql", "src/graphql/fragments/*.graphql"],
   generates: {
     "src/graphql/generated.ts": {
-      plugins: [
-        "typescript",
-        "typescript-operations",
-        "typescript-graphql-request",
-      ],
+      plugins: ["typescript", "typescript-operations", "typescript-graphql-request"],
     },
   },
 };

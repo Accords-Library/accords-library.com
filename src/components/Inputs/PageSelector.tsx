@@ -16,12 +16,7 @@ interface Props {
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
-export const PageSelector = ({
-  page,
-  className,
-  pagesCount,
-  onChange,
-}: Props): JSX.Element => (
+export const PageSelector = ({ page, className, pagesCount, onChange }: Props): JSX.Element => (
   <ButtonGroup
     className={cJoin("flex flex-row place-content-center", className)}
     buttonsProps={[

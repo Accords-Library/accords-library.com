@@ -2,21 +2,11 @@ import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next";
 import { Fragment, useCallback, useMemo } from "react";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { ReturnButton } from "components/PanelComponents/ReturnButton";
-import {
-  ContentPanel,
-  ContentPanelWidthSizes,
-} from "components/Panels/ContentPanel";
+import { ContentPanel, ContentPanelWidthSizes } from "components/Panels/ContentPanel";
 import { SubPanel } from "components/Panels/SubPanel";
-import {
-  GetLibraryItemScansQuery,
-  UploadImageFragment,
-} from "graphql/generated";
+import { GetLibraryItemScansQuery, UploadImageFragment } from "graphql/generated";
 import { getReadySdk } from "graphql/sdk";
-import {
-  prettyInlineTitle,
-  prettySlug,
-  prettyItemSubType,
-} from "helpers/formatters";
+import { prettyInlineTitle, prettySlug, prettyItemSubType } from "helpers/formatters";
 import {
   filterHasAttributes,
   getStatusDescription,
@@ -41,10 +31,7 @@ import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { TranslatedProps } from "types/TranslatedProps";
 import { TranslatedNavOption } from "components/PanelComponents/NavOption";
 import { useIntersectionList } from "hooks/useIntersectionList";
-import {
-  useIs1ColumnLayout,
-  useIsContentPanelNoMoreThan,
-} from "hooks/useContainerQuery";
+import { useIs1ColumnLayout, useIsContentPanelNoMoreThan } from "hooks/useContainerQuery";
 import { cIf, cJoin } from "helpers/className";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { getLangui } from "graphql/fetchLocalData";
@@ -56,13 +43,9 @@ import { getLangui } from "graphql/fetchLocalData";
 
 interface Props extends AppLayoutRequired {
   item: NonNullable<
-    NonNullable<
-      GetLibraryItemScansQuery["libraryItems"]
-    >["data"][number]["attributes"]
+    NonNullable<GetLibraryItemScansQuery["libraryItems"]>["data"][number]["attributes"]
   >;
-  itemId: NonNullable<
-    NonNullable<GetLibraryItemScansQuery["libraryItems"]>["data"][number]["id"]
-  >;
+  itemId: NonNullable<NonNullable<GetLibraryItemScansQuery["libraryItems"]>["data"][number]["id"]>;
 }
 
 const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
@@ -72,9 +55,9 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
 
   const ids = useMemo(
     () =>
-      filterHasAttributes(item.contents?.data, [
-        "attributes.slug",
-      ] as const).map((content) => content.attributes.slug),
+      filterHasAttributes(item.contents?.data, ["attributes.slug"] as const).map(
+        (content) => content.attributes.slug
+      ),
     [item.contents?.data]
   );
   const currentIntersection = useIntersectionList(ids);
@@ -103,18 +86,16 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
                   ? [prettyItemSubType(item.metadata[0])]
                   : []
               }
-              bottomChips={filterHasAttributes(item.categories?.data, [
-                "attributes",
-              ] as const).map((category) => category.attributes.short)}
+              bottomChips={filterHasAttributes(item.categories?.data, ["attributes"] as const).map(
+                (category) => category.attributes.short
+              )}
               metadata={{
                 releaseDate: item.release_date,
                 price: item.price,
                 position: "Bottom",
               }}
               infoAppend={
-                !isUntangibleGroupItem(item.metadata?.[0]) && (
-                  <PreviewCardCTAs id={itemId} />
-                )
+                !isUntangibleGroupItem(item.metadata?.[0]) && <PreviewCardCTAs id={itemId} />
               }
             />
           </div>
@@ -122,54 +103,46 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
 
         <HorizontalLine />
 
-        <p className="mb-4 font-headers text-2xl font-bold">
-          {langui.contents}
-        </p>
+        <p className="mb-4 font-headers text-2xl font-bold">{langui.contents}</p>
 
-        {filterHasAttributes(item.contents?.data, ["attributes"] as const).map(
-          (content, index) => (
-            <>
-              {content.attributes.scan_set &&
-                content.attributes.scan_set.length > 0 && (
-                  <TranslatedNavOption
-                    key={content.id}
-                    url={`#${content.attributes.slug}`}
-                    translations={filterHasAttributes(
-                      content.attributes.content?.data?.attributes
-                        ?.translations,
-                      ["language.data.attributes"] as const
-                    ).map((translation) => ({
-                      language: translation.language.data.attributes.code,
-                      title: prettyInlineTitle(
-                        translation.pre_title,
-                        translation.title,
-                        translation.subtitle
-                      ),
-                      subtitle:
-                        content.attributes.range[0]?.__typename ===
-                        "ComponentRangePageRange"
-                          ? `${content.attributes.range[0].starting_page}` +
-                            `→` +
-                            `${content.attributes.range[0].ending_page}`
-                          : undefined,
-                    }))}
-                    fallback={{
-                      title: prettySlug(content.attributes.slug, item.slug),
-                      subtitle:
-                        content.attributes.range[0]?.__typename ===
-                        "ComponentRangePageRange"
-                          ? `${content.attributes.range[0].starting_page}` +
-                            `→` +
-                            `${content.attributes.range[0].ending_page}`
-                          : undefined,
-                    }}
-                    border
-                    active={index === currentIntersection}
-                  />
-                )}
-            </>
-          )
-        )}
+        {filterHasAttributes(item.contents?.data, ["attributes"] as const).map((content, index) => (
+          <>
+            {content.attributes.scan_set && content.attributes.scan_set.length > 0 && (
+              <TranslatedNavOption
+                key={content.id}
+                url={`#${content.attributes.slug}`}
+                translations={filterHasAttributes(
+                  content.attributes.content?.data?.attributes?.translations,
+                  ["language.data.attributes"] as const
+                ).map((translation) => ({
+                  language: translation.language.data.attributes.code,
+                  title: prettyInlineTitle(
+                    translation.pre_title,
+                    translation.title,
+                    translation.subtitle
+                  ),
+                  subtitle:
+                    content.attributes.range[0]?.__typename === "ComponentRangePageRange"
+                      ? `${content.attributes.range[0].starting_page}` +
+                        `→` +
+                        `${content.attributes.range[0].ending_page}`
+                      : undefined,
+                }))}
+                fallback={{
+                  title: prettySlug(content.attributes.slug, item.slug),
+                  subtitle:
+                    content.attributes.range[0]?.__typename === "ComponentRangePageRange"
+                      ? `${content.attributes.range[0].starting_page}` +
+                        `→` +
+                        `${content.attributes.range[0].ending_page}`
+                      : undefined,
+                }}
+                border
+                active={index === currentIntersection}
+              />
+            )}
+          </>
+        ))}
       </SubPanel>
     ),
     [
@@ -201,9 +174,7 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
           className="mb-10"
         />
 
-        {item.images && (
-          <ScanSetCover images={item.images} openLightBox={openLightBox} />
-        )}
+        {item.images && <ScanSetCover images={item.images} openLightBox={openLightBox} />}
 
         {item.contents?.data.map((content) => (
           <Fragment key={content.id}>
@@ -233,23 +204,10 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
         ))}
       </ContentPanel>
     ),
-    [
-      LightBox,
-      openLightBox,
-      item.contents?.data,
-      item.images,
-      item.slug,
-      langui,
-    ]
+    [LightBox, openLightBox, item.contents?.data, item.images, item.slug, langui]
   );
 
-  return (
-    <AppLayout
-      contentPanel={contentPanel}
-      subPanel={subPanel}
-      {...otherProps}
-    />
-  );
+  return <AppLayout contentPanel={contentPanel} subPanel={subPanel} {...otherProps} />;
 };
 export default LibrarySlug;
 
@@ -262,10 +220,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
   const langui = getLangui(context.locale);
   const item = await sdk.getLibraryItemScans({
-    slug:
-      context.params && isDefined(context.params.slug)
-        ? context.params.slug.toString()
-        : "",
+    slug: context.params && isDefined(context.params.slug) ? context.params.slug.toString() : "",
     language_code: context.locale ?? "en",
   });
   if (!item.libraryItems?.data[0]?.attributes || !item.libraryItems.data[0]?.id)
@@ -293,9 +248,7 @@ export const getStaticPaths: GetStaticPaths = async (context) => {
   const sdk = getReadySdk();
   const libraryItems = await sdk.getLibraryItemsSlugs({});
   const paths: GetStaticPathsResult["paths"] = [];
-  filterHasAttributes(libraryItems.libraryItems?.data, [
-    "attributes",
-  ] as const).map((item) => {
+  filterHasAttributes(libraryItems.libraryItems?.data, ["attributes"] as const).map((item) => {
     context.locales?.map((local) =>
       paths.push({ params: { slug: item.attributes.slug }, locale: local })
     );
@@ -323,9 +276,7 @@ interface ScanSetProps {
     NonNullable<
       NonNullable<
         NonNullable<
-          NonNullable<
-            GetLibraryItemScansQuery["libraryItems"]
-          >["data"][number]["attributes"]
+          NonNullable<GetLibraryItemScansQuery["libraryItems"]>["data"][number]["attributes"]
         >["contents"]
       >["data"][number]["attributes"]
     >["scan_set"]
@@ -336,66 +287,53 @@ interface ScanSetProps {
   content: NonNullable<
     NonNullable<
       NonNullable<
-        NonNullable<
-          GetLibraryItemScansQuery["libraryItems"]
-        >["data"][number]["attributes"]
+        NonNullable<GetLibraryItemScansQuery["libraryItems"]>["data"][number]["attributes"]
       >["contents"]
     >["data"][number]["attributes"]
   >["content"];
 }
 
-const ScanSet = ({
-  openLightBox,
-  scanSet,
-  id,
-  title,
-  content,
-}: ScanSetProps): JSX.Element => {
+const ScanSet = ({ openLightBox, scanSet, id, title, content }: ScanSetProps): JSX.Element => {
   const is1ColumnLayout = useIsContentPanelNoMoreThan("2xl");
   const { langui } = useAppLayout();
-  const [selectedScan, LanguageSwitcher, languageSwitcherProps] =
-    useSmartLanguage({
-      items: scanSet,
-      languageExtractor: useCallback(
-        (item: NonNullable<ScanSetProps["scanSet"][number]>) =>
-          item.language?.data?.attributes?.code,
-        []
-      ),
-      transform: useCallback(
-        (item: NonNullable<ScanSetProps["scanSet"][number]>) => {
-          item.pages?.data.sort((a, b) => {
-            if (
-              a.attributes &&
-              b.attributes &&
-              isDefinedAndNotEmpty(a.attributes.url) &&
-              isDefinedAndNotEmpty(b.attributes.url)
-            ) {
-              let aName = getAssetFilename(a.attributes.url);
-              let bName = getAssetFilename(b.attributes.url);
+  const [selectedScan, LanguageSwitcher, languageSwitcherProps] = useSmartLanguage({
+    items: scanSet,
+    languageExtractor: useCallback(
+      (item: NonNullable<ScanSetProps["scanSet"][number]>) => item.language?.data?.attributes?.code,
+      []
+    ),
+    transform: useCallback((item: NonNullable<ScanSetProps["scanSet"][number]>) => {
+      item.pages?.data.sort((a, b) => {
+        if (
+          a.attributes &&
+          b.attributes &&
+          isDefinedAndNotEmpty(a.attributes.url) &&
+          isDefinedAndNotEmpty(b.attributes.url)
+        ) {
+          let aName = getAssetFilename(a.attributes.url);
+          let bName = getAssetFilename(b.attributes.url);
 
-              /*
-               * If the number is a succession of 0s, make the number
-               * incrementally smaller than 0 (i.e: 00 becomes -1)
-               */
-              if (aName.replaceAll("0", "").length === 0) {
-                aName = (1 - aName.length).toString(10);
-              }
-              if (bName.replaceAll("0", "").length === 0) {
-                bName = (1 - bName.length).toString(10);
-              }
+          /*
+           * If the number is a succession of 0s, make the number
+           * incrementally smaller than 0 (i.e: 00 becomes -1)
+           */
+          if (aName.replaceAll("0", "").length === 0) {
+            aName = (1 - aName.length).toString(10);
+          }
+          if (bName.replaceAll("0", "").length === 0) {
+            bName = (1 - bName.length).toString(10);
+          }
 
-              if (isInteger(aName) && isInteger(bName)) {
-                return parseInt(aName, 10) - parseInt(bName, 10);
-              }
-              return a.attributes.url.localeCompare(b.attributes.url);
-            }
-            return 0;
-          });
-          return item;
-        },
-        []
-      ),
-    });
+          if (isInteger(aName) && isInteger(bName)) {
+            return parseInt(aName, 10) - parseInt(bName, 10);
+          }
+          return a.attributes.url.localeCompare(b.attributes.url);
+        }
+        return 0;
+      });
+      return item;
+    }, []),
+  });
 
   const pages = useMemo(
     () => filterHasAttributes(selectedScan?.pages?.data, ["attributes"]),
@@ -408,8 +346,7 @@ const ScanSet = ({
         <div>
           <div
             className="flex flex-row flex-wrap place-items-center
-          gap-6 pt-10 text-base first-of-type:pt-0"
-          >
+          gap-6 pt-10 text-base first-of-type:pt-0">
             <h2 id={id} className="text-2xl">
               {title}
             </h2>
@@ -425,13 +362,12 @@ const ScanSet = ({
           </div>
 
           <div className="flex flex-row flex-wrap place-items-center gap-4 pb-6">
-            {content?.data?.attributes &&
-              isDefinedAndNotEmpty(content.data.attributes.slug) && (
-                <Button
-                  href={`/contents/${content.data.attributes.slug}`}
-                  text={langui.open_content}
-                />
-              )}
+            {content?.data?.attributes && isDefinedAndNotEmpty(content.data.attributes.slug) && (
+              <Button
+                href={`/contents/${content.data.attributes.slug}`}
+                text={langui.open_content}
+              />
+            )}
 
             {languageSwitcherProps.locales.size > 1 && (
               <LanguageSwitcher {...languageSwitcherProps} />
@@ -441,8 +377,7 @@ const ScanSet = ({
               <p className="font-headers font-bold">{langui.status}:</p>
               <ToolTip
                 content={getStatusDescription(selectedScan.status, langui)}
-                maxWidth={"20rem"}
-              >
+                maxWidth={"20rem"}>
                 <Chip text={selectedScan.status} />
               </ToolTip>
             </div>
@@ -479,24 +414,21 @@ const ScanSet = ({
               </div>
             )}
 
-            {selectedScan.typesetters &&
-              selectedScan.typesetters.data.length > 0 && (
-                <div>
-                  <p className="font-headers font-bold">
-                    {langui.typesetters}:
-                  </p>
-                  <div className="grid place-content-center place-items-center gap-2">
-                    {filterHasAttributes(selectedScan.typesetters.data, [
-                      "id",
-                      "attributes",
-                    ] as const).map((typesetter) => (
-                      <Fragment key={typesetter.id}>
-                        <RecorderChip recorder={typesetter.attributes} />
-                      </Fragment>
-                    ))}
-                  </div>
+            {selectedScan.typesetters && selectedScan.typesetters.data.length > 0 && (
+              <div>
+                <p className="font-headers font-bold">{langui.typesetters}:</p>
+                <div className="grid place-content-center place-items-center gap-2">
+                  {filterHasAttributes(selectedScan.typesetters.data, [
+                    "id",
+                    "attributes",
+                  ] as const).map((typesetter) => (
+                    <Fragment key={typesetter.id}>
+                      <RecorderChip recorder={typesetter.attributes} />
+                    </Fragment>
+                  ))}
                 </div>
-              )}
+              </div>
+            )}
 
             {isDefinedAndNotEmpty(selectedScan.notes) && (
               <ToolTip content={selectedScan.notes}>
@@ -514,8 +446,7 @@ const ScanSet = ({
                 "grid-cols-2 gap-[4vmin]",
                 "grid-cols-[repeat(auto-fill,_minmax(10rem,1fr))]"
               )
-            )}
-          >
+            )}>
             {pages.map((page, index) => (
               <div
                 key={page.id}
@@ -526,8 +457,7 @@ const ScanSet = ({
                     getAssetURL(image.attributes.url, ImageQuality.Large)
                   );
                   openLightBox(images, index);
-                }}
-              >
+                }}>
                 <Img src={page.attributes} quality={ImageQuality.Small} />
               </div>
             ))}
@@ -547,18 +477,10 @@ const TranslatedScanSet = ({
 }: TranslatedProps<ScanSetProps, "title">): JSX.Element => {
   const [selectedTranslation] = useSmartLanguage({
     items: translations,
-    languageExtractor: useCallback(
-      (item: { language: string }): string => item.language,
-      []
-    ),
+    languageExtractor: useCallback((item: { language: string }): string => item.language, []),
   });
 
-  return (
-    <ScanSet
-      title={selectedTranslation?.title ?? fallback.title}
-      {...otherProps}
-    />
-  );
+  return <ScanSet title={selectedTranslation?.title ?? fallback.title} {...otherProps} />;
 };
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
@@ -567,28 +489,22 @@ interface ScanSetCoverProps {
   openLightBox: (images: string[], index?: number) => void;
   images: NonNullable<
     NonNullable<
-      NonNullable<
-        GetLibraryItemScansQuery["libraryItems"]
-      >["data"][number]["attributes"]
+      NonNullable<GetLibraryItemScansQuery["libraryItems"]>["data"][number]["attributes"]
     >["images"]
   >;
 }
 
-const ScanSetCover = ({
-  openLightBox,
-  images,
-}: ScanSetCoverProps): JSX.Element => {
+const ScanSetCover = ({ openLightBox, images }: ScanSetCoverProps): JSX.Element => {
   const is1ColumnLayout = useIsContentPanelNoMoreThan("4xl");
   const { langui } = useAppLayout();
-  const [selectedScan, LanguageSwitcher, languageSwitcherProps] =
-    useSmartLanguage({
-      items: images,
-      languageExtractor: useCallback(
-        (item: NonNullable<ScanSetCoverProps["images"][number]>) =>
-          item.language?.data?.attributes?.code,
-        []
-      ),
-    });
+  const [selectedScan, LanguageSwitcher, languageSwitcherProps] = useSmartLanguage({
+    items: images,
+    languageExtractor: useCallback(
+      (item: NonNullable<ScanSetCoverProps["images"][number]>) =>
+        item.language?.data?.attributes?.code,
+      []
+    ),
+  });
 
   const coverImages = useMemo(() => {
     const memo: UploadImageFragment[] = [];
@@ -613,8 +529,7 @@ const ScanSetCover = ({
         <div>
           <div
             className="flex flex-row flex-wrap place-items-center
-          gap-6 pt-10 text-base first-of-type:pt-0"
-          >
+          gap-6 pt-10 text-base first-of-type:pt-0">
             <h2 id={"cover"} className="text-2xl">
               {langui.cover}
             </h2>
@@ -636,8 +551,7 @@ const ScanSetCover = ({
               <p className="font-headers font-bold">{langui.status}:</p>
               <ToolTip
                 content={getStatusDescription(selectedScan.status, langui)}
-                maxWidth={"20rem"}
-              >
+                maxWidth={"20rem"}>
                 <Chip text={selectedScan.status} />
               </ToolTip>
             </div>
@@ -674,24 +588,21 @@ const ScanSetCover = ({
               </div>
             )}
 
-            {selectedScan.typesetters &&
-              selectedScan.typesetters.data.length > 0 && (
-                <div>
-                  <p className="font-headers font-bold">
-                    {langui.typesetters}:
-                  </p>
-                  <div className="grid place-content-center place-items-center gap-2">
-                    {filterHasAttributes(selectedScan.typesetters.data, [
-                      "id",
-                      "attributes",
-                    ] as const).map((typesetter) => (
-                      <Fragment key={typesetter.id}>
-                        <RecorderChip recorder={typesetter.attributes} />
-                      </Fragment>
-                    ))}
-                  </div>
+            {selectedScan.typesetters && selectedScan.typesetters.data.length > 0 && (
+              <div>
+                <p className="font-headers font-bold">{langui.typesetters}:</p>
+                <div className="grid place-content-center place-items-center gap-2">
+                  {filterHasAttributes(selectedScan.typesetters.data, [
+                    "id",
+                    "attributes",
+                  ] as const).map((typesetter) => (
+                    <Fragment key={typesetter.id}>
+                      <RecorderChip recorder={typesetter.attributes} />
+                    </Fragment>
+                  ))}
                 </div>
-              )}
+              </div>
+            )}
           </div>
 
           <div
@@ -703,21 +614,17 @@ const ScanSetCover = ({
                 "grid-cols-2 gap-[4vmin]",
                 "grid-cols-[repeat(auto-fill,_minmax(10rem,1fr))]"
               )
-            )}
-          >
+            )}>
             {coverImages.map((image, index) => (
               <div
                 key={image.url}
                 className="cursor-pointer transition-transform
                   drop-shadow-shade-lg hover:scale-[1.02]"
                 onClick={() => {
-                  const imgs = coverImages.map((img) =>
-                    getAssetURL(img.url, ImageQuality.Large)
-                  );
+                  const imgs = coverImages.map((img) => getAssetURL(img.url, ImageQuality.Large));
 
                   openLightBox(imgs, index);
-                }}
-              >
+                }}>
                 <Img src={image} quality={ImageQuality.Small} />
               </div>
             ))}

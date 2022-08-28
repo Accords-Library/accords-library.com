@@ -3,10 +3,7 @@ import { useMemo } from "react";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { Chip } from "components/Chip";
 import { Button } from "components/Inputs/Button";
-import {
-  ContentPanel,
-  ContentPanelWidthSizes,
-} from "components/Panels/ContentPanel";
+import { ContentPanel, ContentPanelWidthSizes } from "components/Panels/ContentPanel";
 import { ToolTip } from "components/ToolTip";
 import {
   DevGetLibraryItemsQuery,
@@ -16,6 +13,7 @@ import { getReadySdk } from "graphql/sdk";
 import { Report, Severity } from "types/Report";
 import { getOpenGraph } from "helpers/openGraph";
 import { getLangui } from "graphql/fetchLocalData";
+import { sJoin } from "helpers/formatters";
 
 /*
  *                                           ╭────────╮
@@ -26,10 +24,7 @@ interface Props extends AppLayoutRequired {
   libraryItems: DevGetLibraryItemsQuery;
 }
 
-const CheckupLibraryItems = ({
-  libraryItems,
-  ...otherProps
-}: Props): JSX.Element => {
+const CheckupLibraryItems = ({ libraryItems, ...otherProps }: Props): JSX.Element => {
   const testReport = testingLibraryItem(libraryItems);
 
   const contentPanel = useMemo(
@@ -54,20 +49,9 @@ const CheckupLibraryItems = ({
             <div
               key={index}
               className="mb-2 grid
-          grid-cols-[2em,3em,2fr,1fr,0.5fr,0.5fr,2fr] items-center justify-items-start gap-2"
-            >
-              <Button
-                href={line.frontendUrl}
-                className="w-4 text-xs"
-                text="F"
-                alwaysNewTab
-              />
-              <Button
-                href={line.backendUrl}
-                className="w-4 text-xs"
-                text="B"
-                alwaysNewTab
-              />
+          grid-cols-[2em,3em,2fr,1fr,0.5fr,0.5fr,2fr] items-center justify-items-start gap-2">
+              <Button href={line.frontendUrl} className="w-4 text-xs" text="F" alwaysNewTab />
+              <Button href={line.backendUrl} className="w-4 text-xs" text="B" alwaysNewTab />
               <p>{line.subitems.join(" -> ")}</p>
               <p>{line.name}</p>
               <Chip text={line.type} />
@@ -129,8 +113,16 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
 
   libraryItems.libraryItems?.data.map((item) => {
     if (item.attributes) {
-      const backendUrl = `${process.env.NEXT_PUBLIC_URL_CMS}/admin/content-manager/collectionType/api::library-item.library-item/${item.id}`;
-      const frontendUrl = `${process.env.NEXT_PUBLIC_URL_SELF}/library/${item.attributes.slug}`;
+      const backendUrl = sJoin(
+        process.env.NEXT_PUBLIC_URL_CMS,
+        "/admin/content-manager/collectionType/api::library-item.library-item/",
+        item.id
+      );
+      const frontendUrl = sJoin(
+        process.env.NEXT_PUBLIC_URL_SELF,
+        "/library/",
+        item.attributes.slug
+      );
 
       if (item.attributes.categories?.data.length === 0) {
         report.lines.push({
@@ -145,17 +137,13 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
         });
       }
 
-      if (
-        !item.attributes.root_item &&
-        item.attributes.subitem_of?.data.length === 0
-      ) {
+      if (!item.attributes.root_item && item.attributes.subitem_of?.data.length === 0) {
         report.lines.push({
           subitems: [item.attributes.slug],
           name: "Disconnected Item",
           type: "Error",
           severity: Severity.VeryHigh,
-          description:
-            "The Item is neither a Root Item, nor is it a subitem of another item.",
+          description: "The Item is neither a Root Item, nor is it a subitem of another item.",
           recommandation: "",
           backendUrl: backendUrl,
           frontendUrl: frontendUrl,
@@ -207,10 +195,7 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
             if (image.language?.data?.id) {
               if (image.language.data.id in imagesLanguages) {
                 report.lines.push({
-                  subitems: [
-                    item.attributes.slug,
-                    `Images ${imageIndex.toString()}`,
-                  ],
+                  subitems: [item.attributes.slug, `Images ${imageIndex.toString()}`],
                   name: "Duplicate Language",
                   type: "Error",
                   severity: Severity.High,
@@ -224,10 +209,7 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
               }
             } else {
               report.lines.push({
-                subitems: [
-                  item.attributes.slug,
-                  `Images ${imageIndex.toString()}`,
-                ],
+                subitems: [item.attributes.slug, `Images ${imageIndex.toString()}`],
                 name: "No Language",
                 type: "Error",
                 severity: Severity.VeryHigh,
@@ -240,10 +222,7 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
 
             if (!image.source_language?.data?.id) {
               report.lines.push({
-                subitems: [
-                  item.attributes.slug,
-                  `Images ${imageIndex.toString()}`,
-                ],
+                subitems: [item.attributes.slug, `Images ${imageIndex.toString()}`],
                 name: "No Source Language",
                 type: "Error",
                 severity: Severity.VeryHigh,
@@ -254,15 +233,9 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
               });
             }
 
-            if (
-              image.status !==
-              Enum_Componentcollectionscomponentlibraryimages_Status.Done
-            ) {
+            if (image.status !== Enum_Componentcollectionscomponentlibraryimages_Status.Done) {
               report.lines.push({
-                subitems: [
-                  item.attributes.slug,
-                  `Images ${imageIndex.toString()}`,
-                ],
+                subitems: [item.attributes.slug, `Images ${imageIndex.toString()}`],
                 name: "Not Done Status",
                 type: "Improvement",
                 severity: Severity.Low,
@@ -276,15 +249,11 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
             if (image.source_language?.data?.id === image.language?.data?.id) {
               if (image.scanners?.data.length === 0) {
                 report.lines.push({
-                  subitems: [
-                    item.attributes.slug,
-                    `Images ${imageIndex.toString()}`,
-                  ],
+                  subitems: [item.attributes.slug, `Images ${imageIndex.toString()}`],
                   name: "No Scanners",
                   type: "Missing",
                   severity: Severity.High,
-                  description:
-                    "The Item is a Scan but doesn't credit any Scanners.",
+                  description: "The Item is a Scan but doesn't credit any Scanners.",
                   recommandation: "Add the appropriate Scanners.",
                   backendUrl: backendUrl,
                   frontendUrl: frontendUrl,
@@ -292,36 +261,26 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
               }
               if (image.cleaners?.data.length === 0) {
                 report.lines.push({
-                  subitems: [
-                    item.attributes.slug,
-                    `Images ${imageIndex.toString()}`,
-                  ],
+                  subitems: [item.attributes.slug, `Images ${imageIndex.toString()}`],
                   name: "No Cleaners",
                   type: "Missing",
                   severity: Severity.High,
-                  description:
-                    "The Item is a Scan but doesn't credit any Cleaners.",
+                  description: "The Item is a Scan but doesn't credit any Cleaners.",
                   recommandation: "Add the appropriate Cleaners.",
                   backendUrl: backendUrl,
                   frontendUrl: frontendUrl,
                 });
               }
-              if (
-                image.typesetters?.data &&
-                image.typesetters.data.length > 0
-              ) {
+              if (image.typesetters?.data && image.typesetters.data.length > 0) {
                 report.lines.push({
-                  subitems: [
-                    item.attributes.slug,
-                    `Images ${imageIndex.toString()}`,
-                  ],
+                  subitems: [item.attributes.slug, `Images ${imageIndex.toString()}`],
                   name: "Credited Typesetters",
                   type: "Error",
                   severity: Severity.High,
-                  description:
-                    "The Item is a Scan but credits one or more Typesetters.",
+                  description: "The Item is a Scan but credits one or more Typesetters.",
                   recommandation:
-                    "If appropriate, create a Scanlation Images Set Set with the Typesetters credited there.",
+                    "If appropriate, create a Scanlation Images Set\
+                    with the Typesetters credited there.",
                   backendUrl: backendUrl,
                   frontendUrl: frontendUrl,
                 });
@@ -329,15 +288,11 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
             } else {
               if (image.typesetters?.data.length === 0) {
                 report.lines.push({
-                  subitems: [
-                    item.attributes.slug,
-                    `Images ${imageIndex.toString()}`,
-                  ],
+                  subitems: [item.attributes.slug, `Images ${imageIndex.toString()}`],
                   name: "No Typesetters",
                   type: "Missing",
                   severity: Severity.High,
-                  description:
-                    "The Item is a Scanlation but doesn't credit any Typesetters.",
+                  description: "The Item is a Scanlation but doesn't credit any Typesetters.",
                   recommandation: "Add the appropriate Typesetters.",
                   backendUrl: backendUrl,
                   frontendUrl: frontendUrl,
@@ -345,17 +300,14 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
               }
               if (image.scanners?.data && image.scanners.data.length > 0) {
                 report.lines.push({
-                  subitems: [
-                    item.attributes.slug,
-                    `Images ${imageIndex.toString()}`,
-                  ],
+                  subitems: [item.attributes.slug, `Images ${imageIndex.toString()}`],
                   name: "Credited Scanners",
                   type: "Error",
                   severity: Severity.High,
-                  description:
-                    "The Item is a Scanlation but credits one or more Scanners.",
+                  description: "The Item is a Scanlation but credits one or more Scanners.",
                   recommandation:
-                    "If appropriate, create a Scanners Images Set Set with the Scanners credited there.",
+                    "If appropriate, create a Scanners Images Set\
+                    with the Scanners credited there.",
                   backendUrl: backendUrl,
                   frontendUrl: frontendUrl,
                 });
@@ -365,11 +317,7 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
             if (image.cover) {
               if (!image.cover.front?.data?.id) {
                 report.lines.push({
-                  subitems: [
-                    item.attributes.slug,
-                    `Images ${imageIndex.toString()}`,
-                    "Cover",
-                  ],
+                  subitems: [item.attributes.slug, `Images ${imageIndex.toString()}`, "Cover"],
                   name: "No Front",
                   type: "Missing",
                   severity: Severity.VeryHigh,
@@ -381,11 +329,7 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
               }
               if (!image.cover.spine?.data?.id) {
                 report.lines.push({
-                  subitems: [
-                    item.attributes.slug,
-                    `Images ${imageIndex.toString()}`,
-                    "Cover",
-                  ],
+                  subitems: [item.attributes.slug, `Images ${imageIndex.toString()}`, "Cover"],
                   name: "No spine",
                   type: "Missing",
                   severity: Severity.Low,
@@ -397,11 +341,7 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
               }
               if (!image.cover.back?.data?.id) {
                 report.lines.push({
-                  subitems: [
-                    item.attributes.slug,
-                    `Images ${imageIndex.toString()}`,
-                    "Cover",
-                  ],
+                  subitems: [item.attributes.slug, `Images ${imageIndex.toString()}`, "Cover"],
                   name: "No Back",
                   type: "Missing",
                   severity: Severity.High,
@@ -413,11 +353,7 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
               }
               if (!image.cover.full?.data?.id) {
                 report.lines.push({
-                  subitems: [
-                    item.attributes.slug,
-                    `Images ${imageIndex.toString()}`,
-                    "Cover",
-                  ],
+                  subitems: [item.attributes.slug, `Images ${imageIndex.toString()}`, "Cover"],
                   name: "No Full",
                   type: "Missing",
                   severity: Severity.Low,
@@ -429,10 +365,7 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
               }
             } else {
               report.lines.push({
-                subitems: [
-                  item.attributes.slug,
-                  `Images ${imageIndex.toString()}`,
-                ],
+                subitems: [item.attributes.slug, `Images ${imageIndex.toString()}`],
                 name: "No Cover",
                 type: "Missing",
                 severity: Severity.Medium,
@@ -542,10 +475,7 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
               }
             } else {
               report.lines.push({
-                subitems: [
-                  item.attributes.slug,
-                  `Images ${imageIndex.toString()}`,
-                ],
+                subitems: [item.attributes.slug, `Images ${imageIndex.toString()}`],
                 name: "No Dust Jacket",
                 type: "Missing",
                 severity: Severity.VeryLow,
@@ -559,11 +489,7 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
             if (image.obi_belt) {
               if (!image.obi_belt.front?.data?.id) {
                 report.lines.push({
-                  subitems: [
-                    item.attributes.slug,
-                    `Images ${imageIndex.toString()}`,
-                    "Obi Belt",
-                  ],
+                  subitems: [item.attributes.slug, `Images ${imageIndex.toString()}`, "Obi Belt"],
                   name: "No Front",
                   type: "Missing",
                   severity: Severity.VeryHigh,
@@ -575,11 +501,7 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
               }
               if (!image.obi_belt.spine?.data?.id) {
                 report.lines.push({
-                  subitems: [
-                    item.attributes.slug,
-                    `Images ${imageIndex.toString()}`,
-                    "Obi Belt",
-                  ],
+                  subitems: [item.attributes.slug, `Images ${imageIndex.toString()}`, "Obi Belt"],
                   name: "No spine",
                   type: "Missing",
                   severity: Severity.Low,
@@ -591,11 +513,7 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
               }
               if (!image.obi_belt.back?.data?.id) {
                 report.lines.push({
-                  subitems: [
-                    item.attributes.slug,
-                    `Images ${imageIndex.toString()}`,
-                    "Obi Belt",
-                  ],
+                  subitems: [item.attributes.slug, `Images ${imageIndex.toString()}`, "Obi Belt"],
                   name: "No Back",
                   type: "Missing",
                   severity: Severity.High,
@@ -607,11 +525,7 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
               }
               if (!image.obi_belt.full?.data?.id) {
                 report.lines.push({
-                  subitems: [
-                    item.attributes.slug,
-                    `Images ${imageIndex.toString()}`,
-                    "Obi Belt",
-                  ],
+                  subitems: [item.attributes.slug, `Images ${imageIndex.toString()}`, "Obi Belt"],
                   name: "No Full",
                   type: "Missing",
                   severity: Severity.Low,
@@ -623,11 +537,7 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
               }
               if (!image.obi_belt.flap_front?.data?.id) {
                 report.lines.push({
-                  subitems: [
-                    item.attributes.slug,
-                    `Images ${imageIndex.toString()}`,
-                    "Obi Belt",
-                  ],
+                  subitems: [item.attributes.slug, `Images ${imageIndex.toString()}`, "Obi Belt"],
                   name: "No Flap Front",
                   type: "Missing",
                   severity: Severity.Medium,
@@ -639,11 +549,7 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
               }
               if (!image.obi_belt.flap_back?.data?.id) {
                 report.lines.push({
-                  subitems: [
-                    item.attributes.slug,
-                    `Images ${imageIndex.toString()}`,
-                    "Obi Belt",
-                  ],
+                  subitems: [item.attributes.slug, `Images ${imageIndex.toString()}`, "Obi Belt"],
                   name: "No Flap Back",
                   type: "Missing",
                   severity: Severity.Medium,
@@ -655,10 +561,7 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
               }
             } else {
               report.lines.push({
-                subitems: [
-                  item.attributes.slug,
-                  `Images ${imageIndex.toString()}`,
-                ],
+                subitems: [item.attributes.slug, `Images ${imageIndex.toString()}`],
                 name: "No Obi Belt",
                 type: "Missing",
                 severity: Severity.VeryLow,
@@ -672,20 +575,14 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
         });
       }
 
-      if (
-        item.attributes.descriptions &&
-        item.attributes.descriptions.length > 0
-      ) {
+      if (item.attributes.descriptions && item.attributes.descriptions.length > 0) {
         const descriptionLanguages: string[] = [];
 
         item.attributes.descriptions.map((description, descriptionIndex) => {
           if (description && item.attributes) {
             if (description.description.length < 10) {
               report.lines.push({
-                subitems: [
-                  item.attributes.slug,
-                  `Description ${descriptionIndex}`,
-                ],
+                subitems: [item.attributes.slug, `Description ${descriptionIndex}`],
                 name: "No Text",
                 type: "Missing",
                 severity: Severity.VeryHigh,
@@ -699,10 +596,7 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
             if (description.language?.data?.id) {
               if (description.language.data.id in descriptionLanguages) {
                 report.lines.push({
-                  subitems: [
-                    item.attributes.slug,
-                    `Description ${descriptionIndex}`,
-                  ],
+                  subitems: [item.attributes.slug, `Description ${descriptionIndex}`],
                   name: "Duplicate Language",
                   type: "Error",
                   severity: Severity.High,
@@ -716,10 +610,7 @@ const testingLibraryItem = (libraryItems: Props["libraryItems"]): Report => {
               }
             } else {
               report.lines.push({
-                subitems: [
-                  item.attributes.slug,
-                  `Description ${descriptionIndex}`,
-                ],
+                subitems: [item.attributes.slug, `Description ${descriptionIndex}`],
                 name: "No Language",
                 type: "Error",
                 severity: Severity.VeryHigh,

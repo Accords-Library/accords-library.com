@@ -1,3 +1,5 @@
+import { sJoin } from "./formatters";
+
 export enum ImageQuality {
   Small = "small",
   Medium = "medium",
@@ -17,7 +19,7 @@ export interface OgImage {
   alt: string;
 }
 
-export const imageQualityProperties: Record<ImageQuality, ImageProperties> = {
+const imageQualityProperties: Record<ImageQuality, ImageProperties> = {
   small: { maxSize: 512, extension: "webp" },
   medium: { maxSize: 1024, extension: "webp" },
   large: { maxSize: 2048, extension: "webp" },
@@ -37,11 +39,16 @@ export const getAssetFilename = (path: string): string => {
 export const getAssetURL = (url: string, quality: ImageQuality): string => {
   const indexEndPath = url.indexOf("/uploads/") + "/uploads/".length;
   const indexStartExtension = url.lastIndexOf(".");
-  const assetPathWithoutExtension = url.slice(
-    indexEndPath,
-    indexStartExtension
+  const assetPathWithoutExtension = url.slice(indexEndPath, indexStartExtension);
+  return sJoin(
+    process.env.NEXT_PUBLIC_URL_IMG,
+    "/",
+    quality,
+    "/",
+    assetPathWithoutExtension,
+    ".",
+    imageQualityProperties[quality].extension
   );
-  return `${process.env.NEXT_PUBLIC_URL_IMG}/${quality}/${assetPathWithoutExtension}.${imageQualityProperties[quality].extension}`;
 };
 
 const getImgSizesByMaxSize = (

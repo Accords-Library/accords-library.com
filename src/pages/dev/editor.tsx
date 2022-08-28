@@ -4,10 +4,7 @@ import TurndownService from "turndown";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { Button } from "components/Inputs/Button";
 import { Markdawn, TableOfContents } from "components/Markdown/Markdawn";
-import {
-  ContentPanel,
-  ContentPanelWidthSizes,
-} from "components/Panels/ContentPanel";
+import { ContentPanel, ContentPanelWidthSizes } from "components/Panels/ContentPanel";
 import { Popup } from "components/Popup";
 import { ToolTip } from "components/ToolTip";
 import { Icon } from "components/Ico";
@@ -59,19 +56,14 @@ const Editor = (props: Props): JSX.Element => {
   );
 
   const wrap = useCallback(
-    (
-      wrapper: string,
-      properties?: Record<string, string>,
-      addInnerNewLines?: boolean
-    ) => {
+    (wrapper: string, properties?: Record<string, string>, addInnerNewLines?: boolean) => {
       transformationWrapper((value, selectionStart, selectionEnd) => {
         let prepend = wrapper;
         let append = wrapper;
 
         if (properties) {
           prepend = `<${wrapper}${Object.entries(properties).map(
-            ([propertyName, propertyValue]) =>
-              ` ${propertyName}="${propertyValue}"`
+            ([propertyName, propertyValue]) => ` ${propertyName}="${propertyValue}"`
           )}>`;
           append = `</${wrapper}>`;
         }
@@ -107,17 +99,12 @@ const Editor = (props: Props): JSX.Element => {
   );
 
   const toggleWrap = useCallback(
-    (
-      wrapper: string,
-      properties?: Record<string, string>,
-      addInnerNewLines?: boolean
-    ) => {
+    (wrapper: string, properties?: Record<string, string>, addInnerNewLines?: boolean) => {
       if (textAreaRef.current) {
         const { value, selectionStart, selectionEnd } = textAreaRef.current;
 
         if (
-          value.slice(selectionStart - wrapper.length, selectionStart) ===
-            wrapper &&
+          value.slice(selectionStart - wrapper.length, selectionStart) === wrapper &&
           value.slice(selectionEnd, selectionEnd + wrapper.length) === wrapper
         ) {
           unwrap(wrapper);
@@ -132,8 +119,7 @@ const Editor = (props: Props): JSX.Element => {
   const preline = useCallback(
     (prepend: string) => {
       transformationWrapper((value, selectionStart) => {
-        const lastNewLine =
-          value.slice(0, selectionStart).lastIndexOf("\n") + 1;
+        const lastNewLine = value.slice(0, selectionStart).lastIndexOf("\n") + 1;
 
         let newValue = "";
         newValue += value.slice(0, lastNewLine);
@@ -173,10 +159,7 @@ const Editor = (props: Props): JSX.Element => {
   const contentPanel = useMemo(
     () => (
       <ContentPanel width={ContentPanelWidthSizes.Full}>
-        <Popup
-          onClose={() => setConverterOpened(false)}
-          state={converterOpened}
-        >
+        <Popup onClose={() => setConverterOpened(false)} state={converterOpened}>
           <div className="text-center">
             <h2 className="mt-4">Convert HTML to markdown</h2>
             <p>
@@ -184,8 +167,7 @@ const Editor = (props: Props): JSX.Element => {
               <br />
               The text will immediatly be converted to valid Markdown.
               <br />
-              You can then copy the converted text and paste it anywhere you
-              want in the editor
+              You can then copy the converted text and paste it anywhere you want in the editor
             </p>
           </div>
           <textarea
@@ -226,22 +208,15 @@ const Editor = (props: Props): JSX.Element => {
                 <Button onClick={() => preline("##### ")} text={"H5"} />
                 <Button onClick={() => preline("###### ")} text={"H6"} />
               </div>
-            }
-          >
+            }>
             <Button icon={Icon.Title} />
           </ToolTip>
 
-          <ToolTip
-            placement="bottom"
-            content={<h3 className="text-lg">Toggle Bold</h3>}
-          >
+          <ToolTip placement="bottom" content={<h3 className="text-lg">Toggle Bold</h3>}>
             <Button onClick={() => toggleWrap("**")} icon={Icon.FormatBold} />
           </ToolTip>
 
-          <ToolTip
-            placement="bottom"
-            content={<h3 className="text-lg">Toggle Italic</h3>}
-          >
+          <ToolTip placement="bottom" content={<h3 className="text-lg">Toggle Italic</h3>}>
             <Button onClick={() => toggleWrap("_")} icon={Icon.FormatItalic} />
           </ToolTip>
 
@@ -251,12 +226,11 @@ const Editor = (props: Props): JSX.Element => {
               <>
                 <h3 className="text-lg">Toggle Inline Code</h3>
                 <p>
-                  Makes the text monospace (like text from a computer terminal).
-                  Usually used for stylistic purposes in transcripts.
+                  Makes the text monospace (like text from a computer terminal). Usually used for
+                  stylistic purposes in transcripts.
                 </p>
               </>
-            }
-          >
+            }>
             <Button onClick={() => toggleWrap("`")} icon={Icon.Code} />
           </ToolTip>
 
@@ -267,8 +241,7 @@ const Editor = (props: Props): JSX.Element => {
                 <h3 className="text-lg">Insert footnote</h3>
                 <p>When inserted &ldquo;x&rdquo;</p>
               </>
-            }
-          >
+            }>
             <Button
               onClick={() => {
                 insert("[^x]");
@@ -284,8 +257,8 @@ const Editor = (props: Props): JSX.Element => {
               <>
                 <h3 className="text-lg">Transcripts</h3>
                 <p>
-                  Use this to create dialogues and transcripts. Start by adding
-                  a container, then add transcript speech line within.
+                  Use this to create dialogues and transcripts. Start by adding a container, then
+                  add transcript speech line within.
                 </p>
                 <div className="grid gap-2">
                   <ToolTip
@@ -294,12 +267,8 @@ const Editor = (props: Props): JSX.Element => {
                       <>
                         <h3 className="text-lg">Transcript container</h3>
                       </>
-                    }
-                  >
-                    <Button
-                      onClick={() => wrap("Transcript", {}, true)}
-                      icon={Icon.AddBox}
-                    />
+                    }>
+                    <Button onClick={() => wrap("Transcript", {}, true)} icon={Icon.AddBox} />
                   </ToolTip>
                   <ToolTip
                     placement="right"
@@ -307,13 +276,11 @@ const Editor = (props: Props): JSX.Element => {
                       <>
                         <h3 className="text-lg">Transcript speech line</h3>
                         <p>
-                          Use to add a dialogue/transcript line. Change the{" "}
-                          <kbd>name</kbd> property to chang the name of the
-                          speaker
+                          Use to add a dialogue/transcript line. Change the <kbd>name</kbd> property
+                          to chang the name of the speaker
                         </p>
                       </>
-                    }
-                  >
+                    }>
                     <Button
                       onClick={() => wrap("Line", { name: "speaker" })}
                       icon={Icon.RecordVoiceOver}
@@ -321,24 +288,14 @@ const Editor = (props: Props): JSX.Element => {
                   </ToolTip>
                 </div>
               </>
-            }
-          >
+            }>
             <Button icon={Icon.RecordVoiceOver} />
           </ToolTip>
 
-          <ToolTip
-            placement="bottom"
-            content={<h3 className="text-lg">Inset box</h3>}
-          >
-            <Button
-              onClick={() => wrap("InsetBox", {}, true)}
-              icon={Icon.CheckBoxOutlineBlank}
-            />
+          <ToolTip placement="bottom" content={<h3 className="text-lg">Inset box</h3>}>
+            <Button onClick={() => wrap("InsetBox", {}, true)} icon={Icon.CheckBoxOutlineBlank} />
           </ToolTip>
-          <ToolTip
-            placement="bottom"
-            content={<h3 className="text-lg">Scene break</h3>}
-          >
+          <ToolTip placement="bottom" content={<h3 className="text-lg">Scene break</h3>}>
             <Button onClick={() => insert("\n* * *\n")} icon={Icon.MoreHoriz} />
           </ToolTip>
           <ToolTip
@@ -350,12 +307,9 @@ const Editor = (props: Props): JSX.Element => {
                   content={
                     <>
                       <h3 className="text-lg">External Link</h3>
-                      <p className="text-xs">
-                        Provides a link to another webpage / website
-                      </p>
+                      <p className="text-xs">Provides a link to another webpage / website</p>
                     </>
-                  }
-                >
+                  }>
                   <Button
                     onClick={() => insert("[Link name](https://domain.com)")}
                     icon={Icon.Link}
@@ -369,12 +323,10 @@ const Editor = (props: Props): JSX.Element => {
                     <>
                       <h3 className="text-lg">Intralink</h3>
                       <p className="text-xs">
-                        Interlinks are used to add links to a header within the
-                        same document
+                        Interlinks are used to add links to a header within the same document
                       </p>
                     </>
-                  }
-                >
+                  }>
                   <Button
                     onClick={() => wrap("IntraLink", {})}
                     icon={Icon.Link}
@@ -387,12 +339,11 @@ const Editor = (props: Props): JSX.Element => {
                     <>
                       <h3 className="text-lg">Intralink (with target)</h3>{" "}
                       <p className="text-xs">
-                        Use this one if you want the intralink text to be
-                        different from the target header&rsquo;s name.
+                        Use this one if you want the intralink text to be different from the target
+                        header&rsquo;s name.
                       </p>
                     </>
-                  }
-                >
+                  }>
                   <Button
                     onClick={() => wrap("IntraLink", { target: "target" })}
                     icon={Icon.Link}
@@ -400,24 +351,17 @@ const Editor = (props: Props): JSX.Element => {
                   />
                 </ToolTip>
               </div>
-            }
-          >
+            }>
             <Button icon={Icon.Link} />
           </ToolTip>
 
           <ToolTip
             placement="bottom"
-            content={
-              <h3 className="text-lg">Player&rsquo;s name placeholder</h3>
-            }
-          >
+            content={<h3 className="text-lg">Player&rsquo;s name placeholder</h3>}>
             <Button onClick={() => insert("@player")} icon={Icon.Person} />
           </ToolTip>
 
-          <ToolTip
-            placement="bottom"
-            content={<h3 className="text-lg">Open HTML Converter</h3>}
-          >
+          <ToolTip placement="bottom" content={<h3 className="text-lg">Open HTML Converter</h3>}>
             <Button
               onClick={() => {
                 setConverterOpened(true);
@@ -455,16 +399,7 @@ const Editor = (props: Props): JSX.Element => {
         </div>
       </ContentPanel>
     ),
-    [
-      appendDoc,
-      converterOpened,
-      handleInput,
-      insert,
-      markdown,
-      preline,
-      toggleWrap,
-      wrap,
-    ]
+    [appendDoc, converterOpened, handleInput, insert, markdown, preline, toggleWrap, wrap]
   );
 
   return <AppLayout contentPanel={contentPanel} {...props} />;

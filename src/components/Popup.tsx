@@ -38,13 +38,8 @@ export const Popup = ({
       <div
         className={cJoin(
           "fixed inset-0 z-50 grid place-content-center transition-[backdrop-filter] duration-500",
-          cIf(
-            state,
-            "[backdrop-filter:blur(2px)]",
-            "pointer-events-none touch-none"
-          )
-        )}
-      >
+          cIf(state, "[backdrop-filter:blur(2px)]", "pointer-events-none touch-none")
+        )}>
         <div
           className={cJoin(
             "fixed inset-0 bg-shade transition-all duration-500",
@@ -58,14 +53,9 @@ export const Popup = ({
             "grid place-items-center gap-4 transition-transform",
             cIf(padding, "p-10"),
             cIf(state, "scale-100", "scale-0"),
-            cIf(
-              fillViewport,
-              "absolute inset-10",
-              "relative max-h-[80vh] overflow-y-auto"
-            ),
+            cIf(fillViewport, "absolute inset-10", "relative max-h-[80vh] overflow-y-auto"),
             cIf(!hideBackground, "rounded-lg bg-light shadow-2xl shadow-shade")
-          )}
-        >
+          )}>
           {children}
         </div>
       </div>

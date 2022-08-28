@@ -48,8 +48,7 @@ export const Link = ({
             }
           }
         }
-      }}
-    >
+      }}>
       {children}
     </div>
   );

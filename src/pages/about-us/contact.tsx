@@ -2,10 +2,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { InsetBox } from "components/InsetBox";
 import { PostPage } from "components/PostPage";
-import {
-  getPostStaticProps,
-  PostStaticProps,
-} from "graphql/getPostStaticProps";
+import { getPostStaticProps, PostStaticProps } from "graphql/getPostStaticProps";
 import { cIf, cJoin } from "helpers/className";
 import { randomInt } from "helpers/numbers";
 import { RequestMailProps, ResponseMailProps } from "pages/api/mail";
@@ -22,9 +19,7 @@ const AboutUs = (props: PostStaticProps): JSX.Element => {
   const { langui } = useAppLayout();
   const is1ColumnLayout = useIs1ColumnLayout();
   const [formResponse, setFormResponse] = useState("");
-  const [formState, setFormState] = useState<"completed" | "ongoing" | "stale">(
-    "stale"
-  );
+  const [formState, setFormState] = useState<"completed" | "ongoing" | "stale">("stale");
 
   const [randomNumber1, setRandomNumber1] = useState(randomInt(0, 10));
   const [randomNumber2, setRandomNumber2] = useState(randomInt(0, 10));
@@ -34,10 +29,7 @@ const AboutUs = (props: PostStaticProps): JSX.Element => {
       <form
         className={cJoin(
           "grid gap-8",
-          cIf(
-            formState !== "stale",
-            "pointer-events-none cursor-not-allowed touch-none opacity-60"
-          )
+          cIf(formState !== "stale", "pointer-events-none cursor-not-allowed touch-none opacity-60")
         )}
         onSubmit={(event) => {
           event.preventDefault();
@@ -52,8 +44,7 @@ const AboutUs = (props: PostStaticProps): JSX.Element => {
           setFormState("ongoing");
 
           if (
-            parseInt(fields.verif.value, 10) ===
-              randomNumber1 + randomNumber2 &&
+            parseInt(fields.verif.value, 10) === randomNumber1 + randomNumber2 &&
             formState !== "completed"
           ) {
             const content: RequestMailProps = {
@@ -100,8 +91,7 @@ const AboutUs = (props: PostStaticProps): JSX.Element => {
 
           router.replace("#send-response");
           fields.verif.value = "";
-        }}
-      >
+        }}>
         <div className="flex flex-col place-items-center gap-1">
           <label htmlFor="name">{langui.name}:</label>
           <input
@@ -124,9 +114,7 @@ const AboutUs = (props: PostStaticProps): JSX.Element => {
             required
             disabled={formState !== "stale"}
           />
-          <p className="text-sm italic text-dark opacity-70">
-            {langui.email_gdpr_notice}
-          </p>
+          <p className="text-sm italic text-dark opacity-70">{langui.email_gdpr_notice}</p>
         </div>
 
         <div className="flex w-full flex-col place-items-center gap-1">
@@ -145,8 +133,7 @@ const AboutUs = (props: PostStaticProps): JSX.Element => {
           <div className="flex flex-row place-items-center gap-2">
             <label
               className="flex-shrink-0"
-              htmlFor="verif"
-            >{`${randomNumber1} + ${randomNumber2} =`}</label>
+              htmlFor="verif">{`${randomNumber1} + ${randomNumber2} =`}</label>
             <input
               className="w-24"
               type="number"

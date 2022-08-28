@@ -49,8 +49,7 @@ export const LanguageSwitcher = ({
             </Fragment>
           ))}
         </div>
-      }
-    >
+      }>
       <Button
         badgeNumber={showBadge && locales.size > 1 ? locales.size : undefined}
         icon={Icon.Translate}

@@ -114,16 +114,11 @@ type ResponseMailProps = {
   revalidated: boolean;
 };
 
-const Revalidate = (
-  req: NextApiRequest,
-  res: NextApiResponse<ResponseMailProps>
-): void => {
+const Revalidate = (req: NextApiRequest, res: NextApiResponse<ResponseMailProps>): void => {
   const body = req.body as RequestProps;
 
   // Check for secret to confirm this is a valid request
-  if (
-    req.headers.authorization !== `Bearer ${process.env.REVALIDATION_TOKEN}`
-  ) {
+  if (req.headers.authorization !== `Bearer ${process.env.REVALIDATION_TOKEN}`) {
     res.status(401).json({ message: "Invalid token", revalidated: false });
     return;
   }
@@ -210,9 +205,7 @@ const Revalidate = (
       i18n.locales.forEach((locale: string) => {
         if (body.entry.library_item) {
           paths.push(`/${locale}/library/${body.entry.library_item.slug}`);
-          paths.push(
-            `/${locale}/library/${body.entry.library_item.slug}/scans`
-          );
+          paths.push(`/${locale}/library/${body.entry.library_item.slug}/scans`);
         }
         if (body.entry.content) {
           paths.push(`/${locale}/contents/${body.entry.content.slug}`);
@@ -232,25 +225,19 @@ const Revalidate = (
       body.entry.subfolders.forEach((subfolder) =>
         paths.push(`/contents/folder/${subfolder.slug}`)
       );
-      body.entry.contents.forEach((content) =>
-        paths.push(`/contents/${content.slug}`)
-      );
+      body.entry.contents.forEach((content) => paths.push(`/contents/${content.slug}`));
       i18n.locales.forEach((locale: string) => {
         if (body.entry.slug === "root") {
           paths.push(`/${locale}/contents`);
         }
         paths.push(`/${locale}/contents/folder/${body.entry.slug}`);
         if (body.entry.parent_folder) {
-          paths.push(
-            `/${locale}/contents/folder/${body.entry.parent_folder.slug}`
-          );
+          paths.push(`/${locale}/contents/folder/${body.entry.parent_folder.slug}`);
         }
         body.entry.subfolders.forEach((subfolder) =>
           paths.push(`/${locale}/contents/folder/${subfolder.slug}`)
         );
-        body.entry.contents.forEach((content) =>
-          paths.push(`/${locale}/contents/${content.slug}`)
-        );
+        body.entry.contents.forEach((content) => paths.push(`/${locale}/contents/${content.slug}`));
       });
       break;
     }
@@ -311,9 +298,7 @@ const Revalidate = (
     res.json({ message: "Success!", revalidated: true });
     return;
   } catch (error) {
-    res
-      .status(500)
-      .send({ message: `Error revalidating: ${error}`, revalidated: false });
+    res.status(500).send({ message: `Error revalidating: ${error}`, revalidated: false });
   }
 };
 export default Revalidate;

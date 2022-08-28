@@ -29,22 +29,13 @@ interface Props {
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
-const DefinitionCard = ({
-  source,
-  translations = [],
-  index,
-  categories,
-}: Props): JSX.Element => {
+const DefinitionCard = ({ source, translations = [], index, categories }: Props): JSX.Element => {
   const isContentPanelNoMoreThanMd = useIsContentPanelNoMoreThan("md");
   const { langui } = useAppLayout();
-  const [selectedTranslation, LanguageSwitcher, languageSwitcherProps] =
-    useSmartLanguage({
-      items: translations,
-      languageExtractor: useCallback(
-        (item: Props["translations"][number]) => item.language,
-        []
-      ),
-    });
+  const [selectedTranslation, LanguageSwitcher, languageSwitcherProps] = useSmartLanguage({
+    items: translations,
+    languageExtractor: useCallback((item: Props["translations"][number]) => item.language, []),
+  });
 
   return (
     <>
@@ -63,8 +54,7 @@ const DefinitionCard = ({
             <Separator />
             <ToolTip
               content={getStatusDescription(selectedTranslation.status, langui)}
-              maxWidth={"20rem"}
-            >
+              maxWidth={"20rem"}>
               <Chip text={selectedTranslation.status} />
             </ToolTip>
           </>
@@ -89,8 +79,7 @@ const DefinitionCard = ({
           className={cJoin(
             "mt-3 flex place-items-center gap-2",
             cIf(isContentPanelNoMoreThanMd, "flex-col text-center")
-          )}
-        >
+          )}>
           <p>{langui.source}: </p>
           <Button href={source.url} size="small" text={source.name} />
         </div>

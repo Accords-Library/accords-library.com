@@ -1,8 +1,5 @@
 import { PostPage } from "components/PostPage";
-import {
-  getPostStaticProps,
-  PostStaticProps,
-} from "graphql/getPostStaticProps";
+import { getPostStaticProps, PostStaticProps } from "graphql/getPostStaticProps";
 import { useAppLayout } from "contexts/AppLayoutContext";
 
 /*

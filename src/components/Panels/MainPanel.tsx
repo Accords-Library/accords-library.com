@@ -29,16 +29,14 @@ export const MainPanel = (): JSX.Element => {
       className={cJoin(
         "grid content-start justify-center gap-y-2 p-8 text-center",
         cIf(mainPanelReduced && is3ColumnsLayout, "px-4")
-      )}
-    >
+      )}>
       {/* Reduce/expand main menu */}
       {is3ColumnsLayout && (
         <div
           className={cJoin(
             "fixed top-1/2",
             cIf(mainPanelReduced, "left-[4.65rem]", "left-[18.65rem]")
-          )}
-        >
+          )}>
           <Button
             onClick={() => {
               if (mainPanelReduced) {
@@ -63,8 +61,7 @@ export const MainPanel = (): JSX.Element => {
                 [mask:url('/icons/accords.svg')] ![mask-size:contain] ![mask-repeat:no-repeat]
                 ![mask-position:center] hover:bg-dark`,
                 cIf(mainPanelReduced && is3ColumnsLayout, "w-12", "w-1/2")
-              )}
-            ></div>
+              )}></div>
           </Link>
 
           {(!mainPanelReduced || !is3ColumnsLayout) && (
@@ -74,19 +71,13 @@ export const MainPanel = (): JSX.Element => {
           <div
             className={cJoin(
               "flex flex-wrap gap-2",
-              cIf(
-                mainPanelReduced && is3ColumnsLayout,
-                "flex-col gap-3",
-                "flex-row"
-              )
-            )}
-          >
+              cIf(mainPanelReduced && is3ColumnsLayout, "flex-col gap-3", "flex-row")
+            )}>
             <ToolTip
               content={<h3 className="text-2xl">{langui.open_settings}</h3>}
               placement="right"
               className="text-left"
-              disabled={!mainPanelReduced}
-            >
+              disabled={!mainPanelReduced}>
               <Button
                 onClick={() => {
                   setConfigPanelOpen(true);
@@ -174,12 +165,7 @@ export const MainPanel = (): JSX.Element => {
 
       {mainPanelReduced && is3ColumnsLayout ? "" : <HorizontalLine />}
 
-      <div
-        className={cJoin(
-          "text-center",
-          cIf(mainPanelReduced && is3ColumnsLayout, "hidden")
-        )}
-      >
+      <div className={cJoin("text-center", cIf(mainPanelReduced && is3ColumnsLayout, "hidden"))}>
         {isDefinedAndNotEmpty(langui.licensing_notice) && (
           <p>
             <Markdown>{langui.licensing_notice}</Markdown>
@@ -190,8 +176,7 @@ export const MainPanel = (): JSX.Element => {
             onClick={() => umami("[MainPanel] Visit license")}
             aria-label="Read more about the license we use for this website"
             className="group grid grid-flow-col place-content-center gap-1 transition-[filter]"
-            href="https://creativecommons.org/licenses/by-sa/4.0/"
-          >
+            href="https://creativecommons.org/licenses/by-sa/4.0/">
             <div
               className="aspect-square w-6 bg-black transition-colors
               [mask:url('/icons/creative-commons-brands.svg')] ![mask-size:contain]
@@ -223,8 +208,7 @@ export const MainPanel = (): JSX.Element => {
               ![mask-size:contain] ![mask-repeat:no-repeat] ![mask-position:center] hover:bg-dark"
             href="https://github.com/Accords-Library"
             target="_blank"
-            rel="noopener noreferrer"
-          ></a>
+            rel="noopener noreferrer"></a>
           <a
             aria-label="Follow us on Twitter"
             onClick={() => umami("[MainPanel] Visit Twitter")}
@@ -233,8 +217,7 @@ export const MainPanel = (): JSX.Element => {
               ![mask-size:contain] ![mask-repeat:no-repeat] ![mask-position:center] hover:bg-dark"
             href="https://twitter.com/AccordsLibrary"
             target="_blank"
-            rel="noopener noreferrer"
-          ></a>
+            rel="noopener noreferrer"></a>
           <a
             aria-label="Join our Discord server!"
             onClick={() => umami("[MainPanel] Visit Discord")}
@@ -243,8 +226,7 @@ export const MainPanel = (): JSX.Element => {
               ![mask-size:contain] ![mask-repeat:no-repeat] ![mask-position:center] hover:bg-dark"
             href="/discord"
             target="_blank"
-            rel="noopener noreferrer"
-          ></a>
+            rel="noopener noreferrer"></a>
         </div>
       </div>
     </div>

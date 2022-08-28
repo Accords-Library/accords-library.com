@@ -20,9 +20,7 @@ import { getLangui } from "graphql/fetchLocalData";
  */
 
 interface Props extends AppLayoutRequired {
-  chapters: NonNullable<
-    GetChroniclesChaptersQuery["chroniclesChapters"]
-  >["data"];
+  chapters: NonNullable<GetChroniclesChaptersQuery["chroniclesChapters"]>["data"];
 }
 
 const Chronicles = ({ chapters, ...otherProps }: Props): JSX.Element => {
@@ -39,22 +37,21 @@ const Chronicles = ({ chapters, ...otherProps }: Props): JSX.Element => {
         <HorizontalLine />
 
         <div className="grid gap-16">
-          {filterHasAttributes(chapters, [
-            "attributes.chronicles",
-            "id",
-          ] as const).map((chapter) => (
-            <TranslatedChroniclesList
-              key={chapter.id}
-              chronicles={chapter.attributes.chronicles.data}
-              translations={filterHasAttributes(chapter.attributes.titles, [
-                "language.data.attributes.code",
-              ] as const).map((translation) => ({
-                title: translation.title,
-                language: translation.language.data.attributes.code,
-              }))}
-              fallback={{ title: prettySlug(chapter.attributes.slug) }}
-            />
-          ))}
+          {filterHasAttributes(chapters, ["attributes.chronicles", "id"] as const).map(
+            (chapter) => (
+              <TranslatedChroniclesList
+                key={chapter.id}
+                chronicles={chapter.attributes.chronicles.data}
+                translations={filterHasAttributes(chapter.attributes.titles, [
+                  "language.data.attributes.code",
+                ] as const).map((translation) => ({
+                  title: translation.title,
+                  language: translation.language.data.attributes.code,
+                }))}
+                fallback={{ title: prettySlug(chapter.attributes.slug) }}
+              />
+            )
+          )}
         </div>
       </SubPanel>
     ),

@@ -14,23 +14,14 @@ interface Props {
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
-export const WithLabel = ({
-  label,
-  children,
-  disabled,
-}: Props): JSX.Element => (
+export const WithLabel = ({ label, children, disabled }: Props): JSX.Element => (
   <div
     className={cJoin(
       "flex flex-row place-content-between place-items-center gap-2",
       cIf(disabled, "text-dark brightness-150 contrast-75 grayscale")
-    )}
-  >
+    )}>
     {isDefinedAndNotEmpty(label) && (
-      <p
-        className={cJoin("text-left", cIf(label.length < 10, "flex-shrink-0"))}
-      >
-        {label}:
-      </p>
+      <p className={cJoin("text-left", cIf(label.length < 10, "flex-shrink-0"))}>{label}:</p>
     )}
     {children}
   </div>

@@ -30,17 +30,9 @@ const AboutUs = (props: Props): JSX.Element => {
 
           <HorizontalLine />
 
-          <NavOption
-            title={langui.accords_handbook}
-            url="/about-us/accords-handbook"
-            border
-          />
+          <NavOption title={langui.accords_handbook} url="/about-us/accords-handbook" border />
           <NavOption title={langui.legality} url="/about-us/legality" border />
-          <NavOption
-            title={langui.sharing_policy}
-            url="/about-us/sharing-policy"
-            border
-          />
+          <NavOption title={langui.sharing_policy} url="/about-us/sharing-policy" border />
           <NavOption title={langui.contact_us} url="/about-us/contact" border />
         </SubPanel>
       }

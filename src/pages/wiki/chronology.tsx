@@ -39,17 +39,11 @@ import { getLangui } from "graphql/fetchLocalData";
  */
 
 interface Props extends AppLayoutRequired {
-  chronologyItems: NonNullable<
-    GetChronologyItemsQuery["chronologyItems"]
-  >["data"];
+  chronologyItems: NonNullable<GetChronologyItemsQuery["chronologyItems"]>["data"];
   chronologyEras: NonNullable<GetErasQuery["chronologyEras"]>["data"];
 }
 
-const Chronology = ({
-  chronologyItems,
-  chronologyEras,
-  ...otherProps
-}: Props): JSX.Element => {
+const Chronology = ({ chronologyItems, chronologyEras, ...otherProps }: Props): JSX.Element => {
   const { langui } = useAppLayout();
   const ids = useMemo(
     () =>
@@ -64,36 +58,30 @@ const Chronology = ({
   const subPanel = useMemo(
     () => (
       <SubPanel>
-        <ReturnButton
-          href="/wiki"
-          title={langui.wiki}
-          displayOnlyOn="3ColumnsLayout"
-        />
+        <ReturnButton href="/wiki" title={langui.wiki} displayOnlyOn="3ColumnsLayout" />
 
         <HorizontalLine />
 
-        {filterHasAttributes(chronologyEras, ["attributes", "id"] as const).map(
-          (era, index) => (
-            <Fragment key={era.id}>
-              <TranslatedNavOption
-                translations={filterHasAttributes(era.attributes.title, [
-                  "language.data.attributes.code",
-                ] as const).map((translation) => ({
-                  language: translation.language.data.attributes.code,
-                  title: translation.title,
-                  subtitle: `${era.attributes.starting_year} → ${era.attributes.ending_year}`,
-                }))}
-                fallback={{
-                  title: prettySlug(era.attributes.slug),
-                  subtitle: `${era.attributes.starting_year} → ${era.attributes.ending_year}`,
-                }}
-                url={`#${era.attributes.slug}`}
-                border
-                active={currentIntersection === index}
-              />
-            </Fragment>
-          )
-        )}
+        {filterHasAttributes(chronologyEras, ["attributes", "id"] as const).map((era, index) => (
+          <Fragment key={era.id}>
+            <TranslatedNavOption
+              translations={filterHasAttributes(era.attributes.title, [
+                "language.data.attributes.code",
+              ] as const).map((translation) => ({
+                language: translation.language.data.attributes.code,
+                title: translation.title,
+                subtitle: `${era.attributes.starting_year} → ${era.attributes.ending_year}`,
+              }))}
+              fallback={{
+                title: prettySlug(era.attributes.slug),
+                subtitle: `${era.attributes.starting_year} → ${era.attributes.ending_year}`,
+              }}
+              url={`#${era.attributes.slug}`}
+              border
+              active={currentIntersection === index}
+            />
+          </Fragment>
+        ))}
       </SubPanel>
     ),
     [chronologyEras, currentIntersection, langui]
@@ -109,41 +97,31 @@ const Chronology = ({
           className="mb-10"
         />
 
-        {filterHasAttributes(chronologyEras, ["attributes"] as const).map(
-          (era) => (
-            <TranslatedChronologyEra
-              key={era.attributes.slug}
-              id={era.attributes.slug}
-              translations={filterHasAttributes(era.attributes.title, [
-                "language.data.attributes.code",
-              ] as const).map((translation) => ({
-                language: translation.language.data.attributes.code,
-                title: translation.title,
-                description: translation.description,
-              }))}
-              fallback={{ title: prettySlug(era.attributes.slug) }}
-              chronologyItems={filterHasAttributes(chronologyItems, [
-                "attributes",
-              ] as const).filter(
-                (item) =>
-                  item.attributes.year >= era.attributes.starting_year &&
-                  item.attributes.year < era.attributes.ending_year
-              )}
-            />
-          )
-        )}
+        {filterHasAttributes(chronologyEras, ["attributes"] as const).map((era) => (
+          <TranslatedChronologyEra
+            key={era.attributes.slug}
+            id={era.attributes.slug}
+            translations={filterHasAttributes(era.attributes.title, [
+              "language.data.attributes.code",
+            ] as const).map((translation) => ({
+              language: translation.language.data.attributes.code,
+              title: translation.title,
+              description: translation.description,
+            }))}
+            fallback={{ title: prettySlug(era.attributes.slug) }}
+            chronologyItems={filterHasAttributes(chronologyItems, ["attributes"] as const).filter(
+              (item) =>
+                item.attributes.year >= era.attributes.starting_year &&
+                item.attributes.year < era.attributes.ending_year
+            )}
+          />
+        ))}
       </ContentPanel>
     ),
     [chronologyEras, chronologyItems, langui]
   );
 
-  return (
-    <AppLayout
-      contentPanel={contentPanel}
-      subPanel={subPanel}
-      {...otherProps}
-    />
-  );
+  return <AppLayout contentPanel={contentPanel} subPanel={subPanel} {...otherProps} />;
 };
 export default Chronology;
 
@@ -157,8 +135,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const langui = getLangui(context.locale);
   const chronologyItems = await sdk.getChronologyItems();
   const chronologyEras = await sdk.getEras();
-  if (!chronologyItems.chronologyItems || !chronologyEras.chronologyEras)
-    return { notFound: true };
+  if (!chronologyItems.chronologyItems || !chronologyEras.chronologyEras) return { notFound: true };
 
   const props: Props = {
     chronologyItems: chronologyItems.chronologyItems.data,
@@ -182,25 +159,18 @@ interface ChronologyEraProps {
   chronologyItems: Props["chronologyItems"];
 }
 
-const ChronologyEra = ({
-  id,
-  title,
-  description,
-  chronologyItems,
-}: ChronologyEraProps) => {
+const ChronologyEra = ({ id, title, description, chronologyItems }: ChronologyEraProps) => {
   const yearGroups = useMemo(() => {
     const memo: Props["chronologyItems"][] = [];
     let currentYear = -Infinity;
-    filterHasAttributes(chronologyItems, ["attributes"] as const).forEach(
-      (item) => {
-        if (currentYear === item.attributes.year) {
-          memo[memo.length - 1].push(item);
-        } else {
-          currentYear = item.attributes.year;
-          memo.push([item]);
-        }
+    filterHasAttributes(chronologyItems, ["attributes"] as const).forEach((item) => {
+      if (currentYear === item.attributes.year) {
+        memo[memo.length - 1].push(item);
+      } else {
+        currentYear = item.attributes.year;
+        memo.push([item]);
       }
-    );
+    });
     return memo;
   }, [chronologyItems]);
 
@@ -212,9 +182,7 @@ const ChronologyEra = ({
           <AnchorShare id={id} />
         </h2>
 
-        {isDefinedAndNotEmpty(description) && (
-          <p className="whitespace-pre-line ">{description}</p>
-        )}
+        {isDefinedAndNotEmpty(description) && <p className="whitespace-pre-line ">{description}</p>}
       </InsetBox>
       <div>
         {yearGroups.map((item, index) => (
@@ -231,10 +199,7 @@ const TranslatedChronologyEra = ({
   translations,
   fallback,
   ...otherProps
-}: TranslatedProps<
-  Parameters<typeof ChronologyEra>[0],
-  "description" | "title"
->): JSX.Element => {
+}: TranslatedProps<Parameters<typeof ChronologyEra>[0], "description" | "title">): JSX.Element => {
   const [selectedTranslation] = useSmartLanguage({
     items: translations,
     languageExtractor: (item: { language: string }): string => item.language,
@@ -258,23 +223,20 @@ interface ChronologyYearProps {
 const ChronologyYear = ({ items }: ChronologyYearProps) => (
   <div
     className="rounded-2xl target:my-4 target:bg-mid target:py-4"
-    id={generateAnchor(items[0].attributes?.year)}
-  >
-    {filterHasAttributes(items, ["attributes.events"] as const).map(
-      (item, index) => (
-        <ChronologyDate
-          key={index}
-          date={{
-            year: item.attributes.year,
-            month: item.attributes.month,
-            day: item.attributes.day,
-            displayYear: index === 0,
-            overwriteYear: item.attributes.displayed_date,
-          }}
-          events={item.attributes.events}
-        />
-      )
-    )}
+    id={generateAnchor(items[0].attributes?.year)}>
+    {filterHasAttributes(items, ["attributes.events"] as const).map((item, index) => (
+      <ChronologyDate
+        key={index}
+        date={{
+          year: item.attributes.year,
+          month: item.attributes.month,
+          day: item.attributes.day,
+          displayYear: index === 0,
+          overwriteYear: item.attributes.displayed_date,
+        }}
+        events={item.attributes.events}
+      />
+    ))}
   </div>
 );
 
@@ -289,28 +251,20 @@ interface ChronologyDateProps {
     overwriteYear?: string | null | undefined;
   };
   events: NonNullable<
-    NonNullable<
-      NonNullable<Props["chronologyItems"]>[number]["attributes"]
-    >["events"]
+    NonNullable<NonNullable<Props["chronologyItems"]>[number]["attributes"]>["events"]
   >;
 }
 
-export const ChronologyDate = ({
-  date,
-  events,
-}: ChronologyDateProps): JSX.Element => {
+export const ChronologyDate = ({ date, events }: ChronologyDateProps): JSX.Element => {
   const router = useRouter();
   return (
     <div
       className="grid grid-cols-[4em] grid-rows-[auto_1fr]
         gap-x-8 rounded-2xl py-4 px-8 target:my-4 target:bg-mid target:py-8"
-      id={generateAnchor(date.year, date.month, date.day)}
-    >
+      id={generateAnchor(date.year, date.month, date.day)}>
       {date.displayYear && (
         <p className="mt-5 text-right text-lg font-bold">
-          {isDefinedAndNotEmpty(date.overwriteYear)
-            ? date.overwriteYear
-            : date.year}
+          {isDefinedAndNotEmpty(date.overwriteYear) ? date.overwriteYear : date.year}
         </p>
       )}
 
@@ -336,15 +290,13 @@ export const ChronologyDate = ({
       </p>
 
       <div className="col-start-2 row-span-2 row-start-1 grid gap-4">
-        {filterHasAttributes(events, ["id", "translations"] as const).map(
-          (event) => (
-            <ChronologyEvent
-              id={generateAnchor(date.year, date.month, date.day)}
-              key={event.id}
-              event={event}
-            />
-          )
-        )}
+        {filterHasAttributes(events, ["id", "translations"] as const).map((event) => (
+          <ChronologyEvent
+            id={generateAnchor(date.year, date.month, date.day)}
+            key={event.id}
+            event={event}
+          />
+        ))}
       </div>
     </div>
   );
@@ -355,53 +307,36 @@ export const ChronologyDate = ({
 interface ChronologyEventProps {
   event: NonNullable<
     NonNullable<
-      NonNullable<
-        NonNullable<Props["chronologyItems"]>[number]["attributes"]
-      >["events"]
+      NonNullable<NonNullable<Props["chronologyItems"]>[number]["attributes"]>["events"]
     >[number]
   >;
 
   id: string;
 }
 
-export const ChronologyEvent = ({
-  event,
-  id,
-}: ChronologyEventProps): JSX.Element => {
+export const ChronologyEvent = ({ event, id }: ChronologyEventProps): JSX.Element => {
   const { langui } = useAppLayout();
-  const [selectedTranslation, LanguageSwitcher, languageSwitcherProps] =
-    useSmartLanguage({
-      items: event.translations ?? [],
-      languageExtractor: useCallback(
-        (
-          item: NonNullable<
-            ChronologyEventProps["event"]["translations"]
-          >[number]
-        ) => item?.language?.data?.attributes?.code,
-        []
-      ),
-    });
+  const [selectedTranslation, LanguageSwitcher, languageSwitcherProps] = useSmartLanguage({
+    items: event.translations ?? [],
+    languageExtractor: useCallback(
+      (item: NonNullable<ChronologyEventProps["event"]["translations"]>[number]) =>
+        item?.language?.data?.attributes?.code,
+      []
+    ),
+  });
 
   return (
     <div>
       {selectedTranslation && (
         <>
           <div className="mr-2 flex place-items-center gap-x-2">
-            <LanguageSwitcher
-              {...languageSwitcherProps}
-              size="small"
-              showBadge={false}
-            />
+            <LanguageSwitcher {...languageSwitcherProps} size="small" showBadge={false} />
 
             {selectedTranslation.status !==
               Enum_Componenttranslationschronologyitem_Status.Done && (
               <ToolTip
-                content={getStatusDescription(
-                  selectedTranslation.status,
-                  langui
-                )}
-                maxWidth={"20rem"}
-              >
+                content={getStatusDescription(selectedTranslation.status, langui)}
+                maxWidth={"20rem"}>
                 <Chip text={selectedTranslation.status} />
               </ToolTip>
             )}
@@ -424,21 +359,15 @@ export const ChronologyEvent = ({
 
           {selectedTranslation.title && (
             <div className="mt-1 flex place-content-start place-items-start gap-2">
-              <h3 className="font-headers font-bold">
-                {selectedTranslation.title}
-              </h3>
+              <h3 className="font-headers font-bold">{selectedTranslation.title}</h3>
             </div>
           )}
 
           {selectedTranslation.description && (
-            <p className="whitespace-pre-line">
-              {selectedTranslation.description}
-            </p>
+            <p className="whitespace-pre-line">{selectedTranslation.description}</p>
           )}
 
-          {selectedTranslation.note && (
-            <em>{`${langui.notes}: ${selectedTranslation.note}`}</em>
-          )}
+          {selectedTranslation.note && <em>{`${langui.notes}: ${selectedTranslation.note}`}</em>}
         </>
       )}
     </div>

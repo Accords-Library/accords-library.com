@@ -1,9 +1,6 @@
 import { PostPage } from "components/PostPage";
 import { useAppLayout } from "contexts/AppLayoutContext";
-import {
-  getPostStaticProps,
-  PostStaticProps,
-} from "graphql/getPostStaticProps";
+import { getPostStaticProps, PostStaticProps } from "graphql/getPostStaticProps";
 import { getOpenGraph } from "helpers/openGraph";
 
 /*
@@ -23,9 +20,7 @@ const Home = ({ ...otherProps }: PostStaticProps): JSX.Element => {
             [mask-size:contain] [mask-repeat:no-repeat] [mask-position:center]"
           />
           <h1 className="mb-0 text-5xl">Accord&rsquo;s Library</h1>
-          <h2 className="-mt-5 text-xl">
-            Discover • Analyze • Translate • Archive
-          </h2>
+          <h2 className="-mt-5 text-xl">Discover • Analyze • Translate • Archive</h2>
         </div>
       }
       displayTitle={false}

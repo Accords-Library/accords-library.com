@@ -3,10 +3,7 @@ import { useCallback, useMemo, useRef, useState } from "react";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { Button } from "components/Inputs/Button";
 import { ButtonGroup } from "components/Inputs/ButtonGroup";
-import {
-  ContentPanel,
-  ContentPanelWidthSizes,
-} from "components/Panels/ContentPanel";
+import { ContentPanel, ContentPanelWidthSizes } from "components/Panels/ContentPanel";
 import { ToolTip } from "components/ToolTip";
 import { getOpenGraph } from "helpers/openGraph";
 import { getLangui } from "graphql/fetchLocalData";
@@ -30,10 +27,7 @@ const replaceSelection = (
   selectionStart: number,
   selectionEnd: number,
   newSelectedText: string
-) =>
-  text.substring(0, selectionStart) +
-  newSelectedText +
-  text.substring(selectionEnd);
+) => text.substring(0, selectionStart) + newSelectedText + text.substring(selectionEnd);
 
 const swapChar = (char: string, swaps: string[]): string => {
   for (let index = 0; index < swaps.length; index++) {
@@ -60,10 +54,7 @@ const Transcript = (props: Props): JSX.Element => {
 
   const updateLineIndex = useCallback(() => {
     if (textAreaRef.current) {
-      const subText = textAreaRef.current.value.substring(
-        0,
-        textAreaRef.current.selectionStart
-      );
+      const subText = textAreaRef.current.value.substring(0, textAreaRef.current.selectionStart);
       setLineIndex(subText.split("\n").length - 1);
     }
   }, []);
@@ -202,10 +193,7 @@ const Transcript = (props: Props): JSX.Element => {
         textAreaRef.current.selectionStart,
         textAreaRef.current.selectionEnd
       );
-      const selection = textAreaRef.current.value.substring(
-        selectionStart,
-        selectionEnd
-      );
+      const selection = textAreaRef.current.value.substring(selectionStart, selectionEnd);
       if (selection.length === 1) {
         let newSelection = selection;
 
@@ -301,10 +289,7 @@ const Transcript = (props: Props): JSX.Element => {
         textAreaRef.current.selectionStart,
         textAreaRef.current.selectionEnd
       );
-      const selection = textAreaRef.current.value.substring(
-        selectionStart,
-        selectionEnd
-      );
+      const selection = textAreaRef.current.value.substring(selectionStart, selectionEnd);
       if (selection.length === 1) {
         let newSelection = selection;
 
@@ -376,10 +361,7 @@ const Transcript = (props: Props): JSX.Element => {
 
   const contentPanel = useMemo(
     () => (
-      <ContentPanel
-        width={ContentPanelWidthSizes.Full}
-        className="overflow-hidden !pr-0 !pt-4"
-      >
+      <ContentPanel width={ContentPanelWidthSizes.Full} className="overflow-hidden !pr-0 !pt-4">
         <div className="grid grid-flow-col grid-cols-[1fr_5rem]">
           <textarea
             ref={textAreaRef}
@@ -387,18 +369,14 @@ const Transcript = (props: Props): JSX.Element => {
             onClick={updateLineIndex}
             onKeyUp={updateLineIndex}
             title="Input textarea"
-            className="whitespace-pre"
-          ></textarea>
+            className="whitespace-pre"></textarea>
 
           <p
             className="h-[80vh] whitespace-nowrap font-[initial] font-bold
           [writing-mode:vertical-rl] [transform-origin:top_right]"
             style={{
-              transform: `scale(${fontSize}) translateX(${
-                fontSize * xOffset
-              }px)`,
-            }}
-          >
+              transform: `scale(${fontSize}) translateX(${fontSize * xOffset}px)`,
+            }}>
             {text.split("\n")[lineIndex]}
           </p>
         </div>
@@ -412,10 +390,7 @@ const Transcript = (props: Props): JSX.Element => {
               min="0"
               max="100"
               value={xOffset * 10}
-              onChange={(event) =>
-                setXOffset(parseInt(event.target.value, 10) / 10)
-              }
-            ></input>
+              onChange={(event) => setXOffset(parseInt(event.target.value, 10) / 10)}></input>
           </div>
 
           <div className="grid place-items-center">
@@ -428,8 +403,7 @@ const Transcript = (props: Props): JSX.Element => {
               value={fontSize * SIZE_MULTIPLIER}
               onChange={(event) =>
                 setFontSize(parseInt(event.target.value, 10) / SIZE_MULTIPLIER)
-              }
-            ></input>
+              }></input>
           </div>
           <ToolTip content="Automatically convert Western punctuations to Japanese ones.">
             <Button text=". ⟹ 。" onClick={convertPunctuation} />
@@ -526,8 +500,7 @@ const Transcript = (props: Props): JSX.Element => {
                   ]}
                 />
               </div>
-            }
-          >
+            }>
             <Button text={"Quotations"} />
           </ToolTip>
           <ToolTip
@@ -543,8 +516,7 @@ const Transcript = (props: Props): JSX.Element => {
                 <Button text={"〇"} onClick={() => insert("〇")} />
                 <Button text={'"　"'} onClick={() => insert("　")} />
               </div>
-            }
-          >
+            }>
             <Button text="Insert" />
           </ToolTip>
         </div>
@@ -565,13 +537,7 @@ const Transcript = (props: Props): JSX.Element => {
     ]
   );
 
-  return (
-    <AppLayout
-      contentPanel={contentPanel}
-      {...props}
-      contentPanelScroolbar={false}
-    />
-  );
+  return <AppLayout contentPanel={contentPanel} {...props} contentPanelScroolbar={false} />;
 };
 export default Transcript;
 

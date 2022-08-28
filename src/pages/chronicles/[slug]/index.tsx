@@ -2,7 +2,7 @@ import { GetStaticProps, GetStaticPaths, GetStaticPathsResult } from "next";
 import { useCallback, useMemo } from "react";
 import { getReadySdk } from "graphql/sdk";
 import { isDefined, filterHasAttributes } from "helpers/others";
-import { ChronicleWithTranslations } from "helpers/types";
+import { ChronicleWithTranslations } from "types/types";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { ContentPanel } from "components/Panels/ContentPanel";
@@ -15,10 +15,7 @@ import { prettyInlineTitle, prettySlug } from "helpers/formatters";
 import { ReturnButton } from "components/PanelComponents/ReturnButton";
 import { Icon } from "components/Ico";
 import { getOpenGraph } from "helpers/openGraph";
-import {
-  getDefaultPreferredLanguages,
-  staticSmartLanguage,
-} from "helpers/locales";
+import { getDefaultPreferredLanguages, staticSmartLanguage } from "helpers/locales";
 import { getDescription } from "helpers/description";
 import { TranslatedChroniclesList } from "components/Chronicles/ChroniclesList";
 import { useAppLayout } from "contexts/AppLayoutContext";
@@ -31,58 +28,43 @@ import { getLangui } from "graphql/fetchLocalData";
 
 interface Props extends AppLayoutRequired {
   chronicle: ChronicleWithTranslations;
-  chapters: NonNullable<
-    GetChroniclesChaptersQuery["chroniclesChapters"]
-  >["data"];
+  chapters: NonNullable<GetChroniclesChaptersQuery["chroniclesChapters"]>["data"];
 }
 
-const Chronicle = ({
-  chronicle,
-  chapters,
-  ...otherProps
-}: Props): JSX.Element => {
+const Chronicle = ({ chronicle, chapters, ...otherProps }: Props): JSX.Element => {
   const { langui } = useAppLayout();
-  const [selectedTranslation, LanguageSwitcher, languageSwitcherProps] =
-    useSmartLanguage({
-      items: chronicle.translations,
-      languageExtractor: useCallback(
-        (item: ChronicleWithTranslations["translations"][number]) =>
-          item?.language?.data?.attributes?.code,
-        []
-      ),
-    });
-
-  const primaryContent = useMemo<
-    NonNullable<
-      ChronicleWithTranslations["contents"]
-    >["data"][number]["attributes"]
-  >(
-    () =>
-      filterHasAttributes(chronicle.contents?.data, [
-        "attributes.translations",
-      ] as const)[0]?.attributes,
-    [chronicle.contents?.data]
-  );
-
-  const [
-    selectedContentTranslation,
-    ContentLanguageSwitcher,
-    ContentLanguageSwitcherProps,
-  ] = useSmartLanguage({
-    items: primaryContent?.translations ?? [],
+  const [selectedTranslation, LanguageSwitcher, languageSwitcherProps] = useSmartLanguage({
+    items: chronicle.translations,
     languageExtractor: useCallback(
-      (
-        item: NonNullable<
-          NonNullable<
-            NonNullable<
-              ChronicleWithTranslations["contents"]
-            >["data"][number]["attributes"]
-          >["translations"]
-        >[number]
-      ) => item?.language?.data?.attributes?.code,
+      (item: ChronicleWithTranslations["translations"][number]) =>
+        item?.language?.data?.attributes?.code,
       []
     ),
   });
+
+  const primaryContent = useMemo<
+    NonNullable<ChronicleWithTranslations["contents"]>["data"][number]["attributes"]
+  >(
+    () =>
+      filterHasAttributes(chronicle.contents?.data, ["attributes.translations"] as const)[0]
+        ?.attributes,
+    [chronicle.contents?.data]
+  );
+
+  const [selectedContentTranslation, ContentLanguageSwitcher, ContentLanguageSwitcherProps] =
+    useSmartLanguage({
+      items: primaryContent?.translations ?? [],
+      languageExtractor: useCallback(
+        (
+          item: NonNullable<
+            NonNullable<
+              NonNullable<ChronicleWithTranslations["contents"]>["data"][number]["attributes"]
+            >["translations"]
+          >[number]
+        ) => item?.language?.data?.attributes?.code,
+        []
+      ),
+    });
 
   const contentPanel = useMemo(
     () => (
@@ -96,9 +78,7 @@ const Chronicle = ({
 
         {isDefined(selectedTranslation) ? (
           <>
-            <h1 className="mb-16 text-center text-3xl">
-              {selectedTranslation.title}
-            </h1>
+            <h1 className="mb-16 text-center text-3xl">{selectedTranslation.title}</h1>
 
             {languageSwitcherProps.locales.size > 1 && (
               <LanguageSwitcher {...languageSwitcherProps} />
@@ -118,9 +98,7 @@ const Chronicle = ({
                   subtitle={selectedContentTranslation.subtitle}
                   languageSwitcher={
                     ContentLanguageSwitcherProps.locales.size > 1 ? (
-                      <ContentLanguageSwitcher
-                        {...ContentLanguageSwitcherProps}
-                      />
+                      <ContentLanguageSwitcher {...ContentLanguageSwitcherProps} />
                     ) : undefined
                   }
                   categories={primaryContent?.categories}
@@ -167,23 +145,22 @@ const Chronicle = ({
         <HorizontalLine />
 
         <div className="grid gap-16">
-          {filterHasAttributes(chapters, [
-            "attributes.chronicles",
-            "id",
-          ] as const).map((chapter) => (
-            <TranslatedChroniclesList
-              key={chapter.id}
-              chronicles={chapter.attributes.chronicles.data}
-              translations={filterHasAttributes(chapter.attributes.titles, [
-                "language.data.attributes.code",
-              ] as const).map((translation) => ({
-                title: translation.title,
-                language: translation.language.data.attributes.code,
-              }))}
-              fallback={{ title: prettySlug(chapter.attributes.slug) }}
-              currentSlug={chronicle.slug}
-            />
-          ))}
+          {filterHasAttributes(chapters, ["attributes.chronicles", "id"] as const).map(
+            (chapter) => (
+              <TranslatedChroniclesList
+                key={chapter.id}
+                chronicles={chapter.attributes.chronicles.data}
+                translations={filterHasAttributes(chapter.attributes.titles, [
+                  "language.data.attributes.code",
+                ] as const).map((translation) => ({
+                  title: translation.title,
+                  language: translation.language.data.attributes.code,
+                }))}
+                fallback={{ title: prettySlug(chapter.attributes.slug) }}
+                currentSlug={chronicle.slug}
+              />
+            )
+          )}
         </div>
       </SubPanel>
     ),
@@ -210,9 +187,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
   const langui = getLangui(context.locale);
   const slug =
-    context.params && isDefined(context.params.slug)
-      ? context.params.slug.toString()
-      : "";
+    context.params && isDefined(context.params.slug) ? context.params.slug.toString() : "";
   const chronicle = await sdk.getChronicle({
     language_code: context.locale ?? "en",
     slug: slug,
@@ -226,19 +201,11 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   const { title, description } = (() => {
     if (context.locale && context.locales) {
-      if (
-        chronicle.chronicles.data[0].attributes.contents?.data[0]?.attributes
-          ?.translations
-      ) {
+      if (chronicle.chronicles.data[0].attributes.contents?.data[0]?.attributes?.translations) {
         const selectedContentTranslation = staticSmartLanguage({
-          items:
-            chronicle.chronicles.data[0].attributes.contents.data[0].attributes
-              .translations,
+          items: chronicle.chronicles.data[0].attributes.contents.data[0].attributes.translations,
           languageExtractor: (item) => item.language?.data?.attributes?.code,
-          preferredLanguages: getDefaultPreferredLanguages(
-            context.locale,
-            context.locales
-          ),
+          preferredLanguages: getDefaultPreferredLanguages(context.locale, context.locales),
         });
         if (selectedContentTranslation) {
           return {
@@ -247,30 +214,24 @@ export const getStaticProps: GetStaticProps = async (context) => {
               selectedContentTranslation.title,
               selectedContentTranslation.subtitle
             ),
-            description: getDescription(
-              selectedContentTranslation.description,
-              {
-                [langui.type ?? "Type"]: [
-                  chronicle.chronicles.data[0].attributes.contents.data[0]
-                    .attributes.type?.data?.attributes?.titles?.[0]?.title,
-                ],
-                [langui.categories ?? "Categories"]: filterHasAttributes(
-                  chronicle.chronicles.data[0].attributes.contents.data[0]
-                    .attributes.categories?.data,
-                  ["attributes"] as const
-                ).map((category) => category.attributes.short),
-              }
-            ),
+            description: getDescription(selectedContentTranslation.description, {
+              [langui.type ?? "Type"]: [
+                chronicle.chronicles.data[0].attributes.contents.data[0].attributes.type?.data
+                  ?.attributes?.titles?.[0]?.title,
+              ],
+              [langui.categories ?? "Categories"]: filterHasAttributes(
+                chronicle.chronicles.data[0].attributes.contents.data[0].attributes.categories
+                  ?.data,
+                ["attributes"] as const
+              ).map((category) => category.attributes.short),
+            }),
           };
         }
       } else {
         const selectedTranslation = staticSmartLanguage({
           items: chronicle.chronicles.data[0].attributes.translations,
           languageExtractor: (item) => item.language?.data?.attributes?.code,
-          preferredLanguages: getDefaultPreferredLanguages(
-            context.locale,
-            context.locales
-          ),
+          preferredLanguages: getDefaultPreferredLanguages(context.locale, context.locales),
         });
         if (selectedTranslation) {
           return {
@@ -288,13 +249,12 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   const thumbnail =
     chronicle.chronicles.data[0].attributes.translations.length === 0
-      ? chronicle.chronicles.data[0].attributes.contents?.data[0]?.attributes
-          ?.thumbnail?.data?.attributes
+      ? chronicle.chronicles.data[0].attributes.contents?.data[0]?.attributes?.thumbnail?.data
+          ?.attributes
       : undefined;
 
   const props: Props = {
-    chronicle: chronicle.chronicles.data[0]
-      .attributes as ChronicleWithTranslations,
+    chronicle: chronicle.chronicles.data[0].attributes as ChronicleWithTranslations,
     chapters: chronicles.chroniclesChapters.data,
     openGraph: getOpenGraph(langui, title, description, thumbnail),
   };
@@ -309,16 +269,14 @@ export const getStaticPaths: GetStaticPaths = async (context) => {
   const sdk = getReadySdk();
   const contents = await sdk.getChroniclesSlugs();
   const paths: GetStaticPathsResult["paths"] = [];
-  filterHasAttributes(contents.chronicles?.data, ["attributes"] as const).map(
-    (wikiPage) => {
-      context.locales?.map((local) =>
-        paths.push({
-          params: { slug: wikiPage.attributes.slug },
-          locale: local,
-        })
-      );
-    }
-  );
+  filterHasAttributes(contents.chronicles?.data, ["attributes"] as const).map((wikiPage) => {
+    context.locales?.map((local) =>
+      paths.push({
+        params: { slug: wikiPage.attributes.slug },
+        locale: local,
+      })
+    );
+  });
   return {
     paths,
     fallback: "blocking",

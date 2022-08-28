@@ -5,10 +5,7 @@ import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { Switch } from "components/Inputs/Switch";
 import { PanelHeader } from "components/PanelComponents/PanelHeader";
 import { ReturnButton } from "components/PanelComponents/ReturnButton";
-import {
-  ContentPanel,
-  ContentPanelWidthSizes,
-} from "components/Panels/ContentPanel";
+import { ContentPanel, ContentPanelWidthSizes } from "components/Panels/ContentPanel";
 import { SubPanel } from "components/Panels/SubPanel";
 import { PreviewCard } from "components/PreviewCard";
 import { GetVideoChannelQuery } from "graphql/generated";
@@ -43,21 +40,16 @@ const DEFAULT_FILTERS_STATE = {
  */
 
 interface Props extends AppLayoutRequired {
-  channel: NonNullable<
-    GetVideoChannelQuery["videoChannels"]
-  >["data"][number]["attributes"];
+  channel: NonNullable<GetVideoChannelQuery["videoChannels"]>["data"][number]["attributes"];
 }
 
 const Channel = ({ channel, ...otherProps }: Props): JSX.Element => {
-  const { value: keepInfoVisible, toggle: toggleKeepInfoVisible } =
-    useBoolean(true);
+  const { value: keepInfoVisible, toggle: toggleKeepInfoVisible } = useBoolean(true);
   const { langui } = useAppLayout();
   const hoverable = useDeviceSupportsHover();
   const isContentPanelAtLeast4xl = useIsContentPanelAtLeast("4xl");
 
-  const [searchName, setSearchName] = useState(
-    DEFAULT_FILTERS_STATE.searchName
-  );
+  const [searchName, setSearchName] = useState(DEFAULT_FILTERS_STATE.searchName);
 
   const subPanel = useMemo(
     () => (
@@ -98,10 +90,7 @@ const Channel = ({ channel, ...otherProps }: Props): JSX.Element => {
     () => (
       <ContentPanel width={ContentPanelWidthSizes.Full}>
         <SmartList
-          items={filterHasAttributes(channel?.videos?.data, [
-            "id",
-            "attributes",
-          ] as const)}
+          items={filterHasAttributes(channel?.videos?.data, ["id", "attributes"] as const)}
           getItemId={(item) => item.id}
           renderItem={({ item }) => (
             <PreviewCard
@@ -135,22 +124,10 @@ const Channel = ({ channel, ...otherProps }: Props): JSX.Element => {
         />
       </ContentPanel>
     ),
-    [
-      channel?.title,
-      channel?.videos?.data,
-      isContentPanelAtLeast4xl,
-      keepInfoVisible,
-      searchName,
-    ]
+    [channel?.title, channel?.videos?.data, isContentPanelAtLeast4xl, keepInfoVisible, searchName]
   );
 
-  return (
-    <AppLayout
-      subPanel={subPanel}
-      contentPanel={contentPanel}
-      {...otherProps}
-    />
-  );
+  return <AppLayout subPanel={subPanel} contentPanel={contentPanel} {...otherProps} />;
 };
 export default Channel;
 
@@ -163,25 +140,17 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
   const langui = getLangui(context.locale);
   const channel = await sdk.getVideoChannel({
-    channel:
-      context.params && isDefined(context.params.uid)
-        ? context.params.uid.toString()
-        : "",
+    channel: context.params && isDefined(context.params.uid) ? context.params.uid.toString() : "",
   });
   if (!channel.videoChannels?.data[0].attributes) return { notFound: true };
 
   channel.videoChannels.data[0].attributes.videos?.data
-    .sort((a, b) =>
-      compareDate(a.attributes?.published_date, b.attributes?.published_date)
-    )
+    .sort((a, b) => compareDate(a.attributes?.published_date, b.attributes?.published_date))
     .reverse();
 
   const props: Props = {
     channel: channel.videoChannels.data[0].attributes,
-    openGraph: getOpenGraph(
-      langui,
-      channel.videoChannels.data[0].attributes.title
-    ),
+    openGraph: getOpenGraph(langui, channel.videoChannels.data[0].attributes.title),
   };
   return {
     props: props,
@@ -196,9 +165,7 @@ export const getStaticPaths: GetStaticPaths = async (context) => {
   const paths: GetStaticPathsResult["paths"] = [];
 
   if (channels.videoChannels?.data)
-    filterHasAttributes(channels.videoChannels.data, [
-      "attributes",
-    ] as const).map((channel) => {
+    filterHasAttributes(channels.videoChannels.data, ["attributes"] as const).map((channel) => {
       context.locales?.map((local) => {
         paths.push({
           params: { uid: channel.attributes.uid },

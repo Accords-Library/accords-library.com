@@ -21,9 +21,7 @@ const SENSIBILITY_SWIPE = 0.5;
  */
 
 interface Props {
-  setState:
-    | Dispatch<SetStateAction<boolean | undefined>>
-    | Dispatch<SetStateAction<boolean>>;
+  setState: Dispatch<SetStateAction<boolean | undefined>> | Dispatch<SetStateAction<boolean>>;
   state: boolean;
   images: string[];
   index: number;
@@ -32,13 +30,7 @@ interface Props {
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
-export const LightBox = ({
-  state,
-  setState,
-  images,
-  index,
-  setIndex,
-}: Props): JSX.Element => {
+export const LightBox = ({ state, setState, images, index, setIndex }: Props): JSX.Element => {
   const handlePrevious = useCallback(() => {
     if (index > 0) setIndex(index - 1);
   }, [index, setIndex]);
@@ -71,14 +63,8 @@ export const LightBox = ({
             } else {
               handleNext();
             }
-          }}
-        >
-          <Popup
-            onClose={() => setState(false)}
-            state={state}
-            padding={false}
-            fillViewport
-          >
+          }}>
+          <Popup onClose={() => setState(false)} state={state} padding={false} fillViewport>
             <div
               {...handlers}
               className={cJoin(
@@ -88,18 +74,12 @@ export const LightBox = ({
                   `grid-cols-[4em,1fr,4em] [grid-template-areas:"left_image_right"]`,
                   `grid-cols-2 [grid-template-areas:"image_image""left_right"]`
                 )
-              )}
-            >
+              )}>
               <div className="ml-4 [grid-area:left]">
-                {index > 0 && (
-                  <Button onClick={handlePrevious} icon={Icon.ChevronLeft} />
-                )}
+                {index > 0 && <Button onClick={handlePrevious} icon={Icon.ChevronLeft} />}
               </div>
 
-              <Img
-                className="max-h-full min-h-fit [grid-area:image]"
-                src={images[index]}
-              />
+              <Img className="max-h-full min-h-fit [grid-area:image]" src={images[index]} />
 
               <div className="mr-4 [grid-area:right]">
                 {index < images.length - 1 && (

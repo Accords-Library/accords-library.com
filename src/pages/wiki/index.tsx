@@ -8,21 +8,14 @@ import { SubPanel } from "components/Panels/SubPanel";
 import { Icon } from "components/Ico";
 import { getReadySdk } from "graphql/sdk";
 import { GetWikiPageQuery, GetWikiPagesPreviewsQuery } from "graphql/generated";
-import {
-  ContentPanel,
-  ContentPanelWidthSizes,
-} from "components/Panels/ContentPanel";
+import { ContentPanel, ContentPanelWidthSizes } from "components/Panels/ContentPanel";
 import { HorizontalLine } from "components/HorizontalLine";
 import { Button } from "components/Inputs/Button";
 import { Switch } from "components/Inputs/Switch";
 import { TextInput } from "components/Inputs/TextInput";
 import { WithLabel } from "components/Inputs/WithLabel";
 import { useDeviceSupportsHover } from "hooks/useMediaQuery";
-import {
-  filterDefined,
-  filterHasAttributes,
-  isDefinedAndNotEmpty,
-} from "helpers/others";
+import { filterDefined, filterHasAttributes, isDefinedAndNotEmpty } from "helpers/others";
 import { SmartList } from "components/SmartList";
 import { Select } from "components/Inputs/Select";
 import { SelectiveNonNullable } from "types/SelectiveNonNullable";
@@ -59,9 +52,7 @@ const Wiki = ({ pages, ...otherProps }: Props): JSX.Element => {
   const { langui } = useAppLayout();
   const isContentPanelAtLeast4xl = useIsContentPanelAtLeast("4xl");
 
-  const [searchName, setSearchName] = useState(
-    DEFAULT_FILTERS_STATE.searchName
-  );
+  const [searchName, setSearchName] = useState(DEFAULT_FILTERS_STATE.searchName);
 
   const [groupingMethod, setGroupingMethod] = useState<number>(
     DEFAULT_FILTERS_STATE.groupingMethod
@@ -105,11 +96,7 @@ const Wiki = ({ pages, ...otherProps }: Props): JSX.Element => {
             value={groupingMethod}
             onChange={(value) => {
               setGroupingMethod(value);
-              umami(
-                `[Wiki] Change grouping method (${
-                  ["none", "category"][value + 1]
-                })`
-              );
+              umami(`[Wiki] Change grouping method (${["none", "category"][value + 1]})`);
             }}
             allowEmpty
           />
@@ -121,9 +108,7 @@ const Wiki = ({ pages, ...otherProps }: Props): JSX.Element => {
               value={keepInfoVisible}
               onClick={() => {
                 toggleKeepInfoVisible();
-                umami(
-                  `[Wiki] Always ${keepInfoVisible ? "hide" : "show"} info`
-                );
+                umami(`[Wiki] Always ${keepInfoVisible ? "hide" : "show"} info`);
               }}
             />
           </WithLabel>
@@ -143,9 +128,7 @@ const Wiki = ({ pages, ...otherProps }: Props): JSX.Element => {
 
         <HorizontalLine />
 
-        <p className="mb-4 font-headers text-xl font-bold">
-          {langui.special_pages}
-        </p>
+        <p className="mb-4 font-headers text-xl font-bold">{langui.special_pages}</p>
 
         <NavOption title={langui.chronology} url="/wiki/chronology" border />
       </SubPanel>
@@ -170,10 +153,9 @@ const Wiki = ({ pages, ...otherProps }: Props): JSX.Element => {
     ): string[] => {
       switch (groupingMethod) {
         case 0: {
-          const categories = filterHasAttributes(
-            item.attributes.categories?.data,
-            ["attributes"] as const
-          );
+          const categories = filterHasAttributes(item.attributes.categories?.data, [
+            "attributes",
+          ] as const);
           if (categories.length > 0) {
             return categories.map((category) => category.attributes.name);
           }
@@ -202,9 +184,7 @@ const Wiki = ({ pages, ...otherProps }: Props): JSX.Element => {
                 title: translation.title,
                 subtitle:
                   translation.aliases && translation.aliases.length > 0
-                    ? translation.aliases
-                        .map((alias) => alias?.alias)
-                        .join("・")
+                    ? translation.aliases.map((alias) => alias?.alias).join("・")
                     : undefined,
                 description: translation.summary,
                 language: translation.language.data.attributes.code,
@@ -218,14 +198,11 @@ const Wiki = ({ pages, ...otherProps }: Props): JSX.Element => {
               topChips={filterHasAttributes(item.attributes.tags?.data, [
                 "attributes",
               ] as const).map(
-                (tag) =>
-                  tag.attributes.titles?.[0]?.title ??
-                  prettySlug(tag.attributes.slug)
+                (tag) => tag.attributes.titles?.[0]?.title ?? prettySlug(tag.attributes.slug)
               )}
-              bottomChips={filterHasAttributes(
-                item.attributes.categories?.data,
-                ["attributes"] as const
-              ).map((category) => category.attributes.short)}
+              bottomChips={filterHasAttributes(item.attributes.categories?.data, [
+                "attributes",
+              ] as const).map((category) => category.attributes.short)}
             />
           )}
           className={cIf(
@@ -249,13 +226,7 @@ const Wiki = ({ pages, ...otherProps }: Props): JSX.Element => {
         />
       </ContentPanel>
     ),
-    [
-      groupingFunction,
-      keepInfoVisible,
-      pages,
-      searchName,
-      isContentPanelAtLeast4xl,
-    ]
+    [groupingFunction, keepInfoVisible, pages, searchName, isContentPanelAtLeast4xl]
   );
 
   return (

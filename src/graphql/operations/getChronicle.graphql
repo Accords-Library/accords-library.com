@@ -91,9 +91,7 @@ query getChronicle($slug: String, $language_code: String) {
                 data {
                   attributes {
                     slug
-                    titles(
-                      filters: { language: { code: { eq: $language_code } } }
-                    ) {
+                    titles(filters: { language: { code: { eq: $language_code } } }) {
                       title
                     }
                   }

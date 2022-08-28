@@ -10,7 +10,7 @@ import { RecorderChip } from "./RecorderChip";
 import { ThumbnailHeader } from "./ThumbnailHeader";
 import { ToolTip } from "./ToolTip";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
-import { PostWithTranslations } from "helpers/types";
+import { PostWithTranslations } from "types/types";
 import { filterHasAttributes, getStatusDescription } from "helpers/others";
 import { prettySlug } from "helpers/formatters";
 import { useAppLayout } from "contexts/AppLayoutContext";
@@ -49,21 +49,19 @@ export const PostPage = ({
   ...otherProps
 }: Props): JSX.Element => {
   const { langui } = useAppLayout();
-  const [selectedTranslation, LanguageSwitcher, languageSwitcherProps] =
-    useSmartLanguage({
-      items: post.translations,
-      languageExtractor: useCallback(
-        (item: NonNullable<PostWithTranslations["translations"][number]>) =>
-          item.language?.data?.attributes?.code,
-        []
-      ),
-    });
+  const [selectedTranslation, LanguageSwitcher, languageSwitcherProps] = useSmartLanguage({
+    items: post.translations,
+    languageExtractor: useCallback(
+      (item: NonNullable<PostWithTranslations["translations"][number]>) =>
+        item.language?.data?.attributes?.code,
+      []
+    ),
+  });
 
   const { thumbnail, body, title, excerpt } = useMemo(
     () => ({
       thumbnail:
-        selectedTranslation?.thumbnail?.data?.attributes ??
-        post.thumbnail?.data?.attributes,
+        selectedTranslation?.thumbnail?.data?.attributes ?? post.thumbnail?.data?.attributes,
       body: selectedTranslation?.body ?? "",
       title: selectedTranslation?.title ?? prettySlug(post.slug),
       excerpt: selectedTranslation?.excerpt ?? "",
@@ -76,11 +74,7 @@ export const PostPage = ({
       returnHref || returnTitle || displayCredits || displayToc ? (
         <SubPanel>
           {returnHref && returnTitle && (
-            <ReturnButton
-              href={returnHref}
-              title={returnTitle}
-              displayOnlyOn={"3ColumnsLayout"}
-            />
+            <ReturnButton href={returnHref} title={returnTitle} displayOnlyOn={"3ColumnsLayout"} />
           )}
 
           {displayCredits && (
@@ -92,12 +86,8 @@ export const PostPage = ({
                   <p className="font-headers font-bold">{langui.status}:</p>
 
                   <ToolTip
-                    content={getStatusDescription(
-                      selectedTranslation.status,
-                      langui
-                    )}
-                    maxWidth={"20rem"}
-                  >
+                    content={getStatusDescription(selectedTranslation.status, langui)}
+                    maxWidth={"20rem"}>
                     <Chip text={selectedTranslation.status} />
                   </ToolTip>
                 </div>
@@ -107,23 +97,20 @@ export const PostPage = ({
                 <div>
                   <p className="font-headers font-bold">{"Authors"}:</p>
                   <div className="grid place-content-center place-items-center gap-2">
-                    {filterHasAttributes(post.authors.data, [
-                      "id",
-                      "attributes",
-                    ] as const).map((author) => (
-                      <Fragment key={author.id}>
-                        <RecorderChip recorder={author.attributes} />
-                      </Fragment>
-                    ))}
+                    {filterHasAttributes(post.authors.data, ["id", "attributes"] as const).map(
+                      (author) => (
+                        <Fragment key={author.id}>
+                          <RecorderChip recorder={author.attributes} />
+                        </Fragment>
+                      )
+                    )}
                   </div>
                 </div>
               )}
             </>
           )}
 
-          {displayToc && (
-            <TableOfContents text={body} title={title} horizontalLine />
-          )}
+          {displayToc && <TableOfContents text={body} title={title} horizontalLine />}
         </SubPanel>
       ) : undefined,
     [
@@ -173,9 +160,7 @@ export const PostPage = ({
               </div>
             )}
             {displayTitle && (
-              <h1 className="my-16 flex justify-center gap-3 text-center text-4xl">
-                {title}
-              </h1>
+              <h1 className="my-16 flex justify-center gap-3 text-center text-4xl">{title}</h1>
             )}
           </>
         )}
@@ -209,11 +194,5 @@ export const PostPage = ({
     ]
   );
 
-  return (
-    <AppLayout
-      {...otherProps}
-      contentPanel={contentPanel}
-      subPanel={subPanel}
-    />
-  );
+  return <AppLayout {...otherProps} contentPanel={contentPanel} subPanel={subPanel} />;
 };

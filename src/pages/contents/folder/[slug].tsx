@@ -2,18 +2,12 @@ import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next";
 import { useCallback, useMemo } from "react";
 import naturalCompare from "string-natural-compare";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
-import {
-  ContentPanel,
-  ContentPanelWidthSizes,
-} from "components/Panels/ContentPanel";
+import { ContentPanel, ContentPanelWidthSizes } from "components/Panels/ContentPanel";
 import { getOpenGraph } from "helpers/openGraph";
 import { getReadySdk } from "graphql/sdk";
 import { filterHasAttributes } from "helpers/others";
 import { GetContentsFolderQuery } from "graphql/generated";
-import {
-  getDefaultPreferredLanguages,
-  staticSmartLanguage,
-} from "helpers/locales";
+import { getDefaultPreferredLanguages, staticSmartLanguage } from "helpers/locales";
 import { prettySlug } from "helpers/formatters";
 import { SmartList } from "components/SmartList";
 import { Ico, Icon } from "components/Ico";
@@ -37,17 +31,11 @@ import { getLangui } from "graphql/fetchLocalData";
 
 interface Props extends AppLayoutRequired {
   folder: NonNullable<
-    NonNullable<
-      GetContentsFolderQuery["contentsFolders"]
-    >["data"][number]["attributes"]
+    NonNullable<GetContentsFolderQuery["contentsFolders"]>["data"][number]["attributes"]
   >;
 }
 
-const ContentsFolder = ({
-  openGraph,
-  folder,
-  ...otherProps
-}: Props): JSX.Element => {
+const ContentsFolder = ({ openGraph, folder, ...otherProps }: Props): JSX.Element => {
   const { langui } = useAppLayout();
   const isContentPanelAtLeast4xl = useIsContentPanelAtLeast("4xl");
 
@@ -62,15 +50,10 @@ const ContentsFolder = ({
 
         <HorizontalLine />
 
-        <Button
-          href="/contents/all"
-          /* TODO: Langui */
-          text={"Switch to grid view"}
-          icon={Icon.Apps}
-        />
+        <Button href="/contents/all" text={langui.switch_to_grid_view} icon={Icon.Apps} />
       </SubPanel>
     ),
-    [langui.contents, langui.contents_description]
+    [langui.contents, langui.contents_description, langui.switch_to_grid_view]
   );
 
   const contentPanel = useMemo(
@@ -84,10 +67,9 @@ const ContentsFolder = ({
               ) : (
                 <TranslatedButton
                   href={`/contents/folder/${folder.parent_folder.data.attributes.slug}`}
-                  translations={filterHasAttributes(
-                    folder.parent_folder.data.attributes.titles,
-                    ["language.data.attributes.code"] as const
-                  ).map((title) => ({
+                  translations={filterHasAttributes(folder.parent_folder.data.attributes.titles, [
+                    "language.data.attributes.code",
+                  ] as const).map((title) => ({
                     language: title.language.data.attributes.code,
                     text: title.title,
                   }))}
@@ -119,10 +101,7 @@ const ContentsFolder = ({
         </div>
 
         <SmartList
-          items={filterHasAttributes(folder.subfolders?.data, [
-            "id",
-            "attributes",
-          ] as const)}
+          items={filterHasAttributes(folder.subfolders?.data, ["id", "attributes"] as const)}
           getItemId={(item) => item.id}
           renderItem={({ item }) => (
             <TranslatedPreviewFolder
@@ -149,10 +128,7 @@ const ContentsFolder = ({
         />
 
         <SmartList
-          items={filterHasAttributes(folder.contents?.data, [
-            "id",
-            "attributes",
-          ] as const)}
+          items={filterHasAttributes(folder.contents?.data, ["id", "attributes"] as const)}
           getItemId={(item) => item.id}
           renderItem={({ item }) => (
             <TranslatedPreviewCard
@@ -193,8 +169,9 @@ const ContentsFolder = ({
           groupingFunction={() => [langui.contents ?? "Contents"]}
         />
 
-        {folder.contents?.data.length === 0 &&
-          folder.subfolders?.data.length === 0 && <NoContentNorFolderMessage />}
+        {folder.contents?.data.length === 0 && folder.subfolders?.data.length === 0 && (
+          <NoContentNorFolderMessage />
+        )}
       </ContentPanel>
     ),
     [
@@ -240,15 +217,15 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   const subFolders = {
     // eslint-disable-next-line id-denylist
-    data: filterHasAttributes(folder.subfolders?.data, [
-      "attributes.slug",
-    ]).sort((a, b) => naturalCompare(a.attributes.slug, b.attributes.slug)),
+    data: filterHasAttributes(folder.subfolders?.data, ["attributes.slug"]).sort((a, b) =>
+      naturalCompare(a.attributes.slug, b.attributes.slug)
+    ),
   };
 
   const contents = {
     // eslint-disable-next-line id-denylist
-    data: filterHasAttributes(folder.contents?.data, ["attributes.slug"]).sort(
-      (a, b) => naturalCompare(a.attributes.slug, b.attributes.slug)
+    data: filterHasAttributes(folder.contents?.data, ["attributes.slug"]).sort((a, b) =>
+      naturalCompare(a.attributes.slug, b.attributes.slug)
     ),
   };
 
@@ -263,10 +240,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
       const selectedTranslation = staticSmartLanguage({
         items: folder.titles,
         languageExtractor: (item) => item.language?.data?.attributes?.code,
-        preferredLanguages: getDefaultPreferredLanguages(
-          context.locale,
-          context.locales
-        ),
+        preferredLanguages: getDefaultPreferredLanguages(context.locale, context.locales),
       });
       if (selectedTranslation) {
         return selectedTranslation.title;
@@ -290,9 +264,7 @@ export const getStaticPaths: GetStaticPaths = async (context) => {
   const sdk = getReadySdk();
   const contents = await sdk.getContentsFoldersSlugs();
   const paths: GetStaticPathsResult["paths"] = [];
-  filterHasAttributes(contents.contentsFolders?.data, [
-    "attributes",
-  ] as const).map((item) => {
+  filterHasAttributes(contents.contentsFolders?.data, ["attributes"] as const).map((item) => {
     context.locales?.map((local) => {
       paths.push({
         params: { slug: item.attributes.slug },
@@ -320,13 +292,8 @@ const PreviewFolder = ({ href, title }: PreviewFolderProps): JSX.Element => (
   <Link
     href={href}
     className="flex w-full cursor-pointer flex-row place-content-center place-items-center gap-4
-    rounded-md bg-light p-6 transition-transform drop-shadow-shade-xl hover:scale-[1.02]"
-  >
-    {title && (
-      <p className="text-center font-headers text-lg font-bold leading-none">
-        {title}
-      </p>
-    )}
+    rounded-md bg-light p-6 transition-transform drop-shadow-shade-xl hover:scale-[1.02]">
+    {title && <p className="text-center font-headers text-lg font-bold leading-none">{title}</p>}
   </Link>
 );
 
@@ -339,17 +306,9 @@ const TranslatedPreviewFolder = ({
 }: TranslatedProps<PreviewFolderProps, "title">): JSX.Element => {
   const [selectedTranslation] = useSmartLanguage({
     items: translations,
-    languageExtractor: useCallback(
-      (item: { language: string }): string => item.language,
-      []
-    ),
+    languageExtractor: useCallback((item: { language: string }): string => item.language, []),
   });
-  return (
-    <PreviewFolder
-      title={selectedTranslation?.title ?? fallback.title}
-      {...otherProps}
-    />
-  );
+  return <PreviewFolder title={selectedTranslation?.title ?? fallback.title} {...otherProps} />;
 };
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
@@ -360,8 +319,7 @@ const NoContentNorFolderMessage = () => {
     <div className="grid place-content-center">
       <div
         className="grid grid-flow-col place-items-center gap-9 rounded-2xl border-2 border-dotted
-      border-dark p-8 text-dark opacity-40"
-      >
+      border-dark p-8 text-dark opacity-40">
         <p className="max-w-xs text-2xl">{langui.empty_folder_message}</p>
       </div>
     </div>

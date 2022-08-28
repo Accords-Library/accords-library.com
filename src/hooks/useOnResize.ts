@@ -12,10 +12,7 @@ export const useOnResize = (
     console.log("[useOnResize]", id);
     const elem = isClient ? document.querySelector(`#${id}`) : null;
     const ro = new ResizeObserver((resizeObserverEntry) =>
-      onResize(
-        resizeObserverEntry[0].contentRect.width,
-        resizeObserverEntry[0].contentRect.height
-      )
+      onResize(resizeObserverEntry[0].contentRect.width, resizeObserverEntry[0].contentRect.height)
     );
     if (isDefined(elem)) {
       ro.observe(elem);

@@ -13,6 +13,3 @@ export const prettyTerminalBoxedTitle = (string: string | null | undefined): str
        │ ${string} │
        ╰${"─".repeat(string.length + 2)}╯`
     : "";
-
-export const prettyTerminalTitle = (title: string | null | undefined): string =>
-  `\n\n-= ${title?.toUpperCase()} =-`;

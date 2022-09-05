@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
 import { useSwipeable } from "react-swipeable";
 import UAParser from "ua-parser-js";
-import { useBoolean, useIsClient } from "usehooks-ts";
+import { useIsClient } from "usehooks-ts";
 import Script from "next/script";
 import { layout } from "../../design.config";
 import { Ico, Icon } from "./Ico";
@@ -69,6 +69,8 @@ export const AppLayout = ({
     preferredLanguages,
     selectedThemeMode,
     subPanelOpen,
+    hasDisgardedSafariWarning,
+    setHasDisgardedSafariWarning,
     setConfigPanelOpen,
     setCurrency,
     setDarkMode,
@@ -144,7 +146,7 @@ export const AppLayout = ({
   }, [currencyOptions, currencySelect, setCurrency]);
 
   const isClient = useIsClient();
-  const { value: hasDisgardSafariWarning, setTrue: disgardSafariWarning } = useBoolean(false);
+
   const isSafari = useMemo<boolean>(() => {
     if (isClient) {
       const parser = new UAParser();
@@ -309,7 +311,7 @@ export const AppLayout = ({
           )}
         </div>
 
-        <Popup state={isSafari && !hasDisgardSafariWarning} onClose={() => null}>
+        <Popup state={isSafari && !hasDisgardedSafariWarning} onClose={() => null}>
           <h1 className="text-2xl">Hi, you are using Safari!</h1>
           <p className="max-w-lg text-center">
             In most cases this wouldn&rsquo;t be a problem but our website is—for some obscure
@@ -324,7 +326,7 @@ export const AppLayout = ({
             text="Let me in regardless"
             className="mt-8"
             onClick={() => {
-              disgardSafariWarning();
+              setHasDisgardedSafariWarning(true);
               sendAnalytics("Safari", "Disgard warning");
             }}
           />

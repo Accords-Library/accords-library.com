@@ -298,7 +298,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     language_code: context.locale ?? "en",
   });
   if (!contents.contents) return { notFound: true };
-  
+
   contents.contents.data.sort((a, b) => {
     const titleA = a.attributes?.slug ?? "";
     const titleB = b.attributes?.slug ?? "";

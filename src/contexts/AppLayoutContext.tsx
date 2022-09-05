@@ -1,6 +1,6 @@
 import React, { ReactNode, useContext, useEffect, useLayoutEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { useLocalStorage } from "usehooks-ts";
+import { useLocalStorage, useSessionStorage } from "usehooks-ts";
 import { isDefined, isDefinedAndNotEmpty } from "helpers/others";
 import { LibraryItemUserStatus, RequiredNonNullable } from "types/types";
 import { useDarkMode } from "hooks/useDarkMode";
@@ -72,6 +72,11 @@ interface AppLayoutState {
   langui: Langui;
   languages: Languages;
   currencies: Currencies;
+
+  hasDisgardedSafariWarning: boolean;
+  setHasDisgardedSafariWarning: React.Dispatch<
+    React.SetStateAction<AppLayoutState["hasDisgardedSafariWarning"]>
+  >;
 }
 
 const initialState: RequiredNonNullable<AppLayoutState> = {
@@ -134,6 +139,9 @@ const initialState: RequiredNonNullable<AppLayoutState> = {
   currencies: [],
   languages: [],
   langui: {},
+
+  hasDisgardedSafariWarning: false,
+  setHasDisgardedSafariWarning: () => null,
 };
 
 const AppContext = React.createContext<AppLayoutState>(initialState);
@@ -190,6 +198,11 @@ export const AppContextProvider = (props: Props): JSX.Element => {
   const [libraryItemUserStatus, setLibraryItemUserStatus] = useLocalStorage(
     "libraryItemUserStatus",
     initialState.libraryItemUserStatus
+  );
+
+  const [hasDisgardedSafariWarning, setHasDisgardedSafariWarning] = useSessionStorage(
+    "hasDisgardedSafariWarning",
+    initialState.hasDisgardedSafariWarning
   );
 
   const toggleSubPanelOpen = () => {
@@ -294,6 +307,7 @@ export const AppContextProvider = (props: Props): JSX.Element => {
         screenWidth,
         contentPanelWidth,
         subPanelWidth,
+        hasDisgardedSafariWarning,
         setSubPanelOpen,
         setConfigPanelOpen,
         setMainPanelReduced,
@@ -318,6 +332,7 @@ export const AppContextProvider = (props: Props): JSX.Element => {
         setScreenWidth,
         setContentPanelWidth,
         setSubPanelWidth,
+        setHasDisgardedSafariWarning,
         languages,
         langui,
         currencies,

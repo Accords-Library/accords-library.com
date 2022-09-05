@@ -45,7 +45,7 @@
     "@digitak/esrun": "^3.2.10",
     "@graphql-codegen/cli": "^2.11.8",
     "@graphql-codegen/typescript": "2.7.3",
-    "@graphql-codegen/typescript-graphql-request": "^4.5.3",
+    "@graphql-codegen/typescript-graphql-request": "^4.5.4",
     "@graphql-codegen/typescript-operations": "^2.5.3",
     "@types/node": "18.7.13",
     "@types/nodemailer": "^6.4.5",

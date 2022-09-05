@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from "react";
 import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next";
+import { useRouter } from "next/router";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { Chip } from "components/Chip";
 import { HorizontalLine } from "components/HorizontalLine";
@@ -22,6 +23,9 @@ import { cIf, cJoin } from "helpers/className";
 import { useIs3ColumnsLayout } from "hooks/useContainerQuery";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { getLangui } from "graphql/fetchLocalData";
+import { Terminal } from "components/Cli/Terminal";
+import { prettyTerminalBoxedTitle, prettyTerminalUnderlinedTitle } from "helpers/terminal";
+import { useIsTerminalMode } from "hooks/useIsTerminalMode";
 
 /*
  *                                           ╭────────╮
@@ -34,6 +38,8 @@ interface Props extends AppLayoutRequired {
 
 const WikiPage = ({ page, ...otherProps }: Props): JSX.Element => {
   const { langui } = useAppLayout();
+  const router = useRouter();
+  const isTerminalMode = useIsTerminalMode();
   const [selectedTranslation, LanguageSwitcher, languageSwitcherProps] = useSmartLanguage({
     items: page.translations,
     languageExtractor: useCallback(
@@ -190,6 +196,48 @@ const WikiPage = ({ page, ...otherProps }: Props): JSX.Element => {
     ]
   );
 
+  if (isTerminalMode) {
+    return (
+      <Terminal
+        childrenPaths={[]}
+        parentPath={"/wiki"}
+        content={`${prettyTerminalBoxedTitle(
+          `${selectedTranslation?.title}${
+            selectedTranslation?.aliases && selectedTranslation.aliases.length > 0
+              ? ` (${selectedTranslation.aliases.map((alias) => alias?.alias).join(", ")})`
+              : ""
+          }`
+        )}${
+          isDefinedAndNotEmpty(selectedTranslation?.summary)
+            ? `${prettyTerminalUnderlinedTitle(langui.summary)}${selectedTranslation?.summary}`
+            : ""
+        }${
+          page.definitions && page.definitions.length > 0
+            ? `${filterHasAttributes(page.definitions, ["translations"] as const).map(
+                (definition, index) =>
+                  `${prettyTerminalUnderlinedTitle(`${langui.definition} ${index + 1}`)}${
+                    staticSmartLanguage({
+                      items: filterHasAttributes(definition.translations, [
+                        "language.data.attributes.code",
+                      ] as const),
+                      languageExtractor: (item) => item.language.data.attributes.code,
+                      preferredLanguages: getDefaultPreferredLanguages(
+                        router.locale ?? "en",
+                        router.locales ?? ["en"]
+                      ),
+                    })?.definition
+                  }`
+              )}`
+            : ""
+        }${
+          isDefinedAndNotEmpty(selectedTranslation?.body?.body)
+            ? `\n\n${selectedTranslation?.body?.body}`
+            : "\n"
+        }`}
+      />
+    );
+  }
+
   return <AppLayout subPanel={subPanel} contentPanel={contentPanel} {...otherProps} />;
 };
 export default WikiPage;
@@ -208,7 +256,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     language_code: context.locale ?? "en",
     slug: slug,
   });
-  if (!page.wikiPages?.data[0].attributes?.translations) return { notFound: true };
+  if (!page.wikiPages?.data[0]?.attributes?.translations) return { notFound: true };
 
   const { title, description } = (() => {
     const chipsGroups = {

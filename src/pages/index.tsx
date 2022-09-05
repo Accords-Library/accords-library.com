@@ -2,6 +2,8 @@ import { PostPage } from "components/PostPage";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { getPostStaticProps, PostStaticProps } from "graphql/getPostStaticProps";
 import { getOpenGraph } from "helpers/openGraph";
+import { Terminal } from "components/Cli/Terminal";
+import { useIsTerminalMode } from "hooks/useIsTerminalMode";
 
 /*
  *                                           ╭────────╮
@@ -10,6 +12,26 @@ import { getOpenGraph } from "helpers/openGraph";
 
 const Home = ({ ...otherProps }: PostStaticProps): JSX.Element => {
   const { langui } = useAppLayout();
+  const isTerminalMode = useIsTerminalMode();
+
+  if (isTerminalMode) {
+    return (
+      <Terminal
+        parentPath="/"
+        childrenPaths={[
+          "library",
+          "contents",
+          "wiki",
+          "chronicles",
+          "news",
+          "gallery",
+          "archives",
+          "about-us",
+        ]}
+      />
+    );
+  }
+
   return (
     <PostPage
       {...otherProps}

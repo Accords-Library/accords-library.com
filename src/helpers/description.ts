@@ -25,7 +25,7 @@ export const getDescription = (
   return result;
 };
 
-const prettyMarkdown = (markdown: string): string =>
+export const prettyMarkdown = (markdown: string): string =>
   markdown.replace(/[*]/gu, "").replace(/[_]/gu, "");
 
 const prettyChip = (items: (string | undefined)[]): string =>

@@ -27,6 +27,8 @@ import { cIf } from "helpers/className";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { getLangui } from "graphql/fetchLocalData";
 import { sendAnalytics } from "helpers/analytics";
+import { Terminal } from "components/Cli/Terminal";
+import { useIsTerminalMode } from "hooks/useIsTerminalMode";
 
 /*
  *                                         ╭─────────────╮
@@ -52,6 +54,7 @@ const Wiki = ({ pages, ...otherProps }: Props): JSX.Element => {
   const hoverable = useDeviceSupportsHover();
   const { langui } = useAppLayout();
   const isContentPanelAtLeast4xl = useIsContentPanelAtLeast("4xl");
+  const isTerminalMode = useIsTerminalMode();
 
   const [searchName, setSearchName] = useState(DEFAULT_FILTERS_STATE.searchName);
 
@@ -229,6 +232,17 @@ const Wiki = ({ pages, ...otherProps }: Props): JSX.Element => {
     ),
     [groupingFunction, keepInfoVisible, pages, searchName, isContentPanelAtLeast4xl]
   );
+
+  if (isTerminalMode) {
+    return (
+      <Terminal
+        parentPath="/"
+        childrenPaths={filterHasAttributes(pages, ["attributes"] as const).map(
+          (page) => page.attributes.slug
+        )}
+      />
+    );
+  }
 
   return (
     <AppLayout

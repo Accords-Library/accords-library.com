@@ -20,6 +20,7 @@ module.exports = {
       body: "var(--theme-font-body)",
       headers: "var(--theme-font-headers)",
       mono: "var(--theme-font-mono)",
+      realmono: `ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace`,
       ...fonts,
     },
     screens: {

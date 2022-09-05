@@ -267,7 +267,10 @@ export const AppContextProvider = (props: Props): JSX.Element => {
   }, [router.events, setConfigPanelOpen, setMainPanelOpen, setSubPanelOpen]);
 
   useLayoutEffect(() => {
-    document.getElementsByTagName("html")[0].style.fontSize = `${fontSize * 100}%`;
+    const html = document.getElementsByTagName("html")[0];
+    if (isDefined(html)) {
+      html.style.fontSize = `${fontSize * 100}%`;
+    }
   }, [fontSize]);
 
   useScrollIntoView();

@@ -172,6 +172,22 @@ input[type="submit"] {
   [background-blend-mode:var(--theme-texture-dots-blend)];
 }
 
+/* ANIMATION */
+
+.animation-carret {
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  from,
+  to {
+    border-bottom-style: solid;
+  }
+  50% {
+    border-bottom-style: none;
+  }
+}
+
 /* DEBUGGING */
 .false {
   @apply border-2 border-[red] text-[red] outline-dotted outline-2 outline-[red];

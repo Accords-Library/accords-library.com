@@ -25,6 +25,8 @@ import { useIsContentPanelAtLeast } from "hooks/useContainerQuery";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { getLangui } from "graphql/fetchLocalData";
 import { sendAnalytics } from "helpers/analytics";
+import { useIsTerminalMode } from "hooks/useIsTerminalMode";
+import { Terminal } from "components/Cli/Terminal";
 
 /*
  *                                         ╭─────────────╮
@@ -55,6 +57,7 @@ const News = ({ posts, ...otherProps }: Props): JSX.Element => {
     toggle: toggleKeepInfoVisible,
     setValue: setKeepInfoVisible,
   } = useBoolean(DEFAULT_FILTERS_STATE.keepInfoVisible);
+  const isTerminalMode = useIsTerminalMode();
 
   const subPanel = useMemo(
     () => (
@@ -152,6 +155,17 @@ const News = ({ posts, ...otherProps }: Props): JSX.Element => {
     ),
     [keepInfoVisible, posts, searchName, isContentPanelAtLeast4xl]
   );
+
+  if (isTerminalMode) {
+    return (
+      <Terminal
+        parentPath="/"
+        childrenPaths={filterHasAttributes(posts, ["attributes"] as const).map(
+          (post) => post.attributes.slug
+        )}
+      />
+    );
+  }
 
   return (
     <AppLayout

@@ -8,10 +8,13 @@ import "@fontsource/zen-maru-gothic/900.css";
 import type { AppProps } from "next/app";
 import { AppContextProvider } from "contexts/AppLayoutContext";
 import "tailwind.css";
+import { TerminalContextProvider } from "contexts/TerminalContext";
 
 const AccordsLibraryApp = (props: AppProps): JSX.Element => (
   <AppContextProvider>
-    <props.Component {...props.pageProps} />
+    <TerminalContextProvider>
+      <props.Component {...props.pageProps} />
+    </TerminalContextProvider>
   </AppContextProvider>
 );
 export default AccordsLibraryApp;

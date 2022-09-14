@@ -1,20 +1,34 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { i18n } from "../../../next.config";
+import { cartesianProduct } from "helpers/others";
+
+type CRUDEvents = "entry.create" | "entry.delete" | "entry.update";
+
+type StrapiEvent = {
+  event: CRUDEvents;
+  model: string;
+  entry: Record<string, unknown>;
+};
 
 type RequestProps =
-  | HookChronicle
-  | HookChronicleChapter
-  | HookChronology
-  | HookContent
-  | HookContentFolder
-  | HookCustom
-  | HookLibraryItem
-  | HookPostContent
-  | HookRangedContent
-  | HookWiki;
+  | CustomRequest
+  | StrapiChronicle
+  | StrapiChronicleChapter
+  | StrapiChronology
+  | StrapiContent
+  | StrapiContentFolder
+  | StrapiLibraryItem
+  | StrapiPostContent
+  | StrapiRangedContent
+  | StrapiWiki;
 
-type HookRangedContent = {
-  event: "entry.create" | "entry.delete" | "entry.update";
+interface CustomRequest {
+  model: "custom";
+  path: string;
+}
+
+interface StrapiRangedContent extends StrapiEvent {
+  event: CRUDEvents;
   model: "ranged-content";
   entry: {
     library_item?: {
@@ -24,14 +38,9 @@ type HookRangedContent = {
       slug: string;
     };
   };
-};
+}
 
-type HookCustom = {
-  model: "custom";
-  url: string;
-};
-
-type HookContent = {
+interface StrapiContent extends StrapiEvent {
   model: "content";
   entry: {
     slug: string;
@@ -42,18 +51,18 @@ type HookContent = {
       slug: string;
     }[];
   };
-};
+}
 
-type HookPostContent = {
-  event: "entry.create" | "entry.delete" | "entry.update";
+interface StrapiPostContent extends StrapiEvent {
+  event: CRUDEvents;
   model: "post";
   entry: {
     slug: string;
   };
-};
+}
 
-type HookLibraryItem = {
-  event: "entry.create" | "entry.delete" | "entry.update";
+interface StrapiLibraryItem extends StrapiEvent {
+  event: CRUDEvents;
   model: "library-item";
   entry: {
     slug: string;
@@ -63,10 +72,10 @@ type HookLibraryItem = {
       }
     ];
   };
-};
+}
 
-type HookContentFolder = {
-  event: "entry.create" | "entry.delete" | "entry.update";
+interface StrapiContentFolder extends StrapiEvent {
+  event: CRUDEvents;
   model: "contents-folder";
   entry: {
     slug: string;
@@ -78,36 +87,36 @@ type HookContentFolder = {
       slug: string;
     }[];
   };
-};
+}
 
-type HookChronology = {
-  event: "entry.create" | "entry.delete" | "entry.update";
+interface StrapiChronology extends StrapiEvent {
+  event: CRUDEvents;
   model: "chronology-era" | "chronology-item";
-};
+}
 
-type HookWiki = {
-  event: "entry.create" | "entry.delete" | "entry.update";
+interface StrapiWiki extends StrapiEvent {
+  event: CRUDEvents;
   model: "wiki-page";
   entry: {
     slug: string;
   };
-};
+}
 
-type HookChronicle = {
-  event: "entry.create" | "entry.delete" | "entry.update";
+interface StrapiChronicle extends StrapiEvent {
+  event: CRUDEvents;
   model: "chronicle";
   entry: {
     slug: string;
   };
-};
+}
 
-type HookChronicleChapter = {
-  event: "entry.create" | "entry.delete" | "entry.update";
+interface StrapiChronicleChapter extends StrapiEvent {
+  event: CRUDEvents;
   model: "chronicles-chapter";
   entry: {
     chronicles: { slug: string }[];
   };
-};
+}
 
 type ResponseMailProps = {
   message: string;
@@ -129,10 +138,6 @@ const Revalidate = (req: NextApiRequest, res: NextApiResponse<ResponseMailProps>
     case "post": {
       paths.push(`/news`);
       paths.push(`/news/${body.entry.slug}`);
-      i18n.locales.forEach((locale: string) => {
-        paths.push(`/${locale}/news`);
-        paths.push(`/${locale}/news/${body.entry.slug}`);
-      });
       break;
     }
 
@@ -142,14 +147,6 @@ const Revalidate = (req: NextApiRequest, res: NextApiResponse<ResponseMailProps>
       paths.push(`/library/${body.entry.slug}/scans`);
       body.entry.subitem_of.forEach((parentItem) => {
         paths.push(`/library/${parentItem.slug}`);
-      });
-      i18n.locales.forEach((locale: string) => {
-        paths.push(`/${locale}/library`);
-        paths.push(`/${locale}/library/${body.entry.slug}`);
-        paths.push(`/${locale}/library/${body.entry.slug}/scans`);
-        body.entry.subitem_of.forEach((parentItem) => {
-          paths.push(`/${locale}/library/${parentItem.slug}`);
-        });
       });
       break;
     }
@@ -161,13 +158,6 @@ const Revalidate = (req: NextApiRequest, res: NextApiResponse<ResponseMailProps>
       if (body.entry.folder?.slug) {
         paths.push(`/contents/folder/${body.entry.folder.slug}`);
       }
-      i18n.locales.forEach((locale: string) => {
-        paths.push(`/${locale}/contents`);
-        paths.push(`/${locale}/contents/${body.entry.slug}`);
-        if (body.entry.folder?.slug) {
-          paths.push(`/${locale}/contents/folder/${body.entry.folder.slug}`);
-        }
-      });
       if (body.entry.ranged_contents.length > 0) {
         body.entry.ranged_contents.forEach((ranged_content) => {
           const parentSlug = ranged_content.slug.slice(
@@ -176,10 +166,6 @@ const Revalidate = (req: NextApiRequest, res: NextApiResponse<ResponseMailProps>
           );
           paths.push(`/library/${parentSlug}`);
           paths.push(`/library/${parentSlug}/scans`);
-          i18n.locales.forEach((locale: string) => {
-            paths.push(`/${locale}/library/${parentSlug}`);
-            paths.push(`/${locale}/library/${parentSlug}/scans`);
-          });
         });
       }
       break;
@@ -188,9 +174,6 @@ const Revalidate = (req: NextApiRequest, res: NextApiResponse<ResponseMailProps>
     case "chronology-era":
     case "chronology-item": {
       paths.push(`/wiki/chronology`);
-      i18n.locales.forEach((locale: string) => {
-        paths.push(`/${locale}/wiki/chronology`);
-      });
       break;
     }
 
@@ -202,15 +185,6 @@ const Revalidate = (req: NextApiRequest, res: NextApiResponse<ResponseMailProps>
       if (body.entry.content) {
         paths.push(`/contents/${body.entry.content.slug}`);
       }
-      i18n.locales.forEach((locale: string) => {
-        if (body.entry.library_item) {
-          paths.push(`/${locale}/library/${body.entry.library_item.slug}`);
-          paths.push(`/${locale}/library/${body.entry.library_item.slug}/scans`);
-        }
-        if (body.entry.content) {
-          paths.push(`/${locale}/contents/${body.entry.content.slug}`);
-        }
-      });
       break;
     }
 
@@ -226,59 +200,31 @@ const Revalidate = (req: NextApiRequest, res: NextApiResponse<ResponseMailProps>
         paths.push(`/contents/folder/${subfolder.slug}`)
       );
       body.entry.contents.forEach((content) => paths.push(`/contents/${content.slug}`));
-      i18n.locales.forEach((locale: string) => {
-        if (body.entry.slug === "root") {
-          paths.push(`/${locale}/contents`);
-        }
-        paths.push(`/${locale}/contents/folder/${body.entry.slug}`);
-        if (body.entry.parent_folder) {
-          paths.push(`/${locale}/contents/folder/${body.entry.parent_folder.slug}`);
-        }
-        body.entry.subfolders.forEach((subfolder) =>
-          paths.push(`/${locale}/contents/folder/${subfolder.slug}`)
-        );
-        body.entry.contents.forEach((content) => paths.push(`/${locale}/contents/${content.slug}`));
-      });
       break;
     }
 
     case "wiki-page": {
       paths.push(`/wiki`);
       paths.push(`/wiki/${body.entry.slug}`);
-      i18n.locales.forEach((locale: string) => {
-        paths.push(`/${locale}/wiki`);
-        paths.push(`/${locale}/wiki/${body.entry.slug}`);
-      });
-
       break;
     }
 
     case "chronicle": {
       paths.push(`/chronicles`);
       paths.push(`/chronicles/${body.entry.slug}`);
-      i18n.locales.forEach((locale: string) => {
-        paths.push(`/${locale}/chronicles`);
-        paths.push(`/${locale}/chronicles/${body.entry.slug}`);
-      });
       break;
     }
 
     case "chronicles-chapter": {
       paths.push(`/chronicles`);
-      i18n.locales.forEach((locale: string) => {
-        paths.push(`/${locale}/chronicles`);
-      });
       body.entry.chronicles.forEach((chronicle) => {
         paths.push(`/chronicles/${chronicle.slug}`);
-        i18n.locales.forEach((locale: string) => {
-          paths.push(`/${locale}/chronicles/${chronicle.slug}`);
-        });
       });
       break;
     }
 
     case "custom": {
-      paths.push(`${body.url}`);
+      paths.push(`${body.path}`);
       break;
     }
 
@@ -287,11 +233,14 @@ const Revalidate = (req: NextApiRequest, res: NextApiResponse<ResponseMailProps>
       break;
   }
 
-  console.table(paths);
+  const localizedPaths = cartesianProduct(i18n.locales, paths).map(
+    ([locale, path]) => `/${locale}${path}`
+  );
+  console.table(localizedPaths);
 
   try {
     Promise.all(
-      paths.map(async (path) => {
+      localizedPaths.map(async (path) => {
         await res.revalidate(path);
       })
     );

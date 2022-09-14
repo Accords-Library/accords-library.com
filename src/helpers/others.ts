@@ -102,3 +102,9 @@ export const arrayMove = <T>(arr: T[], sourceIndex: number, targetIndex: number)
   arr.splice(targetIndex, 0, arr.splice(sourceIndex, 1)[0]);
   return arr;
 };
+
+export const cartesianProduct = <T, U>(arrayA: T[], arrayB: U[]): [T, U][] => {
+  const result: [T, U][] = [];
+  arrayA.forEach((a) => arrayB.forEach((b) => result.push([a, b])));
+  return result;
+};

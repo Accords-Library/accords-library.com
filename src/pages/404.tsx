@@ -4,6 +4,8 @@ import { ReturnButton } from "components/PanelComponents/ReturnButton";
 import { ContentPanel } from "components/Panels/ContentPanel";
 import { getOpenGraph } from "helpers/openGraph";
 import { getLangui } from "graphql/fetchLocalData";
+import { Img } from "components/Img";
+import { useAppLayout } from "contexts/AppLayoutContext";
 
 /*
  *                                           ╭────────╮
@@ -12,18 +14,24 @@ import { getLangui } from "graphql/fetchLocalData";
 
 interface Props extends AppLayoutRequired {}
 
-const FourOhFour = ({ openGraph, ...otherProps }: Props): JSX.Element => (
-  <AppLayout
-    contentPanel={
-      <ContentPanel>
-        <h1>{openGraph.title}</h1>
-        <ReturnButton href="/" title="Home" />
-      </ContentPanel>
-    }
-    openGraph={openGraph}
-    {...otherProps}
-  />
-);
+const FourOhFour = ({ openGraph, ...otherProps }: Props): JSX.Element => {
+  const { langui } = useAppLayout();
+  return (
+    <AppLayout
+      contentPanel={
+        <ContentPanel>
+          <Img src={"/gameover_cards.webp"} className="animate-zoom-in drop-shadow-shade-lg" />
+          <div className="mt-8 grid place-items-center gap-6">
+            <h2>{langui.page_not_found}</h2>
+            <ReturnButton href="/" title="Home" />
+          </div>
+        </ContentPanel>
+      }
+      openGraph={openGraph}
+      {...otherProps}
+    />
+  );
+};
 export default FourOhFour;
 
 /*

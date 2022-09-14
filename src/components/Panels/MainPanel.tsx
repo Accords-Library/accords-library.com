@@ -52,7 +52,6 @@ export const MainPanel = (): JSX.Element => {
           />
         </div>
       )}
-
       <div>
         <div className="grid place-items-center">
           <Link href="/" className="flex w-full justify-center">

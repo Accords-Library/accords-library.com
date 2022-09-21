@@ -341,7 +341,7 @@ export const ChronologyEvent = ({ event, id }: ChronologyEventProps): JSX.Elemen
               </ToolTip>
             )}
 
-            <p className="mt-[0.2rem] grid grid-flow-col gap-1 place-self-start text-xs text-dark">
+            <p className="grid grid-flow-col gap-1 place-self-start text-xs leading-6 text-dark">
               {event.source?.data ? (
                 `(${event.source.data.attributes?.name})`
               ) : (

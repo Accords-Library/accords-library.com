@@ -167,7 +167,7 @@ export const AppLayout = ({
         className={cJoin(
           `fixed inset-0 m-0 grid touch-pan-y bg-light p-0 text-black
         [grid-template-areas:'main_sub_content']`,
-          cIf(is1ColumnLayout, "grid-rows-[1fr_5rem] [grid-template-areas:'content''navbar']")
+          cIf(is1ColumnLayout, `grid-rows-[1fr_5rem] [grid-template-areas:'content''navbar']`)
         )}
         style={{
           gridTemplateColumns: is1ColumnLayout
@@ -278,13 +278,13 @@ export const AppLayout = ({
         {/* Navbar */}
         <div
           className={cJoin(
-            `texture-paper-dots grid grid-cols-[5rem_1fr_5rem] place-items-center
-          border-t-[1px] border-dotted border-black bg-light [grid-area:navbar]`,
+            `texture-paper-dots z-10 grid grid-cols-[5rem_1fr_5rem] place-items-center
+            border-t-[1px] border-dotted border-black bg-light [grid-area:navbar]`,
             cIf(!is1ColumnLayout, "hidden")
           )}>
           <Ico
             icon={mainPanelOpen ? Icon.Close : Icon.Menu}
-            className="mt-[.1em] cursor-pointer !text-2xl"
+            className="cursor-pointer !text-2xl"
             onClick={() => {
               toggleMainPanelOpen();
               setSubPanelOpen(false);
@@ -302,7 +302,7 @@ export const AppLayout = ({
           {isDefined(subPanel) && !turnSubIntoContent && (
             <Ico
               icon={subPanelOpen ? Icon.Close : subPanelIcon}
-              className="mt-[.1em] cursor-pointer !text-2xl"
+              className="cursor-pointer !text-2xl"
               onClick={() => {
                 toggleSubPanelOpen();
                 setMainPanelOpen(false);

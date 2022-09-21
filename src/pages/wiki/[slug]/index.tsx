@@ -90,7 +90,7 @@ const WikiPage = ({ page, ...otherProps }: Props): JSX.Element => {
               <div
                 className={cJoin(
                   "mb-8 overflow-hidden rounded-lg bg-mid text-center",
-                  cIf(is3ColumnsLayout, "float-right ml-8 w-[25rem]")
+                  cIf(is3ColumnsLayout, "float-right ml-8 w-96")
                 )}>
                 {page.thumbnail?.data?.attributes && (
                   <Img

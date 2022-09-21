@@ -211,7 +211,7 @@ const Wiki = ({ pages, ...otherProps }: Props): JSX.Element => {
           )}
           className={cIf(
             isContentPanelAtLeast4xl,
-            "grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] gap-x-6 gap-y-8",
+            "grid-cols-[repeat(auto-fill,minmax(15rem,1fr))] gap-x-6 gap-y-8",
             "grid-cols-2 gap-x-3 gap-y-5"
           )}
           searchingTerm={searchName}

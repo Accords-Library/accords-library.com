@@ -42,6 +42,7 @@ const layout = {
   mainMenuReduced: 6,
   mainMenu: 20,
   subMenu: 20,
+  navbar: 5,
 };
 
 module.exports = {

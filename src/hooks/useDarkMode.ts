@@ -1,6 +1,6 @@
 import { useEffect } from "react";
+import { useLocalStorage } from "usehooks-ts";
 import { usePrefersDarkMode } from "./useMediaQuery";
-import { useStateWithLocalStorage } from "./useStateWithLocalStorage";
 
 export const useDarkMode = (
   key: string,
@@ -11,12 +11,9 @@ export const useDarkMode = (
   React.Dispatch<React.SetStateAction<boolean>>,
   React.Dispatch<React.SetStateAction<boolean>>
 ] => {
-  const [darkMode, setDarkMode] = useStateWithLocalStorage(key, initialValue);
+  const [darkMode, setDarkMode] = useLocalStorage(key, initialValue);
   const prefersDarkMode = usePrefersDarkMode();
-  const [selectedThemeMode, setSelectedThemeMode] = useStateWithLocalStorage(
-    "selectedThemeMode",
-    false
-  );
+  const [selectedThemeMode, setSelectedThemeMode] = useLocalStorage("selectedThemeMode", false);
 
   useEffect(() => {
     if (!selectedThemeMode) setDarkMode(prefersDarkMode);

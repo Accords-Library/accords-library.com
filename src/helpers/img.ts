@@ -58,10 +58,10 @@ const getImgSizesByMaxSize = (
 ): { width: number; height: number } => {
   if (width > height) {
     if (width < maxSize) return { width: width, height: height };
-    return { width: maxSize, height: (height / width) * maxSize };
+    return { width: maxSize, height: Math.ceil((height / width) * maxSize) };
   }
   if (height < maxSize) return { width: width, height: height };
-  return { width: (width / height) * maxSize, height: maxSize };
+  return { width: Math.ceil((width / height) * maxSize), height: maxSize };
 };
 
 export const getImgSizesByQuality = (

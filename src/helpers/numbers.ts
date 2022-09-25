@@ -20,3 +20,6 @@ export const randomInt = (min: number, max: number): number =>
   Math.floor(Math.random() * (max - min)) + min;
 
 export const isInteger = (value: string): boolean => /^[+-]?[0-9]+$/u.test(value);
+
+export const clamp = (value: number, min: number, max: number): number =>
+  Math.min(Math.max(value, min), max);

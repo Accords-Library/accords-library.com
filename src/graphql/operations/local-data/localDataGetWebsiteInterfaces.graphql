@@ -180,6 +180,17 @@ query localDataGetWebsiteInterfaces {
         switch_to_grid_view
         switch_to_folder_view
         content_is_not_available
+        paper_texture
+        book_fold
+        lighting
+        side_pages
+        shadow
+        night_reader
+        single_page_view
+        double_page_view
+        reset_all_options
+        reading_layout
+        quality
       }
     }
   }

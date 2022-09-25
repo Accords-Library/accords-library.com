@@ -47,6 +47,34 @@ query getLibraryItemScans($slug: String, $language_code: String) {
             }
           }
           cover {
+            front {
+              data {
+                attributes {
+                  ...uploadImage
+                }
+              }
+            }
+            spine {
+              data {
+                attributes {
+                  ...uploadImage
+                }
+              }
+            }
+            back {
+              data {
+                attributes {
+                  ...uploadImage
+                }
+              }
+            }
+            front {
+              data {
+                attributes {
+                  ...uploadImage
+                }
+              }
+            }
             full {
               data {
                 attributes {
@@ -55,6 +83,20 @@ query getLibraryItemScans($slug: String, $language_code: String) {
               }
             }
             inside_full {
+              data {
+                attributes {
+                  ...uploadImage
+                }
+              }
+            }
+            inside_front {
+              data {
+                attributes {
+                  ...uploadImage
+                }
+              }
+            }
+            inside_back {
               data {
                 attributes {
                   ...uploadImage
@@ -108,6 +150,9 @@ query getLibraryItemScans($slug: String, $language_code: String) {
         price {
           ...pricePicker
         }
+        size {
+          width
+        }
         categories(pagination: { limit: -1 }) {
           data {
             id
@@ -120,6 +165,7 @@ query getLibraryItemScans($slug: String, $language_code: String) {
         metadata {
           __typename
           ... on ComponentMetadataBooks {
+            page_order
             subtype {
               data {
                 attributes {

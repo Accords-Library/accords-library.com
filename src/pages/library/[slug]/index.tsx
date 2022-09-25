@@ -510,7 +510,9 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
             <div id={intersectionIds[4]} className="grid w-full place-items-center gap-8">
               <h2 className="-mb-6 text-2xl">{langui.contents}</h2>
               {displayOpenScans && (
-                <Button href={`/library/${item.slug}/scans`} text={langui.view_scans} />
+                <div className="grid grid-flow-col gap-4">
+                  <Button href={`/library/${item.slug}/reader`} text={langui.view_scans} />
+                </div>
               )}
               <div className="max-w- grid w-full gap-4">
                 {filterHasAttributes(item.contents.data, ["attributes"] as const).map(
@@ -735,7 +737,10 @@ const ContentLine = ({
           {hasScanSet || isDefined(content) ? (
             <>
               {hasScanSet && (
-                <Button href={`/library/${parentSlug}/scans#${slug}`} text={langui.view_scans} />
+                <Button
+                  href={`/library/${parentSlug}/reader?page=${rangeStart}`}
+                  text={langui.view_scans}
+                />
               )}
               {isDefined(content) && (
                 <Button href={`/contents/${content.slug}`} text={langui.open_content} />
@@ -787,7 +792,10 @@ const ContentLine = ({
         {hasScanSet || isDefined(content) ? (
           <>
             {hasScanSet && (
-              <Button href={`/library/${parentSlug}/scans#${slug}`} text={langui.view_scans} />
+              <Button
+                href={`/library/${parentSlug}/reader?page=${rangeStart}`}
+                text={langui.view_scans}
+              />
             )}
             {isDefined(content) && (
               <Button href={`/contents/${content.slug}`} text={langui.open_content} />

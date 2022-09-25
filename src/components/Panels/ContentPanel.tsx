@@ -30,7 +30,7 @@ export const ContentPanel = ({
     <div className="grid h-full">
       <main
         className={cJoin(
-          "justify-self-center px-4 pt-10 pb-20",
+          "justify-self-center px-4 pt-10 pb-20 relative",
           cIf(isContentPanelAtLeast3xl, "px-10 pt-20 pb-32"),
           width === ContentPanelWidthSizes.Default
             ? "max-w-2xl"

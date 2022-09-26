@@ -24,7 +24,7 @@
     "@fontsource/zen-maru-gothic": "^4.5.13",
     "@tippyjs/react": "^4.2.6",
     "@types/ua-parser-js": "^0.7.36",
-    "autoprefixer": "^10.4.10",
+    "autoprefixer": "^10.4.12",
     "graphql-request": "^5.0.0",
     "markdown-to-jsx": "^7.1.7",
     "meilisearch": "^0.27.0",

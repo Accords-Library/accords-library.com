@@ -41,7 +41,7 @@
     "tippy.js": "^6.3.7",
     "turndown": "^7.1.1",
     "ua-parser-js": "^1.0.2",
-    "usehooks-ts": "^2.6.0"
+    "usehooks-ts": "^2.7.1"
   },
   "devDependencies": {
     "@digitak/esrun": "^3.2.11",

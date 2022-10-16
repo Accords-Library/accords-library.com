@@ -312,7 +312,7 @@ input[type="submit"] {
   position: absolute;
 }
 .rc-slider-handle {
-  @apply h-4 w-4 -mt-1 rounded-full bg-dark transition-shadow;
+  @apply -mt-1 h-4 w-4 rounded-full bg-dark transition-shadow;
   position: absolute;
   cursor: grab;
   touch-action: pan-x;

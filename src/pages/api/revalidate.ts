@@ -144,7 +144,7 @@ const Revalidate = (req: NextApiRequest, res: NextApiResponse<ResponseMailProps>
     case "library-item": {
       paths.push(`/library`);
       paths.push(`/library/${body.entry.slug}`);
-      paths.push(`/library/${body.entry.slug}/scans`);
+      paths.push(`/library/${body.entry.slug}/reader`);
       body.entry.subitem_of.forEach((parentItem) => {
         paths.push(`/library/${parentItem.slug}`);
       });
@@ -165,7 +165,7 @@ const Revalidate = (req: NextApiRequest, res: NextApiResponse<ResponseMailProps>
             ranged_content.slug.length - body.entry.slug.length - 1
           );
           paths.push(`/library/${parentSlug}`);
-          paths.push(`/library/${parentSlug}/scans`);
+          paths.push(`/library/${parentSlug}/reader`);
         });
       }
       break;
@@ -180,7 +180,7 @@ const Revalidate = (req: NextApiRequest, res: NextApiResponse<ResponseMailProps>
     case "ranged-content": {
       if (body.entry.library_item) {
         paths.push(`/library/${body.entry.library_item.slug}`);
-        paths.push(`/library/${body.entry.library_item.slug}/scans`);
+        paths.push(`/library/${body.entry.library_item.slug}/reader`);
       }
       if (body.entry.content) {
         paths.push(`/contents/${body.entry.content.slug}`);

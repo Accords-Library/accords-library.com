@@ -762,6 +762,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   const pageWidth = item.libraryItems.data[0].attributes.size?.width ?? 120;
 
+  if (pages.length === 0) return { notFound: true };
+
   const props: Props = {
     item: item.libraryItems.data[0].attributes,
     pages,

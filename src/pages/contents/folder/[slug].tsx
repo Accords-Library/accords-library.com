@@ -21,8 +21,8 @@ import { TranslatedPreviewCard } from "components/PreviewCard";
 import { HorizontalLine } from "components/HorizontalLine";
 import { useIsContentPanelAtLeast } from "hooks/useContainerQuery";
 import { cJoin, cIf } from "helpers/className";
-import { useAppLayout } from "contexts/AppLayoutContext";
 import { getLangui } from "graphql/fetchLocalData";
+import { useLocalData } from "contexts/LocalDataContext";
 
 /*
  *                                           ╭────────╮
@@ -36,7 +36,7 @@ interface Props extends AppLayoutRequired {
 }
 
 const ContentsFolder = ({ openGraph, folder, ...otherProps }: Props): JSX.Element => {
-  const { langui } = useAppLayout();
+  const { langui } = useLocalData();
   const isContentPanelAtLeast4xl = useIsContentPanelAtLeast("4xl");
 
   const subPanel = useMemo(
@@ -305,7 +305,7 @@ const TranslatedPreviewFolder = ({
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
 const NoContentNorFolderMessage = () => {
-  const { langui } = useAppLayout();
+  const { langui } = useLocalData();
   return (
     <div className="grid place-content-center">
       <div

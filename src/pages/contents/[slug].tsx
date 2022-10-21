@@ -32,8 +32,8 @@ import { TranslatedPreviewLine } from "components/PreviewLine";
 import { useIs1ColumnLayout, useIsContentPanelAtLeast } from "hooks/useContainerQuery";
 import { cIf } from "helpers/className";
 import { getLangui } from "graphql/fetchLocalData";
-import { useAppLayout } from "contexts/AppLayoutContext";
 import { Ids } from "types/ids";
+import { useLocalData } from "contexts/LocalDataContext";
 
 /*
  *                                           ╭────────╮
@@ -47,7 +47,7 @@ interface Props extends AppLayoutRequired {
 const Content = ({ content, ...otherProps }: Props): JSX.Element => {
   const isContentPanelAtLeast2xl = useIsContentPanelAtLeast("2xl");
   const is1ColumnLayout = useIs1ColumnLayout();
-  const { langui, languages } = useAppLayout();
+  const { langui, languages } = useLocalData();
 
   const [selectedTranslation, LanguageSwitcher, languageSwitcherProps] = useSmartLanguage({
     items: content.translations,

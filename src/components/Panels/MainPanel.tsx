@@ -10,6 +10,7 @@ import { isDefinedAndNotEmpty } from "helpers/others";
 import { Link } from "components/Inputs/Link";
 import { useIs3ColumnsLayout } from "hooks/useContainerQuery";
 import { sendAnalytics } from "helpers/analytics";
+import { useLocalData } from "contexts/LocalDataContext";
 
 /*
  *                                        ╭─────────────╮
@@ -18,12 +19,8 @@ import { sendAnalytics } from "helpers/analytics";
 
 export const MainPanel = (): JSX.Element => {
   const is3ColumnsLayout = useIs3ColumnsLayout();
-  const {
-    mainPanelReduced = false,
-    toggleMainPanelReduced,
-    setConfigPanelOpen,
-    langui,
-  } = useAppLayout();
+  const { mainPanelReduced = false, toggleMainPanelReduced, setConfigPanelOpen } = useAppLayout();
+  const { langui } = useLocalData();
 
   return (
     <div
@@ -47,7 +44,7 @@ export const MainPanel = (): JSX.Element => {
               }
               toggleMainPanelReduced();
             }}
-            className="bg-light !px-2"
+            className="z-50 bg-light !px-2"
             icon={mainPanelReduced ? Icon.ChevronRight : Icon.ChevronLeft}
           />
         </div>

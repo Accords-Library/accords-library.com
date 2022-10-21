@@ -1,6 +1,6 @@
 import { PostPage } from "components/PostPage";
 import { getPostStaticProps, PostStaticProps } from "graphql/getPostStaticProps";
-import { useAppLayout } from "contexts/AppLayoutContext";
+import { useLocalData } from "contexts/LocalDataContext";
 
 /*
  *                                           ╭────────╮
@@ -8,7 +8,7 @@ import { useAppLayout } from "contexts/AppLayoutContext";
  */
 
 const AccordsHandbook = (props: PostStaticProps): JSX.Element => {
-  const { langui } = useAppLayout();
+  const { langui } = useLocalData();
   return (
     <PostPage
       {...props}

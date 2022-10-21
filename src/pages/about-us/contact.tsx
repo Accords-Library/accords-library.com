@@ -7,8 +7,8 @@ import { cIf, cJoin } from "helpers/className";
 import { randomInt } from "helpers/numbers";
 import { RequestMailProps, ResponseMailProps } from "pages/api/mail";
 import { useIs1ColumnLayout } from "hooks/useContainerQuery";
-import { useAppLayout } from "contexts/AppLayoutContext";
 import { sendAnalytics } from "helpers/analytics";
+import { useLocalData } from "contexts/LocalDataContext";
 
 /*
  *                                           ╭────────╮
@@ -17,7 +17,7 @@ import { sendAnalytics } from "helpers/analytics";
 
 const AboutUs = (props: PostStaticProps): JSX.Element => {
   const router = useRouter();
-  const { langui } = useAppLayout();
+  const { langui } = useLocalData();
   const is1ColumnLayout = useIs1ColumnLayout();
   const [formResponse, setFormResponse] = useState("");
   const [formState, setFormState] = useState<"completed" | "ongoing" | "stale">("stale");

@@ -5,8 +5,8 @@ import { Icon } from "components/Ico";
 import { cJoin } from "helpers/className";
 import { prettyLanguage } from "helpers/formatters";
 import { iterateMap } from "helpers/others";
-import { useLanguages } from "hooks/useLocalData";
 import { sendAnalytics } from "helpers/analytics";
+import { useLocalData } from "contexts/LocalDataContext";
 
 /*
  *                                        ╭─────────────╮
@@ -32,7 +32,7 @@ export const LanguageSwitcher = ({
   onLanguageChanged,
   showBadge = true,
 }: Props): JSX.Element => {
-  const languages = useLanguages();
+  const { languages } = useLocalData();
   return (
     <ToolTip
       content={

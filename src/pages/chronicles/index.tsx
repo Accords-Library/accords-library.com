@@ -11,8 +11,8 @@ import { prettySlug } from "helpers/formatters";
 import { getOpenGraph } from "helpers/openGraph";
 import { TranslatedChroniclesList } from "components/Chronicles/ChroniclesList";
 import { HorizontalLine } from "components/HorizontalLine";
-import { useAppLayout } from "contexts/AppLayoutContext";
 import { getLangui } from "graphql/fetchLocalData";
+import { useLocalData } from "contexts/LocalDataContext";
 
 /*
  *                                           ╭────────╮
@@ -24,7 +24,7 @@ interface Props extends AppLayoutRequired {
 }
 
 const Chronicles = ({ chapters, ...otherProps }: Props): JSX.Element => {
-  const { langui } = useAppLayout();
+  const { langui } = useLocalData();
   const subPanel = useMemo(
     () => (
       <SubPanel>

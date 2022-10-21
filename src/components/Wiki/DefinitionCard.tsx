@@ -6,7 +6,7 @@ import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { Button } from "components/Inputs/Button";
 import { useIsContentPanelNoMoreThan } from "hooks/useContainerQuery";
 import { cIf, cJoin } from "helpers/className";
-import { useAppLayout } from "contexts/AppLayoutContext";
+import { useLocalData } from "contexts/LocalDataContext";
 
 /*
  *                                        ╭─────────────╮
@@ -31,7 +31,7 @@ interface Props {
 
 const DefinitionCard = ({ source, translations = [], index, categories }: Props): JSX.Element => {
   const isContentPanelNoMoreThanMd = useIsContentPanelNoMoreThan("md");
-  const { langui } = useAppLayout();
+  const { langui } = useLocalData();
   const [selectedTranslation, LanguageSwitcher, languageSwitcherProps] = useSmartLanguage({
     items: translations,
     languageExtractor: useCallback((item: Props["translations"][number]) => item.language, []),

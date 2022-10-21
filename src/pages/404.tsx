@@ -5,7 +5,7 @@ import { ContentPanel } from "components/Panels/ContentPanel";
 import { getOpenGraph } from "helpers/openGraph";
 import { getLangui } from "graphql/fetchLocalData";
 import { Img } from "components/Img";
-import { useAppLayout } from "contexts/AppLayoutContext";
+import { useLocalData } from "contexts/LocalDataContext";
 
 /*
  *                                           ╭────────╮
@@ -15,7 +15,7 @@ import { useAppLayout } from "contexts/AppLayoutContext";
 interface Props extends AppLayoutRequired {}
 
 const FourOhFour = ({ openGraph, ...otherProps }: Props): JSX.Element => {
-  const { langui } = useAppLayout();
+  const { langui } = useLocalData();
   return (
     <AppLayout
       contentPanel={

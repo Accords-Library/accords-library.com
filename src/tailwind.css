@@ -25,7 +25,7 @@ a {
 }
 
 mark {
-  @apply bg-mid px-2;
+  @apply bg-mid px-2 text-black;
 }
 
 /* SCROLLBARS STYLING */

@@ -22,11 +22,11 @@ import { TranslatedPreviewCard } from "components/PreviewCard";
 import { HorizontalLine } from "components/HorizontalLine";
 import { cIf } from "helpers/className";
 import { useIsContentPanelAtLeast } from "hooks/useContainerQuery";
-import { useAppLayout } from "contexts/AppLayoutContext";
 import { getLangui } from "graphql/fetchLocalData";
 import { sendAnalytics } from "helpers/analytics";
 import { useIsTerminalMode } from "hooks/useIsTerminalMode";
 import { Terminal } from "components/Cli/Terminal";
+import { useLocalData } from "contexts/LocalDataContext";
 
 /*
  *                                         ╭─────────────╮
@@ -49,7 +49,7 @@ interface Props extends AppLayoutRequired {
 
 const News = ({ posts, ...otherProps }: Props): JSX.Element => {
   const isContentPanelAtLeast4xl = useIsContentPanelAtLeast("4xl");
-  const { langui } = useAppLayout();
+  const { langui } = useLocalData();
   const hoverable = useDeviceSupportsHover();
   const [searchName, setSearchName] = useState(DEFAULT_FILTERS_STATE.searchName);
   const {

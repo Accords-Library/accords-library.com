@@ -18,8 +18,8 @@ import { getOpenGraph } from "helpers/openGraph";
 import { getDefaultPreferredLanguages, staticSmartLanguage } from "helpers/locales";
 import { getDescription } from "helpers/description";
 import { TranslatedChroniclesList } from "components/Chronicles/ChroniclesList";
-import { useAppLayout } from "contexts/AppLayoutContext";
 import { getLangui } from "graphql/fetchLocalData";
+import { useLocalData } from "contexts/LocalDataContext";
 
 /*
  *                                           ╭────────╮
@@ -32,7 +32,7 @@ interface Props extends AppLayoutRequired {
 }
 
 const Chronicle = ({ chronicle, chapters, ...otherProps }: Props): JSX.Element => {
-  const { langui } = useAppLayout();
+  const { langui } = useLocalData();
   const [selectedTranslation, LanguageSwitcher, languageSwitcherProps] = useSmartLanguage({
     items: chronicle.translations,
     languageExtractor: useCallback(

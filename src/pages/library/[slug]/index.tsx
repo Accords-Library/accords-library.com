@@ -14,7 +14,6 @@ import { ReturnButton } from "components/PanelComponents/ReturnButton";
 import { ContentPanel, ContentPanelWidthSizes } from "components/Panels/ContentPanel";
 import { SubPanel } from "components/Panels/SubPanel";
 import { PreviewCard } from "components/PreviewCard";
-import { useAppLayout } from "contexts/AppLayoutContext";
 import {
   Enum_Componentmetadatabooks_Binding_Type,
   Enum_Componentmetadatabooks_Page_Order,
@@ -52,9 +51,10 @@ import { getDescription } from "helpers/description";
 import { useIntersectionList } from "hooks/useIntersectionList";
 import { HorizontalLine } from "components/HorizontalLine";
 import { useIsContentPanelNoMoreThan } from "hooks/useContainerQuery";
-import { useCurrencies } from "hooks/useLocalData";
 import { getLangui } from "graphql/fetchLocalData";
 import { Ids } from "types/ids";
+import { useUserSettings } from "contexts/UserSettingsContext";
+import { useLocalData } from "contexts/LocalDataContext";
 
 /*
  *                                         ╭─────────────╮
@@ -74,9 +74,8 @@ interface Props extends AppLayoutRequired {
 }
 
 const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
-  const { currency } = useAppLayout();
-  const { langui } = useAppLayout();
-  const currencies = useCurrencies();
+  const { currency } = useUserSettings();
+  const { langui, currencies } = useLocalData();
   const isContentPanelNoMoreThan3xl = useIsContentPanelNoMoreThan("3xl");
   const isContentPanelNoMoreThanSm = useIsContentPanelNoMoreThan("sm");
   const hoverable = useDeviceSupportsHover();
@@ -698,7 +697,7 @@ const ContentLine = ({
   parentSlug,
   condensed,
 }: ContentLineProps): JSX.Element => {
-  const { langui } = useAppLayout();
+  const { langui } = useLocalData();
   const { value: isOpened, toggle: toggleOpened } = useBoolean(false);
   const [selectedTranslation] = useSmartLanguage({
     items: content?.translations ?? [],

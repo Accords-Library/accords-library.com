@@ -1,7 +1,7 @@
 import { Ico, Icon } from "./Ico";
 import { ToolTip } from "./ToolTip";
 import { cJoin } from "helpers/className";
-import { useAppLayout } from "contexts/AppLayoutContext";
+import { useLocalData } from "contexts/LocalDataContext";
 
 /*
  *                                        ╭─────────────╮
@@ -16,7 +16,7 @@ interface Props {
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
 export const AnchorShare = ({ id, className }: Props): JSX.Element => {
-  const { langui } = useAppLayout();
+  const { langui } = useLocalData();
   return (
     <ToolTip content={langui.copy_anchor_link} trigger="mouseenter" className="text-sm">
       <ToolTip content={langui.anchor_link_copied} trigger="click" className="text-sm">

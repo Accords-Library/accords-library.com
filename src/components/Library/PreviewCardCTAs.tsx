@@ -2,8 +2,9 @@ import { Icon } from "components/Ico";
 import { Button } from "components/Inputs/Button";
 import { ToolTip } from "components/ToolTip";
 import { LibraryItemUserStatus } from "types/types";
-import { useAppLayout } from "contexts/AppLayoutContext";
 import { cIf, cJoin } from "helpers/className";
+import { useLocalData } from "contexts/LocalDataContext";
+import { useLibraryItemUserStatus } from "hooks/useLibraryItemUserStatus";
 
 /*
  *                                        ╭─────────────╮
@@ -18,7 +19,9 @@ interface Props {
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
 export const PreviewCardCTAs = ({ id, expand = false }: Props): JSX.Element => {
-  const { libraryItemUserStatus, setLibraryItemUserStatus, langui } = useAppLayout();
+  const { libraryItemUserStatus, setLibraryItemUserStatus } = useLibraryItemUserStatus();
+  const { langui } = useLocalData();
+
   return (
     <div
       className={cJoin(

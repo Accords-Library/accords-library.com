@@ -22,8 +22,8 @@ import { SmartList } from "components/SmartList";
 import { cIf } from "helpers/className";
 import { useIsContentPanelAtLeast } from "hooks/useContainerQuery";
 import { TextInput } from "components/Inputs/TextInput";
-import { useAppLayout } from "contexts/AppLayoutContext";
 import { getLangui } from "graphql/fetchLocalData";
+import { useLocalData } from "contexts/LocalDataContext";
 
 /*
  *                                         ╭─────────────╮
@@ -45,7 +45,7 @@ interface Props extends AppLayoutRequired {
 
 const Channel = ({ channel, ...otherProps }: Props): JSX.Element => {
   const { value: keepInfoVisible, toggle: toggleKeepInfoVisible } = useBoolean(true);
-  const { langui } = useAppLayout();
+  const { langui } = useLocalData();
   const hoverable = useDeviceSupportsHover();
   const isContentPanelAtLeast4xl = useIsContentPanelAtLeast("4xl");
 

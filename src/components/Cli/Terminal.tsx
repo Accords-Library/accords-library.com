@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/router";
-import { useAppLayout } from "contexts/AppLayoutContext";
 import { cJoin, cIf } from "helpers/className";
 import { useTerminalContext } from "contexts/TerminalContext";
 import { isDefined, isDefinedAndNotEmpty } from "helpers/others";
+import { useUserSettings } from "contexts/UserSettingsContext";
 
 /*
  *                                         ╭─────────────╮
@@ -31,7 +31,7 @@ export const Terminal = ({
   content,
 }: Props): JSX.Element => {
   const [childrenPaths, setChildrenPaths] = useState(propsChildrenPaths);
-  const { darkMode } = useAppLayout();
+  const { darkMode, setPlayerName } = useUserSettings();
   const { previousCommands, previousLines, setPreviousCommands, setPreviousLines } =
     useTerminalContext();
   const [line, setLine] = useState("");
@@ -39,7 +39,6 @@ export const Terminal = ({
   const [previousCommandIndex, setPreviousCommandIndex] = useState(0);
   const [carretPosition, setCarretPosition] = useState(0);
   const router = useRouter();
-  const { setPlayerName } = useAppLayout();
   const [isTextAreaFocused, setIsTextAreaFocused] = useState(false);
 
   const terminalInputRef = useRef<HTMLTextAreaElement>(null);

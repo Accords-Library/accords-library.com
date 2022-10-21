@@ -21,11 +21,11 @@ import { getDefaultPreferredLanguages, staticSmartLanguage } from "helpers/local
 import { getDescription } from "helpers/description";
 import { cIf, cJoin } from "helpers/className";
 import { useIs3ColumnsLayout } from "hooks/useContainerQuery";
-import { useAppLayout } from "contexts/AppLayoutContext";
 import { getLangui } from "graphql/fetchLocalData";
 import { Terminal } from "components/Cli/Terminal";
 import { prettyTerminalBoxedTitle, prettyTerminalUnderlinedTitle } from "helpers/terminal";
 import { useIsTerminalMode } from "hooks/useIsTerminalMode";
+import { useLocalData } from "contexts/LocalDataContext";
 
 /*
  *                                           ╭────────╮
@@ -37,7 +37,7 @@ interface Props extends AppLayoutRequired {
 }
 
 const WikiPage = ({ page, ...otherProps }: Props): JSX.Element => {
-  const { langui } = useAppLayout();
+  const { langui } = useLocalData();
   const router = useRouter();
   const isTerminalMode = useIsTerminalMode();
   const [selectedTranslation, LanguageSwitcher, languageSwitcherProps] = useSmartLanguage({

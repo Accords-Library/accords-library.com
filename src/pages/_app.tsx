@@ -9,12 +9,21 @@ import type { AppProps } from "next/app";
 import { AppContextProvider } from "contexts/AppLayoutContext";
 import "tailwind.css";
 import { TerminalContextProvider } from "contexts/TerminalContext";
+import { UserSettingsProvider as UserSettingsContextProvider } from "contexts/UserSettingsContext";
+import { LocalDataContextProvider } from "contexts/LocalDataContext";
+import { ContainerQueriesContextProvider } from "contexts/ContainerQueriesContext";
 
 const AccordsLibraryApp = (props: AppProps): JSX.Element => (
   <AppContextProvider>
-    <TerminalContextProvider>
-      <props.Component {...props.pageProps} />
-    </TerminalContextProvider>
+    <ContainerQueriesContextProvider>
+      <LocalDataContextProvider>
+        <UserSettingsContextProvider>
+          <TerminalContextProvider>
+            <props.Component {...props.pageProps} />
+          </TerminalContextProvider>
+        </UserSettingsContextProvider>
+      </LocalDataContextProvider>
+    </ContainerQueriesContextProvider>
   </AppContextProvider>
 );
 export default AccordsLibraryApp;

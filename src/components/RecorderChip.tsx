@@ -6,7 +6,7 @@ import { Chip } from "components/Chip";
 import { RecorderChipFragment } from "graphql/generated";
 import { ImageQuality } from "helpers/img";
 import { filterHasAttributes } from "helpers/others";
-import { useAppLayout } from "contexts/AppLayoutContext";
+import { useLocalData } from "contexts/LocalDataContext";
 
 /*
  *                                        ╭─────────────╮
@@ -21,7 +21,7 @@ interface Props {
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
 export const RecorderChip = ({ recorder }: Props): JSX.Element => {
-  const { langui } = useAppLayout();
+  const { langui } = useLocalData();
 
   return (
     <ToolTip

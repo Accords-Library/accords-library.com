@@ -1,10 +1,10 @@
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
-import { useLanguages } from "./useLocalData";
 import { LanguageSwitcher } from "components/Inputs/LanguageSwitcher";
-import { useAppLayout } from "contexts/AppLayoutContext";
 import { filterDefined, isDefined } from "helpers/others";
 import { getPreferredLanguage } from "helpers/locales";
+import { useUserSettings } from "contexts/UserSettingsContext";
+import { useLocalData } from "contexts/LocalDataContext";
 
 interface Props<T> {
   items: T[];
@@ -17,8 +17,8 @@ export const useSmartLanguage = <T>({
   languageExtractor,
   transform = (item) => item,
 }: Props<T>): [T | undefined, typeof LanguageSwitcher, Parameters<typeof LanguageSwitcher>[0]] => {
-  const { preferredLanguages } = useAppLayout();
-  const languages = useLanguages();
+  const { preferredLanguages } = useUserSettings();
+  const { languages } = useLocalData();
   const router = useRouter();
 
   const availableLocales = useMemo(() => {

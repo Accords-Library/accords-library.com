@@ -5,7 +5,6 @@ import ReactDOMServer from "react-dom/server";
 import { HorizontalLine } from "components/HorizontalLine";
 import { Img } from "components/Img";
 import { InsetBox } from "components/InsetBox";
-import { useAppLayout } from "contexts/AppLayoutContext";
 import { cIf, cJoin } from "helpers/className";
 import { slugify } from "helpers/formatters";
 import { getAssetURL, ImageQuality } from "helpers/img";
@@ -16,6 +15,8 @@ import { useIntersectionList } from "hooks/useIntersectionList";
 import { Ico, Icon } from "components/Ico";
 import { useIsContentPanelAtLeast } from "hooks/useContainerQuery";
 import { useDeviceSupportsHover } from "hooks/useMediaQuery";
+import { useUserSettings } from "contexts/UserSettingsContext";
+import { useLocalData } from "contexts/LocalDataContext";
 
 /*
  *                                        ╭─────────────╮
@@ -30,7 +31,7 @@ interface MarkdawnProps {
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
 export const Markdawn = ({ className, text: rawText }: MarkdawnProps): JSX.Element => {
-  const { playerName } = useAppLayout();
+  const { playerName } = useUserSettings();
   const router = useRouter();
   const isContentPanelAtLeastLg = useIsContentPanelAtLeast("lg");
   const [openLightBox, LightBox] = useLightBox();
@@ -236,7 +237,7 @@ export const TableOfContents = ({
   horizontalLine = false,
 }: TableOfContentsProps): JSX.Element => {
   const router = useRouter();
-  const { langui } = useAppLayout();
+  const { langui } = useLocalData();
   const toc = useMemo(() => getTocFromMarkdawn(preprocessMarkDawn(text), title), [text, title]);
 
   return (

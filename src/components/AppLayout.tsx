@@ -23,6 +23,9 @@ import { useIs1ColumnLayout, useIsScreenAtLeast } from "hooks/useContainerQuery"
 import { useOnResize } from "hooks/useOnResize";
 import { Ids } from "types/ids";
 import { sendAnalytics } from "helpers/analytics";
+import { useUserSettings } from "contexts/UserSettingsContext";
+import { useLocalData } from "contexts/LocalDataContext";
+import { useContainerQueries } from "contexts/ContainerQueriesContext";
 
 /*
  *                                         ╭─────────────╮
@@ -58,38 +61,39 @@ export const AppLayout = ({
 }: Props): JSX.Element => {
   const {
     configPanelOpen,
-    currency,
-    darkMode,
-    dyslexic,
-    fontSize,
     mainPanelOpen,
     mainPanelReduced,
     menuGestures,
-    playerName,
-    preferredLanguages,
-    selectedThemeMode,
     subPanelOpen,
     hasDisgardedSafariWarning,
     setHasDisgardedSafariWarning,
     setConfigPanelOpen,
+    setMainPanelOpen,
+    setSubPanelOpen,
+    toggleMainPanelOpen,
+    toggleSubPanelOpen,
+  } = useAppLayout();
+
+  const { setScreenWidth, setContentPanelWidth, setSubPanelWidth } = useContainerQueries();
+
+  const { langui, currencies, languages } = useLocalData();
+
+  const {
+    currency,
+    darkMode,
+    dyslexic,
+    fontSize,
+    playerName,
+    preferredLanguages,
+    selectedThemeMode,
     setCurrency,
     setDarkMode,
     setDyslexic,
     setFontSize,
-    setMainPanelOpen,
     setPlayerName,
     setPreferredLanguages,
     setSelectedThemeMode,
-    setSubPanelOpen,
-    toggleMainPanelOpen,
-    toggleSubPanelOpen,
-    setScreenWidth,
-    setContentPanelWidth,
-    setSubPanelWidth,
-    langui,
-    currencies,
-    languages,
-  } = useAppLayout();
+  } = useUserSettings();
 
   const router = useRouter();
   const is1ColumnLayout = useIs1ColumnLayout();

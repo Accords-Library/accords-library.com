@@ -4,7 +4,6 @@ import { Chip } from "./Chip";
 import { Ico, Icon } from "./Ico";
 import { Img } from "./Img";
 import { Link } from "./Inputs/Link";
-import { useAppLayout } from "contexts/AppLayoutContext";
 import { DatePickerFragment, PricePickerFragment, UploadImageFragment } from "graphql/generated";
 import { cIf, cJoin } from "helpers/className";
 import { prettyDate, prettyDuration, prettyPrice, prettyShortenNumber } from "helpers/formatters";
@@ -12,7 +11,8 @@ import { ImageQuality } from "helpers/img";
 import { useDeviceSupportsHover } from "hooks/useMediaQuery";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { TranslatedProps } from "types/TranslatedProps";
-import { useCurrencies } from "hooks/useLocalData";
+import { useUserSettings } from "contexts/UserSettingsContext";
+import { useLocalData } from "contexts/LocalDataContext";
 
 /*
  *                                        ╭─────────────╮
@@ -70,10 +70,10 @@ export const PreviewCard = ({
   hoverlay,
   infoAppend,
 }: Props): JSX.Element => {
-  const { currency } = useAppLayout();
+  const { currency } = useUserSettings();
+  const { currencies } = useLocalData();
   const isHoverable = useDeviceSupportsHover();
   const router = useRouter();
-  const currencies = useCurrencies();
 
   const metadataJSX = useMemo(
     () => (

@@ -7,8 +7,8 @@ import { SubPanel } from "components/Panels/SubPanel";
 import { Icon } from "components/Ico";
 import { getOpenGraph } from "helpers/openGraph";
 import { HorizontalLine } from "components/HorizontalLine";
-import { useAppLayout } from "contexts/AppLayoutContext";
 import { getLangui } from "graphql/fetchLocalData";
+import { useLocalData } from "contexts/LocalDataContext";
 
 /*
  *                                           ╭────────╮
@@ -18,7 +18,7 @@ import { getLangui } from "graphql/fetchLocalData";
 interface Props extends AppLayoutRequired {}
 
 const Archives = (props: Props): JSX.Element => {
-  const { langui } = useAppLayout();
+  const { langui } = useLocalData();
   const subPanel = useMemo(
     () => (
       <SubPanel>

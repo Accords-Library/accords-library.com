@@ -22,7 +22,6 @@ import { PreviewCard } from "components/PreviewCard";
 import { useDeviceSupportsHover } from "hooks/useMediaQuery";
 import { ButtonGroup } from "components/Inputs/ButtonGroup";
 import { filterHasAttributes, isDefined, isDefinedAndNotEmpty, isUndefined } from "helpers/others";
-import { useAppLayout } from "contexts/AppLayoutContext";
 import { convertPrice } from "helpers/numbers";
 import { SmartList } from "components/SmartList";
 import { SelectiveNonNullable } from "types/SelectiveNonNullable";
@@ -31,9 +30,10 @@ import { compareDate } from "helpers/date";
 import { HorizontalLine } from "components/HorizontalLine";
 import { useIsContentPanelAtLeast } from "hooks/useContainerQuery";
 import { cIf, cJoin } from "helpers/className";
-import { useCurrencies } from "hooks/useLocalData";
 import { getLangui } from "graphql/fetchLocalData";
 import { sendAnalytics } from "helpers/analytics";
+import { useLocalData } from "contexts/LocalDataContext";
+import { useLibraryItemUserStatus } from "hooks/useLibraryItemUserStatus";
 
 /*
  *                                         ╭─────────────╮
@@ -62,9 +62,8 @@ interface Props extends AppLayoutRequired {
 
 const Library = ({ items, ...otherProps }: Props): JSX.Element => {
   const hoverable = useDeviceSupportsHover();
-  const currencies = useCurrencies();
-  const { langui } = useAppLayout();
-  const { libraryItemUserStatus } = useAppLayout();
+  const { langui, currencies } = useLocalData();
+  const { libraryItemUserStatus } = useLibraryItemUserStatus();
   const isContentPanelAtLeast4xl = useIsContentPanelAtLeast("4xl");
 
   const [searchName, setSearchName] = useState(DEFAULT_FILTERS_STATE.searchName);

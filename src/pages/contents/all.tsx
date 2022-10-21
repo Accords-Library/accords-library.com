@@ -24,9 +24,9 @@ import { HorizontalLine } from "components/HorizontalLine";
 import { TranslatedPreviewCard } from "components/PreviewCard";
 import { useIsContentPanelAtLeast } from "hooks/useContainerQuery";
 import { cJoin, cIf } from "helpers/className";
-import { useAppLayout } from "contexts/AppLayoutContext";
 import { getLangui } from "graphql/fetchLocalData";
 import { sendAnalytics } from "helpers/analytics";
+import { useLocalData } from "contexts/LocalDataContext";
 
 /*
  *                                         ╭─────────────╮
@@ -50,7 +50,7 @@ interface Props extends AppLayoutRequired {
 
 const Contents = ({ contents, ...otherProps }: Props): JSX.Element => {
   const hoverable = useDeviceSupportsHover();
-  const { langui } = useAppLayout();
+  const { langui } = useLocalData();
   const isContentPanelAtLeast4xl = useIsContentPanelAtLeast("4xl");
 
   const [groupingMethod, setGroupingMethod] = useState<number>(

@@ -22,8 +22,8 @@ import { compareDate } from "helpers/date";
 import { HorizontalLine } from "components/HorizontalLine";
 import { cIf } from "helpers/className";
 import { useIsContentPanelAtLeast } from "hooks/useContainerQuery";
-import { useAppLayout } from "contexts/AppLayoutContext";
 import { getLangui } from "graphql/fetchLocalData";
+import { useLocalData } from "contexts/LocalDataContext";
 
 /*
  *                                         ╭─────────────╮
@@ -44,7 +44,7 @@ interface Props extends AppLayoutRequired {
 }
 
 const Videos = ({ videos, ...otherProps }: Props): JSX.Element => {
-  const { langui } = useAppLayout();
+  const { langui } = useLocalData();
   const hoverable = useDeviceSupportsHover();
   const isContentPanelAtLeast4xl = useIsContentPanelAtLeast("4xl");
 

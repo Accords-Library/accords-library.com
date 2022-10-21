@@ -7,7 +7,7 @@ import { prettyInlineTitle, prettySlug, slugify } from "helpers/formatters";
 import { getAssetURL, ImageQuality } from "helpers/img";
 import { filterHasAttributes } from "helpers/others";
 import { useLightBox } from "hooks/useLightBox";
-import { useAppLayout } from "contexts/AppLayoutContext";
+import { useLocalData } from "contexts/LocalDataContext";
 
 /*
  *                                        ╭─────────────╮
@@ -43,7 +43,7 @@ export const ThumbnailHeader = ({
   languageSwitcher,
 }: Props): JSX.Element => {
   const [openLightBox, LightBox] = useLightBox();
-  const { langui } = useAppLayout();
+  const { langui } = useLocalData();
 
   return (
     <>

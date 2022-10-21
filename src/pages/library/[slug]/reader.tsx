@@ -27,7 +27,6 @@ import { getAssetFilename, ImageQuality } from "helpers/img";
 import { useIs1ColumnLayout, useIsContentPanelNoMoreThan } from "hooks/useContainerQuery";
 import { cIf, cJoin } from "helpers/className";
 import { clamp, isInteger } from "helpers/numbers";
-import { useAppLayout } from "contexts/AppLayoutContext";
 import { SubPanel } from "components/Panels/SubPanel";
 import { Button } from "components/Inputs/Button";
 import { Icon } from "components/Ico";
@@ -44,6 +43,8 @@ import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { TranslatedProps } from "types/TranslatedProps";
 import { prettyInlineTitle, prettySlug } from "helpers/formatters";
 import { useFullscreen } from "hooks/useFullscreen";
+import { useUserSettings } from "contexts/UserSettingsContext";
+import { useLocalData } from "contexts/LocalDataContext";
 
 const CUSTOM_DARK_DROPSHADOW = `
 drop-shadow(0 0    0.5em rgb(var(--theme-color-shade) / 30%))
@@ -110,8 +111,8 @@ const LibrarySlug = ({
   ...otherProps
 }: Props): JSX.Element => {
   const is1ColumnLayout = useIs1ColumnLayout();
-  const { langui } = useAppLayout();
-  const { darkMode } = useAppLayout();
+  const { langui } = useLocalData();
+  const { darkMode } = useUserSettings();
   const [currentPageIndex, setCurrentPageIndex] = useState(0);
   const [currentZoom, setCurrentZoom] = useState(1);
   const [isGalleryMode, setIsGalleryMode] = useState(false);
@@ -814,7 +815,7 @@ interface PageFiltersProps {
 }
 
 const PageFilters = ({ page, bookType, options }: PageFiltersProps) => {
-  const { darkMode } = useAppLayout();
+  const { darkMode } = useUserSettings();
   const commonCss = useMemo(
     () => cJoin("absolute inset-0", cIf(page === "right", "[background-position-x:-100%]")),
     [page]
@@ -906,7 +907,7 @@ interface ScanSetProps {
 
 const ScanSet = ({ onClickOnImage, scanSet, id, title, content }: ScanSetProps): JSX.Element => {
   const is1ColumnLayout = useIsContentPanelNoMoreThan("2xl");
-  const { langui } = useAppLayout();
+  const { langui } = useLocalData();
   const [selectedScan, LanguageSwitcher, languageSwitcherProps] = useSmartLanguage({
     items: scanSet,
     languageExtractor: useCallback(

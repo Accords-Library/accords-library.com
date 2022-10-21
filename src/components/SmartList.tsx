@@ -7,8 +7,8 @@ import { cJoin } from "helpers/className";
 import { isDefined, isDefinedAndNotEmpty } from "helpers/others";
 import { useScrollTopOnChange } from "hooks/useScrollTopOnChange";
 import { useIs3ColumnsLayout } from "hooks/useContainerQuery";
-import { useAppLayout } from "contexts/AppLayoutContext";
 import { Ids } from "types/ids";
+import { useLocalData } from "contexts/LocalDataContext";
 
 interface Group<T> {
   name: string;
@@ -70,7 +70,7 @@ export const SmartList = <T,>({
   className,
 }: Props<T>): JSX.Element => {
   const [page, setPage] = useState(0);
-  const { langui } = useAppLayout();
+  const { langui } = useLocalData();
   useScrollTopOnChange(Ids.ContentPanel, [page], paginationScroolTop);
   useEffect(() => setPage(0), [searchingTerm, groupingFunction, groupSortingFunction, items]);
 
@@ -223,7 +223,7 @@ export const SmartList = <T,>({
 
 const DefaultRenderWhenEmpty = () => {
   const is3ColumnsLayout = useIs3ColumnsLayout();
-  const { langui } = useAppLayout();
+  const { langui } = useLocalData();
   return (
     <div className="grid h-full place-content-center">
       <div

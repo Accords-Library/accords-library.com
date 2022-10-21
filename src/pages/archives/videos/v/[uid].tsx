@@ -19,6 +19,7 @@ import { getVideoFile } from "helpers/videos";
 import { getOpenGraph } from "helpers/openGraph";
 import { useIsContentPanelAtLeast } from "hooks/useContainerQuery";
 import { getLangui } from "graphql/fetchLocalData";
+import { useLocalData } from "contexts/LocalDataContext";
 
 /*
  *                                           ╭────────╮
@@ -31,7 +32,8 @@ interface Props extends AppLayoutRequired {
 
 const Video = ({ video, ...otherProps }: Props): JSX.Element => {
   const isContentPanelAtLeast4xl = useIsContentPanelAtLeast("4xl");
-  const { setSubPanelOpen, langui } = useAppLayout();
+  const { setSubPanelOpen } = useAppLayout();
+  const { langui } = useLocalData();
   const router = useRouter();
 
   const subPanel = useMemo(

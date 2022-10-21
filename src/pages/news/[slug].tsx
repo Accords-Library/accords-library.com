@@ -4,13 +4,13 @@ import { PostPage } from "components/PostPage";
 import { getPostStaticProps, PostStaticProps } from "graphql/getPostStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import { filterHasAttributes, isDefined, isDefinedAndNotEmpty } from "helpers/others";
-import { useAppLayout } from "contexts/AppLayoutContext";
 import { useIsTerminalMode } from "hooks/useIsTerminalMode";
 import { Terminal } from "components/Cli/Terminal";
 import { PostWithTranslations } from "types/types";
 import { getDefaultPreferredLanguages, staticSmartLanguage } from "helpers/locales";
 import { prettyTerminalBoxedTitle } from "helpers/terminal";
 import { prettyMarkdown } from "helpers/description";
+import { useLocalData } from "contexts/LocalDataContext";
 
 /*
  *                                           ╭────────╮
@@ -20,7 +20,7 @@ import { prettyMarkdown } from "helpers/description";
 interface Props extends PostStaticProps {}
 
 const LibrarySlug = (props: Props): JSX.Element => {
-  const { langui } = useAppLayout();
+  const { langui } = useLocalData();
   const isTerminalMode = useIsTerminalMode();
   const router = useRouter();
 

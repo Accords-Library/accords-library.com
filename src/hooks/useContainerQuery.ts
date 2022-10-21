@@ -1,4 +1,5 @@
-import { useAppLayout } from "contexts/AppLayoutContext";
+import { useContainerQueries } from "contexts/ContainerQueriesContext";
+import { useUserSettings } from "contexts/UserSettingsContext";
 
 type MediaQuery = { value: number; unit: "px" | "rem"; rule: "max" | "min" };
 
@@ -32,7 +33,7 @@ const sizes: Record<Size, number> = {
 };
 
 export const useIsScreenAtLeast = (size: Size): boolean => {
-  const { screenWidth } = useAppLayout();
+  const { screenWidth } = useContainerQueries();
   return useApplyContainerQuery(screenWidth, {
     value: sizes[size],
     unit: "rem",
@@ -42,7 +43,7 @@ export const useIsScreenAtLeast = (size: Size): boolean => {
 
 // ts-unused-exports:disable-next-line
 export const useIsScreenNoMoreThan = (size: Size): boolean => {
-  const { screenWidth } = useAppLayout();
+  const { screenWidth } = useContainerQueries();
   return useApplyContainerQuery(screenWidth, {
     value: sizes[size],
     unit: "rem",
@@ -51,7 +52,7 @@ export const useIsScreenNoMoreThan = (size: Size): boolean => {
 };
 
 export const useIsContentPanelAtLeast = (size: Size): boolean => {
-  const { contentPanelWidth } = useAppLayout();
+  const { contentPanelWidth } = useContainerQueries();
   return useApplyContainerQuery(contentPanelWidth, {
     value: sizes[size],
     unit: "rem",
@@ -60,7 +61,7 @@ export const useIsContentPanelAtLeast = (size: Size): boolean => {
 };
 
 export const useIsContentPanelNoMoreThan = (size: Size): boolean => {
-  const { contentPanelWidth } = useAppLayout();
+  const { contentPanelWidth } = useContainerQueries();
   return useApplyContainerQuery(contentPanelWidth, {
     value: sizes[size],
     unit: "rem",
@@ -69,7 +70,7 @@ export const useIsContentPanelNoMoreThan = (size: Size): boolean => {
 };
 
 export const useIsSubPanelAtLeast = (size: Size): boolean => {
-  const { subPanelWidth } = useAppLayout();
+  const { subPanelWidth } = useContainerQueries();
   return useApplyContainerQuery(subPanelWidth, {
     value: sizes[size],
     unit: "rem",
@@ -79,7 +80,7 @@ export const useIsSubPanelAtLeast = (size: Size): boolean => {
 
 // ts-unused-exports:disable-next-line
 export const useIsSubPanelNoMoreThan = (size: Size): boolean => {
-  const { subPanelWidth } = useAppLayout();
+  const { subPanelWidth } = useContainerQueries();
   return useApplyContainerQuery(subPanelWidth, {
     value: sizes[size],
     unit: "rem",
@@ -88,7 +89,7 @@ export const useIsSubPanelNoMoreThan = (size: Size): boolean => {
 };
 
 export const useIs3ColumnsLayout = (): boolean => {
-  const { screenWidth } = useAppLayout();
+  const { screenWidth } = useContainerQueries();
   return useApplyContainerQuery(screenWidth, {
     value: sizes["5xl"],
     unit: "rem",
@@ -97,7 +98,7 @@ export const useIs3ColumnsLayout = (): boolean => {
 };
 
 export const useIs1ColumnLayout = (): boolean => {
-  const { screenWidth } = useAppLayout();
+  const { screenWidth } = useContainerQueries();
   return useApplyContainerQuery(screenWidth, {
     value: sizes["5xl"],
     unit: "rem",
@@ -106,7 +107,7 @@ export const useIs1ColumnLayout = (): boolean => {
 };
 
 const useApplyContainerQuery = (width: number, query: MediaQuery) => {
-  const { fontSize } = useAppLayout();
+  const { fontSize } = useUserSettings();
   const breakpoint = query.value * (query.unit === "rem" ? 16 : 1) * fontSize;
   return query.rule === "min" ? width >= breakpoint : width < breakpoint;
 };

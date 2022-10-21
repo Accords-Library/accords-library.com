@@ -1,4 +1,12 @@
-import React, { ReactNode, useContext, useEffect, useState } from "react";
+import React, {
+  createContext,
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { useRouter } from "next/router";
 import { useLocalStorage, useSessionStorage } from "usehooks-ts";
 import { isDefined } from "helpers/others";
@@ -9,27 +17,27 @@ import { useScrollIntoView } from "hooks/useScrollIntoView";
 interface AppLayoutState {
   subPanelOpen: boolean;
   toggleSubPanelOpen: () => void;
-  setSubPanelOpen: React.Dispatch<React.SetStateAction<AppLayoutState["subPanelOpen"]>>;
+  setSubPanelOpen: Dispatch<SetStateAction<AppLayoutState["subPanelOpen"]>>;
 
   configPanelOpen: boolean;
   toggleConfigPanelOpen: () => void;
-  setConfigPanelOpen: React.Dispatch<React.SetStateAction<AppLayoutState["configPanelOpen"]>>;
+  setConfigPanelOpen: Dispatch<SetStateAction<AppLayoutState["configPanelOpen"]>>;
 
   mainPanelReduced: boolean;
   toggleMainPanelReduced: () => void;
-  setMainPanelReduced: React.Dispatch<React.SetStateAction<AppLayoutState["mainPanelReduced"]>>;
+  setMainPanelReduced: Dispatch<SetStateAction<AppLayoutState["mainPanelReduced"]>>;
 
   mainPanelOpen: boolean;
   toggleMainPanelOpen: () => void;
-  setMainPanelOpen: React.Dispatch<React.SetStateAction<AppLayoutState["mainPanelOpen"]>>;
+  setMainPanelOpen: Dispatch<SetStateAction<AppLayoutState["mainPanelOpen"]>>;
 
   menuGestures: boolean;
   toggleMenuGestures: () => void;
-  setMenuGestures: React.Dispatch<React.SetStateAction<AppLayoutState["menuGestures"]>>;
+  setMenuGestures: Dispatch<SetStateAction<AppLayoutState["menuGestures"]>>;
 
   hasDisgardedSafariWarning: boolean;
-  setHasDisgardedSafariWarning: React.Dispatch<
-    React.SetStateAction<AppLayoutState["hasDisgardedSafariWarning"]>
+  setHasDisgardedSafariWarning: Dispatch<
+    SetStateAction<AppLayoutState["hasDisgardedSafariWarning"]>
   >;
 }
 
@@ -58,7 +66,7 @@ const initialState: RequiredNonNullable<AppLayoutState> = {
   setHasDisgardedSafariWarning: () => null,
 };
 
-const AppLayoutContext = React.createContext<AppLayoutState>(initialState);
+const AppLayoutContext = createContext<AppLayoutState>(initialState);
 
 export const useAppLayout = (): AppLayoutState => useContext(AppLayoutContext);
 

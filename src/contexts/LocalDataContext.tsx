@@ -1,4 +1,4 @@
-import React, { ReactNode, useContext, useMemo } from "react";
+import React, { createContext, ReactNode, useContext, useMemo } from "react";
 import { useRouter } from "next/router";
 import { useFetch } from "usehooks-ts";
 import {
@@ -29,7 +29,7 @@ const initialState: RequiredNonNullable<LocalDataState> = {
   langui: {},
 };
 
-const LocalDataContext = React.createContext<LocalDataState>(initialState);
+const LocalDataContext = createContext<LocalDataState>(initialState);
 
 export const useLocalData = (): LocalDataState => useContext(LocalDataContext);
 

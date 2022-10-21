@@ -1,7 +1,6 @@
 import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next";
 import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import Hotkeys from "react-hot-keys";
-import { useBoolean } from "usehooks-ts";
 import Slider from "rc-slider";
 import { useRouter } from "next/router";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
@@ -45,6 +44,7 @@ import { prettyInlineTitle, prettySlug } from "helpers/formatters";
 import { useFullscreen } from "hooks/useFullscreen";
 import { useUserSettings } from "contexts/UserSettingsContext";
 import { useLocalData } from "contexts/LocalDataContext";
+import { FilterSettings, useReaderSettings } from "hooks/useReaderSettings";
 
 const CUSTOM_DARK_DROPSHADOW = `
 drop-shadow(0 0    0.5em rgb(var(--theme-color-shade) / 30%))
@@ -61,28 +61,8 @@ const CUSTOM_LIGHT_DROPSHADOW = `
 const SIDEPAGES_PAGE_COUNT_ON_TEXTURE = 200;
 const SIDEPAGES_PAGE_WIDTH = 0.02;
 
-const DEFAULT_READER_OPTIONS = {
-  pageQuality: ImageQuality.Large,
-  isSidePagesEnabled: true,
-  filterOptions: {
-    bookFold: true,
-    lighting: true,
-    paperTexture: true,
-    teint: 0.1,
-    dropShadow: true,
-  },
-};
-
 type BookType = "book" | "manga";
 type DisplayMode = "double" | "single";
-
-interface FilterOptions {
-  paperTexture: boolean;
-  bookFold: boolean;
-  lighting: boolean;
-  teint: number;
-  dropShadow: boolean;
-}
 
 /*
  *                                           ╭────────╮
@@ -113,6 +93,19 @@ const LibrarySlug = ({
   const is1ColumnLayout = useIs1ColumnLayout();
   const { langui } = useLocalData();
   const { darkMode } = useUserSettings();
+  const {
+    filterSettings,
+    isSidePagesEnabled,
+    pageQuality,
+    toggleBookFold,
+    toggleLighting,
+    togglePaperTexture,
+    toggleDropShadow,
+    toggleIsSidePagesEnabled,
+    setPageQuality,
+    setTeint,
+    resetReaderSettings,
+  } = useReaderSettings();
   const [currentPageIndex, setCurrentPageIndex] = useState(0);
   const [currentZoom, setCurrentZoom] = useState(1);
   const [isGalleryMode, setIsGalleryMode] = useState(false);
@@ -120,15 +113,7 @@ const LibrarySlug = ({
     is1ColumnLayout ? "single" : "double"
   );
   const router = useRouter();
-  const [filterOptions, setFilterOptions] = useState<FilterOptions>(
-    DEFAULT_READER_OPTIONS.filterOptions
-  );
-  const [pageQuality, setPageQuality] = useState<ImageQuality>(DEFAULT_READER_OPTIONS.pageQuality);
-  const {
-    value: isSidePagesEnabled,
-    toggle: toggleSidePagesEnabled,
-    setValue: setIsSidePagesEnabled,
-  } = useBoolean(DEFAULT_READER_OPTIONS.isSidePagesEnabled);
+
   const { isFullscreen, toggleFullscreen } = useFullscreen(Ids.ContentPanel);
 
   const effectiveDisplayMode = useMemo(
@@ -254,7 +239,7 @@ const LibrarySlug = ({
     }
      70%     0%,
      ${
-       filterOptions.bookFold
+       filterSettings.bookFold
          ? `90%   .25%,
             95%    .5%,
             98%    .8%,
@@ -269,7 +254,7 @@ const LibrarySlug = ({
      }
      70%   100%
     )`,
-    [filterOptions.bookFold, isSidePagesEnabled, leftSidePagesWidth]
+    [filterSettings.bookFold, isSidePagesEnabled, leftSidePagesWidth]
   );
 
   const rightSideClipPath = useMemo(
@@ -284,7 +269,7 @@ const LibrarySlug = ({
       }
       30%   100%,
       ${
-        filterOptions.bookFold
+        filterSettings.bookFold
           ? `10% 99.75%,
               5%  99.5%,
               2%  99.2%,
@@ -299,7 +284,7 @@ const LibrarySlug = ({
       }
       30%     0%
       )`,
-    [filterOptions.bookFold, isSidePagesEnabled, rightSidePagesWidth]
+    [filterSettings.bookFold, isSidePagesEnabled, rightSidePagesWidth]
   );
 
   const pageHeight = useMemo(
@@ -314,43 +299,23 @@ const LibrarySlug = ({
 
         <div className="mt-4 grid gap-2">
           <WithLabel label={langui.paper_texture}>
-            <Switch
-              value={filterOptions.paperTexture}
-              onClick={() =>
-                setFilterOptions((current) => ({ ...current, paperTexture: !current.paperTexture }))
-              }
-            />
+            <Switch value={filterSettings.paperTexture} onClick={togglePaperTexture} />
           </WithLabel>
 
           <WithLabel label={langui.book_fold}>
-            <Switch
-              value={filterOptions.bookFold}
-              onClick={() =>
-                setFilterOptions((current) => ({ ...current, bookFold: !current.bookFold }))
-              }
-            />
+            <Switch value={filterSettings.bookFold} onClick={toggleBookFold} />
           </WithLabel>
 
           <WithLabel label={langui.lighting}>
-            <Switch
-              value={filterOptions.lighting}
-              onClick={() =>
-                setFilterOptions((current) => ({ ...current, lighting: !current.lighting }))
-              }
-            />
+            <Switch value={filterSettings.lighting} onClick={toggleLighting} />
           </WithLabel>
 
           <WithLabel label={langui.side_pages}>
-            <Switch value={isSidePagesEnabled} onClick={toggleSidePagesEnabled} />
+            <Switch value={isSidePagesEnabled} onClick={toggleIsSidePagesEnabled} />
           </WithLabel>
 
           <WithLabel label={langui.shadow}>
-            <Switch
-              value={filterOptions.dropShadow}
-              onClick={() =>
-                setFilterOptions((current) => ({ ...current, dropShadow: !current.dropShadow }))
-              }
-            />
+            <Switch value={filterSettings.dropShadow} onClick={toggleDropShadow} />
           </WithLabel>
         </div>
 
@@ -359,7 +324,7 @@ const LibrarySlug = ({
           <Slider
             min={0}
             max={10}
-            value={filterOptions.teint * 10}
+            value={filterSettings.teint * 10}
             onChange={(event) => {
               let value = 0;
               if (Array.isArray(event)) {
@@ -367,10 +332,7 @@ const LibrarySlug = ({
               } else {
                 value = event;
               }
-              setFilterOptions((current) => ({
-                ...current,
-                teint: value / 10,
-              }));
+              setTeint(value / 10);
             }}
           />
         </div>
@@ -418,9 +380,7 @@ const LibrarySlug = ({
           text={langui.reset_all_options}
           icon={Icon.Replay}
           onClick={() => {
-            setFilterOptions(DEFAULT_READER_OPTIONS.filterOptions);
-            setPageQuality(DEFAULT_READER_OPTIONS.pageQuality);
-            setIsSidePagesEnabled(DEFAULT_READER_OPTIONS.isSidePagesEnabled);
+            resetReaderSettings();
             setDisplayMode(is1ColumnLayout ? "single" : "double");
             sendAnalytics("Reader", "Reset all options");
           }}
@@ -428,19 +388,36 @@ const LibrarySlug = ({
       </SubPanel>
     ),
     [
-      langui,
+      langui.item,
+      langui.paper_texture,
+      langui.book_fold,
+      langui.lighting,
+      langui.side_pages,
+      langui.shadow,
+      langui.night_reader,
+      langui.reading_layout,
+      langui.single_page_view,
+      langui.double_page_view,
+      langui.quality,
+      langui.reset_all_options,
       itemSlug,
-      filterOptions.paperTexture,
-      filterOptions.bookFold,
-      filterOptions.lighting,
-      filterOptions.dropShadow,
-      filterOptions.teint,
+      filterSettings.paperTexture,
+      filterSettings.bookFold,
+      filterSettings.lighting,
+      filterSettings.dropShadow,
+      filterSettings.teint,
+      togglePaperTexture,
+      toggleBookFold,
+      toggleLighting,
       isSidePagesEnabled,
-      toggleSidePagesEnabled,
+      toggleIsSidePagesEnabled,
+      toggleDropShadow,
       displayMode,
       pageQuality,
+      setTeint,
       changeDisplayMode,
-      setIsSidePagesEnabled,
+      setPageQuality,
+      resetReaderSettings,
       is1ColumnLayout,
     ]
   );
@@ -468,7 +445,7 @@ const LibrarySlug = ({
                   gridAutoFlow: "column",
                   display: "grid",
                   placeContent: "center",
-                  filter: filterOptions.dropShadow
+                  filter: filterSettings.dropShadow
                     ? darkMode
                       ? CUSTOM_DARK_DROPSHADOW
                       : CUSTOM_LIGHT_DROPSHADOW
@@ -485,7 +462,7 @@ const LibrarySlug = ({
                       src={firstPage}
                       quality={pageQuality}
                     />
-                    <PageFilters page="single" bookType={bookType} options={filterOptions} />
+                    <PageFilters page="single" bookType={bookType} options={filterSettings} />
                     <div
                       className="absolute left-0 top-0 bottom-0 w-1/2"
                       onClick={() => currentZoom <= 1 && handlePageNavigation("left")}
@@ -523,7 +500,7 @@ const LibrarySlug = ({
                         src={pageOrder === PageOrder.LeftToRight ? firstPage : secondPage}
                         quality={pageQuality}
                       />
-                      <PageFilters page="left" bookType={bookType} options={filterOptions} />
+                      <PageFilters page="left" bookType={bookType} options={filterSettings} />
                     </div>
                     <div
                       className={cJoin(
@@ -557,7 +534,7 @@ const LibrarySlug = ({
                         />
                       )}
 
-                      <PageFilters page="right" bookType={bookType} options={filterOptions} />
+                      <PageFilters page="right" bookType={bookType} options={filterSettings} />
                     </div>
                   </>
                 )}
@@ -647,7 +624,7 @@ const LibrarySlug = ({
     [
       is1ColumnLayout,
       currentZoom,
-      filterOptions,
+      filterSettings,
       darkMode,
       pageHeight,
       effectiveDisplayMode,
@@ -811,7 +788,7 @@ export const getStaticPaths: GetStaticPaths = async (context) => {
 interface PageFiltersProps {
   page: "left" | "right" | "single";
   bookType: BookType;
-  options: FilterOptions;
+  options: FilterSettings;
 }
 
 const PageFilters = ({ page, bookType, options }: PageFiltersProps) => {

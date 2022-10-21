@@ -1,11 +1,18 @@
-import React, { ReactNode, useContext, useState } from "react";
+import React, {
+  createContext,
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  useContext,
+  useState,
+} from "react";
 import { RequiredNonNullable } from "types/types";
 
 interface TerminalState {
   previousLines: string[];
   previousCommands: string[];
-  setPreviousLines: React.Dispatch<React.SetStateAction<TerminalState["previousLines"]>>;
-  setPreviousCommands: React.Dispatch<React.SetStateAction<TerminalState["previousCommands"]>>;
+  setPreviousLines: Dispatch<SetStateAction<TerminalState["previousLines"]>>;
+  setPreviousCommands: Dispatch<SetStateAction<TerminalState["previousCommands"]>>;
 }
 
 const initialState: RequiredNonNullable<TerminalState> = {
@@ -15,7 +22,7 @@ const initialState: RequiredNonNullable<TerminalState> = {
   setPreviousCommands: () => null,
 };
 
-const TerminalContext = React.createContext<TerminalState>(initialState);
+const TerminalContext = createContext<TerminalState>(initialState);
 
 export const useTerminalContext = (): TerminalState => useContext(TerminalContext);
 

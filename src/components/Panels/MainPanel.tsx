@@ -19,7 +19,7 @@ import { useLocalData } from "contexts/LocalDataContext";
 
 export const MainPanel = (): JSX.Element => {
   const is3ColumnsLayout = useIs3ColumnsLayout();
-  const { mainPanelReduced = false, toggleMainPanelReduced, setConfigPanelOpen } = useAppLayout();
+  const { mainPanelReduced, toggleMainPanelReduced, setConfigPanelOpen } = useAppLayout();
   const { langui } = useLocalData();
 
   return (

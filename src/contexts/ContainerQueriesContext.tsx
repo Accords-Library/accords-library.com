@@ -1,17 +1,22 @@
-import React, { ReactNode, useContext, useState } from "react";
+import React, {
+  createContext,
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  useContext,
+  useState,
+} from "react";
 import { RequiredNonNullable } from "types/types";
 
 interface ContainerQueriesState {
   screenWidth: number;
-  setScreenWidth: React.Dispatch<React.SetStateAction<ContainerQueriesState["screenWidth"]>>;
+  setScreenWidth: Dispatch<SetStateAction<ContainerQueriesState["screenWidth"]>>;
 
   contentPanelWidth: number;
-  setContentPanelWidth: React.Dispatch<
-    React.SetStateAction<ContainerQueriesState["contentPanelWidth"]>
-  >;
+  setContentPanelWidth: Dispatch<SetStateAction<ContainerQueriesState["contentPanelWidth"]>>;
 
   subPanelWidth: number;
-  setSubPanelWidth: React.Dispatch<React.SetStateAction<ContainerQueriesState["subPanelWidth"]>>;
+  setSubPanelWidth: Dispatch<SetStateAction<ContainerQueriesState["subPanelWidth"]>>;
 }
 
 const initialState: RequiredNonNullable<ContainerQueriesState> = {
@@ -25,7 +30,7 @@ const initialState: RequiredNonNullable<ContainerQueriesState> = {
   setSubPanelWidth: () => null,
 };
 
-const ContainerQueriesContext = React.createContext<ContainerQueriesState>(initialState);
+const ContainerQueriesContext = createContext<ContainerQueriesState>(initialState);
 
 export const useContainerQueries = (): ContainerQueriesState => useContext(ContainerQueriesContext);
 

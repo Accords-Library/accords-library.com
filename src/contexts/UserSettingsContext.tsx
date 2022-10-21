@@ -1,5 +1,13 @@
 import { useLocalStorage } from "usehooks-ts";
-import React, { ReactNode, useContext, useEffect, useLayoutEffect } from "react";
+import React, {
+  createContext,
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+} from "react";
 import { useRouter } from "next/router";
 import { isDefined, isDefinedAndNotEmpty } from "helpers/others";
 import { RequiredNonNullable } from "types/types";
@@ -8,32 +16,28 @@ import { useDarkMode } from "hooks/useDarkMode";
 
 interface UserSettingsState {
   fontSize: number;
-  setFontSize: React.Dispatch<React.SetStateAction<UserSettingsState["fontSize"]>>;
+  setFontSize: Dispatch<SetStateAction<UserSettingsState["fontSize"]>>;
 
   darkMode: boolean;
   toggleDarkMode: () => void;
-  setDarkMode: React.Dispatch<React.SetStateAction<UserSettingsState["darkMode"]>>;
+  setDarkMode: Dispatch<SetStateAction<UserSettingsState["darkMode"]>>;
 
   selectedThemeMode: boolean;
   toggleSelectedThemeMode: () => void;
-  setSelectedThemeMode: React.Dispatch<
-    React.SetStateAction<UserSettingsState["selectedThemeMode"]>
-  >;
+  setSelectedThemeMode: Dispatch<SetStateAction<UserSettingsState["selectedThemeMode"]>>;
 
   dyslexic: boolean;
   toggleDyslexic: () => void;
-  setDyslexic: React.Dispatch<React.SetStateAction<UserSettingsState["dyslexic"]>>;
+  setDyslexic: Dispatch<SetStateAction<UserSettingsState["dyslexic"]>>;
 
   currency: string;
-  setCurrency: React.Dispatch<React.SetStateAction<UserSettingsState["currency"]>>;
+  setCurrency: Dispatch<SetStateAction<UserSettingsState["currency"]>>;
 
   playerName: string;
-  setPlayerName: React.Dispatch<React.SetStateAction<UserSettingsState["playerName"]>>;
+  setPlayerName: Dispatch<SetStateAction<UserSettingsState["playerName"]>>;
 
   preferredLanguages: string[];
-  setPreferredLanguages: React.Dispatch<
-    React.SetStateAction<UserSettingsState["preferredLanguages"]>
-  >;
+  setPreferredLanguages: Dispatch<SetStateAction<UserSettingsState["preferredLanguages"]>>;
 }
 
 const initialState: RequiredNonNullable<UserSettingsState> = {
@@ -62,7 +66,7 @@ const initialState: RequiredNonNullable<UserSettingsState> = {
   setPreferredLanguages: () => null,
 };
 
-const UserSettingsContext = React.createContext<UserSettingsState>(initialState);
+const UserSettingsContext = createContext<UserSettingsState>(initialState);
 
 export const useUserSettings = (): UserSettingsState => useContext(UserSettingsContext);
 

@@ -176,18 +176,18 @@ export const MainPanel = (): JSX.Element => {
             href="https://creativecommons.org/licenses/by-sa/4.0/">
             <div
               className="aspect-square w-6 bg-black transition-colors
-              [mask:url('/icons/creative-commons-brands.svg')] ![mask-size:contain]
-              ![mask-repeat:no-repeat] ![mask-position:center] group-hover:bg-dark"
+              ![mask-size:contain] ![mask-repeat:no-repeat] ![mask-position:center]
+              [mask:url('/icons/creative-commons-brands.svg')] group-hover:bg-dark"
             />
             <div
               className="aspect-square w-6 bg-black transition-colors
-              [mask:url('/icons/creative-commons-by-brands.svg')] ![mask-size:contain]
-              ![mask-repeat:no-repeat] ![mask-position:center] group-hover:bg-dark"
+              ![mask-size:contain] ![mask-repeat:no-repeat] ![mask-position:center]
+              [mask:url('/icons/creative-commons-by-brands.svg')] group-hover:bg-dark"
             />
             <div
               className="aspect-square w-6 bg-black transition-colors
-              [mask:url('/icons/creative-commons-sa-brands.svg')] ![mask-size:contain]
-              ![mask-repeat:no-repeat] ![mask-position:center] group-hover:bg-dark"
+              ![mask-size:contain] ![mask-repeat:no-repeat] ![mask-position:center]
+              [mask:url('/icons/creative-commons-sa-brands.svg')] group-hover:bg-dark"
             />
           </a>
         </div>
@@ -200,9 +200,9 @@ export const MainPanel = (): JSX.Element => {
           <a
             aria-label="Browse our GitHub repository, which include this website source code"
             onClick={() => sendAnalytics("MainPanel", "Visit GitHub")}
-            className="aspect-square w-10
-              bg-black transition-colors [mask:url('/icons/github-brands.svg')]
-              ![mask-size:contain] ![mask-repeat:no-repeat] ![mask-position:center] hover:bg-dark"
+            className="aspect-square w-10 bg-black
+              transition-colors ![mask-size:contain] ![mask-repeat:no-repeat]
+              ![mask-position:center] [mask:url('/icons/github-brands.svg')] hover:bg-dark"
             href="https://github.com/Accords-Library"
             target="_blank"
             rel="noopener noreferrer"></a>
@@ -210,8 +210,8 @@ export const MainPanel = (): JSX.Element => {
             aria-label="Follow us on Twitter"
             onClick={() => sendAnalytics("MainPanel", "Visit Twitter")}
             className="aspect-square w-10
-              bg-black transition-colors [mask:url('/icons/twitter-brands.svg')]
-              ![mask-size:contain] ![mask-repeat:no-repeat] ![mask-position:center] hover:bg-dark"
+              bg-black transition-colors ![mask-size:contain] ![mask-repeat:no-repeat]
+              ![mask-position:center] [mask:url('/icons/twitter-brands.svg')] hover:bg-dark"
             href="https://twitter.com/AccordsLibrary"
             target="_blank"
             rel="noopener noreferrer"></a>
@@ -219,8 +219,8 @@ export const MainPanel = (): JSX.Element => {
             aria-label="Join our Discord server!"
             onClick={() => sendAnalytics("MainPanel", "Visit Discord")}
             className="aspect-square w-10
-              bg-black transition-colors [mask:url('/icons/discord-brands.svg')]
-              ![mask-size:contain] ![mask-repeat:no-repeat] ![mask-position:center] hover:bg-dark"
+              bg-black transition-colors ![mask-size:contain] ![mask-repeat:no-repeat]
+              ![mask-position:center] [mask:url('/icons/discord-brands.svg')] hover:bg-dark"
             href="/discord"
             target="_blank"
             rel="noopener noreferrer"></a>

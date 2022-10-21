@@ -220,11 +220,11 @@ export const PreviewCard = ({
           </div>
         )}
         <div className="my-1">
-          {pre_title && <p className="mb-1 break-words leading-none">{pre_title}</p>}
+          {pre_title && <p className="mb-1 leading-none break-words">{pre_title}</p>}
           {title && (
-            <p className="break-words font-headers text-lg font-bold leading-none">{title}</p>
+            <p className="font-headers text-lg font-bold leading-none break-words">{title}</p>
           )}
-          {subtitle && <p className="break-words leading-none">{subtitle}</p>}
+          {subtitle && <p className="leading-none break-words">{subtitle}</p>}
         </div>
         {description && <p>{description}</p>}
         {bottomChips && bottomChips.length > 0 && (

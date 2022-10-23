@@ -1,5 +1,5 @@
 import { MouseEventHandler } from "react";
-import { cJoin } from "helpers/className";
+import { cIf, cJoin } from "helpers/className";
 
 /*
  *                                        ╭─────────────╮
@@ -10,14 +10,19 @@ interface Props {
   className?: string;
   onClick?: MouseEventHandler<HTMLSpanElement> | undefined;
   icon: Icon;
+  isFilled?: boolean;
 }
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
-export const Ico = ({ onClick, icon, className }: Props): JSX.Element => (
+export const Ico = ({ onClick, icon, className, isFilled = true }: Props): JSX.Element => (
   <span
     onClick={onClick}
-    className={cJoin("material-icons [font-size:inherit] [line-height:inherit]", className)}>
+    className={cJoin(
+      "[font-size:inherit] [line-height:inherit]",
+      cIf(isFilled, "material-icons", "material-icons-outlined"),
+      className
+    )}>
     {icon}
   </span>
 );

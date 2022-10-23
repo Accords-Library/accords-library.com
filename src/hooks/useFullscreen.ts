@@ -4,21 +4,27 @@ import { isDefined } from "helpers/others";
 
 export const useFullscreen = (
   id: string
-): { isFullscreen: boolean; toggleFullscreen: () => void } => {
+): {
+  isFullscreen: boolean;
+  requestFullscreen: () => void;
+  exitFullscreen: () => void;
+  toggleFullscreen: () => void;
+} => {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const isClient = useIsClient();
 
   const elem = useMemo(() => (isClient ? document.querySelector(`#${id}`) : null), [id, isClient]);
 
-  const toggleFullscreen = useCallback(() => {
-    if (elem) {
-      if (isFullscreen) {
-        document.exitFullscreen();
-      } else {
-        elem.requestFullscreen();
-      }
-    }
-  }, [elem, isFullscreen]);
+  const requestFullscreen = useCallback(() => elem?.requestFullscreen(), [elem]);
+  const exitFullscreen = useCallback(
+    async () => isFullscreen && document.exitFullscreen(),
+    [isFullscreen]
+  );
+
+  const toggleFullscreen = useCallback(
+    () => (isFullscreen ? exitFullscreen() : requestFullscreen()),
+    [exitFullscreen, isFullscreen, requestFullscreen]
+  );
 
   useEffect(() => {
     const onFullscreenChanged = () => {
@@ -28,5 +34,5 @@ export const useFullscreen = (
     return () => removeEventListener("fullscreenchange", onFullscreenChanged);
   }, []);
 
-  return { isFullscreen, toggleFullscreen };
+  return { isFullscreen, requestFullscreen, exitFullscreen, toggleFullscreen };
 };

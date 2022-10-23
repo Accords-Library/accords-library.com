@@ -29,11 +29,11 @@ import { getOpenGraph } from "helpers/openGraph";
 import { getDefaultPreferredLanguages, staticSmartLanguage } from "helpers/locales";
 import { getDescription } from "helpers/description";
 import { TranslatedPreviewLine } from "components/PreviewLine";
-import { useIs1ColumnLayout, useIsContentPanelAtLeast } from "hooks/useContainerQuery";
 import { cIf } from "helpers/className";
 import { getLangui } from "graphql/fetchLocalData";
 import { Ids } from "types/ids";
 import { useLocalData } from "contexts/LocalDataContext";
+import { useContainerQueries } from "contexts/ContainerQueriesContext";
 
 /*
  *                                           ╭────────╮
@@ -45,8 +45,7 @@ interface Props extends AppLayoutRequired {
 }
 
 const Content = ({ content, ...otherProps }: Props): JSX.Element => {
-  const isContentPanelAtLeast2xl = useIsContentPanelAtLeast("2xl");
-  const is1ColumnLayout = useIs1ColumnLayout();
+  const { isContentPanelAtLeast2xl, is1ColumnLayout } = useContainerQueries();
   const { langui, languages } = useLocalData();
 
   const [selectedTranslation, LanguageSwitcher, languageSwitcherProps] = useSmartLanguage({

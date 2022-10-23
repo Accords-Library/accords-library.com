@@ -34,16 +34,16 @@ export const Select = ({ className, value, options, allowEmpty, onChange }: Prop
     <div
       ref={ref}
       className={cJoin(
-        "relative text-center transition-[filter]",
+        "relative text-center transition-filter",
         cIf(isOpened, "z-10 drop-shadow-shade-lg"),
         className
       )}>
       <div
         className={cJoin(
           `grid cursor-pointer grid-flow-col grid-cols-[1fr_auto_auto] place-items-center
-          rounded-[1em] bg-light p-1 outline outline-2 outline-offset-[-2px] outline-mid
-          transition-all hover:bg-mid hover:outline-[transparent]`,
-          cIf(isOpened, "rounded-b-none bg-highlight outline-[transparent]")
+           rounded-[1em] bg-light p-1 outline outline-1 -outline-offset-1 outline-mid
+           transition-all hover:bg-mid hover:outline-transparent`,
+          cIf(isOpened, "rounded-b-none bg-highlight outline-transparent")
         )}>
         <p onClick={tryToggling} className="w-full">
           {value === -1 ? "—" : options[value]}

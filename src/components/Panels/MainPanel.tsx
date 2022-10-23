@@ -8,9 +8,10 @@ import { Icon } from "components/Ico";
 import { cIf, cJoin } from "helpers/className";
 import { isDefinedAndNotEmpty } from "helpers/others";
 import { Link } from "components/Inputs/Link";
-import { useIs3ColumnsLayout } from "hooks/useContainerQuery";
 import { sendAnalytics } from "helpers/analytics";
 import { useLocalData } from "contexts/LocalDataContext";
+import { ColoredSvg } from "components/ColoredSvg";
+import { useContainerQueries } from "contexts/ContainerQueriesContext";
 
 /*
  *                                        ╭─────────────╮
@@ -18,7 +19,7 @@ import { useLocalData } from "contexts/LocalDataContext";
  */
 
 export const MainPanel = (): JSX.Element => {
-  const is3ColumnsLayout = useIs3ColumnsLayout();
+  const { is3ColumnsLayout } = useContainerQueries();
   const { mainPanelReduced, toggleMainPanelReduced, setConfigPanelOpen } = useAppLayout();
   const { langui } = useLocalData();
 
@@ -51,14 +52,14 @@ export const MainPanel = (): JSX.Element => {
       )}
       <div>
         <div className="grid place-items-center">
-          <Link href="/" className="flex w-full justify-center">
-            <div
+          <Link href="/" className="flex w-full cursor-pointer justify-center">
+            <ColoredSvg
+              src="/icons/accords.svg"
               className={cJoin(
-                `mb-4 aspect-square cursor-pointer bg-black transition-colors
-                [mask:url('/icons/accords.svg')] ![mask-size:contain] ![mask-repeat:no-repeat]
-                ![mask-position:center] hover:bg-dark`,
+                "mb-4 aspect-square bg-black hover:bg-dark",
                 cIf(mainPanelReduced && is3ColumnsLayout, "w-12", "w-1/2")
-              )}></div>
+              )}
+            />
           </Link>
 
           {(!mainPanelReduced || !is3ColumnsLayout) && (
@@ -148,7 +149,7 @@ export const MainPanel = (): JSX.Element => {
 
       <NavOption
         url="/archives"
-        icon={Icon.Inventory}
+        icon={Icon.Inventory2}
         title={langui.archives}
         reduced={mainPanelReduced && is3ColumnsLayout}
       />
@@ -160,7 +161,7 @@ export const MainPanel = (): JSX.Element => {
         reduced={mainPanelReduced && is3ColumnsLayout}
       />
 
-      {mainPanelReduced && is3ColumnsLayout ? "" : <HorizontalLine />}
+      {(!mainPanelReduced || !is3ColumnsLayout) && <HorizontalLine />}
 
       <div className={cJoin("text-center", cIf(mainPanelReduced && is3ColumnsLayout, "hidden"))}>
         {isDefinedAndNotEmpty(langui.licensing_notice) && (
@@ -172,22 +173,19 @@ export const MainPanel = (): JSX.Element => {
           <a
             onClick={() => sendAnalytics("MainPanel", "Visit license")}
             aria-label="Read more about the license we use for this website"
-            className="group grid grid-flow-col place-content-center gap-1 transition-[filter]"
+            className="group grid grid-flow-col place-content-center gap-1 transition-filter"
             href="https://creativecommons.org/licenses/by-sa/4.0/">
-            <div
-              className="aspect-square w-6 bg-black transition-colors
-              ![mask-size:contain] ![mask-repeat:no-repeat] ![mask-position:center]
-              [mask:url('/icons/creative-commons-brands.svg')] group-hover:bg-dark"
+            <ColoredSvg
+              className="h-6 w-6 bg-black group-hover:bg-dark"
+              src="/icons/creative-commons-brands.svg"
             />
-            <div
-              className="aspect-square w-6 bg-black transition-colors
-              ![mask-size:contain] ![mask-repeat:no-repeat] ![mask-position:center]
-              [mask:url('/icons/creative-commons-by-brands.svg')] group-hover:bg-dark"
+            <ColoredSvg
+              className="h-6 w-6 bg-black group-hover:bg-dark"
+              src="/icons/creative-commons-by-brands.svg"
             />
-            <div
-              className="aspect-square w-6 bg-black transition-colors
-              ![mask-size:contain] ![mask-repeat:no-repeat] ![mask-position:center]
-              [mask:url('/icons/creative-commons-sa-brands.svg')] group-hover:bg-dark"
+            <ColoredSvg
+              className="h-6 w-6 bg-black group-hover:bg-dark"
+              src="/icons/creative-commons-sa-brands.svg"
             />
           </a>
         </div>
@@ -200,30 +198,36 @@ export const MainPanel = (): JSX.Element => {
           <a
             aria-label="Browse our GitHub repository, which include this website source code"
             onClick={() => sendAnalytics("MainPanel", "Visit GitHub")}
-            className="aspect-square w-10 bg-black
-              transition-colors ![mask-size:contain] ![mask-repeat:no-repeat]
-              ![mask-position:center] [mask:url('/icons/github-brands.svg')] hover:bg-dark"
             href="https://github.com/Accords-Library"
             target="_blank"
-            rel="noopener noreferrer"></a>
+            rel="noopener noreferrer">
+            <ColoredSvg
+              className="h-10 w-10 bg-black hover:bg-dark"
+              src="/icons/github-brands.svg"
+            />
+          </a>
           <a
             aria-label="Follow us on Twitter"
             onClick={() => sendAnalytics("MainPanel", "Visit Twitter")}
-            className="aspect-square w-10
-              bg-black transition-colors ![mask-size:contain] ![mask-repeat:no-repeat]
-              ![mask-position:center] [mask:url('/icons/twitter-brands.svg')] hover:bg-dark"
             href="https://twitter.com/AccordsLibrary"
             target="_blank"
-            rel="noopener noreferrer"></a>
+            rel="noopener noreferrer">
+            <ColoredSvg
+              className="h-10 w-10 bg-black hover:bg-dark"
+              src="/icons/twitter-brands.svg"
+            />
+          </a>
           <a
             aria-label="Join our Discord server!"
             onClick={() => sendAnalytics("MainPanel", "Visit Discord")}
-            className="aspect-square w-10
-              bg-black transition-colors ![mask-size:contain] ![mask-repeat:no-repeat]
-              ![mask-position:center] [mask:url('/icons/discord-brands.svg')] hover:bg-dark"
             href="/discord"
             target="_blank"
-            rel="noopener noreferrer"></a>
+            rel="noopener noreferrer">
+            <ColoredSvg
+              className="h-10 w-10 bg-black hover:bg-dark"
+              src="/icons/discord-brands.svg"
+            />
+          </a>
         </div>
       </div>
     </div>

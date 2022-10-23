@@ -61,13 +61,10 @@ export const NavOption = ({
           justify-center gap-x-5 rounded-2xl p-4 transition-all hover:bg-mid hover:shadow-inner-sm
           hover:shadow-shade hover:active:shadow-inner hover:active:shadow-shade`,
           cIf(icon, "text-left", "text-center"),
-          cIf(
-            border,
-            "outline outline-2 outline-offset-[-2px] outline-mid hover:outline-[transparent]"
-          ),
+          cIf(border, "outline outline-2 -outline-offset-2 outline-mid hover:outline-transparent"),
           cIf(isActive, "bg-mid shadow-inner-sm shadow-shade")
         )}>
-        {icon && <Ico icon={icon} className="mt-[-.1em] !text-2xl" />}
+        {icon && <Ico icon={icon} className="mt-[-.1em] !text-2xl" isFilled={isActive} />}
 
         {!reduced && (
           <div>

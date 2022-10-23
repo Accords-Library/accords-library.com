@@ -4,10 +4,10 @@ import { InsetBox } from "components/InsetBox";
 import { Markdawn } from "components/Markdown/Markdawn";
 import { GetContentTextQuery, UploadImageFragment } from "graphql/generated";
 import { prettyInlineTitle, prettySlug, slugify } from "helpers/formatters";
-import { getAssetURL, ImageQuality } from "helpers/img";
+import { ImageQuality } from "helpers/img";
 import { filterHasAttributes } from "helpers/others";
-import { useLightBox } from "hooks/useLightBox";
 import { useLocalData } from "contexts/LocalDataContext";
+import { useLightBox } from "contexts/LightBoxContext";
 
 /*
  *                                        ╭─────────────╮
@@ -42,12 +42,11 @@ export const ThumbnailHeader = ({
   description,
   languageSwitcher,
 }: Props): JSX.Element => {
-  const [openLightBox, LightBox] = useLightBox();
   const { langui } = useLocalData();
+  const { showLightBox } = useLightBox();
 
   return (
     <>
-      <LightBox />
       <div className="mb-12 grid place-items-center gap-12">
         <div className="drop-shadow-shade-lg">
           {thumbnail ? (
@@ -55,9 +54,7 @@ export const ThumbnailHeader = ({
               className="cursor-pointer rounded-xl"
               src={thumbnail}
               quality={ImageQuality.Medium}
-              onClick={() => {
-                openLightBox([getAssetURL(thumbnail.url, ImageQuality.Large)]);
-              }}
+              onClick={() => showLightBox([thumbnail])}
             />
           ) : (
             <div className="aspect-[4/3] w-96 rounded-xl bg-light"></div>

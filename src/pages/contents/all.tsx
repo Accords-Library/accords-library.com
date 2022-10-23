@@ -22,11 +22,11 @@ import { SelectiveNonNullable } from "types/SelectiveNonNullable";
 import { getOpenGraph } from "helpers/openGraph";
 import { HorizontalLine } from "components/HorizontalLine";
 import { TranslatedPreviewCard } from "components/PreviewCard";
-import { useIsContentPanelAtLeast } from "hooks/useContainerQuery";
 import { cJoin, cIf } from "helpers/className";
 import { getLangui } from "graphql/fetchLocalData";
 import { sendAnalytics } from "helpers/analytics";
 import { useLocalData } from "contexts/LocalDataContext";
+import { useContainerQueries } from "contexts/ContainerQueriesContext";
 
 /*
  *                                         ╭─────────────╮
@@ -51,7 +51,7 @@ interface Props extends AppLayoutRequired {
 const Contents = ({ contents, ...otherProps }: Props): JSX.Element => {
   const hoverable = useDeviceSupportsHover();
   const { langui } = useLocalData();
-  const isContentPanelAtLeast4xl = useIsContentPanelAtLeast("4xl");
+  const { isContentPanelAtLeast4xl } = useContainerQueries();
 
   const [groupingMethod, setGroupingMethod] = useState<number>(
     DEFAULT_FILTERS_STATE.groupingMethod

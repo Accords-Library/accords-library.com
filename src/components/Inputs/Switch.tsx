@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { cIf, cJoin } from "helpers/className";
 
 /*
@@ -14,21 +15,35 @@ interface Props {
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
-export const Switch = ({ value, onClick, className, disabled = false }: Props): JSX.Element => (
-  <div
-    className={cJoin(
-      "relative grid h-6 w-12 rounded-full border-2 border-mid transition-colors",
-      cIf(disabled, "cursor-not-allowed", "cursor-pointer"),
-      cIf(value, "border-none bg-mid shadow-inner-sm shadow-shade", "bg-light"),
-      className
-    )}
-    onClick={() => {
-      if (!disabled) onClick();
-    }}>
+export const Switch = ({ value, onClick, className, disabled = false }: Props): JSX.Element => {
+  const [isFocused, setIsFocused] = useState(false);
+  return (
     <div
       className={cJoin(
-        "absolute aspect-square rounded-full bg-dark transition-transform",
-        cIf(value, "top-[2px] bottom-[2px] left-[2px] translate-x-[120%]", "top-0 bottom-0 left-0")
-      )}></div>
-  </div>
-);
+        `relative grid h-6 w-12 content-center rounded-full border-mid outline
+        outline-1 -outline-offset-1 outline-mid transition-colors`,
+        cIf(disabled, "cursor-not-allowed", "cursor-pointer"),
+        cIf(
+          value,
+          "border-none bg-mid shadow-inner-sm shadow-shade outline-transparent",
+          "bg-light"
+        ),
+        className
+      )}
+      onClick={() => {
+        if (!disabled) onClick();
+      }}
+      onPointerDown={() => setIsFocused(true)}
+      onPointerOut={() => setIsFocused(false)}
+      onPointerLeave={() => setIsFocused(false)}
+      onPointerUp={() => setIsFocused(false)}>
+      <div
+        className={cJoin(
+          "ml-1 h-4 w-4 rounded-full bg-dark transition-transform",
+          cIf(value, "translate-x-6"),
+          cIf(isFocused, cIf(value, "translate-x-5", "translate-x-1"))
+        )}
+      />
+    </div>
+  );
+};

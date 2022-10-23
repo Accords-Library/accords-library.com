@@ -1,95 +1,136 @@
-import { Dispatch, SetStateAction, useCallback } from "react";
-import Hotkeys from "react-hot-keys";
-import { useSwipeable } from "react-swipeable";
+import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
+import { useState } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
 import { Img } from "./Img";
 import { Button } from "./Inputs/Button";
-import { Popup } from "./Popup";
 import { Icon } from "components/Ico";
-import { useIs3ColumnsLayout } from "hooks/useContainerQuery";
 import { cIf, cJoin } from "helpers/className";
-
-/*
- *                                         ╭─────────────╮
- * ────────────────────────────────────────╯  CONSTANTS  ╰──────────────────────────────────────────
- */
-
-const SENSIBILITY_SWIPE = 0.5;
-
-/*
- *                                        ╭─────────────╮
- * ───────────────────────────────────────╯  COMPONENT  ╰───────────────────────────────────────────
- */
+import { useFullscreen } from "hooks/useFullscreen";
+import { Ids } from "types/ids";
+import { UploadImageFragment } from "graphql/generated";
+import { ImageQuality } from "helpers/img";
+import { isDefined } from "helpers/others";
 
 interface Props {
-  setState: Dispatch<SetStateAction<boolean | undefined>> | Dispatch<SetStateAction<boolean>>;
-  state: boolean;
-  images: string[];
-  index: number;
-  setIndex: Dispatch<SetStateAction<number>>;
+  onCloseRequest: () => void;
+  isVisible: boolean;
+  image?: UploadImageFragment | string;
+  isNextImageAvailable?: boolean;
+  isPreviousImageAvailable?: boolean;
+  onPressNext?: () => void;
+  onPressPrevious?: () => void;
 }
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
-export const LightBox = ({ state, setState, images, index, setIndex }: Props): JSX.Element => {
-  const handlePrevious = useCallback(() => {
-    if (index > 0) setIndex(index - 1);
-  }, [index, setIndex]);
-  const is3ColumnsLayout = useIs3ColumnsLayout();
+export const LightBox = ({
+  onCloseRequest,
+  isVisible,
+  image: src,
+  isPreviousImageAvailable = false,
+  onPressPrevious,
+  isNextImageAvailable = false,
+  onPressNext,
+}: Props): JSX.Element => {
+  const [currentZoom, setCurrentZoom] = useState(1);
+  const { isFullscreen, toggleFullscreen, exitFullscreen, requestFullscreen } = useFullscreen(
+    Ids.LightBox
+  );
 
-  const handleNext = useCallback(() => {
-    if (index < images.length - 1) setIndex(index + 1);
-  }, [images.length, index, setIndex]);
+  useHotkeys(
+    "left",
+    () => onPressPrevious?.(),
+    { enabled: isVisible && isPreviousImageAvailable },
+    [onPressPrevious]
+  );
 
-  const handlers = useSwipeable({
-    onSwipedLeft: (SwipeEventData) => {
-      if (SwipeEventData.velocity < SENSIBILITY_SWIPE) return;
-      handleNext();
-    },
-    onSwipedRight: (SwipeEventData) => {
-      if (SwipeEventData.velocity < SENSIBILITY_SWIPE) return;
-      handlePrevious();
-    },
-  });
+  useHotkeys("f", () => requestFullscreen(), { enabled: isVisible && !isFullscreen }, [
+    requestFullscreen,
+  ]);
+
+  useHotkeys("right", () => onPressNext?.(), { enabled: isVisible && isNextImageAvailable }, [
+    onPressNext,
+  ]);
+
+  useHotkeys("escape", onCloseRequest, { enabled: isVisible }, [onCloseRequest]);
 
   return (
-    <>
-      {state && (
-        <Hotkeys
-          keyName="left,right"
-          allowRepeat
-          onKeyDown={(keyName) => {
-            if (keyName === "left") {
-              handlePrevious();
-            } else {
-              handleNext();
-            }
-          }}>
-          <Popup onClose={() => setState(false)} state={state} padding={false} fillViewport>
-            <div
-              {...handlers}
-              className={cJoin(
-                `grid h-full w-full place-items-center overflow-hidden first-letter:gap-4`,
-                cIf(
-                  is3ColumnsLayout,
-                  `grid-cols-[4em,1fr,4em] [grid-template-areas:"left_image_right"]`,
-                  `grid-cols-2 [grid-template-areas:"image_image""left_right"]`
-                )
-              )}>
-              <div className="ml-4 [grid-area:left]">
-                {index > 0 && <Button onClick={handlePrevious} icon={Icon.ChevronLeft} />}
-              </div>
-
-              <Img className="max-h-full min-h-fit [grid-area:image]" src={images[index]} />
-
-              <div className="mr-4 [grid-area:right]">
-                {index < images.length - 1 && (
-                  <Button onClick={handleNext} icon={Icon.ChevronRight} />
+    <div
+      id={Ids.LightBox}
+      className={cJoin(
+        "fixed inset-0 z-50 grid place-content-center transition-filter duration-500",
+        cIf(isVisible, "backdrop-blur", "pointer-events-none touch-none")
+      )}>
+      <div
+        className={cJoin(
+          "fixed inset-0 bg-shade transition-all duration-500",
+          cIf(isVisible, "bg-opacity-50", "bg-opacity-0")
+        )}
+      />
+      <div
+        className={cJoin(
+          "absolute inset-8 grid transition-transform",
+          cIf(isVisible, "scale-100", "scale-0")
+        )}>
+        <TransformWrapper
+          onZoom={(zoom) => setCurrentZoom(zoom.state.scale)}
+          panning={{ disabled: currentZoom <= 1, velocityDisabled: false }}
+          doubleClick={{ disabled: true, mode: "reset" }}
+          zoomAnimation={{ size: 0.1 }}
+          velocityAnimation={{ animationTime: 0, equalToMove: true }}>
+          {({ resetTransform }) => (
+            <>
+              <TransformComponent
+                wrapperStyle={{
+                  overflow: "visible",
+                  placeSelf: "center",
+                }}>
+                {isDefined(src) && (
+                  <Img
+                    className={`drop-shadow-shade-2xl-shade h-[calc(100vh-4rem)] w-full
+                    object-contain`}
+                    src={src}
+                    quality={ImageQuality.Large}
+                  />
                 )}
+              </TransformComponent>
+
+              {isPreviousImageAvailable && (
+                <div
+                  className={`absolute top-1/2 left-0 grid gap-4 rounded-[2rem] p-4
+                  backdrop-blur-lg`}>
+                  <Button icon={Icon.NavigateBefore} onClick={onPressPrevious} />
+                </div>
+              )}
+
+              {isNextImageAvailable && (
+                <div
+                  className={`absolute top-1/2 right-0 grid gap-4 rounded-[2rem] p-4
+                    backdrop-blur-lg`}>
+                  <Button icon={Icon.NavigateNext} onClick={onPressNext} />{" "}
+                </div>
+              )}
+
+              <div
+                className={`absolute top-0 right-0 grid gap-4 rounded-[2rem] p-4
+                backdrop-blur-lg`}>
+                <Button
+                  onClick={() => {
+                    resetTransform();
+                    exitFullscreen();
+                    onCloseRequest();
+                  }}
+                  icon={Icon.Close}
+                />
+                <Button
+                  icon={isFullscreen ? Icon.FullscreenExit : Icon.Fullscreen}
+                  onClick={toggleFullscreen}
+                />
               </div>
-            </div>
-          </Popup>
-        </Hotkeys>
-      )}
-    </>
+            </>
+          )}
+        </TransformWrapper>
+      </div>
+    </div>
   );
 };

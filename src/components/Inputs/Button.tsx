@@ -58,7 +58,7 @@ export const Button = ({
         onFocus={(event) => event.target.blur()}
         className={cJoin(
           `group grid cursor-pointer select-none grid-flow-col place-content-center 
-          place-items-center gap-2 rounded-full border-[1px] border-dark py-3 px-4
+          place-items-center gap-2 rounded-full border border-dark py-3 px-4
           leading-none text-dark transition-all`,
           cIf(
             active,

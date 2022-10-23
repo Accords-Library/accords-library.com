@@ -159,7 +159,7 @@ const Editor = (props: Props): JSX.Element => {
   const contentPanel = useMemo(
     () => (
       <ContentPanel width={ContentPanelWidthSizes.Full}>
-        <Popup onClose={() => setConverterOpened(false)} state={converterOpened}>
+        <Popup isVisible={converterOpened} onCloseRequest={() => setConverterOpened(false)}>
           <div className="text-center">
             <h2 className="mt-4">Convert HTML to markdown</h2>
             <p>

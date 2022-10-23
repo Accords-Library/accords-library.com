@@ -1,0 +1,4 @@
+.texture-paper-dots {
+  @apply bg-[length:10cm] bg-local [background-image:var(--theme-texture-dots)]
+  [background-blend-mode:var(--theme-texture-dots-blend)];
+}

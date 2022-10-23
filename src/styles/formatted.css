@@ -1,0 +1,89 @@
+.formatted h1,
+.formatted h2,
+.formatted h3,
+.formatted h4,
+.formatted h5,
+.formatted h6 {
+  @apply flex justify-center gap-3 text-center;
+}
+
+.formatted h1 {
+  @apply my-16 text-4xl;
+}
+
+.formatted h1 + h2 {
+  @apply -mt-10;
+}
+
+.formatted h2 {
+  @apply my-12 text-3xl;
+}
+
+.formatted h2 + h3 {
+  @apply -mt-8;
+}
+
+.formatted h3 {
+  @apply my-8 text-2xl;
+}
+
+.formatted h3 + h4 {
+  @apply -mt-6;
+}
+
+.formatted h4 {
+  @apply my-6 text-xl;
+}
+
+.formatted h5 {
+  @apply my-4 text-lg;
+}
+
+.formatted p,
+.formatted strong {
+  @apply my-2 text-justify;
+}
+
+.formatted strong {
+  @apply font-black;
+}
+
+.formatted footer {
+  @apply border-t-2 border-dotted pt-6;
+}
+
+.formatted footer > div {
+  @apply my-2 rounded-xl px-6 py-4;
+}
+
+.formatted footer > div:target {
+  @apply bg-mid shadow-inner-sm shadow-shade;
+}
+
+.formatted li::marker {
+  @apply text-dark;
+}
+
+.formatted code {
+  @apply font-mono;
+}
+
+.formatted pre > code {
+  @apply block whitespace-pre-line;
+}
+
+.formatted ul {
+  @apply list-disc pl-4;
+}
+
+.formatted ol {
+  @apply list-decimal pl-4;
+}
+
+.formatted blockquote {
+  @apply my-8 rounded-lg border-2 border-mid p-5 text-center;
+}
+
+.formatted blockquote cite {
+  @apply block text-dark;
+}

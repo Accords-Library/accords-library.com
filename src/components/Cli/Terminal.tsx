@@ -234,7 +234,7 @@ export const Terminal = ({
   return (
     <div
       className={cJoin(
-        "h-screen overflow-hidden bg-light text-black set-theme-font-standard",
+        "h-screen overflow-hidden bg-light set-theme-font-standard",
         cIf(darkMode, "set-theme-dark", "set-theme-light")
       )}>
       <div

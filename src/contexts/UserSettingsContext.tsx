@@ -13,6 +13,7 @@ import { isDefined, isDefinedAndNotEmpty } from "helpers/others";
 import { RequiredNonNullable } from "types/types";
 import { getDefaultPreferredLanguages } from "helpers/locales";
 import { useDarkMode } from "hooks/useDarkMode";
+import { SettingsPopup } from "components/Panels/SettingsPopup";
 
 interface UserSettingsState {
   fontSize: number;
@@ -134,6 +135,32 @@ export const UserSettingsProvider = ({ children }: Props): JSX.Element => {
     }
   }, [fontSize]);
 
+  useLayoutEffect(() => {
+    const next = document.getElementById("__next");
+    if (isDefined(next)) {
+      if (darkMode) {
+        next.classList.add("set-theme-dark");
+        next.classList.remove("set-theme-light");
+      } else {
+        next.classList.add("set-theme-light");
+        next.classList.remove("set-theme-dark");
+      }
+    }
+  }, [darkMode]);
+
+  useLayoutEffect(() => {
+    const next = document.getElementById("__next");
+    if (isDefined(next)) {
+      if (dyslexic) {
+        next.classList.add("set-theme-font-dyslexic");
+        next.classList.remove("set-theme-font-standard");
+      } else {
+        next.classList.add("set-theme-font-standard");
+        next.classList.remove("set-theme-font-dyslexic");
+      }
+    }
+  }, [dyslexic]);
+
   return (
     <UserSettingsContext.Provider
       value={{
@@ -155,6 +182,7 @@ export const UserSettingsProvider = ({ children }: Props): JSX.Element => {
         toggleSelectedThemeMode,
         toggleDyslexic,
       }}>
+      <SettingsPopup />
       {children}
     </UserSettingsContext.Provider>
   );

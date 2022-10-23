@@ -14,18 +14,18 @@ import { filterHasAttributes, isDefined, isDefinedAndNotEmpty } from "helpers/ot
 import { WikiPageWithTranslations } from "types/types";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { prettySlug, sJoin } from "helpers/formatters";
-import { useLightBox } from "hooks/useLightBox";
-import { getAssetURL, ImageQuality } from "helpers/img";
+import { ImageQuality } from "helpers/img";
 import { getOpenGraph } from "helpers/openGraph";
 import { getDefaultPreferredLanguages, staticSmartLanguage } from "helpers/locales";
 import { getDescription } from "helpers/description";
 import { cIf, cJoin } from "helpers/className";
-import { useIs3ColumnsLayout } from "hooks/useContainerQuery";
 import { getLangui } from "graphql/fetchLocalData";
 import { Terminal } from "components/Cli/Terminal";
 import { prettyTerminalBoxedTitle, prettyTerminalUnderlinedTitle } from "helpers/terminal";
 import { useIsTerminalMode } from "hooks/useIsTerminalMode";
 import { useLocalData } from "contexts/LocalDataContext";
+import { useContainerQueries } from "contexts/ContainerQueriesContext";
+import { useLightBox } from "contexts/LightBoxContext";
 
 /*
  *                                           ╭────────╮
@@ -40,6 +40,7 @@ const WikiPage = ({ page, ...otherProps }: Props): JSX.Element => {
   const { langui } = useLocalData();
   const router = useRouter();
   const isTerminalMode = useIsTerminalMode();
+  const { showLightBox } = useLightBox();
   const [selectedTranslation, LanguageSwitcher, languageSwitcherProps] = useSmartLanguage({
     items: page.translations,
     languageExtractor: useCallback(
@@ -48,9 +49,7 @@ const WikiPage = ({ page, ...otherProps }: Props): JSX.Element => {
       []
     ),
   });
-
-  const [openLightBox, LightBox] = useLightBox();
-  const is3ColumnsLayout = useIs3ColumnsLayout();
+  const { is3ColumnsLayout } = useContainerQueries();
 
   const subPanel = useMemo(
     () => (
@@ -64,8 +63,6 @@ const WikiPage = ({ page, ...otherProps }: Props): JSX.Element => {
   const contentPanel = useMemo(
     () => (
       <ContentPanel width={ContentPanelWidthSizes.Large}>
-        <LightBox />
-
         <ReturnButton
           href={`/wiki`}
           title={langui.wiki}
@@ -98,10 +95,8 @@ const WikiPage = ({ page, ...otherProps }: Props): JSX.Element => {
                     quality={ImageQuality.Medium}
                     className="w-full cursor-pointer"
                     onClick={() => {
-                      if (page.thumbnail?.data?.attributes?.url) {
-                        openLightBox([
-                          getAssetURL(page.thumbnail.data.attributes.url, ImageQuality.Large),
-                        ]);
+                      if (page.thumbnail?.data?.attributes) {
+                        showLightBox([page.thumbnail.data.attributes]);
                       }
                     }}
                   />
@@ -183,16 +178,18 @@ const WikiPage = ({ page, ...otherProps }: Props): JSX.Element => {
     ),
     [
       LanguageSwitcher,
-      LightBox,
       is3ColumnsLayout,
       languageSwitcherProps,
-      langui,
-      openLightBox,
+      langui.categories,
+      langui.summary,
+      langui.tags,
+      langui.wiki,
       page.categories?.data,
       page.definitions,
       page.tags?.data,
       page.thumbnail?.data?.attributes,
       selectedTranslation,
+      showLightBox,
     ]
   );
 

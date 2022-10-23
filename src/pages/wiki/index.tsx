@@ -22,13 +22,13 @@ import { SelectiveNonNullable } from "types/SelectiveNonNullable";
 import { prettySlug } from "helpers/formatters";
 import { getOpenGraph } from "helpers/openGraph";
 import { TranslatedPreviewCard } from "components/PreviewCard";
-import { useIsContentPanelAtLeast } from "hooks/useContainerQuery";
 import { cIf } from "helpers/className";
 import { getLangui } from "graphql/fetchLocalData";
 import { sendAnalytics } from "helpers/analytics";
 import { Terminal } from "components/Cli/Terminal";
 import { useIsTerminalMode } from "hooks/useIsTerminalMode";
 import { useLocalData } from "contexts/LocalDataContext";
+import { useContainerQueries } from "contexts/ContainerQueriesContext";
 
 /*
  *                                         ╭─────────────╮
@@ -53,7 +53,7 @@ interface Props extends AppLayoutRequired {
 const Wiki = ({ pages, ...otherProps }: Props): JSX.Element => {
   const hoverable = useDeviceSupportsHover();
   const { langui } = useLocalData();
-  const isContentPanelAtLeast4xl = useIsContentPanelAtLeast("4xl");
+  const { isContentPanelAtLeast4xl } = useContainerQueries();
   const isTerminalMode = useIsTerminalMode();
 
   const [searchName, setSearchName] = useState(DEFAULT_FILTERS_STATE.searchName);

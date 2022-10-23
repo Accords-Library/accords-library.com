@@ -6,9 +6,9 @@ import { Ico, Icon } from "./Ico";
 import { cJoin } from "helpers/className";
 import { isDefined, isDefinedAndNotEmpty } from "helpers/others";
 import { useScrollTopOnChange } from "hooks/useScrollTopOnChange";
-import { useIs3ColumnsLayout } from "hooks/useContainerQuery";
 import { Ids } from "types/ids";
 import { useLocalData } from "contexts/LocalDataContext";
+import { useContainerQueries } from "contexts/ContainerQueriesContext";
 
 interface Group<T> {
   name: string;
@@ -191,7 +191,7 @@ export const SmartList = <T,>({
                   )}
                   <div
                     className={cJoin(
-                      `grid items-start gap-8 border-b-[3px] border-dotted pb-12
+                      `grid items-start gap-8 border-b-2 border-dotted pb-12
                       last-of-type:border-0`,
                       className
                     )}>
@@ -222,7 +222,7 @@ export const SmartList = <T,>({
  */
 
 const DefaultRenderWhenEmpty = () => {
-  const is3ColumnsLayout = useIs3ColumnsLayout();
+  const { is3ColumnsLayout } = useContainerQueries();
   const { langui } = useLocalData();
   return (
     <div className="grid h-full place-content-center">

@@ -1,6 +1,6 @@
 import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next";
 import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
-import Hotkeys from "react-hot-keys";
+import { useHotkeys } from "react-hotkeys-hook";
 import Slider from "rc-slider";
 import { useRouter } from "next/router";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
@@ -23,7 +23,6 @@ import { getLangui } from "graphql/fetchLocalData";
 import { ContentPanel, ContentPanelWidthSizes } from "components/Panels/ContentPanel";
 import { Img } from "components/Img";
 import { getAssetFilename, ImageQuality } from "helpers/img";
-import { useIs1ColumnLayout, useIsContentPanelNoMoreThan } from "hooks/useContainerQuery";
 import { cIf, cJoin } from "helpers/className";
 import { clamp, isInteger } from "helpers/numbers";
 import { SubPanel } from "components/Panels/SubPanel";
@@ -45,6 +44,7 @@ import { useFullscreen } from "hooks/useFullscreen";
 import { useUserSettings } from "contexts/UserSettingsContext";
 import { useLocalData } from "contexts/LocalDataContext";
 import { FilterSettings, useReaderSettings } from "hooks/useReaderSettings";
+import { useContainerQueries } from "contexts/ContainerQueriesContext";
 
 const CUSTOM_DARK_DROPSHADOW = `
 drop-shadow(0 0    0.5em rgb(var(--theme-color-shade) / 30%))
@@ -90,7 +90,7 @@ const LibrarySlug = ({
   item,
   ...otherProps
 }: Props): JSX.Element => {
-  const is1ColumnLayout = useIs1ColumnLayout();
+  const { is1ColumnLayout } = useContainerQueries();
   const { langui } = useLocalData();
   const { darkMode } = useUserSettings();
   const {
@@ -114,7 +114,7 @@ const LibrarySlug = ({
   );
   const router = useRouter();
 
-  const { isFullscreen, toggleFullscreen } = useFullscreen(Ids.ContentPanel);
+  const { isFullscreen, toggleFullscreen, requestFullscreen } = useFullscreen(Ids.ContentPanel);
 
   const effectiveDisplayMode = useMemo(
     () =>
@@ -172,6 +172,19 @@ const LibrarySlug = ({
     },
     [changeCurrentPageIndex, effectiveDisplayMode, pageOrder]
   );
+
+  useHotkeys("left", () => handlePageNavigation("left"), { enabled: !isGalleryMode }, [
+    handlePageNavigation,
+  ]);
+
+  useHotkeys("up", () => setIsGalleryMode(true), { enabled: !isGalleryMode }, [setIsGalleryMode]);
+  useHotkeys("down", () => setIsGalleryMode(false), { enabled: isGalleryMode }, [setIsGalleryMode]);
+
+  useHotkeys("f", () => requestFullscreen(), { enabled: !isFullscreen }, [requestFullscreen]);
+
+  useHotkeys("right", () => handlePageNavigation("right"), { enabled: !isGalleryMode }, [
+    handlePageNavigation,
+  ]);
 
   const firstPage = useMemo(
     () =>
@@ -426,121 +439,114 @@ const LibrarySlug = ({
     () => (
       <ContentPanel width={ContentPanelWidthSizes.Full} className="grid place-content-center !p-0">
         <div className={cJoin("mb-12 grid", cIf(is1ColumnLayout, "!p-0", "!p-8"))}>
-          <Hotkeys
-            keyName="left,right"
-            allowRepeat
-            onKeyDown={(keyName) => {
-              handlePageNavigation(keyName as "left" | "right");
-            }}>
-            <TransformWrapper
-              onZoom={(zoom) => setCurrentZoom(zoom.state.scale)}
-              panning={{ disabled: currentZoom <= 1, velocityDisabled: false }}
-              doubleClick={{ disabled: true, mode: "reset" }}
-              zoomAnimation={{ size: 0.1 }}
-              velocityAnimation={{ animationTime: 0, equalToMove: true }}>
-              <TransformComponent
-                wrapperStyle={{ overflow: "visible", placeSelf: "center" }}
-                contentStyle={{
-                  height: "100%",
-                  gridAutoFlow: "column",
-                  display: "grid",
-                  placeContent: "center",
-                  filter: filterSettings.dropShadow
-                    ? darkMode
-                      ? CUSTOM_DARK_DROPSHADOW
-                      : CUSTOM_LIGHT_DROPSHADOW
-                    : undefined,
-                }}>
-                {effectiveDisplayMode === "single" ? (
+          <TransformWrapper
+            onZoom={(zoom) => setCurrentZoom(zoom.state.scale)}
+            panning={{ disabled: currentZoom <= 1, velocityDisabled: false }}
+            doubleClick={{ disabled: true, mode: "reset" }}
+            zoomAnimation={{ size: 0.1 }}
+            velocityAnimation={{ animationTime: 0, equalToMove: true }}>
+            <TransformComponent
+              wrapperStyle={{ overflow: "visible", placeSelf: "center" }}
+              contentStyle={{
+                height: "100%",
+                gridAutoFlow: "column",
+                display: "grid",
+                placeContent: "center",
+                filter: filterSettings.dropShadow
+                  ? darkMode
+                    ? CUSTOM_DARK_DROPSHADOW
+                    : CUSTOM_LIGHT_DROPSHADOW
+                  : undefined,
+              }}>
+              {effectiveDisplayMode === "single" ? (
+                <div
+                  className={cJoin(
+                    "relative grid grid-flow-col",
+                    cIf(currentZoom <= 1, "cursor-pointer", "cursor-move")
+                  )}>
+                  <Img
+                    style={{ maxHeight: pageHeight, width: "auto" }}
+                    src={firstPage}
+                    quality={pageQuality}
+                  />
+                  <PageFilters page="single" bookType={bookType} options={filterSettings} />
+                  <div
+                    className="absolute left-0 top-0 bottom-0 w-1/2"
+                    onClick={() => currentZoom <= 1 && handlePageNavigation("left")}
+                  />
+                  <div
+                    className="absolute right-0 top-0 bottom-0 w-1/2"
+                    onClick={() => currentZoom <= 1 && handlePageNavigation("right")}
+                  />
+                </div>
+              ) : (
+                <>
                   <div
                     className={cJoin(
                       "relative grid grid-flow-col",
                       cIf(currentZoom <= 1, "cursor-pointer", "cursor-move")
-                    )}>
+                    )}
+                    onClick={() => currentZoom <= 1 && handlePageNavigation("left")}
+                    style={{
+                      clipPath: leftSideClipPath,
+                    }}>
+                    {isSidePagesEnabled && (
+                      <div
+                        style={{
+                          width: leftSidePagesWidth,
+                          backgroundImage: `url(/reader/sidepages-${bookType}.webp)`,
+                          backgroundSize: `${
+                            (SIDEPAGES_PAGE_COUNT_ON_TEXTURE / leftSidePagesCount) * 100
+                          }% 100%`,
+                        }}
+                      />
+                    )}
+
                     <Img
                       style={{ maxHeight: pageHeight, width: "auto" }}
-                      src={firstPage}
+                      src={pageOrder === PageOrder.LeftToRight ? firstPage : secondPage}
                       quality={pageQuality}
                     />
-                    <PageFilters page="single" bookType={bookType} options={filterSettings} />
-                    <div
-                      className="absolute left-0 top-0 bottom-0 w-1/2"
-                      onClick={() => currentZoom <= 1 && handlePageNavigation("left")}
-                    />
-                    <div
-                      className="absolute right-0 top-0 bottom-0 w-1/2"
-                      onClick={() => currentZoom <= 1 && handlePageNavigation("right")}
-                    />
+                    <PageFilters page="left" bookType={bookType} options={filterSettings} />
                   </div>
-                ) : (
-                  <>
-                    <div
-                      className={cJoin(
-                        "relative grid grid-flow-col",
-                        cIf(currentZoom <= 1, "cursor-pointer", "cursor-move")
+                  <div
+                    className={cJoin(
+                      "relative grid grid-flow-col",
+                      cIf(currentZoom <= 1, "cursor-pointer", "cursor-move")
+                    )}
+                    onClick={() => currentZoom <= 1 && handlePageNavigation("right")}
+                    style={{
+                      clipPath: rightSideClipPath,
+                    }}>
+                    <Img
+                      style={{ maxHeight: pageHeight, width: "auto" }}
+                      className={cIf(
+                        is1ColumnLayout,
+                        `max-h-[calc(100vh-5rem)]`,
+                        "max-h-[calc(100vh-4rem)]"
                       )}
-                      onClick={() => currentZoom <= 1 && handlePageNavigation("left")}
-                      style={{
-                        clipPath: leftSideClipPath,
-                      }}>
-                      {isSidePagesEnabled && (
-                        <div
-                          style={{
-                            width: leftSidePagesWidth,
-                            backgroundImage: `url(/reader/sidepages-${bookType}.webp)`,
-                            backgroundSize: `${
-                              (SIDEPAGES_PAGE_COUNT_ON_TEXTURE / leftSidePagesCount) * 100
-                            }% 100%`,
-                          }}
-                        />
-                      )}
-
-                      <Img
-                        style={{ maxHeight: pageHeight, width: "auto" }}
-                        src={pageOrder === PageOrder.LeftToRight ? firstPage : secondPage}
-                        quality={pageQuality}
+                      src={pageOrder === PageOrder.LeftToRight ? secondPage : firstPage}
+                      quality={pageQuality}
+                    />
+                    {isSidePagesEnabled && (
+                      <div
+                        style={{
+                          width: rightSidePagesWidth,
+                          backgroundImage: `url(/reader/sidepages-${bookType}.webp)`,
+                          backgroundPositionX: "right",
+                          backgroundSize: `${
+                            (SIDEPAGES_PAGE_COUNT_ON_TEXTURE / rightSidePagesCount) * 100
+                          }% 100%`,
+                        }}
                       />
-                      <PageFilters page="left" bookType={bookType} options={filterSettings} />
-                    </div>
-                    <div
-                      className={cJoin(
-                        "relative grid grid-flow-col",
-                        cIf(currentZoom <= 1, "cursor-pointer", "cursor-move")
-                      )}
-                      onClick={() => currentZoom <= 1 && handlePageNavigation("right")}
-                      style={{
-                        clipPath: rightSideClipPath,
-                      }}>
-                      <Img
-                        style={{ maxHeight: pageHeight, width: "auto" }}
-                        className={cIf(
-                          is1ColumnLayout,
-                          `max-h-[calc(100vh-5rem)]`,
-                          "max-h-[calc(100vh-4rem)]"
-                        )}
-                        src={pageOrder === PageOrder.LeftToRight ? secondPage : firstPage}
-                        quality={pageQuality}
-                      />
-                      {isSidePagesEnabled && (
-                        <div
-                          style={{
-                            width: rightSidePagesWidth,
-                            backgroundImage: `url(/reader/sidepages-${bookType}.webp)`,
-                            backgroundPositionX: "right",
-                            backgroundSize: `${
-                              (SIDEPAGES_PAGE_COUNT_ON_TEXTURE / rightSidePagesCount) * 100
-                            }% 100%`,
-                          }}
-                        />
-                      )}
+                    )}
 
-                      <PageFilters page="right" bookType={bookType} options={filterSettings} />
-                    </div>
-                  </>
-                )}
-              </TransformComponent>
-            </TransformWrapper>
-          </Hotkeys>
+                    <PageFilters page="right" bookType={bookType} options={filterSettings} />
+                  </div>
+                </>
+              )}
+            </TransformComponent>
+          </TransformWrapper>
         </div>
         <div
           className={cJoin(
@@ -883,7 +889,7 @@ interface ScanSetProps {
 }
 
 const ScanSet = ({ onClickOnImage, scanSet, id, title, content }: ScanSetProps): JSX.Element => {
-  const is1ColumnLayout = useIsContentPanelNoMoreThan("2xl");
+  const { is1ColumnLayout } = useContainerQueries();
   const { langui } = useLocalData();
   const [selectedScan, LanguageSwitcher, languageSwitcherProps] = useSmartLanguage({
     items: scanSet,
@@ -1028,8 +1034,8 @@ const ScanSet = ({ onClickOnImage, scanSet, id, title, content }: ScanSetProps):
 
           <div
             className={cJoin(
-              `grid items-end gap-8 border-b-[3px] border-dotted pb-12
-            last-of-type:border-0`,
+              `grid items-end gap-8 border-b-2 border-dotted pb-12
+               last-of-type:border-0`,
               cIf(
                 is1ColumnLayout,
                 "grid-cols-2 gap-[4vmin]",

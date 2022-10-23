@@ -20,10 +20,10 @@ import { compareDate } from "helpers/date";
 import { HorizontalLine } from "components/HorizontalLine";
 import { SmartList } from "components/SmartList";
 import { cIf } from "helpers/className";
-import { useIsContentPanelAtLeast } from "hooks/useContainerQuery";
 import { TextInput } from "components/Inputs/TextInput";
 import { getLangui } from "graphql/fetchLocalData";
 import { useLocalData } from "contexts/LocalDataContext";
+import { useContainerQueries } from "contexts/ContainerQueriesContext";
 
 /*
  *                                         ╭─────────────╮
@@ -47,7 +47,7 @@ const Channel = ({ channel, ...otherProps }: Props): JSX.Element => {
   const { value: keepInfoVisible, toggle: toggleKeepInfoVisible } = useBoolean(true);
   const { langui } = useLocalData();
   const hoverable = useDeviceSupportsHover();
-  const isContentPanelAtLeast4xl = useIsContentPanelAtLeast("4xl");
+  const { isContentPanelAtLeast4xl } = useContainerQueries();
 
   const [searchName, setSearchName] = useState(DEFAULT_FILTERS_STATE.searchName);
 

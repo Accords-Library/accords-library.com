@@ -19,10 +19,10 @@ import { TranslatedProps } from "types/TranslatedProps";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { TranslatedPreviewCard } from "components/PreviewCard";
 import { HorizontalLine } from "components/HorizontalLine";
-import { useIsContentPanelAtLeast } from "hooks/useContainerQuery";
 import { cJoin, cIf } from "helpers/className";
 import { getLangui } from "graphql/fetchLocalData";
 import { useLocalData } from "contexts/LocalDataContext";
+import { useContainerQueries } from "contexts/ContainerQueriesContext";
 
 /*
  *                                           ╭────────╮
@@ -37,7 +37,7 @@ interface Props extends AppLayoutRequired {
 
 const ContentsFolder = ({ openGraph, folder, ...otherProps }: Props): JSX.Element => {
   const { langui } = useLocalData();
-  const isContentPanelAtLeast4xl = useIsContentPanelAtLeast("4xl");
+  const { isContentPanelAtLeast4xl } = useContainerQueries();
 
   const subPanel = useMemo(
     () => (

@@ -4,9 +4,9 @@ import { ToolTip } from "components/ToolTip";
 import { getStatusDescription } from "helpers/others";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { Button } from "components/Inputs/Button";
-import { useIsContentPanelNoMoreThan } from "hooks/useContainerQuery";
 import { cIf, cJoin } from "helpers/className";
 import { useLocalData } from "contexts/LocalDataContext";
+import { useContainerQueries } from "contexts/ContainerQueriesContext";
 
 /*
  *                                        ╭─────────────╮
@@ -30,7 +30,7 @@ interface Props {
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
 const DefinitionCard = ({ source, translations = [], index, categories }: Props): JSX.Element => {
-  const isContentPanelNoMoreThanMd = useIsContentPanelNoMoreThan("md");
+  const { isContentPanelAtLeastMd } = useContainerQueries();
   const { langui } = useLocalData();
   const [selectedTranslation, LanguageSwitcher, languageSwitcherProps] = useSmartLanguage({
     items: translations,
@@ -78,7 +78,7 @@ const DefinitionCard = ({ source, translations = [], index, categories }: Props)
         <div
           className={cJoin(
             "mt-3 flex place-items-center gap-2",
-            cIf(isContentPanelNoMoreThanMd, "flex-col text-center")
+            cIf(!isContentPanelAtLeastMd, "flex-col text-center")
           )}>
           <p>{langui.source}: </p>
           <Button href={source.url} size="small" text={source.name} />

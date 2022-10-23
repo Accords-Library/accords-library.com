@@ -21,9 +21,9 @@ import { getOpenGraph } from "helpers/openGraph";
 import { compareDate } from "helpers/date";
 import { HorizontalLine } from "components/HorizontalLine";
 import { cIf } from "helpers/className";
-import { useIsContentPanelAtLeast } from "hooks/useContainerQuery";
 import { getLangui } from "graphql/fetchLocalData";
 import { useLocalData } from "contexts/LocalDataContext";
+import { useContainerQueries } from "contexts/ContainerQueriesContext";
 
 /*
  *                                         ╭─────────────╮
@@ -46,7 +46,7 @@ interface Props extends AppLayoutRequired {
 const Videos = ({ videos, ...otherProps }: Props): JSX.Element => {
   const { langui } = useLocalData();
   const hoverable = useDeviceSupportsHover();
-  const isContentPanelAtLeast4xl = useIsContentPanelAtLeast("4xl");
+  const { isContentPanelAtLeast4xl } = useContainerQueries();
 
   const { value: keepInfoVisible, toggle: toggleKeepInfoVisible } = useBoolean(true);
 

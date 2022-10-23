@@ -4,9 +4,9 @@ import { Button } from "components/Inputs/Button";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { TranslatedProps } from "types/TranslatedProps";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
-import { useIs3ColumnsLayout } from "hooks/useContainerQuery";
 import { isDefined } from "helpers/others";
 import { useLocalData } from "contexts/LocalDataContext";
+import { useContainerQueries } from "contexts/ContainerQueriesContext";
 
 /*
  *                                        ╭─────────────╮
@@ -26,7 +26,7 @@ interface Props {
 export const ReturnButton = ({ href, title, displayOnlyOn, className }: Props): JSX.Element => {
   const { setSubPanelOpen } = useAppLayout();
   const { langui } = useLocalData();
-  const is3ColumnsLayout = useIs3ColumnsLayout();
+  const { is3ColumnsLayout } = useContainerQueries();
 
   return (
     <>

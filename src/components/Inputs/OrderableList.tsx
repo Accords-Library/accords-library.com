@@ -57,7 +57,7 @@ export const OrderableList = ({ onChange, items, insertLabels }: Props): JSX.Ele
               updateOrder(sourceIndex, targetIndex);
             }}
             className="grid cursor-grab select-none grid-cols-[auto_1fr] place-content-center gap-2
-            rounded-full border-[1px] border-dark bg-light px-1 py-2 pr-4 text-dark transition-all
+            rounded-full border border-dark bg-light px-1 py-2 pr-4 text-dark transition-all
             hover:bg-dark hover:text-light hover:drop-shadow-shade-lg"
             draggable>
             <div className="grid grid-rows-[.8em_.8em] place-items-center">

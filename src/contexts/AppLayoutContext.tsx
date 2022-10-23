@@ -8,7 +8,7 @@ import React, {
   useState,
 } from "react";
 import { useRouter } from "next/router";
-import { useLocalStorage, useSessionStorage } from "usehooks-ts";
+import { useLocalStorage } from "usehooks-ts";
 import { isDefined } from "helpers/others";
 import { RequiredNonNullable } from "types/types";
 import { useStateWithLocalStorage } from "hooks/useStateWithLocalStorage";
@@ -34,11 +34,6 @@ interface AppLayoutState {
   menuGestures: boolean;
   toggleMenuGestures: () => void;
   setMenuGestures: Dispatch<SetStateAction<AppLayoutState["menuGestures"]>>;
-
-  hasDisgardedSafariWarning: boolean;
-  setHasDisgardedSafariWarning: Dispatch<
-    SetStateAction<AppLayoutState["hasDisgardedSafariWarning"]>
-  >;
 }
 
 const initialState: RequiredNonNullable<AppLayoutState> = {
@@ -61,9 +56,6 @@ const initialState: RequiredNonNullable<AppLayoutState> = {
   menuGestures: true,
   toggleMenuGestures: () => null,
   setMenuGestures: () => null,
-
-  hasDisgardedSafariWarning: false,
-  setHasDisgardedSafariWarning: () => null,
 };
 
 const AppLayoutContext = createContext<AppLayoutState>(initialState);
@@ -98,11 +90,6 @@ export const AppContextProvider = ({ children }: Props): JSX.Element => {
   );
 
   const [menuGestures, setMenuGestures] = useState(false);
-
-  const [hasDisgardedSafariWarning, setHasDisgardedSafariWarning] = useSessionStorage(
-    "hasDisgardedSafariWarning",
-    initialState.hasDisgardedSafariWarning
-  );
 
   const toggleSubPanelOpen = () => {
     setSubPanelOpen((current) => (isDefined(current) ? !current : current));
@@ -148,13 +135,11 @@ export const AppContextProvider = ({ children }: Props): JSX.Element => {
         mainPanelReduced,
         mainPanelOpen,
         menuGestures,
-        hasDisgardedSafariWarning,
         setSubPanelOpen,
         setConfigPanelOpen,
         setMainPanelReduced,
         setMainPanelOpen,
         setMenuGestures,
-        setHasDisgardedSafariWarning,
         toggleSubPanelOpen,
         toggleConfigPanelOpen,
         toggleMainPanelReduced,

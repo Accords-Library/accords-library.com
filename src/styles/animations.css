@@ -1,0 +1,32 @@
+.animation-carret {
+  animation-name: blink;
+  animation-duration: 1s;
+  animation-timing-function: step-end;
+  animation-iteration-count: infinite;
+}
+
+.animate-zoom-in {
+  animation-name: zoom-in;
+  animation-duration: 2s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: 1;
+}
+
+@keyframes zoom-in {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes blink {
+  from,
+  to {
+    border-bottom-style: solid;
+  }
+  50% {
+    border-bottom-style: none;
+  }
+}

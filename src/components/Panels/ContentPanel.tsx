@@ -1,5 +1,5 @@
+import { useContainerQueries } from "contexts/ContainerQueriesContext";
 import { cIf, cJoin } from "helpers/className";
-import { useIsContentPanelAtLeast } from "hooks/useContainerQuery";
 
 /*
  *                                        ╭─────────────╮
@@ -25,7 +25,7 @@ export const ContentPanel = ({
   children,
   className,
 }: Props): JSX.Element => {
-  const isContentPanelAtLeast3xl = useIsContentPanelAtLeast("3xl");
+  const { isContentPanelAtLeast3xl } = useContainerQueries();
   return (
     <div className="grid h-full">
       <main

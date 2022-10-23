@@ -29,7 +29,7 @@ import {
   prettySlug,
   prettyURL,
 } from "helpers/formatters";
-import { getAssetURL, ImageQuality } from "helpers/img";
+import { ImageQuality } from "helpers/img";
 import { convertMmToInch } from "helpers/numbers";
 import {
   filterDefined,
@@ -38,7 +38,6 @@ import {
   isDefinedAndNotEmpty,
   sortRangedContent,
 } from "helpers/others";
-import { useLightBox } from "hooks/useLightBox";
 import { useScrollTopOnChange } from "hooks/useScrollTopOnChange";
 import { isUntangibleGroupItem } from "helpers/libraryItem";
 import { useDeviceSupportsHover } from "hooks/useMediaQuery";
@@ -50,11 +49,12 @@ import { getOpenGraph } from "helpers/openGraph";
 import { getDescription } from "helpers/description";
 import { useIntersectionList } from "hooks/useIntersectionList";
 import { HorizontalLine } from "components/HorizontalLine";
-import { useIsContentPanelNoMoreThan } from "hooks/useContainerQuery";
 import { getLangui } from "graphql/fetchLocalData";
 import { Ids } from "types/ids";
 import { useUserSettings } from "contexts/UserSettingsContext";
 import { useLocalData } from "contexts/LocalDataContext";
+import { useContainerQueries } from "contexts/ContainerQueriesContext";
+import { useLightBox } from "contexts/LightBoxContext";
 
 /*
  *                                         ╭─────────────╮
@@ -76,12 +76,12 @@ interface Props extends AppLayoutRequired {
 const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
   const { currency } = useUserSettings();
   const { langui, currencies } = useLocalData();
-  const isContentPanelNoMoreThan3xl = useIsContentPanelNoMoreThan("3xl");
-  const isContentPanelNoMoreThanSm = useIsContentPanelNoMoreThan("sm");
+  const { isContentPanelAtLeast3xl, isContentPanelAtLeastSm } = useContainerQueries();
   const hoverable = useDeviceSupportsHover();
   const router = useRouter();
-  const [openLightBox, LightBox] = useLightBox();
   const { value: keepInfoVisible, toggle: toggleKeepInfoVisible } = useBoolean(false);
+
+  const { showLightBox } = useLightBox();
 
   useScrollTopOnChange(Ids.ContentPanel, [item]);
   const currentIntersection = useIntersectionList(intersectionIds);
@@ -158,8 +158,6 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
   const contentPanel = useMemo(
     () => (
       <ContentPanel width={ContentPanelWidthSizes.Full}>
-        <LightBox />
-
         <ReturnButton
           href="/library/"
           title={langui.library}
@@ -170,18 +168,16 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
           <div
             className={cJoin(
               "relative h-[50vh] w-full cursor-pointer drop-shadow-shade-xl",
-              cIf(isContentPanelNoMoreThan3xl, "h-[60vh]", "mb-16")
-            )}
-            onClick={() => {
-              if (item.thumbnail?.data?.attributes) {
-                openLightBox([getAssetURL(item.thumbnail.data.attributes.url, ImageQuality.Large)]);
-              }
-            }}>
+              cIf(isContentPanelAtLeast3xl, "mb-16", "h-[60vh]")
+            )}>
             {item.thumbnail?.data?.attributes ? (
               <Img
                 src={item.thumbnail.data.attributes}
                 quality={ImageQuality.Large}
                 className="h-full w-full object-contain"
+                onClick={() => {
+                  showLightBox([item.thumbnail?.data?.attributes]);
+                }}
               />
             ) : (
               <div className="aspect-[21/29.7] w-full rounded-xl bg-light"></div>
@@ -254,12 +250,12 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
                         className="relative aspect-square cursor-pointer
                       transition-transform hover:scale-[1.02]"
                         onClick={() => {
-                          const images: string[] = filterHasAttributes(item.gallery?.data, [
-                            "attributes",
-                          ] as const).map((image) =>
-                            getAssetURL(image.attributes.url, ImageQuality.Large)
+                          showLightBox(
+                            filterHasAttributes(item.gallery?.data, ["attributes"] as const).map(
+                              (image) => image.attributes
+                            ),
+                            index
                           );
-                          openLightBox(images, index);
                         }}>
                         <Img
                           className="h-full w-full rounded-lg
@@ -280,7 +276,7 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
               <div
                 className={cJoin(
                   "grid place-items-center gap-y-8",
-                  cIf(!isContentPanelNoMoreThan3xl, "grid-flow-col place-content-between")
+                  cIf(isContentPanelAtLeast3xl, "grid-flow-col place-content-between")
                 )}>
                 {item.metadata?.[0] && (
                   <div className="grid place-content-start place-items-center">
@@ -337,25 +333,25 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
                 <div
                   className={cJoin(
                     "grid gap-4",
-                    cIf(isContentPanelNoMoreThan3xl, "place-items-center")
+                    cIf(!isContentPanelAtLeast3xl, "place-items-center")
                   )}>
                   <h3 className="text-xl">{langui.size}</h3>
                   <div
                     className={cJoin(
                       "grid w-full",
                       cIf(
-                        isContentPanelNoMoreThanSm,
-                        "grid-flow-row place-content-center gap-8",
-                        "grid-flow-col place-content-between"
+                        isContentPanelAtLeastSm,
+                        "grid-flow-col place-content-between",
+                        "grid-flow-row place-content-center gap-8"
                       )
                     )}>
                     <div
                       className={cJoin(
                         "grid gap-x-4",
                         cIf(
-                          isContentPanelNoMoreThan3xl,
-                          "place-items-center",
-                          "grid-flow-col place-items-start"
+                          isContentPanelAtLeast3xl,
+                          "grid-flow-col place-items-start",
+                          "place-items-center"
                         )
                       )}>
                       <p className="font-bold">{langui.width}:</p>
@@ -368,9 +364,9 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
                       className={cJoin(
                         "grid gap-x-4",
                         cIf(
-                          isContentPanelNoMoreThan3xl,
-                          "place-items-center",
-                          "grid-flow-col place-items-start"
+                          isContentPanelAtLeast3xl,
+                          "grid-flow-col place-items-start",
+                          "place-items-center"
                         )
                       )}>
                       <p className="font-bold">{langui.height}:</p>
@@ -384,9 +380,9 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
                         className={cJoin(
                           "grid gap-x-4",
                           cIf(
-                            isContentPanelNoMoreThan3xl,
-                            "place-items-center",
-                            "grid-flow-col place-items-start"
+                            isContentPanelAtLeast3xl,
+                            "grid-flow-col place-items-start",
+                            "place-items-center"
                           )
                         )}>
                         <p className="font-bold">{langui.thickness}:</p>
@@ -405,7 +401,7 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
                   <div
                     className={cJoin(
                       "grid gap-4",
-                      cIf(isContentPanelNoMoreThan3xl, "place-items-center")
+                      cIf(!isContentPanelAtLeast3xl, "place-items-center")
                     )}>
                     <h3 className="text-xl">{langui.type_information}</h3>
                     <div className="flex flex-wrap place-content-between gap-x-8">
@@ -555,7 +551,7 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
                         isDefined(rangedContent.attributes.scan_set) &&
                         rangedContent.attributes.scan_set.length > 0
                       }
-                      condensed={isContentPanelNoMoreThan3xl}
+                      condensed={!isContentPanelAtLeast3xl}
                     />
                   )
                 )}
@@ -566,9 +562,8 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
       </ContentPanel>
     ),
     [
-      LightBox,
       langui,
-      isContentPanelNoMoreThan3xl,
+      isContentPanelAtLeast3xl,
       item.thumbnail?.data?.attributes,
       item.subitem_of?.data,
       item.title,
@@ -588,13 +583,13 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
       router.locale,
       currencies,
       currency,
-      isContentPanelNoMoreThanSm,
+      isContentPanelAtLeastSm,
       isVariantSet,
       hoverable,
       toggleKeepInfoVisible,
       keepInfoVisible,
       displayOpenScans,
-      openLightBox,
+      showLightBox,
     ]
   );
 

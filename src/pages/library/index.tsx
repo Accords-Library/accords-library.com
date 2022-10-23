@@ -28,12 +28,12 @@ import { SelectiveNonNullable } from "types/SelectiveNonNullable";
 import { getOpenGraph } from "helpers/openGraph";
 import { compareDate } from "helpers/date";
 import { HorizontalLine } from "components/HorizontalLine";
-import { useIsContentPanelAtLeast } from "hooks/useContainerQuery";
 import { cIf, cJoin } from "helpers/className";
 import { getLangui } from "graphql/fetchLocalData";
 import { sendAnalytics } from "helpers/analytics";
 import { useLocalData } from "contexts/LocalDataContext";
 import { useLibraryItemUserStatus } from "hooks/useLibraryItemUserStatus";
+import { useContainerQueries } from "contexts/ContainerQueriesContext";
 
 /*
  *                                         ╭─────────────╮
@@ -64,7 +64,7 @@ const Library = ({ items, ...otherProps }: Props): JSX.Element => {
   const hoverable = useDeviceSupportsHover();
   const { langui, currencies } = useLocalData();
   const { libraryItemUserStatus } = useLibraryItemUserStatus();
-  const isContentPanelAtLeast4xl = useIsContentPanelAtLeast("4xl");
+  const { isContentPanelAtLeast4xl } = useContainerQueries();
 
   const [searchName, setSearchName] = useState(DEFAULT_FILTERS_STATE.searchName);
 

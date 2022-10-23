@@ -1,0 +1,11 @@
+.false {
+  @apply border-2 border-[red] text-[red] outline-dotted outline-2 outline-[red];
+}
+
+.undefined {
+  @apply border-2 border-[green] text-[green] outline-dotted outline-2 outline-[green];
+}
+
+.null {
+  @apply border-2 border-[blue] text-[blue] outline-dotted outline-2 outline-[blue];
+}

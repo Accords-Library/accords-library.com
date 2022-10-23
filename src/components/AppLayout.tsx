@@ -1,29 +1,15 @@
 import Head from "next/head";
-import { useRouter } from "next/router";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useSwipeable } from "react-swipeable";
-import UAParser from "ua-parser-js";
-import { useIsClient } from "usehooks-ts";
-import Script from "next/script";
 import { layout } from "../../design.config";
 import { Ico, Icon } from "./Ico";
-import { ButtonGroup } from "./Inputs/ButtonGroup";
-import { OrderableList } from "./Inputs/OrderableList";
-import { Select } from "./Inputs/Select";
-import { TextInput } from "./Inputs/TextInput";
 import { MainPanel } from "./Panels/MainPanel";
-import { Popup } from "./Popup";
-import { filterHasAttributes, isDefined, isUndefined } from "helpers/others";
-import { prettyLanguage } from "helpers/formatters";
+import { SafariPopup } from "./Panels/SafariPopup";
+import { isDefined, isUndefined } from "helpers/others";
 import { cIf, cJoin } from "helpers/className";
 import { useAppLayout } from "contexts/AppLayoutContext";
-import { Button } from "components/Inputs/Button";
 import { OpenGraph, TITLE_PREFIX, TITLE_SEPARATOR } from "helpers/openGraph";
-import { useIs1ColumnLayout, useIsScreenAtLeast } from "hooks/useContainerQuery";
-import { useOnResize } from "hooks/useOnResize";
 import { Ids } from "types/ids";
-import { sendAnalytics } from "helpers/analytics";
-import { useUserSettings } from "contexts/UserSettingsContext";
 import { useLocalData } from "contexts/LocalDataContext";
 import { useContainerQueries } from "contexts/ContainerQueriesContext";
 
@@ -60,48 +46,19 @@ export const AppLayout = ({
   contentPanelScroolbar = true,
 }: Props): JSX.Element => {
   const {
-    configPanelOpen,
     mainPanelOpen,
     mainPanelReduced,
     menuGestures,
     subPanelOpen,
-    hasDisgardedSafariWarning,
-    setHasDisgardedSafariWarning,
-    setConfigPanelOpen,
     setMainPanelOpen,
     setSubPanelOpen,
     toggleMainPanelOpen,
     toggleSubPanelOpen,
   } = useAppLayout();
 
-  const { setScreenWidth, setContentPanelWidth, setSubPanelWidth } = useContainerQueries();
+  const { langui } = useLocalData();
 
-  const { langui, currencies, languages } = useLocalData();
-
-  const {
-    currency,
-    darkMode,
-    dyslexic,
-    fontSize,
-    playerName,
-    preferredLanguages,
-    selectedThemeMode,
-    setCurrency,
-    setDarkMode,
-    setDyslexic,
-    setFontSize,
-    setPlayerName,
-    setPreferredLanguages,
-    setSelectedThemeMode,
-  } = useUserSettings();
-
-  const router = useRouter();
-  const is1ColumnLayout = useIs1ColumnLayout();
-  const isScreenAtLeastXs = useIsScreenAtLeast("xs");
-
-  useOnResize(Ids.Body, (width) => setScreenWidth(width));
-  useOnResize(Ids.ContentPanel, (width) => setContentPanelWidth(width));
-  useOnResize(Ids.SubPanel, (width) => setSubPanelWidth(width));
+  const { is1ColumnLayout, isScreenAtLeastXs } = useContainerQueries();
 
   const handlers = useSwipeable({
     onSwipedLeft: (SwipeEventData) => {
@@ -131,389 +88,148 @@ export const AppLayout = ({
     [contentPanel, subPanel]
   );
 
-  const currencyOptions = useMemo(
-    () =>
-      filterHasAttributes(currencies, ["attributes"] as const).map(
-        (currentCurrency) => currentCurrency.attributes.code
-      ),
-    [currencies]
-  );
-
-  const [currencySelect, setCurrencySelect] = useState<number>(-1);
-
-  useEffect(() => {
-    if (isDefined(currency)) setCurrencySelect(currencyOptions.indexOf(currency));
-  }, [currency, currencyOptions]);
-
-  useEffect(() => {
-    if (currencySelect >= 0) setCurrency(currencyOptions[currencySelect]);
-  }, [currencyOptions, currencySelect, setCurrency]);
-
-  const isClient = useIsClient();
-
-  const isSafari = useMemo<boolean>(() => {
-    if (isClient) {
-      const parser = new UAParser();
-      return parser.getBrowser().name === "Safari" || parser.getOS().name === "iOS";
-    }
-    return false;
-  }, [isClient]);
-
   return (
     <div
+      {...handlers}
+      id={Ids.Body}
       className={cJoin(
-        cIf(darkMode, "set-theme-dark", "set-theme-light"),
-        cIf(dyslexic, "set-theme-font-dyslexic", "set-theme-font-standard")
-      )}>
+        "fixed inset-0 m-0 grid touch-pan-y bg-light p-0 [grid-template-areas:'main_sub_content']",
+        cIf(is1ColumnLayout, "grid-rows-[1fr_5rem] [grid-template-areas:'content''navbar']")
+      )}
+      style={{
+        gridTemplateColumns: is1ColumnLayout
+          ? "1fr"
+          : `${mainPanelReduced ? layout.mainMenuReduced : layout.mainMenu}rem ${
+              isDefined(subPanel) ? layout.subMenu : 0
+            }rem 1fr`,
+      }}>
+      <Head>
+        <title>{openGraph.title}</title>
+        <meta name="description" content={openGraph.description} />
+
+        <meta name="twitter:title" content={openGraph.title} />
+        <meta name="twitter:description" content={openGraph.description} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:image" content={openGraph.thumbnail.image} />
+
+        <meta property="og:title" content={openGraph.title} />
+        <meta property="og:description" content={openGraph.description} />
+        <meta property="og:image" content={openGraph.thumbnail.image} />
+        <meta property="og:image:secure_url" content={openGraph.thumbnail.image} />
+        <meta property="og:image:width" content={openGraph.thumbnail.width.toString()} />
+        <meta property="og:image:height" content={openGraph.thumbnail.height.toString()} />
+        <meta property="og:image:alt" content={openGraph.thumbnail.alt} />
+        <meta property="og:image:type" content="image/jpeg" />
+      </Head>
+
+      {/* Background when navbar is opened */}
       <div
-        {...handlers}
-        id={Ids.Body}
         className={cJoin(
-          `fixed inset-0 m-0 grid touch-pan-y bg-light p-0 text-black
-        [grid-template-areas:'main_sub_content']`,
-          cIf(is1ColumnLayout, `grid-rows-[1fr_5rem] [grid-template-areas:'content''navbar']`)
-        )}
-        style={{
-          gridTemplateColumns: is1ColumnLayout
-            ? "1fr"
-            : `${mainPanelReduced ? layout.mainMenuReduced : layout.mainMenu}rem ${
-                isDefined(subPanel) ? layout.subMenu : 0
-              }rem 1fr`,
-        }}>
-        <Head>
-          <title>{openGraph.title}</title>
-          <meta name="description" content={openGraph.description} />
-
-          <meta name="twitter:title" content={openGraph.title} />
-          <meta name="twitter:description" content={openGraph.description} />
-          <meta name="twitter:card" content="summary_large_image" />
-          <meta name="twitter:image" content={openGraph.thumbnail.image} />
-
-          <meta property="og:title" content={openGraph.title} />
-          <meta property="og:description" content={openGraph.description} />
-          <meta property="og:image" content={openGraph.thumbnail.image} />
-          <meta property="og:image:secure_url" content={openGraph.thumbnail.image} />
-          <meta property="og:image:width" content={openGraph.thumbnail.width.toString()} />
-          <meta property="og:image:height" content={openGraph.thumbnail.height.toString()} />
-          <meta property="og:image:alt" content={openGraph.thumbnail.alt} />
-          <meta property="og:image:type" content="image/jpeg" />
-        </Head>
-
-        <Script
-          async
-          defer
-          data-website-id={process.env.NEXT_PUBLIC_UMAMI_ID}
-          src={`${process.env.NEXT_PUBLIC_UMAMI_URL}/umami.js`}
-        />
-
-        {/* Background when navbar is opened */}
-        <div
-          className={cJoin(
-            `absolute inset-0 transition-[backdrop-filter] duration-500
+          `absolute inset-0 transition-filter duration-500
             [grid-area:content]`,
-            cIf(
-              (mainPanelOpen || subPanelOpen) && is1ColumnLayout,
-              "z-10 [backdrop-filter:blur(2px)]",
-              "pointer-events-none touch-none"
-            )
-          )}>
-          <div
-            className={cJoin(
-              "absolute inset-0 bg-shade transition-opacity duration-500",
-              cIf((mainPanelOpen || subPanelOpen) && is1ColumnLayout, "opacity-60", "opacity-0")
-            )}
-            onClick={() => {
-              setMainPanelOpen(false);
-              setSubPanelOpen(false);
-            }}></div>
-        </div>
-
-        {/* Content panel */}
+          cIf(
+            (mainPanelOpen || subPanelOpen) && is1ColumnLayout,
+            "z-10 backdrop-blur",
+            "pointer-events-none touch-none"
+          )
+        )}>
         <div
-          id={Ids.ContentPanel}
           className={cJoin(
-            "texture-paper-dots bg-light [grid-area:content]",
-            cIf(contentPanelScroolbar, "overflow-y-scroll")
-          )}>
-          {isDefined(contentPanel) ? (
-            contentPanel
-          ) : (
-            <ContentPlaceholder
-              message={langui.select_option_sidebar ?? ""}
-              icon={Icon.ChevronLeft}
-            />
+            "absolute inset-0 bg-shade transition-opacity duration-500",
+            cIf((mainPanelOpen || subPanelOpen) && is1ColumnLayout, "opacity-60", "opacity-0")
           )}
-        </div>
+          onClick={() => {
+            setMainPanelOpen(false);
+            setSubPanelOpen(false);
+          }}></div>
+      </div>
 
-        {/* Sub panel */}
-        {isDefined(subPanel) && (
-          <div
-            id={Ids.SubPanel}
-            className={cJoin(
-              `texture-paper-dots z-20 overflow-y-scroll border-r-[1px] border-dark/50
+      {/* Content panel */}
+      <div
+        id={Ids.ContentPanel}
+        className={cJoin(
+          "texture-paper-dots bg-light [grid-area:content]",
+          cIf(contentPanelScroolbar, "overflow-y-scroll")
+        )}>
+        {isDefined(contentPanel) ? (
+          contentPanel
+        ) : (
+          <ContentPlaceholder
+            message={langui.select_option_sidebar ?? ""}
+            icon={Icon.ChevronLeft}
+          />
+        )}
+      </div>
+
+      {/* Sub panel */}
+      {isDefined(subPanel) && (
+        <div
+          id={Ids.SubPanel}
+          className={cJoin(
+            `texture-paper-dots z-20 overflow-y-scroll border-r border-dark/50
               bg-light transition-transform duration-300 [scrollbar-width:none]
               webkit-scrollbar:w-0`,
-              cIf(
-                is1ColumnLayout,
-                "justify-self-end border-r-0 [grid-area:content]",
-                "[grid-area:sub]"
-              ),
-              cIf(is1ColumnLayout && isScreenAtLeastXs, "w-[min(30rem,90%)] border-l-[1px]"),
-              cIf(is1ColumnLayout && !subPanelOpen && !turnSubIntoContent, "translate-x-[100vw]"),
-              cIf(is1ColumnLayout && turnSubIntoContent, "w-full border-l-0")
-            )}>
-            {subPanel}
-          </div>
-        )}
-
-        {/* Main panel */}
-        <div
-          className={cJoin(
-            `texture-paper-dots z-30 overflow-y-scroll border-r-[1px] border-dark/50
-            bg-light transition-transform duration-300 [scrollbar-width:none] webkit-scrollbar:w-0`,
-            cIf(is1ColumnLayout, "justify-self-start [grid-area:content]", "[grid-area:main]"),
-            cIf(is1ColumnLayout && isScreenAtLeastXs, "w-[min(30rem,90%)]"),
-            cIf(!mainPanelOpen && is1ColumnLayout, "-translate-x-full")
+            cIf(
+              is1ColumnLayout,
+              "justify-self-end border-r-0 [grid-area:content]",
+              "[grid-area:sub]"
+            ),
+            cIf(is1ColumnLayout && isScreenAtLeastXs, "w-[min(30rem,90%)] border-l"),
+            cIf(is1ColumnLayout && !subPanelOpen && !turnSubIntoContent, "translate-x-[100vw]"),
+            cIf(is1ColumnLayout && turnSubIntoContent, "w-full border-l-0")
           )}>
-          <MainPanel />
+          {subPanel}
         </div>
+      )}
 
-        {/* Navbar */}
-        <div
+      {/* Main panel */}
+      <div
+        className={cJoin(
+          `texture-paper-dots z-30 overflow-y-scroll border-r border-dark/50
+            bg-light transition-transform duration-300 [scrollbar-width:none] webkit-scrollbar:w-0`,
+          cIf(is1ColumnLayout, "justify-self-start [grid-area:content]", "[grid-area:main]"),
+          cIf(is1ColumnLayout && isScreenAtLeastXs, "w-[min(30rem,90%)]"),
+          cIf(!mainPanelOpen && is1ColumnLayout, "-translate-x-full")
+        )}>
+        <MainPanel />
+      </div>
+
+      {/* Navbar */}
+      <div
+        className={cJoin(
+          `texture-paper-dots z-10 grid grid-cols-[5rem_1fr_5rem] place-items-center
+            border-t border-dotted border-black bg-light [grid-area:navbar]`,
+          cIf(!is1ColumnLayout, "hidden")
+        )}>
+        <Ico
+          icon={mainPanelOpen ? Icon.Close : Icon.Menu}
+          className="cursor-pointer !text-2xl"
+          onClick={() => {
+            toggleMainPanelOpen();
+            setSubPanelOpen(false);
+          }}
+        />
+        <p
           className={cJoin(
-            `texture-paper-dots z-10 grid grid-cols-[5rem_1fr_5rem] place-items-center
-            border-t-[1px] border-dotted border-black bg-light [grid-area:navbar]`,
-            cIf(!is1ColumnLayout, "hidden")
+            "overflow-hidden text-center font-headers font-black",
+            cIf(openGraph.title.length > 30, "max-h-14 text-xl", "max-h-16 text-2xl")
           )}>
+          {openGraph.title.substring(TITLE_PREFIX.length + TITLE_SEPARATOR.length)
+            ? openGraph.title.substring(TITLE_PREFIX.length + TITLE_SEPARATOR.length)
+            : "Accord’s Library"}
+        </p>
+        {isDefined(subPanel) && !turnSubIntoContent && (
           <Ico
-            icon={mainPanelOpen ? Icon.Close : Icon.Menu}
+            icon={subPanelOpen ? Icon.Close : subPanelIcon}
             className="cursor-pointer !text-2xl"
             onClick={() => {
-              toggleMainPanelOpen();
-              setSubPanelOpen(false);
+              toggleSubPanelOpen();
+              setMainPanelOpen(false);
             }}
           />
-          <p
-            className={cJoin(
-              "overflow-hidden text-center font-headers font-black",
-              cIf(openGraph.title.length > 30, "max-h-14 text-xl", "max-h-16 text-2xl")
-            )}>
-            {openGraph.title.substring(TITLE_PREFIX.length + TITLE_SEPARATOR.length)
-              ? openGraph.title.substring(TITLE_PREFIX.length + TITLE_SEPARATOR.length)
-              : "Accord’s Library"}
-          </p>
-          {isDefined(subPanel) && !turnSubIntoContent && (
-            <Ico
-              icon={subPanelOpen ? Icon.Close : subPanelIcon}
-              className="cursor-pointer !text-2xl"
-              onClick={() => {
-                toggleSubPanelOpen();
-                setMainPanelOpen(false);
-              }}
-            />
-          )}
-        </div>
-
-        <Popup state={isSafari && !hasDisgardedSafariWarning} onClose={() => null}>
-          <h1 className="text-2xl">Hi, you are using Safari!</h1>
-          <p className="max-w-lg text-center">
-            In most cases this wouldn&rsquo;t be a problem but our website is—for some obscure
-            reason—performing terribly on Safari (WebKit). Because of that, we have decided to
-            display this message instead of letting you have a slow and painful experience. We are
-            looking into the problem, and are hoping to fix this soon.
-          </p>
-          <p>In the meanwhile, if you are using an iPhone/iPad, please try using another device.</p>
-          <p>If you are on macOS, please use another browser such as Firefox or Chrome.</p>
-
-          <Button
-            text="Let me in regardless"
-            className="mt-8"
-            onClick={() => {
-              setHasDisgardedSafariWarning(true);
-              sendAnalytics("Safari", "Disgard warning");
-            }}
-          />
-        </Popup>
-
-        <Popup
-          state={configPanelOpen}
-          onClose={() => {
-            setConfigPanelOpen(false);
-            sendAnalytics("Settings", "Close settings");
-          }}>
-          <h2 className="text-2xl">{langui.settings}</h2>
-
-          <div
-            className={cJoin(
-              `mt-4 grid justify-items-center gap-16 text-center`,
-              cIf(!is1ColumnLayout, "grid-cols-[auto_auto]")
-            )}>
-            {router.locales && (
-              <div>
-                <h3 className="text-xl">{langui.languages}</h3>
-                {preferredLanguages.length > 0 && (
-                  <OrderableList
-                    items={preferredLanguages.map((locale) => ({
-                      code: locale,
-                      name: prettyLanguage(locale, languages),
-                    }))}
-                    insertLabels={[
-                      {
-                        insertAt: 0,
-                        name: langui.primary_language ?? "Primary language",
-                      },
-                      {
-                        insertAt: 1,
-                        name: langui.secondary_language ?? "Secondary languages",
-                      },
-                    ]}
-                    onChange={(items) => {
-                      const newPreferredLanguages = items.map((item) => item.code);
-                      setPreferredLanguages(newPreferredLanguages);
-                      sendAnalytics("Settings", "Change preferred languages");
-                    }}
-                  />
-                )}
-              </div>
-            )}
-            <div
-              className={cJoin(
-                "grid place-items-center gap-8 text-center",
-                cIf(!is1ColumnLayout, "grid-cols-2")
-              )}>
-              <div>
-                <h3 className="text-xl">{langui.theme}</h3>
-                <ButtonGroup
-                  buttonsProps={[
-                    {
-                      onClick: () => {
-                        setDarkMode(false);
-                        setSelectedThemeMode(true);
-                        sendAnalytics("Settings", "Change theme (light)");
-                      },
-                      active: selectedThemeMode && !darkMode,
-                      text: langui.light,
-                    },
-                    {
-                      onClick: () => {
-                        setSelectedThemeMode(false);
-                        sendAnalytics("Settings", "Change theme (auto)");
-                      },
-                      active: !selectedThemeMode,
-                      text: langui.auto,
-                    },
-                    {
-                      onClick: () => {
-                        setDarkMode(true);
-                        setSelectedThemeMode(true);
-                        sendAnalytics("Settings", "Change theme (dark)");
-                      },
-                      active: selectedThemeMode && darkMode,
-                      text: langui.dark,
-                    },
-                  ]}
-                />
-              </div>
-
-              <div>
-                <h3 className="text-xl">{langui.currency}</h3>
-                <div>
-                  <Select
-                    options={currencyOptions}
-                    value={currencySelect}
-                    onChange={(newCurrency) => {
-                      setCurrencySelect(newCurrency);
-                      sendAnalytics(
-                        "Settings",
-                        `Change currency (${currencyOptions[newCurrency]})}`
-                      );
-                    }}
-                    className="w-28"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <h3 className="text-xl">{langui.font_size}</h3>
-                <ButtonGroup
-                  buttonsProps={[
-                    {
-                      onClick: () => {
-                        setFontSize((current) => current / 1.05);
-                        sendAnalytics(
-                          "Settings",
-                          `Change font size (${((fontSize / 1.05) * 100).toLocaleString(undefined, {
-                            maximumFractionDigits: 0,
-                          })}%)`
-                        );
-                      },
-                      icon: Icon.TextDecrease,
-                    },
-                    {
-                      onClick: () => {
-                        setFontSize(1);
-                        sendAnalytics("Settings", "Change font size (100%)");
-                      },
-                      text: `${(fontSize * 100).toLocaleString(undefined, {
-                        maximumFractionDigits: 0,
-                      })}%`,
-                    },
-                    {
-                      onClick: () => {
-                        setFontSize((current) => current * 1.05);
-                        sendAnalytics(
-                          "Settings",
-                          `Change font size (${(fontSize * 1.05 * 100).toLocaleString(undefined, {
-                            maximumFractionDigits: 0,
-                          })}%)`
-                        );
-                      },
-                      icon: Icon.TextIncrease,
-                    },
-                  ]}
-                />
-              </div>
-
-              <div>
-                <h3 className="text-xl">{langui.font}</h3>
-                <div className="grid gap-2">
-                  <Button
-                    active={!dyslexic}
-                    onClick={() => {
-                      setDyslexic(false);
-                      sendAnalytics("Settings", "Change font (Zen Maru Gothic)");
-                    }}
-                    className="font-zenMaruGothic"
-                    text="Zen Maru Gothic"
-                  />
-                  <Button
-                    active={dyslexic}
-                    onClick={() => {
-                      setDyslexic(true);
-                      sendAnalytics("Settings", "Change font (OpenDyslexic)");
-                    }}
-                    className="font-openDyslexic"
-                    text="OpenDyslexic"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <h3 className="text-xl">{langui.player_name}</h3>
-                <TextInput
-                  placeholder="<player>"
-                  className="w-48"
-                  value={playerName}
-                  onChange={(newName) => {
-                    setPlayerName(newName);
-                    sendAnalytics("Settings", "Change username");
-                  }}
-                />
-              </div>
-            </div>
-          </div>
-        </Popup>
+        )}
       </div>
+      <SafariPopup />
     </div>
   );
 };

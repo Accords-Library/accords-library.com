@@ -9,14 +9,14 @@ import { cIf, cJoin } from "helpers/className";
 import { slugify } from "helpers/formatters";
 import { getAssetURL, ImageQuality } from "helpers/img";
 import { isDefined, isDefinedAndNotEmpty, isUndefined } from "helpers/others";
-import { useLightBox } from "hooks/useLightBox";
 import { AnchorShare } from "components/AnchorShare";
 import { useIntersectionList } from "hooks/useIntersectionList";
 import { Ico, Icon } from "components/Ico";
-import { useIsContentPanelAtLeast } from "hooks/useContainerQuery";
 import { useDeviceSupportsHover } from "hooks/useMediaQuery";
 import { useUserSettings } from "contexts/UserSettingsContext";
 import { useLocalData } from "contexts/LocalDataContext";
+import { useContainerQueries } from "contexts/ContainerQueriesContext";
+import { useLightBox } from "contexts/LightBoxContext";
 
 /*
  *                                        ╭─────────────╮
@@ -33,8 +33,8 @@ interface MarkdawnProps {
 export const Markdawn = ({ className, text: rawText }: MarkdawnProps): JSX.Element => {
   const { playerName } = useUserSettings();
   const router = useRouter();
-  const isContentPanelAtLeastLg = useIsContentPanelAtLeast("lg");
-  const [openLightBox, LightBox] = useLightBox();
+  const { isContentPanelAtLeastLg } = useContainerQueries();
+  const { showLightBox } = useLightBox();
 
   /* eslint-disable no-irregular-whitespace */
   const text = useMemo(
@@ -49,175 +49,169 @@ export const Markdawn = ({ className, text: rawText }: MarkdawnProps): JSX.Eleme
   }
 
   return (
-    <>
-      <LightBox />
-      <Markdown
-        className={cJoin("formatted", className)}
-        options={{
-          slugify: slugify,
-          overrides: {
-            a: {
-              component: (compProps: { href: string; children: React.ReactNode }) => {
-                if (compProps.href.startsWith("/") || compProps.href.startsWith("#")) {
-                  return (
-                    <a onClick={async () => router.push(compProps.href)}>{compProps.children}</a>
-                  );
-                }
+    <Markdown
+      className={cJoin("formatted", className)}
+      options={{
+        slugify: slugify,
+        overrides: {
+          a: {
+            component: (compProps: { href: string; children: React.ReactNode }) => {
+              if (compProps.href.startsWith("/") || compProps.href.startsWith("#")) {
                 return (
-                  <a href={compProps.href} target="_blank" rel="noreferrer">
-                    {compProps.children}
-                  </a>
+                  <a onClick={async () => router.push(compProps.href)}>{compProps.children}</a>
                 );
-              },
-            },
-
-            Header: {
-              component: (compProps: {
-                id: string;
-                style: React.CSSProperties;
-                children: string;
-                level: string;
-              }) => (
-                <Header
-                  title={compProps.children}
-                  level={parseInt(compProps.level, 10)}
-                  slug={compProps.id}
-                />
-              ),
-            },
-
-            SceneBreak: {
-              component: (compProps: { id: string }) => (
-                <Header title={"* * *"} level={6} slug={compProps.id} />
-              ),
-            },
-
-            IntraLink: {
-              component: (compProps: {
-                children: React.ReactNode;
-                target?: string;
-                page?: string;
-              }) => {
-                const slug = isDefinedAndNotEmpty(compProps.target)
-                  ? slugify(compProps.target)
-                  : slugify(compProps.children?.toString());
-                return (
-                  <a onClick={async () => router.replace(`${compProps.page ?? ""}#${slug}`)}>
-                    {compProps.children}
-                  </a>
-                );
-              },
-            },
-
-            Transcript: {
-              component: (compProps) => (
-                <div
-                  className={cJoin(
-                    "grid gap-x-6 gap-y-2",
-                    cIf(isContentPanelAtLeastLg, "grid-cols-[auto_1fr]", "grid-cols-1")
-                  )}>
+              }
+              return (
+                <a href={compProps.href} target="_blank" rel="noreferrer">
                   {compProps.children}
-                </div>
-              ),
-            },
-
-            Line: {
-              component: (compProps) => (
-                <>
-                  <strong
-                    className={cJoin(
-                      "!my-0 text-dark/60",
-                      cIf(!isContentPanelAtLeastLg, "!-mb-4")
-                    )}>
-                    <Markdawn text={compProps.name} />
-                  </strong>
-                  <p className="whitespace-pre-line">{compProps.children}</p>
-                </>
-              ),
-            },
-
-            InsetBox: {
-              component: (compProps) => <InsetBox className="my-12">{compProps.children}</InsetBox>,
-            },
-
-            li: {
-              component: (compProps: { children: React.ReactNode }) => (
-                <li
-                  className={
-                    isDefined(compProps.children) &&
-                    ReactDOMServer.renderToStaticMarkup(<>{compProps.children}</>).length > 100
-                      ? "my-4"
-                      : ""
-                  }>
-                  {compProps.children}
-                </li>
-              ),
-            },
-
-            Highlight: {
-              component: (compProps: { children: React.ReactNode }) => (
-                <mark>{compProps.children}</mark>
-              ),
-            },
-
-            footer: {
-              component: (compProps: { children: React.ReactNode }) => (
-                <>
-                  <HorizontalLine />
-                  <div className="grid gap-8">{compProps.children}</div>
-                </>
-              ),
-            },
-
-            blockquote: {
-              component: (compProps: { children: React.ReactNode; cite?: string }) => (
-                <blockquote>
-                  {isDefinedAndNotEmpty(compProps.cite) ? (
-                    <>
-                      &ldquo;{compProps.children}&rdquo;
-                      <cite>— {compProps.cite}</cite>
-                    </>
-                  ) : (
-                    compProps.children
-                  )}
-                </blockquote>
-              ),
-            },
-
-            img: {
-              component: (compProps: {
-                alt: string;
-                src: string;
-                width?: number;
-                height?: number;
-                caption?: string;
-                name?: string;
-              }) => (
-                <div
-                  className="mt-8 mb-12 grid cursor-pointer place-content-center"
-                  onClick={() => {
-                    openLightBox([
-                      compProps.src.startsWith("/uploads/")
-                        ? getAssetURL(compProps.src, ImageQuality.Large)
-                        : compProps.src,
-                    ]);
-                  }}>
-                  <Img
-                    src={
-                      compProps.src.startsWith("/uploads/")
-                        ? getAssetURL(compProps.src, ImageQuality.Small)
-                        : compProps.src
-                    }
-                    quality={ImageQuality.Medium}
-                    className="drop-shadow-shade-lg"></Img>
-                </div>
-              ),
+                </a>
+              );
             },
           },
-        }}>
-        {text}
-      </Markdown>
-    </>
+
+          Header: {
+            component: (compProps: {
+              id: string;
+              style: React.CSSProperties;
+              children: string;
+              level: string;
+            }) => (
+              <Header
+                title={compProps.children}
+                level={parseInt(compProps.level, 10)}
+                slug={compProps.id}
+              />
+            ),
+          },
+
+          SceneBreak: {
+            component: (compProps: { id: string }) => (
+              <Header title={"* * *"} level={6} slug={compProps.id} />
+            ),
+          },
+
+          IntraLink: {
+            component: (compProps: {
+              children: React.ReactNode;
+              target?: string;
+              page?: string;
+            }) => {
+              const slug = isDefinedAndNotEmpty(compProps.target)
+                ? slugify(compProps.target)
+                : slugify(compProps.children?.toString());
+              return (
+                <a onClick={async () => router.replace(`${compProps.page ?? ""}#${slug}`)}>
+                  {compProps.children}
+                </a>
+              );
+            },
+          },
+
+          Transcript: {
+            component: (compProps) => (
+              <div
+                className={cJoin(
+                  "grid gap-x-6 gap-y-2",
+                  cIf(isContentPanelAtLeastLg, "grid-cols-[auto_1fr]", "grid-cols-1")
+                )}>
+                {compProps.children}
+              </div>
+            ),
+          },
+
+          Line: {
+            component: (compProps) => (
+              <>
+                <strong
+                  className={cJoin("!my-0 text-dark/60", cIf(!isContentPanelAtLeastLg, "!-mb-4"))}>
+                  <Markdawn text={compProps.name} />
+                </strong>
+                <p className="whitespace-pre-line">{compProps.children}</p>
+              </>
+            ),
+          },
+
+          InsetBox: {
+            component: (compProps) => <InsetBox className="my-12">{compProps.children}</InsetBox>,
+          },
+
+          li: {
+            component: (compProps: { children: React.ReactNode }) => (
+              <li
+                className={
+                  isDefined(compProps.children) &&
+                  ReactDOMServer.renderToStaticMarkup(<>{compProps.children}</>).length > 100
+                    ? "my-4"
+                    : ""
+                }>
+                {compProps.children}
+              </li>
+            ),
+          },
+
+          Highlight: {
+            component: (compProps: { children: React.ReactNode }) => (
+              <mark>{compProps.children}</mark>
+            ),
+          },
+
+          footer: {
+            component: (compProps: { children: React.ReactNode }) => (
+              <>
+                <HorizontalLine />
+                <div className="grid gap-8">{compProps.children}</div>
+              </>
+            ),
+          },
+
+          blockquote: {
+            component: (compProps: { children: React.ReactNode; cite?: string }) => (
+              <blockquote>
+                {isDefinedAndNotEmpty(compProps.cite) ? (
+                  <>
+                    &ldquo;{compProps.children}&rdquo;
+                    <cite>— {compProps.cite}</cite>
+                  </>
+                ) : (
+                  compProps.children
+                )}
+              </blockquote>
+            ),
+          },
+
+          img: {
+            component: (compProps: {
+              alt: string;
+              src: string;
+              width?: number;
+              height?: number;
+              caption?: string;
+              name?: string;
+            }) => (
+              <div
+                className="mt-8 mb-12 grid cursor-pointer place-content-center"
+                onClick={() => {
+                  showLightBox([
+                    compProps.src.startsWith("/uploads/")
+                      ? getAssetURL(compProps.src, ImageQuality.Large)
+                      : compProps.src,
+                  ]);
+                }}>
+                <Img
+                  src={
+                    compProps.src.startsWith("/uploads/")
+                      ? getAssetURL(compProps.src, ImageQuality.Small)
+                      : compProps.src
+                  }
+                  quality={ImageQuality.Medium}
+                  className="drop-shadow-shade-lg"></Img>
+              </div>
+            ),
+          },
+        },
+      }}>
+      {text}
+    </Markdown>
   );
 };
 

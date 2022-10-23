@@ -38,7 +38,7 @@ const ChroniclesList = ({ chronicles, currentSlug, title }: Props): JSX.Element 
         </div>
       </div>
       <div
-        className="grid gap-4 overflow-hidden transition-[max-height] duration-500"
+        className="grid gap-4 overflow-hidden transition-height duration-500"
         style={{ maxHeight: isOpen ? `${8 * chronicles.length}rem` : 0 }}>
         {filterHasAttributes(chronicles, [
           "attributes.contents",

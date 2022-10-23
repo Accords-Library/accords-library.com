@@ -27,9 +27,42 @@ module.exports = {
       hoverable: { raw: "(hover: hover)" },
       notHoverable: { raw: "(hover: none)" },
     },
+    backdropBlur: {
+      none: "0",
+      sm: "0.1rem",
+      DEFAULT: "0.2rem",
+      md: "0.5rem",
+      lg: "1rem",
+    },
+    borderWidth: {
+      0: "0",
+      2: "0.2rem",
+      4: "0.4rem",
+      8: "0.8rem",
+      DEFAULT: "0.1rem",
+    },
+    outlineWidth: {
+      0: "0",
+      1: "0.15rem",
+      2: "0.17rem",
+    },
+    outlineOffset: {
+      0: "0",
+      1: "0.15rem",
+      2: "0.17rem",
+    },
     extend: {
       boxShadow: {
         "inner-sm": "inset 0 1px 4px -2px",
+      },
+      transitionProperty: {
+        height: "height, max-height, min-height",
+        filter: "filter, backdrop-filter",
+        colors:
+          "color, background-color, border-color, text-decoration-color, fill, stroke, outline-color",
+      },
+      outlineColor: {
+        transparent: "transparent",
       },
     },
   },

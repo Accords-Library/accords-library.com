@@ -32,7 +32,6 @@ interface Props {
   topChips?: string[];
   bottomChips?: string[];
   keepInfoVisible?: boolean;
-  stackNumber?: number;
   metadata?: {
     releaseDate?: DatePickerFragment | null;
     releaseDateFormat?: Intl.DateTimeFormatOptions["dateStyle"];
@@ -62,7 +61,6 @@ export const PreviewCard = ({
   title,
   subtitle,
   description,
-  stackNumber = 0,
   topChips,
   bottomChips,
   keepInfoVisible,
@@ -116,32 +114,6 @@ export const PreviewCard = ({
       href={href}
       className="group grid cursor-pointer items-end text-left transition-transform
       drop-shadow-shade-xl hover:scale-[1.02]">
-      {stackNumber > 0 && (
-        <>
-          <div
-            className={cJoin(
-              `absolute inset-0 scale-[.85] overflow-hidden bg-light brightness-[0.8] sepia-[0.5]
-              transition-[top_transform] group-hover:-top-9`,
-              cIf(thumbnailRounded, "rounded-md")
-            )}>
-            {thumbnail && (
-              <Img className="opacity-30" src={thumbnail} quality={ImageQuality.Medium} />
-            )}
-          </div>
-
-          <div
-            className={cJoin(
-              `absolute inset-0 overflow-hidden bg-light brightness-[0.9] sepia-[0.2]
-              transition-[top_transform] group-hover:-top-4 group-hover:scale-[.94]`,
-              cIf(thumbnailRounded, "rounded-md")
-            )}>
-            {thumbnail && (
-              <Img className="opacity-70" src={thumbnail} quality={ImageQuality.Medium} />
-            )}
-          </div>
-        </>
-      )}
-
       {thumbnail ? (
         <div
           className="relative"
@@ -159,13 +131,7 @@ export const PreviewCard = ({
             src={thumbnail}
             quality={ImageQuality.Medium}
           />
-          {stackNumber > 0 && (
-            <div
-              className="absolute right-2 top-2 rounded-full bg-black
-                bg-opacity-60 px-2 text-light">
-              {stackNumber}
-            </div>
-          )}
+
           {hoverlay && hoverlay.__typename === "Video" && (
             <>
               <div
@@ -190,15 +156,8 @@ export const PreviewCard = ({
           className={cJoin(
             "relative w-full bg-light",
             cIf(keepInfoVisible, "rounded-t-md", "rounded-md notHoverable:rounded-b-none")
-          )}>
-          {stackNumber > 0 && (
-            <div
-              className="absolute right-2 top-2 rounded-full bg-black
-                bg-opacity-60 px-2 text-light">
-              {stackNumber}
-            </div>
           )}
-        </div>
+        />
       )}
       <div
         className={cJoin(

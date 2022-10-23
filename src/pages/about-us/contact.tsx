@@ -6,9 +6,9 @@ import { getPostStaticProps, PostStaticProps } from "graphql/getPostStaticProps"
 import { cIf, cJoin } from "helpers/className";
 import { randomInt } from "helpers/numbers";
 import { RequestMailProps, ResponseMailProps } from "pages/api/mail";
-import { useIs1ColumnLayout } from "hooks/useContainerQuery";
 import { sendAnalytics } from "helpers/analytics";
 import { useLocalData } from "contexts/LocalDataContext";
+import { useContainerQueries } from "contexts/ContainerQueriesContext";
 
 /*
  *                                           ╭────────╮
@@ -18,7 +18,7 @@ import { useLocalData } from "contexts/LocalDataContext";
 const AboutUs = (props: PostStaticProps): JSX.Element => {
   const router = useRouter();
   const { langui } = useLocalData();
-  const is1ColumnLayout = useIs1ColumnLayout();
+  const { is1ColumnLayout } = useContainerQueries();
   const [formResponse, setFormResponse] = useState("");
   const [formState, setFormState] = useState<"completed" | "ongoing" | "stale">("stale");
 

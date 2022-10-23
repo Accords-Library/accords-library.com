@@ -85,7 +85,7 @@ const Video = ({ video, ...otherProps }: Props): JSX.Element => {
         <div className="grid place-items-center gap-12">
           <div id="video" className="w-full overflow-hidden rounded-xl shadow-lg shadow-shade">
             {video.gone ? (
-              <video className="w-full" src={getVideoFile(video.uid)} controls></video>
+              <video className="w-full" src={getVideoFile(video.uid)} controls />
             ) : (
               <iframe
                 src={`https://www.youtube-nocookie.com/embed/${video.uid}`}
@@ -94,7 +94,8 @@ const Video = ({ video, ...otherProps }: Props): JSX.Element => {
                 frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write;
               encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen></iframe>
+                allowFullScreen
+              />
             )}
 
             <div className="mt-2 p-6">

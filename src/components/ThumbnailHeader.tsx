@@ -57,7 +57,7 @@ export const ThumbnailHeader = ({
               onClick={() => showLightBox([thumbnail])}
             />
           ) : (
-            <div className="aspect-[4/3] w-96 rounded-xl bg-light"></div>
+            <div className="aspect-[4/3] w-96 rounded-xl bg-light" />
           )}
         </div>
         <div

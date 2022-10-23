@@ -180,7 +180,7 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
                 }}
               />
             ) : (
-              <div className="aspect-[21/29.7] w-full rounded-xl bg-light"></div>
+              <div className="aspect-[21/29.7] w-full rounded-xl bg-light" />
             )}
           </div>
 
@@ -707,7 +707,7 @@ const ContentLine = ({
       <div className="my-4 grid gap-2">
         <div className="flex gap-2">
           {content?.type && <Chip text={content.type} />}
-          <p className="h-4 w-full border-b-2 border-dotted border-black opacity-30"></p>
+          <p className="h-4 w-full border-b-2 border-dotted border-black opacity-30" />
           <p>{rangeStart}</p>
         </div>
 
@@ -773,7 +773,7 @@ const ContentLine = ({
             <Chip key={index} text={category} />
           ))}
         </div>
-        <p className="h-4 w-full border-b-2 border-dotted border-black opacity-30"></p>
+        <p className="h-4 w-full border-b-2 border-dotted border-black opacity-30" />
         <p>{rangeStart}</p>
         {content?.type && <Chip className="justify-self-end" text={content.type} />}
       </div>

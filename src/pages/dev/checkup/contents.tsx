@@ -31,8 +31,8 @@ const CheckupContents = ({ contents, ...otherProps }: Props): JSX.Element => {
         {<h2 className="text-2xl">{testReport.title}</h2>}
 
         <div className="my-4 grid grid-cols-[2em,3em,2fr,1fr,0.5fr,0.5fr,2fr] items-center gap-2">
-          <p></p>
-          <p></p>
+          <p />
+          <p />
           <p className="font-headers">Ref</p>
           <p className="font-headers">Name</p>
           <p className="font-headers">Type</p>

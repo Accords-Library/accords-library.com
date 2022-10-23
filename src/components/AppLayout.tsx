@@ -141,7 +141,8 @@ export const AppLayout = ({
           onClick={() => {
             setMainPanelOpen(false);
             setSubPanelOpen(false);
-          }}></div>
+          }}
+        />
       </div>
 
       {/* Content panel */}

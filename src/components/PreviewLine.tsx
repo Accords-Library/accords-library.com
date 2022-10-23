@@ -44,7 +44,7 @@ const PreviewLine = ({
         <Img className="h-full object-cover" src={thumbnail} quality={ImageQuality.Medium} />
       </div>
     ) : (
-      <div style={{ aspectRatio: thumbnailAspectRatio }}></div>
+      <div style={{ aspectRatio: thumbnailAspectRatio }} />
     )}
     <div className="grid gap-2">
       {topChips && topChips.length > 0 && (

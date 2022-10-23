@@ -369,7 +369,8 @@ const Transcript = (props: Props): JSX.Element => {
             onClick={updateLineIndex}
             onKeyUp={updateLineIndex}
             title="Input textarea"
-            className="whitespace-pre"></textarea>
+            className="whitespace-pre"
+          />
 
           <p
             className="h-[80vh] whitespace-nowrap font-[initial] font-bold
@@ -390,7 +391,8 @@ const Transcript = (props: Props): JSX.Element => {
               min="0"
               max="100"
               value={xOffset * 10}
-              onChange={(event) => setXOffset(parseInt(event.target.value, 10) / 10)}></input>
+              onChange={(event) => setXOffset(parseInt(event.target.value, 10) / 10)}
+            />
           </div>
 
           <div className="grid place-items-center">
@@ -401,9 +403,8 @@ const Transcript = (props: Props): JSX.Element => {
               min="1000"
               max="3000"
               value={fontSize * SIZE_MULTIPLIER}
-              onChange={(event) =>
-                setFontSize(parseInt(event.target.value, 10) / SIZE_MULTIPLIER)
-              }></input>
+              onChange={(event) => setFontSize(parseInt(event.target.value, 10) / SIZE_MULTIPLIER)}
+            />
           </div>
           <ToolTip content="Automatically convert Western punctuations to Japanese ones.">
             <Button text=". ⟹ 。" onClick={convertPunctuation} />

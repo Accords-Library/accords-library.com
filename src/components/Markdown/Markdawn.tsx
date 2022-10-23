@@ -204,7 +204,8 @@ export const Markdawn = ({ className, text: rawText }: MarkdawnProps): JSX.Eleme
                       : compProps.src
                   }
                   quality={ImageQuality.Medium}
-                  className="drop-shadow-shade-lg"></Img>
+                  className="drop-shadow-shade-lg"
+                />
               </div>
             ),
           },

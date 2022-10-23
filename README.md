@@ -43,7 +43,7 @@
   - Persistent app state using LocalStorage
 - Accessibility
   - Gestures using [react-swipeable](https://www.npmjs.com/package/react-swipeable)
-  - Keyboard hotkeys using [react-hot-keys](https://www.npmjs.com/package/react-hot-keys)
+  - Keyboard hotkeys using [react-hotkeys-hook](https://www.npmjs.com/package/react-hotkeys-hook)
   - Support for light and dark mode with a manual switch and system's selected theme by default
   - Fonts can be swaped to [OpenDyslexic](https://www.npmjs.com/package/@fontsource/opendyslexic)
 - Multilingual

@@ -15,17 +15,34 @@ interface Props {
   allowEmpty?: boolean;
   className?: string;
   onChange: (value: number) => void;
+  disabled?: boolean;
 }
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
-export const Select = ({ className, value, options, allowEmpty, onChange }: Props): JSX.Element => {
+export const Select = ({
+  className,
+  value,
+  options,
+  allowEmpty,
+  disabled = false,
+  onChange,
+}: Props): JSX.Element => {
   const { value: isOpened, setFalse: setClosed, toggle: toggleOpened } = useBoolean(false);
 
   const tryToggling = useCallback(() => {
+    if (disabled) return;
     const optionCount = options.length + (value === -1 ? 1 : 0);
     if (optionCount > 1) toggleOpened();
-  }, [options.length, value, toggleOpened]);
+  }, [disabled, options.length, value, toggleOpened]);
+
+  const onSelectionChanged = useCallback(
+    (newIndex: number) => {
+      setClosed();
+      onChange(newIndex);
+    },
+    [onChange, setClosed]
+  );
 
   const ref = useRef<HTMLDivElement>(null);
   useOnClickOutside(ref, setClosed);
@@ -35,27 +52,29 @@ export const Select = ({ className, value, options, allowEmpty, onChange }: Prop
       ref={ref}
       className={cJoin(
         "relative text-center transition-filter",
-        cIf(isOpened, "z-10 drop-shadow-shade-lg"),
+        cIf(isOpened, "z-10 drop-shadow-lg shadow-shade"),
         className
       )}>
       <div
         className={cJoin(
-          `grid cursor-pointer grid-flow-col grid-cols-[1fr_auto_auto] place-items-center
-           rounded-[1em] bg-light p-1 outline outline-1 -outline-offset-1 outline-mid
-           transition-all hover:bg-mid hover:outline-transparent`,
-          cIf(isOpened, "rounded-b-none bg-highlight outline-transparent")
+          `grid cursor-pointer select-none grid-flow-col grid-cols-[1fr_auto_auto]
+           place-items-center rounded-3xl p-1 outline outline-1 -outline-offset-1
+           outline-mid`,
+          cIf(isOpened, "rounded-b-none bg-highlight outline-transparent"),
+          cIf(
+            disabled,
+            "cursor-not-allowed text-dark opacity-50 outline-dark/60 grayscale",
+            "transition-all hover:bg-mid hover:outline-transparent"
+          )
         )}>
-        <p onClick={tryToggling} className="w-full">
+        <p onClick={tryToggling} className="w-full px-4 py-1">
           {value === -1 ? "—" : options[value]}
         </p>
         {value >= 0 && allowEmpty && (
           <Ico
             icon={Icon.Close}
             className="!text-xs"
-            onClick={() => {
-              setClosed();
-              onChange(-1);
-            }}
+            onClick={() => !disabled && onSelectionChanged(-1)}
           />
         )}
         <Ico onClick={tryToggling} icon={isOpened ? Icon.ArrowDropUp : Icon.ArrowDropDown} />
@@ -70,10 +89,7 @@ export const Select = ({ className, value, options, allowEmpty, onChange }: Prop
                   cIf(isOpened, "bg-highlight", "bg-light")
                 )}
                 id={option}
-                onClick={() => {
-                  setClosed();
-                  onChange(index);
-                }}>
+                onClick={() => onSelectionChanged(index)}>
                 {option}
               </div>
             )}

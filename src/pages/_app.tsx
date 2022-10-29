@@ -11,8 +11,6 @@ import type { AppProps } from "next/app";
 import Script from "next/script";
 import { AppContextProvider } from "contexts/AppLayoutContext";
 
-import "styles/animations.css";
-import "styles/custom-classes.css";
 import "styles/debug.css";
 import "styles/formatted.css";
 import "styles/others.css";

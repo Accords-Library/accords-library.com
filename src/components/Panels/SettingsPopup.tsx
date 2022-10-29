@@ -6,7 +6,7 @@ import { ButtonGroup } from "components/Inputs/ButtonGroup";
 import { OrderableList } from "components/Inputs/OrderableList";
 import { Select } from "components/Inputs/Select";
 import { TextInput } from "components/Inputs/TextInput";
-import { Popup } from "components/Popup";
+import { Popup } from "components/Containers/Popup";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { useLocalData } from "contexts/LocalDataContext";
 import { useUserSettings } from "contexts/UserSettingsContext";

@@ -1,12 +1,12 @@
 import { useRouter } from "next/router";
-import { MouseEventHandler, useCallback, useMemo } from "react";
+import { MouseEventHandler, useCallback, useMemo, useState } from "react";
 import { Ico, Icon } from "components/Ico";
 import { ToolTip } from "components/ToolTip";
-import { cJoin, cIf } from "helpers/className";
+import { cIf, cJoin } from "helpers/className";
 import { isDefinedAndNotEmpty } from "helpers/others";
-import { Link } from "components/Inputs/Link";
 import { TranslatedProps } from "types/TranslatedProps";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
+import { DownPressable } from "components/Containers/DownPressable";
 
 /*
  *                                        ╭─────────────╮
@@ -21,6 +21,7 @@ interface Props {
   border?: boolean;
   reduced?: boolean;
   active?: boolean;
+  disabled?: boolean;
   onClick?: MouseEventHandler<HTMLDivElement>;
 }
 
@@ -34,6 +35,7 @@ export const NavOption = ({
   border = false,
   reduced = false,
   active = false,
+  disabled = false,
   onClick,
 }: Props): JSX.Element => {
   const router = useRouter();
@@ -41,6 +43,7 @@ export const NavOption = ({
     () => active || router.asPath.startsWith(url),
     [active, router.asPath, url]
   );
+  const [isFocused, setFocused] = useState(false);
 
   return (
     <ToolTip
@@ -52,27 +55,28 @@ export const NavOption = ({
       }
       placement="right"
       className="text-left"
-      disabled={!reduced}>
-      <Link
-        href={url}
-        onClick={onClick}
+      disabled={!reduced || disabled}>
+      <DownPressable
         className={cJoin(
-          `relative grid w-full cursor-pointer auto-cols-fr grid-flow-col grid-cols-[auto]
-          justify-center gap-x-5 rounded-2xl p-4 transition-all hover:bg-mid hover:shadow-inner-sm
-          hover:shadow-shade hover:active:shadow-inner hover:active:shadow-shade`,
-          cIf(icon, "text-left", "text-center"),
-          cIf(border, "outline outline-2 -outline-offset-2 outline-mid hover:outline-transparent"),
-          cIf(isActive, "bg-mid shadow-inner-sm shadow-shade")
-        )}>
-        {icon && <Ico icon={icon} className="mt-[-.1em] !text-2xl" isFilled={isActive} />}
-
+          "grid w-full auto-cols-fr grid-flow-col grid-cols-[auto] justify-center gap-x-5",
+          cIf(icon, "text-left", "text-center")
+        )}
+        href={url}
+        border={border}
+        onClick={onClick}
+        active={isActive}
+        disabled={disabled}
+        onFocusChanged={setFocused}>
+        {icon && (
+          <Ico icon={icon} className="mt-[-.1em] !text-2xl" isFilled={isActive || isFocused} />
+        )}
         {!reduced && (
           <div>
             <h3 className="text-2xl">{title}</h3>
             {isDefinedAndNotEmpty(subtitle) && <p className="col-start-2">{subtitle}</p>}
           </div>
         )}
-      </Link>
+      </DownPressable>
     </ToolTip>
   );
 };

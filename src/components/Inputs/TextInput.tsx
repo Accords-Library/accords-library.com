@@ -1,5 +1,5 @@
 import { Ico, Icon } from "components/Ico";
-import { cJoin } from "helpers/className";
+import { cIf, cJoin } from "helpers/className";
 import { isDefinedAndNotEmpty } from "helpers/others";
 
 /*
@@ -13,6 +13,7 @@ interface Props {
   className?: string;
   name?: string;
   placeholder?: string;
+  disabled?: boolean;
 }
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
@@ -23,6 +24,7 @@ export const TextInput = ({
   className,
   name,
   placeholder,
+  disabled = false,
 }: Props): JSX.Element => (
   <div className={cJoin("relative", className)}>
     <input
@@ -30,6 +32,7 @@ export const TextInput = ({
       type="text"
       name={name}
       value={value}
+      disabled={disabled}
       placeholder={placeholder}
       onChange={(event) => {
         onChange(event.target.value);
@@ -38,11 +41,9 @@ export const TextInput = ({
     {isDefinedAndNotEmpty(value) && (
       <div className="absolute right-4 top-0 bottom-0 grid place-items-center">
         <Ico
-          className="cursor-pointer !text-xs"
+          className={cJoin("!text-xs", cIf(disabled, "opacity-30 grayscale", "cursor-pointer"))}
           icon={Icon.Close}
-          onClick={() => {
-            onChange("");
-          }}
+          onClick={() => !disabled && onChange("")}
         />
       </div>
     )}

@@ -2,10 +2,10 @@ import { GetStaticProps } from "next";
 import { Fragment, useCallback, useMemo } from "react";
 import { useRouter } from "next/router";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
-import { InsetBox } from "components/InsetBox";
+import { InsetBox } from "components/Containers/InsetBox";
 import { ReturnButton } from "components/PanelComponents/ReturnButton";
-import { ContentPanel } from "components/Panels/ContentPanel";
-import { SubPanel } from "components/Panels/SubPanel";
+import { ContentPanel } from "components/Containers/ContentPanel";
+import { SubPanel } from "components/Containers/SubPanel";
 import {
   Enum_Componenttranslationschronologyitem_Status,
   GetChronologyItemsQuery,

@@ -168,8 +168,7 @@ export const AppLayout = ({
           id={Ids.SubPanel}
           className={cJoin(
             `texture-paper-dots z-20 overflow-y-scroll border-r border-dark/50
-              bg-light transition-transform duration-300 [scrollbar-width:none]
-              webkit-scrollbar:w-0`,
+              bg-light transition-transform duration-300 scrollbar-none`,
             cIf(
               is1ColumnLayout,
               "justify-self-end border-r-0 [grid-area:content]",
@@ -187,7 +186,7 @@ export const AppLayout = ({
       <div
         className={cJoin(
           `texture-paper-dots z-30 overflow-y-scroll border-r border-dark/50
-            bg-light transition-transform duration-300 [scrollbar-width:none] webkit-scrollbar:w-0`,
+            bg-light transition-transform duration-300 scrollbar-none`,
           cIf(is1ColumnLayout, "justify-self-start [grid-area:content]", "[grid-area:main]"),
           cIf(is1ColumnLayout && isScreenAtLeastXs, "w-[min(30rem,90%)]"),
           cIf(!mainPanelOpen && is1ColumnLayout, "-translate-x-full")

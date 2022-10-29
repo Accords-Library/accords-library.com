@@ -8,6 +8,7 @@ const locales = ["en", "es", "fr", "pt-br", "ja"];
 module.exports = {
   swcMinify: true,
   reactStrictMode: true,
+  poweredByHeader: false,
   i18n: {
     locales: locales,
     defaultLocale: "en",

@@ -4,7 +4,7 @@ import React, { Fragment, useMemo } from "react";
 import ReactDOMServer from "react-dom/server";
 import { HorizontalLine } from "components/HorizontalLine";
 import { Img } from "components/Img";
-import { InsetBox } from "components/InsetBox";
+import { InsetBox } from "components/Containers/InsetBox";
 import { cIf, cJoin } from "helpers/className";
 import { slugify } from "helpers/formatters";
 import { getAssetURL, ImageQuality } from "helpers/img";
@@ -204,7 +204,7 @@ export const Markdawn = ({ className, text: rawText }: MarkdawnProps): JSX.Eleme
                       : compProps.src
                   }
                   quality={ImageQuality.Medium}
-                  className="drop-shadow-shade-lg"
+                  className="drop-shadow-lg shadow-shade"
                 />
               </div>
             ),

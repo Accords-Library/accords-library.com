@@ -7,12 +7,12 @@ import { Chip } from "components/Chip";
 import { Img } from "components/Img";
 import { Button } from "components/Inputs/Button";
 import { Switch } from "components/Inputs/Switch";
-import { InsetBox } from "components/InsetBox";
+import { InsetBox } from "components/Containers/InsetBox";
 import { PreviewCardCTAs } from "components/Library/PreviewCardCTAs";
 import { NavOption } from "components/PanelComponents/NavOption";
 import { ReturnButton } from "components/PanelComponents/ReturnButton";
-import { ContentPanel, ContentPanelWidthSizes } from "components/Panels/ContentPanel";
-import { SubPanel } from "components/Panels/SubPanel";
+import { ContentPanel, ContentPanelWidthSizes } from "components/Containers/ContentPanel";
+import { SubPanel } from "components/Containers/SubPanel";
 import { PreviewCard } from "components/PreviewCard";
 import {
   Enum_Componentmetadatabooks_Binding_Type,
@@ -167,7 +167,7 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
         <div className="grid place-items-center gap-12">
           <div
             className={cJoin(
-              "relative h-[50vh] w-full cursor-pointer drop-shadow-shade-xl",
+              "relative h-[50vh] w-full cursor-pointer drop-shadow-xl shadow-shade",
               cIf(isContentPanelAtLeast3xl, "mb-16", "h-[60vh]")
             )}>
             {item.thumbnail?.data?.attributes ? (
@@ -248,7 +248,7 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
                     <Fragment key={galleryItem.id}>
                       <div
                         className="relative aspect-square cursor-pointer
-                      transition-transform hover:scale-[1.02]"
+                      transition-transform hover:scale-102"
                         onClick={() => {
                           showLightBox(
                             filterHasAttributes(item.gallery?.data, ["attributes"] as const).map(
@@ -258,8 +258,8 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
                           );
                         }}>
                         <Img
-                          className="h-full w-full rounded-lg
-                        bg-light object-cover drop-shadow-shade-md"
+                          className="h-full w-full rounded-lg bg-light object-cover shadow-md
+                           shadow-shade/30 transition-shadow hover:shadow-lg hover:shadow-shade/50"
                           src={galleryItem.attributes}
                         />
                       </div>

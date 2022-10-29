@@ -1,6 +1,6 @@
 import { Chip } from "components/Chip";
 import { Img } from "components/Img";
-import { InsetBox } from "components/InsetBox";
+import { InsetBox } from "components/Containers/InsetBox";
 import { Markdawn } from "components/Markdown/Markdawn";
 import { GetContentTextQuery, UploadImageFragment } from "graphql/generated";
 import { prettyInlineTitle, prettySlug, slugify } from "helpers/formatters";
@@ -48,7 +48,7 @@ export const ThumbnailHeader = ({
   return (
     <>
       <div className="mb-12 grid place-items-center gap-12">
-        <div className="drop-shadow-shade-lg">
+        <div className="shadow-shade drop-shadow-lg">
           {thumbnail ? (
             <Img
               className="cursor-pointer rounded-xl"

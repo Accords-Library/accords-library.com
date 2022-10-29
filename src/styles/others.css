@@ -7,7 +7,7 @@
 }
 
 * {
-  @apply box-border scroll-m-[40vh] scroll-smooth ![-webkit-tap-highlight-color:transparent];
+  @apply box-border scroll-m-[40vh] scroll-smooth scrollbar-thin ![-webkit-tap-highlight-color:transparent];
 }
 
 h1,
@@ -32,31 +32,12 @@ mark {
   @apply bg-mid px-2;
 }
 
-/* SCROLLBARS STYLING */
-
-* {
-  @apply [scrollbar-color:theme(colors.dark/1)_transparent] [scrollbar-width:thin];
-}
-
-*::-webkit-scrollbar {
-  @apply w-3;
-}
-
-*::-webkit-scrollbar-track {
-  @apply bg-light;
-}
-
-*::-webkit-scrollbar-thumb {
-  @apply rounded-full border-2 border-solid border-light bg-dark;
-}
-
 /* INPUT */
 
 input,
 textarea {
-  @apply rounded-full bg-light p-2 text-center text-dark outline outline-1 -outline-offset-1
-  outline-mid transition-all placeholder:text-dark placeholder:opacity-60 hover:bg-mid
-  hover:outline-transparent;
+  @apply rounded-full bg-[transparent] p-2 text-center text-dark outline outline-1 -outline-offset-1
+  outline-mid transition-all placeholder:text-dark placeholder:opacity-60;
 }
 
 input::placeholder {
@@ -65,7 +46,7 @@ input::placeholder {
 
 input:focus-visible,
 textarea:focus-within {
-  @apply bg-mid shadow-inner-sm shadow-shade outline-none;
+  @apply bg-mid shadow-inner-sm outline-none shadow-shade;
 }
 
 textarea {
@@ -74,7 +55,21 @@ textarea {
 
 input[type="submit"] {
   @apply grid cursor-pointer place-content-center place-items-center rounded-full border
-  border-dark px-4 pt-[0.4rem] pb-[0.5rem] text-dark outline-none transition-all hover:bg-dark
-  hover:text-light hover:drop-shadow-shade-lg active:border-black active:bg-black
-  active:text-light active:drop-shadow-black-lg;
+  border-dark px-4 pt-[0.4rem] pb-[0.5rem] text-dark outline-none transition-all shadow-shade
+  hover:bg-dark hover:text-light hover:drop-shadow-lg active:border-black active:bg-black
+  active:text-light active:drop-shadow-lg active:shadow-black;
+}
+
+input:enabled,
+textarea:enabled {
+  @apply hover:bg-mid hover:outline-transparent;
+}
+
+input:disabled,
+textarea:disabled {
+  @apply cursor-not-allowed opacity-50 outline-dark/60 grayscale;
+}
+
+textarea {
+  @apply scrollbar-none;
 }

@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { InsetBox } from "components/InsetBox";
+import { InsetBox } from "components/Containers/InsetBox";
 import { PostPage } from "components/PostPage";
 import { getPostStaticProps, PostStaticProps } from "graphql/getPostStaticProps";
 import { cIf, cJoin } from "helpers/className";

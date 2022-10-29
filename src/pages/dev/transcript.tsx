@@ -3,7 +3,7 @@ import { useCallback, useMemo, useRef, useState } from "react";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { Button } from "components/Inputs/Button";
 import { ButtonGroup } from "components/Inputs/ButtonGroup";
-import { ContentPanel, ContentPanelWidthSizes } from "components/Panels/ContentPanel";
+import { ContentPanel, ContentPanelWidthSizes } from "components/Containers/ContentPanel";
 import { ToolTip } from "components/ToolTip";
 import { getOpenGraph } from "helpers/openGraph";
 import { getLangui } from "graphql/fetchLocalData";

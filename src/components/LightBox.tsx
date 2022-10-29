@@ -10,15 +10,16 @@ import { Ids } from "types/ids";
 import { UploadImageFragment } from "graphql/generated";
 import { ImageQuality } from "helpers/img";
 import { isDefined } from "helpers/others";
+import { useContainerQueries } from "contexts/ContainerQueriesContext";
 
 interface Props {
   onCloseRequest: () => void;
   isVisible: boolean;
   image?: UploadImageFragment | string;
-  isNextImageAvailable?: boolean;
-  isPreviousImageAvailable?: boolean;
-  onPressNext?: () => void;
-  onPressPrevious?: () => void;
+  isNextImageAvailable: boolean;
+  isPreviousImageAvailable: boolean;
+  onPressNext: () => void;
+  onPressPrevious: () => void;
 }
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
@@ -37,18 +38,15 @@ export const LightBox = ({
     Ids.LightBox
   );
 
-  useHotkeys(
-    "left",
-    () => onPressPrevious?.(),
-    { enabled: isVisible && isPreviousImageAvailable },
-    [onPressPrevious]
-  );
+  useHotkeys("left", () => onPressPrevious(), { enabled: isVisible && isPreviousImageAvailable }, [
+    onPressPrevious,
+  ]);
 
   useHotkeys("f", () => requestFullscreen(), { enabled: isVisible && !isFullscreen }, [
     requestFullscreen,
   ]);
 
-  useHotkeys("right", () => onPressNext?.(), { enabled: isVisible && isNextImageAvailable }, [
+  useHotkeys("right", () => onPressNext(), { enabled: isVisible && isNextImageAvailable }, [
     onPressNext,
   ]);
 
@@ -69,7 +67,7 @@ export const LightBox = ({
       />
       <div
         className={cJoin(
-          "absolute inset-8 grid transition-transform",
+          "absolute inset-0 grid transition-transform",
           cIf(isVisible, "scale-100", "scale-0")
         )}>
         <TransformWrapper
@@ -87,50 +85,116 @@ export const LightBox = ({
                 }}>
                 {isDefined(src) && (
                   <Img
-                    className={`drop-shadow-shade-2xl-shade h-[calc(100vh-4rem)] w-full
+                    className={`shadow-shade drop-shadow-2xl h-[calc(100vh-4rem)] w-full
                     object-contain`}
                     src={src}
                     quality={ImageQuality.Large}
                   />
                 )}
               </TransformComponent>
-
-              {isPreviousImageAvailable && (
-                <div
-                  className={`absolute top-1/2 left-0 grid gap-4 rounded-[2rem] p-4
-                  backdrop-blur-lg`}>
-                  <Button icon={Icon.NavigateBefore} onClick={onPressPrevious} />
-                </div>
-              )}
-
-              {isNextImageAvailable && (
-                <div
-                  className={`absolute top-1/2 right-0 grid gap-4 rounded-[2rem] p-4
-                    backdrop-blur-lg`}>
-                  <Button icon={Icon.NavigateNext} onClick={onPressNext} />{" "}
-                </div>
-              )}
-
-              <div
-                className={`absolute top-0 right-0 grid gap-4 rounded-[2rem] p-4
-                backdrop-blur-lg`}>
-                <Button
-                  onClick={() => {
-                    resetTransform();
-                    exitFullscreen();
-                    onCloseRequest();
-                  }}
-                  icon={Icon.Close}
-                />
-                <Button
-                  icon={isFullscreen ? Icon.FullscreenExit : Icon.Fullscreen}
-                  onClick={toggleFullscreen}
-                />
-              </div>
+              <ControlButtons
+                isNextImageAvailable={isNextImageAvailable}
+                isPreviousImageAvailable={isPreviousImageAvailable}
+                isFullscreen={isFullscreen}
+                onCloseRequest={() => {
+                  resetTransform();
+                  exitFullscreen();
+                  onCloseRequest();
+                }}
+                onPressPrevious={() => {
+                  resetTransform();
+                  onPressPrevious();
+                }}
+                onPressNext={() => {
+                  resetTransform();
+                  onPressNext();
+                }}
+                toggleFullscreen={toggleFullscreen}
+              />
             </>
           )}
         </TransformWrapper>
       </div>
     </div>
+  );
+};
+
+interface ControlButtonsProps {
+  isPreviousImageAvailable: boolean;
+  isNextImageAvailable: boolean;
+  isFullscreen: boolean;
+  onPressPrevious?: () => void;
+  onPressNext?: () => void;
+  onCloseRequest: () => void;
+  toggleFullscreen: () => void;
+}
+
+const ControlButtons = ({
+  isFullscreen,
+  isPreviousImageAvailable,
+  isNextImageAvailable,
+  onPressPrevious,
+  onPressNext,
+  onCloseRequest,
+  toggleFullscreen,
+}: ControlButtonsProps): JSX.Element => {
+  const { is1ColumnLayout } = useContainerQueries();
+
+  const PreviousButton = () => (
+    <Button
+      icon={Icon.NavigateBefore}
+      onClick={onPressPrevious}
+      disabled={!isPreviousImageAvailable}
+    />
+  );
+  const NextButton = () => (
+    <Button icon={Icon.NavigateNext} onClick={onPressNext} disabled={!isNextImageAvailable} />
+  );
+
+  const FullscreenButton = () => (
+    <Button
+      icon={isFullscreen ? Icon.FullscreenExit : Icon.Fullscreen}
+      onClick={toggleFullscreen}
+    />
+  );
+
+  const CloseButton = () => <Button onClick={onCloseRequest} icon={Icon.Close} />;
+
+  return is1ColumnLayout ? (
+    <>
+      <div className="absolute bottom-2 left-0 right-0 grid place-content-center">
+        <div className="grid grid-flow-col gap-4 rounded-4xl p-4 backdrop-blur-lg">
+          <PreviousButton />
+          <FullscreenButton />
+          <NextButton />
+        </div>
+      </div>
+      <div className="absolute top-2 right-2 grid gap-4 rounded-4xl p-4 backdrop-blur-lg">
+        <CloseButton />
+      </div>
+    </>
+  ) : (
+    <>
+      {isPreviousImageAvailable && (
+        <div
+          className={`absolute top-1/2 left-8 grid gap-4 rounded-4xl p-4
+          backdrop-blur-lg`}>
+          <PreviousButton />
+        </div>
+      )}
+      {isNextImageAvailable && (
+        <div
+          className={`absolute top-1/2 right-8 grid gap-4 rounded-4xl p-4
+          backdrop-blur-lg`}>
+          <NextButton />
+        </div>
+      )}
+      <div
+        className={`absolute top-4 right-8 grid gap-4 rounded-4xl p-4
+        backdrop-blur-lg`}>
+        <CloseButton />
+        <FullscreenButton />
+      </div>
+    </>
   );
 };

@@ -5,11 +5,11 @@ import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { HorizontalLine } from "components/HorizontalLine";
 import { Ico, Icon } from "components/Ico";
 import { Button } from "components/Inputs/Button";
-import { InsetBox } from "components/InsetBox";
+import { InsetBox } from "components/Containers/InsetBox";
 import { NavOption } from "components/PanelComponents/NavOption";
 import { ReturnButton } from "components/PanelComponents/ReturnButton";
-import { ContentPanel, ContentPanelWidthSizes } from "components/Panels/ContentPanel";
-import { SubPanel } from "components/Panels/SubPanel";
+import { ContentPanel, ContentPanelWidthSizes } from "components/Containers/ContentPanel";
+import { SubPanel } from "components/Containers/SubPanel";
 import { useAppLayout } from "contexts/AppLayoutContext";
 import { GetVideoQuery } from "graphql/generated";
 import { getReadySdk } from "graphql/sdk";
@@ -83,7 +83,7 @@ const Video = ({ video, ...otherProps }: Props): JSX.Element => {
         />
 
         <div className="grid place-items-center gap-12">
-          <div id="video" className="w-full overflow-hidden rounded-xl shadow-lg shadow-shade">
+          <div id="video" className="w-full overflow-hidden rounded-xl shadow-xl shadow-shade/80">
             {video.gone ? (
               <video className="w-full" src={getVideoFile(video.uid)} controls />
             ) : (

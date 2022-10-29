@@ -7,8 +7,8 @@ import { HorizontalLine } from "components/HorizontalLine";
 import { PreviewCardCTAs } from "components/Library/PreviewCardCTAs";
 import { Markdawn, TableOfContents } from "components/Markdown/Markdawn";
 import { TranslatedReturnButton } from "components/PanelComponents/ReturnButton";
-import { ContentPanel } from "components/Panels/ContentPanel";
-import { SubPanel } from "components/Panels/SubPanel";
+import { ContentPanel } from "components/Containers/ContentPanel";
+import { SubPanel } from "components/Containers/SubPanel";
 import { PreviewCard } from "components/PreviewCard";
 import { RecorderChip } from "components/RecorderChip";
 import { ThumbnailHeader } from "components/ThumbnailHeader";
@@ -315,7 +315,6 @@ const Content = ({ content, ...otherProps }: Props): JSX.Element => {
                   title: prettySlug(previousContent.attributes.slug),
                 }}
                 thumbnail={previousContent.attributes.thumbnail?.data?.attributes}
-                thumbnailAspectRatio="3/2"
                 topChips={
                   isContentPanelAtLeast2xl && previousContent.attributes.type?.data?.attributes
                     ? [
@@ -359,7 +358,6 @@ const Content = ({ content, ...otherProps }: Props): JSX.Element => {
                 }))}
                 fallback={{ title: nextContent.attributes.slug }}
                 thumbnail={nextContent.attributes.thumbnail?.data?.attributes}
-                thumbnailAspectRatio="3/2"
                 topChips={
                   isContentPanelAtLeast2xl && nextContent.attributes.type?.data?.attributes
                     ? [

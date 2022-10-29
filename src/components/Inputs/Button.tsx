@@ -46,28 +46,32 @@ export const Button = ({
   size = "normal",
 }: Props): JSX.Element => (
   <ConditionalWrapper
-    isWrapping={isDefinedAndNotEmpty(href)}
+    isWrapping={isDefinedAndNotEmpty(href) && !disabled}
     wrapperProps={{ href: href ?? "", alwaysNewTab }}
     wrapper={LinkWrapper}>
     <div className="relative">
       <div
         draggable={draggable}
         id={id}
-        onClick={onClick}
+        onClick={(event) => !disabled && onClick?.(event)}
         onMouseUp={onMouseUp}
         onFocus={(event) => event.target.blur()}
         className={cJoin(
           `group grid cursor-pointer select-none grid-flow-col place-content-center 
           place-items-center gap-2 rounded-full border border-dark py-3 px-4
           leading-none text-dark transition-all`,
-          cIf(
-            active,
-            "!border-black bg-black !text-light drop-shadow-black-lg",
-            `hover:bg-dark hover:text-light hover:drop-shadow-shade-lg active:hover:!border-black
-            active:hover:bg-black active:hover:!text-light active:hover:drop-shadow-black-lg`
-          ),
           cIf(size === "small", "px-3 py-1 text-xs"),
-          cIf(disabled, "cursor-not-allowed"),
+          cIf(active, "!border-black bg-black !text-light drop-shadow-lg shadow-black"),
+          cIf(
+            disabled,
+            "cursor-not-allowed opacity-50 grayscale",
+            cIf(
+              !active,
+              `shadow-shade hover:bg-dark hover:text-light hover:drop-shadow-lg
+               active:hover:!border-black active:hover:bg-black active:hover:!text-light
+               active:hover:drop-shadow-lg active:hover:shadow-black`
+            )
+          ),
           className
         )}>
         {isDefined(badgeNumber) && (

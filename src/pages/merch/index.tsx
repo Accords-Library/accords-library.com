@@ -1,7 +1,7 @@
 import { GetStaticProps } from "next";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { PanelHeader } from "components/PanelComponents/PanelHeader";
-import { SubPanel } from "components/Panels/SubPanel";
+import { SubPanel } from "components/Containers/SubPanel";
 import { Icon } from "components/Ico";
 import { getOpenGraph } from "helpers/openGraph";
 import { getLangui } from "graphql/fetchLocalData";

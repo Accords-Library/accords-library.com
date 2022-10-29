@@ -20,12 +20,12 @@ import {
 } from "helpers/others";
 import { getOpenGraph } from "helpers/openGraph";
 import { getLangui } from "graphql/fetchLocalData";
-import { ContentPanel, ContentPanelWidthSizes } from "components/Panels/ContentPanel";
+import { ContentPanel, ContentPanelWidthSizes } from "components/Containers/ContentPanel";
 import { Img } from "components/Img";
 import { getAssetFilename, ImageQuality } from "helpers/img";
 import { cIf, cJoin } from "helpers/className";
 import { clamp, isInteger } from "helpers/numbers";
-import { SubPanel } from "components/Panels/SubPanel";
+import { SubPanel } from "components/Containers/SubPanel";
 import { Button } from "components/Inputs/Button";
 import { Icon } from "components/Ico";
 import { Ids } from "types/ids";
@@ -1045,8 +1045,8 @@ const ScanSet = ({ onClickOnImage, scanSet, id, title, content }: ScanSetProps):
             {pages.map((page, index) => (
               <div
                 key={page.id}
-                className="cursor-pointer transition-transform
-                drop-shadow-shade-lg hover:scale-[1.02]"
+                className="cursor-pointer drop-shadow-lg
+                transition-transform shadow-shade hover:scale-102"
                 onClick={() => {
                   onClickOnImage(index);
                 }}>

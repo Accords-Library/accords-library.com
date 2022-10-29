@@ -1,8 +1,8 @@
 import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next";
-import { useCallback, useMemo } from "react";
+import { useMemo } from "react";
 import naturalCompare from "string-natural-compare";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
-import { ContentPanel, ContentPanelWidthSizes } from "components/Panels/ContentPanel";
+import { ContentPanel, ContentPanelWidthSizes } from "components/Containers/ContentPanel";
 import { getOpenGraph } from "helpers/openGraph";
 import { getReadySdk } from "graphql/sdk";
 import { filterHasAttributes } from "helpers/others";
@@ -12,17 +12,15 @@ import { prettySlug } from "helpers/formatters";
 import { SmartList } from "components/SmartList";
 import { Ico, Icon } from "components/Ico";
 import { Button, TranslatedButton } from "components/Inputs/Button";
-import { Link } from "components/Inputs/Link";
 import { PanelHeader } from "components/PanelComponents/PanelHeader";
-import { SubPanel } from "components/Panels/SubPanel";
-import { TranslatedProps } from "types/TranslatedProps";
-import { useSmartLanguage } from "hooks/useSmartLanguage";
+import { SubPanel } from "components/Containers/SubPanel";
 import { TranslatedPreviewCard } from "components/PreviewCard";
 import { HorizontalLine } from "components/HorizontalLine";
 import { cJoin, cIf } from "helpers/className";
 import { getLangui } from "graphql/fetchLocalData";
 import { useLocalData } from "contexts/LocalDataContext";
 import { useContainerQueries } from "contexts/ContainerQueriesContext";
+import { TranslatedPreviewFolder } from "components/Contents/PreviewFolder";
 
 /*
  *                                           ╭────────╮
@@ -273,36 +271,6 @@ export const getStaticPaths: GetStaticPaths = async (context) => {
  *                                    ╭──────────────────────╮
  * ───────────────────────────────────╯  PRIVATE COMPONENTS  ╰──────────────────────────────────────
  */
-
-interface PreviewFolderProps {
-  href: string;
-  title: string | null | undefined;
-}
-
-const PreviewFolder = ({ href, title }: PreviewFolderProps): JSX.Element => (
-  <Link
-    href={href}
-    className="flex w-full cursor-pointer flex-row place-content-center place-items-center gap-4
-    rounded-md bg-light p-6 transition-transform drop-shadow-shade-xl hover:scale-[1.02]">
-    {title && <p className="text-center font-headers text-lg font-bold leading-none">{title}</p>}
-  </Link>
-);
-
-// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
-
-const TranslatedPreviewFolder = ({
-  translations,
-  fallback,
-  ...otherProps
-}: TranslatedProps<PreviewFolderProps, "title">): JSX.Element => {
-  const [selectedTranslation] = useSmartLanguage({
-    items: translations,
-    languageExtractor: useCallback((item: { language: string }): string => item.language, []),
-  });
-  return <PreviewFolder title={selectedTranslation?.title ?? fallback.title} {...otherProps} />;
-};
-
-// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
 const NoContentNorFolderMessage = () => {
   const { langui } = useLocalData();

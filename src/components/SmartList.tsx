@@ -9,6 +9,7 @@ import { useScrollTopOnChange } from "hooks/useScrollTopOnChange";
 import { Ids } from "types/ids";
 import { useLocalData } from "contexts/LocalDataContext";
 import { useContainerQueries } from "contexts/ContainerQueriesContext";
+import { useHotkeys } from "react-hotkeys-hook";
 
 interface Group<T> {
   name: string;
@@ -162,6 +163,11 @@ export const SmartList = <T,>({
 
     return memo;
   }, [groups, paginationItemPerPage]);
+
+  useHotkeys("left", () => setPage((current) => current - 1), { enabled: page > 0 });
+  useHotkeys("right", () => setPage((current) => current + 1), {
+    enabled: page < pages.length - 1,
+  });
 
   return (
     <>

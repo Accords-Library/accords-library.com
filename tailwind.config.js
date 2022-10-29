@@ -15,6 +15,7 @@ module.exports = {
       dark: "rgb(var(--theme-color-dark) / <alpha-value>)",
       shade: "rgb(var(--theme-color-shade) / <alpha-value>)",
       black: "rgb(var(--theme-color-black) / <alpha-value>)",
+      transparent: "transparent",
     },
     fontFamily: {
       body: "var(--theme-font-body)",
@@ -51,22 +52,147 @@ module.exports = {
       1: "0.15rem",
       2: "0.17rem",
     },
+    borderRadius: {
+      none: "0",
+      sm: "0.125rem",
+      DEFAULT: "0.25rem",
+      md: "0.375rem",
+      lg: "0.5rem",
+      xl: "0.75rem",
+      "2xl": "1rem",
+      "3xl": "1.25rem",
+      "4xl": "2rem",
+      full: "9999rem",
+    },
+    boxShadow: {
+      sm: "0 1px 2px 0",
+      DEFAULT: ["0 1px 3px 0", "0 1px 2px -1px"],
+      md: ["0 4px 6px -1px", "0 1px 4px -2px"],
+      lg: ["0 10px 15px -3px", "0 0 6px -4px"],
+      xl: ["0 20px 25px -5px", "0 0 10px -6px"],
+      "2xl": ["0 25px 50px -5px", "0 15px 20px -5px"],
+      inner: "inset 0 2px 4px 0",
+      "inner-sm": "inset 0 1px 4px -2px",
+      none: "0 0 #0000",
+    },
+    dropShadow: {
+      none: "0 0 var(--tw-raw-shadow-color)",
+      sm: "0 2px 1px rgb(var(--tw-raw-shadow-color) / 0.5)",
+      DEFAULT: [
+        "0 1px 2px rgb(var(--tw-raw-shadow-color) / 0.1)",
+        "0 1px 1px rgb(var(--tw-raw-shadow-color) / 0.6)",
+      ],
+      md: [
+        "0 4px 3px rgb(var(--tw-raw-shadow-color) / 0.4)",
+        "0 2px 2px rgb(var(--tw-raw-shadow-color) / 0.6)",
+      ],
+      lg: [
+        "0 10px 8px rgb(var(--tw-raw-shadow-color) / 0.5)",
+        "0 4px 4px rgb(var(--tw-raw-shadow-color) / 0.7)",
+      ],
+      xl: [
+        "0 20px 13px rgb(var(--tw-raw-shadow-color) / 0.4)",
+        "0 8px 8px rgb(var(--tw-raw-shadow-color) / 0.7)",
+      ],
+      "2xl": [
+        "0 15px 16px rgb(var(--tw-raw-shadow-color) / 0.7)",
+        "0 10px 8px rgb(var(--tw-raw-shadow-color) / 0.6)",
+        "0 0px 2px rgb(var(--tw-raw-shadow-color) / 0.2)",
+      ],
+    },
     extend: {
-      boxShadow: {
-        "inner-sm": "inset 0 1px 4px -2px",
-      },
       transitionProperty: {
         height: "height, max-height, min-height",
         filter: "filter, backdrop-filter",
         colors:
           "color, background-color, border-color, text-decoration-color, fill, stroke, outline-color",
       },
-      outlineColor: {
-        transparent: "transparent",
+      scale: {
+        102: "1.02",
       },
     },
   },
   plugins: [
+    /* Add support for coloring drop shadows */
+    plugin(function ({ matchUtilities, theme }) {
+      matchUtilities(
+        {
+          shadow: (value) => ({
+            "--tw-raw-shadow-color": value.slice(4, value.length - 17),
+          }),
+        },
+        { values: theme("boxShadowColor") }
+      );
+    }),
+
+    /* Add support for scrollbar styling */
+    plugin(({ addUtilities, theme }) => {
+      addUtilities({
+        ".scrollbar-none": {
+          "scrollbar-width": "none",
+          "&::-webkit-scrollbar": {
+            display: "none",
+          },
+        },
+        ".scrollbar-thin": {
+          scrollbarWidth: "thin",
+          scrollbarColor: `rgb(var(--theme-color-dark)) transparent`,
+          "&::-webkit-scrollbar": {
+            width: theme("width.3"),
+            height: theme("width.3"),
+          },
+          "&::-webkit-scrollbar-track": {
+            background: "rgb(var(--theme-color-light))",
+          },
+          "&::-webkit-scrollbar-thumb": {
+            background: "rgb(var(--theme-color-dark))",
+            borderRadius: theme("borderRadius.full"),
+            borderWidth: theme("borderWidth.2"),
+            borderColor: "rgb(var(--theme-color-light))",
+            borderStyle: "solid",
+          },
+        },
+      });
+    }),
+
+    /* Add custom animations */
+    plugin(({ addComponents }) => {
+      addComponents({
+        ".animate-carret": {
+          animationName: "blink",
+          animationDuration: "1s",
+          animationTimingFunction: "step-end",
+          animationIterationCount: "infinite",
+        },
+        ".animate-zoom-in": {
+          animationName: "zoom-in",
+          animationDuration: "2s",
+          animationTimingFunction: "ease-in-out",
+          animationIterationCount: "1",
+        },
+        "@keyframes blink": {
+          from: {
+            borderBottomStyle: "solid",
+          },
+          "50%": {
+            borderBottomStyle: "none",
+          },
+          to: {
+            borderBottomStyle: "solid",
+          },
+        },
+        "@keyframes zoom-in": {
+          from: {
+            transform: "scale(0)",
+          },
+          to: {
+            transform: "scale(1)",
+          },
+        },
+      });
+    }),
+
+    /* CSS colors setters */
     plugin(({ addUtilities }) => {
       addUtilities({
         ".set-theme-light": {
@@ -92,6 +218,7 @@ module.exports = {
       });
     }),
 
+    /* CSS fonts setters */
     plugin(({ addUtilities }) => {
       addUtilities({
         ".set-theme-font-standard": {
@@ -107,75 +234,38 @@ module.exports = {
       });
     }),
 
-    plugin(({ addVariant, e }) => {
-      addVariant("webkit-scrollbar", ({ modifySelectors, separator }) => {
-        modifySelectors(({ className }) => {
-          return `.${e(`webkit-scrollbar${separator}${className}`)}::-webkit-scrollbar`;
-        });
-      });
-    }),
-
-    // Colored Dropshadow
-    plugin(({ addUtilities }) => {
-      addUtilities({
-        ".drop-shadow-shade-md": {
-          filter: `
-          drop-shadow(0 4px 3px rgb(var(--theme-color-shade) / 0.15))
-          drop-shadow(0 2px 2px rgb(var(--theme-color-shade) / 0.2))`,
-        },
-        ".drop-shadow-shade-lg": {
-          filter: `
-          drop-shadow(0 10px 8px rgb(var(--theme-color-shade) / 0.2))
-          drop-shadow(0 4px 3px rgb(var(--theme-color-shade) / 0.4))`,
-        },
-        ".drop-shadow-shade-xl": {
-          filter: `
-          drop-shadow(0 20px 13px rgb(var(--theme-color-shade) / 0.25))
-          drop-shadow(0 8px 5px rgb(var(--theme-color-shade) / 0.7))`,
-        },
-        ".drop-shadow-shade-2xl": {
-          filter: `drop-shadow(0 25px 25px rgb(var(--theme-color-shade) / 0.8))`,
-        },
-
-        ".drop-shadow-black-md": {
-          filter: `
-          drop-shadow(0 4px 3px rgb(var(--theme-color-black) / 0.15))
-          drop-shadow(0 2px 2px rgb(var(--theme-color-black) / 0.2))`,
-        },
-        ".drop-shadow-black-lg": {
-          filter: `
-          drop-shadow(0 10px 8px rgb(var(--theme-color-black) / 0.2))
-          drop-shadow(0 4px 3px rgb(var(--theme-color-black) / 0.4))`,
-        },
-        ".drop-shadow-black-xl": {
-          filter: `
-          drop-shadow(0 20px 13px rgb(var(--theme-color-black) / 0.25))
-          drop-shadow(0 8px 5px rgb(var(--theme-color-black) / 0.7))`,
-        },
-        ".drop-shadow-black-2xl": {
-          filter: `drop-shadow(0 25px 25px rgb(var(--theme-color-black) / 0.8))`,
-        },
-      });
-    }),
-
+    /* Linear background colors presets */
     plugin(({ addUtilities }) => {
       addUtilities({
         ".linearbg-obi": {
           background: `linear-gradient(
               to right,
               rgb(var(--theme-color-mid)),
-              rgb(var(--theme-color-light)) 3%,
-              rgb(var(--theme-color-light)) 97%,
+              rgb(var(--theme-color-highlight)) 3%,
+              rgb(var(--theme-color-highlight)) 97%,
               rgb(var(--theme-color-mid))
             )`,
         },
       });
     }),
 
+    /* Add support for break-wrods CSS attribute */
     plugin(({ addUtilities }) => {
       addUtilities({
         ".break-words": {
-          "word-break": "break-word",
+          wordBreak: "break-word",
+        },
+      });
+    }),
+
+    /* Custom background texture */
+    plugin(({ addUtilities }) => {
+      addUtilities({
+        ".texture-paper-dots": {
+          backgroundSize: "10cm",
+          backgroundAttachment: "local",
+          backgroundImage: "var(--theme-texture-dots)",
+          backgroundBlendMode: "var(--theme-texture-dots-blend)",
         },
       });
     }),

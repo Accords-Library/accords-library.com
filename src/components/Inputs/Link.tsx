@@ -1,5 +1,5 @@
 import router from "next/router";
-import { MouseEventHandler, useState } from "react";
+import { PointerEventHandler, useState } from "react";
 import { isDefined } from "helpers/others";
 
 interface Props {
@@ -8,43 +8,56 @@ interface Props {
   allowNewTab?: boolean;
   alwaysNewTab?: boolean;
   children: React.ReactNode;
-  onClick?: MouseEventHandler<HTMLDivElement>;
+  onClick?: PointerEventHandler<HTMLDivElement>;
+  onFocusChanged?: (isFocused: boolean) => void;
+  disabled?: boolean;
 }
 
 export const Link = ({
   href,
   allowNewTab = true,
   alwaysNewTab = false,
+  disabled = false,
   children,
   className,
   onClick,
+  onFocusChanged,
 }: Props): JSX.Element => {
   const [isValidClick, setIsValidClick] = useState(false);
 
   return (
     <div
       className={className}
-      onMouseLeave={() => setIsValidClick(false)}
-      onContextMenu={(event) => event.preventDefault()}
-      onMouseDown={(event) => {
-        event.preventDefault();
-        setIsValidClick(true);
+      onPointerLeave={() => {
+        setIsValidClick(false);
+        onFocusChanged?.(false);
       }}
-      onMouseUp={(event) => {
-        if (isDefined(onClick)) {
-          onClick(event);
-        } else if (isValidClick && href) {
-          if (event.button !== MouseButton.Right) {
-            if (alwaysNewTab) {
-              window.open(href, "_blank", "noopener");
-            } else if (event.button === MouseButton.Left) {
-              if (href.startsWith("#")) {
-                router.replace(href);
-              } else {
-                router.push(href);
+      onContextMenu={(event) => event.preventDefault()}
+      onPointerDown={(event) => {
+        if (!disabled) {
+          event.preventDefault();
+          onFocusChanged?.(true);
+          setIsValidClick(true);
+        }
+      }}
+      onPointerUp={(event) => {
+        onFocusChanged?.(false);
+        if (!disabled) {
+          if (isDefined(onClick)) {
+            onClick(event);
+          } else if (isValidClick && href) {
+            if (event.button !== MouseButton.Right) {
+              if (alwaysNewTab) {
+                window.open(href, "_blank", "noopener");
+              } else if (event.button === MouseButton.Left) {
+                if (href.startsWith("#")) {
+                  router.replace(href);
+                } else {
+                  router.push(href);
+                }
+              } else if (allowNewTab) {
+                window.open(href, "_blank");
               }
-            } else if (allowNewTab) {
-              window.open(href, "_blank");
             }
           }
         }

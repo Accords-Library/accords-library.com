@@ -54,7 +54,7 @@ const ChroniclesList = ({ chronicles, currentSlug, title }: Props): JSX.Element 
                   ] as const).map((content, index) => (
                     <TranslatedChroniclePreview
                       key={index}
-                      isActive={chronicle.attributes.slug === currentSlug}
+                      active={chronicle.attributes.slug === currentSlug}
                       date={chronicle.attributes.date_start}
                       translations={filterHasAttributes(content.attributes.translations, [
                         "language.data.attributes.code",
@@ -80,7 +80,7 @@ const ChroniclesList = ({ chronicles, currentSlug, title }: Props): JSX.Element 
                 : chronicle.attributes.translations.length > 0 && (
                     <TranslatedChroniclePreview
                       date={chronicle.attributes.date_start}
-                      isActive={chronicle.attributes.slug === currentSlug}
+                      active={chronicle.attributes.slug === currentSlug}
                       translations={filterHasAttributes(chronicle.attributes.translations, [
                         "language.data.attributes.code",
                         "title",

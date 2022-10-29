@@ -1,9 +1,10 @@
 import { useCallback } from "react";
-import { Link } from "components/Inputs/Link";
 import { DatePickerFragment } from "graphql/generated";
-import { cIf, cJoin } from "helpers/className";
 import { TranslatedProps } from "types/TranslatedProps";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
+import { DownPressable } from "components/Containers/DownPressable";
+import { isDefined } from "helpers/others";
+import { cIf, cJoin } from "helpers/className";
 
 /*
  *                                        ╭─────────────╮
@@ -14,25 +15,32 @@ interface Props {
   date: DatePickerFragment;
   title: string;
   url: string;
-  isActive?: boolean;
+  active?: boolean;
+  disabled?: boolean;
 }
 
-const ChroniclePreview = ({ date, url, title, isActive }: Props): JSX.Element => (
-  <Link
+export const ChroniclePreview = ({ date, url, title, active, disabled }: Props): JSX.Element => (
+  <DownPressable
+    className="flex w-full gap-4 py-4 px-5"
     href={url}
-    className={cJoin(
-      `flex w-full cursor-pointer gap-4 rounded-2xl py-4 px-5 text-left align-top outline outline-2
-      -outline-offset-2 outline-mid transition-all hover:bg-mid hover:shadow-inner-sm
-      hover:shadow-shade hover:outline-transparent hover:active:shadow-inner
-      hover:active:shadow-shade`,
-      cIf(isActive, "bg-mid shadow-inner-sm shadow-shade outline-transparent")
-    )}>
-    <div className="text-right">
-      <p>{date.year}</p>
-      <p className="text-sm text-dark">{prettyMonthDay(date.month, date.day)}</p>
-    </div>
-    <p className="text-lg leading-tight">{title}</p>
-  </Link>
+    active={active}
+    border
+    disabled={disabled}>
+    {isDefined(date.year) && (
+      <div className="text-right">
+        <p>{date.year}</p>
+        <p className="text-sm text-dark">{prettyMonthDay(date.month, date.day)}</p>
+      </div>
+    )}
+
+    <p
+      className={cJoin(
+        "text-lg leading-tight",
+        cIf(isDefined(date.year), "text-left", "w-full text-center")
+      )}>
+      {title}
+    </p>
+  </DownPressable>
 );
 
 /*

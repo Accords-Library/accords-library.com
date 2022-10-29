@@ -2,7 +2,7 @@ import { GetStaticProps } from "next";
 import { useMemo } from "react";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { PanelHeader } from "components/PanelComponents/PanelHeader";
-import { SubPanel } from "components/Panels/SubPanel";
+import { SubPanel } from "components/Containers/SubPanel";
 import { Icon } from "components/Ico";
 import { getReadySdk } from "graphql/sdk";
 import { GetChroniclesChaptersQuery } from "graphql/generated";

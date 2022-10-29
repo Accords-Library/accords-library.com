@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { Chip } from "components/Chip";
 import { Button } from "components/Inputs/Button";
-import { ContentPanel, ContentPanelWidthSizes } from "components/Panels/ContentPanel";
+import { ContentPanel, ContentPanelWidthSizes } from "components/Containers/ContentPanel";
 import { ToolTip } from "components/ToolTip";
 import { DevGetContentsQuery } from "graphql/generated";
 import { getReadySdk } from "graphql/sdk";

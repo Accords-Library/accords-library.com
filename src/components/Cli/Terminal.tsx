@@ -239,8 +239,7 @@ export const Terminal = ({
       )}>
       <div
         ref={terminalWindowRef}
-        className="h-full overflow-scroll scroll-auto p-6
-        [scrollbar-width:none] webkit-scrollbar:w-0">
+        className="h-full overflow-scroll scroll-auto p-6 scrollbar-none">
         {previousLines.map((previousLine, index) => (
           <p key={index} className="whitespace-pre-line font-realmono">
             {previousLine}
@@ -311,7 +310,7 @@ export const Terminal = ({
               <span
                 className={cJoin(
                   "whitespace-pre font-realmono",
-                  cIf(isTextAreaFocused, "animation-carret border-b-2 border-black")
+                  cIf(isTextAreaFocused, "animate-carret border-b-2 border-black")
                 )}>
                 {line[carretPosition] ?? " "}
               </span>

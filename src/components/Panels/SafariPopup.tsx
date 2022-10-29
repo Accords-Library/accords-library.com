@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import UAParser from "ua-parser-js";
 import { useIsClient, useSessionStorage } from "usehooks-ts";
 import { Button } from "components/Inputs/Button";
-import { Popup } from "components/Popup";
+import { Popup } from "components/Containers/Popup";
 import { sendAnalytics } from "helpers/analytics";
 
 export const SafariPopup = (): JSX.Element => {

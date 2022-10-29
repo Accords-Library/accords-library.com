@@ -5,8 +5,8 @@
   max-width: calc(100vw - 10px);
 }
 .tippy-box {
-  @apply relative rounded-lg bg-light transition-[transform,visibility,opacity]
-  shadow-shade shadow-xl;
+  @apply relative rounded-lg bg-light shadow-xl
+  transition-[transform,visibility,opacity] shadow-shade;
 }
 .tippy-box[data-placement^="top"] > .tippy-arrow {
   @apply bottom-0;

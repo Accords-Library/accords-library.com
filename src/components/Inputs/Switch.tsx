@@ -22,7 +22,7 @@ export const Switch = ({ value, onClick, className, disabled = false }: Props): 
       className={cJoin(
         `relative grid h-6 w-12 content-center rounded-full border-mid outline
         outline-1 -outline-offset-1 outline-mid transition-colors`,
-        cIf(value, "border-none bg-mid shadow-inner-sm shadow-shade outline-transparent"),
+        cIf(value, "border-none bg-mid shadow-inner-sm outline-transparent shadow-shade"),
         cIf(disabled, "cursor-not-allowed opacity-50 grayscale", "cursor-pointer"),
         cIf(disabled, cIf(value, "bg-dark/40 outline-transparent", "outline-dark/60")),
         className
@@ -36,7 +36,7 @@ export const Switch = ({ value, onClick, className, disabled = false }: Props): 
       onPointerUp={() => setIsFocused(false)}>
       <div
         className={cJoin(
-          "ml-1 h-4 w-4 rounded-full bg-dark transition-transform touch-none pointer-events-none",
+          "pointer-events-none ml-1 h-4 w-4 touch-none rounded-full bg-dark transition-transform",
           cIf(value, "translate-x-6"),
           cIf(isFocused, cIf(value, "translate-x-5", "translate-x-1"))
         )}

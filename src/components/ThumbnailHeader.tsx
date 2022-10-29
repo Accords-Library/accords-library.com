@@ -48,7 +48,7 @@ export const ThumbnailHeader = ({
   return (
     <>
       <div className="mb-12 grid place-items-center gap-12">
-        <div className="shadow-shade drop-shadow-lg">
+        <div className="drop-shadow-lg shadow-shade">
           {thumbnail ? (
             <Img
               className="cursor-pointer rounded-xl"

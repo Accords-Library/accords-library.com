@@ -1,4 +1,5 @@
 import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
 import naturalCompare from "string-natural-compare";
 import { Chip } from "./Chip";
 import { PageSelector } from "./Inputs/PageSelector";
@@ -9,7 +10,6 @@ import { useScrollTopOnChange } from "hooks/useScrollTopOnChange";
 import { Ids } from "types/ids";
 import { useLocalData } from "contexts/LocalDataContext";
 import { useContainerQueries } from "contexts/ContainerQueriesContext";
-import { useHotkeys } from "react-hotkeys-hook";
 
 interface Group<T> {
   name: string;

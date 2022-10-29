@@ -149,7 +149,7 @@ export const AppLayout = ({
       <div
         id={Ids.ContentPanel}
         className={cJoin(
-          "texture-paper-dots bg-light [grid-area:content]",
+          "bg-light texture-paper-dots [grid-area:content]",
           cIf(contentPanelScroolbar, "overflow-y-scroll")
         )}>
         {isDefined(contentPanel) ? (
@@ -167,8 +167,8 @@ export const AppLayout = ({
         <div
           id={Ids.SubPanel}
           className={cJoin(
-            `texture-paper-dots z-20 overflow-y-scroll border-r border-dark/50
-              bg-light transition-transform duration-300 scrollbar-none`,
+            `z-20 overflow-y-scroll border-r border-dark/50 bg-light
+              transition-transform duration-300 scrollbar-none texture-paper-dots`,
             cIf(
               is1ColumnLayout,
               "justify-self-end border-r-0 [grid-area:content]",
@@ -185,8 +185,8 @@ export const AppLayout = ({
       {/* Main panel */}
       <div
         className={cJoin(
-          `texture-paper-dots z-30 overflow-y-scroll border-r border-dark/50
-            bg-light transition-transform duration-300 scrollbar-none`,
+          `z-30 overflow-y-scroll border-r border-dark/50 bg-light
+            transition-transform duration-300 scrollbar-none texture-paper-dots`,
           cIf(is1ColumnLayout, "justify-self-start [grid-area:content]", "[grid-area:main]"),
           cIf(is1ColumnLayout && isScreenAtLeastXs, "w-[min(30rem,90%)]"),
           cIf(!mainPanelOpen && is1ColumnLayout, "-translate-x-full")
@@ -197,8 +197,8 @@ export const AppLayout = ({
       {/* Navbar */}
       <div
         className={cJoin(
-          `texture-paper-dots z-10 grid grid-cols-[5rem_1fr_5rem] place-items-center
-            border-t border-dotted border-black bg-light [grid-area:navbar]`,
+          `z-10 grid grid-cols-[5rem_1fr_5rem] place-items-center border-t
+            border-dotted border-black bg-light texture-paper-dots [grid-area:navbar]`,
           cIf(!is1ColumnLayout, "hidden")
         )}>
         <Ico

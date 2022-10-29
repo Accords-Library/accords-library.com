@@ -85,8 +85,8 @@ export const LightBox = ({
                 }}>
                 {isDefined(src) && (
                   <Img
-                    className={`shadow-shade drop-shadow-2xl h-[calc(100vh-4rem)] w-full
-                    object-contain`}
+                    className={`h-[calc(100vh-4rem)] w-full object-contain drop-shadow-2xl
+                    shadow-shade`}
                     src={src}
                     quality={ImageQuality.Large}
                   />

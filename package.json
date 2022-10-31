@@ -28,7 +28,7 @@
     "cuid": "^2.1.8",
     "graphql-request": "^5.0.0",
     "markdown-to-jsx": "^7.1.7",
-    "next": "^12.3.1",
+    "next": "^13.0.0",
     "nodemailer": "^6.8.0",
     "rc-slider": "^10.0.1",
     "react": "18.2.0",

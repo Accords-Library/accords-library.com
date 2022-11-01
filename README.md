@@ -56,7 +56,7 @@
   - The website is built before running in production
   - Performances are great, and possibility to deploy the app on a CDN
   - On-Demand ISR to continuously update the website when new content is added or existing content is modified/deleted
-  - UI localizations are downloaded separetely into the `public/local-data` to avoid fetching the same static props for every page. 
+  - UI localizations are downloaded separetely into the `public/local-data` to avoid fetching the same static props for every page.
 - SEO
   - Good defaults for the metadata and OpenGraph properties
   - Each page can provide a custom thumbnail, title, description to be used
@@ -66,6 +66,7 @@
   - Each warning/error comes with a front-end link to the incriminating element, as well as a link to the CMS to fix it
   - Check for completeness, conformity, and integrity
 - Code quality and style
+
   - React Strict Mode
   - [Eslint](https://www.npmjs.com/package/eslint) with [eslint-plugin-import](https://www.npmjs.com/package/eslint-plugin-import), [typescript-eslint](https://www.npmjs.com/package/@typescript-eslint/eslint-plugin)
   - [Prettier](https://www.npmjs.com/package/prettier) with [prettier-plugin-tailwindcss](https://www.npmjs.com/package/prettier-plugin-tailwindcss)

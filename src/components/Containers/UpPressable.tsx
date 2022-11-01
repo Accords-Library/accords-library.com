@@ -23,8 +23,8 @@ export const UpPressable = ({
       href={href}
       onFocusChanged={setFocused}
       className={cJoin(
-        `overflow-hidden rounded-md drop-shadow-lg transition-all duration-300 shadow-shade`,
-        cIf(!noBackground, "bg-highlight"),
+        `drop-shadow-lg transition-all duration-300 shadow-shade`,
+        cIf(!noBackground, "overflow-hidden rounded-md bg-highlight"),
         cIf(
           disabled,
           "cursor-not-allowed opacity-50 grayscale",

@@ -1,6 +1,7 @@
 import { PostPage } from "components/PostPage";
 import { getPostStaticProps, PostStaticProps } from "graphql/getPostStaticProps";
-import { useLocalData } from "contexts/LocalDataContext";
+import { atoms } from "contexts/atoms";
+import { useAtomGetter } from "helpers/atoms";
 
 /*
  *                                           ╭────────╮
@@ -8,7 +9,7 @@ import { useLocalData } from "contexts/LocalDataContext";
  */
 
 const Legality = (props: PostStaticProps): JSX.Element => {
-  const { langui } = useLocalData();
+  const langui = useAtomGetter(atoms.localData.langui);
   return (
     <PostPage
       {...props}

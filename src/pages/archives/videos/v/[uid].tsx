@@ -10,7 +10,6 @@ import { NavOption } from "components/PanelComponents/NavOption";
 import { ReturnButton } from "components/PanelComponents/ReturnButton";
 import { ContentPanel, ContentPanelWidthSizes } from "components/Containers/ContentPanel";
 import { SubPanel } from "components/Containers/SubPanel";
-import { useAppLayout } from "contexts/AppLayoutContext";
 import { GetVideoQuery } from "graphql/generated";
 import { getReadySdk } from "graphql/sdk";
 import { prettyDate, prettyShortenNumber } from "helpers/formatters";
@@ -18,7 +17,8 @@ import { filterHasAttributes, isDefined } from "helpers/others";
 import { getVideoFile } from "helpers/videos";
 import { getOpenGraph } from "helpers/openGraph";
 import { getLangui } from "graphql/fetchLocalData";
-import { useLocalData } from "contexts/LocalDataContext";
+import { atoms } from "contexts/atoms";
+import { useAtomGetter } from "helpers/atoms";
 import { useContainerQueries } from "contexts/ContainerQueriesContext";
 
 /*
@@ -32,8 +32,7 @@ interface Props extends AppLayoutRequired {
 
 const Video = ({ video, ...otherProps }: Props): JSX.Element => {
   const { isContentPanelAtLeast4xl } = useContainerQueries();
-  const { setSubPanelOpen } = useAppLayout();
-  const { langui } = useLocalData();
+  const langui = useAtomGetter(atoms.localData.langui);
   const router = useRouter();
 
   const subPanel = useMemo(
@@ -47,29 +46,12 @@ const Video = ({ video, ...otherProps }: Props): JSX.Element => {
 
         <HorizontalLine />
 
-        <NavOption
-          title={langui.video}
-          url="#video"
-          border
-          onClick={() => setSubPanelOpen(false)}
-        />
-
-        <NavOption
-          title={langui.channel}
-          url="#channel"
-          border
-          onClick={() => setSubPanelOpen(false)}
-        />
-
-        <NavOption
-          title={langui.description}
-          url="#description"
-          border
-          onClick={() => setSubPanelOpen(false)}
-        />
+        <NavOption title={langui.video} url="#video" border />
+        <NavOption title={langui.channel} url="#channel" border />
+        <NavOption title={langui.description} url="#description" border />
       </SubPanel>
     ),
-    [setSubPanelOpen, langui]
+    [langui]
   );
 
   const contentPanel = useMemo(

@@ -18,7 +18,8 @@ import { TranslatedPreviewCard } from "components/PreviewCard";
 import { HorizontalLine } from "components/HorizontalLine";
 import { cJoin, cIf } from "helpers/className";
 import { getLangui } from "graphql/fetchLocalData";
-import { useLocalData } from "contexts/LocalDataContext";
+import { atoms } from "contexts/atoms";
+import { useAtomGetter } from "helpers/atoms";
 import { useContainerQueries } from "contexts/ContainerQueriesContext";
 import { TranslatedPreviewFolder } from "components/Contents/PreviewFolder";
 
@@ -34,7 +35,7 @@ interface Props extends AppLayoutRequired {
 }
 
 const ContentsFolder = ({ openGraph, folder, ...otherProps }: Props): JSX.Element => {
-  const { langui } = useLocalData();
+  const langui = useAtomGetter(atoms.localData.langui);
   const { isContentPanelAtLeast4xl } = useContainerQueries();
 
   const subPanel = useMemo(
@@ -273,7 +274,7 @@ export const getStaticPaths: GetStaticPaths = async (context) => {
  */
 
 const NoContentNorFolderMessage = () => {
-  const { langui } = useLocalData();
+  const langui = useAtomGetter(atoms.localData.langui);
   return (
     <div className="grid place-content-center">
       <div

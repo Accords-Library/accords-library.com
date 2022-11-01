@@ -1,8 +1,9 @@
 import React, { createContext, ReactNode, useContext, useMemo, useState } from "react";
-import { useUserSettings } from "./UserSettingsContext";
+import { atoms } from "./atoms";
 import { useOnResize } from "hooks/useOnResize";
 import { Ids } from "types/ids";
 import { RequiredNonNullable } from "types/types";
+import { useAtomGetter } from "helpers/atoms";
 
 type Size =
   | "2xl"
@@ -100,7 +101,7 @@ export const ContainerQueriesContextProvider = ({ children }: Props): JSX.Elemen
   useOnResize(Ids.ContentPanel, (width) => setContentPanelWidth(width));
   useOnResize(Ids.SubPanel, (width) => setSubPanelWidth(width));
 
-  const { fontSize } = useUserSettings();
+  const fontSize = useAtomGetter(atoms.settings.fontSize);
 
   const screenAtLeasts = useMemo(
     () => ({

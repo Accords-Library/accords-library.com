@@ -13,10 +13,9 @@ import { AnchorShare } from "components/AnchorShare";
 import { useIntersectionList } from "hooks/useIntersectionList";
 import { Ico, Icon } from "components/Ico";
 import { useDeviceSupportsHover } from "hooks/useMediaQuery";
-import { useUserSettings } from "contexts/UserSettingsContext";
-import { useLocalData } from "contexts/LocalDataContext";
 import { useContainerQueries } from "contexts/ContainerQueriesContext";
-import { useLightBox } from "contexts/LightBoxContext";
+import { atoms } from "contexts/atoms";
+import { useAtomGetter } from "helpers/atoms";
 
 /*
  *                                        ╭─────────────╮
@@ -31,10 +30,10 @@ interface MarkdawnProps {
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
 export const Markdawn = ({ className, text: rawText }: MarkdawnProps): JSX.Element => {
-  const { playerName } = useUserSettings();
+  const playerName = useAtomGetter(atoms.settings.playerName);
   const router = useRouter();
   const { isContentPanelAtLeastLg } = useContainerQueries();
-  const { showLightBox } = useLightBox();
+  const { showLightBox } = useAtomGetter(atoms.lightBox);
 
   /* eslint-disable no-irregular-whitespace */
   const text = useMemo(
@@ -232,7 +231,7 @@ export const TableOfContents = ({
   horizontalLine = false,
 }: TableOfContentsProps): JSX.Element => {
   const router = useRouter();
-  const { langui } = useLocalData();
+  const langui = useAtomGetter(atoms.localData.langui);
   const toc = useMemo(() => getTocFromMarkdawn(preprocessMarkDawn(text), title), [text, title]);
 
   return (

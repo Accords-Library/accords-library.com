@@ -7,37 +7,33 @@ import { OrderableList } from "components/Inputs/OrderableList";
 import { Select } from "components/Inputs/Select";
 import { TextInput } from "components/Inputs/TextInput";
 import { Popup } from "components/Containers/Popup";
-import { useAppLayout } from "contexts/AppLayoutContext";
-import { useLocalData } from "contexts/LocalDataContext";
-import { useUserSettings } from "contexts/UserSettingsContext";
 import { sendAnalytics } from "helpers/analytics";
 import { cJoin, cIf } from "helpers/className";
 import { prettyLanguage } from "helpers/formatters";
 import { filterHasAttributes, isDefined } from "helpers/others";
 import { useContainerQueries } from "contexts/ContainerQueriesContext";
+import { atoms } from "contexts/atoms";
+import { useAtomGetter, useAtomPair } from "helpers/atoms";
+import { ThemeMode } from "contexts/UserSettingsProvider";
 
 export const SettingsPopup = (): JSX.Element => {
-  const {
-    currency,
-    darkMode,
-    dyslexic,
-    fontSize,
-    playerName,
-    preferredLanguages,
-    selectedThemeMode,
-    setCurrency,
-    setDarkMode,
-    setDyslexic,
-    setFontSize,
-    setPlayerName,
-    setPreferredLanguages,
-    setSelectedThemeMode,
-  } = useUserSettings();
+  const [preferredLanguages, setPreferredLanguages] = useAtomPair(
+    atoms.settings.preferredLanguages
+  );
+  const [isSettingsOpened, setSettingsOpened] = useAtomPair(atoms.layout.settingsOpened);
+  const [currency, setCurrency] = useAtomPair(atoms.settings.currency);
+  const [isDyslexic, setDyslexic] = useAtomPair(atoms.settings.dyslexic);
+  const [fontSize, setFontSize] = useAtomPair(atoms.settings.fontSize);
+  const [playerName, setPlayerName] = useAtomPair(atoms.settings.playerName);
+  const [themeMode, setThemeMode] = useAtomPair(atoms.settings.themeMode);
 
-  const { langui, currencies, languages } = useLocalData();
+  const languages = useAtomGetter(atoms.localData.languages);
+  const langui = useAtomGetter(atoms.localData.langui);
+  const currencies = useAtomGetter(atoms.localData.currencies);
+
   const { is1ColumnLayout } = useContainerQueries();
+
   const router = useRouter();
-  const { configPanelOpen, setConfigPanelOpen } = useAppLayout();
 
   const currencyOptions = useMemo(
     () =>
@@ -59,9 +55,9 @@ export const SettingsPopup = (): JSX.Element => {
 
   return (
     <Popup
-      isVisible={configPanelOpen}
+      isVisible={isSettingsOpened}
       onCloseRequest={() => {
-        setConfigPanelOpen(false);
+        setSettingsOpened(false);
         sendAnalytics("Settings", "Close settings");
       }}>
       <h2 className="text-2xl">{langui.settings}</h2>
@@ -110,28 +106,26 @@ export const SettingsPopup = (): JSX.Element => {
               buttonsProps={[
                 {
                   onClick: () => {
-                    setDarkMode(false);
-                    setSelectedThemeMode(true);
+                    setThemeMode(ThemeMode.Light);
                     sendAnalytics("Settings", "Change theme (light)");
                   },
-                  active: selectedThemeMode && !darkMode,
+                  active: themeMode === ThemeMode.Light,
                   text: langui.light,
                 },
                 {
                   onClick: () => {
-                    setSelectedThemeMode(false);
+                    setThemeMode(ThemeMode.Auto);
                     sendAnalytics("Settings", "Change theme (auto)");
                   },
-                  active: !selectedThemeMode,
+                  active: themeMode === ThemeMode.Auto,
                   text: langui.auto,
                 },
                 {
                   onClick: () => {
-                    setDarkMode(true);
-                    setSelectedThemeMode(true);
+                    setThemeMode(ThemeMode.Dark);
                     sendAnalytics("Settings", "Change theme (dark)");
                   },
-                  active: selectedThemeMode && darkMode,
+                  active: themeMode === ThemeMode.Dark,
                   text: langui.dark,
                 },
               ]}
@@ -198,7 +192,7 @@ export const SettingsPopup = (): JSX.Element => {
             <h3 className="text-xl">{langui.font}</h3>
             <div className="grid gap-2">
               <Button
-                active={!dyslexic}
+                active={!isDyslexic}
                 onClick={() => {
                   setDyslexic(false);
                   sendAnalytics("Settings", "Change font (Zen Maru Gothic)");
@@ -207,7 +201,7 @@ export const SettingsPopup = (): JSX.Element => {
                 text="Zen Maru Gothic"
               />
               <Button
-                active={dyslexic}
+                active={isDyslexic}
                 onClick={() => {
                   setDyslexic(true);
                   sendAnalytics("Settings", "Change font (OpenDyslexic)");

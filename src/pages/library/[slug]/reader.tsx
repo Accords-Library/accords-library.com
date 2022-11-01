@@ -41,14 +41,14 @@ import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { TranslatedProps } from "types/TranslatedProps";
 import { prettyInlineTitle, prettySlug } from "helpers/formatters";
 import { useFullscreen } from "hooks/useFullscreen";
-import { useUserSettings } from "contexts/UserSettingsContext";
-import { useLocalData } from "contexts/LocalDataContext";
+import { atoms } from "contexts/atoms";
+import { useAtomGetter } from "helpers/atoms";
 import { FilterSettings, useReaderSettings } from "hooks/useReaderSettings";
 import { useContainerQueries } from "contexts/ContainerQueriesContext";
 
 const CUSTOM_DARK_DROPSHADOW = `
-drop-shadow(0 0    0.5em rgb(var(--theme-color-shade) / 30%))
-drop-shadow(0 1em    1em rgb(var(--theme-color-shade) / 40%))
+  drop-shadow(0 0    0.5em rgb(var(--theme-color-shade) / 30%))
+  drop-shadow(0 1em    1em rgb(var(--theme-color-shade) / 40%))
   drop-shadow(0 2em    2em rgb(var(--theme-color-shade) / 60%))
   drop-shadow(0 12em  12em rgb(var(--theme-color-shade) / 80%))`;
 
@@ -91,8 +91,8 @@ const LibrarySlug = ({
   ...otherProps
 }: Props): JSX.Element => {
   const { is1ColumnLayout } = useContainerQueries();
-  const { langui } = useLocalData();
-  const { darkMode } = useUserSettings();
+  const langui = useAtomGetter(atoms.localData.langui);
+  const isDarkMode = useAtomGetter(atoms.settings.darkMode);
   const {
     filterSettings,
     isSidePagesEnabled,
@@ -453,7 +453,7 @@ const LibrarySlug = ({
                 display: "grid",
                 placeContent: "center",
                 filter: filterSettings.dropShadow
-                  ? darkMode
+                  ? isDarkMode
                     ? CUSTOM_DARK_DROPSHADOW
                     : CUSTOM_LIGHT_DROPSHADOW
                   : undefined,
@@ -631,7 +631,7 @@ const LibrarySlug = ({
       is1ColumnLayout,
       currentZoom,
       filterSettings,
-      darkMode,
+      isDarkMode,
       pageHeight,
       effectiveDisplayMode,
       firstPage,
@@ -798,7 +798,7 @@ interface PageFiltersProps {
 }
 
 const PageFilters = ({ page, bookType, options }: PageFiltersProps) => {
-  const { darkMode } = useUserSettings();
+  const isDarkMode = useAtomGetter(atoms.settings.darkMode);
   const commonCss = useMemo(
     () => cJoin("absolute inset-0", cIf(page === "right", "[background-position-x:-100%]")),
     [page]
@@ -823,7 +823,7 @@ const PageFilters = ({ page, bookType, options }: PageFiltersProps) => {
             commonCss,
             `bg-blend-lighten mix-blend-multiply [background-image:url(/reader/book-fold.webp)]
           [background-size:200%_100%]`,
-            cIf(!darkMode, "bg-[#FFF]/50")
+            cIf(!isDarkMode, "bg-[#FFF]/50")
           )}
         />
       )}
@@ -834,7 +834,7 @@ const PageFilters = ({ page, bookType, options }: PageFiltersProps) => {
             className={cJoin(
               commonCss,
               `bg-blend-lighten mix-blend-multiply [background-size:200%_100%]`,
-              cIf(!darkMode, "bg-[#FFF]/50"),
+              cIf(!isDarkMode, "bg-[#FFF]/50"),
               cIf(
                 page === "single",
                 "[background-image:url(/reader/lighting-single-page.webp)]",
@@ -846,7 +846,7 @@ const PageFilters = ({ page, bookType, options }: PageFiltersProps) => {
             className={cJoin(
               commonCss,
               `bg-blend-lighten mix-blend-soft-light [background-size:200%_100%]`,
-              cIf(!darkMode, "bg-[#FFF]/30"),
+              cIf(!isDarkMode, "bg-[#FFF]/30"),
               cIf(
                 page === "single",
                 "[background-image:url(/reader/specular-single-page.webp)]",
@@ -890,7 +890,7 @@ interface ScanSetProps {
 
 const ScanSet = ({ onClickOnImage, scanSet, id, title, content }: ScanSetProps): JSX.Element => {
   const { is1ColumnLayout } = useContainerQueries();
-  const { langui } = useLocalData();
+  const langui = useAtomGetter(atoms.localData.langui);
   const [selectedScan, LanguageSwitcher, languageSwitcherProps] = useSmartLanguage({
     items: scanSet,
     languageExtractor: useCallback(

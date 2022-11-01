@@ -1,12 +1,12 @@
 import { useCallback } from "react";
 import { Icon } from "components/Ico";
 import { Button } from "components/Inputs/Button";
-import { useAppLayout } from "contexts/AppLayoutContext";
 import { TranslatedProps } from "types/TranslatedProps";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { isDefined } from "helpers/others";
-import { useLocalData } from "contexts/LocalDataContext";
 import { useContainerQueries } from "contexts/ContainerQueriesContext";
+import { atoms } from "contexts/atoms";
+import { useAtomGetter } from "helpers/atoms";
 
 /*
  *                                        ╭─────────────╮
@@ -24,8 +24,7 @@ interface Props {
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
 export const ReturnButton = ({ href, title, displayOnlyOn, className }: Props): JSX.Element => {
-  const { setSubPanelOpen } = useAppLayout();
-  const { langui } = useLocalData();
+  const langui = useAtomGetter(atoms.localData.langui);
   const { is3ColumnsLayout } = useContainerQueries();
 
   return (
@@ -34,12 +33,7 @@ export const ReturnButton = ({ href, title, displayOnlyOn, className }: Props): 
         (!is3ColumnsLayout && displayOnlyOn === "1ColumnLayout") ||
         !isDefined(displayOnlyOn)) && (
         <div className={className}>
-          <Button
-            onClick={() => setSubPanelOpen(false)}
-            href={href}
-            text={`${langui.return_to} ${title}`}
-            icon={Icon.NavigateBefore}
-          />
+          <Button href={href} text={`${langui.return_to} ${title}`} icon={Icon.NavigateBefore} />
         </div>
       )}
     </>

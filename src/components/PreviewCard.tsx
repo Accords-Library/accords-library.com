@@ -11,8 +11,8 @@ import { ImageQuality } from "helpers/img";
 import { useDeviceSupportsHover } from "hooks/useMediaQuery";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { TranslatedProps } from "types/TranslatedProps";
-import { useUserSettings } from "contexts/UserSettingsContext";
-import { useLocalData } from "contexts/LocalDataContext";
+import { atoms } from "contexts/atoms";
+import { useAtomGetter } from "helpers/atoms";
 
 /*
  *                                        ╭─────────────╮
@@ -70,8 +70,8 @@ export const PreviewCard = ({
   infoAppend,
   disabled = false,
 }: Props): JSX.Element => {
-  const { currency } = useUserSettings();
-  const { currencies } = useLocalData();
+  const currency = useAtomGetter(atoms.settings.currency);
+  const currencies = useAtomGetter(atoms.localData.currencies);
   const isHoverable = useDeviceSupportsHover();
   const router = useRouter();
 

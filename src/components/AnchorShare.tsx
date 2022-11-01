@@ -1,7 +1,8 @@
 import { Ico, Icon } from "./Ico";
 import { ToolTip } from "./ToolTip";
 import { cJoin } from "helpers/className";
-import { useLocalData } from "contexts/LocalDataContext";
+import { useAtomGetter } from "helpers/atoms";
+import { atoms } from "contexts/atoms";
 
 /*
  *                                        ╭─────────────╮
@@ -16,7 +17,7 @@ interface Props {
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
 export const AnchorShare = ({ id, className }: Props): JSX.Element => {
-  const { langui } = useLocalData();
+  const langui = useAtomGetter(atoms.localData.langui);
   return (
     <ToolTip content={langui.copy_anchor_link} trigger="mouseenter" className="text-sm">
       <ToolTip content={langui.anchor_link_copied} trigger="click" className="text-sm">

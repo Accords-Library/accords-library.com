@@ -13,7 +13,8 @@ import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { PostWithTranslations } from "types/types";
 import { filterHasAttributes, getStatusDescription } from "helpers/others";
 import { prettySlug } from "helpers/formatters";
-import { useLocalData } from "contexts/LocalDataContext";
+import { atoms } from "contexts/atoms";
+import { useAtomGetter } from "helpers/atoms";
 
 /*
  *                                        ╭─────────────╮
@@ -48,7 +49,7 @@ export const PostPage = ({
   displayTitle = true,
   ...otherProps
 }: Props): JSX.Element => {
-  const { langui } = useLocalData();
+  const langui = useAtomGetter(atoms.localData.langui);
   const [selectedTranslation, LanguageSwitcher, languageSwitcherProps] = useSmartLanguage({
     items: post.translations,
     languageExtractor: useCallback(

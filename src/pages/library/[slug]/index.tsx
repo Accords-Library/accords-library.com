@@ -51,10 +51,9 @@ import { useIntersectionList } from "hooks/useIntersectionList";
 import { HorizontalLine } from "components/HorizontalLine";
 import { getLangui } from "graphql/fetchLocalData";
 import { Ids } from "types/ids";
-import { useUserSettings } from "contexts/UserSettingsContext";
-import { useLocalData } from "contexts/LocalDataContext";
+import { atoms } from "contexts/atoms";
+import { useAtomGetter } from "helpers/atoms";
 import { useContainerQueries } from "contexts/ContainerQueriesContext";
-import { useLightBox } from "contexts/LightBoxContext";
 
 /*
  *                                         ╭─────────────╮
@@ -74,14 +73,16 @@ interface Props extends AppLayoutRequired {
 }
 
 const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
-  const { currency } = useUserSettings();
-  const { langui, currencies } = useLocalData();
+  const currency = useAtomGetter(atoms.settings.currency);
+  const langui = useAtomGetter(atoms.localData.langui);
+  const currencies = useAtomGetter(atoms.localData.currencies);
+
   const { isContentPanelAtLeast3xl, isContentPanelAtLeastSm } = useContainerQueries();
   const hoverable = useDeviceSupportsHover();
   const router = useRouter();
   const { value: keepInfoVisible, toggle: toggleKeepInfoVisible } = useBoolean(false);
 
-  const { showLightBox } = useLightBox();
+  const { showLightBox } = useAtomGetter(atoms.lightBox);
 
   useScrollTopOnChange(Ids.ContentPanel, [item]);
   const currentIntersection = useIntersectionList(intersectionIds);
@@ -692,7 +693,7 @@ const ContentLine = ({
   parentSlug,
   condensed,
 }: ContentLineProps): JSX.Element => {
-  const { langui } = useLocalData();
+  const langui = useAtomGetter(atoms.localData.langui);
   const { value: isOpened, toggle: toggleOpened } = useBoolean(false);
   const [selectedTranslation] = useSmartLanguage({
     items: content?.translations ?? [],

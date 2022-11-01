@@ -22,7 +22,8 @@ import { SmartList } from "components/SmartList";
 import { cIf } from "helpers/className";
 import { TextInput } from "components/Inputs/TextInput";
 import { getLangui } from "graphql/fetchLocalData";
-import { useLocalData } from "contexts/LocalDataContext";
+import { atoms } from "contexts/atoms";
+import { useAtomGetter } from "helpers/atoms";
 import { useContainerQueries } from "contexts/ContainerQueriesContext";
 
 /*
@@ -45,7 +46,7 @@ interface Props extends AppLayoutRequired {
 
 const Channel = ({ channel, ...otherProps }: Props): JSX.Element => {
   const { value: keepInfoVisible, toggle: toggleKeepInfoVisible } = useBoolean(true);
-  const { langui } = useLocalData();
+  const langui = useAtomGetter(atoms.localData.langui);
   const hoverable = useDeviceSupportsHover();
   const { isContentPanelAtLeast4xl } = useContainerQueries();
 

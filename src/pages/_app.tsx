@@ -9,7 +9,6 @@ import "@fontsource/zen-maru-gothic/900.css";
 
 import type { AppProps } from "next/app";
 import Script from "next/script";
-import { AppContextProvider } from "contexts/AppLayoutContext";
 
 import "styles/debug.css";
 import "styles/formatted.css";
@@ -17,19 +16,19 @@ import "styles/others.css";
 import "styles/rc-slider.css";
 import "styles/tippy.css";
 
-import { TerminalContextProvider } from "contexts/TerminalContext";
-import { UserSettingsProvider as UserSettingsContextProvider } from "contexts/UserSettingsContext";
-import { LocalDataContextProvider } from "contexts/LocalDataContext";
 import { ContainerQueriesContextProvider } from "contexts/ContainerQueriesContext";
-import { LightBoxContextProvider } from "contexts/LightBoxContext";
+import { LocalDataProvider } from "contexts/LocalDataProvider";
+import { UserSettingsProvider } from "contexts/UserSettingsProvider";
+import { LightBoxProvider } from "contexts/LightBoxProvider";
+import { AppLayoutProvider } from "contexts/AppLayoutProvider";
 
 const AccordsLibraryApp = (props: AppProps): JSX.Element => (
-  <LocalDataContextProvider>
-    <AppContextProvider>
-      <UserSettingsContextProvider>
-        <ContainerQueriesContextProvider>
-          <TerminalContextProvider>
-            <LightBoxContextProvider>
+  <LocalDataProvider>
+    <UserSettingsProvider>
+      <AppLayoutProvider>
+        <UserSettingsProvider>
+          <ContainerQueriesContextProvider>
+            <LightBoxProvider>
               <Script
                 async
                 defer
@@ -37,11 +36,11 @@ const AccordsLibraryApp = (props: AppProps): JSX.Element => (
                 src={`${process.env.NEXT_PUBLIC_UMAMI_URL}/umami.js`}
               />
               <props.Component {...props.pageProps} />
-            </LightBoxContextProvider>
-          </TerminalContextProvider>
-        </ContainerQueriesContextProvider>
-      </UserSettingsContextProvider>
-    </AppContextProvider>
-  </LocalDataContextProvider>
+            </LightBoxProvider>
+          </ContainerQueriesContextProvider>
+        </UserSettingsProvider>
+      </AppLayoutProvider>
+    </UserSettingsProvider>
+  </LocalDataProvider>
 );
 export default AccordsLibraryApp;

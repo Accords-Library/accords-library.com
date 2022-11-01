@@ -4,14 +4,13 @@ import { PostPage } from "components/PostPage";
 import { getPostStaticProps, PostStaticProps } from "graphql/getPostStaticProps";
 import { getReadySdk } from "graphql/sdk";
 import { filterHasAttributes, isDefined, isDefinedAndNotEmpty } from "helpers/others";
-import { useIsTerminalMode } from "hooks/useIsTerminalMode";
 import { Terminal } from "components/Cli/Terminal";
 import { PostWithTranslations } from "types/types";
 import { getDefaultPreferredLanguages, staticSmartLanguage } from "helpers/locales";
 import { prettyTerminalBoxedTitle } from "helpers/terminal";
 import { prettyMarkdown } from "helpers/description";
-import { useLocalData } from "contexts/LocalDataContext";
-
+import { atoms } from "contexts/atoms";
+import { useAtomGetter } from "helpers/atoms";
 /*
  *                                           ╭────────╮
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
@@ -20,8 +19,8 @@ import { useLocalData } from "contexts/LocalDataContext";
 interface Props extends PostStaticProps {}
 
 const LibrarySlug = (props: Props): JSX.Element => {
-  const { langui } = useLocalData();
-  const isTerminalMode = useIsTerminalMode();
+  const langui = useAtomGetter(atoms.localData.langui);
+  const isTerminalMode = useAtomGetter(atoms.layout.terminalMode);
   const router = useRouter();
 
   if (isTerminalMode) {

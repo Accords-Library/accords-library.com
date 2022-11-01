@@ -8,8 +8,9 @@ import { cJoin } from "helpers/className";
 import { isDefined, isDefinedAndNotEmpty } from "helpers/others";
 import { useScrollTopOnChange } from "hooks/useScrollTopOnChange";
 import { Ids } from "types/ids";
-import { useLocalData } from "contexts/LocalDataContext";
 import { useContainerQueries } from "contexts/ContainerQueriesContext";
+import { atoms } from "contexts/atoms";
+import { useAtomGetter } from "helpers/atoms";
 
 interface Group<T> {
   name: string;
@@ -71,7 +72,7 @@ export const SmartList = <T,>({
   className,
 }: Props<T>): JSX.Element => {
   const [page, setPage] = useState(0);
-  const { langui } = useLocalData();
+  const langui = useAtomGetter(atoms.localData.langui);
   useScrollTopOnChange(Ids.ContentPanel, [page], paginationScroolTop);
   useEffect(() => setPage(0), [searchingTerm, groupingFunction, groupSortingFunction, items]);
 
@@ -229,7 +230,7 @@ export const SmartList = <T,>({
 
 const DefaultRenderWhenEmpty = () => {
   const { is3ColumnsLayout } = useContainerQueries();
-  const { langui } = useLocalData();
+  const langui = useAtomGetter(atoms.localData.langui);
   return (
     <div className="grid h-full place-content-center">
       <div

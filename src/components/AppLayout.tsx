@@ -7,11 +7,11 @@ import { MainPanel } from "./Panels/MainPanel";
 import { SafariPopup } from "./Panels/SafariPopup";
 import { isDefined, isUndefined } from "helpers/others";
 import { cIf, cJoin } from "helpers/className";
-import { useAppLayout } from "contexts/AppLayoutContext";
 import { OpenGraph, TITLE_PREFIX, TITLE_SEPARATOR } from "helpers/openGraph";
 import { Ids } from "types/ids";
-import { useLocalData } from "contexts/LocalDataContext";
 import { useContainerQueries } from "contexts/ContainerQueriesContext";
+import { atoms } from "contexts/atoms";
+import { useAtomGetter, useAtomPair } from "helpers/atoms";
 
 /*
  *                                         ╭─────────────╮
@@ -45,39 +45,33 @@ export const AppLayout = ({
   subPanelIcon = Icon.Tune,
   contentPanelScroolbar = true,
 }: Props): JSX.Element => {
-  const {
-    mainPanelOpen,
-    mainPanelReduced,
-    menuGestures,
-    subPanelOpen,
-    setMainPanelOpen,
-    setSubPanelOpen,
-    toggleMainPanelOpen,
-    toggleSubPanelOpen,
-  } = useAppLayout();
+  const isMainPanelReduced = useAtomGetter(atoms.layout.mainPanelReduced);
+  const [isSubPanelOpened, setSubPanelOpened] = useAtomPair(atoms.layout.subPanelOpened);
+  const [isMainPanelOpened, setMainPanelOpened] = useAtomPair(atoms.layout.mainPanelOpened);
+  const isMenuGesturesEnabled = useAtomGetter(atoms.layout.menuGesturesEnabled);
 
-  const { langui } = useLocalData();
+  const langui = useAtomGetter(atoms.localData.langui);
 
   const { is1ColumnLayout, isScreenAtLeastXs } = useContainerQueries();
 
   const handlers = useSwipeable({
     onSwipedLeft: (SwipeEventData) => {
-      if (menuGestures) {
+      if (isMenuGesturesEnabled) {
         if (SwipeEventData.velocity < SENSIBILITY_SWIPE) return;
-        if (mainPanelOpen) {
-          setMainPanelOpen(false);
+        if (isMainPanelOpened) {
+          setMainPanelOpened(false);
         } else if (isDefined(subPanel) && isDefined(contentPanel)) {
-          setSubPanelOpen(true);
+          setSubPanelOpened(true);
         }
       }
     },
     onSwipedRight: (SwipeEventData) => {
-      if (menuGestures) {
+      if (isMenuGesturesEnabled) {
         if (SwipeEventData.velocity < SENSIBILITY_SWIPE) return;
-        if (subPanelOpen) {
-          setSubPanelOpen(false);
+        if (isSubPanelOpened) {
+          setSubPanelOpened(false);
         } else {
-          setMainPanelOpen(true);
+          setMainPanelOpened(true);
         }
       }
     },
@@ -99,7 +93,7 @@ export const AppLayout = ({
       style={{
         gridTemplateColumns: is1ColumnLayout
           ? "1fr"
-          : `${mainPanelReduced ? layout.mainMenuReduced : layout.mainMenu}rem ${
+          : `${isMainPanelReduced ? layout.mainMenuReduced : layout.mainMenu}rem ${
               isDefined(subPanel) ? layout.subMenu : 0
             }rem 1fr`,
       }}>
@@ -128,7 +122,7 @@ export const AppLayout = ({
           `absolute inset-0 transition-filter duration-500
             [grid-area:content]`,
           cIf(
-            (mainPanelOpen || subPanelOpen) && is1ColumnLayout,
+            (isMainPanelOpened || isSubPanelOpened) && is1ColumnLayout,
             "z-10 backdrop-blur",
             "pointer-events-none touch-none"
           )
@@ -136,11 +130,15 @@ export const AppLayout = ({
         <div
           className={cJoin(
             "absolute inset-0 bg-shade transition-opacity duration-500",
-            cIf((mainPanelOpen || subPanelOpen) && is1ColumnLayout, "opacity-60", "opacity-0")
+            cIf(
+              (isMainPanelOpened || isSubPanelOpened) && is1ColumnLayout,
+              "opacity-60",
+              "opacity-0"
+            )
           )}
           onClick={() => {
-            setMainPanelOpen(false);
-            setSubPanelOpen(false);
+            setMainPanelOpened(false);
+            setSubPanelOpened(false);
           }}
         />
       </div>
@@ -175,7 +173,7 @@ export const AppLayout = ({
               "[grid-area:sub]"
             ),
             cIf(is1ColumnLayout && isScreenAtLeastXs, "w-[min(30rem,90%)] border-l"),
-            cIf(is1ColumnLayout && !subPanelOpen && !turnSubIntoContent, "translate-x-[100vw]"),
+            cIf(is1ColumnLayout && !isSubPanelOpened && !turnSubIntoContent, "translate-x-[100vw]"),
             cIf(is1ColumnLayout && turnSubIntoContent, "w-full border-l-0")
           )}>
           {subPanel}
@@ -189,7 +187,7 @@ export const AppLayout = ({
             transition-transform duration-300 scrollbar-none texture-paper-dots`,
           cIf(is1ColumnLayout, "justify-self-start [grid-area:content]", "[grid-area:main]"),
           cIf(is1ColumnLayout && isScreenAtLeastXs, "w-[min(30rem,90%)]"),
-          cIf(!mainPanelOpen && is1ColumnLayout, "-translate-x-full")
+          cIf(!isMainPanelOpened && is1ColumnLayout, "-translate-x-full")
         )}>
         <MainPanel />
       </div>
@@ -202,11 +200,11 @@ export const AppLayout = ({
           cIf(!is1ColumnLayout, "hidden")
         )}>
         <Ico
-          icon={mainPanelOpen ? Icon.Close : Icon.Menu}
+          icon={isMainPanelOpened ? Icon.Close : Icon.Menu}
           className="cursor-pointer !text-2xl"
           onClick={() => {
-            toggleMainPanelOpen();
-            setSubPanelOpen(false);
+            setMainPanelOpened((current) => !current);
+            setSubPanelOpened(false);
           }}
         />
         <p
@@ -220,11 +218,11 @@ export const AppLayout = ({
         </p>
         {isDefined(subPanel) && !turnSubIntoContent && (
           <Ico
-            icon={subPanelOpen ? Icon.Close : subPanelIcon}
+            icon={isSubPanelOpened ? Icon.Close : subPanelIcon}
             className="cursor-pointer !text-2xl"
             onClick={() => {
-              toggleSubPanelOpen();
-              setMainPanelOpen(false);
+              setSubPanelOpened((current) => !current);
+              setMainPanelOpened(false);
             }}
           />
         )}

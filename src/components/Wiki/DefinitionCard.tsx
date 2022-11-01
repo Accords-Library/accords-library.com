@@ -5,8 +5,9 @@ import { getStatusDescription } from "helpers/others";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { Button } from "components/Inputs/Button";
 import { cIf, cJoin } from "helpers/className";
-import { useLocalData } from "contexts/LocalDataContext";
 import { useContainerQueries } from "contexts/ContainerQueriesContext";
+import { atoms } from "contexts/atoms";
+import { useAtomGetter } from "helpers/atoms";
 
 /*
  *                                        ╭─────────────╮
@@ -31,7 +32,7 @@ interface Props {
 
 const DefinitionCard = ({ source, translations = [], index, categories }: Props): JSX.Element => {
   const { isContentPanelAtLeastMd } = useContainerQueries();
-  const { langui } = useLocalData();
+  const langui = useAtomGetter(atoms.localData.langui);
   const [selectedTranslation, LanguageSwitcher, languageSwitcherProps] = useSmartLanguage({
     items: translations,
     languageExtractor: useCallback((item: Props["translations"][number]) => item.language, []),

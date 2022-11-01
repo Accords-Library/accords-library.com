@@ -2,8 +2,8 @@ import { PostPage } from "components/PostPage";
 import { getPostStaticProps, PostStaticProps } from "graphql/getPostStaticProps";
 import { getOpenGraph } from "helpers/openGraph";
 import { Terminal } from "components/Cli/Terminal";
-import { useIsTerminalMode } from "hooks/useIsTerminalMode";
-import { useLocalData } from "contexts/LocalDataContext";
+import { atoms } from "contexts/atoms";
+import { useAtomGetter } from "helpers/atoms";
 
 /*
  *                                           ╭────────╮
@@ -11,8 +11,8 @@ import { useLocalData } from "contexts/LocalDataContext";
  */
 
 const Home = ({ ...otherProps }: PostStaticProps): JSX.Element => {
-  const { langui } = useLocalData();
-  const isTerminalMode = useIsTerminalMode();
+  const langui = useAtomGetter(atoms.localData.langui);
+  const isTerminalMode = useAtomGetter(atoms.layout.terminalMode);
 
   if (isTerminalMode) {
     return (

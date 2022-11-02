@@ -16,31 +16,29 @@ import "styles/others.css";
 import "styles/rc-slider.css";
 import "styles/tippy.css";
 
-import { ContainerQueriesContextProvider } from "contexts/ContainerQueriesContext";
 import { LocalDataProvider } from "contexts/LocalDataProvider";
-import { UserSettingsProvider } from "contexts/UserSettingsProvider";
 import { LightBoxProvider } from "contexts/LightBoxProvider";
 import { AppLayoutProvider } from "contexts/AppLayoutProvider";
+import { SettingsProvider } from "contexts/SettingsProvider";
+import { ContainerQueriesContextProvider } from "contexts/ContainerQueriesProvider";
 
 const AccordsLibraryApp = (props: AppProps): JSX.Element => (
   <LocalDataProvider>
-    <UserSettingsProvider>
+    <SettingsProvider>
       <AppLayoutProvider>
-        <UserSettingsProvider>
-          <ContainerQueriesContextProvider>
-            <LightBoxProvider>
-              <Script
-                async
-                defer
-                data-website-id={process.env.NEXT_PUBLIC_UMAMI_ID}
-                src={`${process.env.NEXT_PUBLIC_UMAMI_URL}/umami.js`}
-              />
-              <props.Component {...props.pageProps} />
-            </LightBoxProvider>
-          </ContainerQueriesContextProvider>
-        </UserSettingsProvider>
+        <ContainerQueriesContextProvider>
+          <LightBoxProvider>
+            <Script
+              async
+              defer
+              data-website-id={process.env.NEXT_PUBLIC_UMAMI_ID}
+              src={`${process.env.NEXT_PUBLIC_UMAMI_URL}/umami.js`}
+            />
+            <props.Component {...props.pageProps} />
+          </LightBoxProvider>
+        </ContainerQueriesContextProvider>
       </AppLayoutProvider>
-    </UserSettingsProvider>
+    </SettingsProvider>
   </LocalDataProvider>
 );
 export default AccordsLibraryApp;

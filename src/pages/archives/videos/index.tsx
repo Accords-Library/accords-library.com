@@ -24,7 +24,6 @@ import { cIf } from "helpers/className";
 import { getLangui } from "graphql/fetchLocalData";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter } from "helpers/atoms";
-import { useContainerQueries } from "contexts/ContainerQueriesContext";
 
 /*
  *                                         ╭─────────────╮
@@ -47,7 +46,7 @@ interface Props extends AppLayoutRequired {
 const Videos = ({ videos, ...otherProps }: Props): JSX.Element => {
   const langui = useAtomGetter(atoms.localData.langui);
   const hoverable = useDeviceSupportsHover();
-  const { isContentPanelAtLeast4xl } = useContainerQueries();
+  const isContentPanelAtLeast4xl = useAtomGetter(atoms.containerQueries.isContentPanelAtLeast4xl);
 
   const { value: keepInfoVisible, toggle: toggleKeepInfoVisible } = useBoolean(true);
 

@@ -9,7 +9,6 @@ import { isDefinedAndNotEmpty } from "helpers/others";
 import { Link } from "components/Inputs/Link";
 import { sendAnalytics } from "helpers/analytics";
 import { ColoredSvg } from "components/ColoredSvg";
-import { useContainerQueries } from "contexts/ContainerQueriesContext";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter, useAtomPair, useAtomSetter } from "helpers/atoms";
 
@@ -19,7 +18,7 @@ import { useAtomGetter, useAtomPair, useAtomSetter } from "helpers/atoms";
  */
 
 export const MainPanel = (): JSX.Element => {
-  const { is3ColumnsLayout } = useContainerQueries();
+  const is3ColumnsLayout = useAtomGetter(atoms.containerQueries.is3ColumnsLayout);
   const langui = useAtomGetter(atoms.localData.langui);
   const [isMainPanelReduced, setMainPanelReduced] = useAtomPair(atoms.layout.mainPanelReduced);
   const setSettingsOpened = useAtomSetter(atoms.layout.settingsOpened);

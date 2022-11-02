@@ -8,7 +8,6 @@ import { cJoin } from "helpers/className";
 import { isDefined, isDefinedAndNotEmpty } from "helpers/others";
 import { useScrollTopOnChange } from "hooks/useScrollTopOnChange";
 import { Ids } from "types/ids";
-import { useContainerQueries } from "contexts/ContainerQueriesContext";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter } from "helpers/atoms";
 
@@ -229,7 +228,7 @@ export const SmartList = <T,>({
  */
 
 const DefaultRenderWhenEmpty = () => {
-  const { is3ColumnsLayout } = useContainerQueries();
+  const is3ColumnsLayout = useAtomGetter(atoms.containerQueries.is3ColumnsLayout);
   const langui = useAtomGetter(atoms.localData.langui);
   return (
     <div className="grid h-full place-content-center">

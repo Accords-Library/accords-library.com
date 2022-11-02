@@ -34,7 +34,6 @@ import { getLangui } from "graphql/fetchLocalData";
 import { Ids } from "types/ids";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter } from "helpers/atoms";
-import { useContainerQueries } from "contexts/ContainerQueriesContext";
 
 /*
  *                                           ╭────────╮
@@ -46,7 +45,9 @@ interface Props extends AppLayoutRequired {
 }
 
 const Content = ({ content, ...otherProps }: Props): JSX.Element => {
-  const { isContentPanelAtLeast2xl, is1ColumnLayout } = useContainerQueries();
+  const isContentPanelAtLeast2xl = useAtomGetter(atoms.containerQueries.isContentPanelAtLeast2xl);
+  const is1ColumnLayout = useAtomGetter(atoms.containerQueries.is1ColumnLayout);
+
   const langui = useAtomGetter(atoms.localData.langui);
   const languages = useAtomGetter(atoms.localData.languages);
 

@@ -27,7 +27,6 @@ import { getLangui } from "graphql/fetchLocalData";
 import { sendAnalytics } from "helpers/analytics";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter } from "helpers/atoms";
-import { useContainerQueries } from "contexts/ContainerQueriesContext";
 
 /*
  *                                         ╭─────────────╮
@@ -52,7 +51,8 @@ interface Props extends AppLayoutRequired {
 const Contents = ({ contents, ...otherProps }: Props): JSX.Element => {
   const hoverable = useDeviceSupportsHover();
   const langui = useAtomGetter(atoms.localData.langui);
-  const { isContentPanelAtLeast4xl } = useContainerQueries();
+  const isContentPanelAtLeast4xl = useAtomGetter(atoms.containerQueries.isContentPanelAtLeast4xl);
+
 
   const [groupingMethod, setGroupingMethod] = useState<number>(
     DEFAULT_FILTERS_STATE.groupingMethod

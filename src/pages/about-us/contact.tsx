@@ -9,7 +9,6 @@ import { RequestMailProps, ResponseMailProps } from "pages/api/mail";
 import { sendAnalytics } from "helpers/analytics";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter } from "helpers/atoms";
-import { useContainerQueries } from "contexts/ContainerQueriesContext";
 
 /*
  *                                           ╭────────╮
@@ -19,7 +18,7 @@ import { useContainerQueries } from "contexts/ContainerQueriesContext";
 const AboutUs = (props: PostStaticProps): JSX.Element => {
   const router = useRouter();
   const langui = useAtomGetter(atoms.localData.langui);
-  const { is1ColumnLayout } = useContainerQueries();
+  const is1ColumnLayout = useAtomGetter(atoms.containerQueries.is1ColumnLayout);
   const [formResponse, setFormResponse] = useState("");
   const [formState, setFormState] = useState<"completed" | "ongoing" | "stale">("stale");
 

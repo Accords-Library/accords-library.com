@@ -10,7 +10,8 @@ import { Ids } from "types/ids";
 import { UploadImageFragment } from "graphql/generated";
 import { ImageQuality } from "helpers/img";
 import { isDefined } from "helpers/others";
-import { useContainerQueries } from "contexts/ContainerQueriesContext";
+import { useAtomGetter } from "helpers/atoms";
+import { atoms } from "contexts/atoms";
 
 interface Props {
   onCloseRequest: () => void;
@@ -138,7 +139,7 @@ const ControlButtons = ({
   onCloseRequest,
   toggleFullscreen,
 }: ControlButtonsProps): JSX.Element => {
-  const { is1ColumnLayout } = useContainerQueries();
+  const is1ColumnLayout = useAtomGetter(atoms.containerQueries.is1ColumnLayout);
 
   const PreviousButton = () => (
     <Button

@@ -19,7 +19,6 @@ import { getOpenGraph } from "helpers/openGraph";
 import { getLangui } from "graphql/fetchLocalData";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter } from "helpers/atoms";
-import { useContainerQueries } from "contexts/ContainerQueriesContext";
 
 /*
  *                                           ╭────────╮
@@ -31,7 +30,7 @@ interface Props extends AppLayoutRequired {
 }
 
 const Video = ({ video, ...otherProps }: Props): JSX.Element => {
-  const { isContentPanelAtLeast4xl } = useContainerQueries();
+  const isContentPanelAtLeast4xl = useAtomGetter(atoms.containerQueries.isContentPanelAtLeast4xl);
   const langui = useAtomGetter(atoms.localData.langui);
   const router = useRouter();
 

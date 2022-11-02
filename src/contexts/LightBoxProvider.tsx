@@ -1,27 +1,17 @@
 import React, { useCallback, useState } from "react";
-import { atom } from "jotai";
 import { useEffectOnce } from "usehooks-ts";
 import { UploadImageFragment } from "graphql/generated";
 import { LightBox } from "components/LightBox";
 import { filterDefined } from "helpers/others";
-import { atomPairing, useAtomSetter } from "helpers/atoms";
-
-const lightboxAtom = atomPairing(
-  atom<{
-    showLightBox: (
-      images: (UploadImageFragment | string | null | undefined)[],
-      index?: number
-    ) => void;
-  }>({ showLightBox: () => null })
-);
-export const lightBox = lightboxAtom[0];
+import { useAtomSetter } from "helpers/atoms";
+import { lightBox } from "contexts/atoms";
 
 export const LightBoxProvider = ({ children }: { children: React.ReactNode }): JSX.Element => {
   const [isLightBoxVisible, setLightBoxVisibility] = useState(false);
   const [lightBoxImages, setLightBoxImages] = useState<(UploadImageFragment | string)[]>([]);
   const [lightBoxIndex, setLightBoxIndex] = useState(0);
 
-  const setShowLightBox = useAtomSetter(lightboxAtom);
+  const setShowLightBox = useAtomSetter(lightBox);
 
   useEffectOnce(() =>
     setShowLightBox({

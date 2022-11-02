@@ -24,7 +24,6 @@ import { Terminal } from "components/Cli/Terminal";
 import { prettyTerminalBoxedTitle, prettyTerminalUnderlinedTitle } from "helpers/terminal";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter } from "helpers/atoms";
-import { useContainerQueries } from "contexts/ContainerQueriesContext";
 
 /*
  *                                           ╭────────╮
@@ -48,7 +47,7 @@ const WikiPage = ({ page, ...otherProps }: Props): JSX.Element => {
       []
     ),
   });
-  const { is3ColumnsLayout } = useContainerQueries();
+  const is3ColumnsLayout = useAtomGetter(atoms.containerQueries.is3ColumnsLayout);
 
   const subPanel = useMemo(
     () => (

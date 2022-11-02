@@ -13,7 +13,6 @@ import { AnchorShare } from "components/AnchorShare";
 import { useIntersectionList } from "hooks/useIntersectionList";
 import { Ico, Icon } from "components/Ico";
 import { useDeviceSupportsHover } from "hooks/useMediaQuery";
-import { useContainerQueries } from "contexts/ContainerQueriesContext";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter } from "helpers/atoms";
 
@@ -32,7 +31,7 @@ interface MarkdawnProps {
 export const Markdawn = ({ className, text: rawText }: MarkdawnProps): JSX.Element => {
   const playerName = useAtomGetter(atoms.settings.playerName);
   const router = useRouter();
-  const { isContentPanelAtLeastLg } = useContainerQueries();
+  const isContentPanelAtLeastLg = useAtomGetter(atoms.containerQueries.isContentPanelAtLeastLg);
   const { showLightBox } = useAtomGetter(atoms.lightBox);
 
   /* eslint-disable no-irregular-whitespace */

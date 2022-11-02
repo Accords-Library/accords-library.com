@@ -20,7 +20,6 @@ import { cJoin, cIf } from "helpers/className";
 import { getLangui } from "graphql/fetchLocalData";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter } from "helpers/atoms";
-import { useContainerQueries } from "contexts/ContainerQueriesContext";
 import { TranslatedPreviewFolder } from "components/Contents/PreviewFolder";
 
 /*
@@ -36,7 +35,8 @@ interface Props extends AppLayoutRequired {
 
 const ContentsFolder = ({ openGraph, folder, ...otherProps }: Props): JSX.Element => {
   const langui = useAtomGetter(atoms.localData.langui);
-  const { isContentPanelAtLeast4xl } = useContainerQueries();
+  const isContentPanelAtLeast4xl = useAtomGetter(atoms.containerQueries.isContentPanelAtLeast4xl);
+
 
   const subPanel = useMemo(
     () => (

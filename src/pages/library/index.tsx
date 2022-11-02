@@ -34,7 +34,6 @@ import { sendAnalytics } from "helpers/analytics";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter } from "helpers/atoms";
 import { useLibraryItemUserStatus } from "hooks/useLibraryItemUserStatus";
-import { useContainerQueries } from "contexts/ContainerQueriesContext";
 
 /*
  *                                         ╭─────────────╮
@@ -67,7 +66,7 @@ const Library = ({ items, ...otherProps }: Props): JSX.Element => {
   const currencies = useAtomGetter(atoms.localData.currencies);
 
   const { libraryItemUserStatus } = useLibraryItemUserStatus();
-  const { isContentPanelAtLeast4xl } = useContainerQueries();
+  const isContentPanelAtLeast4xl = useAtomGetter(atoms.containerQueries.isContentPanelAtLeast4xl);
 
   const [searchName, setSearchName] = useState(DEFAULT_FILTERS_STATE.searchName);
 

@@ -26,7 +26,6 @@ import { sendAnalytics } from "helpers/analytics";
 import { Terminal } from "components/Cli/Terminal";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter } from "helpers/atoms";
-import { useContainerQueries } from "contexts/ContainerQueriesContext";
 
 /*
  *                                         ╭─────────────╮
@@ -48,7 +47,7 @@ interface Props extends AppLayoutRequired {
 }
 
 const News = ({ posts, ...otherProps }: Props): JSX.Element => {
-  const { isContentPanelAtLeast4xl } = useContainerQueries();
+  const isContentPanelAtLeast4xl = useAtomGetter(atoms.containerQueries.isContentPanelAtLeast4xl);
   const langui = useAtomGetter(atoms.localData.langui);
   const hoverable = useDeviceSupportsHover();
   const [searchName, setSearchName] = useState(DEFAULT_FILTERS_STATE.searchName);

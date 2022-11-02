@@ -44,7 +44,6 @@ import { useFullscreen } from "hooks/useFullscreen";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter } from "helpers/atoms";
 import { FilterSettings, useReaderSettings } from "hooks/useReaderSettings";
-import { useContainerQueries } from "contexts/ContainerQueriesContext";
 
 const CUSTOM_DARK_DROPSHADOW = `
   drop-shadow(0 0    0.5em rgb(var(--theme-color-shade) / 30%))
@@ -90,7 +89,7 @@ const LibrarySlug = ({
   item,
   ...otherProps
 }: Props): JSX.Element => {
-  const { is1ColumnLayout } = useContainerQueries();
+  const is1ColumnLayout = useAtomGetter(atoms.containerQueries.is1ColumnLayout);
   const langui = useAtomGetter(atoms.localData.langui);
   const isDarkMode = useAtomGetter(atoms.settings.darkMode);
   const {
@@ -889,7 +888,7 @@ interface ScanSetProps {
 }
 
 const ScanSet = ({ onClickOnImage, scanSet, id, title, content }: ScanSetProps): JSX.Element => {
-  const { is1ColumnLayout } = useContainerQueries();
+  const is1ColumnLayout = useAtomGetter(atoms.containerQueries.is1ColumnLayout);
   const langui = useAtomGetter(atoms.localData.langui);
   const [selectedScan, LanguageSwitcher, languageSwitcherProps] = useSmartLanguage({
     items: scanSet,

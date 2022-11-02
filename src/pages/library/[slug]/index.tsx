@@ -53,7 +53,6 @@ import { getLangui } from "graphql/fetchLocalData";
 import { Ids } from "types/ids";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter } from "helpers/atoms";
-import { useContainerQueries } from "contexts/ContainerQueriesContext";
 
 /*
  *                                         ╭─────────────╮
@@ -77,7 +76,9 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
   const langui = useAtomGetter(atoms.localData.langui);
   const currencies = useAtomGetter(atoms.localData.currencies);
 
-  const { isContentPanelAtLeast3xl, isContentPanelAtLeastSm } = useContainerQueries();
+  const isContentPanelAtLeast3xl = useAtomGetter(atoms.containerQueries.isContentPanelAtLeast3xl);
+  const isContentPanelAtLeastSm = useAtomGetter(atoms.containerQueries.isContentPanelAtLeastSm);
+
   const hoverable = useDeviceSupportsHover();
   const router = useRouter();
   const { value: keepInfoVisible, toggle: toggleKeepInfoVisible } = useBoolean(false);

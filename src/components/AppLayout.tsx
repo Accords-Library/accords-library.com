@@ -9,7 +9,6 @@ import { isDefined, isUndefined } from "helpers/others";
 import { cIf, cJoin } from "helpers/className";
 import { OpenGraph, TITLE_PREFIX, TITLE_SEPARATOR } from "helpers/openGraph";
 import { Ids } from "types/ids";
-import { useContainerQueries } from "contexts/ContainerQueriesContext";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter, useAtomPair } from "helpers/atoms";
 
@@ -52,7 +51,8 @@ export const AppLayout = ({
 
   const langui = useAtomGetter(atoms.localData.langui);
 
-  const { is1ColumnLayout, isScreenAtLeastXs } = useContainerQueries();
+  const is1ColumnLayout = useAtomGetter(atoms.containerQueries.is1ColumnLayout);
+  const isScreenAtLeastXs = useAtomGetter(atoms.containerQueries.isScreenAtLeastXs);
 
   const handlers = useSwipeable({
     onSwipedLeft: (SwipeEventData) => {

@@ -4,7 +4,6 @@ import { Button } from "components/Inputs/Button";
 import { TranslatedProps } from "types/TranslatedProps";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { isDefined } from "helpers/others";
-import { useContainerQueries } from "contexts/ContainerQueriesContext";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter } from "helpers/atoms";
 
@@ -25,7 +24,7 @@ interface Props {
 
 export const ReturnButton = ({ href, title, displayOnlyOn, className }: Props): JSX.Element => {
   const langui = useAtomGetter(atoms.localData.langui);
-  const { is3ColumnsLayout } = useContainerQueries();
+  const is3ColumnsLayout = useAtomGetter(atoms.containerQueries.is3ColumnsLayout);
 
   return (
     <>

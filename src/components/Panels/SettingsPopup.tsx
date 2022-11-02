@@ -11,10 +11,9 @@ import { sendAnalytics } from "helpers/analytics";
 import { cJoin, cIf } from "helpers/className";
 import { prettyLanguage } from "helpers/formatters";
 import { filterHasAttributes, isDefined } from "helpers/others";
-import { useContainerQueries } from "contexts/ContainerQueriesContext";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter, useAtomPair } from "helpers/atoms";
-import { ThemeMode } from "contexts/UserSettingsProvider";
+import { ThemeMode } from "contexts/SettingsProvider";
 
 export const SettingsPopup = (): JSX.Element => {
   const [preferredLanguages, setPreferredLanguages] = useAtomPair(
@@ -31,7 +30,7 @@ export const SettingsPopup = (): JSX.Element => {
   const langui = useAtomGetter(atoms.localData.langui);
   const currencies = useAtomGetter(atoms.localData.currencies);
 
-  const { is1ColumnLayout } = useContainerQueries();
+  const is1ColumnLayout = useAtomGetter(atoms.containerQueries.is1ColumnLayout);
 
   const router = useRouter();
 

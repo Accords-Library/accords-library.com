@@ -60,7 +60,7 @@ export const lightBox = atomPairing(
 const previousLines = atomPairing(atom<string[]>([]));
 const previousCommands = atomPairing(atom<string[]>([]));
 
-export const terminal = {
+const terminal = {
   previousLines,
   previousCommands,
 };

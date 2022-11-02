@@ -37,7 +37,6 @@ const ContentsFolder = ({ openGraph, folder, ...otherProps }: Props): JSX.Elemen
   const langui = useAtomGetter(atoms.localData.langui);
   const isContentPanelAtLeast4xl = useAtomGetter(atoms.containerQueries.isContentPanelAtLeast4xl);
 
-
   const subPanel = useMemo(
     () => (
       <SubPanel>

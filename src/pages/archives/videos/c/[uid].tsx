@@ -49,7 +49,6 @@ const Channel = ({ channel, ...otherProps }: Props): JSX.Element => {
   const hoverable = useDeviceSupportsHover();
   const isContentPanelAtLeast4xl = useAtomGetter(atoms.containerQueries.isContentPanelAtLeast4xl);
 
-
   const [searchName, setSearchName] = useState(DEFAULT_FILTERS_STATE.searchName);
 
   const subPanel = useMemo(

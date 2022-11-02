@@ -39,7 +39,8 @@
   - Support for Container Queries (media queries at the element level)
   - The website has a three-column layout, which turns into one-column + 2 toggleable side-menus if the screen is too narrow.
   - Check out our [Design System Showcase](https://accords-library.com/dev/showcase/design-system)
-- State Management: [React Context](https://reactjs.org/docs/context.html)
+- State Management: [Jōtai](https://jotai.org/)
+  - Jōtai is a small-weighted library for atomic state management
   - Persistent app state using LocalStorage and SessionStorage
 - Accessibility
   - Gestures using [react-swipeable](https://www.npmjs.com/package/react-swipeable)

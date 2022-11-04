@@ -1,11 +1,11 @@
 import { useRouter } from "next/router";
 import { useLayoutEffect, useEffect } from "react";
-import { useAtomGetter, useAtomPair } from "helpers/atoms";
+import { atom } from "jotai";
+import { atomWithStorage } from "jotai/utils";
+import { atomPairing, useAtomGetter, useAtomPair } from "helpers/atoms";
 import { getDefaultPreferredLanguages } from "helpers/locales";
 import { isDefined, isDefinedAndNotEmpty } from "helpers/others";
 import { usePrefersDarkMode } from "hooks/useMediaQuery";
-import { SettingsPopup } from "components/Panels/SettingsPopup";
-import { settings } from "contexts/atoms";
 
 export enum ThemeMode {
   Dark = "dark",
@@ -13,13 +13,31 @@ export enum ThemeMode {
   Light = "light",
 }
 
-export const SettingsProvider = ({ children }: { children: React.ReactNode }): JSX.Element => {
+const preferredLanguagesAtom = atomPairing(atomWithStorage<string[]>("preferredLanguages", []));
+const themeModeAtom = atomPairing(atomWithStorage<ThemeMode>("themeMode", ThemeMode.Auto));
+const darkModeAtom = atomPairing(atom(false));
+const fontSizeAtom = atomPairing(atomWithStorage("fontSize", 1));
+const dyslexicAtom = atomPairing(atomWithStorage("isDyslexic", false));
+const currencyAtom = atomPairing(atomWithStorage("currency", "USD"));
+const playerNameAtom = atomPairing(atomWithStorage("playerName", ""));
+
+export const settings = {
+  preferredLanguages: preferredLanguagesAtom,
+  themeMode: themeModeAtom,
+  darkMode: darkModeAtom,
+  fontSize: fontSizeAtom,
+  dyslexic: dyslexicAtom,
+  currency: currencyAtom,
+  playerName: playerNameAtom,
+};
+
+export const useSettings = (): void => {
   const router = useRouter();
-  const [preferredLanguages, setPreferredLanguages] = useAtomPair(settings.preferredLanguages);
-  const fontSize = useAtomGetter(settings.fontSize);
-  const isDyslexic = useAtomGetter(settings.dyslexic);
-  const [isDarkMode, setDarkMode] = useAtomPair(settings.darkMode);
-  const themeMode = useAtomGetter(settings.themeMode);
+  const [preferredLanguages, setPreferredLanguages] = useAtomPair(preferredLanguagesAtom);
+  const fontSize = useAtomGetter(fontSizeAtom);
+  const isDyslexic = useAtomGetter(dyslexicAtom);
+  const [isDarkMode, setDarkMode] = useAtomPair(darkModeAtom);
+  const themeMode = useAtomGetter(themeModeAtom);
 
   useLayoutEffect(() => {
     const html = document.getElementsByTagName("html")[0];
@@ -82,11 +100,4 @@ export const SettingsProvider = ({ children }: { children: React.ReactNode }): J
       );
     }
   }, [preferredLanguages, router, setPreferredLanguages]);
-
-  return (
-    <>
-      <SettingsPopup />
-      {children}
-    </>
-  );
 };

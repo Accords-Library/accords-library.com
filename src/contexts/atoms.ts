@@ -1,12 +1,17 @@
-import { atomWithStorage } from "jotai/utils";
 import { atom } from "jotai";
-import { localData } from "contexts/LocalDataProvider";
-import { containerQueries } from "contexts/ContainerQueriesProvider";
+import { atomWithStorage } from "jotai/utils";
+import { localData } from "contexts/localData";
+import { containerQueries } from "contexts/containerQueries";
 import { atomPairing } from "helpers/atoms";
-import { UploadImageFragment } from "graphql/generated";
-import { ThemeMode } from "contexts/SettingsProvider";
+import { settings } from "contexts/settings";
+import { lightBox } from "contexts/LightBoxProvider";
 
-/* [ LAYOUT ATOMS ] */
+/* 
+ * I'm getting a weird error if I put those atoms in appLayout.ts
+ * So I'm putting the atoms here. Sucks, I know.
+ */
+
+/* [ APPLAYOUT ATOMS ] */
 
 const mainPanelReduced = atomPairing(atomWithStorage("isMainPanelReduced", false));
 const settingsOpened = atomPairing(atomWithStorage("isSettingsOpened", false));
@@ -24,37 +29,6 @@ const layout = {
   terminalMode,
 };
 
-/* [ SETTINGS ATOMS ] */
-
-const preferredLanguagesAtom = atomPairing(atomWithStorage<string[]>("preferredLanguages", []));
-const themeModeAtom = atomPairing(atomWithStorage<ThemeMode>("themeMode", ThemeMode.Auto));
-const darkModeAtom = atomPairing(atom(false));
-const fontSizeAtom = atomPairing(atomWithStorage("fontSize", 1));
-const dyslexicAtom = atomPairing(atomWithStorage("isDyslexic", false));
-const currencyAtom = atomPairing(atomWithStorage("currency", "USD"));
-const playerNameAtom = atomPairing(atomWithStorage("playerName", ""));
-
-export const settings = {
-  preferredLanguages: preferredLanguagesAtom,
-  themeMode: themeModeAtom,
-  darkMode: darkModeAtom,
-  fontSize: fontSizeAtom,
-  dyslexic: dyslexicAtom,
-  currency: currencyAtom,
-  playerName: playerNameAtom,
-};
-
-/* [ LIGHTBOX ATOMS ] */
-
-export const lightBox = atomPairing(
-  atom<{
-    showLightBox: (
-      images: (UploadImageFragment | string | null | undefined)[],
-      index?: number
-    ) => void;
-  }>({ showLightBox: () => null })
-);
-
 /* [ TERMINAL ATOMS ] */
 
 const previousLines = atomPairing(atom<string[]>([]));
@@ -66,10 +40,10 @@ const terminal = {
 };
 
 export const atoms = {
+  settings,
   layout,
   terminal,
   localData,
-  lightBox: lightBox[0],
+  lightBox,
   containerQueries,
-  settings,
 };

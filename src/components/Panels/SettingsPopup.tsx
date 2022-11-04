@@ -13,7 +13,7 @@ import { prettyLanguage } from "helpers/formatters";
 import { filterHasAttributes, isDefined } from "helpers/others";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter, useAtomPair } from "helpers/atoms";
-import { ThemeMode } from "contexts/SettingsProvider";
+import { ThemeMode } from "contexts/settings";
 
 export const SettingsPopup = (): JSX.Element => {
   const [preferredLanguages, setPreferredLanguages] = useAtomPair(

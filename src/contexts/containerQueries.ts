@@ -2,7 +2,7 @@ import { atom, Getter } from "jotai";
 import { atomPairing, useAtomSetter } from "helpers/atoms";
 import { useOnResize } from "hooks/useOnResize";
 import { Ids } from "types/ids";
-import { settings } from "contexts/atoms";
+import { settings } from "contexts/settings";
 
 type Size =
   | "2xl"
@@ -135,11 +135,7 @@ export const containerQueries = {
   isSubPanelAtLeast7xl,
 };
 
-export const ContainerQueriesContextProvider = ({
-  children,
-}: {
-  children: React.ReactNode;
-}): JSX.Element => {
+export const useContainerQueries = (): void => {
   const setScreenWidth = useAtomSetter(screenWidth);
   const setContentPanelWidth = useAtomSetter(contentPanelWidth);
   const setSubPanelWidth = useAtomSetter(subPanelWidth);
@@ -147,6 +143,4 @@ export const ContainerQueriesContextProvider = ({
   useOnResize(Ids.Body, (width) => setScreenWidth(width));
   useOnResize(Ids.ContentPanel, (width) => setContentPanelWidth(width));
   useOnResize(Ids.SubPanel, (width) => setSubPanelWidth(width));
-
-  return <>{children}</>;
 };

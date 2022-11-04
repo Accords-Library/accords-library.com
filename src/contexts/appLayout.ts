@@ -4,7 +4,7 @@ import { useScrollIntoView } from "hooks/useScrollIntoView";
 import { useAtomSetter } from "helpers/atoms";
 import { atoms } from "contexts/atoms";
 
-export const AppLayoutProvider = ({ children }: { children: React.ReactNode }): JSX.Element => {
+export const useAppLayout = (): void => {
   const router = useRouter();
 
   const setSettingsOpened = useAtomSetter(atoms.layout.settingsOpened);
@@ -26,6 +26,4 @@ export const AppLayoutProvider = ({ children }: { children: React.ReactNode }): 
   }, [router, setSettingsOpened, setMainPanelOpened, setSubPanelOpened]);
 
   useScrollIntoView();
-
-  return <>{children}</>;
 };

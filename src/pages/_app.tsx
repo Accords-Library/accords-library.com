@@ -16,29 +16,31 @@ import "styles/others.css";
 import "styles/rc-slider.css";
 import "styles/tippy.css";
 
-import { LocalDataProvider } from "contexts/LocalDataProvider";
+import { useLocalData } from "contexts/localData";
+import { useAppLayout } from "contexts/appLayout";
 import { LightBoxProvider } from "contexts/LightBoxProvider";
-import { AppLayoutProvider } from "contexts/AppLayoutProvider";
-import { SettingsProvider } from "contexts/SettingsProvider";
-import { ContainerQueriesContextProvider } from "contexts/ContainerQueriesProvider";
+import { SettingsPopup } from "components/Panels/SettingsPopup";
+import { useSettings } from "contexts/settings";
+import { useContainerQueries } from "contexts/containerQueries";
 
-const AccordsLibraryApp = (props: AppProps): JSX.Element => (
-  <LocalDataProvider>
-    <SettingsProvider>
-      <AppLayoutProvider>
-        <ContainerQueriesContextProvider>
-          <LightBoxProvider>
-            <Script
-              async
-              defer
-              data-website-id={process.env.NEXT_PUBLIC_UMAMI_ID}
-              src={`${process.env.NEXT_PUBLIC_UMAMI_URL}/umami.js`}
-            />
-            <props.Component {...props.pageProps} />
-          </LightBoxProvider>
-        </ContainerQueriesContextProvider>
-      </AppLayoutProvider>
-    </SettingsProvider>
-  </LocalDataProvider>
-);
+const AccordsLibraryApp = (props: AppProps): JSX.Element => {
+  useLocalData();
+  useAppLayout();
+  useSettings();
+  useContainerQueries();
+
+  return (
+    <>
+      <SettingsPopup />
+      <LightBoxProvider />
+      <Script
+        async
+        defer
+        data-website-id={process.env.NEXT_PUBLIC_UMAMI_ID}
+        src={`${process.env.NEXT_PUBLIC_UMAMI_URL}/umami.js`}
+      />
+      <props.Component {...props.pageProps} />
+    </>
+  );
+};
 export default AccordsLibraryApp;

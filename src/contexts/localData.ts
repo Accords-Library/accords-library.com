@@ -30,7 +30,7 @@ export const localData = {
 
 const getFileName = (name: LocalDataFile): string => `/local-data/${name}.json`;
 
-export const LocalDataProvider = ({ children }: { children: React.ReactNode }): JSX.Element => {
+export const useLocalData = (): void => {
   const setLanguages = useAtomSetter(languages);
   const setCurrencies = useAtomSetter(currencies);
   const setLangui = useAtomSetter(langui);
@@ -56,6 +56,4 @@ export const LocalDataProvider = ({ children }: { children: React.ReactNode }): 
     console.log("[useLocalData] Refresh langui");
     setLangui(processLangui(rawLangui, locale));
   }, [locale, rawLangui, setLangui]);
-
-  return <>{children}</>;
 };

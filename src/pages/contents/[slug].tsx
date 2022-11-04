@@ -32,8 +32,8 @@ import { TranslatedPreviewLine } from "components/PreviewLine";
 import { cIf } from "helpers/className";
 import { getLangui } from "graphql/fetchLocalData";
 import { Ids } from "types/ids";
-import { useLocalData } from "contexts/LocalDataContext";
-import { useContainerQueries } from "contexts/ContainerQueriesContext";
+import { atoms } from "contexts/atoms";
+import { useAtomGetter } from "helpers/atoms";
 
 /*
  *                                           ╭────────╮
@@ -45,8 +45,11 @@ interface Props extends AppLayoutRequired {
 }
 
 const Content = ({ content, ...otherProps }: Props): JSX.Element => {
-  const { isContentPanelAtLeast2xl, is1ColumnLayout } = useContainerQueries();
-  const { langui, languages } = useLocalData();
+  const isContentPanelAtLeast2xl = useAtomGetter(atoms.containerQueries.isContentPanelAtLeast2xl);
+  const is1ColumnLayout = useAtomGetter(atoms.containerQueries.is1ColumnLayout);
+
+  const langui = useAtomGetter(atoms.localData.langui);
+  const languages = useAtomGetter(atoms.localData.languages);
 
   const [selectedTranslation, LanguageSwitcher, languageSwitcherProps] = useSmartLanguage({
     items: content.translations,

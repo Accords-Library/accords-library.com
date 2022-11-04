@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { MouseEventHandler, useCallback, useMemo, useState } from "react";
+import { MouseEventHandler, useCallback, useMemo } from "react";
 import { Ico, Icon } from "components/Ico";
 import { ToolTip } from "components/ToolTip";
 import { cIf, cJoin } from "helpers/className";
@@ -43,7 +43,6 @@ export const NavOption = ({
     () => active || router.asPath.startsWith(url),
     [active, router.asPath, url]
   );
-  const [isFocused, setFocused] = useState(false);
 
   return (
     <ToolTip
@@ -65,11 +64,8 @@ export const NavOption = ({
         border={border}
         onClick={onClick}
         active={isActive}
-        disabled={disabled}
-        onFocusChanged={setFocused}>
-        {icon && (
-          <Ico icon={icon} className="mt-[-.1em] !text-2xl" isFilled={isActive || isFocused} />
-        )}
+        disabled={disabled}>
+        {icon && <Ico icon={icon} className="mt-[-.1em] !text-2xl" isFilled={isActive} />}
         {!reduced && (
           <div>
             <h3 className="text-2xl">{title}</h3>

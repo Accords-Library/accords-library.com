@@ -26,9 +26,8 @@ import { cIf } from "helpers/className";
 import { getLangui } from "graphql/fetchLocalData";
 import { sendAnalytics } from "helpers/analytics";
 import { Terminal } from "components/Cli/Terminal";
-import { useIsTerminalMode } from "hooks/useIsTerminalMode";
-import { useLocalData } from "contexts/LocalDataContext";
-import { useContainerQueries } from "contexts/ContainerQueriesContext";
+import { atoms } from "contexts/atoms";
+import { useAtomGetter } from "helpers/atoms";
 
 /*
  *                                         ╭─────────────╮
@@ -52,9 +51,9 @@ interface Props extends AppLayoutRequired {
 
 const Wiki = ({ pages, ...otherProps }: Props): JSX.Element => {
   const hoverable = useDeviceSupportsHover();
-  const { langui } = useLocalData();
-  const { isContentPanelAtLeast4xl } = useContainerQueries();
-  const isTerminalMode = useIsTerminalMode();
+  const langui = useAtomGetter(atoms.localData.langui);
+  const isContentPanelAtLeast4xl = useAtomGetter(atoms.containerQueries.isContentPanelAtLeast4xl);
+  const isTerminalMode = useAtomGetter(atoms.layout.terminalMode);
 
   const [searchName, setSearchName] = useState(DEFAULT_FILTERS_STATE.searchName);
 

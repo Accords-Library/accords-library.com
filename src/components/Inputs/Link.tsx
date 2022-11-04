@@ -1,5 +1,5 @@
 import router from "next/router";
-import { PointerEventHandler, useState } from "react";
+import { MouseEventHandler, useState } from "react";
 import { isDefined } from "helpers/others";
 
 interface Props {
@@ -8,7 +8,7 @@ interface Props {
   allowNewTab?: boolean;
   alwaysNewTab?: boolean;
   children: React.ReactNode;
-  onClick?: PointerEventHandler<HTMLDivElement>;
+  onClick?: MouseEventHandler<HTMLDivElement>;
   onFocusChanged?: (isFocused: boolean) => void;
   disabled?: boolean;
 }
@@ -28,19 +28,19 @@ export const Link = ({
   return (
     <div
       className={className}
-      onPointerLeave={() => {
+      onMouseLeave={() => {
         setIsValidClick(false);
         onFocusChanged?.(false);
       }}
       onContextMenu={(event) => event.preventDefault()}
-      onPointerDown={(event) => {
+      onMouseDown={(event) => {
         if (!disabled) {
           event.preventDefault();
           onFocusChanged?.(true);
           setIsValidClick(true);
         }
       }}
-      onPointerUp={(event) => {
+      onMouseUp={(event) => {
         onFocusChanged?.(false);
         if (!disabled) {
           if (isDefined(onClick)) {

@@ -19,7 +19,8 @@ import { getDefaultPreferredLanguages, staticSmartLanguage } from "helpers/local
 import { getDescription } from "helpers/description";
 import { TranslatedChroniclesList } from "components/Chronicles/ChroniclesList";
 import { getLangui } from "graphql/fetchLocalData";
-import { useLocalData } from "contexts/LocalDataContext";
+import { atoms } from "contexts/atoms";
+import { useAtomGetter } from "helpers/atoms";
 
 /*
  *                                           ╭────────╮
@@ -32,7 +33,7 @@ interface Props extends AppLayoutRequired {
 }
 
 const Chronicle = ({ chronicle, chapters, ...otherProps }: Props): JSX.Element => {
-  const { langui } = useLocalData();
+  const langui = useAtomGetter(atoms.localData.langui);
   const [selectedTranslation, LanguageSwitcher, languageSwitcherProps] = useSmartLanguage({
     items: chronicle.translations,
     languageExtractor: useCallback(

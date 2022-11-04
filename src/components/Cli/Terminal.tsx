@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { cJoin, cIf } from "helpers/className";
-import { useTerminalContext } from "contexts/TerminalContext";
 import { isDefined, isDefinedAndNotEmpty } from "helpers/others";
-import { useUserSettings } from "contexts/UserSettingsContext";
+import { atoms } from "contexts/atoms";
+import { useAtomSetter, useAtomPair } from "helpers/atoms";
 
 /*
  *                                         ╭─────────────╮
@@ -31,9 +31,11 @@ export const Terminal = ({
   content,
 }: Props): JSX.Element => {
   const [childrenPaths, setChildrenPaths] = useState(propsChildrenPaths);
-  const { darkMode, setPlayerName } = useUserSettings();
-  const { previousCommands, previousLines, setPreviousCommands, setPreviousLines } =
-    useTerminalContext();
+  const setPlayerName = useAtomSetter(atoms.settings.playerName);
+
+  const [previousCommands, setPreviousCommands] = useAtomPair(atoms.terminal.previousCommands);
+  const [previousLines, setPreviousLines] = useAtomPair(atoms.terminal.previousLines);
+
   const [line, setLine] = useState("");
   const [displayCurrentLine, setDisplayCurrentLine] = useState(true);
   const [previousCommandIndex, setPreviousCommandIndex] = useState(0);
@@ -232,11 +234,7 @@ export const Terminal = ({
   }, [line]);
 
   return (
-    <div
-      className={cJoin(
-        "h-screen overflow-hidden bg-light set-theme-font-standard",
-        cIf(darkMode, "set-theme-dark", "set-theme-light")
-      )}>
+    <div className={cJoin("h-screen overflow-hidden bg-light set-theme-font-standard")}>
       <div
         ref={terminalWindowRef}
         className="h-full overflow-scroll scroll-auto p-6 scrollbar-none">

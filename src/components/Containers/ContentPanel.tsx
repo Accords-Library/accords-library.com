@@ -1,4 +1,5 @@
-import { useContainerQueries } from "contexts/ContainerQueriesContext";
+import { atoms } from "contexts/atoms";
+import { useAtomGetter } from "helpers/atoms";
 import { cIf, cJoin } from "helpers/className";
 
 /*
@@ -25,7 +26,7 @@ export const ContentPanel = ({
   children,
   className,
 }: Props): JSX.Element => {
-  const { isContentPanelAtLeast3xl } = useContainerQueries();
+  const isContentPanelAtLeast3xl = useAtomGetter(atoms.containerQueries.isContentPanelAtLeast3xl);
   return (
     <div className="grid h-full">
       <main

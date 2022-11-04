@@ -31,7 +31,8 @@ import { TranslatedNavOption } from "components/PanelComponents/NavOption";
 import { useIntersectionList } from "hooks/useIntersectionList";
 import { HorizontalLine } from "components/HorizontalLine";
 import { getLangui } from "graphql/fetchLocalData";
-import { useLocalData } from "contexts/LocalDataContext";
+import { atoms } from "contexts/atoms";
+import { useAtomGetter } from "helpers/atoms";
 
 /*
  *                                           ╭────────╮
@@ -44,7 +45,7 @@ interface Props extends AppLayoutRequired {
 }
 
 const Chronology = ({ chronologyItems, chronologyEras, ...otherProps }: Props): JSX.Element => {
-  const { langui } = useLocalData();
+  const langui = useAtomGetter(atoms.localData.langui);
   const ids = useMemo(
     () =>
       filterHasAttributes(chronologyEras, ["attributes"] as const).map(
@@ -315,7 +316,7 @@ interface ChronologyEventProps {
 }
 
 export const ChronologyEvent = ({ event, id }: ChronologyEventProps): JSX.Element => {
-  const { langui } = useLocalData();
+  const langui = useAtomGetter(atoms.localData.langui);
   const [selectedTranslation, LanguageSwitcher, languageSwitcherProps] = useSmartLanguage({
     items: event.translations ?? [],
     languageExtractor: useCallback(

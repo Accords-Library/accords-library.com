@@ -22,10 +22,8 @@ import { cIf, cJoin } from "helpers/className";
 import { getLangui } from "graphql/fetchLocalData";
 import { Terminal } from "components/Cli/Terminal";
 import { prettyTerminalBoxedTitle, prettyTerminalUnderlinedTitle } from "helpers/terminal";
-import { useIsTerminalMode } from "hooks/useIsTerminalMode";
-import { useLocalData } from "contexts/LocalDataContext";
-import { useContainerQueries } from "contexts/ContainerQueriesContext";
-import { useLightBox } from "contexts/LightBoxContext";
+import { atoms } from "contexts/atoms";
+import { useAtomGetter } from "helpers/atoms";
 
 /*
  *                                           ╭────────╮
@@ -37,10 +35,10 @@ interface Props extends AppLayoutRequired {
 }
 
 const WikiPage = ({ page, ...otherProps }: Props): JSX.Element => {
-  const { langui } = useLocalData();
+  const langui = useAtomGetter(atoms.localData.langui);
   const router = useRouter();
-  const isTerminalMode = useIsTerminalMode();
-  const { showLightBox } = useLightBox();
+  const isTerminalMode = useAtomGetter(atoms.layout.terminalMode);
+  const { showLightBox } = useAtomGetter(atoms.lightBox);
   const [selectedTranslation, LanguageSwitcher, languageSwitcherProps] = useSmartLanguage({
     items: page.translations,
     languageExtractor: useCallback(
@@ -49,7 +47,7 @@ const WikiPage = ({ page, ...otherProps }: Props): JSX.Element => {
       []
     ),
   });
-  const { is3ColumnsLayout } = useContainerQueries();
+  const is3ColumnsLayout = useAtomGetter(atoms.containerQueries.is3ColumnsLayout);
 
   const subPanel = useMemo(
     () => (

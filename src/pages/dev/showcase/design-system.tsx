@@ -936,13 +936,8 @@ const LightThemeSection = ({ className, children }: ThemedSectionProps) => (
 );
 
 const WhiteSection = ({ className, children }: ThemedSectionProps) => (
-  <div
-    className={cJoin(
-      `mb-12 rounded-xl bg-[white] py-10 px-14 text-black drop-shadow-lg shadow-shade
-      set-theme-light`,
-      className
-    )}>
-    {children}
+  <div className="mb-12 rounded-xl bg-[white] py-10 px-14 drop-shadow-lg shadow-shade">
+    <div className={cJoin("text-black set-theme-light", className)}>{children}</div>
   </div>
 );
 

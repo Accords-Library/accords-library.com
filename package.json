@@ -26,6 +26,7 @@
     "@tippyjs/react": "^4.2.6",
     "autoprefixer": "^10.4.13",
     "graphql-request": "^5.0.0",
+    "jotai": "^1.9.0",
     "markdown-to-jsx": "^7.1.7",
     "next": "^13.0.1",
     "nodemailer": "^6.8.0",

@@ -7,8 +7,8 @@ import { cIf, cJoin } from "helpers/className";
 import { randomInt } from "helpers/numbers";
 import { RequestMailProps, ResponseMailProps } from "pages/api/mail";
 import { sendAnalytics } from "helpers/analytics";
-import { useLocalData } from "contexts/LocalDataContext";
-import { useContainerQueries } from "contexts/ContainerQueriesContext";
+import { atoms } from "contexts/atoms";
+import { useAtomGetter } from "helpers/atoms";
 
 /*
  *                                           ╭────────╮
@@ -17,8 +17,8 @@ import { useContainerQueries } from "contexts/ContainerQueriesContext";
 
 const AboutUs = (props: PostStaticProps): JSX.Element => {
   const router = useRouter();
-  const { langui } = useLocalData();
-  const { is1ColumnLayout } = useContainerQueries();
+  const langui = useAtomGetter(atoms.localData.langui);
+  const is1ColumnLayout = useAtomGetter(atoms.containerQueries.is1ColumnLayout);
   const [formResponse, setFormResponse] = useState("");
   const [formState, setFormState] = useState<"completed" | "ongoing" | "stale">("stale");
 

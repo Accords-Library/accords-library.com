@@ -25,8 +25,8 @@ import { TranslatedPreviewCard } from "components/PreviewCard";
 import { cJoin, cIf } from "helpers/className";
 import { getLangui } from "graphql/fetchLocalData";
 import { sendAnalytics } from "helpers/analytics";
-import { useLocalData } from "contexts/LocalDataContext";
-import { useContainerQueries } from "contexts/ContainerQueriesContext";
+import { atoms } from "contexts/atoms";
+import { useAtomGetter } from "helpers/atoms";
 
 /*
  *                                         ╭─────────────╮
@@ -50,8 +50,8 @@ interface Props extends AppLayoutRequired {
 
 const Contents = ({ contents, ...otherProps }: Props): JSX.Element => {
   const hoverable = useDeviceSupportsHover();
-  const { langui } = useLocalData();
-  const { isContentPanelAtLeast4xl } = useContainerQueries();
+  const langui = useAtomGetter(atoms.localData.langui);
+  const isContentPanelAtLeast4xl = useAtomGetter(atoms.containerQueries.isContentPanelAtLeast4xl);
 
   const [groupingMethod, setGroupingMethod] = useState<number>(
     DEFAULT_FILTERS_STATE.groupingMethod

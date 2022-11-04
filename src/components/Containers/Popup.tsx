@@ -1,7 +1,8 @@
 import { useEffect } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
-import { useAppLayout } from "contexts/AppLayoutContext";
 import { cIf, cJoin } from "helpers/className";
+import { atoms } from "contexts/atoms";
+import { useAtomSetter } from "helpers/atoms";
 
 /*
  *                                        ╭─────────────╮
@@ -27,13 +28,13 @@ export const Popup = ({
   hideBackground = false,
   padding = true,
 }: Props): JSX.Element => {
-  const { setMenuGestures } = useAppLayout();
+  const setMenuGesturesEnabled = useAtomSetter(atoms.layout.menuGesturesEnabled);
 
   useHotkeys("escape", () => onCloseRequest?.(), {}, [onCloseRequest]);
 
   useEffect(() => {
-    setMenuGestures(!isVisible);
-  }, [setMenuGestures, isVisible]);
+    setMenuGesturesEnabled(!isVisible);
+  }, [isVisible, setMenuGesturesEnabled]);
 
   return (
     <div

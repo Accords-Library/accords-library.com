@@ -234,7 +234,7 @@ export const Terminal = ({
   }, [line]);
 
   return (
-    <div className={cJoin("h-screen overflow-hidden bg-light set-theme-font-standard")}>
+    <div className="h-screen overflow-hidden bg-light set-theme-font-standard">
       <div
         ref={terminalWindowRef}
         className="h-full overflow-scroll scroll-auto p-6 scrollbar-none">

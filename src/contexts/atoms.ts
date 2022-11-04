@@ -6,7 +6,7 @@ import { atomPairing } from "helpers/atoms";
 import { settings } from "contexts/settings";
 import { lightBox } from "contexts/LightBoxProvider";
 
-/* 
+/*
  * I'm getting a weird error if I put those atoms in appLayout.ts
  * So I'm putting the atoms here. Sucks, I know.
  */

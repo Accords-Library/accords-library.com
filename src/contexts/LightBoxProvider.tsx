@@ -6,7 +6,7 @@ import { LightBox } from "components/LightBox";
 import { filterDefined } from "helpers/others";
 import { atomPairing, useAtomSetter } from "helpers/atoms";
 
-export const lightBoxAtom = atomPairing(
+const lightBoxAtom = atomPairing(
   atom<{
     showLightBox: (
       images: (UploadImageFragment | string | null | undefined)[],
@@ -15,7 +15,7 @@ export const lightBoxAtom = atomPairing(
   }>({ showLightBox: () => null })
 );
 
-export const lightBox = lightBoxAtom[0]
+export const lightBox = lightBoxAtom[0];
 
 export const LightBoxProvider = (): JSX.Element => {
   const [isLightBoxVisible, setLightBoxVisibility] = useState(false);

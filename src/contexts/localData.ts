@@ -1,6 +1,6 @@
 import { atom } from "jotai";
 import { useRouter } from "next/router";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useFetch } from "usehooks-ts";
 import { atomPairing, useAtomSetter } from "helpers/atoms";
 import {

@@ -5,7 +5,8 @@ import { ContentPanel } from "components/Containers/ContentPanel";
 import { getOpenGraph } from "helpers/openGraph";
 import { getLangui } from "graphql/fetchLocalData";
 import { Img } from "components/Img";
-import { useLocalData } from "contexts/LocalDataContext";
+import { atoms } from "contexts/atoms";
+import { useAtomGetter } from "helpers/atoms";
 
 /*
  *                                           ╭────────╮
@@ -15,7 +16,7 @@ import { useLocalData } from "contexts/LocalDataContext";
 interface Props extends AppLayoutRequired {}
 
 const FourOhFour = ({ openGraph, ...otherProps }: Props): JSX.Element => {
-  const { langui } = useLocalData();
+  const langui = useAtomGetter(atoms.localData.langui);
   return (
     <AppLayout
       contentPanel={

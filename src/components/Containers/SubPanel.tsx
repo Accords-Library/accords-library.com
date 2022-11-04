@@ -1,4 +1,5 @@
-import { useContainerQueries } from "contexts/ContainerQueriesContext";
+import { atoms } from "contexts/atoms";
+import { useAtomGetter } from "helpers/atoms";
 import { cIf, cJoin } from "helpers/className";
 
 /*
@@ -13,7 +14,7 @@ interface Props {
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
 export const SubPanel = ({ children }: Props): JSX.Element => {
-  const { isSubPanelAtLeastXs } = useContainerQueries();
+  const isSubPanelAtLeastXs = useAtomGetter(atoms.containerQueries.isSubPanelAtLeastXs);
   return (
     <div
       className={cJoin(

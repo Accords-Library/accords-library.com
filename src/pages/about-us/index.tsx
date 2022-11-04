@@ -7,7 +7,8 @@ import { SubPanel } from "components/Containers/SubPanel";
 import { getOpenGraph } from "helpers/openGraph";
 import { HorizontalLine } from "components/HorizontalLine";
 import { getLangui } from "graphql/fetchLocalData";
-import { useLocalData } from "contexts/LocalDataContext";
+import { atoms } from "contexts/atoms";
+import { useAtomGetter } from "helpers/atoms";
 
 /*
  *                                           ╭────────╮
@@ -17,7 +18,7 @@ import { useLocalData } from "contexts/LocalDataContext";
 interface Props extends AppLayoutRequired {}
 
 const AboutUs = (props: Props): JSX.Element => {
-  const { langui } = useLocalData();
+  const langui = useAtomGetter(atoms.localData.langui);
   return (
     <AppLayout
       subPanel={

@@ -6,8 +6,8 @@ import { GetContentTextQuery, UploadImageFragment } from "graphql/generated";
 import { prettyInlineTitle, prettySlug, slugify } from "helpers/formatters";
 import { ImageQuality } from "helpers/img";
 import { filterHasAttributes } from "helpers/others";
-import { useLocalData } from "contexts/LocalDataContext";
-import { useLightBox } from "contexts/LightBoxContext";
+import { useAtomGetter } from "helpers/atoms";
+import { atoms } from "contexts/atoms";
 
 /*
  *                                        ╭─────────────╮
@@ -42,8 +42,8 @@ export const ThumbnailHeader = ({
   description,
   languageSwitcher,
 }: Props): JSX.Element => {
-  const { langui } = useLocalData();
-  const { showLightBox } = useLightBox();
+  const langui = useAtomGetter(atoms.localData.langui);
+  const { showLightBox } = useAtomGetter(atoms.lightBox);
 
   return (
     <>

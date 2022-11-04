@@ -45,12 +45,6 @@ export interface ChronicleWithTranslations extends Omit<Chronicle, "translations
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
-export type RequiredNonNullable<T> = {
-  [P in keyof T]-?: NonNullable<T[P]>;
-};
-
-// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
-
 export enum LibraryItemUserStatus {
   None = 0,
   Want = 1,

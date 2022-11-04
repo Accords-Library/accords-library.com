@@ -3,8 +3,9 @@ import { Button } from "components/Inputs/Button";
 import { ToolTip } from "components/ToolTip";
 import { LibraryItemUserStatus } from "types/types";
 import { cIf, cJoin } from "helpers/className";
-import { useLocalData } from "contexts/LocalDataContext";
 import { useLibraryItemUserStatus } from "hooks/useLibraryItemUserStatus";
+import { atoms } from "contexts/atoms";
+import { useAtomGetter } from "helpers/atoms";
 
 /*
  *                                        ╭─────────────╮
@@ -20,7 +21,7 @@ interface Props {
 
 export const PreviewCardCTAs = ({ id, expand = false }: Props): JSX.Element => {
   const { libraryItemUserStatus, setLibraryItemUserStatus } = useLibraryItemUserStatus();
-  const { langui } = useLocalData();
+  const langui = useAtomGetter(atoms.localData.langui);
 
   return (
     <div

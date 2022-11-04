@@ -23,10 +23,9 @@ import { HorizontalLine } from "components/HorizontalLine";
 import { cIf } from "helpers/className";
 import { getLangui } from "graphql/fetchLocalData";
 import { sendAnalytics } from "helpers/analytics";
-import { useIsTerminalMode } from "hooks/useIsTerminalMode";
 import { Terminal } from "components/Cli/Terminal";
-import { useLocalData } from "contexts/LocalDataContext";
-import { useContainerQueries } from "contexts/ContainerQueriesContext";
+import { atoms } from "contexts/atoms";
+import { useAtomGetter } from "helpers/atoms";
 
 /*
  *                                         ╭─────────────╮
@@ -48,8 +47,8 @@ interface Props extends AppLayoutRequired {
 }
 
 const News = ({ posts, ...otherProps }: Props): JSX.Element => {
-  const { isContentPanelAtLeast4xl } = useContainerQueries();
-  const { langui } = useLocalData();
+  const isContentPanelAtLeast4xl = useAtomGetter(atoms.containerQueries.isContentPanelAtLeast4xl);
+  const langui = useAtomGetter(atoms.localData.langui);
   const hoverable = useDeviceSupportsHover();
   const [searchName, setSearchName] = useState(DEFAULT_FILTERS_STATE.searchName);
   const {
@@ -57,7 +56,7 @@ const News = ({ posts, ...otherProps }: Props): JSX.Element => {
     toggle: toggleKeepInfoVisible,
     setValue: setKeepInfoVisible,
   } = useBoolean(DEFAULT_FILTERS_STATE.keepInfoVisible);
-  const isTerminalMode = useIsTerminalMode();
+  const isTerminalMode = useAtomGetter(atoms.layout.terminalMode);
 
   const subPanel = useMemo(
     () => (

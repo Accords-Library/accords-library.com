@@ -6,7 +6,8 @@ import { cJoin } from "helpers/className";
 import { prettyLanguage } from "helpers/formatters";
 import { iterateMap } from "helpers/others";
 import { sendAnalytics } from "helpers/analytics";
-import { useLocalData } from "contexts/LocalDataContext";
+import { atoms } from "contexts/atoms";
+import { useAtomGetter } from "helpers/atoms";
 
 /*
  *                                        ╭─────────────╮
@@ -32,7 +33,7 @@ export const LanguageSwitcher = ({
   onLanguageChanged,
   showBadge = true,
 }: Props): JSX.Element => {
-  const { languages } = useLocalData();
+  const languages = useAtomGetter(atoms.localData.languages);
   return (
     <ToolTip
       content={

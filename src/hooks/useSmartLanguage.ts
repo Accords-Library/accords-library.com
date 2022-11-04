@@ -3,8 +3,8 @@ import { useEffect, useMemo, useState } from "react";
 import { LanguageSwitcher } from "components/Inputs/LanguageSwitcher";
 import { filterDefined, isDefined } from "helpers/others";
 import { getPreferredLanguage } from "helpers/locales";
-import { useUserSettings } from "contexts/UserSettingsContext";
-import { useLocalData } from "contexts/LocalDataContext";
+import { atoms } from "contexts/atoms";
+import { useAtomGetter } from "helpers/atoms";
 
 interface Props<T> {
   items: T[];
@@ -17,8 +17,8 @@ export const useSmartLanguage = <T>({
   languageExtractor,
   transform = (item) => item,
 }: Props<T>): [T | undefined, typeof LanguageSwitcher, Parameters<typeof LanguageSwitcher>[0]] => {
-  const { preferredLanguages } = useUserSettings();
-  const { languages } = useLocalData();
+  const preferredLanguages = useAtomGetter(atoms.settings.preferredLanguages);
+  const languages = useAtomGetter(atoms.localData.languages);
   const router = useRouter();
 
   const availableLocales = useMemo(() => {

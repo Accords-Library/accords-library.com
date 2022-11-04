@@ -3,15 +3,14 @@ import { HorizontalLine } from "components/HorizontalLine";
 import { Button } from "components/Inputs/Button";
 import { NavOption } from "components/PanelComponents/NavOption";
 import { ToolTip } from "components/ToolTip";
-import { useAppLayout } from "contexts/AppLayoutContext";
 import { Icon } from "components/Ico";
 import { cIf, cJoin } from "helpers/className";
 import { isDefinedAndNotEmpty } from "helpers/others";
 import { Link } from "components/Inputs/Link";
 import { sendAnalytics } from "helpers/analytics";
-import { useLocalData } from "contexts/LocalDataContext";
 import { ColoredSvg } from "components/ColoredSvg";
-import { useContainerQueries } from "contexts/ContainerQueriesContext";
+import { atoms } from "contexts/atoms";
+import { useAtomGetter, useAtomPair, useAtomSetter } from "helpers/atoms";
 
 /*
  *                                        ╭─────────────╮
@@ -19,34 +18,35 @@ import { useContainerQueries } from "contexts/ContainerQueriesContext";
  */
 
 export const MainPanel = (): JSX.Element => {
-  const { is3ColumnsLayout } = useContainerQueries();
-  const { mainPanelReduced, toggleMainPanelReduced, setConfigPanelOpen } = useAppLayout();
-  const { langui } = useLocalData();
+  const is3ColumnsLayout = useAtomGetter(atoms.containerQueries.is3ColumnsLayout);
+  const langui = useAtomGetter(atoms.localData.langui);
+  const [isMainPanelReduced, setMainPanelReduced] = useAtomPair(atoms.layout.mainPanelReduced);
+  const setSettingsOpened = useAtomSetter(atoms.layout.settingsOpened);
 
   return (
     <div
       className={cJoin(
         "grid content-start justify-center gap-y-2 p-8 text-center",
-        cIf(mainPanelReduced && is3ColumnsLayout, "px-4")
+        cIf(isMainPanelReduced && is3ColumnsLayout, "px-4")
       )}>
       {/* Reduce/expand main menu */}
       {is3ColumnsLayout && (
         <div
           className={cJoin(
             "fixed top-1/2",
-            cIf(mainPanelReduced, "left-[4.65rem]", "left-[18.65rem]")
+            cIf(isMainPanelReduced, "left-[4.65rem]", "left-[18.65rem]")
           )}>
           <Button
             onClick={() => {
-              if (mainPanelReduced) {
+              if (isMainPanelReduced) {
                 sendAnalytics("MainPanel", "Expand");
               } else {
                 sendAnalytics("MainPanel", "Reduce");
               }
-              toggleMainPanelReduced();
+              setMainPanelReduced((current) => !current);
             }}
             className="z-50 bg-light !px-2"
-            icon={mainPanelReduced ? Icon.ChevronRight : Icon.ChevronLeft}
+            icon={isMainPanelReduced ? Icon.ChevronRight : Icon.ChevronLeft}
           />
         </div>
       )}
@@ -57,28 +57,28 @@ export const MainPanel = (): JSX.Element => {
               src="/icons/accords.svg"
               className={cJoin(
                 "mb-4 aspect-square bg-black hover:bg-dark",
-                cIf(mainPanelReduced && is3ColumnsLayout, "w-12", "w-1/2")
+                cIf(isMainPanelReduced && is3ColumnsLayout, "w-12", "w-1/2")
               )}
             />
           </Link>
 
-          {(!mainPanelReduced || !is3ColumnsLayout) && (
+          {(!isMainPanelReduced || !is3ColumnsLayout) && (
             <h2 className="mb-4 text-3xl">Accord&rsquo;s Library</h2>
           )}
 
           <div
             className={cJoin(
               "flex flex-wrap gap-2",
-              cIf(mainPanelReduced && is3ColumnsLayout, "flex-col gap-3", "flex-row")
+              cIf(isMainPanelReduced && is3ColumnsLayout, "flex-col gap-3", "flex-row")
             )}>
             <ToolTip
               content={<h3 className="text-2xl">{langui.open_settings}</h3>}
               placement="right"
               className="text-left"
-              disabled={!mainPanelReduced}>
+              disabled={!isMainPanelReduced}>
               <Button
                 onClick={() => {
-                  setConfigPanelOpen(true);
+                  setSettingsOpened(true);
                   sendAnalytics("Settings", "Open settings");
                 }}
                 icon={Icon.Settings}
@@ -95,7 +95,7 @@ export const MainPanel = (): JSX.Element => {
         icon={Icon.LibraryBooks}
         title={langui.library}
         subtitle={langui.library_short_description}
-        reduced={mainPanelReduced && is3ColumnsLayout}
+        reduced={isMainPanelReduced && is3ColumnsLayout}
       />
 
       <NavOption
@@ -103,7 +103,7 @@ export const MainPanel = (): JSX.Element => {
         icon={Icon.Workspaces}
         title={langui.contents}
         subtitle={langui.contents_short_description}
-        reduced={mainPanelReduced && is3ColumnsLayout}
+        reduced={isMainPanelReduced && is3ColumnsLayout}
       />
 
       <NavOption
@@ -111,7 +111,7 @@ export const MainPanel = (): JSX.Element => {
         icon={Icon.TravelExplore}
         title={langui.wiki}
         subtitle={langui.wiki_short_description}
-        reduced={mainPanelReduced && is3ColumnsLayout}
+        reduced={isMainPanelReduced && is3ColumnsLayout}
       />
 
       <NavOption
@@ -119,7 +119,7 @@ export const MainPanel = (): JSX.Element => {
         icon={Icon.WatchLater}
         title={langui.chronicles}
         subtitle={langui.chronicles_short_description}
-        reduced={mainPanelReduced && is3ColumnsLayout}
+        reduced={isMainPanelReduced && is3ColumnsLayout}
       />
 
       <HorizontalLine />
@@ -128,7 +128,7 @@ export const MainPanel = (): JSX.Element => {
         url="/news"
         icon={Icon.Feed}
         title={langui.news}
-        reduced={mainPanelReduced && is3ColumnsLayout}
+        reduced={isMainPanelReduced && is3ColumnsLayout}
       />
 
       {/*
@@ -136,7 +136,7 @@ export const MainPanel = (): JSX.Element => {
         url="/merch"
         icon={Icon.Store}
         title={langui.merch}
-        reduced={mainPanelReduced && is3ColumnsLayout}
+        reduced={isMainPanelReduced && is3ColumnsLayout}
       />
       */}
 
@@ -144,26 +144,26 @@ export const MainPanel = (): JSX.Element => {
         url="https://gallery.accords-library.com/posts/"
         icon={Icon.Collections}
         title={langui.gallery}
-        reduced={mainPanelReduced && is3ColumnsLayout}
+        reduced={isMainPanelReduced && is3ColumnsLayout}
       />
 
       <NavOption
         url="/archives"
         icon={Icon.Inventory2}
         title={langui.archives}
-        reduced={mainPanelReduced && is3ColumnsLayout}
+        reduced={isMainPanelReduced && is3ColumnsLayout}
       />
 
       <NavOption
         url="/about-us"
         icon={Icon.Info}
         title={langui.about_us}
-        reduced={mainPanelReduced && is3ColumnsLayout}
+        reduced={isMainPanelReduced && is3ColumnsLayout}
       />
 
-      {(!mainPanelReduced || !is3ColumnsLayout) && <HorizontalLine />}
+      {(!isMainPanelReduced || !is3ColumnsLayout) && <HorizontalLine />}
 
-      <div className={cJoin("text-center", cIf(mainPanelReduced && is3ColumnsLayout, "hidden"))}>
+      <div className={cJoin("text-center", cIf(isMainPanelReduced && is3ColumnsLayout, "hidden"))}>
         {isDefinedAndNotEmpty(langui.licensing_notice) && (
           <p>
             <Markdown>{langui.licensing_notice}</Markdown>

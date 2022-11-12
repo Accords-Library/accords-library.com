@@ -1,0 +1,22 @@
+query revalidationGetRangedContent($id: ID) {
+  rangedContent(id: $id) {
+    data {
+      attributes {
+        content {
+          data {
+            attributes {
+              slug
+            }
+          }
+        }
+        library_item {
+          data {
+            attributes {
+              slug
+            }
+          }
+        }
+      }
+    }
+  }
+}

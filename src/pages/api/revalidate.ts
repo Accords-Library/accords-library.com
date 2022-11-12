@@ -1,6 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { i18n } from "../../../next.config";
-import { cartesianProduct } from "helpers/others";
+import { cartesianProduct, filterHasAttributes } from "helpers/others";
+import { fetchLocalData } from "graphql/fetchLocalData";
+import { getReadySdk } from "graphql/sdk";
 
 type CRUDEvents = "entry.create" | "entry.delete" | "entry.update";
 
@@ -10,6 +12,8 @@ type StrapiEvent = {
   entry: Record<string, unknown>;
 };
 
+type StrapiRelationalField = { count: number };
+
 type RequestProps =
   | CustomRequest
   | StrapiChronicle
@@ -17,9 +21,12 @@ type RequestProps =
   | StrapiChronology
   | StrapiContent
   | StrapiContentFolder
+  | StrapiCurrency
+  | StrapiLanguage
   | StrapiLibraryItem
   | StrapiPostContent
   | StrapiRangedContent
+  | StrapiWebsiteInterface
   | StrapiWiki;
 
 interface CustomRequest {
@@ -31,12 +38,9 @@ interface StrapiRangedContent extends StrapiEvent {
   event: CRUDEvents;
   model: "ranged-content";
   entry: {
-    library_item?: {
-      slug: string;
-    };
-    content?: {
-      slug: string;
-    };
+    id: string;
+    library_item: StrapiRelationalField;
+    content: StrapiRelationalField;
   };
 }
 
@@ -44,12 +48,8 @@ interface StrapiContent extends StrapiEvent {
   model: "content";
   entry: {
     slug: string;
-    folder?: {
-      slug: string;
-    };
-    ranged_contents: {
-      slug: string;
-    }[];
+    folder: StrapiRelationalField;
+    ranged_contents: StrapiRelationalField;
   };
 }
 
@@ -61,16 +61,36 @@ interface StrapiPostContent extends StrapiEvent {
   };
 }
 
+interface StrapiWebsiteInterface extends StrapiEvent {
+  event: CRUDEvents;
+  model: "website-interface";
+  entry: {
+    slug: string;
+  };
+}
+
+interface StrapiLanguage extends StrapiEvent {
+  event: CRUDEvents;
+  model: "language";
+  entry: {
+    slug: string;
+  };
+}
+
+interface StrapiCurrency extends StrapiEvent {
+  event: CRUDEvents;
+  model: "currency";
+  entry: {
+    slug: string;
+  };
+}
+
 interface StrapiLibraryItem extends StrapiEvent {
   event: CRUDEvents;
   model: "library-item";
   entry: {
     slug: string;
-    subitem_of: [
-      {
-        slug: string;
-      }
-    ];
+    subitem_of: StrapiRelationalField;
   };
 }
 
@@ -79,13 +99,9 @@ interface StrapiContentFolder extends StrapiEvent {
   model: "contents-folder";
   entry: {
     slug: string;
-    parent_folder?: {
-      slug: string;
-    };
-    subfolders: { slug: string }[];
-    contents: {
-      slug: string;
-    }[];
+    parent_folder: StrapiRelationalField;
+    subfolders: StrapiRelationalField;
+    contents: StrapiRelationalField;
   };
 }
 
@@ -118,13 +134,17 @@ interface StrapiChronicleChapter extends StrapiEvent {
   };
 }
 
-type ResponseMailProps = {
+type ResponseProps = {
   message: string;
   revalidated: boolean;
 };
 
-const Revalidate = (req: NextApiRequest, res: NextApiResponse<ResponseMailProps>): void => {
+const Revalidate = async (
+  req: NextApiRequest,
+  res: NextApiResponse<ResponseProps>
+): Promise<void> => {
   const body = req.body as RequestProps;
+  const sdk = getReadySdk();
 
   // Check for secret to confirm this is a valid request
   if (req.headers.authorization !== `Bearer ${process.env.REVALIDATION_TOKEN}`) {
@@ -133,6 +153,8 @@ const Revalidate = (req: NextApiRequest, res: NextApiResponse<ResponseMailProps>
   }
 
   const paths: string[] = [];
+
+  console.log(body);
 
   switch (body.model) {
     case "post": {
@@ -145,9 +167,17 @@ const Revalidate = (req: NextApiRequest, res: NextApiResponse<ResponseMailProps>
       paths.push(`/library`);
       paths.push(`/library/${body.entry.slug}`);
       paths.push(`/library/${body.entry.slug}/reader`);
-      body.entry.subitem_of.forEach((parentItem) => {
-        paths.push(`/library/${parentItem.slug}`);
-      });
+
+      if (body.entry.subitem_of.count > 0) {
+        const libraryItem = await sdk.getLibraryItem({
+          language_code: "en",
+          slug: body.entry.slug,
+        });
+        filterHasAttributes(libraryItem.libraryItems?.data[0].attributes?.subitem_of?.data, [
+          "attributes.slug",
+        ] as const).forEach((parentItem) => paths.push(`/library/${parentItem.attributes.slug}`));
+      }
+
       break;
     }
 
@@ -155,15 +185,22 @@ const Revalidate = (req: NextApiRequest, res: NextApiResponse<ResponseMailProps>
       paths.push(`/contents`);
       paths.push(`/contents/all`);
       paths.push(`/contents/${body.entry.slug}`);
-      if (body.entry.folder?.slug) {
-        paths.push(`/contents/folder/${body.entry.folder.slug}`);
-      }
-      if (body.entry.ranged_contents.length > 0) {
-        body.entry.ranged_contents.forEach((ranged_content) => {
-          const parentSlug = ranged_content.slug.slice(
-            0,
-            ranged_content.slug.length - body.entry.slug.length - 1
-          );
+
+      if (body.entry.folder.count > 0 || body.entry.ranged_contents.count > 0) {
+        const content = await sdk.getContentText({
+          language_code: "en",
+          slug: body.entry.slug,
+        });
+
+        const folderSlug = content.contents?.data[0].attributes?.folder?.data?.attributes?.slug;
+        if (folderSlug) {
+          paths.push(`/contents/folder/${folderSlug}`);
+        }
+
+        filterHasAttributes(content.contents?.data[0].attributes?.ranged_contents?.data, [
+          "attributes.library_item.data.attributes.slug",
+        ] as const).forEach((ranged_content) => {
+          const parentSlug = ranged_content.attributes.library_item.data.attributes.slug;
           paths.push(`/library/${parentSlug}`);
           paths.push(`/library/${parentSlug}/reader`);
         });
@@ -178,12 +215,21 @@ const Revalidate = (req: NextApiRequest, res: NextApiResponse<ResponseMailProps>
     }
 
     case "ranged-content": {
-      if (body.entry.library_item) {
-        paths.push(`/library/${body.entry.library_item.slug}`);
-        paths.push(`/library/${body.entry.library_item.slug}/reader`);
-      }
-      if (body.entry.content) {
-        paths.push(`/contents/${body.entry.content.slug}`);
+      if (body.entry.content.count > 0 || body.entry.library_item.count > 0) {
+        const rangedContent = await sdk.revalidationGetRangedContent({
+          id: body.entry.id,
+        });
+        const libraryItemSlug =
+          rangedContent.rangedContent?.data?.attributes?.content?.data?.attributes?.slug;
+        if (libraryItemSlug) {
+          paths.push(`/library/${libraryItemSlug}`);
+          paths.push(`/library/${libraryItemSlug}/reader`);
+        }
+        const contentSlug =
+          rangedContent.rangedContent?.data?.attributes?.content?.data?.attributes?.slug;
+        if (contentSlug) {
+          paths.push(`/contents/${contentSlug}`);
+        }
       }
       break;
     }
@@ -193,13 +239,30 @@ const Revalidate = (req: NextApiRequest, res: NextApiResponse<ResponseMailProps>
         paths.push(`/contents`);
       }
       paths.push(`/contents/folder/${body.entry.slug}`);
-      if (body.entry.parent_folder) {
-        paths.push(`/contents/folder/${body.entry.parent_folder.slug}`);
+
+      if (
+        body.entry.contents.count > 0 ||
+        body.entry.parent_folder.count > 0 ||
+        body.entry.subfolders.count > 0
+      ) {
+        const folder = await sdk.getContentsFolder({
+          language_code: "en",
+          slug: body.entry.slug,
+        });
+        const parentSlug =
+          folder.contentsFolders?.data[0].attributes?.parent_folder?.data?.attributes?.slug;
+        if (parentSlug) {
+          paths.push(`/contents/folder/${parentSlug}`);
+        }
+        filterHasAttributes(folder.contentsFolders?.data[0].attributes?.subfolders?.data, [
+          "attributes.slug",
+        ] as const).forEach((subfolder) =>
+          paths.push(`/contents/folder/${subfolder.attributes.slug}`)
+        );
+        filterHasAttributes(folder.contentsFolders?.data[0].attributes?.contents?.data, [
+          "attributes.slug",
+        ] as const).forEach((content) => paths.push(`/contents/${content.attributes.slug}`));
       }
-      body.entry.subfolders.forEach((subfolder) =>
-        paths.push(`/contents/folder/${subfolder.slug}`)
-      );
-      body.entry.contents.forEach((content) => paths.push(`/contents/${content.slug}`));
       break;
     }
 
@@ -223,20 +286,27 @@ const Revalidate = (req: NextApiRequest, res: NextApiResponse<ResponseMailProps>
       break;
     }
 
+    case "website-interface":
+    case "language":
+    case "currency": {
+      await fetchLocalData();
+      break;
+    }
+
     case "custom": {
       paths.push(`${body.path}`);
       break;
     }
 
     default:
-      console.log(body);
+      console.log("Unknown case");
       break;
   }
 
+  console.table(paths);
   const localizedPaths = cartesianProduct(i18n.locales, paths).map(
     ([locale, path]) => `/${locale}${path}`
   );
-  console.table(localizedPaths);
 
   try {
     Promise.all(

@@ -21,13 +21,16 @@ const readLocalData = <T>(name: LocalDataFile): T => {
   return JSON.parse(readFileSync(path, { encoding: "utf8" }));
 };
 
-const sdk = getReadySdk();
-
-(async () => {
+export const fetchLocalData = async (): Promise<void> => {
+  const sdk = getReadySdk();
   writeLocalData("websiteInterfaces", await sdk.localDataGetWebsiteInterfaces());
   writeLocalData("currencies", await sdk.localDataGetCurrencies());
   writeLocalData("languages", await sdk.localDataGetLanguages());
-})();
+};
+
+if (process.argv[2] === "--esrun") {
+  fetchLocalData();
+}
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 

@@ -12,6 +12,7 @@ src/graphql/generated.ts
 # next.js
 /.next/
 /out/
+src/pages.old
 
 # production
 /build

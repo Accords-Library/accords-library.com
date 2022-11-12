@@ -4,12 +4,23 @@ import { localData } from "contexts/localData";
 import { containerQueries } from "contexts/containerQueries";
 import { atomPairing } from "helpers/atoms";
 import { settings } from "contexts/settings";
-import { lightBox } from "contexts/LightBoxProvider";
+import { UploadImageFragment } from "graphql/generated";
 
 /*
  * I'm getting a weird error if I put those atoms in appLayout.ts
  * So I'm putting the atoms here. Sucks, I know.
  */
+
+/* [ LIGHTBOX ] */
+
+export const lightBox = atomPairing(
+  atom<{
+    showLightBox: (
+      images: (UploadImageFragment | string | null | undefined)[],
+      index?: number
+    ) => void;
+  }>({ showLightBox: () => null })
+);
 
 /* [ APPLAYOUT ATOMS ] */
 
@@ -44,6 +55,6 @@ export const atoms = {
   layout,
   terminal,
   localData,
-  lightBox,
+  lightBox: lightBox[0],
   containerQueries,
 };

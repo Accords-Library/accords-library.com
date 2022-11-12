@@ -1,11 +1,12 @@
-import { useRouter } from "next/router";
+// import { useRouter } from "next/router";
 import { useLayoutEffect, useEffect } from "react";
 import { atom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
-import { atomPairing, useAtomGetter, useAtomPair } from "helpers/atoms";
+import { atomPairing, useAtomGetter, useAtomPair, useAtomSetter } from "helpers/atoms";
 import { getDefaultPreferredLanguages } from "helpers/locales";
 import { isDefined, isDefinedAndNotEmpty } from "helpers/others";
 import { usePrefersDarkMode } from "hooks/useMediaQuery";
+import { Ids } from "types/ids";
 
 export enum ThemeMode {
   Dark = "dark",
@@ -32,11 +33,10 @@ export const settings = {
 };
 
 export const useSettings = (): void => {
-  const router = useRouter();
-  const [preferredLanguages, setPreferredLanguages] = useAtomPair(preferredLanguagesAtom);
+  // const router = useRouter();
+  // const [preferredLanguages, setPreferredLanguages] = useAtomPair(preferredLanguagesAtom);
   const fontSize = useAtomGetter(fontSizeAtom);
-  const isDyslexic = useAtomGetter(dyslexicAtom);
-  const [isDarkMode, setDarkMode] = useAtomPair(darkModeAtom);
+  const setDarkMode = useAtomSetter(darkModeAtom);
   const themeMode = useAtomGetter(themeModeAtom);
 
   useLayoutEffect(() => {
@@ -46,19 +46,6 @@ export const useSettings = (): void => {
     }
   }, [fontSize]);
 
-  useLayoutEffect(() => {
-    const next = document.getElementById("__next");
-    if (isDefined(next)) {
-      if (isDyslexic) {
-        next.classList.add("set-theme-font-dyslexic");
-        next.classList.remove("set-theme-font-standard");
-      } else {
-        next.classList.add("set-theme-font-standard");
-        next.classList.remove("set-theme-font-dyslexic");
-      }
-    }
-  }, [isDyslexic]);
-
   /* DARK MODE */
   const prefersDarkMode = usePrefersDarkMode();
 
@@ -66,31 +53,21 @@ export const useSettings = (): void => {
     setDarkMode(themeMode === ThemeMode.Auto ? prefersDarkMode : themeMode === ThemeMode.Dark);
   }, [prefersDarkMode, setDarkMode, themeMode]);
 
-  useLayoutEffect(() => {
-    const next = document.getElementById("__next");
-    if (isDefined(next)) {
-      if (isDarkMode) {
-        next.classList.add("set-theme-dark");
-        next.classList.remove("set-theme-light");
-      } else {
-        next.classList.add("set-theme-light");
-        next.classList.remove("set-theme-dark");
-      }
-    }
-  }, [isDarkMode]);
-
   /* PREFERRED LANGUAGES */
 
+  /*
   useEffect(() => {
     if (preferredLanguages.length === 0) {
       if (isDefinedAndNotEmpty(router.locale) && router.locales) {
         setPreferredLanguages(getDefaultPreferredLanguages(router.locale, router.locales));
       }
     } else if (router.locale !== preferredLanguages[0]) {
-      /*
-       * Using a timeout to the code getting stuck into a loop when reaching the website with a
-       * different preferredLanguages[0] from router.locale
-       */
+      */
+  /*
+   * Using a timeout to the code getting stuck into a loop when reaching the website with a
+   * different preferredLanguages[0] from router.locale
+   */
+  /*
       setTimeout(
         async () =>
           router.replace(router.asPath, router.asPath, {
@@ -100,4 +77,5 @@ export const useSettings = (): void => {
       );
     }
   }, [preferredLanguages, router, setPreferredLanguages]);
+  */
 };

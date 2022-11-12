@@ -35,7 +35,6 @@ export const useLocalData = (): void => {
   const setCurrencies = useAtomSetter(currencies);
   const setLangui = useAtomSetter(langui);
 
-  const { locale } = useRouter();
   const { data: rawLanguages } = useFetch<LocalDataGetLanguagesQuery>(getFileName("languages"));
   const { data: rawCurrencies } = useFetch<LocalDataGetCurrenciesQuery>(getFileName("currencies"));
   const { data: rawLangui } = useFetch<LocalDataGetWebsiteInterfacesQuery>(
@@ -54,6 +53,6 @@ export const useLocalData = (): void => {
 
   useEffect(() => {
     console.log("[useLocalData] Refresh langui");
-    setLangui(processLangui(rawLangui, locale));
-  }, [locale, rawLangui, setLangui]);
+    setLangui(processLangui(rawLangui, "en"));
+  }, [rawLangui, setLangui]);
 };

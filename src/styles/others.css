@@ -2,10 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-#__next {
-  @apply bg-light font-body font-medium text-black;
-}
-
 * {
   @apply box-border scroll-m-[40vh] scroll-smooth scrollbar-thin ![-webkit-tap-highlight-color:transparent];
 }

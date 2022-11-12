@@ -1,17 +1,9 @@
-/* CONFIG */
-
-const locales = ["en", "es", "fr", "pt-br", "ja"];
-
-/* END CONFIG */
-
 /* @type {import('next').NextConfig} */
 module.exports = {
-  swcMinify: true,
   reactStrictMode: true,
   poweredByHeader: false,
-  i18n: {
-    locales: locales,
-    defaultLocale: "en",
+  experimental: {
+    appDir: true,
   },
   images: {
     domains: ["img.accords-library.com", "watch.accords-library.com"],

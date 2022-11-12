@@ -32,8 +32,6 @@ export const SettingsPopup = (): JSX.Element => {
 
   const is1ColumnLayout = useAtomGetter(atoms.containerQueries.is1ColumnLayout);
 
-  const router = useRouter();
-
   const currencyOptions = useMemo(
     () =>
       filterHasAttributes(currencies, ["attributes"] as const).map(
@@ -66,34 +64,6 @@ export const SettingsPopup = (): JSX.Element => {
           `mt-4 grid justify-items-center gap-16 text-center`,
           cIf(!is1ColumnLayout, "grid-cols-[auto_auto]")
         )}>
-        {router.locales && (
-          <div>
-            <h3 className="text-xl">{langui.languages}</h3>
-            {preferredLanguages.length > 0 && (
-              <OrderableList
-                items={preferredLanguages.map((locale) => ({
-                  code: locale,
-                  name: prettyLanguage(locale, languages),
-                }))}
-                insertLabels={[
-                  {
-                    insertAt: 0,
-                    name: langui.primary_language ?? "Primary language",
-                  },
-                  {
-                    insertAt: 1,
-                    name: langui.secondary_language ?? "Secondary languages",
-                  },
-                ]}
-                onChange={(items) => {
-                  const newPreferredLanguages = items.map((item) => item.code);
-                  setPreferredLanguages(newPreferredLanguages);
-                  sendAnalytics("Settings", "Change preferred languages");
-                }}
-              />
-            )}
-          </div>
-        )}
         <div
           className={cJoin(
             "grid place-items-center gap-8 text-center",

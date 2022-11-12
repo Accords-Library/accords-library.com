@@ -1,8 +1,8 @@
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import { useScrollIntoView } from "hooks/useScrollIntoView";
 import { useAtomSetter } from "helpers/atoms";
 import { atoms } from "contexts/atoms";
+import { useScrollIntoView } from "hooks/useScrollIntoView";
 
 export const useAppLayout = (): void => {
   const router = useRouter();

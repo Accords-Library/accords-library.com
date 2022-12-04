@@ -1,5 +1,5 @@
 import { GetStaticProps } from "next";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useBoolean } from "usehooks-ts";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { SmartList } from "components/SmartList";
@@ -52,75 +52,69 @@ const Videos = ({ videos, ...otherProps }: Props): JSX.Element => {
 
   const [searchName, setSearchName] = useState(DEFAULT_FILTERS_STATE.searchName);
 
-  const subPanel = useMemo(
-    () => (
-      <SubPanel>
-        <ReturnButton
-          href="/archives/"
-          title={"Archives"}
-          displayOnlyOn={"3ColumnsLayout"}
-          className="mb-10"
-        />
+  const subPanel = (
+    <SubPanel>
+      <ReturnButton
+        href="/archives/"
+        title={"Archives"}
+        displayOnlyOn={"3ColumnsLayout"}
+        className="mb-10"
+      />
 
-        <PanelHeader icon={Icon.Movie} title="Videos" description={langui.archives_description} />
+      <PanelHeader icon={Icon.Movie} title="Videos" description={langui.archives_description} />
 
-        <HorizontalLine />
+      <HorizontalLine />
 
-        <TextInput
-          className="mb-6 w-full"
-          placeholder={langui.search_title ?? "Search title..."}
-          value={searchName}
-          onChange={setSearchName}
-        />
+      <TextInput
+        className="mb-6 w-full"
+        placeholder={langui.search_title ?? "Search title..."}
+        value={searchName}
+        onChange={setSearchName}
+      />
 
-        {hoverable && (
-          <WithLabel label={langui.always_show_info}>
-            <Switch value={keepInfoVisible} onClick={toggleKeepInfoVisible} />
-          </WithLabel>
-        )}
-      </SubPanel>
-    ),
-    [hoverable, keepInfoVisible, langui, searchName, toggleKeepInfoVisible]
+      {hoverable && (
+        <WithLabel label={langui.always_show_info}>
+          <Switch value={keepInfoVisible} onClick={toggleKeepInfoVisible} />
+        </WithLabel>
+      )}
+    </SubPanel>
   );
 
-  const contentPanel = useMemo(
-    () => (
-      <ContentPanel width={ContentPanelWidthSizes.Full}>
-        <SmartList
-          items={filterHasAttributes(videos, ["id", "attributes"] as const)}
-          getItemId={(item) => item.id}
-          renderItem={({ item }) => (
-            <PreviewCard
-              href={`/archives/videos/v/${item.attributes.uid}`}
-              title={item.attributes.title}
-              thumbnail={getVideoThumbnailURL(item.attributes.uid)}
-              thumbnailAspectRatio="16/9"
-              thumbnailForceAspectRatio
-              keepInfoVisible={keepInfoVisible}
-              metadata={{
-                releaseDate: item.attributes.published_date,
-                views: item.attributes.views,
-                author: item.attributes.channel?.data?.attributes?.title,
-                position: "Top",
-              }}
-              hoverlay={{
-                __typename: "Video",
-                duration: item.attributes.duration,
-              }}
-            />
-          )}
-          className={cIf(
-            isContentPanelAtLeast4xl,
-            "grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] gap-x-6 gap-y-8",
-            "grid-cols-2 gap-x-3 gap-y-5"
-          )}
-          paginationItemPerPage={25}
-          searchingTerm={searchName}
-          searchingBy={(item) => item.attributes.title}
-        />
-      </ContentPanel>
-    ),
-    [isContentPanelAtLeast4xl, keepInfoVisible, searchName, videos]
+  const contentPanel = (
+    <ContentPanel width={ContentPanelWidthSizes.Full}>
+      <SmartList
+        items={filterHasAttributes(videos, ["id", "attributes"] as const)}
+        getItemId={(item) => item.id}
+        renderItem={({ item }) => (
+          <PreviewCard
+            href={`/archives/videos/v/${item.attributes.uid}`}
+            title={item.attributes.title}
+            thumbnail={getVideoThumbnailURL(item.attributes.uid)}
+            thumbnailAspectRatio="16/9"
+            thumbnailForceAspectRatio
+            keepInfoVisible={keepInfoVisible}
+            metadata={{
+              releaseDate: item.attributes.published_date,
+              views: item.attributes.views,
+              author: item.attributes.channel?.data?.attributes?.title,
+              position: "Top",
+            }}
+            hoverlay={{
+              __typename: "Video",
+              duration: item.attributes.duration,
+            }}
+          />
+        )}
+        className={cIf(
+          isContentPanelAtLeast4xl,
+          "grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] gap-x-6 gap-y-8",
+          "grid-cols-2 gap-x-3 gap-y-5"
+        )}
+        paginationItemPerPage={25}
+        searchingTerm={searchName}
+        searchingBy={(item) => item.attributes.title}
+      />
+    </ContentPanel>
   );
   return <AppLayout subPanel={subPanel} contentPanel={contentPanel} {...otherProps} />;
 };

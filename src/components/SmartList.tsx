@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
+import { Fragment, useCallback, useEffect, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import naturalCompare from "string-natural-compare";
 import { Chip } from "./Chip";
@@ -87,17 +87,11 @@ export const SmartList = <T,>({
     return items;
   }, [items, searchingBy, searchingCaseInsensitive, searchingTerm]);
 
-  const filteredItems = useMemo(() => {
-    const filteredBySearch = searchFilter();
-    return filteredBySearch.filter(filteringFunction);
-  }, [filteringFunction, searchFilter]);
+  const filteredItems = searchFilter().filter(filteringFunction);
 
-  const sortedItem = useMemo(
-    () => filteredItems.sort(sortingFunction),
-    [filteredItems, sortingFunction]
-  );
+  const sortedItem = filteredItems.sort(sortingFunction);
 
-  const groups = useMemo(() => {
+  const groups = (() => {
     const memo: Group<T>[] = [];
 
     sortedItem.forEach((item) => {
@@ -116,9 +110,9 @@ export const SmartList = <T,>({
       });
     });
     return memo.sort(groupSortingFunction);
-  }, [groupCountingFunction, groupSortingFunction, groupingFunction, sortedItem]);
+  })();
 
-  const pages = useMemo(() => {
+  const pages = (() => {
     const memo: Group<T>[][] = [];
     let currentPage: Group<T>[] = [];
     let remainingSlots = paginationItemPerPage;
@@ -162,7 +156,7 @@ export const SmartList = <T,>({
     }
 
     return memo;
-  }, [groups, paginationItemPerPage]);
+  })();
 
   useHotkeys("left", () => setPage((current) => current - 1), { enabled: page > 0 });
   useHotkeys("right", () => setPage((current) => current + 1), {

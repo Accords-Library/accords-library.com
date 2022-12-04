@@ -1,5 +1,4 @@
 import { GetStaticProps } from "next";
-import { useMemo } from "react";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { Chip } from "components/Chip";
 import { Button } from "components/Inputs/Button";
@@ -27,54 +26,51 @@ interface Props extends AppLayoutRequired {
 const CheckupLibraryItems = ({ libraryItems, ...otherProps }: Props): JSX.Element => {
   const testReport = testingLibraryItem(libraryItems);
 
-  const contentPanel = useMemo(
-    () => (
-      <ContentPanel width={ContentPanelWidthSizes.Full}>
-        {<h2 className="text-2xl">{testReport.title}</h2>}
+  const contentPanel = (
+    <ContentPanel width={ContentPanelWidthSizes.Full}>
+      {<h2 className="text-2xl">{testReport.title}</h2>}
 
-        <div className="my-4 grid grid-cols-[2em,3em,2fr,1fr,0.5fr,0.5fr,2fr] items-center gap-2">
-          <p />
-          <p />
-          <p className="font-headers">Ref</p>
-          <p className="font-headers">Name</p>
-          <p className="font-headers">Type</p>
-          <p className="font-headers">Severity</p>
-          <p className="font-headers">Description</p>
-        </div>
+      <div className="my-4 grid grid-cols-[2em,3em,2fr,1fr,0.5fr,0.5fr,2fr] items-center gap-2">
+        <p />
+        <p />
+        <p className="font-headers">Ref</p>
+        <p className="font-headers">Name</p>
+        <p className="font-headers">Type</p>
+        <p className="font-headers">Severity</p>
+        <p className="font-headers">Description</p>
+      </div>
 
-        {testReport.lines
-          .sort((a, b) => a.name.localeCompare(b.name))
-          .sort((a, b) => b.severity - a.severity)
-          .map((line, index) => (
-            <div
-              key={index}
-              className="mb-2 grid
+      {testReport.lines
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .sort((a, b) => b.severity - a.severity)
+        .map((line, index) => (
+          <div
+            key={index}
+            className="mb-2 grid
           grid-cols-[2em,3em,2fr,1fr,0.5fr,0.5fr,2fr] items-center justify-items-start gap-2">
-              <Button href={line.frontendUrl} className="w-4 text-xs" text="F" alwaysNewTab />
-              <Button href={line.backendUrl} className="w-4 text-xs" text="B" alwaysNewTab />
-              <p>{line.subitems.join(" -> ")}</p>
-              <p>{line.name}</p>
-              <Chip text={line.type} />
-              <Chip
-                className={
-                  line.severity === Severity.VeryHigh
-                    ? "bg-[#f00] font-bold !opacity-100"
-                    : line.severity === Severity.High
-                    ? "bg-[#ff6600] font-bold !opacity-100"
-                    : line.severity === Severity.Medium
-                    ? "bg-[#fff344] !opacity-100"
-                    : ""
-                }
-                text={Severity[line.severity]}
-              />
-              <ToolTip content={line.recommandation} placement="left">
-                <p>{line.description}</p>
-              </ToolTip>
-            </div>
-          ))}
-      </ContentPanel>
-    ),
-    [testReport.lines, testReport.title]
+            <Button href={line.frontendUrl} className="w-4 text-xs" text="F" alwaysNewTab />
+            <Button href={line.backendUrl} className="w-4 text-xs" text="B" alwaysNewTab />
+            <p>{line.subitems.join(" -> ")}</p>
+            <p>{line.name}</p>
+            <Chip text={line.type} />
+            <Chip
+              className={
+                line.severity === Severity.VeryHigh
+                  ? "bg-[#f00] font-bold !opacity-100"
+                  : line.severity === Severity.High
+                  ? "bg-[#ff6600] font-bold !opacity-100"
+                  : line.severity === Severity.Medium
+                  ? "bg-[#fff344] !opacity-100"
+                  : ""
+              }
+              text={Severity[line.severity]}
+            />
+            <ToolTip content={line.recommandation} placement="left">
+              <p>{line.description}</p>
+            </ToolTip>
+          </div>
+        ))}
+    </ContentPanel>
   );
 
   return <AppLayout contentPanel={contentPanel} {...otherProps} />;

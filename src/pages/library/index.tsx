@@ -1,5 +1,5 @@
 import { GetStaticProps } from "next";
-import { useState, useMemo, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { useBoolean } from "usehooks-ts";
 import naturalCompare from "string-natural-compare";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
@@ -222,255 +222,222 @@ const Library = ({ items, ...otherProps }: Props): JSX.Element => {
     [groupingMethod, langui]
   );
 
-  const subPanel = useMemo(
-    () => (
-      <SubPanel>
-        <PanelHeader
-          icon={Icon.LibraryBooks}
-          title={langui.library}
-          description={langui.library_description}
-        />
+  const subPanel = (
+    <SubPanel>
+      <PanelHeader
+        icon={Icon.LibraryBooks}
+        title={langui.library}
+        description={langui.library_description}
+      />
 
-        <HorizontalLine />
+      <HorizontalLine />
 
-        <TextInput
-          className="mb-6 w-full"
-          placeholder={langui.search_title ?? "Search..."}
-          value={searchName}
-          onChange={(name) => {
-            setSearchName(name);
-            if (isDefinedAndNotEmpty(name)) {
-              sendAnalytics("Library", "Change search term");
-            } else {
-              sendAnalytics("Library", "Clear search term");
-            }
-          }}
-        />
+      <TextInput
+        className="mb-6 w-full"
+        placeholder={langui.search_title ?? "Search..."}
+        value={searchName}
+        onChange={(name) => {
+          setSearchName(name);
+          if (isDefinedAndNotEmpty(name)) {
+            sendAnalytics("Library", "Change search term");
+          } else {
+            sendAnalytics("Library", "Clear search term");
+          }
+        }}
+      />
 
-        <WithLabel label={langui.group_by}>
-          <Select
-            className="w-full"
-            options={[
-              langui.category ?? "Category",
-              langui.type ?? "Type",
-              langui.release_year ?? "Year",
-            ]}
-            value={groupingMethod}
-            onChange={(value) => {
-              setGroupingMethod(value);
-              sendAnalytics(
-                "Library",
-                `Change grouping method (${["none", "category", "type", "year"][value + 1]})`
-              );
-            }}
-            allowEmpty
-          />
-        </WithLabel>
-
-        <WithLabel label={langui.order_by}>
-          <Select
-            className="w-full"
-            options={[
-              langui.name ?? "Name",
-              langui.price ?? "Price",
-              langui.release_date ?? "Release date",
-            ]}
-            value={sortingMethod}
-            onChange={(value) => {
-              setSortingMethod(value);
-              sendAnalytics(
-                "Library",
-                `Change sorting method (${["name", "price", "release date"][value]})`
-              );
-            }}
-          />
-        </WithLabel>
-
-        <WithLabel label={langui.show_subitems}>
-          <Switch
-            value={showSubitems}
-            onClick={() => {
-              toggleShowSubitems();
-              sendAnalytics("Library", `${showSubitems ? "Hide" : "Show"} subitems`);
-            }}
-          />
-        </WithLabel>
-
-        <WithLabel label={langui.show_primary_items}>
-          <Switch
-            value={showPrimaryItems}
-            onClick={() => {
-              toggleShowPrimaryItems();
-              sendAnalytics("Library", `${showPrimaryItems ? "Hide" : "Show"} primary items`);
-            }}
-          />
-        </WithLabel>
-
-        <WithLabel label={langui.show_secondary_items}>
-          <Switch
-            value={showSecondaryItems}
-            onClick={() => {
-              toggleShowSecondaryItems();
-              sendAnalytics("Library", `${showSecondaryItems ? "Hide" : "Show"} secondary items`);
-            }}
-          />
-        </WithLabel>
-
-        {hoverable && (
-          <WithLabel label={langui.always_show_info}>
-            <Switch
-              value={keepInfoVisible}
-              onClick={() => {
-                toggleKeepInfoVisible();
-                sendAnalytics("Library", `Always ${keepInfoVisible ? "hide" : "show"} info`);
-              }}
-            />
-          </WithLabel>
-        )}
-
-        <ButtonGroup
-          className="mt-4"
-          buttonsProps={[
-            {
-              tooltip: langui.only_display_items_i_want,
-              icon: Icon.Favorite,
-              onClick: () => {
-                setFilterUserStatus(LibraryItemUserStatus.Want);
-                sendAnalytics("Library", "Set filter status (I want)");
-              },
-              active: filterUserStatus === LibraryItemUserStatus.Want,
-            },
-            {
-              tooltip: langui.only_display_items_i_have,
-              icon: Icon.BackHand,
-              onClick: () => {
-                setFilterUserStatus(LibraryItemUserStatus.Have);
-                sendAnalytics("Library", "Set filter status (I have)");
-              },
-              active: filterUserStatus === LibraryItemUserStatus.Have,
-            },
-            {
-              tooltip: langui.only_display_unmarked_items,
-              icon: Icon.RadioButtonUnchecked,
-              onClick: () => {
-                setFilterUserStatus(LibraryItemUserStatus.None);
-                sendAnalytics("Library", "Set filter status (unmarked)");
-              },
-              active: filterUserStatus === LibraryItemUserStatus.None,
-            },
-            {
-              tooltip: langui.only_display_unmarked_items,
-              text: langui.all,
-              onClick: () => {
-                setFilterUserStatus(undefined);
-                sendAnalytics("Library", "Set filter status (all)");
-              },
-              active: isUndefined(filterUserStatus),
-            },
+      <WithLabel label={langui.group_by}>
+        <Select
+          className="w-full"
+          options={[
+            langui.category ?? "Category",
+            langui.type ?? "Type",
+            langui.release_year ?? "Year",
           ]}
+          value={groupingMethod}
+          onChange={(value) => {
+            setGroupingMethod(value);
+            sendAnalytics(
+              "Library",
+              `Change grouping method (${["none", "category", "type", "year"][value + 1]})`
+            );
+          }}
+          allowEmpty
         />
+      </WithLabel>
 
-        <Button
-          className="mt-8"
-          text={langui.reset_all_filters}
-          icon={Icon.Replay}
-          onClick={() => {
-            setSearchName(DEFAULT_FILTERS_STATE.searchName);
-            setShowSubitems(DEFAULT_FILTERS_STATE.showSubitems);
-            setShowPrimaryItems(DEFAULT_FILTERS_STATE.showPrimaryItems);
-            setShowSecondaryItems(DEFAULT_FILTERS_STATE.showSecondaryItems);
-            setSortingMethod(DEFAULT_FILTERS_STATE.sortingMethod);
-            setGroupingMethod(DEFAULT_FILTERS_STATE.groupingMethod);
-            setKeepInfoVisible(DEFAULT_FILTERS_STATE.keepInfoVisible);
-            setFilterUserStatus(DEFAULT_FILTERS_STATE.filterUserStatus);
-            sendAnalytics("Library", "Reset all filters");
+      <WithLabel label={langui.order_by}>
+        <Select
+          className="w-full"
+          options={[
+            langui.name ?? "Name",
+            langui.price ?? "Price",
+            langui.release_date ?? "Release date",
+          ]}
+          value={sortingMethod}
+          onChange={(value) => {
+            setSortingMethod(value);
+            sendAnalytics(
+              "Library",
+              `Change sorting method (${["name", "price", "release date"][value]})`
+            );
           }}
         />
-      </SubPanel>
-    ),
-    [
-      filterUserStatus,
-      groupingMethod,
-      hoverable,
-      keepInfoVisible,
-      langui,
-      searchName,
-      setKeepInfoVisible,
-      setShowPrimaryItems,
-      setShowSecondaryItems,
-      setShowSubitems,
-      showPrimaryItems,
-      showSecondaryItems,
-      showSubitems,
-      sortingMethod,
-      toggleKeepInfoVisible,
-      toggleShowPrimaryItems,
-      toggleShowSecondaryItems,
-      toggleShowSubitems,
-    ]
+      </WithLabel>
+
+      <WithLabel label={langui.show_subitems}>
+        <Switch
+          value={showSubitems}
+          onClick={() => {
+            toggleShowSubitems();
+            sendAnalytics("Library", `${showSubitems ? "Hide" : "Show"} subitems`);
+          }}
+        />
+      </WithLabel>
+
+      <WithLabel label={langui.show_primary_items}>
+        <Switch
+          value={showPrimaryItems}
+          onClick={() => {
+            toggleShowPrimaryItems();
+            sendAnalytics("Library", `${showPrimaryItems ? "Hide" : "Show"} primary items`);
+          }}
+        />
+      </WithLabel>
+
+      <WithLabel label={langui.show_secondary_items}>
+        <Switch
+          value={showSecondaryItems}
+          onClick={() => {
+            toggleShowSecondaryItems();
+            sendAnalytics("Library", `${showSecondaryItems ? "Hide" : "Show"} secondary items`);
+          }}
+        />
+      </WithLabel>
+
+      {hoverable && (
+        <WithLabel label={langui.always_show_info}>
+          <Switch
+            value={keepInfoVisible}
+            onClick={() => {
+              toggleKeepInfoVisible();
+              sendAnalytics("Library", `Always ${keepInfoVisible ? "hide" : "show"} info`);
+            }}
+          />
+        </WithLabel>
+      )}
+
+      <ButtonGroup
+        className="mt-4"
+        buttonsProps={[
+          {
+            tooltip: langui.only_display_items_i_want,
+            icon: Icon.Favorite,
+            onClick: () => {
+              setFilterUserStatus(LibraryItemUserStatus.Want);
+              sendAnalytics("Library", "Set filter status (I want)");
+            },
+            active: filterUserStatus === LibraryItemUserStatus.Want,
+          },
+          {
+            tooltip: langui.only_display_items_i_have,
+            icon: Icon.BackHand,
+            onClick: () => {
+              setFilterUserStatus(LibraryItemUserStatus.Have);
+              sendAnalytics("Library", "Set filter status (I have)");
+            },
+            active: filterUserStatus === LibraryItemUserStatus.Have,
+          },
+          {
+            tooltip: langui.only_display_unmarked_items,
+            icon: Icon.RadioButtonUnchecked,
+            onClick: () => {
+              setFilterUserStatus(LibraryItemUserStatus.None);
+              sendAnalytics("Library", "Set filter status (unmarked)");
+            },
+            active: filterUserStatus === LibraryItemUserStatus.None,
+          },
+          {
+            tooltip: langui.only_display_unmarked_items,
+            text: langui.all,
+            onClick: () => {
+              setFilterUserStatus(undefined);
+              sendAnalytics("Library", "Set filter status (all)");
+            },
+            active: isUndefined(filterUserStatus),
+          },
+        ]}
+      />
+
+      <Button
+        className="mt-8"
+        text={langui.reset_all_filters}
+        icon={Icon.Replay}
+        onClick={() => {
+          setSearchName(DEFAULT_FILTERS_STATE.searchName);
+          setShowSubitems(DEFAULT_FILTERS_STATE.showSubitems);
+          setShowPrimaryItems(DEFAULT_FILTERS_STATE.showPrimaryItems);
+          setShowSecondaryItems(DEFAULT_FILTERS_STATE.showSecondaryItems);
+          setSortingMethod(DEFAULT_FILTERS_STATE.sortingMethod);
+          setGroupingMethod(DEFAULT_FILTERS_STATE.groupingMethod);
+          setKeepInfoVisible(DEFAULT_FILTERS_STATE.keepInfoVisible);
+          setFilterUserStatus(DEFAULT_FILTERS_STATE.filterUserStatus);
+          sendAnalytics("Library", "Reset all filters");
+        }}
+      />
+    </SubPanel>
   );
 
-  const contentPanel = useMemo(
-    () => (
-      <ContentPanel width={ContentPanelWidthSizes.Full}>
-        <SmartList
-          items={filterHasAttributes(items, ["id", "attributes"] as const)}
-          getItemId={(item) => item.id}
-          renderItem={({ item }) => (
-            <PreviewCard
-              href={`/library/${item.attributes.slug}`}
-              title={item.attributes.title}
-              subtitle={item.attributes.subtitle}
-              thumbnail={item.attributes.thumbnail?.data?.attributes}
-              thumbnailAspectRatio="21/29.7"
-              thumbnailRounded={false}
-              keepInfoVisible={keepInfoVisible}
-              topChips={
-                item.attributes.metadata &&
-                item.attributes.metadata.length > 0 &&
-                item.attributes.metadata[0]
-                  ? [prettyItemSubType(item.attributes.metadata[0])]
-                  : []
-              }
-              bottomChips={item.attributes.categories?.data.map(
-                (category) => category.attributes?.short ?? ""
-              )}
-              metadata={{
-                releaseDate: item.attributes.release_date,
-                price: item.attributes.price,
-                position: "Bottom",
-              }}
-              infoAppend={
-                !isUntangibleGroupItem(item.attributes.metadata?.[0]) && (
-                  <PreviewCardCTAs id={item.id} />
-                )
-              }
-            />
-          )}
-          className={cJoin(
-            "grid-cols-2 items-end",
-            cIf(isContentPanelAtLeast4xl, "grid-cols-[repeat(auto-fill,_minmax(13rem,1fr))]")
-          )}
-          searchingTerm={searchName}
-          sortingFunction={sortingFunction}
-          groupingFunction={groupingFunction}
-          searchingBy={(item) =>
-            prettyInlineTitle("", item.attributes.title, item.attributes.subtitle)
-          }
-          filteringFunction={filteringFunction}
-          paginationItemPerPage={25}
-        />
-      </ContentPanel>
-    ),
-    [
-      filteringFunction,
-      groupingFunction,
-      isContentPanelAtLeast4xl,
-      items,
-      keepInfoVisible,
-      searchName,
-      sortingFunction,
-    ]
+  const contentPanel = (
+    <ContentPanel width={ContentPanelWidthSizes.Full}>
+      <SmartList
+        items={filterHasAttributes(items, ["id", "attributes"] as const)}
+        getItemId={(item) => item.id}
+        renderItem={({ item }) => (
+          <PreviewCard
+            href={`/library/${item.attributes.slug}`}
+            title={item.attributes.title}
+            subtitle={item.attributes.subtitle}
+            thumbnail={item.attributes.thumbnail?.data?.attributes}
+            thumbnailAspectRatio="21/29.7"
+            thumbnailRounded={false}
+            keepInfoVisible={keepInfoVisible}
+            topChips={
+              item.attributes.metadata &&
+              item.attributes.metadata.length > 0 &&
+              item.attributes.metadata[0]
+                ? [prettyItemSubType(item.attributes.metadata[0])]
+                : []
+            }
+            bottomChips={item.attributes.categories?.data.map(
+              (category) => category.attributes?.short ?? ""
+            )}
+            metadata={{
+              releaseDate: item.attributes.release_date,
+              price: item.attributes.price,
+              position: "Bottom",
+            }}
+            infoAppend={
+              !isUntangibleGroupItem(item.attributes.metadata?.[0]) && (
+                <PreviewCardCTAs id={item.id} />
+              )
+            }
+          />
+        )}
+        className={cJoin(
+          "grid-cols-2 items-end",
+          cIf(isContentPanelAtLeast4xl, "grid-cols-[repeat(auto-fill,_minmax(13rem,1fr))]")
+        )}
+        searchingTerm={searchName}
+        sortingFunction={sortingFunction}
+        groupingFunction={groupingFunction}
+        searchingBy={(item) =>
+          prettyInlineTitle("", item.attributes.title, item.attributes.subtitle)
+        }
+        filteringFunction={filteringFunction}
+        paginationItemPerPage={25}
+      />
+    </ContentPanel>
   );
 
   return (

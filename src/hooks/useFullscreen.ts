@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useIsClient } from "usehooks-ts";
 import { isDefined } from "helpers/others";
 
@@ -13,7 +13,7 @@ export const useFullscreen = (
   const [isFullscreen, setIsFullscreen] = useState(false);
   const isClient = useIsClient();
 
-  const elem = useMemo(() => (isClient ? document.querySelector(`#${id}`) : null), [id, isClient]);
+  const elem = isClient ? document.querySelector(`#${id}`) : null;
 
   const requestFullscreen = useCallback(() => elem?.requestFullscreen(), [elem]);
   const exitFullscreen = useCallback(

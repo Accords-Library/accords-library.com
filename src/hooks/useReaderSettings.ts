@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useCallback, useMemo } from "react";
+import { Dispatch, SetStateAction, useCallback } from "react";
 import { useLocalStorage } from "usehooks-ts";
 import { ImageQuality } from "helpers/img";
 
@@ -94,13 +94,8 @@ export const useReaderSettings = (): {
     setTeint,
   ]);
 
-  const filterSettings = useMemo(
-    () => ({ bookFold, lighting, paperTexture, teint, dropShadow }),
-    [bookFold, dropShadow, lighting, paperTexture, teint]
-  );
-
   return {
-    filterSettings,
+    filterSettings: { bookFold, lighting, paperTexture, teint, dropShadow },
     isSidePagesEnabled,
     pageQuality,
     toggleBookFold,

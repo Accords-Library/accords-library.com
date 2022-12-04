@@ -1,5 +1,4 @@
 import { GetStaticProps } from "next";
-import { useMemo } from "react";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { NavOption } from "components/PanelComponents/NavOption";
 import { PanelHeader } from "components/PanelComponents/PanelHeader";
@@ -20,20 +19,18 @@ interface Props extends AppLayoutRequired {}
 
 const Archives = (props: Props): JSX.Element => {
   const langui = useAtomGetter(atoms.localData.langui);
-  const subPanel = useMemo(
-    () => (
-      <SubPanel>
-        <PanelHeader
-          icon={Icon.Inventory}
-          title={langui.archives}
-          description={langui.archives_description}
-        />
-        <HorizontalLine />
-        <NavOption title={"Videos"} url="/archives/videos/" border />
-      </SubPanel>
-    ),
-    [langui]
+  const subPanel = (
+    <SubPanel>
+      <PanelHeader
+        icon={Icon.Inventory}
+        title={langui.archives}
+        description={langui.archives_description}
+      />
+      <HorizontalLine />
+      <NavOption title={"Videos"} url="/archives/videos/" border />
+    </SubPanel>
   );
+
   return <AppLayout subPanel={subPanel} {...props} />;
 };
 export default Archives;

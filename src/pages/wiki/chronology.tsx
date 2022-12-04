@@ -1,5 +1,5 @@
 import { GetStaticProps } from "next";
-import { Fragment, useCallback, useMemo } from "react";
+import { Fragment, useCallback } from "react";
 import { useRouter } from "next/router";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { InsetBox } from "components/Containers/InsetBox";
@@ -46,80 +46,70 @@ interface Props extends AppLayoutRequired {
 
 const Chronology = ({ chronologyItems, chronologyEras, ...otherProps }: Props): JSX.Element => {
   const langui = useAtomGetter(atoms.localData.langui);
-  const ids = useMemo(
-    () =>
-      filterHasAttributes(chronologyEras, ["attributes"] as const).map(
-        (era) => era.attributes.slug
-      ),
-    [chronologyEras]
+  const ids = filterHasAttributes(chronologyEras, ["attributes"] as const).map(
+    (era) => era.attributes.slug
   );
 
   const currentIntersection = useIntersectionList(ids);
 
-  const subPanel = useMemo(
-    () => (
-      <SubPanel>
-        <ReturnButton href="/wiki" title={langui.wiki} displayOnlyOn="3ColumnsLayout" />
+  const subPanel = (
+    <SubPanel>
+      <ReturnButton href="/wiki" title={langui.wiki} displayOnlyOn="3ColumnsLayout" />
 
-        <HorizontalLine />
+      <HorizontalLine />
 
-        {filterHasAttributes(chronologyEras, ["attributes", "id"] as const).map((era, index) => (
-          <Fragment key={era.id}>
-            <TranslatedNavOption
-              translations={filterHasAttributes(era.attributes.title, [
-                "language.data.attributes.code",
-              ] as const).map((translation) => ({
-                language: translation.language.data.attributes.code,
-                title: translation.title,
-                subtitle: `${era.attributes.starting_year} → ${era.attributes.ending_year}`,
-              }))}
-              fallback={{
-                title: prettySlug(era.attributes.slug),
-                subtitle: `${era.attributes.starting_year} → ${era.attributes.ending_year}`,
-              }}
-              url={`#${era.attributes.slug}`}
-              border
-              active={currentIntersection === index}
-            />
-          </Fragment>
-        ))}
-      </SubPanel>
-    ),
-    [chronologyEras, currentIntersection, langui]
-  );
-
-  const contentPanel = useMemo(
-    () => (
-      <ContentPanel>
-        <ReturnButton
-          href="/wiki"
-          title={langui.wiki}
-          displayOnlyOn="1ColumnLayout"
-          className="mb-10"
-        />
-
-        {filterHasAttributes(chronologyEras, ["attributes"] as const).map((era) => (
-          <TranslatedChronologyEra
-            key={era.attributes.slug}
-            id={era.attributes.slug}
+      {filterHasAttributes(chronologyEras, ["attributes", "id"] as const).map((era, index) => (
+        <Fragment key={era.id}>
+          <TranslatedNavOption
             translations={filterHasAttributes(era.attributes.title, [
               "language.data.attributes.code",
             ] as const).map((translation) => ({
               language: translation.language.data.attributes.code,
               title: translation.title,
-              description: translation.description,
+              subtitle: `${era.attributes.starting_year} → ${era.attributes.ending_year}`,
             }))}
-            fallback={{ title: prettySlug(era.attributes.slug) }}
-            chronologyItems={filterHasAttributes(chronologyItems, ["attributes"] as const).filter(
-              (item) =>
-                item.attributes.year >= era.attributes.starting_year &&
-                item.attributes.year < era.attributes.ending_year
-            )}
+            fallback={{
+              title: prettySlug(era.attributes.slug),
+              subtitle: `${era.attributes.starting_year} → ${era.attributes.ending_year}`,
+            }}
+            url={`#${era.attributes.slug}`}
+            border
+            active={currentIntersection === index}
           />
-        ))}
-      </ContentPanel>
-    ),
-    [chronologyEras, chronologyItems, langui]
+        </Fragment>
+      ))}
+    </SubPanel>
+  );
+
+  const contentPanel = (
+    <ContentPanel>
+      <ReturnButton
+        href="/wiki"
+        title={langui.wiki}
+        displayOnlyOn="1ColumnLayout"
+        className="mb-10"
+      />
+
+      {filterHasAttributes(chronologyEras, ["attributes"] as const).map((era) => (
+        <TranslatedChronologyEra
+          key={era.attributes.slug}
+          id={era.attributes.slug}
+          translations={filterHasAttributes(era.attributes.title, [
+            "language.data.attributes.code",
+          ] as const).map((translation) => ({
+            language: translation.language.data.attributes.code,
+            title: translation.title,
+            description: translation.description,
+          }))}
+          fallback={{ title: prettySlug(era.attributes.slug) }}
+          chronologyItems={filterHasAttributes(chronologyItems, ["attributes"] as const).filter(
+            (item) =>
+              item.attributes.year >= era.attributes.starting_year &&
+              item.attributes.year < era.attributes.ending_year
+          )}
+        />
+      ))}
+    </ContentPanel>
   );
 
   return <AppLayout contentPanel={contentPanel} subPanel={subPanel} {...otherProps} />;
@@ -161,7 +151,7 @@ interface ChronologyEraProps {
 }
 
 const ChronologyEra = ({ id, title, description, chronologyItems }: ChronologyEraProps) => {
-  const yearGroups = useMemo(() => {
+  const yearGroups = (() => {
     const memo: Props["chronologyItems"][] = [];
     let currentYear = -Infinity;
     filterHasAttributes(chronologyItems, ["attributes"] as const).forEach((item) => {
@@ -173,7 +163,7 @@ const ChronologyEra = ({ id, title, description, chronologyItems }: ChronologyEr
       }
     });
     return memo;
-  }, [chronologyItems]);
+  })();
 
   return (
     <div id={id}>

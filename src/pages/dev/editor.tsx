@@ -1,5 +1,5 @@
 import { GetStaticProps } from "next";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import TurndownService from "turndown";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { Button } from "components/Inputs/Button";
@@ -156,250 +156,243 @@ const Editor = (props: Props): JSX.Element => {
     [transformationWrapper]
   );
 
-  const contentPanel = useMemo(
-    () => (
-      <ContentPanel width={ContentPanelWidthSizes.Full}>
-        <Popup isVisible={converterOpened} onCloseRequest={() => setConverterOpened(false)}>
-          <div className="text-center">
-            <h2 className="mt-4">Convert HTML to markdown</h2>
-            <p>
-              Copy and paste any HTML content (content from web pages) here.
-              <br />
-              The text will immediatly be converted to valid Markdown.
-              <br />
-              You can then copy the converted text and paste it anywhere you want in the editor
-            </p>
-          </div>
-          <textarea
-            readOnly
-            title="Ouput textarea"
-            onPaste={(event) => {
-              const turndownService = new TurndownService({
-                headingStyle: "atx",
-                codeBlockStyle: "fenced",
-                bulletListMarker: "-",
-                emDelimiter: "_",
-                strongDelimiter: "**",
-              });
-
-              let paste = event.clipboardData.getData("text/html");
-              paste = paste.replace(/<!--.*?-->/u, "");
-              paste = turndownService.turndown(paste);
-              paste = paste.replace(/<!--.*?-->/u, "");
-
-              const target = event.target as HTMLTextAreaElement;
-              target.value = paste;
-              target.select();
-              event.preventDefault();
-            }}
-            className="h-[50vh] w-[50vw]"
-          />
-        </Popup>
-
-        <div className="mb-4 flex flex-row gap-2">
-          <ToolTip
-            content={
-              <div className="grid gap-2">
-                <h3 className="text-lg">Headers</h3>
-                <Button onClick={() => preline("# ")} text={"H1"} />
-                <Button onClick={() => preline("## ")} text={"H2"} />
-                <Button onClick={() => preline("### ")} text={"H3"} />
-                <Button onClick={() => preline("#### ")} text={"H4"} />
-                <Button onClick={() => preline("##### ")} text={"H5"} />
-                <Button onClick={() => preline("###### ")} text={"H6"} />
-              </div>
-            }>
-            <Button icon={Icon.Title} />
-          </ToolTip>
-
-          <ToolTip placement="bottom" content={<h3 className="text-lg">Toggle Bold</h3>}>
-            <Button onClick={() => toggleWrap("**")} icon={Icon.FormatBold} />
-          </ToolTip>
-
-          <ToolTip placement="bottom" content={<h3 className="text-lg">Toggle Italic</h3>}>
-            <Button onClick={() => toggleWrap("_")} icon={Icon.FormatItalic} />
-          </ToolTip>
-
-          <ToolTip
-            placement="bottom"
-            content={
-              <>
-                <h3 className="text-lg">Toggle Inline Code</h3>
-                <p>
-                  Makes the text monospace (like text from a computer terminal). Usually used for
-                  stylistic purposes in transcripts.
-                </p>
-              </>
-            }>
-            <Button onClick={() => toggleWrap("`")} icon={Icon.Code} />
-          </ToolTip>
-
-          <ToolTip
-            placement="bottom"
-            content={
-              <>
-                <h3 className="text-lg">Insert footnote</h3>
-                <p>When inserted &ldquo;x&rdquo;</p>
-              </>
-            }>
-            <Button
-              onClick={() => {
-                insert("[^x]");
-                appendDoc("\n\n[^x]: This is a footnote.");
-              }}
-              icon={Icon.Superscript}
-            />
-          </ToolTip>
-
-          <ToolTip
-            placement="bottom"
-            content={
-              <>
-                <h3 className="text-lg">Transcripts</h3>
-                <p>
-                  Use this to create dialogues and transcripts. Start by adding a container, then
-                  add transcript speech line within.
-                </p>
-                <div className="grid gap-2">
-                  <ToolTip
-                    placement="right"
-                    content={
-                      <>
-                        <h3 className="text-lg">Transcript container</h3>
-                      </>
-                    }>
-                    <Button onClick={() => wrap("Transcript", {}, true)} icon={Icon.AddBox} />
-                  </ToolTip>
-                  <ToolTip
-                    placement="right"
-                    content={
-                      <>
-                        <h3 className="text-lg">Transcript speech line</h3>
-                        <p>
-                          Use to add a dialogue/transcript line. Change the <kbd>name</kbd> property
-                          to chang the name of the speaker
-                        </p>
-                      </>
-                    }>
-                    <Button
-                      onClick={() => wrap("Line", { name: "speaker" })}
-                      icon={Icon.RecordVoiceOver}
-                    />
-                  </ToolTip>
-                </div>
-              </>
-            }>
-            <Button icon={Icon.RecordVoiceOver} />
-          </ToolTip>
-
-          <ToolTip placement="bottom" content={<h3 className="text-lg">Inset box</h3>}>
-            <Button onClick={() => wrap("InsetBox", {}, true)} icon={Icon.CheckBoxOutlineBlank} />
-          </ToolTip>
-          <ToolTip placement="bottom" content={<h3 className="text-lg">Scene break</h3>}>
-            <Button onClick={() => insert("\n* * *\n")} icon={Icon.MoreHoriz} />
-          </ToolTip>
-          <ToolTip
-            content={
-              <div className="flex flex-col place-items-center gap-2">
-                <h3 className="text-lg">Links</h3>
-                <ToolTip
-                  placement="right"
-                  content={
-                    <>
-                      <h3 className="text-lg">External Link</h3>
-                      <p className="text-xs">Provides a link to another webpage / website</p>
-                    </>
-                  }>
-                  <Button
-                    onClick={() => insert("[Link name](https://domain.com)")}
-                    icon={Icon.Link}
-                    text={"External"}
-                  />
-                </ToolTip>
-
-                <ToolTip
-                  placement="right"
-                  content={
-                    <>
-                      <h3 className="text-lg">Intralink</h3>
-                      <p className="text-xs">
-                        Interlinks are used to add links to a header within the same document
-                      </p>
-                    </>
-                  }>
-                  <Button
-                    onClick={() => wrap("IntraLink", {})}
-                    icon={Icon.Link}
-                    text={"Internal"}
-                  />
-                </ToolTip>
-                <ToolTip
-                  placement="right"
-                  content={
-                    <>
-                      <h3 className="text-lg">Intralink (with target)</h3>{" "}
-                      <p className="text-xs">
-                        Use this one if you want the intralink text to be different from the target
-                        header&rsquo;s name.
-                      </p>
-                    </>
-                  }>
-                  <Button
-                    onClick={() => wrap("IntraLink", { target: "target" })}
-                    icon={Icon.Link}
-                    text="Internal (w/ target)"
-                  />
-                </ToolTip>
-              </div>
-            }>
-            <Button icon={Icon.Link} />
-          </ToolTip>
-
-          <ToolTip
-            placement="bottom"
-            content={<h3 className="text-lg">Player&rsquo;s name placeholder</h3>}>
-            <Button onClick={() => insert("@player")} icon={Icon.Person} />
-          </ToolTip>
-
-          <ToolTip placement="bottom" content={<h3 className="text-lg">Open HTML Converter</h3>}>
-            <Button
-              onClick={() => {
-                setConverterOpened(true);
-              }}
-              icon={Icon.Html}
-            />
-          </ToolTip>
+  const contentPanel = (
+    <ContentPanel width={ContentPanelWidthSizes.Full}>
+      <Popup isVisible={converterOpened} onCloseRequest={() => setConverterOpened(false)}>
+        <div className="text-center">
+          <h2 className="mt-4">Convert HTML to markdown</h2>
+          <p>
+            Copy and paste any HTML content (content from web pages) here.
+            <br />
+            The text will immediatly be converted to valid Markdown.
+            <br />
+            You can then copy the converted text and paste it anywhere you want in the editor
+          </p>
         </div>
+        <textarea
+          readOnly
+          title="Ouput textarea"
+          onPaste={(event) => {
+            const turndownService = new TurndownService({
+              headingStyle: "atx",
+              codeBlockStyle: "fenced",
+              bulletListMarker: "-",
+              emDelimiter: "_",
+              strongDelimiter: "**",
+            });
 
-        <div className="grid grid-cols-2 gap-8">
-          <div>
-            <h2>Editor</h2>
-            <textarea
-              ref={textAreaRef}
-              onInput={(event) => {
-                const textarea = event.target as HTMLTextAreaElement;
-                handleInput(textarea.value);
-              }}
-              className="h-[70vh] w-full rounded-xl bg-mid !bg-opacity-40 p-8
-              font-mono text-black outline-none"
-              value={markdown}
-              title="Input textarea"
-            />
-          </div>
-          <div>
-            <h2>Preview</h2>
-            <div className="h-[70vh] overflow-scroll rounded-xl bg-mid bg-opacity-40 p-8">
-              <Markdawn className="w-full" text={markdown} />
+            let paste = event.clipboardData.getData("text/html");
+            paste = paste.replace(/<!--.*?-->/u, "");
+            paste = turndownService.turndown(paste);
+            paste = paste.replace(/<!--.*?-->/u, "");
+
+            const target = event.target as HTMLTextAreaElement;
+            target.value = paste;
+            target.select();
+            event.preventDefault();
+          }}
+          className="h-[50vh] w-[50vw]"
+        />
+      </Popup>
+
+      <div className="mb-4 flex flex-row gap-2">
+        <ToolTip
+          content={
+            <div className="grid gap-2">
+              <h3 className="text-lg">Headers</h3>
+              <Button onClick={() => preline("# ")} text={"H1"} />
+              <Button onClick={() => preline("## ")} text={"H2"} />
+              <Button onClick={() => preline("### ")} text={"H3"} />
+              <Button onClick={() => preline("#### ")} text={"H4"} />
+              <Button onClick={() => preline("##### ")} text={"H5"} />
+              <Button onClick={() => preline("###### ")} text={"H6"} />
             </div>
+          }>
+          <Button icon={Icon.Title} />
+        </ToolTip>
+
+        <ToolTip placement="bottom" content={<h3 className="text-lg">Toggle Bold</h3>}>
+          <Button onClick={() => toggleWrap("**")} icon={Icon.FormatBold} />
+        </ToolTip>
+
+        <ToolTip placement="bottom" content={<h3 className="text-lg">Toggle Italic</h3>}>
+          <Button onClick={() => toggleWrap("_")} icon={Icon.FormatItalic} />
+        </ToolTip>
+
+        <ToolTip
+          placement="bottom"
+          content={
+            <>
+              <h3 className="text-lg">Toggle Inline Code</h3>
+              <p>
+                Makes the text monospace (like text from a computer terminal). Usually used for
+                stylistic purposes in transcripts.
+              </p>
+            </>
+          }>
+          <Button onClick={() => toggleWrap("`")} icon={Icon.Code} />
+        </ToolTip>
+
+        <ToolTip
+          placement="bottom"
+          content={
+            <>
+              <h3 className="text-lg">Insert footnote</h3>
+              <p>When inserted &ldquo;x&rdquo;</p>
+            </>
+          }>
+          <Button
+            onClick={() => {
+              insert("[^x]");
+              appendDoc("\n\n[^x]: This is a footnote.");
+            }}
+            icon={Icon.Superscript}
+          />
+        </ToolTip>
+
+        <ToolTip
+          placement="bottom"
+          content={
+            <>
+              <h3 className="text-lg">Transcripts</h3>
+              <p>
+                Use this to create dialogues and transcripts. Start by adding a container, then add
+                transcript speech line within.
+              </p>
+              <div className="grid gap-2">
+                <ToolTip
+                  placement="right"
+                  content={
+                    <>
+                      <h3 className="text-lg">Transcript container</h3>
+                    </>
+                  }>
+                  <Button onClick={() => wrap("Transcript", {}, true)} icon={Icon.AddBox} />
+                </ToolTip>
+                <ToolTip
+                  placement="right"
+                  content={
+                    <>
+                      <h3 className="text-lg">Transcript speech line</h3>
+                      <p>
+                        Use to add a dialogue/transcript line. Change the <kbd>name</kbd> property
+                        to chang the name of the speaker
+                      </p>
+                    </>
+                  }>
+                  <Button
+                    onClick={() => wrap("Line", { name: "speaker" })}
+                    icon={Icon.RecordVoiceOver}
+                  />
+                </ToolTip>
+              </div>
+            </>
+          }>
+          <Button icon={Icon.RecordVoiceOver} />
+        </ToolTip>
+
+        <ToolTip placement="bottom" content={<h3 className="text-lg">Inset box</h3>}>
+          <Button onClick={() => wrap("InsetBox", {}, true)} icon={Icon.CheckBoxOutlineBlank} />
+        </ToolTip>
+        <ToolTip placement="bottom" content={<h3 className="text-lg">Scene break</h3>}>
+          <Button onClick={() => insert("\n* * *\n")} icon={Icon.MoreHoriz} />
+        </ToolTip>
+        <ToolTip
+          content={
+            <div className="flex flex-col place-items-center gap-2">
+              <h3 className="text-lg">Links</h3>
+              <ToolTip
+                placement="right"
+                content={
+                  <>
+                    <h3 className="text-lg">External Link</h3>
+                    <p className="text-xs">Provides a link to another webpage / website</p>
+                  </>
+                }>
+                <Button
+                  onClick={() => insert("[Link name](https://domain.com)")}
+                  icon={Icon.Link}
+                  text={"External"}
+                />
+              </ToolTip>
+
+              <ToolTip
+                placement="right"
+                content={
+                  <>
+                    <h3 className="text-lg">Intralink</h3>
+                    <p className="text-xs">
+                      Interlinks are used to add links to a header within the same document
+                    </p>
+                  </>
+                }>
+                <Button onClick={() => wrap("IntraLink", {})} icon={Icon.Link} text={"Internal"} />
+              </ToolTip>
+              <ToolTip
+                placement="right"
+                content={
+                  <>
+                    <h3 className="text-lg">Intralink (with target)</h3>{" "}
+                    <p className="text-xs">
+                      Use this one if you want the intralink text to be different from the target
+                      header&rsquo;s name.
+                    </p>
+                  </>
+                }>
+                <Button
+                  onClick={() => wrap("IntraLink", { target: "target" })}
+                  icon={Icon.Link}
+                  text="Internal (w/ target)"
+                />
+              </ToolTip>
+            </div>
+          }>
+          <Button icon={Icon.Link} />
+        </ToolTip>
+
+        <ToolTip
+          placement="bottom"
+          content={<h3 className="text-lg">Player&rsquo;s name placeholder</h3>}>
+          <Button onClick={() => insert("@player")} icon={Icon.Person} />
+        </ToolTip>
+
+        <ToolTip placement="bottom" content={<h3 className="text-lg">Open HTML Converter</h3>}>
+          <Button
+            onClick={() => {
+              setConverterOpened(true);
+            }}
+            icon={Icon.Html}
+          />
+        </ToolTip>
+      </div>
+
+      <div className="grid grid-cols-2 gap-8">
+        <div>
+          <h2>Editor</h2>
+          <textarea
+            ref={textAreaRef}
+            onInput={(event) => {
+              const textarea = event.target as HTMLTextAreaElement;
+              handleInput(textarea.value);
+            }}
+            className="h-[70vh] w-full rounded-xl bg-mid !bg-opacity-40 p-8
+              font-mono text-black outline-none"
+            value={markdown}
+            title="Input textarea"
+          />
+        </div>
+        <div>
+          <h2>Preview</h2>
+          <div className="h-[70vh] overflow-scroll rounded-xl bg-mid bg-opacity-40 p-8">
+            <Markdawn className="w-full" text={markdown} />
           </div>
         </div>
+      </div>
 
-        <div className="mt-8">
-          <TableOfContents text={markdown} />
-        </div>
-      </ContentPanel>
-    ),
-    [appendDoc, converterOpened, handleInput, insert, markdown, preline, toggleWrap, wrap]
+      <div className="mt-8">
+        <TableOfContents text={markdown} />
+      </div>
+    </ContentPanel>
   );
 
   return <AppLayout contentPanel={contentPanel} {...props} />;

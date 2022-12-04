@@ -1,5 +1,5 @@
 import { GetStaticProps } from "next";
-import { useState, useMemo, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { useBoolean } from "usehooks-ts";
 import naturalCompare from "string-natural-compare";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
@@ -116,163 +116,134 @@ const Contents = ({ contents, ...otherProps }: Props): JSX.Element => {
     [searchName]
   );
 
-  const subPanel = useMemo(
-    () => (
-      <SubPanel>
-        <PanelHeader
-          icon={Icon.Workspaces}
-          title={langui.contents}
-          description={langui.contents_description}
-        />
+  const subPanel = (
+    <SubPanel>
+      <PanelHeader
+        icon={Icon.Workspaces}
+        title={langui.contents}
+        description={langui.contents_description}
+      />
 
-        <HorizontalLine />
+      <HorizontalLine />
 
-        <Button href="/contents" text={langui.switch_to_folder_view} icon={Icon.Folder} />
+      <Button href="/contents" text={langui.switch_to_folder_view} icon={Icon.Folder} />
 
-        <HorizontalLine />
+      <HorizontalLine />
 
-        <TextInput
-          className="mb-6 w-full"
-          placeholder={langui.search_title ?? "Search..."}
-          value={searchName}
-          onChange={(name) => {
-            setSearchName(name);
-            if (isDefinedAndNotEmpty(name)) {
-              sendAnalytics("Contents/All", "Change search term");
-            } else {
-              sendAnalytics("Contents/All", "Clear search term");
-            }
+      <TextInput
+        className="mb-6 w-full"
+        placeholder={langui.search_title ?? "Search..."}
+        value={searchName}
+        onChange={(name) => {
+          setSearchName(name);
+          if (isDefinedAndNotEmpty(name)) {
+            sendAnalytics("Contents/All", "Change search term");
+          } else {
+            sendAnalytics("Contents/All", "Clear search term");
+          }
+        }}
+      />
+
+      <WithLabel label={langui.group_by}>
+        <Select
+          className="w-full"
+          options={[langui.category ?? "Category", langui.type ?? "Type"]}
+          value={groupingMethod}
+          onChange={(value) => {
+            setGroupingMethod(value);
+            sendAnalytics(
+              "Contents/All",
+              `Change grouping method (${["none", "category", "type"][value + 1]})`
+            );
           }}
+          allowEmpty
         />
+      </WithLabel>
 
-        <WithLabel label={langui.group_by}>
-          <Select
-            className="w-full"
-            options={[langui.category ?? "Category", langui.type ?? "Type"]}
-            value={groupingMethod}
-            onChange={(value) => {
-              setGroupingMethod(value);
-              sendAnalytics(
-                "Contents/All",
-                `Change grouping method (${["none", "category", "type"][value + 1]})`
-              );
+      {hoverable && (
+        <WithLabel label={langui.always_show_info}>
+          <Switch
+            value={keepInfoVisible}
+            onClick={() => {
+              toggleKeepInfoVisible();
+              sendAnalytics("Contents/All", `Always ${keepInfoVisible ? "hide" : "show"} info`);
             }}
-            allowEmpty
           />
         </WithLabel>
+      )}
 
-        {hoverable && (
-          <WithLabel label={langui.always_show_info}>
-            <Switch
-              value={keepInfoVisible}
-              onClick={() => {
-                toggleKeepInfoVisible();
-                sendAnalytics("Contents/All", `Always ${keepInfoVisible ? "hide" : "show"} info`);
-              }}
-            />
-          </WithLabel>
-        )}
-
-        <Button
-          className="mt-8"
-          text={langui.reset_all_filters}
-          icon={Icon.Replay}
-          onClick={() => {
-            setSearchName(DEFAULT_FILTERS_STATE.searchName);
-            setGroupingMethod(DEFAULT_FILTERS_STATE.groupingMethod);
-            setKeepInfoVisible(DEFAULT_FILTERS_STATE.keepInfoVisible);
-            sendAnalytics("Contents/All", "Reset all filters");
-          }}
-        />
-      </SubPanel>
-    ),
-    [
-      groupingMethod,
-      hoverable,
-      keepInfoVisible,
-      langui.always_show_info,
-      langui.category,
-      langui.contents,
-      langui.contents_description,
-      langui.group_by,
-      langui.reset_all_filters,
-      langui.search_title,
-      langui.switch_to_folder_view,
-      langui.type,
-      searchName,
-      setKeepInfoVisible,
-      toggleKeepInfoVisible,
-    ]
+      <Button
+        className="mt-8"
+        text={langui.reset_all_filters}
+        icon={Icon.Replay}
+        onClick={() => {
+          setSearchName(DEFAULT_FILTERS_STATE.searchName);
+          setGroupingMethod(DEFAULT_FILTERS_STATE.groupingMethod);
+          setKeepInfoVisible(DEFAULT_FILTERS_STATE.keepInfoVisible);
+          sendAnalytics("Contents/All", "Reset all filters");
+        }}
+      />
+    </SubPanel>
   );
 
-  const contentPanel = useMemo(
-    () => (
-      <ContentPanel width={ContentPanelWidthSizes.Full}>
-        <SmartList
-          items={filterHasAttributes(contents, ["attributes", "id"] as const)}
-          getItemId={(item) => item.id}
-          renderItem={({ item }) => (
-            <TranslatedPreviewCard
-              href={`/contents/${item.attributes.slug}`}
-              translations={filterHasAttributes(item.attributes.translations, [
-                "language.data.attributes.code",
-              ] as const).map((translation) => ({
-                pre_title: translation.pre_title,
-                title: translation.title,
-                subtitle: translation.subtitle,
-                language: translation.language.data.attributes.code,
-              }))}
-              fallback={{ title: prettySlug(item.attributes.slug) }}
-              thumbnail={item.attributes.thumbnail?.data?.attributes}
-              thumbnailAspectRatio="3/2"
-              thumbnailForceAspectRatio
-              topChips={
-                item.attributes.type?.data?.attributes
-                  ? [
-                      item.attributes.type.data.attributes.titles?.[0]
-                        ? item.attributes.type.data.attributes.titles[0]?.title
-                        : prettySlug(item.attributes.type.data.attributes.slug),
-                    ]
-                  : undefined
-              }
-              bottomChips={item.attributes.categories?.data.map(
-                (category) => category.attributes?.short ?? ""
-              )}
-              keepInfoVisible={keepInfoVisible}
-            />
-          )}
-          className={cJoin(
-            "items-end",
-            cIf(
-              isContentPanelAtLeast4xl,
-              "grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] gap-x-6 gap-y-8",
-              "grid-cols-2 gap-x-3 gap-y-5"
-            )
-          )}
-          groupingFunction={groupingFunction}
-          filteringFunction={filteringFunction}
-          searchingTerm={searchName}
-          searchingBy={(item) =>
-            `
+  const contentPanel = (
+    <ContentPanel width={ContentPanelWidthSizes.Full}>
+      <SmartList
+        items={filterHasAttributes(contents, ["attributes", "id"] as const)}
+        getItemId={(item) => item.id}
+        renderItem={({ item }) => (
+          <TranslatedPreviewCard
+            href={`/contents/${item.attributes.slug}`}
+            translations={filterHasAttributes(item.attributes.translations, [
+              "language.data.attributes.code",
+            ] as const).map((translation) => ({
+              pre_title: translation.pre_title,
+              title: translation.title,
+              subtitle: translation.subtitle,
+              language: translation.language.data.attributes.code,
+            }))}
+            fallback={{ title: prettySlug(item.attributes.slug) }}
+            thumbnail={item.attributes.thumbnail?.data?.attributes}
+            thumbnailAspectRatio="3/2"
+            thumbnailForceAspectRatio
+            topChips={
+              item.attributes.type?.data?.attributes
+                ? [
+                    item.attributes.type.data.attributes.titles?.[0]
+                      ? item.attributes.type.data.attributes.titles[0]?.title
+                      : prettySlug(item.attributes.type.data.attributes.slug),
+                  ]
+                : undefined
+            }
+            bottomChips={item.attributes.categories?.data.map(
+              (category) => category.attributes?.short ?? ""
+            )}
+            keepInfoVisible={keepInfoVisible}
+          />
+        )}
+        className={cJoin(
+          "items-end",
+          cIf(
+            isContentPanelAtLeast4xl,
+            "grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] gap-x-6 gap-y-8",
+            "grid-cols-2 gap-x-3 gap-y-5"
+          )
+        )}
+        groupingFunction={groupingFunction}
+        filteringFunction={filteringFunction}
+        searchingTerm={searchName}
+        searchingBy={(item) =>
+          `
             ${item.attributes.slug}
             ${filterDefined(item.attributes.translations)
               .map((translation) =>
                 prettyInlineTitle(translation.pre_title, translation.title, translation.subtitle)
               )
               .join(" ")}`
-          }
-          paginationItemPerPage={50}
-        />
-      </ContentPanel>
-    ),
-    [
-      isContentPanelAtLeast4xl,
-      contents,
-      filteringFunction,
-      groupingFunction,
-      keepInfoVisible,
-      searchName,
-    ]
+        }
+        paginationItemPerPage={50}
+      />
+    </ContentPanel>
   );
 
   return (

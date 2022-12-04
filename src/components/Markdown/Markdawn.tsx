@@ -1,6 +1,6 @@
 import Markdown from "markdown-to-jsx";
 import { useRouter } from "next/router";
-import React, { Fragment, useMemo } from "react";
+import React, { Fragment } from "react";
 import ReactDOMServer from "react-dom/server";
 import { HorizontalLine } from "components/HorizontalLine";
 import { Img } from "components/Img";
@@ -35,11 +35,8 @@ export const Markdawn = ({ className, text: rawText }: MarkdawnProps): JSX.Eleme
   const { showLightBox } = useAtomGetter(atoms.lightBox);
 
   /* eslint-disable no-irregular-whitespace */
-  const text = useMemo(
-    () => `${preprocessMarkDawn(rawText, playerName)}
-  ​`,
-    [playerName, rawText]
-  );
+  const text = `${preprocessMarkDawn(rawText, playerName)}
+  ​`;
   /* eslint-enable no-irregular-whitespace */
 
   if (isUndefined(text) || text === "") {
@@ -219,19 +216,17 @@ export const Markdawn = ({ className, text: rawText }: MarkdawnProps): JSX.Eleme
 interface TableOfContentsProps {
   text: string;
   title?: string;
-
   horizontalLine?: boolean;
 }
 
 export const TableOfContents = ({
   text,
   title,
-
   horizontalLine = false,
 }: TableOfContentsProps): JSX.Element => {
   const router = useRouter();
   const langui = useAtomGetter(atoms.localData.langui);
-  const toc = useMemo(() => getTocFromMarkdawn(preprocessMarkDawn(text), title), [text, title]);
+  const toc = getTocFromMarkdawn(preprocessMarkDawn(text), title);
 
   return (
     <>
@@ -268,27 +263,24 @@ interface HeaderProps {
 
 const Header = ({ level, title, slug }: HeaderProps): JSX.Element => {
   const isHoverable = useDeviceSupportsHover();
-  const innerComponent = useMemo(
-    () => (
-      <>
-        <div className="ml-10 flex place-items-center gap-4">
-          {title === "* * *" ? (
-            <div className="mt-8 mb-12 space-x-3 text-dark">
-              <Ico icon={Icon.Emergency} />
-              <Ico icon={Icon.Emergency} />
-              <Ico icon={Icon.Emergency} />
-            </div>
-          ) : (
-            <div className="font-headers">{title}</div>
-          )}
-          <AnchorShare
-            className={cIf(isHoverable, "opacity-0 transition-opacity group-hover:opacity-100")}
-            id={slug}
-          />
-        </div>
-      </>
-    ),
-    [isHoverable, slug, title]
+  const innerComponent = (
+    <>
+      <div className="ml-10 flex place-items-center gap-4">
+        {title === "* * *" ? (
+          <div className="mt-8 mb-12 space-x-3 text-dark">
+            <Ico icon={Icon.Emergency} />
+            <Ico icon={Icon.Emergency} />
+            <Ico icon={Icon.Emergency} />
+          </div>
+        ) : (
+          <div className="font-headers">{title}</div>
+        )}
+        <AnchorShare
+          className={cIf(isHoverable, "opacity-0 transition-opacity group-hover:opacity-100")}
+          id={slug}
+        />
+      </div>
+    </>
   );
 
   switch (level) {
@@ -349,8 +341,7 @@ const TocLevel = ({
   allowIntersection = true,
 }: LevelProps): JSX.Element => {
   const router = useRouter();
-
-  const ids = useMemo(() => tocchildren.map((child) => child.slug), [tocchildren]);
+  const ids = tocchildren.map((child) => child.slug);
   const currentIntersection = useIntersectionList(ids);
 
   return (

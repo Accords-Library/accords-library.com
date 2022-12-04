@@ -1,1 +1,36 @@
-{"languages":{"data":[{"id":"1","attributes":{"name":"French","code":"fr","localized_name":"Français"}},{"id":"2","attributes":{"name":"English","code":"en","localized_name":"English"}},{"id":"3","attributes":{"name":"Japanese","code":"ja","localized_name":"日本語"}},{"id":"4","attributes":{"name":"Spanish","code":"es","localized_name":"Español"}},{"id":"6","attributes":{"name":"Portuguese (Brazil)","code":"pt-br","localized_name":"Português (Brasil)"}},{"id":"8","attributes":{"name":"German","code":"de","localized_name":"Deutsch"}},{"id":"9","attributes":{"name":"Italian","code":"it","localized_name":"Italiano"}},{"id":"10","attributes":{"name":"Russian","code":"ru","localized_name":"русский"}},{"id":"11","attributes":{"name":"Korean","code":"ko","localized_name":"한국어"}},{"id":"12","attributes":{"name":"Chinese (Traditional)","code":"zh-cht","localized_name":"中文(繁體)"}}]}}
+{
+  "languages": {
+    "data": [
+      { "id": "1", "attributes": { "name": "French", "code": "fr", "localized_name": "Français" } },
+      { "id": "2", "attributes": { "name": "English", "code": "en", "localized_name": "English" } },
+      { "id": "3", "attributes": { "name": "Japanese", "code": "ja", "localized_name": "日本語" } },
+      { "id": "4", "attributes": { "name": "Spanish", "code": "es", "localized_name": "Español" } },
+      {
+        "id": "6",
+        "attributes": {
+          "name": "Portuguese (Brazil)",
+          "code": "pt-br",
+          "localized_name": "Português (Brasil)"
+        }
+      },
+      { "id": "8", "attributes": { "name": "German", "code": "de", "localized_name": "Deutsch" } },
+      {
+        "id": "9",
+        "attributes": { "name": "Italian", "code": "it", "localized_name": "Italiano" }
+      },
+      {
+        "id": "10",
+        "attributes": { "name": "Russian", "code": "ru", "localized_name": "русский" }
+      },
+      { "id": "11", "attributes": { "name": "Korean", "code": "ko", "localized_name": "한국어" } },
+      {
+        "id": "12",
+        "attributes": {
+          "name": "Chinese (Traditional)",
+          "code": "zh-cht",
+          "localized_name": "中文(繁體)"
+        }
+      }
+    ]
+  }
+}

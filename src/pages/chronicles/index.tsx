@@ -1,5 +1,4 @@
 import { GetStaticProps } from "next";
-import { useMemo } from "react";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { PanelHeader } from "components/PanelComponents/PanelHeader";
 import { SubPanel } from "components/Containers/SubPanel";
@@ -26,37 +25,32 @@ interface Props extends AppLayoutRequired {
 
 const Chronicles = ({ chapters, ...otherProps }: Props): JSX.Element => {
   const langui = useAtomGetter(atoms.localData.langui);
-  const subPanel = useMemo(
-    () => (
-      <SubPanel>
-        <PanelHeader
-          icon={Icon.WatchLater}
-          title={langui.chronicles}
-          description={langui.chronicles_description}
-        />
+  const subPanel = (
+    <SubPanel>
+      <PanelHeader
+        icon={Icon.WatchLater}
+        title={langui.chronicles}
+        description={langui.chronicles_description}
+      />
 
-        <HorizontalLine />
+      <HorizontalLine />
 
-        <div className="grid gap-16">
-          {filterHasAttributes(chapters, ["attributes.chronicles", "id"] as const).map(
-            (chapter) => (
-              <TranslatedChroniclesList
-                key={chapter.id}
-                chronicles={chapter.attributes.chronicles.data}
-                translations={filterHasAttributes(chapter.attributes.titles, [
-                  "language.data.attributes.code",
-                ] as const).map((translation) => ({
-                  title: translation.title,
-                  language: translation.language.data.attributes.code,
-                }))}
-                fallback={{ title: prettySlug(chapter.attributes.slug) }}
-              />
-            )
-          )}
-        </div>
-      </SubPanel>
-    ),
-    [chapters, langui]
+      <div className="grid gap-16">
+        {filterHasAttributes(chapters, ["attributes.chronicles", "id"] as const).map((chapter) => (
+          <TranslatedChroniclesList
+            key={chapter.id}
+            chronicles={chapter.attributes.chronicles.data}
+            translations={filterHasAttributes(chapter.attributes.titles, [
+              "language.data.attributes.code",
+            ] as const).map((translation) => ({
+              title: translation.title,
+              language: translation.language.data.attributes.code,
+            }))}
+            fallback={{ title: prettySlug(chapter.attributes.slug) }}
+          />
+        ))}
+      </div>
+    </SubPanel>
   );
 
   return <AppLayout subPanel={subPanel} {...otherProps} />;

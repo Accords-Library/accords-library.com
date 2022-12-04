@@ -36,7 +36,7 @@ export const useSmartLanguage = <T>({
     setSelectedTranslationIndex(getPreferredLanguage(preferredLanguages, availableLocales));
   }, [preferredLanguages, availableLocales, router.locale]);
 
-  const selectedTranslation = useMemo(() => {
+  const selectedTranslation = (() => {
     if (isDefined(selectedTranslationIndex)) {
       const item = items[selectedTranslationIndex];
       if (isDefined(item)) {
@@ -44,7 +44,7 @@ export const useSmartLanguage = <T>({
       }
     }
     return undefined;
-  }, [items, selectedTranslationIndex, transform]);
+  })();
 
   const languageSwitcherProps = {
     languages: languages,

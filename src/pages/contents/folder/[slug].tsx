@@ -1,5 +1,4 @@
 import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next";
-import { useMemo } from "react";
 import naturalCompare from "string-natural-compare";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { ContentPanel, ContentPanelWidthSizes } from "components/Containers/ContentPanel";
@@ -37,150 +36,136 @@ const ContentsFolder = ({ openGraph, folder, ...otherProps }: Props): JSX.Elemen
   const langui = useAtomGetter(atoms.localData.langui);
   const isContentPanelAtLeast4xl = useAtomGetter(atoms.containerQueries.isContentPanelAtLeast4xl);
 
-  const subPanel = useMemo(
-    () => (
-      <SubPanel>
-        <PanelHeader
-          icon={Icon.Workspaces}
-          title={langui.contents}
-          description={langui.contents_description}
-        />
+  const subPanel = (
+    <SubPanel>
+      <PanelHeader
+        icon={Icon.Workspaces}
+        title={langui.contents}
+        description={langui.contents_description}
+      />
 
-        <HorizontalLine />
+      <HorizontalLine />
 
-        <Button href="/contents/all" text={langui.switch_to_grid_view} icon={Icon.Apps} />
-      </SubPanel>
-    ),
-    [langui.contents, langui.contents_description, langui.switch_to_grid_view]
+      <Button href="/contents/all" text={langui.switch_to_grid_view} icon={Icon.Apps} />
+    </SubPanel>
   );
 
-  const contentPanel = useMemo(
-    () => (
-      <ContentPanel width={ContentPanelWidthSizes.Full}>
-        <div className="mb-10 grid grid-flow-col place-items-center justify-start gap-x-2">
-          {folder.parent_folder?.data?.attributes && (
-            <>
-              {folder.parent_folder.data.attributes.slug === "root" ? (
-                <Button href="/contents" icon={Icon.Home} />
-              ) : (
-                <TranslatedButton
-                  href={`/contents/folder/${folder.parent_folder.data.attributes.slug}`}
-                  translations={filterHasAttributes(folder.parent_folder.data.attributes.titles, [
-                    "language.data.attributes.code",
-                  ] as const).map((title) => ({
-                    language: title.language.data.attributes.code,
-                    text: title.title,
-                  }))}
-                  fallback={{
-                    text: prettySlug(folder.parent_folder.data.attributes.slug),
-                  }}
-                />
-              )}
-              <Ico icon={Icon.ChevronRight} />
-            </>
-          )}
+  const contentPanel = (
+    <ContentPanel width={ContentPanelWidthSizes.Full}>
+      <div className="mb-10 grid grid-flow-col place-items-center justify-start gap-x-2">
+        {folder.parent_folder?.data?.attributes && (
+          <>
+            {folder.parent_folder.data.attributes.slug === "root" ? (
+              <Button href="/contents" icon={Icon.Home} />
+            ) : (
+              <TranslatedButton
+                href={`/contents/folder/${folder.parent_folder.data.attributes.slug}`}
+                translations={filterHasAttributes(folder.parent_folder.data.attributes.titles, [
+                  "language.data.attributes.code",
+                ] as const).map((title) => ({
+                  language: title.language.data.attributes.code,
+                  text: title.title,
+                }))}
+                fallback={{
+                  text: prettySlug(folder.parent_folder.data.attributes.slug),
+                }}
+              />
+            )}
+            <Ico icon={Icon.ChevronRight} />
+          </>
+        )}
 
-          {folder.slug === "root" ? (
-            <Button href="/contents" icon={Icon.Home} active />
-          ) : (
-            <TranslatedButton
-              translations={filterHasAttributes(folder.titles, [
-                "language.data.attributes.code",
-              ] as const).map((title) => ({
-                language: title.language.data.attributes.code,
-                text: title.title,
-              }))}
-              fallback={{
-                text: prettySlug(folder.slug),
-              }}
-              active
-            />
-          )}
-        </div>
+        {folder.slug === "root" ? (
+          <Button href="/contents" icon={Icon.Home} active />
+        ) : (
+          <TranslatedButton
+            translations={filterHasAttributes(folder.titles, [
+              "language.data.attributes.code",
+            ] as const).map((title) => ({
+              language: title.language.data.attributes.code,
+              text: title.title,
+            }))}
+            fallback={{
+              text: prettySlug(folder.slug),
+            }}
+            active
+          />
+        )}
+      </div>
 
-        <SmartList
-          items={filterHasAttributes(folder.subfolders?.data, ["id", "attributes"] as const)}
-          getItemId={(item) => item.id}
-          renderItem={({ item }) => (
-            <TranslatedPreviewFolder
-              href={`/contents/folder/${item.attributes.slug}`}
-              translations={filterHasAttributes(item.attributes.titles, [
-                "language.data.attributes.code",
-              ] as const).map((title) => ({
-                title: title.title,
-                language: title.language.data.attributes.code,
-              }))}
-              fallback={{ title: prettySlug(item.attributes.slug) }}
-            />
-          )}
-          className={cJoin(
-            "items-end",
-            cIf(
-              isContentPanelAtLeast4xl,
-              "grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] gap-x-6 gap-y-8",
-              "grid-cols-2 gap-4"
-            )
-          )}
-          renderWhenEmpty={() => <></>}
-          groupingFunction={() => [langui.folders ?? "Folders"]}
-        />
-
-        <SmartList
-          items={filterHasAttributes(folder.contents?.data, ["id", "attributes"] as const)}
-          getItemId={(item) => item.id}
-          renderItem={({ item }) => (
-            <TranslatedPreviewCard
-              href={`/contents/${item.attributes.slug}`}
-              translations={filterHasAttributes(item.attributes.translations, [
-                "language.data.attributes.code",
-              ] as const).map((translation) => ({
-                pre_title: translation.pre_title,
-                title: translation.title,
-                subtitle: translation.subtitle,
-                language: translation.language.data.attributes.code,
-              }))}
-              fallback={{ title: prettySlug(item.attributes.slug) }}
-              thumbnail={item.attributes.thumbnail?.data?.attributes}
-              thumbnailAspectRatio="3/2"
-              thumbnailForceAspectRatio
-              topChips={
-                item.attributes.type?.data?.attributes
-                  ? [
-                      item.attributes.type.data.attributes.titles?.[0]
-                        ? item.attributes.type.data.attributes.titles[0]?.title
-                        : prettySlug(item.attributes.type.data.attributes.slug),
-                    ]
-                  : undefined
-              }
-              bottomChips={item.attributes.categories?.data.map(
-                (category) => category.attributes?.short ?? ""
-              )}
-              keepInfoVisible
-            />
-          )}
-          className={cIf(
+      <SmartList
+        items={filterHasAttributes(folder.subfolders?.data, ["id", "attributes"] as const)}
+        getItemId={(item) => item.id}
+        renderItem={({ item }) => (
+          <TranslatedPreviewFolder
+            href={`/contents/folder/${item.attributes.slug}`}
+            translations={filterHasAttributes(item.attributes.titles, [
+              "language.data.attributes.code",
+            ] as const).map((title) => ({
+              title: title.title,
+              language: title.language.data.attributes.code,
+            }))}
+            fallback={{ title: prettySlug(item.attributes.slug) }}
+          />
+        )}
+        className={cJoin(
+          "items-end",
+          cIf(
             isContentPanelAtLeast4xl,
             "grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] gap-x-6 gap-y-8",
-            "grid-cols-2 gap-x-3 gap-y-5"
-          )}
-          renderWhenEmpty={() => <></>}
-          groupingFunction={() => [langui.contents ?? "Contents"]}
-        />
-
-        {folder.contents?.data.length === 0 && folder.subfolders?.data.length === 0 && (
-          <NoContentNorFolderMessage />
+            "grid-cols-2 gap-4"
+          )
         )}
-      </ContentPanel>
-    ),
-    [
-      folder.contents?.data,
-      folder.parent_folder?.data?.attributes,
-      folder.slug,
-      folder.subfolders?.data,
-      folder.titles,
-      isContentPanelAtLeast4xl,
-      langui,
-    ]
+        renderWhenEmpty={() => <></>}
+        groupingFunction={() => [langui.folders ?? "Folders"]}
+      />
+
+      <SmartList
+        items={filterHasAttributes(folder.contents?.data, ["id", "attributes"] as const)}
+        getItemId={(item) => item.id}
+        renderItem={({ item }) => (
+          <TranslatedPreviewCard
+            href={`/contents/${item.attributes.slug}`}
+            translations={filterHasAttributes(item.attributes.translations, [
+              "language.data.attributes.code",
+            ] as const).map((translation) => ({
+              pre_title: translation.pre_title,
+              title: translation.title,
+              subtitle: translation.subtitle,
+              language: translation.language.data.attributes.code,
+            }))}
+            fallback={{ title: prettySlug(item.attributes.slug) }}
+            thumbnail={item.attributes.thumbnail?.data?.attributes}
+            thumbnailAspectRatio="3/2"
+            thumbnailForceAspectRatio
+            topChips={
+              item.attributes.type?.data?.attributes
+                ? [
+                    item.attributes.type.data.attributes.titles?.[0]
+                      ? item.attributes.type.data.attributes.titles[0]?.title
+                      : prettySlug(item.attributes.type.data.attributes.slug),
+                  ]
+                : undefined
+            }
+            bottomChips={item.attributes.categories?.data.map(
+              (category) => category.attributes?.short ?? ""
+            )}
+            keepInfoVisible
+          />
+        )}
+        className={cIf(
+          isContentPanelAtLeast4xl,
+          "grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] gap-x-6 gap-y-8",
+          "grid-cols-2 gap-x-3 gap-y-5"
+        )}
+        renderWhenEmpty={() => <></>}
+        groupingFunction={() => [langui.contents ?? "Contents"]}
+      />
+
+      {folder.contents?.data.length === 0 && folder.subfolders?.data.length === 0 && (
+        <NoContentNorFolderMessage />
+      )}
+    </ContentPanel>
   );
 
   return (

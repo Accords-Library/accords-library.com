@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useMemo } from "react";
+import { Fragment, useCallback } from "react";
 import { AppLayout, AppLayoutRequired } from "./AppLayout";
 import { Chip } from "./Chip";
 import { HorizontalLine } from "./HorizontalLine";
@@ -59,140 +59,104 @@ export const PostPage = ({
     ),
   });
 
-  const { thumbnail, body, title, excerpt } = useMemo(
-    () => ({
-      thumbnail:
-        selectedTranslation?.thumbnail?.data?.attributes ?? post.thumbnail?.data?.attributes,
-      body: selectedTranslation?.body ?? "",
-      title: selectedTranslation?.title ?? prettySlug(post.slug),
-      excerpt: selectedTranslation?.excerpt ?? "",
-    }),
-    [post.slug, post.thumbnail, selectedTranslation]
-  );
+  const thumbnail =
+    selectedTranslation?.thumbnail?.data?.attributes ?? post.thumbnail?.data?.attributes;
+  const body = selectedTranslation?.body ?? "";
+  const title = selectedTranslation?.title ?? prettySlug(post.slug);
+  const excerpt = selectedTranslation?.excerpt ?? "";
 
-  const subPanel = useMemo(
-    () =>
-      returnHref || returnTitle || displayCredits || displayToc ? (
-        <SubPanel>
-          {returnHref && returnTitle && (
-            <ReturnButton href={returnHref} title={returnTitle} displayOnlyOn={"3ColumnsLayout"} />
-          )}
-
-          {displayCredits && (
-            <>
-              <HorizontalLine />
-
-              {selectedTranslation && (
-                <div className="grid grid-flow-col place-content-center place-items-center gap-2">
-                  <p className="font-headers font-bold">{langui.status}:</p>
-
-                  <ToolTip
-                    content={getStatusDescription(selectedTranslation.status, langui)}
-                    maxWidth={"20rem"}>
-                    <Chip text={selectedTranslation.status} />
-                  </ToolTip>
-                </div>
-              )}
-
-              {post.authors && post.authors.data.length > 0 && (
-                <div>
-                  <p className="font-headers font-bold">{"Authors"}:</p>
-                  <div className="grid place-content-center place-items-center gap-2">
-                    {filterHasAttributes(post.authors.data, ["id", "attributes"] as const).map(
-                      (author) => (
-                        <Fragment key={author.id}>
-                          <RecorderChip recorder={author.attributes} />
-                        </Fragment>
-                      )
-                    )}
-                  </div>
-                </div>
-              )}
-            </>
-          )}
-
-          {displayToc && <TableOfContents text={body} title={title} horizontalLine />}
-        </SubPanel>
-      ) : undefined,
-    [
-      body,
-      displayCredits,
-      displayToc,
-      langui,
-      post.authors,
-      returnHref,
-      returnTitle,
-      selectedTranslation,
-      title,
-    ]
-  );
-
-  const contentPanel = useMemo(
-    () => (
-      <ContentPanel>
+  const subPanel =
+    returnHref || returnTitle || displayCredits || displayToc ? (
+      <SubPanel>
         {returnHref && returnTitle && (
-          <ReturnButton
-            href={returnHref}
-            title={returnTitle}
-            displayOnlyOn={"1ColumnLayout"}
-            className="mb-10"
-          />
+          <ReturnButton href={returnHref} title={returnTitle} displayOnlyOn={"3ColumnsLayout"} />
         )}
 
-        {displayThumbnailHeader ? (
+        {displayCredits && (
           <>
-            <ThumbnailHeader
-              thumbnail={thumbnail}
-              title={title}
-              description={excerpt}
-              categories={post.categories}
-              languageSwitcher={
-                languageSwitcherProps.locales.size > 1 ? (
-                  <LanguageSwitcher {...languageSwitcherProps} />
-                ) : undefined
-              }
-            />
-          </>
-        ) : (
-          <>
-            {displayLanguageSwitcher && (
-              <div className="grid place-content-end place-items-start">
-                <LanguageSwitcher {...languageSwitcherProps} />
+            <HorizontalLine />
+
+            {selectedTranslation && (
+              <div className="grid grid-flow-col place-content-center place-items-center gap-2">
+                <p className="font-headers font-bold">{langui.status}:</p>
+
+                <ToolTip
+                  content={getStatusDescription(selectedTranslation.status, langui)}
+                  maxWidth={"20rem"}>
+                  <Chip text={selectedTranslation.status} />
+                </ToolTip>
               </div>
             )}
-            {displayTitle && (
-              <h1 className="my-16 flex justify-center gap-3 text-center text-4xl">{title}</h1>
+
+            {post.authors && post.authors.data.length > 0 && (
+              <div>
+                <p className="font-headers font-bold">{"Authors"}:</p>
+                <div className="grid place-content-center place-items-center gap-2">
+                  {filterHasAttributes(post.authors.data, ["id", "attributes"] as const).map(
+                    (author) => (
+                      <Fragment key={author.id}>
+                        <RecorderChip recorder={author.attributes} />
+                      </Fragment>
+                    )
+                  )}
+                </div>
+              </div>
             )}
           </>
         )}
 
-        {prependBody}
-        {body && (
-          <>
-            {displayThumbnailHeader && <HorizontalLine />}
-            <Markdawn text={body} />
-          </>
-        )}
+        {displayToc && <TableOfContents text={body} title={title} horizontalLine />}
+      </SubPanel>
+    ) : undefined;
 
-        {appendBody}
-      </ContentPanel>
-    ),
-    [
-      LanguageSwitcher,
-      appendBody,
-      body,
-      displayLanguageSwitcher,
-      displayThumbnailHeader,
-      displayTitle,
-      excerpt,
-      languageSwitcherProps,
-      post.categories,
-      prependBody,
-      returnHref,
-      returnTitle,
-      thumbnail,
-      title,
-    ]
+  const contentPanel = (
+    <ContentPanel>
+      {returnHref && returnTitle && (
+        <ReturnButton
+          href={returnHref}
+          title={returnTitle}
+          displayOnlyOn={"1ColumnLayout"}
+          className="mb-10"
+        />
+      )}
+
+      {displayThumbnailHeader ? (
+        <>
+          <ThumbnailHeader
+            thumbnail={thumbnail}
+            title={title}
+            description={excerpt}
+            categories={post.categories}
+            languageSwitcher={
+              languageSwitcherProps.locales.size > 1 ? (
+                <LanguageSwitcher {...languageSwitcherProps} />
+              ) : undefined
+            }
+          />
+        </>
+      ) : (
+        <>
+          {displayLanguageSwitcher && (
+            <div className="grid place-content-end place-items-start">
+              <LanguageSwitcher {...languageSwitcherProps} />
+            </div>
+          )}
+          {displayTitle && (
+            <h1 className="my-16 flex justify-center gap-3 text-center text-4xl">{title}</h1>
+          )}
+        </>
+      )}
+
+      {prependBody}
+      {body && (
+        <>
+          {displayThumbnailHeader && <HorizontalLine />}
+          <Markdawn text={body} />
+        </>
+      )}
+
+      {appendBody}
+    </ContentPanel>
   );
 
   return <AppLayout {...otherProps} contentPanel={contentPanel} subPanel={subPanel} />;

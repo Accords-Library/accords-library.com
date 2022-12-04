@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 import { useRouter } from "next/router";
 import { Chip } from "./Chip";
 import { Ico, Icon } from "./Ico";
@@ -75,40 +75,37 @@ export const PreviewCard = ({
   const isHoverable = useDeviceSupportsHover();
   const router = useRouter();
 
-  const metadataJSX = useMemo(
-    () => (
-      <>
-        {metadata && (metadata.releaseDate || metadata.price) && (
-          <div className="flex w-full flex-row flex-wrap gap-x-3">
-            {metadata.releaseDate && (
-              <p className="text-sm">
-                <Ico icon={Icon.Event} className="mr-1 translate-y-[.15em] !text-base" />
-                {prettyDate(metadata.releaseDate, router.locale)}
-              </p>
-            )}
-            {metadata.price && (
-              <p className="justify-self-end text-sm">
-                <Ico icon={Icon.ShoppingCart} className="mr-1 translate-y-[.15em] !text-base" />
-                {prettyPrice(metadata.price, currencies, currency)}
-              </p>
-            )}
-            {metadata.views && (
-              <p className="text-sm">
-                <Ico icon={Icon.Visibility} className="mr-1 translate-y-[.15em] !text-base" />
-                {prettyShortenNumber(metadata.views)}
-              </p>
-            )}
-            {metadata.author && (
-              <p className="text-sm">
-                <Ico icon={Icon.Person} className="mr-1 translate-y-[.15em] !text-base" />
-                {metadata.author}
-              </p>
-            )}
-          </div>
-        )}
-      </>
-    ),
-    [currencies, currency, metadata, router.locale]
+  const metadataJSX = (
+    <>
+      {metadata && (metadata.releaseDate || metadata.price) && (
+        <div className="flex w-full flex-row flex-wrap gap-x-3">
+          {metadata.releaseDate && (
+            <p className="text-sm">
+              <Ico icon={Icon.Event} className="mr-1 translate-y-[.15em] !text-base" />
+              {prettyDate(metadata.releaseDate, router.locale)}
+            </p>
+          )}
+          {metadata.price && (
+            <p className="justify-self-end text-sm">
+              <Ico icon={Icon.ShoppingCart} className="mr-1 translate-y-[.15em] !text-base" />
+              {prettyPrice(metadata.price, currencies, currency)}
+            </p>
+          )}
+          {metadata.views && (
+            <p className="text-sm">
+              <Ico icon={Icon.Visibility} className="mr-1 translate-y-[.15em] !text-base" />
+              {prettyShortenNumber(metadata.views)}
+            </p>
+          )}
+          {metadata.author && (
+            <p className="text-sm">
+              <Ico icon={Icon.Person} className="mr-1 translate-y-[.15em] !text-base" />
+              {metadata.author}
+            </p>
+          )}
+        </div>
+      )}
+    </>
   );
 
   return (

@@ -67,105 +67,80 @@ const Chronicle = ({ chronicle, chapters, ...otherProps }: Props): JSX.Element =
       ),
     });
 
-  const contentPanel = useMemo(
-    () => (
-      <ContentPanel>
-        <ReturnButton
-          displayOnlyOn={"1ColumnLayout"}
-          href="/chronicles"
-          title={langui.chronicles}
-          className="mb-10"
-        />
+  const contentPanel = (
+    <ContentPanel>
+      <ReturnButton
+        displayOnlyOn={"1ColumnLayout"}
+        href="/chronicles"
+        title={langui.chronicles}
+        className="mb-10"
+      />
 
-        {isDefined(selectedTranslation) ? (
-          <>
-            <h1 className="mb-16 text-center text-3xl">{selectedTranslation.title}</h1>
+      {isDefined(selectedTranslation) ? (
+        <>
+          <h1 className="mb-16 text-center text-3xl">{selectedTranslation.title}</h1>
 
-            {languageSwitcherProps.locales.size > 1 && (
-              <LanguageSwitcher {...languageSwitcherProps} />
-            )}
+          {languageSwitcherProps.locales.size > 1 && (
+            <LanguageSwitcher {...languageSwitcherProps} />
+          )}
 
-            {isDefined(selectedTranslation.body) && (
-              <Markdawn text={selectedTranslation.body.body} />
-            )}
-          </>
-        ) : (
-          <>
-            {selectedContentTranslation && (
-              <>
-                <ThumbnailHeader
-                  pre_title={selectedContentTranslation.pre_title}
-                  title={selectedContentTranslation.title}
-                  subtitle={selectedContentTranslation.subtitle}
-                  languageSwitcher={
-                    ContentLanguageSwitcherProps.locales.size > 1 ? (
-                      <ContentLanguageSwitcher {...ContentLanguageSwitcherProps} />
-                    ) : undefined
-                  }
-                  categories={primaryContent?.categories}
-                  type={primaryContent?.type}
-                  description={selectedContentTranslation.description}
-                  thumbnail={primaryContent?.thumbnail?.data?.attributes}
-                />
+          {isDefined(selectedTranslation.body) && <Markdawn text={selectedTranslation.body.body} />}
+        </>
+      ) : (
+        <>
+          {selectedContentTranslation && (
+            <>
+              <ThumbnailHeader
+                pre_title={selectedContentTranslation.pre_title}
+                title={selectedContentTranslation.title}
+                subtitle={selectedContentTranslation.subtitle}
+                languageSwitcher={
+                  ContentLanguageSwitcherProps.locales.size > 1 ? (
+                    <ContentLanguageSwitcher {...ContentLanguageSwitcherProps} />
+                  ) : undefined
+                }
+                categories={primaryContent?.categories}
+                type={primaryContent?.type}
+                description={selectedContentTranslation.description}
+                thumbnail={primaryContent?.thumbnail?.data?.attributes}
+              />
 
-                {selectedContentTranslation.text_set?.text && (
-                  <>
-                    <HorizontalLine />
-                    <Markdawn text={selectedContentTranslation.text_set.text} />
-                  </>
-                )}
-              </>
-            )}
-          </>
-        )}
-      </ContentPanel>
-    ),
-    [
-      selectedTranslation,
-      languageSwitcherProps,
-      LanguageSwitcher,
-      selectedContentTranslation,
-      ContentLanguageSwitcherProps,
-      ContentLanguageSwitcher,
-      primaryContent?.categories,
-      primaryContent?.type,
-      primaryContent?.thumbnail?.data?.attributes,
-      langui,
-    ]
+              {selectedContentTranslation.text_set?.text && (
+                <>
+                  <HorizontalLine />
+                  <Markdawn text={selectedContentTranslation.text_set.text} />
+                </>
+              )}
+            </>
+          )}
+        </>
+      )}
+    </ContentPanel>
   );
 
-  const subPanel = useMemo(
-    () => (
-      <SubPanel>
-        <ReturnButton
-          displayOnlyOn={"3ColumnsLayout"}
-          href="/chronicles"
-          title={langui.chronicles}
-        />
+  const subPanel = (
+    <SubPanel>
+      <ReturnButton displayOnlyOn={"3ColumnsLayout"} href="/chronicles" title={langui.chronicles} />
 
-        <HorizontalLine />
+      <HorizontalLine />
 
-        <div className="grid gap-16">
-          {filterHasAttributes(chapters, ["attributes.chronicles", "id"] as const).map(
-            (chapter) => (
-              <TranslatedChroniclesList
-                key={chapter.id}
-                chronicles={chapter.attributes.chronicles.data}
-                translations={filterHasAttributes(chapter.attributes.titles, [
-                  "language.data.attributes.code",
-                ] as const).map((translation) => ({
-                  title: translation.title,
-                  language: translation.language.data.attributes.code,
-                }))}
-                fallback={{ title: prettySlug(chapter.attributes.slug) }}
-                currentSlug={chronicle.slug}
-              />
-            )
-          )}
-        </div>
-      </SubPanel>
-    ),
-    [chapters, chronicle.slug, langui]
+      <div className="grid gap-16">
+        {filterHasAttributes(chapters, ["attributes.chronicles", "id"] as const).map((chapter) => (
+          <TranslatedChroniclesList
+            key={chapter.id}
+            chronicles={chapter.attributes.chronicles.data}
+            translations={filterHasAttributes(chapter.attributes.titles, [
+              "language.data.attributes.code",
+            ] as const).map((translation) => ({
+              title: translation.title,
+              language: translation.language.data.attributes.code,
+            }))}
+            fallback={{ title: prettySlug(chapter.attributes.slug) }}
+            currentSlug={chronicle.slug}
+          />
+        ))}
+      </div>
+    </SubPanel>
   );
 
   return (

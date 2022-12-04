@@ -1,5 +1,5 @@
 import { GetStaticProps } from "next";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useBoolean } from "usehooks-ts";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { Switch } from "components/Inputs/Switch";
@@ -58,101 +58,95 @@ const News = ({ posts, ...otherProps }: Props): JSX.Element => {
   } = useBoolean(DEFAULT_FILTERS_STATE.keepInfoVisible);
   const isTerminalMode = useAtomGetter(atoms.layout.terminalMode);
 
-  const subPanel = useMemo(
-    () => (
-      <SubPanel>
-        <PanelHeader icon={Icon.Feed} title={langui.news} description={langui.news_description} />
+  const subPanel = (
+    <SubPanel>
+      <PanelHeader icon={Icon.Feed} title={langui.news} description={langui.news_description} />
 
-        <HorizontalLine />
+      <HorizontalLine />
 
-        <TextInput
-          className="mb-6 w-full"
-          placeholder={langui.search_title ?? "Search..."}
-          value={searchName}
-          onChange={(name) => {
-            setSearchName(name);
-            if (isDefinedAndNotEmpty(name)) {
-              sendAnalytics("News", "Change search term");
-            } else {
-              sendAnalytics("News", "Clear search term");
-            }
-          }}
-        />
+      <TextInput
+        className="mb-6 w-full"
+        placeholder={langui.search_title ?? "Search..."}
+        value={searchName}
+        onChange={(name) => {
+          setSearchName(name);
+          if (isDefinedAndNotEmpty(name)) {
+            sendAnalytics("News", "Change search term");
+          } else {
+            sendAnalytics("News", "Clear search term");
+          }
+        }}
+      />
 
-        {hoverable && (
-          <WithLabel label={langui.always_show_info}>
-            <Switch
-              value={keepInfoVisible}
-              onClick={() => {
-                toggleKeepInfoVisible();
-                sendAnalytics("News", `Always ${keepInfoVisible ? "hide" : "show"} info`);
-              }}
-            />
-          </WithLabel>
-        )}
+      {hoverable && (
+        <WithLabel label={langui.always_show_info}>
+          <Switch
+            value={keepInfoVisible}
+            onClick={() => {
+              toggleKeepInfoVisible();
+              sendAnalytics("News", `Always ${keepInfoVisible ? "hide" : "show"} info`);
+            }}
+          />
+        </WithLabel>
+      )}
 
-        <Button
-          className="mt-8"
-          text={langui.reset_all_filters}
-          icon={Icon.Replay}
-          onClick={() => {
-            setSearchName(DEFAULT_FILTERS_STATE.searchName);
-            setKeepInfoVisible(DEFAULT_FILTERS_STATE.keepInfoVisible);
-            sendAnalytics("News", "Reset all filters");
-          }}
-        />
-      </SubPanel>
-    ),
-    [hoverable, keepInfoVisible, langui, searchName, setKeepInfoVisible, toggleKeepInfoVisible]
+      <Button
+        className="mt-8"
+        text={langui.reset_all_filters}
+        icon={Icon.Replay}
+        onClick={() => {
+          setSearchName(DEFAULT_FILTERS_STATE.searchName);
+          setKeepInfoVisible(DEFAULT_FILTERS_STATE.keepInfoVisible);
+          sendAnalytics("News", "Reset all filters");
+        }}
+      />
+    </SubPanel>
   );
 
-  const contentPanel = useMemo(
-    () => (
-      <ContentPanel width={ContentPanelWidthSizes.Full}>
-        <SmartList
-          items={filterHasAttributes(posts, ["attributes", "id"] as const)}
-          getItemId={(post) => post.id}
-          renderItem={({ item: post }) => (
-            <TranslatedPreviewCard
-              href={`/news/${post.attributes.slug}`}
-              translations={filterHasAttributes(post.attributes.translations, [
-                "language.data.attributes.code",
-              ] as const).map((translation) => ({
-                language: translation.language.data.attributes.code,
-                title: translation.title,
-                description: translation.excerpt,
-              }))}
-              fallback={{ title: prettySlug(post.attributes.slug) }}
-              thumbnail={post.attributes.thumbnail?.data?.attributes}
-              thumbnailAspectRatio="3/2"
-              thumbnailForceAspectRatio
-              bottomChips={post.attributes.categories?.data.map(
-                (category) => category.attributes?.short ?? ""
-              )}
-              keepInfoVisible={keepInfoVisible}
-              metadata={{
-                releaseDate: post.attributes.date,
-                releaseDateFormat: "long",
-                position: "Top",
-              }}
-            />
-          )}
-          className={cIf(
-            isContentPanelAtLeast4xl,
-            "grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] gap-x-6 gap-y-8",
-            "grid-cols-2 gap-x-4 gap-y-6"
-          )}
-          searchingTerm={searchName}
-          searchingBy={(post) =>
-            `${prettySlug(post.attributes.slug)} ${post.attributes.translations
-              ?.map((translation) => translation?.title)
-              .join(" ")}`
-          }
-          paginationItemPerPage={25}
-        />
-      </ContentPanel>
-    ),
-    [keepInfoVisible, posts, searchName, isContentPanelAtLeast4xl]
+  const contentPanel = (
+    <ContentPanel width={ContentPanelWidthSizes.Full}>
+      <SmartList
+        items={filterHasAttributes(posts, ["attributes", "id"] as const)}
+        getItemId={(post) => post.id}
+        renderItem={({ item: post }) => (
+          <TranslatedPreviewCard
+            href={`/news/${post.attributes.slug}`}
+            translations={filterHasAttributes(post.attributes.translations, [
+              "language.data.attributes.code",
+            ] as const).map((translation) => ({
+              language: translation.language.data.attributes.code,
+              title: translation.title,
+              description: translation.excerpt,
+            }))}
+            fallback={{ title: prettySlug(post.attributes.slug) }}
+            thumbnail={post.attributes.thumbnail?.data?.attributes}
+            thumbnailAspectRatio="3/2"
+            thumbnailForceAspectRatio
+            bottomChips={post.attributes.categories?.data.map(
+              (category) => category.attributes?.short ?? ""
+            )}
+            keepInfoVisible={keepInfoVisible}
+            metadata={{
+              releaseDate: post.attributes.date,
+              releaseDateFormat: "long",
+              position: "Top",
+            }}
+          />
+        )}
+        className={cIf(
+          isContentPanelAtLeast4xl,
+          "grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] gap-x-6 gap-y-8",
+          "grid-cols-2 gap-x-4 gap-y-6"
+        )}
+        searchingTerm={searchName}
+        searchingBy={(post) =>
+          `${prettySlug(post.attributes.slug)} ${post.attributes.translations
+            ?.map((translation) => translation?.title)
+            .join(" ")}`
+        }
+        paginationItemPerPage={25}
+      />
+    </ContentPanel>
   );
 
   if (isTerminalMode) {

@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
@@ -49,146 +49,126 @@ const WikiPage = ({ page, ...otherProps }: Props): JSX.Element => {
   });
   const is3ColumnsLayout = useAtomGetter(atoms.containerQueries.is3ColumnsLayout);
 
-  const subPanel = useMemo(
-    () => (
-      <SubPanel>
-        <ReturnButton href={`/wiki`} title={langui.wiki} displayOnlyOn={"3ColumnsLayout"} />
-      </SubPanel>
-    ),
-    [langui]
+  const subPanel = (
+    <SubPanel>
+      <ReturnButton href={`/wiki`} title={langui.wiki} displayOnlyOn={"3ColumnsLayout"} />
+    </SubPanel>
   );
 
-  const contentPanel = useMemo(
-    () => (
-      <ContentPanel width={ContentPanelWidthSizes.Large}>
-        <ReturnButton
-          href={`/wiki`}
-          title={langui.wiki}
-          displayOnlyOn={"1ColumnLayout"}
-          className="mb-10"
-        />
+  const contentPanel = (
+    <ContentPanel width={ContentPanelWidthSizes.Large}>
+      <ReturnButton
+        href={`/wiki`}
+        title={langui.wiki}
+        displayOnlyOn={"1ColumnLayout"}
+        className="mb-10"
+      />
 
-        <div className="flex flex-wrap place-content-center gap-3">
-          <h1 className="text-center text-3xl">{selectedTranslation?.title}</h1>
-          {selectedTranslation?.aliases && selectedTranslation.aliases.length > 0 && (
-            <p className="mr-3 text-center text-2xl">
-              {`(${selectedTranslation.aliases.map((alias) => alias?.alias).join("・")})`}
-            </p>
-          )}
-          <LanguageSwitcher {...languageSwitcherProps} />
-        </div>
-
-        {selectedTranslation && (
-          <>
-            <HorizontalLine />
-            <div className="text-justify">
-              <div
-                className={cJoin(
-                  "mb-8 overflow-hidden rounded-lg bg-mid text-center",
-                  cIf(is3ColumnsLayout, "float-right ml-8 w-96")
-                )}>
-                {page.thumbnail?.data?.attributes && (
-                  <Img
-                    src={page.thumbnail.data.attributes}
-                    quality={ImageQuality.Medium}
-                    className="w-full cursor-pointer"
-                    onClick={() => {
-                      if (page.thumbnail?.data?.attributes) {
-                        showLightBox([page.thumbnail.data.attributes]);
-                      }
-                    }}
-                  />
-                )}
-                <div className="my-4 grid gap-4 p-4">
-                  {page.categories?.data && page.categories.data.length > 0 && (
-                    <>
-                      <p className="font-headers text-xl font-bold">{langui.categories}</p>
-
-                      <div className="flex flex-row flex-wrap place-content-center gap-2">
-                        {filterHasAttributes(page.categories.data, ["attributes"] as const).map(
-                          (category) => (
-                            <Chip key={category.id} text={category.attributes.name} />
-                          )
-                        )}
-                      </div>
-                    </>
-                  )}
-
-                  {page.tags?.data && page.tags.data.length > 0 && (
-                    <>
-                      <p className="font-headers text-xl font-bold">{langui.tags}</p>
-                      <div className="flex flex-row flex-wrap place-content-center gap-2">
-                        {filterHasAttributes(page.tags.data, ["attributes"] as const).map((tag) => (
-                          <Chip
-                            key={tag.id}
-                            text={
-                              tag.attributes.titles?.[0]?.title ?? prettySlug(tag.attributes.slug)
-                            }
-                          />
-                        ))}
-                      </div>
-                    </>
-                  )}
-                </div>
-              </div>
-
-              {isDefinedAndNotEmpty(selectedTranslation.summary) && (
-                <div className="mb-12">
-                  <p className="font-headers text-lg font-bold">{langui.summary}</p>
-                  <p>{selectedTranslation.summary}</p>
-                </div>
-              )}
-
-              {filterHasAttributes(page.definitions, ["translations"] as const).map(
-                (definition, index) => (
-                  <div key={index} className="mb-12">
-                    <DefinitionCard
-                      source={{
-                        name: definition.source?.data?.attributes?.name,
-                        url: definition.source?.data?.attributes?.content?.data?.attributes?.slug
-                          ? sJoin(
-                              "/contents/",
-                              definition.source.data.attributes.content.data.attributes.slug
-                            )
-                          : cJoin(
-                              "/library/",
-                              definition.source?.data?.attributes?.ranged_content?.data?.attributes
-                                ?.library_item?.data?.attributes?.slug
-                            ),
-                      }}
-                      translations={definition.translations.map((translation) => ({
-                        language: translation?.language?.data?.attributes?.code,
-                        definition: translation?.definition,
-                        status: translation?.status,
-                      }))}
-                      index={index + 1}
-                      categories={filterHasAttributes(definition.categories?.data, [
-                        "attributes",
-                      ] as const).map((category) => category.attributes.short)}
-                    />
-                  </div>
-                )
-              )}
-            </div>
-          </>
+      <div className="flex flex-wrap place-content-center gap-3">
+        <h1 className="text-center text-3xl">{selectedTranslation?.title}</h1>
+        {selectedTranslation?.aliases && selectedTranslation.aliases.length > 0 && (
+          <p className="mr-3 text-center text-2xl">
+            {`(${selectedTranslation.aliases.map((alias) => alias?.alias).join("・")})`}
+          </p>
         )}
-      </ContentPanel>
-    ),
-    [
-      LanguageSwitcher,
-      is3ColumnsLayout,
-      languageSwitcherProps,
-      langui.categories,
-      langui.summary,
-      langui.tags,
-      langui.wiki,
-      page.categories?.data,
-      page.definitions,
-      page.tags?.data,
-      page.thumbnail?.data?.attributes,
-      selectedTranslation,
-      showLightBox,
-    ]
+        <LanguageSwitcher {...languageSwitcherProps} />
+      </div>
+
+      {selectedTranslation && (
+        <>
+          <HorizontalLine />
+          <div className="text-justify">
+            <div
+              className={cJoin(
+                "mb-8 overflow-hidden rounded-lg bg-mid text-center",
+                cIf(is3ColumnsLayout, "float-right ml-8 w-96")
+              )}>
+              {page.thumbnail?.data?.attributes && (
+                <Img
+                  src={page.thumbnail.data.attributes}
+                  quality={ImageQuality.Medium}
+                  className="w-full cursor-pointer"
+                  onClick={() => {
+                    if (page.thumbnail?.data?.attributes) {
+                      showLightBox([page.thumbnail.data.attributes]);
+                    }
+                  }}
+                />
+              )}
+              <div className="my-4 grid gap-4 p-4">
+                {page.categories?.data && page.categories.data.length > 0 && (
+                  <>
+                    <p className="font-headers text-xl font-bold">{langui.categories}</p>
+
+                    <div className="flex flex-row flex-wrap place-content-center gap-2">
+                      {filterHasAttributes(page.categories.data, ["attributes"] as const).map(
+                        (category) => (
+                          <Chip key={category.id} text={category.attributes.name} />
+                        )
+                      )}
+                    </div>
+                  </>
+                )}
+
+                {page.tags?.data && page.tags.data.length > 0 && (
+                  <>
+                    <p className="font-headers text-xl font-bold">{langui.tags}</p>
+                    <div className="flex flex-row flex-wrap place-content-center gap-2">
+                      {filterHasAttributes(page.tags.data, ["attributes"] as const).map((tag) => (
+                        <Chip
+                          key={tag.id}
+                          text={
+                            tag.attributes.titles?.[0]?.title ?? prettySlug(tag.attributes.slug)
+                          }
+                        />
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+
+            {isDefinedAndNotEmpty(selectedTranslation.summary) && (
+              <div className="mb-12">
+                <p className="font-headers text-lg font-bold">{langui.summary}</p>
+                <p>{selectedTranslation.summary}</p>
+              </div>
+            )}
+
+            {filterHasAttributes(page.definitions, ["translations"] as const).map(
+              (definition, index) => (
+                <div key={index} className="mb-12">
+                  <DefinitionCard
+                    source={{
+                      name: definition.source?.data?.attributes?.name,
+                      url: definition.source?.data?.attributes?.content?.data?.attributes?.slug
+                        ? sJoin(
+                            "/contents/",
+                            definition.source.data.attributes.content.data.attributes.slug
+                          )
+                        : cJoin(
+                            "/library/",
+                            definition.source?.data?.attributes?.ranged_content?.data?.attributes
+                              ?.library_item?.data?.attributes?.slug
+                          ),
+                    }}
+                    translations={definition.translations.map((translation) => ({
+                      language: translation?.language?.data?.attributes?.code,
+                      definition: translation?.definition,
+                      status: translation?.status,
+                    }))}
+                    index={index + 1}
+                    categories={filterHasAttributes(definition.categories?.data, [
+                      "attributes",
+                    ] as const).map((category) => category.attributes.short)}
+                  />
+                </div>
+              )
+            )}
+          </div>
+        </>
+      )}
+    </ContentPanel>
   );
 
   if (isTerminalMode) {

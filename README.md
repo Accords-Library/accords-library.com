@@ -25,7 +25,7 @@
 #### [Front](https://github.com/Accords-Library/accords-library.com) (this repository)
 
 - Language: [TypeScript](https://www.typescriptlang.org/)
-- Framework: [Next.js 12](https://nextjs.org/) (React 18)
+- Framework: [Next.js 13](https://nextjs.org/) (React 18)
 - Queries: [GraphQL Code Generator](https://www.graphql-code-generator.com/)
   - Fetch the GraphQL schema from the GraphQL back-end endpoint
   - Read the operations and fragments stored as graphql files in the `src/graphql` folder

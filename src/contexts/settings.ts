@@ -84,6 +84,7 @@ export const useSettings = (): void => {
   useEffect(() => {
     if (preferredLanguages.length === 0) {
       if (isDefinedAndNotEmpty(router.locale) && router.locales) {
+        console.log(router.locale, getDefaultPreferredLanguages(router.locale, router.locales));
         setPreferredLanguages(getDefaultPreferredLanguages(router.locale, router.locales));
       }
     } else if (router.locale !== preferredLanguages[0]) {

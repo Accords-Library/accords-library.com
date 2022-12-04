@@ -1,5 +1,5 @@
 import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next";
-import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
+import { Fragment, useCallback, useEffect, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import Slider from "rc-slider";
 import { useRouter } from "next/router";
@@ -44,6 +44,7 @@ import { useFullscreen } from "hooks/useFullscreen";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter } from "helpers/atoms";
 import { FilterSettings, useReaderSettings } from "hooks/useReaderSettings";
+import { useIsWebkit } from "hooks/useIsWebkit";
 
 const CUSTOM_DARK_DROPSHADOW = `
   drop-shadow(0 0    0.5em rgb(var(--theme-color-shade) / 30%))
@@ -112,19 +113,14 @@ const LibrarySlug = ({
     is1ColumnLayout ? "single" : "double"
   );
   const router = useRouter();
+  const isWebkit = useIsWebkit();
 
   const { isFullscreen, toggleFullscreen, requestFullscreen } = useFullscreen(Ids.ContentPanel);
 
-  const effectiveDisplayMode = useMemo(
-    () =>
-      currentPageIndex === 0 || currentPageIndex === pages.length - 1 ? "single" : displayMode,
-    [currentPageIndex, displayMode, pages.length]
-  );
+  const effectiveDisplayMode =
+    currentPageIndex === 0 || currentPageIndex === pages.length - 1 ? "single" : displayMode;
 
-  const ajustedSidepagesTotalWidth = useMemo(
-    () => pages.length * SIDEPAGES_PAGE_WIDTH * (120 / pageWidth),
-    [pageWidth, pages.length]
-  );
+  const ajustedSidepagesTotalWidth = pages.length * SIDEPAGES_PAGE_WIDTH * (120 / pageWidth);
 
   const changeCurrentPageIndex = useCallback(
     (callbackFn: (current: number) => number) => {
@@ -185,61 +181,39 @@ const LibrarySlug = ({
     handlePageNavigation,
   ]);
 
-  const firstPage = useMemo(
-    () =>
-      pages[
-        effectiveDisplayMode === "double" && currentPageIndex % 2 === 0
-          ? currentPageIndex - 1
-          : currentPageIndex
-      ],
-    [currentPageIndex, effectiveDisplayMode, pages]
-  );
-  const secondPage = useMemo(
-    () =>
-      pages[
-        effectiveDisplayMode === "double" && currentPageIndex % 2 === 0
-          ? currentPageIndex
-          : currentPageIndex + 1
-      ],
-    [currentPageIndex, effectiveDisplayMode, pages]
-  );
+  const firstPage =
+    pages[
+      effectiveDisplayMode === "double" && currentPageIndex % 2 === 0
+        ? currentPageIndex - 1
+        : currentPageIndex
+    ];
 
-  const leftSidePagesCount = useMemo(
-    () =>
-      pageOrder === PageOrder.LeftToRight ? currentPageIndex : pages.length - 1 - currentPageIndex,
-    [currentPageIndex, pageOrder, pages.length]
-  );
+  const secondPage =
+    pages[
+      effectiveDisplayMode === "double" && currentPageIndex % 2 === 0
+        ? currentPageIndex
+        : currentPageIndex + 1
+    ];
 
-  const rightSidePagesCount = useMemo(
-    () =>
-      pageOrder === PageOrder.LeftToRight ? pages.length - 1 - currentPageIndex : currentPageIndex,
-    [currentPageIndex, pageOrder, pages.length]
-  );
+  const leftSidePagesCount =
+    pageOrder === PageOrder.LeftToRight ? currentPageIndex : pages.length - 1 - currentPageIndex;
 
-  const leftSidePagesWidth = useMemo(
-    () =>
-      `${
-        pageOrder === PageOrder.LeftToRight
-          ? (currentPageIndex / pages.length) * ajustedSidepagesTotalWidth
-          : ajustedSidepagesTotalWidth -
-            (currentPageIndex / pages.length) * ajustedSidepagesTotalWidth
-      }vmin`,
-    [ajustedSidepagesTotalWidth, currentPageIndex, pageOrder, pages.length]
-  );
+  const rightSidePagesCount =
+    pageOrder === PageOrder.LeftToRight ? pages.length - 1 - currentPageIndex : currentPageIndex;
 
-  const rightSidePagesWidth = useMemo(
-    () =>
-      `${
-        pageOrder === PageOrder.LeftToRight
-          ? ajustedSidepagesTotalWidth -
-            (currentPageIndex / pages.length) * ajustedSidepagesTotalWidth
-          : (currentPageIndex / pages.length) * ajustedSidepagesTotalWidth
-      }vmin`,
-    [ajustedSidepagesTotalWidth, currentPageIndex, pageOrder, pages.length]
-  );
+  const leftSidePagesWidth = `${
+    pageOrder === PageOrder.LeftToRight
+      ? (currentPageIndex / pages.length) * ajustedSidepagesTotalWidth
+      : ajustedSidepagesTotalWidth - (currentPageIndex / pages.length) * ajustedSidepagesTotalWidth
+  }vmin`;
 
-  const leftSideClipPath = useMemo(
-    () => `polygon(
+  const rightSidePagesWidth = `${
+    pageOrder === PageOrder.LeftToRight
+      ? ajustedSidepagesTotalWidth - (currentPageIndex / pages.length) * ajustedSidepagesTotalWidth
+      : (currentPageIndex / pages.length) * ajustedSidepagesTotalWidth
+  }vmin`;
+
+  const leftSideClipPath = `polygon(
     ${
       isSidePagesEnabled
         ? `
@@ -265,12 +239,9 @@ const LibrarySlug = ({
          : "101% 0%, 101% 100%,"
      }
      70%   100%
-    )`,
-    [filterSettings.bookFold, isSidePagesEnabled, leftSidePagesWidth]
-  );
+    )`;
 
-  const rightSideClipPath = useMemo(
-    () => `polygon(
+  const rightSideClipPath = `polygon(
       ${
         isSidePagesEnabled
           ? `calc(100% - ${rightSidePagesWidth}) 0%,
@@ -295,48 +266,237 @@ const LibrarySlug = ({
           : "-1% 100%, -1% 0%,"
       }
       30%     0%
-      )`,
-    [filterSettings.bookFold, isSidePagesEnabled, rightSidePagesWidth]
-  );
+      )`;
 
-  const pageHeight = useMemo(
-    () => `calc(100vh - ${is1ColumnLayout ? 5 : 4}rem - 3rem)`,
-    [is1ColumnLayout]
-  );
+  const pageHeight = `calc(100vh - ${is1ColumnLayout ? 5 : 4}rem - 3rem)`;
 
-  const subPanel = useMemo(
-    () => (
-      <SubPanel>
-        <ReturnButton title={langui.item} href={`/library/${itemSlug}`} />
+  const subPanel = (
+    <SubPanel>
+      <ReturnButton title={langui.item} href={`/library/${itemSlug}`} />
 
-        <div className="mt-4 grid gap-2">
-          <WithLabel label={langui.paper_texture}>
-            <Switch value={filterSettings.paperTexture} onClick={togglePaperTexture} />
-          </WithLabel>
+      <div className="mt-4 grid gap-2">
+        <WithLabel label={langui.paper_texture}>
+          <Switch value={filterSettings.paperTexture} onClick={togglePaperTexture} />
+        </WithLabel>
 
-          <WithLabel label={langui.book_fold}>
-            <Switch value={filterSettings.bookFold} onClick={toggleBookFold} />
-          </WithLabel>
+        <WithLabel label={langui.book_fold}>
+          <Switch value={filterSettings.bookFold} onClick={toggleBookFold} />
+        </WithLabel>
 
-          <WithLabel label={langui.lighting}>
-            <Switch value={filterSettings.lighting} onClick={toggleLighting} />
-          </WithLabel>
+        <WithLabel label={langui.lighting}>
+          <Switch value={filterSettings.lighting} onClick={toggleLighting} />
+        </WithLabel>
 
-          <WithLabel label={langui.side_pages}>
-            <Switch value={isSidePagesEnabled} onClick={toggleIsSidePagesEnabled} />
-          </WithLabel>
+        <WithLabel label={langui.side_pages}>
+          <Switch value={isSidePagesEnabled} onClick={toggleIsSidePagesEnabled} />
+        </WithLabel>
 
+        {!isWebkit && (
           <WithLabel label={langui.shadow}>
             <Switch value={filterSettings.dropShadow} onClick={toggleDropShadow} />
           </WithLabel>
-        </div>
+        )}
+      </div>
 
-        <div className="mt-4 grid">
-          <p>{langui.night_reader}:</p>
+      <div className="mt-4 grid">
+        <p>{langui.night_reader}:</p>
+        <Slider
+          min={0}
+          max={10}
+          value={filterSettings.teint * 10}
+          onChange={(event) => {
+            let value = 0;
+            if (Array.isArray(event)) {
+              value = event[0];
+            } else {
+              value = event;
+            }
+            setTeint(value / 10);
+          }}
+        />
+      </div>
+
+      <div className="mt-8 grid gap-2">
+        <p>{langui.reading_layout}:</p>
+        <ButtonGroup
+          buttonsProps={[
+            {
+              icon: Icon.Description,
+              tooltip: langui.single_page_view,
+              active: displayMode === "single",
+              onClick: () => changeDisplayMode("single"),
+            },
+            {
+              icon: Icon.AutoStories,
+              tooltip: langui.double_page_view,
+              active: displayMode === "double",
+              onClick: () => changeDisplayMode("double"),
+            },
+          ]}
+        />
+      </div>
+
+      <div className="mt-4 grid gap-2">
+        <p>{langui.quality}:</p>
+        <ButtonGroup
+          buttonsProps={[
+            {
+              text: "SD",
+              active: pageQuality === ImageQuality.Medium,
+              onClick: () => setPageQuality(ImageQuality.Medium),
+            },
+            {
+              text: "HD",
+              active: pageQuality === ImageQuality.Large,
+              onClick: () => setPageQuality(ImageQuality.Large),
+            },
+          ]}
+        />
+      </div>
+
+      <Button
+        className="mt-8"
+        text={langui.reset_all_options}
+        icon={Icon.Replay}
+        onClick={() => {
+          resetReaderSettings();
+          setDisplayMode(is1ColumnLayout ? "single" : "double");
+          sendAnalytics("Reader", "Reset all options");
+        }}
+      />
+    </SubPanel>
+  );
+
+  const contentPanel = (
+    <ContentPanel width={ContentPanelWidthSizes.Full} className="grid place-content-center !p-0">
+      <div className={cJoin("mb-12 grid", cIf(is1ColumnLayout, "!p-0", "!p-8"))}>
+        <TransformWrapper
+          onZoom={(zoom) => setCurrentZoom(zoom.state.scale)}
+          panning={{ disabled: currentZoom <= 1, velocityDisabled: false }}
+          doubleClick={{ disabled: true, mode: "reset" }}
+          zoomAnimation={{ size: 0.1 }}
+          velocityAnimation={{ animationTime: 0, equalToMove: true }}>
+          <TransformComponent
+            wrapperStyle={{ overflow: "visible", placeSelf: "center" }}
+            contentStyle={{
+              height: "100%",
+              gridAutoFlow: "column",
+              display: "grid",
+              placeContent: "center",
+              filter:
+                !filterSettings.dropShadow || isWebkit
+                  ? undefined
+                  : isDarkMode
+                  ? CUSTOM_DARK_DROPSHADOW
+                  : CUSTOM_LIGHT_DROPSHADOW,
+            }}>
+            {effectiveDisplayMode === "single" ? (
+              <div
+                className={cJoin(
+                  "relative grid grid-flow-col",
+                  cIf(currentZoom <= 1, "cursor-pointer", "cursor-move")
+                )}>
+                <Img
+                  style={{ maxHeight: pageHeight, width: "auto" }}
+                  src={firstPage}
+                  quality={pageQuality}
+                />
+                <PageFilters page="single" bookType={bookType} options={filterSettings} />
+                <div
+                  className="absolute left-0 top-0 bottom-0 w-1/2"
+                  onClick={() => currentZoom <= 1 && handlePageNavigation("left")}
+                />
+                <div
+                  className="absolute right-0 top-0 bottom-0 w-1/2"
+                  onClick={() => currentZoom <= 1 && handlePageNavigation("right")}
+                />
+              </div>
+            ) : (
+              <>
+                <div
+                  className={cJoin(
+                    "relative grid grid-flow-col",
+                    cIf(currentZoom <= 1, "cursor-pointer", "cursor-move")
+                  )}
+                  onClick={() => currentZoom <= 1 && handlePageNavigation("left")}
+                  style={{
+                    clipPath: leftSideClipPath,
+                  }}>
+                  {isSidePagesEnabled && (
+                    <div
+                      style={{
+                        width: leftSidePagesWidth,
+                        backgroundImage: `url(/reader/sidepages-${bookType}.webp)`,
+                        backgroundSize: `${
+                          (SIDEPAGES_PAGE_COUNT_ON_TEXTURE / leftSidePagesCount) * 100
+                        }% 100%`,
+                      }}
+                    />
+                  )}
+
+                  <Img
+                    style={{ maxHeight: pageHeight, width: "auto" }}
+                    src={pageOrder === PageOrder.LeftToRight ? firstPage : secondPage}
+                    quality={pageQuality}
+                  />
+                  <PageFilters page="left" bookType={bookType} options={filterSettings} />
+                </div>
+                <div
+                  className={cJoin(
+                    "relative grid grid-flow-col",
+                    cIf(currentZoom <= 1, "cursor-pointer", "cursor-move")
+                  )}
+                  onClick={() => currentZoom <= 1 && handlePageNavigation("right")}
+                  style={{
+                    clipPath: rightSideClipPath,
+                  }}>
+                  <Img
+                    style={{ maxHeight: pageHeight, width: "auto" }}
+                    className={cIf(
+                      is1ColumnLayout,
+                      `max-h-[calc(100vh-5rem)]`,
+                      "max-h-[calc(100vh-4rem)]"
+                    )}
+                    src={pageOrder === PageOrder.LeftToRight ? secondPage : firstPage}
+                    quality={pageQuality}
+                  />
+                  {isSidePagesEnabled && (
+                    <div
+                      style={{
+                        width: rightSidePagesWidth,
+                        backgroundImage: `url(/reader/sidepages-${bookType}.webp)`,
+                        backgroundPositionX: "right",
+                        backgroundSize: `${
+                          (SIDEPAGES_PAGE_COUNT_ON_TEXTURE / rightSidePagesCount) * 100
+                        }% 100%`,
+                      }}
+                    />
+                  )}
+
+                  <PageFilters page="right" bookType={bookType} options={filterSettings} />
+                </div>
+              </>
+            )}
+          </TransformComponent>
+        </TransformWrapper>
+      </div>
+      <div
+        className={cJoin(
+          `absolute inset-0 bg-light
+            transition-transform duration-500`,
+          cIf(isGalleryMode, "translate-y-0", "translate-y-[calc(100%-3rem)]")
+        )}>
+        <div
+          className="mb-4 mt-3 grid grid-flow-col grid-cols-[auto,1fr,auto]
+            place-content-center place-items-center gap-4 px-4">
+          <p className="text-dark">
+            {currentPageIndex - 1} / {pages.length - 2}
+          </p>
           <Slider
+            reverse={pageOrder === PageOrder.RightToLeft}
             min={0}
-            max={10}
-            value={filterSettings.teint * 10}
+            max={pages.length - 1}
+            value={currentPageIndex - 1}
             onChange={(event) => {
               let value = 0;
               if (Array.isArray(event)) {
@@ -344,317 +504,60 @@ const LibrarySlug = ({
               } else {
                 value = event;
               }
-              setTeint(value / 10);
+              changeCurrentPageIndex(() => value);
             }}
           />
-        </div>
-
-        <div className="mt-8 grid gap-2">
-          <p>{langui.reading_layout}:</p>
-          <ButtonGroup
-            buttonsProps={[
-              {
-                icon: Icon.Description,
-                tooltip: langui.single_page_view,
-                active: displayMode === "single",
-                onClick: () => changeDisplayMode("single"),
-              },
-              {
-                icon: Icon.AutoStories,
-                tooltip: langui.double_page_view,
-                active: displayMode === "double",
-                onClick: () => changeDisplayMode("double"),
-              },
-            ]}
-          />
-        </div>
-
-        <div className="mt-4 grid gap-2">
-          <p>{langui.quality}:</p>
-          <ButtonGroup
-            buttonsProps={[
-              {
-                text: "SD",
-                active: pageQuality === ImageQuality.Medium,
-                onClick: () => setPageQuality(ImageQuality.Medium),
-              },
-              {
-                text: "HD",
-                active: pageQuality === ImageQuality.Large,
-                onClick: () => setPageQuality(ImageQuality.Large),
-              },
-            ]}
-          />
-        </div>
-
-        <Button
-          className="mt-8"
-          text={langui.reset_all_options}
-          icon={Icon.Replay}
-          onClick={() => {
-            resetReaderSettings();
-            setDisplayMode(is1ColumnLayout ? "single" : "double");
-            sendAnalytics("Reader", "Reset all options");
-          }}
-        />
-      </SubPanel>
-    ),
-    [
-      langui.item,
-      langui.paper_texture,
-      langui.book_fold,
-      langui.lighting,
-      langui.side_pages,
-      langui.shadow,
-      langui.night_reader,
-      langui.reading_layout,
-      langui.single_page_view,
-      langui.double_page_view,
-      langui.quality,
-      langui.reset_all_options,
-      itemSlug,
-      filterSettings.paperTexture,
-      filterSettings.bookFold,
-      filterSettings.lighting,
-      filterSettings.dropShadow,
-      filterSettings.teint,
-      togglePaperTexture,
-      toggleBookFold,
-      toggleLighting,
-      isSidePagesEnabled,
-      toggleIsSidePagesEnabled,
-      toggleDropShadow,
-      displayMode,
-      pageQuality,
-      setTeint,
-      changeDisplayMode,
-      setPageQuality,
-      resetReaderSettings,
-      is1ColumnLayout,
-    ]
-  );
-
-  const contentPanel = useMemo(
-    () => (
-      <ContentPanel width={ContentPanelWidthSizes.Full} className="grid place-content-center !p-0">
-        <div className={cJoin("mb-12 grid", cIf(is1ColumnLayout, "!p-0", "!p-8"))}>
-          <TransformWrapper
-            onZoom={(zoom) => setCurrentZoom(zoom.state.scale)}
-            panning={{ disabled: currentZoom <= 1, velocityDisabled: false }}
-            doubleClick={{ disabled: true, mode: "reset" }}
-            zoomAnimation={{ size: 0.1 }}
-            velocityAnimation={{ animationTime: 0, equalToMove: true }}>
-            <TransformComponent
-              wrapperStyle={{ overflow: "visible", placeSelf: "center" }}
-              contentStyle={{
-                height: "100%",
-                gridAutoFlow: "column",
-                display: "grid",
-                placeContent: "center",
-                filter: filterSettings.dropShadow
-                  ? isDarkMode
-                    ? CUSTOM_DARK_DROPSHADOW
-                    : CUSTOM_LIGHT_DROPSHADOW
-                  : undefined,
-              }}>
-              {effectiveDisplayMode === "single" ? (
-                <div
-                  className={cJoin(
-                    "relative grid grid-flow-col",
-                    cIf(currentZoom <= 1, "cursor-pointer", "cursor-move")
-                  )}>
-                  <Img
-                    style={{ maxHeight: pageHeight, width: "auto" }}
-                    src={firstPage}
-                    quality={pageQuality}
-                  />
-                  <PageFilters page="single" bookType={bookType} options={filterSettings} />
-                  <div
-                    className="absolute left-0 top-0 bottom-0 w-1/2"
-                    onClick={() => currentZoom <= 1 && handlePageNavigation("left")}
-                  />
-                  <div
-                    className="absolute right-0 top-0 bottom-0 w-1/2"
-                    onClick={() => currentZoom <= 1 && handlePageNavigation("right")}
-                  />
-                </div>
-              ) : (
-                <>
-                  <div
-                    className={cJoin(
-                      "relative grid grid-flow-col",
-                      cIf(currentZoom <= 1, "cursor-pointer", "cursor-move")
-                    )}
-                    onClick={() => currentZoom <= 1 && handlePageNavigation("left")}
-                    style={{
-                      clipPath: leftSideClipPath,
-                    }}>
-                    {isSidePagesEnabled && (
-                      <div
-                        style={{
-                          width: leftSidePagesWidth,
-                          backgroundImage: `url(/reader/sidepages-${bookType}.webp)`,
-                          backgroundSize: `${
-                            (SIDEPAGES_PAGE_COUNT_ON_TEXTURE / leftSidePagesCount) * 100
-                          }% 100%`,
-                        }}
-                      />
-                    )}
-
-                    <Img
-                      style={{ maxHeight: pageHeight, width: "auto" }}
-                      src={pageOrder === PageOrder.LeftToRight ? firstPage : secondPage}
-                      quality={pageQuality}
-                    />
-                    <PageFilters page="left" bookType={bookType} options={filterSettings} />
-                  </div>
-                  <div
-                    className={cJoin(
-                      "relative grid grid-flow-col",
-                      cIf(currentZoom <= 1, "cursor-pointer", "cursor-move")
-                    )}
-                    onClick={() => currentZoom <= 1 && handlePageNavigation("right")}
-                    style={{
-                      clipPath: rightSideClipPath,
-                    }}>
-                    <Img
-                      style={{ maxHeight: pageHeight, width: "auto" }}
-                      className={cIf(
-                        is1ColumnLayout,
-                        `max-h-[calc(100vh-5rem)]`,
-                        "max-h-[calc(100vh-4rem)]"
-                      )}
-                      src={pageOrder === PageOrder.LeftToRight ? secondPage : firstPage}
-                      quality={pageQuality}
-                    />
-                    {isSidePagesEnabled && (
-                      <div
-                        style={{
-                          width: rightSidePagesWidth,
-                          backgroundImage: `url(/reader/sidepages-${bookType}.webp)`,
-                          backgroundPositionX: "right",
-                          backgroundSize: `${
-                            (SIDEPAGES_PAGE_COUNT_ON_TEXTURE / rightSidePagesCount) * 100
-                          }% 100%`,
-                        }}
-                      />
-                    )}
-
-                    <PageFilters page="right" bookType={bookType} options={filterSettings} />
-                  </div>
-                </>
-              )}
-            </TransformComponent>
-          </TransformWrapper>
-        </div>
-        <div
-          className={cJoin(
-            `absolute inset-0 bg-light
-            transition-transform duration-500`,
-            cIf(isGalleryMode, "translate-y-0", "translate-y-[calc(100%-3rem)]")
-          )}>
-          <div
-            className="mb-4 mt-3 grid grid-flow-col grid-cols-[auto,1fr,auto]
-            place-content-center place-items-center gap-4 px-4">
-            <p className="text-dark">
-              {currentPageIndex - 1} / {pages.length - 2}
-            </p>
-            <Slider
-              reverse={pageOrder === PageOrder.RightToLeft}
-              min={0}
-              max={pages.length - 1}
-              value={currentPageIndex - 1}
-              onChange={(event) => {
-                let value = 0;
-                if (Array.isArray(event)) {
-                  value = event[0];
-                } else {
-                  value = event;
-                }
-                changeCurrentPageIndex(() => value);
-              }}
+          <div className="flex gap-2">
+            <Button
+              icon={isGalleryMode ? Icon.ExpandMore : Icon.ExpandLess}
+              onClick={() => setIsGalleryMode((current) => !current)}
+              size="small"
             />
-            <div className="flex gap-2">
-              <Button
-                icon={isGalleryMode ? Icon.ExpandMore : Icon.ExpandLess}
-                onClick={() => setIsGalleryMode((current) => !current)}
-                size="small"
-              />
-              <Button
-                icon={isFullscreen ? Icon.FullscreenExit : Icon.Fullscreen}
-                onClick={toggleFullscreen}
-                size="small"
-              />
-            </div>
-          </div>
-          <div className="h-[calc(100vh-4rem)] overflow-y-scroll px-8">
-            {item.contents?.data.map((content) => (
-              <Fragment key={content.id}>
-                {content.attributes?.scan_set?.[0] && (
-                  <TranslatedScanSet
-                    scanSet={content.attributes.scan_set}
-                    onClickOnImage={(index) => {
-                      const range = content.attributes?.range[0];
-                      let newPageIndex = index + 1;
-                      if (range?.__typename === "ComponentRangePageRange") {
-                        newPageIndex += range.starting_page;
-                      }
-                      changeCurrentPageIndex(() => newPageIndex);
-                      setIsGalleryMode(false);
-                    }}
-                    id={content.attributes.slug}
-                    translations={filterHasAttributes(
-                      content.attributes.content?.data?.attributes?.translations,
-                      ["language.data.attributes"] as const
-                    ).map((translation) => ({
-                      language: translation.language.data.attributes.code,
-                      title: prettyInlineTitle(
-                        translation.pre_title,
-                        translation.title,
-                        translation.subtitle
-                      ),
-                    }))}
-                    fallback={{
-                      title: prettySlug(content.attributes.slug, item.slug),
-                    }}
-                    content={content.attributes.content}
-                  />
-                )}
-              </Fragment>
-            ))}
+            <Button
+              icon={isFullscreen ? Icon.FullscreenExit : Icon.Fullscreen}
+              onClick={toggleFullscreen}
+              size="small"
+            />
           </div>
         </div>
-      </ContentPanel>
-    ),
-    [
-      is1ColumnLayout,
-      currentZoom,
-      filterSettings,
-      isDarkMode,
-      pageHeight,
-      effectiveDisplayMode,
-      firstPage,
-      pageQuality,
-      bookType,
-      leftSideClipPath,
-      isSidePagesEnabled,
-      leftSidePagesWidth,
-      leftSidePagesCount,
-      pageOrder,
-      secondPage,
-      rightSideClipPath,
-      rightSidePagesWidth,
-      rightSidePagesCount,
-      isGalleryMode,
-      currentPageIndex,
-      pages.length,
-      isFullscreen,
-      toggleFullscreen,
-      item.contents?.data,
-      item.slug,
-      handlePageNavigation,
-      changeCurrentPageIndex,
-    ]
+        <div className="h-[calc(100vh-4rem)] overflow-y-scroll px-8">
+          {item.contents?.data.map((content) => (
+            <Fragment key={content.id}>
+              {content.attributes?.scan_set?.[0] && (
+                <TranslatedScanSet
+                  scanSet={content.attributes.scan_set}
+                  onClickOnImage={(index) => {
+                    const range = content.attributes?.range[0];
+                    let newPageIndex = index + 1;
+                    if (range?.__typename === "ComponentRangePageRange") {
+                      newPageIndex += range.starting_page;
+                    }
+                    changeCurrentPageIndex(() => newPageIndex);
+                    setIsGalleryMode(false);
+                  }}
+                  id={content.attributes.slug}
+                  translations={filterHasAttributes(
+                    content.attributes.content?.data?.attributes?.translations,
+                    ["language.data.attributes"] as const
+                  ).map((translation) => ({
+                    language: translation.language.data.attributes.code,
+                    title: prettyInlineTitle(
+                      translation.pre_title,
+                      translation.title,
+                      translation.subtitle
+                    ),
+                  }))}
+                  fallback={{
+                    title: prettySlug(content.attributes.slug, item.slug),
+                  }}
+                  content={content.attributes.content}
+                />
+              )}
+            </Fragment>
+          ))}
+        </div>
+      </div>
+    </ContentPanel>
   );
 
   return (
@@ -798,9 +701,9 @@ interface PageFiltersProps {
 
 const PageFilters = ({ page, bookType, options }: PageFiltersProps) => {
   const isDarkMode = useAtomGetter(atoms.settings.darkMode);
-  const commonCss = useMemo(
-    () => cJoin("absolute inset-0", cIf(page === "right", "[background-position-x:-100%]")),
-    [page]
+  const commonCss = cJoin(
+    "absolute inset-0",
+    cIf(page === "right", "[background-position-x:-100%]")
   );
 
   return (
@@ -929,10 +832,7 @@ const ScanSet = ({ onClickOnImage, scanSet, id, title, content }: ScanSetProps):
     }, []),
   });
 
-  const pages = useMemo(
-    () => filterHasAttributes(selectedScan?.pages?.data, ["attributes"]),
-    [selectedScan]
-  );
+  const pages = filterHasAttributes(selectedScan?.pages?.data, ["attributes"]);
 
   return (
     <>

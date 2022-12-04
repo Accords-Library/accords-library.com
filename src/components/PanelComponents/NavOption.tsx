@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { MouseEventHandler, useCallback, useMemo } from "react";
+import { MouseEventHandler, useCallback } from "react";
 import { Ico, Icon } from "components/Ico";
 import { ToolTip } from "components/ToolTip";
 import { cIf, cJoin } from "helpers/className";
@@ -39,10 +39,7 @@ export const NavOption = ({
   onClick,
 }: Props): JSX.Element => {
   const router = useRouter();
-  const isActive = useMemo(
-    () => active || router.asPath.startsWith(url),
-    [active, router.asPath, url]
-  );
+  const isActive = active || router.asPath.startsWith(url);
 
   return (
     <ToolTip

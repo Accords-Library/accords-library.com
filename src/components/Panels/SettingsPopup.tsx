@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Icon } from "components/Ico";
 import { Button } from "components/Inputs/Button";
 import { ButtonGroup } from "components/Inputs/ButtonGroup";
@@ -34,12 +34,8 @@ export const SettingsPopup = (): JSX.Element => {
 
   const router = useRouter();
 
-  const currencyOptions = useMemo(
-    () =>
-      filterHasAttributes(currencies, ["attributes"] as const).map(
-        (currentCurrency) => currentCurrency.attributes.code
-      ),
-    [currencies]
+  const currencyOptions = filterHasAttributes(currencies, ["attributes"] as const).map(
+    (currentCurrency) => currentCurrency.attributes.code
   );
 
   const [currencySelect, setCurrencySelect] = useState<number>(-1);

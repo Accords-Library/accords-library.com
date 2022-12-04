@@ -6,7 +6,6 @@ const locales = ["en", "es", "fr", "pt-br", "ja"];
 
 /* @type {import('next').NextConfig} */
 module.exports = {
-  swcMinify: true,
   reactStrictMode: true,
   poweredByHeader: false,
   i18n: {

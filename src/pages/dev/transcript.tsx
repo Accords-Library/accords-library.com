@@ -1,5 +1,5 @@
 import { GetStaticProps } from "next";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { Button } from "components/Inputs/Button";
 import { ButtonGroup } from "components/Inputs/ButtonGroup";
@@ -359,183 +359,168 @@ const Transcript = (props: Props): JSX.Element => {
     [updateDisplayedText]
   );
 
-  const contentPanel = useMemo(
-    () => (
-      <ContentPanel width={ContentPanelWidthSizes.Full} className="overflow-hidden !pr-0 !pt-4">
-        <div className="grid grid-flow-col grid-cols-[1fr_5rem]">
-          <textarea
-            ref={textAreaRef}
-            onChange={updateDisplayedText}
-            onClick={updateLineIndex}
-            onKeyUp={updateLineIndex}
-            title="Input textarea"
-            className="whitespace-pre"
-          />
+  const contentPanel = (
+    <ContentPanel width={ContentPanelWidthSizes.Full} className="overflow-hidden !pr-0 !pt-4">
+      <div className="grid grid-flow-col grid-cols-[1fr_5rem]">
+        <textarea
+          ref={textAreaRef}
+          onChange={updateDisplayedText}
+          onClick={updateLineIndex}
+          onKeyUp={updateLineIndex}
+          title="Input textarea"
+          className="whitespace-pre"
+        />
 
-          <p
-            className="h-[80vh] whitespace-nowrap font-[initial] font-bold
+        <p
+          className="h-[80vh] whitespace-nowrap font-[initial] font-bold
           [writing-mode:vertical-rl] [transform-origin:top_right]"
-            style={{
-              transform: `scale(${fontSize}) translateX(${fontSize * xOffset}px)`,
-            }}>
-            {text.split("\n")[lineIndex]}
-          </p>
+          style={{
+            transform: `scale(${fontSize}) translateX(${fontSize * xOffset}px)`,
+          }}>
+          {text.split("\n")[lineIndex]}
+        </p>
+      </div>
+
+      <div className="flex flex-wrap place-items-center gap-4 pr-24">
+        <div className="grid place-items-center">
+          <p>Text offset: {xOffset}px</p>
+          <input
+            title="Font size multiplier"
+            type="range"
+            min="0"
+            max="100"
+            value={xOffset * 10}
+            onChange={(event) => setXOffset(parseInt(event.target.value, 10) / 10)}
+          />
         </div>
 
-        <div className="flex flex-wrap place-items-center gap-4 pr-24">
-          <div className="grid place-items-center">
-            <p>Text offset: {xOffset}px</p>
-            <input
-              title="Font size multiplier"
-              type="range"
-              min="0"
-              max="100"
-              value={xOffset * 10}
-              onChange={(event) => setXOffset(parseInt(event.target.value, 10) / 10)}
-            />
-          </div>
-
-          <div className="grid place-items-center">
-            <p>Font size: {fontSize}x</p>
-            <input
-              title="Font size multiplier"
-              type="range"
-              min="1000"
-              max="3000"
-              value={fontSize * SIZE_MULTIPLIER}
-              onChange={(event) => setFontSize(parseInt(event.target.value, 10) / SIZE_MULTIPLIER)}
-            />
-          </div>
-          <ToolTip content="Automatically convert Western punctuations to Japanese ones.">
-            <Button text=". ⟹ 。" onClick={convertPunctuation} />
-          </ToolTip>
-          <ToolTip content="Swap a kana for one of its variant (different diacritics).">
-            <Button text="か ⟺ が" onClick={toggleDakuten} />
-          </ToolTip>
-          <ToolTip content="Toggle a kana's small form">
-            <Button text="つ ⟺ っ" onClick={toggleSmallForm} />
-          </ToolTip>
-          <ToolTip content="Convert standard characters to their full width variant.">
-            <Button text="123 ⟹ １２３" onClick={convertFullWidth} />
-          </ToolTip>
-
-          <ToolTip
-            content={
-              <div className="grid gap-2">
-                <ButtonGroup
-                  buttonsProps={[
-                    { text: "「", onClick: () => insert("「") },
-                    { text: "」", onClick: () => insert("」") },
-                  ]}
-                />
-                <ButtonGroup
-                  buttonsProps={[
-                    { text: "『", onClick: () => insert("『") },
-                    { text: "』", onClick: () => insert("』") },
-                  ]}
-                />
-                <ButtonGroup
-                  buttonsProps={[
-                    { text: "【", onClick: () => insert("【") },
-                    { text: "】", onClick: () => insert("】") },
-                  ]}
-                />
-                <ButtonGroup
-                  buttonsProps={[
-                    { text: "〖", onClick: () => insert("〖") },
-                    { text: "〗", onClick: () => insert("〗") },
-                  ]}
-                />
-                <ButtonGroup
-                  buttonsProps={[
-                    { text: "〝", onClick: () => insert("〝") },
-                    { text: "〟", onClick: () => insert("〟") },
-                  ]}
-                />
-                <ButtonGroup
-                  buttonsProps={[
-                    { text: "（", onClick: () => insert("（") },
-                    { text: "）", onClick: () => insert("）") },
-                  ]}
-                />
-                <ButtonGroup
-                  buttonsProps={[
-                    { text: "｟", onClick: () => insert("｟") },
-                    { text: "｠", onClick: () => insert("｠") },
-                  ]}
-                />
-                <ButtonGroup
-                  buttonsProps={[
-                    { text: "〈", onClick: () => insert("〈") },
-                    { text: "〉", onClick: () => insert("〉") },
-                  ]}
-                />
-                <ButtonGroup
-                  buttonsProps={[
-                    { text: "《", onClick: () => insert("《") },
-                    { text: "》", onClick: () => insert("》") },
-                  ]}
-                />
-                <ButtonGroup
-                  buttonsProps={[
-                    { text: "｛", onClick: () => insert("｛") },
-                    { text: "｝", onClick: () => insert("｝") },
-                  ]}
-                />
-                <ButtonGroup
-                  buttonsProps={[
-                    { text: "［", onClick: () => insert("［") },
-                    { text: "］", onClick: () => insert("］") },
-                  ]}
-                />
-                <ButtonGroup
-                  buttonsProps={[
-                    { text: "〔", onClick: () => insert("〔") },
-                    { text: "〕", onClick: () => insert("〕") },
-                  ]}
-                />
-                <ButtonGroup
-                  buttonsProps={[
-                    { text: "〘", onClick: () => insert("〘") },
-                    { text: "〙", onClick: () => insert("〙") },
-                  ]}
-                />
-              </div>
-            }>
-            <Button text={"Quotations"} />
-          </ToolTip>
-          <ToolTip
-            content={
-              <div className="grid gap-2">
-                <Button text={"。"} onClick={() => insert("。")} />
-                <Button text={"？"} onClick={() => insert("？")} />
-                <Button text={"！"} onClick={() => insert("！")} />
-                <Button text={"⋯"} onClick={() => insert("⋯")} />
-                <Button text={"※"} onClick={() => insert("※")} />
-                <Button text={"♪"} onClick={() => insert("♪")} />
-                <Button text={"・"} onClick={() => insert("・")} />
-                <Button text={"〇"} onClick={() => insert("〇")} />
-                <Button text={'"　"'} onClick={() => insert("　")} />
-              </div>
-            }>
-            <Button text="Insert" />
-          </ToolTip>
+        <div className="grid place-items-center">
+          <p>Font size: {fontSize}x</p>
+          <input
+            title="Font size multiplier"
+            type="range"
+            min="1000"
+            max="3000"
+            value={fontSize * SIZE_MULTIPLIER}
+            onChange={(event) => setFontSize(parseInt(event.target.value, 10) / SIZE_MULTIPLIER)}
+          />
         </div>
-      </ContentPanel>
-    ),
-    [
-      convertFullWidth,
-      convertPunctuation,
-      fontSize,
-      insert,
-      lineIndex,
-      text,
-      toggleDakuten,
-      toggleSmallForm,
-      updateDisplayedText,
-      updateLineIndex,
-      xOffset,
-    ]
+        <ToolTip content="Automatically convert Western punctuations to Japanese ones.">
+          <Button text=". ⟹ 。" onClick={convertPunctuation} />
+        </ToolTip>
+        <ToolTip content="Swap a kana for one of its variant (different diacritics).">
+          <Button text="か ⟺ が" onClick={toggleDakuten} />
+        </ToolTip>
+        <ToolTip content="Toggle a kana's small form">
+          <Button text="つ ⟺ っ" onClick={toggleSmallForm} />
+        </ToolTip>
+        <ToolTip content="Convert standard characters to their full width variant.">
+          <Button text="123 ⟹ １２３" onClick={convertFullWidth} />
+        </ToolTip>
+
+        <ToolTip
+          content={
+            <div className="grid gap-2">
+              <ButtonGroup
+                buttonsProps={[
+                  { text: "「", onClick: () => insert("「") },
+                  { text: "」", onClick: () => insert("」") },
+                ]}
+              />
+              <ButtonGroup
+                buttonsProps={[
+                  { text: "『", onClick: () => insert("『") },
+                  { text: "』", onClick: () => insert("』") },
+                ]}
+              />
+              <ButtonGroup
+                buttonsProps={[
+                  { text: "【", onClick: () => insert("【") },
+                  { text: "】", onClick: () => insert("】") },
+                ]}
+              />
+              <ButtonGroup
+                buttonsProps={[
+                  { text: "〖", onClick: () => insert("〖") },
+                  { text: "〗", onClick: () => insert("〗") },
+                ]}
+              />
+              <ButtonGroup
+                buttonsProps={[
+                  { text: "〝", onClick: () => insert("〝") },
+                  { text: "〟", onClick: () => insert("〟") },
+                ]}
+              />
+              <ButtonGroup
+                buttonsProps={[
+                  { text: "（", onClick: () => insert("（") },
+                  { text: "）", onClick: () => insert("）") },
+                ]}
+              />
+              <ButtonGroup
+                buttonsProps={[
+                  { text: "｟", onClick: () => insert("｟") },
+                  { text: "｠", onClick: () => insert("｠") },
+                ]}
+              />
+              <ButtonGroup
+                buttonsProps={[
+                  { text: "〈", onClick: () => insert("〈") },
+                  { text: "〉", onClick: () => insert("〉") },
+                ]}
+              />
+              <ButtonGroup
+                buttonsProps={[
+                  { text: "《", onClick: () => insert("《") },
+                  { text: "》", onClick: () => insert("》") },
+                ]}
+              />
+              <ButtonGroup
+                buttonsProps={[
+                  { text: "｛", onClick: () => insert("｛") },
+                  { text: "｝", onClick: () => insert("｝") },
+                ]}
+              />
+              <ButtonGroup
+                buttonsProps={[
+                  { text: "［", onClick: () => insert("［") },
+                  { text: "］", onClick: () => insert("］") },
+                ]}
+              />
+              <ButtonGroup
+                buttonsProps={[
+                  { text: "〔", onClick: () => insert("〔") },
+                  { text: "〕", onClick: () => insert("〕") },
+                ]}
+              />
+              <ButtonGroup
+                buttonsProps={[
+                  { text: "〘", onClick: () => insert("〘") },
+                  { text: "〙", onClick: () => insert("〙") },
+                ]}
+              />
+            </div>
+          }>
+          <Button text={"Quotations"} />
+        </ToolTip>
+        <ToolTip
+          content={
+            <div className="grid gap-2">
+              <Button text={"。"} onClick={() => insert("。")} />
+              <Button text={"？"} onClick={() => insert("？")} />
+              <Button text={"！"} onClick={() => insert("！")} />
+              <Button text={"⋯"} onClick={() => insert("⋯")} />
+              <Button text={"※"} onClick={() => insert("※")} />
+              <Button text={"♪"} onClick={() => insert("♪")} />
+              <Button text={"・"} onClick={() => insert("・")} />
+              <Button text={"〇"} onClick={() => insert("〇")} />
+              <Button text={'"　"'} onClick={() => insert("　")} />
+            </div>
+          }>
+          <Button text="Insert" />
+        </ToolTip>
+      </div>
+    </ContentPanel>
   );
 
   return <AppLayout contentPanel={contentPanel} {...props} contentPanelScroolbar={false} />;

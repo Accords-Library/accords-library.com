@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { throttle } from "throttle-debounce";
 import { useIsClient } from "usehooks-ts";
 import { useOnScroll } from "./useOnScroll";
@@ -10,10 +10,7 @@ export const useIntersectionList = (ids: string[]): number => {
 
   const isClient = useIsClient();
 
-  const contentPanel = useMemo(
-    () => (isClient ? document.getElementById(Ids.ContentPanel) : null),
-    [isClient]
-  );
+  const contentPanel = isClient ? document.getElementById(Ids.ContentPanel) : null;
 
   const refreshCurrentIntersection = useCallback(
     (scroll: number) => {

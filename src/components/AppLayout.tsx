@@ -1,10 +1,8 @@
 import Head from "next/head";
-import { useMemo } from "react";
 import { useSwipeable } from "react-swipeable";
 import { layout } from "../../design.config";
 import { Ico, Icon } from "./Ico";
 import { MainPanel } from "./Panels/MainPanel";
-import { SafariPopup } from "./Panels/SafariPopup";
 import { isDefined, isUndefined } from "helpers/others";
 import { cIf, cJoin } from "helpers/className";
 import { OpenGraph, TITLE_PREFIX, TITLE_SEPARATOR } from "helpers/openGraph";
@@ -77,10 +75,7 @@ export const AppLayout = ({
     },
   });
 
-  const turnSubIntoContent = useMemo(
-    () => isDefined(subPanel) && isUndefined(contentPanel),
-    [contentPanel, subPanel]
-  );
+  const turnSubIntoContent = isDefined(subPanel) && isUndefined(contentPanel);
 
   return (
     <div
@@ -227,7 +222,6 @@ export const AppLayout = ({
           />
         )}
       </div>
-      <SafariPopup />
     </div>
   );
 };

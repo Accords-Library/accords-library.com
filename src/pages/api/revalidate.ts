@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { i18n } from "../../../next.config";
-import { cartesianProduct, filterHasAttributes } from "helpers/others";
+import { cartesianProduct, filterHasAttributes, isDefined } from "helpers/others";
 import { fetchLocalData } from "graphql/fetchLocalData";
 import { getReadySdk } from "graphql/sdk";
 
@@ -26,6 +26,7 @@ type RequestProps =
   | StrapiLibraryItem
   | StrapiPostContent
   | StrapiRangedContent
+  | StrapiVideo
   | StrapiWebsiteInterface
   | StrapiWiki;
 
@@ -131,6 +132,15 @@ interface StrapiChronicleChapter extends StrapiEvent {
   model: "chronicles-chapter";
   entry: {
     chronicles: { slug: string }[];
+  };
+}
+
+interface StrapiVideo extends StrapiEvent {
+  event: CRUDEvents;
+  model: "video";
+  entry: {
+    uid: string;
+    channel: StrapiRelationalField;
   };
 }
 
@@ -290,6 +300,19 @@ const Revalidate = async (
     case "language":
     case "currency": {
       await fetchLocalData();
+      break;
+    }
+
+    case "video": {
+      if (body.entry.uid) {
+        paths.push(`/archives/videos`);
+        paths.push(`/archives/videos/v/${body.entry.uid}`);
+        const video = await sdk.getVideo({ uid: body.entry.uid });
+        const channelUid = video.videos?.data[0].attributes?.channel?.data?.attributes?.uid;
+        if (isDefined(channelUid)) {
+          paths.push(`/archives/videos/c/${channelUid}`);
+        }
+      }
       break;
     }
 

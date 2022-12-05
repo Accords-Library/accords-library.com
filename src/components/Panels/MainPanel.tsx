@@ -1,4 +1,3 @@
-import Markdown from "markdown-to-jsx";
 import { HorizontalLine } from "components/HorizontalLine";
 import { Button } from "components/Inputs/Button";
 import { NavOption } from "components/PanelComponents/NavOption";
@@ -11,6 +10,7 @@ import { sendAnalytics } from "helpers/analytics";
 import { ColoredSvg } from "components/ColoredSvg";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter, useAtomPair, useAtomSetter } from "helpers/atoms";
+import { Markdawn } from "components/Markdown/Markdawn";
 
 /*
  *                                        ╭─────────────╮
@@ -166,7 +166,7 @@ export const MainPanel = (): JSX.Element => {
       <div className={cJoin("text-center", cIf(isMainPanelReduced && is3ColumnsLayout, "hidden"))}>
         {isDefinedAndNotEmpty(langui.licensing_notice) && (
           <p>
-            <Markdown>{langui.licensing_notice}</Markdown>
+            <Markdawn text={langui.licensing_notice} />
           </p>
         )}
         <div className="mt-4 mb-8 grid place-content-center">
@@ -192,7 +192,7 @@ export const MainPanel = (): JSX.Element => {
         </div>
         {isDefinedAndNotEmpty(langui.copyright_notice) && (
           <p>
-            <Markdown>{langui.copyright_notice}</Markdown>
+            <Markdawn text={langui.copyright_notice} />
           </p>
         )}
         <div className="mt-12 mb-4 grid h-4 grid-flow-col place-content-center gap-8">

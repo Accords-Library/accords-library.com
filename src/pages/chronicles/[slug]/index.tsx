@@ -43,14 +43,10 @@ const Chronicle = ({ chronicle, chapters, ...otherProps }: Props): JSX.Element =
     ),
   });
 
-  const primaryContent = useMemo<
-    NonNullable<ChronicleWithTranslations["contents"]>["data"][number]["attributes"]
-  >(
-    () =>
-      filterHasAttributes(chronicle.contents?.data, ["attributes.translations"] as const)[0]
-        ?.attributes,
-    [chronicle.contents?.data]
-  );
+  const primaryContent = chronicle.contents
+    ? filterHasAttributes(chronicle.contents.data, ["attributes.translations"] as const)[0]
+        ?.attributes
+    : undefined;
 
   const [selectedContentTranslation, ContentLanguageSwitcher, ContentLanguageSwitcherProps] =
     useSmartLanguage({

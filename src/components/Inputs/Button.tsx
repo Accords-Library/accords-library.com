@@ -1,8 +1,7 @@
-import React, { MouseEventHandler, useCallback } from "react";
+import { MouseEventHandler, useCallback } from "react";
 import { Link } from "./Link";
 import { Ico, Icon } from "components/Ico";
 import { cIf, cJoin } from "helpers/className";
-import { ConditionalWrapper, Wrapper } from "helpers/component";
 import { isDefined, isDefinedAndNotEmpty } from "helpers/others";
 import { TranslatedProps } from "types/TranslatedProps";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
@@ -45,10 +44,7 @@ export const Button = ({
   disabled,
   size = "normal",
 }: Props): JSX.Element => (
-  <ConditionalWrapper
-    isWrapping={isDefinedAndNotEmpty(href) && !disabled}
-    wrapperProps={{ href: href ?? "", alwaysNewTab }}
-    wrapper={LinkWrapper}>
+  <Link href={href} alwaysNewTab={alwaysNewTab} disabled={disabled}>
     <div className="relative">
       <div
         draggable={draggable}
@@ -90,7 +86,7 @@ export const Button = ({
         {isDefinedAndNotEmpty(text) && <p className="-translate-y-[0.05em] text-center">{text}</p>}
       </div>
     </div>
-  </ConditionalWrapper>
+  </Link>
 );
 
 /*
@@ -110,19 +106,3 @@ export const TranslatedButton = ({
 
   return <Button text={selectedTranslation?.text ?? fallback.text} {...otherProps} />;
 };
-
-/*
- *                                    ╭──────────────────────╮
- * ───────────────────────────────────╯  PRIVATE COMPONENTS  ╰──────────────────────────────────────
- */
-
-interface LinkWrapperProps {
-  href: string;
-  alwaysNewTab: boolean;
-}
-
-const LinkWrapper = ({ children, alwaysNewTab, href }: LinkWrapperProps & Wrapper) => (
-  <Link href={href} alwaysNewTab={alwaysNewTab}>
-    {children}
-  </Link>
-);

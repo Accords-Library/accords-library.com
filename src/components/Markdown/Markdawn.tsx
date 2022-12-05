@@ -1,6 +1,5 @@
 import Markdown from "markdown-to-jsx";
-import { useRouter } from "next/router";
-import React, { Fragment } from "react";
+import React, { Fragment, useMemo } from "react";
 import ReactDOMServer from "react-dom/server";
 import { HorizontalLine } from "components/HorizontalLine";
 import { Img } from "components/Img";
@@ -15,6 +14,7 @@ import { Ico, Icon } from "components/Ico";
 import { useDeviceSupportsHover } from "hooks/useMediaQuery";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter } from "helpers/atoms";
+import { Link } from "components/Inputs/Link";
 
 /*
  *                                        ╭─────────────╮
@@ -30,7 +30,6 @@ interface MarkdawnProps {
 
 export const Markdawn = ({ className, text: rawText }: MarkdawnProps): JSX.Element => {
   const playerName = useAtomGetter(atoms.settings.playerName);
-  const router = useRouter();
   const isContentPanelAtLeastLg = useAtomGetter(atoms.containerQueries.isContentPanelAtLeastLg);
   const { showLightBox } = useAtomGetter(atoms.lightBox);
 
@@ -53,13 +52,15 @@ export const Markdawn = ({ className, text: rawText }: MarkdawnProps): JSX.Eleme
             component: (compProps: { href: string; children: React.ReactNode }) => {
               if (compProps.href.startsWith("/") || compProps.href.startsWith("#")) {
                 return (
-                  <a onClick={async () => router.push(compProps.href)}>{compProps.children}</a>
+                  <Link href={compProps.href} linkStyled>
+                    {compProps.children}
+                  </Link>
                 );
               }
               return (
-                <a href={compProps.href} target="_blank" rel="noreferrer">
+                <Link href={compProps.href} alwaysNewTab linkStyled>
                   {compProps.children}
-                </a>
+                </Link>
               );
             },
           },
@@ -95,9 +96,9 @@ export const Markdawn = ({ className, text: rawText }: MarkdawnProps): JSX.Eleme
                 ? slugify(compProps.target)
                 : slugify(compProps.children?.toString());
               return (
-                <a onClick={async () => router.replace(`${compProps.page ?? ""}#${slug}`)}>
+                <Link href={`${compProps.page ?? ""}#${slug}`} linkStyled>
                   {compProps.children}
-                </a>
+                </Link>
               );
             },
           },
@@ -224,7 +225,6 @@ export const TableOfContents = ({
   title,
   horizontalLine = false,
 }: TableOfContentsProps): JSX.Element => {
-  const router = useRouter();
   const langui = useAtomGetter(atoms.localData.langui);
   const toc = getTocFromMarkdawn(preprocessMarkDawn(text), title);
 
@@ -238,9 +238,9 @@ export const TableOfContents = ({
             <p
               className="relative my-2 overflow-x-hidden text-ellipsis whitespace-nowrap
                 text-left">
-              <a onClick={async () => router.replace(`#${toc.slug}`)}>
+              <Link href={`#${toc.slug}`} linkStyled>
                 {<abbr title={toc.title}>{toc.title}</abbr>}
-              </a>
+              </Link>
             </p>
             <TocLevel tocchildren={toc.children} parentNumbering="" />
           </div>
@@ -340,8 +340,7 @@ const TocLevel = ({
   parentNumbering,
   allowIntersection = true,
 }: LevelProps): JSX.Element => {
-  const router = useRouter();
-  const ids = tocchildren.map((child) => child.slug);
+  const ids = useMemo(() => tocchildren.map((child) => child.slug), [tocchildren]);
   const currentIntersection = useIntersectionList(ids);
 
   return (
@@ -354,9 +353,9 @@ const TocLevel = ({
               cIf(allowIntersection && currentIntersection === childIndex, "text-dark")
             )}>
             <span className="text-dark">{`${parentNumbering}${childIndex + 1}.`}</span>{" "}
-            <a onClick={async () => router.replace(`#${child.slug}`)}>
+            <Link href={`#${child.slug}`} linkStyled>
               {<abbr title={child.title}>{child.title}</abbr>}
-            </a>
+            </Link>
           </li>
           <TocLevel
             tocchildren={child.children}

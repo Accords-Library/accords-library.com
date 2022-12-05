@@ -53,6 +53,7 @@ import { getLangui } from "graphql/fetchLocalData";
 import { Ids } from "types/ids";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter } from "helpers/atoms";
+import { Link } from "components/Inputs/Link";
 
 /*
  *                                         ╭─────────────╮
@@ -713,7 +714,7 @@ const ContentLine = ({
         cIf(isOpened, "my-2 h-auto bg-mid py-3 shadow-inner-sm shadow-shade")
       )}>
       <div className="grid grid-cols-[auto_auto_1fr_auto_12ch] place-items-center gap-4">
-        <a>
+        <Link href={""} linkStyled>
           <h3 className="cursor-pointer" onClick={toggleOpened}>
             {selectedTranslation
               ? prettyInlineTitle(
@@ -725,7 +726,7 @@ const ContentLine = ({
               ? prettySlug(content.slug, parentSlug)
               : prettySlug(slug, parentSlug)}
           </h3>
-        </a>
+        </Link>
         <div className="flex flex-row flex-wrap gap-1">
           {content?.categories?.map((category, index) => (
             <Chip key={index} text={category} />

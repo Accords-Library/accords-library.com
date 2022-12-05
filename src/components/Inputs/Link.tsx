@@ -1,74 +1,81 @@
-import router from "next/router";
-import { MouseEventHandler, useState } from "react";
-import { isDefined } from "helpers/others";
+import React, { MouseEventHandler } from "react";
+import NextLink from "next/link";
+import { ConditionalWrapper, Wrapper } from "helpers/component";
+import { isDefinedAndNotEmpty } from "helpers/others";
+import { cIf, cJoin } from "helpers/className";
 
 interface Props {
-  href: string;
+  href: string | null | undefined;
   className?: string;
-  allowNewTab?: boolean;
   alwaysNewTab?: boolean;
   children: React.ReactNode;
   onClick?: MouseEventHandler<HTMLDivElement>;
   onFocusChanged?: (isFocused: boolean) => void;
   disabled?: boolean;
+  linkStyled?: boolean;
 }
 
 export const Link = ({
   href,
-  allowNewTab = true,
-  alwaysNewTab = false,
-  disabled = false,
   children,
   className,
-  onClick,
+  alwaysNewTab,
+  disabled,
+  linkStyled = false,
   onFocusChanged,
-}: Props): JSX.Element => {
-  const [isValidClick, setIsValidClick] = useState(false);
+}: Props): JSX.Element => (
+  <ConditionalWrapper
+    isWrapping={isDefinedAndNotEmpty(href) && !disabled}
+    wrapperProps={{
+      href: href ?? "",
+      alwaysNewTab,
+      onFocusChanged,
+      className: cJoin(
+        cIf(
+          linkStyled,
+          `underline decoration-dark decoration-dotted underline-offset-2 transition-colors
+          hover:text-dark`
+        ),
+        className
+      ),
+    }}
+    wrapper={LinkWrapper}
+    wrapperFalse={DisabledWrapper}
+    wrapperFalseProps={{ className }}>
+    {children}
+  </ConditionalWrapper>
+);
 
-  return (
-    <div
-      className={className}
-      onMouseLeave={() => {
-        setIsValidClick(false);
-        onFocusChanged?.(false);
-      }}
-      onContextMenu={(event) => event.preventDefault()}
-      onMouseDown={(event) => {
-        if (!disabled) {
-          event.preventDefault();
-          onFocusChanged?.(true);
-          setIsValidClick(true);
-        }
-      }}
-      onMouseUp={(event) => {
-        onFocusChanged?.(false);
-        if (!disabled) {
-          if (isDefined(onClick)) {
-            onClick(event);
-          } else if (isValidClick && href) {
-            if (event.button !== MouseButton.Right) {
-              if (alwaysNewTab) {
-                window.open(href, "_blank", "noopener");
-              } else if (event.button === MouseButton.Left) {
-                if (href.startsWith("#")) {
-                  router.replace(href);
-                } else {
-                  router.push(href);
-                }
-              } else if (allowNewTab) {
-                window.open(href, "_blank");
-              }
-            }
-          }
-        }
-      }}>
-      {children}
-    </div>
-  );
-};
-
-enum MouseButton {
-  Left = 0,
-  Middle = 1,
-  Right = 2,
+interface LinkWrapperProps {
+  href: string;
+  className?: string;
+  alwaysNewTab?: boolean;
+  onFocusChanged?: (isFocused: boolean) => void;
 }
+
+const LinkWrapper = ({
+  children,
+  className,
+  onFocusChanged,
+  alwaysNewTab = false,
+  href,
+}: LinkWrapperProps & Wrapper) => (
+  <NextLink
+    href={href}
+    className={className}
+    target={alwaysNewTab ? "_blank" : "_self"}
+    replace={href.startsWith("#")}
+    onMouseLeave={() => onFocusChanged?.(false)}
+    onMouseDown={() => onFocusChanged?.(true)}
+    onMouseUp={() => onFocusChanged?.(false)}>
+    {children}
+  </NextLink>
+);
+
+interface DisabledWrapperProps {
+  className?: string;
+}
+
+const DisabledWrapper = ({ children, className }: DisabledWrapperProps & Wrapper) => (
+  <div className={className}>{children}</div>
+);

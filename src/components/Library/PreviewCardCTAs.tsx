@@ -34,8 +34,8 @@ export const PreviewCardCTAs = ({ id, expand = false }: Props): JSX.Element => {
           icon={Icon.Favorite}
           text={expand ? langui.want_it : undefined}
           active={libraryItemUserStatus[id] === LibraryItemUserStatus.Want}
-          onMouseUp={(event) => event.stopPropagation()}
-          onClick={() => {
+          onClick={(event) => {
+            event.preventDefault();
             setLibraryItemUserStatus((current) => {
               const newLibraryItemUserStatus = { ...current };
               newLibraryItemUserStatus[id] =
@@ -52,8 +52,8 @@ export const PreviewCardCTAs = ({ id, expand = false }: Props): JSX.Element => {
           icon={Icon.BackHand}
           text={expand ? langui.have_it : undefined}
           active={libraryItemUserStatus[id] === LibraryItemUserStatus.Have}
-          onMouseUp={(event) => event.stopPropagation()}
-          onClick={() => {
+          onClick={(event) => {
+            event.preventDefault();
             setLibraryItemUserStatus((current) => {
               const newLibraryItemUserStatus = { ...current };
               newLibraryItemUserStatus[id] =

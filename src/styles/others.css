@@ -19,11 +19,6 @@ h6 {
   @apply font-headers font-black;
 }
 
-a {
-  @apply cursor-pointer underline decoration-dark decoration-dotted
-  underline-offset-2 transition-colors hover:text-dark;
-}
-
 *::selection {
   @apply bg-dark text-light;
 }

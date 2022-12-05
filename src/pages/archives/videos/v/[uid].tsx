@@ -18,6 +18,7 @@ import { getOpenGraph } from "helpers/openGraph";
 import { getLangui } from "graphql/fetchLocalData";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter } from "helpers/atoms";
+import { Link } from "components/Inputs/Link";
 
 /*
  *                                           ╭────────╮
@@ -95,9 +96,9 @@ const Video = ({ video, ...otherProps }: Props): JSX.Element => {
                     : prettyShortenNumber(video.likes)}
                 </p>
               )}
-              <a href={`https://youtu.be/${video.uid}`} target="_blank" rel="noreferrer">
-                <Button className="!py-0 !px-3" text={`${langui.view_on} ${video.source}`} />
-              </a>
+              <Link href={`https://youtu.be/${video.uid}`} alwaysNewTab>
+                <Button size="small" text={`${langui.view_on} ${video.source}`} />
+              </Link>
             </div>
           </div>
         </div>

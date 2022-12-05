@@ -170,11 +170,12 @@ export const MainPanel = (): JSX.Element => {
           </p>
         )}
         <div className="mt-4 mb-8 grid place-content-center">
-          <a
+          <Link
             onClick={() => sendAnalytics("MainPanel", "Visit license")}
             aria-label="Read more about the license we use for this website"
             className="group grid grid-flow-col place-content-center gap-1 transition-filter"
-            href="https://creativecommons.org/licenses/by-sa/4.0/">
+            href="https://creativecommons.org/licenses/by-sa/4.0/"
+            alwaysNewTab>
             <ColoredSvg
               className="h-6 w-6 bg-black group-hover:bg-dark"
               src="/icons/creative-commons-brands.svg"
@@ -187,7 +188,7 @@ export const MainPanel = (): JSX.Element => {
               className="h-6 w-6 bg-black group-hover:bg-dark"
               src="/icons/creative-commons-sa-brands.svg"
             />
-          </a>
+          </Link>
         </div>
         {isDefinedAndNotEmpty(langui.copyright_notice) && (
           <p>
@@ -195,39 +196,36 @@ export const MainPanel = (): JSX.Element => {
           </p>
         )}
         <div className="mt-12 mb-4 grid h-4 grid-flow-col place-content-center gap-8">
-          <a
+          <Link
             aria-label="Browse our GitHub repository, which include this website source code"
             onClick={() => sendAnalytics("MainPanel", "Visit GitHub")}
             href="https://github.com/Accords-Library"
-            target="_blank"
-            rel="noopener noreferrer">
+            alwaysNewTab>
             <ColoredSvg
               className="h-10 w-10 bg-black hover:bg-dark"
               src="/icons/github-brands.svg"
             />
-          </a>
-          <a
+          </Link>
+          <Link
             aria-label="Follow us on Twitter"
             onClick={() => sendAnalytics("MainPanel", "Visit Twitter")}
             href="https://twitter.com/AccordsLibrary"
-            target="_blank"
-            rel="noopener noreferrer">
+            alwaysNewTab>
             <ColoredSvg
               className="h-10 w-10 bg-black hover:bg-dark"
               src="/icons/twitter-brands.svg"
             />
-          </a>
-          <a
+          </Link>
+          <Link
             aria-label="Join our Discord server!"
             onClick={() => sendAnalytics("MainPanel", "Visit Discord")}
             href="/discord"
-            target="_blank"
-            rel="noopener noreferrer">
+            alwaysNewTab>
             <ColoredSvg
               className="h-10 w-10 bg-black hover:bg-dark"
               src="/icons/discord-brands.svg"
             />
-          </a>
+          </Link>
         </div>
       </div>
     </div>

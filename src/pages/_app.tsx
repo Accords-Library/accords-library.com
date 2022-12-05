@@ -36,10 +36,9 @@ const AccordsLibraryApp = (props: AppProps): JSX.Element => {
       <SettingsPopup />
       <LightBoxProvider />
       <Script
-        async
-        defer
         data-website-id={process.env.NEXT_PUBLIC_UMAMI_ID}
         src={`${process.env.NEXT_PUBLIC_UMAMI_URL}/umami.js`}
+        strategy="lazyOnload"
       />
       <props.Component {...props.pageProps} />
     </>

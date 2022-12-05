@@ -73,7 +73,7 @@ export const SmartList = <T,>({
   const [page, setPage] = useState(0);
   const langui = useAtomGetter(atoms.localData.langui);
   useScrollTopOnChange(Ids.ContentPanel, [page], paginationScroolTop);
-  useEffect(() => setPage(0), [searchingTerm, groupingFunction, groupSortingFunction, items]);
+  useEffect(() => setPage(0), [searchingTerm, groupingFunction, groupSortingFunction]);
 
   const searchFilter = useCallback(() => {
     if (isDefinedAndNotEmpty(searchingTerm) && isDefined(searchingBy)) {

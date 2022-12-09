@@ -27,13 +27,11 @@ const imageQualityProperties: Record<ImageQuality, ImageProperties> = {
 };
 
 export const getAssetFilename = (path: string): string => {
-  let result = path.split("/");
-  result = result[result.length - 1].split(".");
-  result = result
-    .splice(0, result.length - 1)
-    .join(".")
-    .split("_");
-  return result[0];
+  // /uploads/329_7f41d09a98.webp -> 329_7f41d09a98.webp
+  let result = path.substring(path.lastIndexOf("/") + 1);
+  // 329_7f41d09a98.webp -> 329
+  result = result.substring(0, result.indexOf("_"));
+  return result;
 };
 
 export const getAssetURL = (url: string, quality: ImageQuality): string => {

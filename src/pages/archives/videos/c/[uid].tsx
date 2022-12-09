@@ -14,7 +14,7 @@ import { getVideoThumbnailURL } from "helpers/videos";
 import { Icon } from "components/Ico";
 import { useDeviceSupportsHover } from "hooks/useMediaQuery";
 import { WithLabel } from "components/Inputs/WithLabel";
-import { filterHasAttributes, isDefined } from "helpers/others";
+import { filterHasAttributes, isDefined } from "helpers/asserts";
 import { getOpenGraph } from "helpers/openGraph";
 import { compareDate } from "helpers/date";
 import { HorizontalLine } from "components/HorizontalLine";
@@ -136,7 +136,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const channel = await sdk.getVideoChannel({
     channel: context.params && isDefined(context.params.uid) ? context.params.uid.toString() : "",
   });
-  if (!channel.videoChannels?.data[0].attributes) return { notFound: true };
+  if (!channel.videoChannels?.data[0]?.attributes) return { notFound: true };
 
   channel.videoChannels.data[0].attributes.videos?.data
     .sort((a, b) => compareDate(a.attributes?.published_date, b.attributes?.published_date))

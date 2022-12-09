@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { i18n } from "../../../next.config";
-import { cartesianProduct, filterHasAttributes, isDefined } from "helpers/others";
+import { cartesianProduct } from "helpers/others";
+import { filterHasAttributes, isDefined } from "helpers/asserts";
 import { fetchLocalData } from "graphql/fetchLocalData";
 import { getReadySdk } from "graphql/sdk";
 
@@ -183,7 +184,7 @@ const Revalidate = async (
           language_code: "en",
           slug: body.entry.slug,
         });
-        filterHasAttributes(libraryItem.libraryItems?.data[0].attributes?.subitem_of?.data, [
+        filterHasAttributes(libraryItem.libraryItems?.data[0]?.attributes?.subitem_of?.data, [
           "attributes.slug",
         ] as const).forEach((parentItem) => paths.push(`/library/${parentItem.attributes.slug}`));
       }
@@ -202,12 +203,12 @@ const Revalidate = async (
           slug: body.entry.slug,
         });
 
-        const folderSlug = content.contents?.data[0].attributes?.folder?.data?.attributes?.slug;
+        const folderSlug = content.contents?.data[0]?.attributes?.folder?.data?.attributes?.slug;
         if (folderSlug) {
           paths.push(`/contents/folder/${folderSlug}`);
         }
 
-        filterHasAttributes(content.contents?.data[0].attributes?.ranged_contents?.data, [
+        filterHasAttributes(content.contents?.data[0]?.attributes?.ranged_contents?.data, [
           "attributes.library_item.data.attributes.slug",
         ] as const).forEach((ranged_content) => {
           const parentSlug = ranged_content.attributes.library_item.data.attributes.slug;
@@ -260,16 +261,16 @@ const Revalidate = async (
           slug: body.entry.slug,
         });
         const parentSlug =
-          folder.contentsFolders?.data[0].attributes?.parent_folder?.data?.attributes?.slug;
+          folder.contentsFolders?.data[0]?.attributes?.parent_folder?.data?.attributes?.slug;
         if (parentSlug) {
           paths.push(`/contents/folder/${parentSlug}`);
         }
-        filterHasAttributes(folder.contentsFolders?.data[0].attributes?.subfolders?.data, [
+        filterHasAttributes(folder.contentsFolders?.data[0]?.attributes?.subfolders?.data, [
           "attributes.slug",
         ] as const).forEach((subfolder) =>
           paths.push(`/contents/folder/${subfolder.attributes.slug}`)
         );
-        filterHasAttributes(folder.contentsFolders?.data[0].attributes?.contents?.data, [
+        filterHasAttributes(folder.contentsFolders?.data[0]?.attributes?.contents?.data, [
           "attributes.slug",
         ] as const).forEach((content) => paths.push(`/contents/${content.attributes.slug}`));
       }
@@ -308,7 +309,7 @@ const Revalidate = async (
         paths.push(`/archives/videos`);
         paths.push(`/archives/videos/v/${body.entry.uid}`);
         const video = await sdk.getVideo({ uid: body.entry.uid });
-        const channelUid = video.videos?.data[0].attributes?.channel?.data?.attributes?.uid;
+        const channelUid = video.videos?.data[0]?.attributes?.channel?.data?.attributes?.uid;
         if (isDefined(channelUid)) {
           paths.push(`/archives/videos/c/${channelUid}`);
         }

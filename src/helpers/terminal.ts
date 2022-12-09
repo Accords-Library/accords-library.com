@@ -1,4 +1,4 @@
-import { isDefinedAndNotEmpty } from "./others";
+import { isDefinedAndNotEmpty } from "./asserts";
 
 export const prettyTerminalUnderlinedTitle = (string: string | null | undefined): string =>
   isDefinedAndNotEmpty(string)

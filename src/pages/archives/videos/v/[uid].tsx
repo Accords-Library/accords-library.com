@@ -12,7 +12,7 @@ import { SubPanel } from "components/Containers/SubPanel";
 import { GetVideoQuery } from "graphql/generated";
 import { getReadySdk } from "graphql/sdk";
 import { prettyDate, prettyShortenNumber } from "helpers/formatters";
-import { filterHasAttributes, isDefined } from "helpers/others";
+import { filterHasAttributes, isDefined } from "helpers/asserts";
 import { getVideoFile } from "helpers/videos";
 import { getOpenGraph } from "helpers/openGraph";
 import { getLangui } from "graphql/fetchLocalData";

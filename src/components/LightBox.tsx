@@ -9,7 +9,7 @@ import { useFullscreen } from "hooks/useFullscreen";
 import { Ids } from "types/ids";
 import { UploadImageFragment } from "graphql/generated";
 import { ImageQuality } from "helpers/img";
-import { isDefined } from "helpers/others";
+import { isDefined } from "helpers/asserts";
 import { useAtomGetter } from "helpers/atoms";
 import { atoms } from "contexts/atoms";
 

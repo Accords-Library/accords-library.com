@@ -13,12 +13,8 @@ import {
 } from "graphql/generated";
 import { getReadySdk } from "graphql/sdk";
 import { prettySlug } from "helpers/formatters";
-import {
-  filterHasAttributes,
-  getStatusDescription,
-  isDefined,
-  isDefinedAndNotEmpty,
-} from "helpers/others";
+import { getStatusDescription } from "helpers/others";
+import { filterHasAttributes, isDefined, isDefinedAndNotEmpty } from "helpers/asserts";
 import { getOpenGraph } from "helpers/openGraph";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { ToolTip } from "components/ToolTip";
@@ -156,7 +152,7 @@ const ChronologyEra = ({ id, title, description, chronologyItems }: ChronologyEr
     let currentYear = -Infinity;
     filterHasAttributes(chronologyItems, ["attributes"] as const).forEach((item) => {
       if (currentYear === item.attributes.year) {
-        memo[memo.length - 1].push(item);
+        memo[memo.length - 1]?.push(item);
       } else {
         currentYear = item.attributes.year;
         memo.push([item]);
@@ -214,7 +210,7 @@ interface ChronologyYearProps {
 const ChronologyYear = ({ items }: ChronologyYearProps) => (
   <div
     className="rounded-2xl target:my-4 target:bg-mid target:py-4"
-    id={generateAnchor(items[0].attributes?.year)}>
+    id={generateAnchor(items[0]?.attributes?.year)}>
     {filterHasAttributes(items, ["attributes.events"] as const).map((item, index) => (
       <ChronologyDate
         key={index}

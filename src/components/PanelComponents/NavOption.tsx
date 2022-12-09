@@ -3,7 +3,7 @@ import { MouseEventHandler, useCallback } from "react";
 import { Ico, Icon } from "components/Ico";
 import { ToolTip } from "components/ToolTip";
 import { cIf, cJoin } from "helpers/className";
-import { isDefinedAndNotEmpty } from "helpers/others";
+import { isDefinedAndNotEmpty } from "helpers/asserts";
 import { TranslatedProps } from "types/TranslatedProps";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { DownPressable } from "components/Containers/DownPressable";

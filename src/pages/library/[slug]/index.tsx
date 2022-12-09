@@ -31,13 +31,13 @@ import {
 } from "helpers/formatters";
 import { ImageQuality } from "helpers/img";
 import { convertMmToInch } from "helpers/numbers";
+import { sortRangedContent } from "helpers/others";
 import {
   filterDefined,
   filterHasAttributes,
   isDefined,
   isDefinedAndNotEmpty,
-  sortRangedContent,
-} from "helpers/others";
+} from "helpers/asserts";
 import { useScrollTopOnChange } from "hooks/useScrollTopOnChange";
 import { isUntangibleGroupItem } from "helpers/libraryItem";
 import { useDeviceSupportsHover } from "hooks/useMediaQuery";

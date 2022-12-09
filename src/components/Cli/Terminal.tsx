@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { cJoin, cIf } from "helpers/className";
-import { isDefined, isDefinedAndNotEmpty } from "helpers/others";
+import { isDefined, isDefinedAndNotEmpty } from "helpers/asserts";
 import { atoms } from "contexts/atoms";
 import { useAtomSetter, useAtomPair } from "helpers/atoms";
 

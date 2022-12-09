@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
 import { LanguageSwitcher } from "components/Inputs/LanguageSwitcher";
-import { filterDefined, isDefined } from "helpers/others";
+import { filterDefined, isDefined } from "helpers/asserts";
 import { getPreferredLanguage } from "helpers/locales";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter } from "helpers/atoms";

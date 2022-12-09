@@ -10,7 +10,7 @@ import { Popup } from "components/Containers/Popup";
 import { sendAnalytics } from "helpers/analytics";
 import { cJoin, cIf } from "helpers/className";
 import { prettyLanguage } from "helpers/formatters";
-import { filterHasAttributes, isDefined } from "helpers/others";
+import { filterHasAttributes, isDefined } from "helpers/asserts";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter, useAtomPair } from "helpers/atoms";
 import { ThemeMode } from "contexts/settings";
@@ -39,14 +39,9 @@ export const SettingsPopup = (): JSX.Element => {
   );
 
   const [currencySelect, setCurrencySelect] = useState<number>(-1);
-
   useEffect(() => {
     if (isDefined(currency)) setCurrencySelect(currencyOptions.indexOf(currency));
   }, [currency, currencyOptions]);
-
-  useEffect(() => {
-    if (currencySelect >= 0) setCurrency(currencyOptions[currencySelect]);
-  }, [currencyOptions, currencySelect, setCurrency]);
 
   return (
     <Popup
@@ -134,8 +129,11 @@ export const SettingsPopup = (): JSX.Element => {
                 options={currencyOptions}
                 value={currencySelect}
                 onChange={(newCurrency) => {
-                  setCurrencySelect(newCurrency);
-                  sendAnalytics("Settings", `Change currency (${currencyOptions[newCurrency]})}`);
+                  const newCurrencyName = currencyOptions[newCurrency];
+                  if (isDefined(newCurrencyName)) {
+                    setCurrency(newCurrencyName);
+                    sendAnalytics("Settings", `Change currency (${currencyOptions[newCurrency]})}`);
+                  }
                 }}
                 className="w-28"
               />

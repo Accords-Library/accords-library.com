@@ -3,7 +3,7 @@ import { useSwipeable } from "react-swipeable";
 import { layout } from "../../design.config";
 import { Ico, Icon } from "./Ico";
 import { MainPanel } from "./Panels/MainPanel";
-import { isDefined, isUndefined } from "helpers/others";
+import { isDefined, isUndefined } from "helpers/asserts";
 import { cIf, cJoin } from "helpers/className";
 import { OpenGraph, TITLE_PREFIX, TITLE_SEPARATOR } from "helpers/openGraph";
 import { Ids } from "types/ids";
@@ -239,7 +239,7 @@ const ContentPlaceholder = ({ message, icon }: ContentPlaceholderProps): JSX.Ele
       className="grid grid-flow-col place-items-center gap-9 rounded-2xl border-2 border-dotted
         border-dark p-8 text-dark opacity-40">
       {isDefined(icon) && <Ico icon={icon} className="!text-[300%]" />}
-      <p className={cJoin("w-64 text-2xl", cIf(!isDefined(icon), "text-center"))}>{message}</p>
+      <p className={cJoin("w-64 text-2xl", cIf(isUndefined(icon), "text-center"))}>{message}</p>
     </div>
   </div>
 );

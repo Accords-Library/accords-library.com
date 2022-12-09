@@ -1,4 +1,4 @@
-import { filterDefined, isDefined, isDefinedAndNotEmpty } from "./others";
+import { filterDefined, isDefined, isDefinedAndNotEmpty } from "./asserts";
 
 export const getDescription = (
   description: string | null | undefined,

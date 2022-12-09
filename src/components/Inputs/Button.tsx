@@ -2,7 +2,7 @@ import { MouseEventHandler, useCallback } from "react";
 import { Link } from "./Link";
 import { Ico, Icon } from "components/Ico";
 import { cIf, cJoin } from "helpers/className";
-import { isDefined, isDefinedAndNotEmpty } from "helpers/others";
+import { isDefined, isDefinedAndNotEmpty } from "helpers/asserts";
 import { TranslatedProps } from "types/TranslatedProps";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 

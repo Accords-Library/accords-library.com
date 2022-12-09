@@ -21,10 +21,15 @@ import { isUntangibleGroupItem } from "helpers/libraryItem";
 import { PreviewCard } from "components/PreviewCard";
 import { useDeviceSupportsHover } from "hooks/useMediaQuery";
 import { ButtonGroup } from "components/Inputs/ButtonGroup";
-import { filterHasAttributes, isDefined, isDefinedAndNotEmpty, isUndefined } from "helpers/others";
+import {
+  filterHasAttributes,
+  isDefined,
+  isDefinedAndNotEmpty,
+  isUndefined,
+  SelectiveNonNullable,
+} from "helpers/asserts";
 import { convertPrice } from "helpers/numbers";
 import { SmartList } from "components/SmartList";
-import { SelectiveNonNullable } from "types/SelectiveNonNullable";
 import { getOpenGraph } from "helpers/openGraph";
 import { compareDate } from "helpers/date";
 import { HorizontalLine } from "components/HorizontalLine";
@@ -142,11 +147,14 @@ const Library = ({ items, ...otherProps }: Props): JSX.Element => {
           return naturalCompare(titleA, titleB);
         }
         case 1: {
+          const commonCurrency = currencies[0];
+          if (isUndefined(commonCurrency)) return 0;
+
           const priceA = a.attributes.price
-            ? convertPrice(a.attributes.price, currencies[0])
+            ? convertPrice(a.attributes.price, commonCurrency)
             : Infinity;
           const priceB = b.attributes.price
-            ? convertPrice(b.attributes.price, currencies[0])
+            ? convertPrice(b.attributes.price, commonCurrency)
             : Infinity;
           return priceA - priceB;
         }

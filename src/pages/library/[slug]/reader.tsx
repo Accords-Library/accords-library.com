@@ -11,13 +11,8 @@ import {
   UploadImageFragment,
 } from "graphql/generated";
 import { getReadySdk } from "graphql/sdk";
-import {
-  filterHasAttributes,
-  getStatusDescription,
-  isDefined,
-  isDefinedAndNotEmpty,
-  sortRangedContent,
-} from "helpers/others";
+import { getStatusDescription, sortRangedContent } from "helpers/others";
+import { filterHasAttributes, isDefined, isDefinedAndNotEmpty } from "helpers/asserts";
 import { getOpenGraph } from "helpers/openGraph";
 import { getLangui } from "graphql/fetchLocalData";
 import { ContentPanel, ContentPanelWidthSizes } from "components/Containers/ContentPanel";
@@ -305,12 +300,7 @@ const LibrarySlug = ({
           max={10}
           value={filterSettings.teint * 10}
           onChange={(event) => {
-            let value = 0;
-            if (Array.isArray(event)) {
-              value = event[0];
-            } else {
-              value = event;
-            }
+            const value = (Array.isArray(event) ? event[0] : event) ?? 0;
             setTeint(value / 10);
           }}
         />
@@ -390,7 +380,7 @@ const LibrarySlug = ({
                   ? CUSTOM_DARK_DROPSHADOW
                   : CUSTOM_LIGHT_DROPSHADOW,
             }}>
-            {effectiveDisplayMode === "single" ? (
+            {effectiveDisplayMode === "single" && isDefined(firstPage) ? (
               <div
                 className={cJoin(
                   "relative grid grid-flow-col",
@@ -412,70 +402,73 @@ const LibrarySlug = ({
                 />
               </div>
             ) : (
-              <>
-                <div
-                  className={cJoin(
-                    "relative grid grid-flow-col",
-                    cIf(currentZoom <= 1, "cursor-pointer", "cursor-move")
-                  )}
-                  onClick={() => currentZoom <= 1 && handlePageNavigation("left")}
-                  style={{
-                    clipPath: leftSideClipPath,
-                  }}>
-                  {isSidePagesEnabled && (
-                    <div
-                      style={{
-                        width: leftSidePagesWidth,
-                        backgroundImage: `url(/reader/sidepages-${bookType}.webp)`,
-                        backgroundSize: `${
-                          (SIDEPAGES_PAGE_COUNT_ON_TEXTURE / leftSidePagesCount) * 100
-                        }% 100%`,
-                      }}
-                    />
-                  )}
-
-                  <Img
-                    style={{ maxHeight: pageHeight, width: "auto" }}
-                    src={pageOrder === PageOrder.LeftToRight ? firstPage : secondPage}
-                    quality={pageQuality}
-                  />
-                  <PageFilters page="left" bookType={bookType} options={filterSettings} />
-                </div>
-                <div
-                  className={cJoin(
-                    "relative grid grid-flow-col",
-                    cIf(currentZoom <= 1, "cursor-pointer", "cursor-move")
-                  )}
-                  onClick={() => currentZoom <= 1 && handlePageNavigation("right")}
-                  style={{
-                    clipPath: rightSideClipPath,
-                  }}>
-                  <Img
-                    style={{ maxHeight: pageHeight, width: "auto" }}
-                    className={cIf(
-                      is1ColumnLayout,
-                      `max-h-[calc(100vh-5rem)]`,
-                      "max-h-[calc(100vh-4rem)]"
+              isDefined(firstPage) &&
+              isDefined(secondPage) && (
+                <>
+                  <div
+                    className={cJoin(
+                      "relative grid grid-flow-col",
+                      cIf(currentZoom <= 1, "cursor-pointer", "cursor-move")
                     )}
-                    src={pageOrder === PageOrder.LeftToRight ? secondPage : firstPage}
-                    quality={pageQuality}
-                  />
-                  {isSidePagesEnabled && (
-                    <div
-                      style={{
-                        width: rightSidePagesWidth,
-                        backgroundImage: `url(/reader/sidepages-${bookType}.webp)`,
-                        backgroundPositionX: "right",
-                        backgroundSize: `${
-                          (SIDEPAGES_PAGE_COUNT_ON_TEXTURE / rightSidePagesCount) * 100
-                        }% 100%`,
-                      }}
-                    />
-                  )}
+                    onClick={() => currentZoom <= 1 && handlePageNavigation("left")}
+                    style={{
+                      clipPath: leftSideClipPath,
+                    }}>
+                    {isSidePagesEnabled && (
+                      <div
+                        style={{
+                          width: leftSidePagesWidth,
+                          backgroundImage: `url(/reader/sidepages-${bookType}.webp)`,
+                          backgroundSize: `${
+                            (SIDEPAGES_PAGE_COUNT_ON_TEXTURE / leftSidePagesCount) * 100
+                          }% 100%`,
+                        }}
+                      />
+                    )}
 
-                  <PageFilters page="right" bookType={bookType} options={filterSettings} />
-                </div>
-              </>
+                    <Img
+                      style={{ maxHeight: pageHeight, width: "auto" }}
+                      src={pageOrder === PageOrder.LeftToRight ? firstPage : secondPage}
+                      quality={pageQuality}
+                    />
+                    <PageFilters page="left" bookType={bookType} options={filterSettings} />
+                  </div>
+                  <div
+                    className={cJoin(
+                      "relative grid grid-flow-col",
+                      cIf(currentZoom <= 1, "cursor-pointer", "cursor-move")
+                    )}
+                    onClick={() => currentZoom <= 1 && handlePageNavigation("right")}
+                    style={{
+                      clipPath: rightSideClipPath,
+                    }}>
+                    <Img
+                      style={{ maxHeight: pageHeight, width: "auto" }}
+                      className={cIf(
+                        is1ColumnLayout,
+                        `max-h-[calc(100vh-5rem)]`,
+                        "max-h-[calc(100vh-4rem)]"
+                      )}
+                      src={pageOrder === PageOrder.LeftToRight ? secondPage : firstPage}
+                      quality={pageQuality}
+                    />
+                    {isSidePagesEnabled && (
+                      <div
+                        style={{
+                          width: rightSidePagesWidth,
+                          backgroundImage: `url(/reader/sidepages-${bookType}.webp)`,
+                          backgroundPositionX: "right",
+                          backgroundSize: `${
+                            (SIDEPAGES_PAGE_COUNT_ON_TEXTURE / rightSidePagesCount) * 100
+                          }% 100%`,
+                        }}
+                      />
+                    )}
+
+                    <PageFilters page="right" bookType={bookType} options={filterSettings} />
+                  </div>
+                </>
+              )
             )}
           </TransformComponent>
         </TransformWrapper>
@@ -498,12 +491,7 @@ const LibrarySlug = ({
             max={pages.length - 1}
             value={currentPageIndex - 1}
             onChange={(event) => {
-              let value = 0;
-              if (Array.isArray(event)) {
-                value = event[0];
-              } else {
-                value = event;
-              }
+              const value = (Array.isArray(event) ? event[0] : event) ?? 0;
               changeCurrentPageIndex(() => value);
             }}
           />
@@ -657,7 +645,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     bookType,
     pageWidth,
     itemSlug: item.libraryItems.data[0].attributes.slug,
-    pageRatio: `${pages[0].width ?? 21} / ${pages[0].height ?? 29.7}`,
+    pageRatio: `${pages[0]?.width ?? 21} / ${pages[0]?.height ?? 29.7}`,
     openGraph: getOpenGraph(
       langui,
       item.libraryItems.data[0].attributes.title,

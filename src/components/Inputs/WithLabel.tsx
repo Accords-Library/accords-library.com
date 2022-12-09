@@ -1,5 +1,5 @@
 import { cIf, cJoin } from "helpers/className";
-import { isDefinedAndNotEmpty } from "helpers/others";
+import { isDefinedAndNotEmpty } from "helpers/asserts";
 
 /*
  *                                        ╭─────────────╮

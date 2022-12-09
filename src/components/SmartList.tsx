@@ -5,7 +5,7 @@ import { Chip } from "./Chip";
 import { PageSelector } from "./Inputs/PageSelector";
 import { Ico, Icon } from "./Ico";
 import { cJoin } from "helpers/className";
-import { isDefined, isDefinedAndNotEmpty } from "helpers/others";
+import { isDefined, isDefinedAndNotEmpty } from "helpers/asserts";
 import { useScrollTopOnChange } from "hooks/useScrollTopOnChange";
 import { Ids } from "types/ids";
 import { atoms } from "contexts/atoms";
@@ -95,17 +95,17 @@ export const SmartList = <T,>({
     const memo: Group<T>[] = [];
 
     sortedItem.forEach((item) => {
-      groupingFunction(item).forEach((category) => {
-        const index = memo.findIndex((group) => group.name === category);
-        if (index === -1) {
+      groupingFunction(item).forEach((groupName) => {
+        const group = memo.find((elem) => elem.name === groupName);
+        if (isDefined(group)) {
+          group.items.push(item);
+          group.totalCount += groupCountingFunction(item);
+        } else {
           memo.push({
-            name: category,
+            name: groupName,
             items: [item],
             totalCount: groupCountingFunction(item),
           });
-        } else {
-          memo[index].items.push(item);
-          memo[index].totalCount += groupCountingFunction(item);
         }
       });
     });
@@ -170,7 +170,7 @@ export const SmartList = <T,>({
       )}
 
       <div className="mb-8">
-        {pages[page]?.length > 0 ? (
+        {(pages[page]?.length ?? 0) > 0 ? (
           pages[page]?.map(
             (group) =>
               group.items.length > 0 && (

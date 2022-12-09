@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { throttle } from "throttle-debounce";
 import { useIsClient } from "usehooks-ts";
 import { useOnScroll } from "./useOnScroll";
-import { isDefined } from "helpers/others";
+import { isDefined, isUndefined } from "helpers/asserts";
 import { Ids } from "types/ids";
 
 export const useIntersectionList = (ids: string[]): number => {
@@ -16,21 +16,21 @@ export const useIntersectionList = (ids: string[]): number => {
     (scroll: number) => {
       console.log("useIntersectionList");
 
-      if (!isDefined(contentPanel)) {
+      if (isUndefined(contentPanel)) {
         setCurrentIntersection(-1);
         return;
       }
 
-      for (let idIndex = 0; idIndex < ids.length; idIndex++) {
-        const elem = document.getElementById(ids[ids.length - 1 - idIndex]);
+      for (const [index, id] of [...ids].reverse().entries()) {
+        const elem = document.getElementById(id);
         const halfScreenOffset = window.screen.height / 2;
 
         if (isDefined(elem) && scroll > elem.offsetTop - halfScreenOffset) {
-          setCurrentIntersection(ids.length - 1 - idIndex);
+          const unreversedIndex = ids.length - 1 - index;
+          setCurrentIntersection(unreversedIndex);
           return;
         }
       }
-      setCurrentIntersection(-1);
     },
     [ids, contentPanel]
   );

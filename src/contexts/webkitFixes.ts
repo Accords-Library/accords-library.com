@@ -1,5 +1,5 @@
 import { useLayoutEffect } from "react";
-import { isDefined } from "helpers/others";
+import { isDefined } from "helpers/asserts";
 import { useIsWebkit } from "hooks/useIsWebkit";
 
 export const useWebkitFixes = (): void => {

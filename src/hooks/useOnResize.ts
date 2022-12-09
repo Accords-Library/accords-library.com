@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useIsClient } from "usehooks-ts";
-import { isDefined } from "helpers/others";
+import { isDefined } from "helpers/asserts";
 
 export const useOnResize = (
   id: string,
@@ -11,9 +11,12 @@ export const useOnResize = (
   useEffect(() => {
     console.log("[useOnResize]", id);
     const elem = isClient ? document.querySelector(`#${id}`) : null;
-    const ro = new ResizeObserver((resizeObserverEntry) =>
-      onResize(resizeObserverEntry[0].contentRect.width, resizeObserverEntry[0].contentRect.height)
-    );
+    const ro = new ResizeObserver((resizeObserverEntry) => {
+      const entry = resizeObserverEntry[0];
+      if (isDefined(entry)) {
+        onResize(entry.contentRect.width, entry.contentRect.height);
+      }
+    });
     if (isDefined(elem)) {
       ro.observe(elem);
     }

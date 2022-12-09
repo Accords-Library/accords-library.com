@@ -3,7 +3,7 @@ import { NextRouter, useRouter } from "next/router";
 import { PostPage } from "components/PostPage";
 import { getPostStaticProps, PostStaticProps } from "graphql/getPostStaticProps";
 import { getReadySdk } from "graphql/sdk";
-import { filterHasAttributes, isDefined, isDefinedAndNotEmpty } from "helpers/others";
+import { filterHasAttributes, isDefined, isDefinedAndNotEmpty } from "helpers/asserts";
 import { Terminal } from "components/Cli/Terminal";
 import { PostWithTranslations } from "types/types";
 import { getDefaultPreferredLanguages, staticSmartLanguage } from "helpers/locales";

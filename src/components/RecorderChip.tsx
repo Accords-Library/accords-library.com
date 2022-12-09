@@ -5,7 +5,7 @@ import { ToolTip } from "./ToolTip";
 import { Chip } from "components/Chip";
 import { RecorderChipFragment } from "graphql/generated";
 import { ImageQuality } from "helpers/img";
-import { filterHasAttributes } from "helpers/others";
+import { filterHasAttributes } from "helpers/asserts";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter } from "helpers/atoms";
 

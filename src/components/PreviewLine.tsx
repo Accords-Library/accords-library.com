@@ -7,7 +7,7 @@ import { ImageQuality } from "helpers/img";
 import { TranslatedProps } from "types/TranslatedProps";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { cIf, cJoin } from "helpers/className";
-import { isDefined } from "helpers/others";
+import { isDefined } from "helpers/asserts";
 
 /*
  *                                        ╭─────────────╮

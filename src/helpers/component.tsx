@@ -1,4 +1,4 @@
-import { isDefined } from "./others";
+import { isDefined } from "./asserts";
 
 export interface Wrapper {
   children: React.ReactNode;

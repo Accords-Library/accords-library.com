@@ -1,4 +1,4 @@
-import { isDefined } from "./others";
+import { isDefined } from "./asserts";
 
 export const isUntangibleGroupItem = (
   metadata:

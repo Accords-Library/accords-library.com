@@ -14,7 +14,7 @@ import { SubPanel } from "components/Containers/SubPanel";
 import { PreviewCard } from "components/PreviewCard";
 import { GetVideosPreviewQuery } from "graphql/generated";
 import { getReadySdk } from "graphql/sdk";
-import { filterHasAttributes } from "helpers/others";
+import { filterHasAttributes } from "helpers/asserts";
 import { getVideoThumbnailURL } from "helpers/videos";
 import { useDeviceSupportsHover } from "hooks/useMediaQuery";
 import { getOpenGraph } from "helpers/openGraph";

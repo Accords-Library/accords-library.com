@@ -5,7 +5,7 @@ import { SubPanel } from "components/Containers/SubPanel";
 import { Icon } from "components/Ico";
 import { getReadySdk } from "graphql/sdk";
 import { GetChroniclesChaptersQuery } from "graphql/generated";
-import { filterHasAttributes } from "helpers/others";
+import { filterHasAttributes } from "helpers/asserts";
 import { prettySlug } from "helpers/formatters";
 import { getOpenGraph } from "helpers/openGraph";
 import { TranslatedChroniclesList } from "components/Chronicles/ChroniclesList";

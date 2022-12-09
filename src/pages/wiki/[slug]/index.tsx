@@ -10,7 +10,7 @@ import { ContentPanel, ContentPanelWidthSizes } from "components/Containers/Cont
 import { SubPanel } from "components/Containers/SubPanel";
 import DefinitionCard from "components/Wiki/DefinitionCard";
 import { getReadySdk } from "graphql/sdk";
-import { filterHasAttributes, isDefined, isDefinedAndNotEmpty } from "helpers/others";
+import { filterHasAttributes, isDefined, isDefinedAndNotEmpty } from "helpers/asserts";
 import { WikiPageWithTranslations } from "types/types";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { prettySlug, sJoin } from "helpers/formatters";

@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useCounter } from "usehooks-ts";
-import { isDefined } from "helpers/others";
+import { isDefined } from "helpers/asserts";
 
 const NUM_RETRIES = 10;
 

@@ -5,7 +5,7 @@ import { Markdawn } from "components/Markdown/Markdawn";
 import { GetContentTextQuery, UploadImageFragment } from "graphql/generated";
 import { prettyInlineTitle, prettySlug, slugify } from "helpers/formatters";
 import { ImageQuality } from "helpers/img";
-import { filterHasAttributes } from "helpers/others";
+import { filterHasAttributes } from "helpers/asserts";
 import { useAtomGetter } from "helpers/atoms";
 import { atoms } from "contexts/atoms";
 

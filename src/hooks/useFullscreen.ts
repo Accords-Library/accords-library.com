@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useIsClient } from "usehooks-ts";
-import { isDefined } from "helpers/others";
+import { isDefined } from "helpers/asserts";
 
 export const useFullscreen = (
   id: string

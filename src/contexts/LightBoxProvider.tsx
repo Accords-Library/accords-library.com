@@ -3,7 +3,7 @@ import { useEffectOnce } from "usehooks-ts";
 import { atom } from "jotai";
 import { UploadImageFragment } from "graphql/generated";
 import { LightBox } from "components/LightBox";
-import { filterDefined } from "helpers/others";
+import { filterDefined } from "helpers/asserts";
 import { atomPairing, useAtomSetter } from "helpers/atoms";
 
 const lightBoxAtom = atomPairing(

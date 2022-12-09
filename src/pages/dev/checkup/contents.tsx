@@ -6,7 +6,7 @@ import { ContentPanel, ContentPanelWidthSizes } from "components/Containers/Cont
 import { ToolTip } from "components/ToolTip";
 import { DevGetContentsQuery } from "graphql/generated";
 import { getReadySdk } from "graphql/sdk";
-import { filterDefined, filterHasAttributes } from "helpers/others";
+import { filterDefined, filterHasAttributes } from "helpers/asserts";
 import { Report, Severity } from "types/Report";
 import { getOpenGraph } from "helpers/openGraph";
 import { getLangui } from "graphql/fetchLocalData";
@@ -61,7 +61,8 @@ const CheckupContents = ({ contents, ...otherProps }: Props): JSX.Element => {
                   ? "bg-[#fff344] !opacity-100"
                   : ""
               }
-              text={Severity[line.severity]}
+              // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+              text={Severity[line.severity] ?? "Unknown"}
             />
             <ToolTip content={line.recommandation} placement="left">
               <p>{line.description}</p>

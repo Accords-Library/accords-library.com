@@ -7,7 +7,7 @@ import { InsetBox } from "components/Containers/InsetBox";
 import { cIf, cJoin } from "helpers/className";
 import { slugify } from "helpers/formatters";
 import { getAssetURL, ImageQuality } from "helpers/img";
-import { isDefined, isDefinedAndNotEmpty, isUndefined } from "helpers/others";
+import { isDefined, isDefinedAndNotEmpty, isUndefined } from "helpers/asserts";
 import { AnchorShare } from "components/AnchorShare";
 import { useIntersectionList } from "hooks/useIntersectionList";
 import { Ico, Icon } from "components/Ico";
@@ -459,7 +459,7 @@ const getTocFromMarkdawn = (text: string, title?: string): TocInterface => {
       h5 = -1;
       scenebreak = 0;
     } else if (h2 >= 0 && line.startsWith('<Header level="3"')) {
-      toc.children[h2].children.push({
+      toc.children[h2]?.children.push({
         title: getTitle(line),
         slug: getSlug(line),
         children: [],
@@ -469,7 +469,7 @@ const getTocFromMarkdawn = (text: string, title?: string): TocInterface => {
       h5 = -1;
       scenebreak = 0;
     } else if (h3 >= 0 && line.startsWith('<Header level="4"')) {
-      toc.children[h2].children[h3].children.push({
+      toc.children[h2]?.children[h3]?.children.push({
         title: getTitle(line),
         slug: getSlug(line),
         children: [],
@@ -478,7 +478,7 @@ const getTocFromMarkdawn = (text: string, title?: string): TocInterface => {
       h5 = -1;
       scenebreak = 0;
     } else if (h4 >= 0 && line.startsWith('<Header level="5"')) {
-      toc.children[h2].children[h3].children[h4].children.push({
+      toc.children[h2]?.children[h3]?.children[h4]?.children.push({
         title: getTitle(line),
         slug: getSlug(line),
         children: [],
@@ -486,7 +486,7 @@ const getTocFromMarkdawn = (text: string, title?: string): TocInterface => {
       h5++;
       scenebreak = 0;
     } else if (h5 >= 0 && line.startsWith('<Header level="6"')) {
-      toc.children[h2].children[h3].children[h4].children[h5].children.push({
+      toc.children[h2]?.children[h3]?.children[h4]?.children[h5]?.children.push({
         title: getTitle(line),
         slug: getSlug(line),
         children: [],
@@ -502,13 +502,13 @@ const getTocFromMarkdawn = (text: string, title?: string): TocInterface => {
       };
 
       if (h5 >= 0) {
-        toc.children[h2].children[h3].children[h4].children[h5].children.push(child);
+        toc.children[h2]?.children[h3]?.children[h4]?.children[h5]?.children.push(child);
       } else if (h4 >= 0) {
-        toc.children[h2].children[h3].children[h4].children.push(child);
+        toc.children[h2]?.children[h3]?.children[h4]?.children.push(child);
       } else if (h3 >= 0) {
-        toc.children[h2].children[h3].children.push(child);
+        toc.children[h2]?.children[h3]?.children.push(child);
       } else if (h2 >= 0) {
-        toc.children[h2].children.push(child);
+        toc.children[h2]?.children.push(child);
       } else {
         toc.children.push(child);
       }

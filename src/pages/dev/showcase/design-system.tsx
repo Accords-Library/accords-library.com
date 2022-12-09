@@ -431,12 +431,7 @@ const DesignSystem = (props: Props): JSX.Element => {
             value={sliderState}
             max={100}
             onChange={(event) => {
-              let value = 0;
-              if (Array.isArray(event)) {
-                value = event[0];
-              } else {
-                value = event;
-              }
+              const value = (Array.isArray(event) ? event[0] : event) ?? 0;
               setSliderState(() => value);
             }}
           />

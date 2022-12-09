@@ -4,7 +4,7 @@ import { atom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
 import { atomPairing, useAtomGetter, useAtomPair } from "helpers/atoms";
 import { getDefaultPreferredLanguages } from "helpers/locales";
-import { isDefined, isDefinedAndNotEmpty } from "helpers/others";
+import { isDefined, isDefinedAndNotEmpty } from "helpers/asserts";
 import { usePrefersDarkMode } from "hooks/useMediaQuery";
 
 export enum ThemeMode {

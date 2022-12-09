@@ -1,5 +1,5 @@
 import { OgImage, getImgSizesByQuality, ImageQuality, getAssetURL } from "./img";
-import { isDefinedAndNotEmpty } from "./others";
+import { isDefinedAndNotEmpty } from "./asserts";
 import { Langui } from "./localData";
 import { UploadImageFragment } from "graphql/generated";
 

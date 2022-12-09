@@ -15,10 +15,14 @@ import { WithLabel } from "components/Inputs/WithLabel";
 import { Button } from "components/Inputs/Button";
 import { useDeviceSupportsHover } from "hooks/useMediaQuery";
 import { Icon } from "components/Ico";
-import { filterDefined, filterHasAttributes, isDefinedAndNotEmpty } from "helpers/others";
+import {
+  filterDefined,
+  filterHasAttributes,
+  isDefinedAndNotEmpty,
+  SelectiveNonNullable,
+} from "helpers/asserts";
 import { GetContentsQuery } from "graphql/generated";
 import { SmartList } from "components/SmartList";
-import { SelectiveNonNullable } from "types/SelectiveNonNullable";
 import { getOpenGraph } from "helpers/openGraph";
 import { HorizontalLine } from "components/HorizontalLine";
 import { TranslatedPreviewCard } from "components/PreviewCard";

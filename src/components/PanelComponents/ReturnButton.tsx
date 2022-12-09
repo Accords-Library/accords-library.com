@@ -3,7 +3,7 @@ import { Icon } from "components/Ico";
 import { Button } from "components/Inputs/Button";
 import { TranslatedProps } from "types/TranslatedProps";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
-import { isDefined } from "helpers/others";
+import { isUndefined } from "helpers/asserts";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter } from "helpers/atoms";
 
@@ -30,7 +30,7 @@ export const ReturnButton = ({ href, title, displayOnlyOn, className }: Props): 
     <>
       {((is3ColumnsLayout && displayOnlyOn === "3ColumnsLayout") ||
         (!is3ColumnsLayout && displayOnlyOn === "1ColumnLayout") ||
-        !isDefined(displayOnlyOn)) && (
+        isUndefined(displayOnlyOn)) && (
         <div className={className}>
           <Button href={href} text={`${langui.return_to} ${title}`} icon={Icon.NavigateBefore} />
         </div>

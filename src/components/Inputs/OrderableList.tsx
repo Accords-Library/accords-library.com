@@ -1,6 +1,7 @@
 import { Fragment, useCallback } from "react";
 import { Ico, Icon } from "components/Ico";
-import { arrayMove, isDefinedAndNotEmpty } from "helpers/others";
+import { arrayMove } from "helpers/others";
+import { isDefinedAndNotEmpty } from "helpers/asserts";
 
 /*
  *                                        ╭─────────────╮
@@ -16,6 +17,14 @@ interface Props {
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
+interface InsertedLabelProps {
+  label?: string;
+}
+
+const InsertedLabel = ({ label }: InsertedLabelProps) => (
+  <>{isDefinedAndNotEmpty(label) && <p>{label}</p>}</>
+);
+
 export const OrderableList = ({ onChange, items, insertLabels }: Props): JSX.Element => {
   const updateOrder = useCallback(
     (sourceIndex: number, targetIndex: number) => {
@@ -29,9 +38,8 @@ export const OrderableList = ({ onChange, items, insertLabels }: Props): JSX.Ele
     <div className="grid gap-2">
       {items.map((item, index) => (
         <Fragment key={index}>
-          {insertLabels && isDefinedAndNotEmpty(insertLabels[index]?.name) && (
-            <p>{insertLabels[index].name}</p>
-          )}
+          <InsertedLabel label={insertLabels?.[index]?.name} />
+
           <div
             onDragStart={(event) => {
               const source = event.target as HTMLElement;

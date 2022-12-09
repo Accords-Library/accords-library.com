@@ -14,7 +14,7 @@ import { WithLabel } from "components/Inputs/WithLabel";
 import { TextInput } from "components/Inputs/TextInput";
 import { Button } from "components/Inputs/Button";
 import { useDeviceSupportsHover } from "hooks/useMediaQuery";
-import { filterHasAttributes, isDefinedAndNotEmpty } from "helpers/others";
+import { filterHasAttributes, isDefinedAndNotEmpty } from "helpers/asserts";
 import { SmartList } from "components/SmartList";
 import { getOpenGraph } from "helpers/openGraph";
 import { compareDate } from "helpers/date";

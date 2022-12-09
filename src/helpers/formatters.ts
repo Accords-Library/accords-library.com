@@ -1,5 +1,5 @@
 import { convertPrice } from "./numbers";
-import { isDefinedAndNotEmpty, isUndefined } from "./others";
+import { isDefinedAndNotEmpty, isUndefined } from "./asserts";
 import { datePickerToDate } from "./date";
 import { Currencies, Languages, Langui } from "./localData";
 import { DatePickerFragment, PricePickerFragment } from "graphql/generated";
@@ -180,7 +180,7 @@ export const prettyItemSubType = (
       case "ComponentMetadataGame":
         return metadata.platforms?.data &&
           metadata.platforms.data.length > 0 &&
-          metadata.platforms.data[0].attributes
+          metadata.platforms.data[0]?.attributes
           ? metadata.platforms.data[0].attributes.short
           : "";
       case "ComponentMetadataGroup": {

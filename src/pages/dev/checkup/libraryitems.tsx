@@ -47,7 +47,7 @@ const CheckupLibraryItems = ({ libraryItems, ...otherProps }: Props): JSX.Elemen
           <div
             key={index}
             className="mb-2 grid
-          grid-cols-[2em,3em,2fr,1fr,0.5fr,0.5fr,2fr] items-center justify-items-start gap-2">
+            grid-cols-[2em,3em,2fr,1fr,0.5fr,0.5fr,2fr] items-center justify-items-start gap-2">
             <Button href={line.frontendUrl} className="w-4 text-xs" text="F" alwaysNewTab />
             <Button href={line.backendUrl} className="w-4 text-xs" text="B" alwaysNewTab />
             <p>{line.subitems.join(" -> ")}</p>
@@ -63,7 +63,8 @@ const CheckupLibraryItems = ({ libraryItems, ...otherProps }: Props): JSX.Elemen
                   ? "bg-[#fff344] !opacity-100"
                   : ""
               }
-              text={Severity[line.severity]}
+              // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+              text={Severity[line.severity] ?? "Unknown"}
             />
             <ToolTip content={line.recommandation} placement="left">
               <p>{line.description}</p>

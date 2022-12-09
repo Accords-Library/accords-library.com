@@ -1,7 +1,7 @@
 import { GetStaticProps, GetStaticPaths, GetStaticPathsResult } from "next";
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 import { getReadySdk } from "graphql/sdk";
-import { isDefined, filterHasAttributes } from "helpers/others";
+import { isDefined, filterHasAttributes } from "helpers/asserts";
 import { ChronicleWithTranslations } from "types/types";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { useSmartLanguage } from "hooks/useSmartLanguage";

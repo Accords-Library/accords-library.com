@@ -2,7 +2,7 @@ import { useCallback } from "react";
 import { useBoolean } from "usehooks-ts";
 import { TranslatedChroniclePreview } from "./ChroniclePreview";
 import { GetChroniclesChaptersQuery } from "graphql/generated";
-import { filterHasAttributes } from "helpers/others";
+import { filterHasAttributes } from "helpers/asserts";
 import { prettyInlineTitle, prettySlug, sJoin } from "helpers/formatters";
 import { Ico, Icon } from "components/Ico";
 import { compareDate } from "helpers/date";

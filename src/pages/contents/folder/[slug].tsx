@@ -4,7 +4,7 @@ import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { ContentPanel, ContentPanelWidthSizes } from "components/Containers/ContentPanel";
 import { getOpenGraph } from "helpers/openGraph";
 import { getReadySdk } from "graphql/sdk";
-import { filterHasAttributes } from "helpers/others";
+import { filterHasAttributes } from "helpers/asserts";
 import { GetContentsFolderQuery } from "graphql/generated";
 import { getDefaultPreferredLanguages, staticSmartLanguage } from "helpers/locales";
 import { prettySlug } from "helpers/formatters";

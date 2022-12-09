@@ -15,10 +15,14 @@ import { Switch } from "components/Inputs/Switch";
 import { TextInput } from "components/Inputs/TextInput";
 import { WithLabel } from "components/Inputs/WithLabel";
 import { useDeviceSupportsHover } from "hooks/useMediaQuery";
-import { filterDefined, filterHasAttributes, isDefinedAndNotEmpty } from "helpers/others";
+import {
+  filterDefined,
+  filterHasAttributes,
+  isDefinedAndNotEmpty,
+  SelectiveNonNullable,
+} from "helpers/asserts";
 import { SmartList } from "components/SmartList";
 import { Select } from "components/Inputs/Select";
-import { SelectiveNonNullable } from "types/SelectiveNonNullable";
 import { prettySlug } from "helpers/formatters";
 import { getOpenGraph } from "helpers/openGraph";
 import { TranslatedPreviewCard } from "components/PreviewCard";

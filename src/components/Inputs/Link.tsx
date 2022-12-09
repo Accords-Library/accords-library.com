@@ -1,7 +1,7 @@
 import React, { MouseEventHandler } from "react";
 import NextLink from "next/link";
 import { ConditionalWrapper, Wrapper } from "helpers/component";
-import { isDefinedAndNotEmpty } from "helpers/others";
+import { isDefinedAndNotEmpty } from "helpers/asserts";
 import { cIf, cJoin } from "helpers/className";
 
 interface Props {

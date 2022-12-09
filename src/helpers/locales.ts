@@ -1,4 +1,4 @@
-import { isDefined } from "./others";
+import { isDefined } from "./asserts";
 
 export const getDefaultPreferredLanguages = (routerLocal: string, locales: string[]): string[] => {
   let defaultPreferredLanguages: string[] = [];

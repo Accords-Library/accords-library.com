@@ -1,11 +1,15 @@
 {
   "compilerOptions": {
+    // Type Checking
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "strict": true,
+
     "target": "ES6",
     "lib": ["dom", "dom.iterable", "esnext"],
     "importHelpers": true,
     "allowJs": true,
     "skipLibCheck": true,
-    "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "esModuleInterop": true,
@@ -16,7 +20,6 @@
     "jsx": "preserve",
     "incremental": true,
     "baseUrl": "src"
-    // "noUncheckedIndexedAccess": true
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"]

@@ -32,7 +32,7 @@ const replaceSelection = (
 const swapChar = (char: string, swaps: string[]): string => {
   for (let index = 0; index < swaps.length; index++) {
     if (char === swaps[index]) {
-      return swaps[(index + 1) % swaps.length];
+      return swaps[(index + 1) % swaps.length] ?? char;
     }
   }
   return char;

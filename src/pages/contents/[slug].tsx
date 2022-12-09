@@ -21,7 +21,8 @@ import {
   prettySlug,
 } from "helpers/formatters";
 import { isUntangibleGroupItem } from "helpers/libraryItem";
-import { filterHasAttributes, getStatusDescription, isDefinedAndNotEmpty } from "helpers/others";
+import { getStatusDescription } from "helpers/others";
+import { filterHasAttributes, isDefinedAndNotEmpty } from "helpers/asserts";
 import { ContentWithTranslations } from "types/types";
 import { useScrollTopOnChange } from "hooks/useScrollTopOnChange";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
@@ -466,7 +467,7 @@ type FolderContents = NonNullable<
 const getPreviousContent = (contents: FolderContents, currentSlug: string) => {
   for (let index = 0; index < contents.length; index++) {
     const content = contents[index];
-    if (content.attributes?.slug === currentSlug && index > 0) {
+    if (content?.attributes?.slug === currentSlug && index > 0) {
       return contents[index - 1];
     }
   }
@@ -478,7 +479,7 @@ const getPreviousContent = (contents: FolderContents, currentSlug: string) => {
 const getNextContent = (contents: FolderContents, currentSlug: string) => {
   for (let index = 0; index < contents.length; index++) {
     const content = contents[index];
-    if (content.attributes?.slug === currentSlug && index < contents.length - 1) {
+    if (content?.attributes?.slug === currentSlug && index < contents.length - 1) {
       return contents[index + 1];
     }
   }

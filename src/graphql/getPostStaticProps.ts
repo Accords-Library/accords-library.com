@@ -5,7 +5,7 @@ import { PostWithTranslations } from "types/types";
 import { getOpenGraph } from "helpers/openGraph";
 import { prettyDate, prettySlug } from "helpers/formatters";
 import { getDefaultPreferredLanguages, staticSmartLanguage } from "helpers/locales";
-import { filterHasAttributes, isDefined } from "helpers/others";
+import { filterHasAttributes, isDefined } from "helpers/asserts";
 import { getDescription } from "helpers/description";
 import { AppLayoutRequired } from "components/AppLayout";
 
@@ -25,7 +25,7 @@ export const getPostStaticProps =
     if (
       post.posts?.data &&
       post.posts.data.length > 0 &&
-      post.posts.data[0].attributes?.translations &&
+      post.posts.data[0]?.attributes?.translations &&
       isDefined(context.locale) &&
       isDefined(context.locales)
     ) {

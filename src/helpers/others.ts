@@ -1,5 +1,5 @@
-import { PathDot, SelectiveNonNullable } from "../types/SelectiveNonNullable";
 import { Langui } from "./localData";
+import { isDefined } from "./asserts";
 import {
   Enum_Componentsetstextset_Status,
   GetLibraryItemQuery,
@@ -45,47 +45,6 @@ export const getStatusDescription = (status: string, langui: Langui): string | n
   }
 };
 
-export const isDefined = <T>(t: T): t is NonNullable<T> => t !== null && t !== undefined;
-
-export const isUndefined = <T>(t: T | null | undefined): t is null | undefined =>
-  t === null || t === undefined;
-
-export const isDefinedAndNotEmpty = (string: string | null | undefined): string is string =>
-  isDefined(string) && string.length > 0;
-
-export const filterDefined = <T>(t: T[] | null | undefined): NonNullable<T>[] =>
-  isUndefined(t) ? [] : (t.filter((item) => isDefined(item)) as NonNullable<T>[]);
-
-export const filterHasAttributes = <T, P extends PathDot<T>>(
-  t: T[] | null | undefined,
-  paths: readonly P[]
-): SelectiveNonNullable<T, typeof paths[number]>[] =>
-  isDefined(t)
-    ? (t.filter((item) => hasAttributes(item, paths)) as unknown as SelectiveNonNullable<
-        T,
-        typeof paths[number]
-      >[])
-    : [];
-
-const hasAttributes = <T>(item: T, paths: readonly PathDot<T>[]): boolean =>
-  isDefined(item) && paths.every((path) => hasAttribute(item, path));
-
-const hasAttribute = <T>(item: T, path: string): boolean => {
-  if (isDefined(item)) {
-    const [head, ...rest] = path.split(".");
-    if (Object.keys(item).includes(head)) {
-      const attribute = head as keyof T;
-      if (isDefined(item[attribute])) {
-        if (rest.length > 0) {
-          return hasAttribute(item[attribute], rest.join("."));
-        }
-        return true;
-      }
-    }
-  }
-  return false;
-};
-
 export const iterateMap = <K, V, U>(
   map: Map<K, V>,
   callbackfn: (key: K, value: V, index: number) => U,
@@ -99,7 +58,10 @@ export const iterateMap = <K, V, U>(
 };
 
 export const arrayMove = <T>(arr: T[], sourceIndex: number, targetIndex: number): T[] => {
-  arr.splice(targetIndex, 0, arr.splice(sourceIndex, 1)[0]);
+  const sourceItem = arr.splice(sourceIndex, 1)[0];
+  if (isDefined(sourceItem)) {
+    arr.splice(targetIndex, 0, sourceItem);
+  }
   return arr;
 };
 

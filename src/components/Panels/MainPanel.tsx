@@ -4,7 +4,7 @@ import { NavOption } from "components/PanelComponents/NavOption";
 import { ToolTip } from "components/ToolTip";
 import { Icon } from "components/Ico";
 import { cIf, cJoin } from "helpers/className";
-import { isDefinedAndNotEmpty } from "helpers/others";
+import { isDefinedAndNotEmpty } from "helpers/asserts";
 import { Link } from "components/Inputs/Link";
 import { sendAnalytics } from "helpers/analytics";
 import { ColoredSvg } from "components/ColoredSvg";

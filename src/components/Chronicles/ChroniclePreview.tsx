@@ -3,7 +3,7 @@ import { DatePickerFragment } from "graphql/generated";
 import { TranslatedProps } from "types/TranslatedProps";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { DownPressable } from "components/Containers/DownPressable";
-import { isDefined } from "helpers/others";
+import { isDefined } from "helpers/asserts";
 import { cIf, cJoin } from "helpers/className";
 
 /*

@@ -27,7 +27,7 @@
     "autoprefixer": "^10.4.13",
     "cuid": "^2.1.8",
     "graphql-request": "^5.0.0",
-    "jotai": "^1.11.0",
+    "jotai": "^1.11.2",
     "markdown-to-jsx": "^7.1.7",
     "next": "^13.0.6",
     "nodemailer": "^6.8.0",

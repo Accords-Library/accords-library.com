@@ -5,29 +5,6 @@ query getVideoChannel($channel: String) {
         uid
         title
         subscribers
-        videos(pagination: { limit: -1 }) {
-          data {
-            id
-            attributes {
-              uid
-              title
-              views
-              duration
-              gone
-              categories(pagination: { limit: -1 }) {
-                data {
-                  id
-                  attributes {
-                    short
-                  }
-                }
-              }
-              published_date {
-                ...datePicker
-              }
-            }
-          }
-        }
       }
     }
   }

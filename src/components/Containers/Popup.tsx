@@ -3,6 +3,8 @@ import { useHotkeys } from "react-hotkeys-hook";
 import { cIf, cJoin } from "helpers/className";
 import { atoms } from "contexts/atoms";
 import { useAtomSetter } from "helpers/atoms";
+import { Button } from "components/Inputs/Button";
+import { Icon } from "components/Ico";
 
 /*
  *                                        ╭─────────────╮
@@ -16,6 +18,7 @@ interface Props {
   fillViewport?: boolean;
   hideBackground?: boolean;
   padding?: boolean;
+  withCloseButton?: boolean;
 }
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
@@ -27,10 +30,11 @@ export const Popup = ({
   fillViewport,
   hideBackground = false,
   padding = true,
+  withCloseButton = true,
 }: Props): JSX.Element => {
   const setMenuGesturesEnabled = useAtomSetter(atoms.layout.menuGesturesEnabled);
 
-  useHotkeys("escape", () => onCloseRequest?.(), {}, [onCloseRequest]);
+  useHotkeys("escape", () => onCloseRequest?.(), { enabled: isVisible }, [onCloseRequest]);
 
   useEffect(() => {
     setMenuGesturesEnabled(!isVisible);
@@ -55,9 +59,18 @@ export const Popup = ({
           "grid place-items-center gap-4 transition-transform",
           cIf(padding, "p-10"),
           cIf(isVisible, "scale-100", "scale-0"),
-          cIf(fillViewport, "absolute inset-10", "relative max-h-[80vh] overflow-y-auto"),
+          cIf(
+            fillViewport,
+            "absolute inset-10 content-start overflow-scroll",
+            "relative max-h-[80vh] overflow-y-auto"
+          ),
           cIf(!hideBackground, "rounded-lg bg-light shadow-2xl shadow-shade")
         )}>
+        {withCloseButton && (
+          <div className="absolute right-6 top-6">
+            <Button icon={Icon.Close} onClick={onCloseRequest} />
+          </div>
+        )}
         {children}
       </div>
     </div>

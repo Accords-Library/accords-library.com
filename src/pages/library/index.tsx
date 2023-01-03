@@ -1,44 +1,36 @@
 import { GetStaticProps } from "next";
-import { useState, useCallback } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useBoolean } from "usehooks-ts";
-import naturalCompare from "string-natural-compare";
+import { z } from "zod";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { Select } from "components/Inputs/Select";
 import { Switch } from "components/Inputs/Switch";
 import { PanelHeader } from "components/PanelComponents/PanelHeader";
 import { ContentPanel, ContentPanelWidthSizes } from "components/Containers/ContentPanel";
 import { SubPanel } from "components/Containers/SubPanel";
-import { GetLibraryItemsPreviewQuery } from "graphql/generated";
-import { getReadySdk } from "graphql/sdk";
-import { prettyInlineTitle, prettyItemSubType } from "helpers/formatters";
 import { LibraryItemUserStatus } from "types/types";
 import { Icon } from "components/Ico";
 import { WithLabel } from "components/Inputs/WithLabel";
 import { TextInput } from "components/Inputs/TextInput";
 import { Button } from "components/Inputs/Button";
-import { PreviewCardCTAs } from "components/Library/PreviewCardCTAs";
-import { isUntangibleGroupItem } from "helpers/libraryItem";
-import { PreviewCard } from "components/PreviewCard";
 import { useDeviceSupportsHover } from "hooks/useMediaQuery";
 import { ButtonGroup } from "components/Inputs/ButtonGroup";
-import {
-  filterHasAttributes,
-  isDefined,
-  isDefinedAndNotEmpty,
-  isUndefined,
-  SelectiveNonNullable,
-} from "helpers/asserts";
-import { convertPrice } from "helpers/numbers";
-import { SmartList } from "components/SmartList";
+import { filterDefined, isDefined, isDefinedAndNotEmpty, isUndefined } from "helpers/asserts";
 import { getOpenGraph } from "helpers/openGraph";
-import { compareDate } from "helpers/date";
 import { HorizontalLine } from "components/HorizontalLine";
-import { cIf, cJoin } from "helpers/className";
 import { getLangui } from "graphql/fetchLocalData";
 import { sendAnalytics } from "helpers/analytics";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter } from "helpers/atoms";
+import { CustomSearchResponse, meiliSearch } from "helpers/search";
+import { MeiliIndices, MeiliLibraryItem } from "shared/meilisearch-graphql-typings/meiliTypes";
+import { useTypedRouter } from "hooks/useTypedRouter";
+import { PreviewCard } from "components/PreviewCard";
+import { prettyItemSubType } from "helpers/formatters";
+import { isUntangibleGroupItem } from "helpers/libraryItem";
+import { PreviewCardCTAs } from "components/Library/PreviewCardCTAs";
 import { useLibraryItemUserStatus } from "hooks/useLibraryItemUserStatus";
+import { Paginator } from "components/Containers/Paginator";
 
 /*
  *                                         ╭─────────────╮
@@ -46,52 +38,69 @@ import { useLibraryItemUserStatus } from "hooks/useLibraryItemUserStatus";
  */
 
 const DEFAULT_FILTERS_STATE = {
-  searchName: "",
+  query: "",
   showSubitems: false,
   showPrimaryItems: true,
   showSecondaryItems: false,
+  page: 1,
   sortingMethod: 0,
-  groupingMethod: -1,
   keepInfoVisible: false,
   filterUserStatus: undefined,
 };
+
+const queryParamSchema = z.object({
+  query: z.coerce.string().optional(),
+  page: z.coerce.number().positive().optional(),
+  sort: z.coerce.number().min(0).max(5).optional(),
+  subitems: z.coerce.boolean().optional(),
+  primary: z.coerce.boolean().optional(),
+  secondary: z.coerce.boolean().optional(),
+  status: z.coerce.string().optional(),
+});
 
 /*
  *                                           ╭────────╮
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
  */
 
-interface Props extends AppLayoutRequired {
-  items: NonNullable<GetLibraryItemsPreviewQuery["libraryItems"]>["data"];
-}
+interface Props extends AppLayoutRequired {}
 
-const Library = ({ items, ...otherProps }: Props): JSX.Element => {
+const Library = (props: Props): JSX.Element => {
   const hoverable = useDeviceSupportsHover();
   const langui = useAtomGetter(atoms.localData.langui);
-  const currencies = useAtomGetter(atoms.localData.currencies);
-
   const { libraryItemUserStatus } = useLibraryItemUserStatus();
-  const isContentPanelAtLeast4xl = useAtomGetter(atoms.containerQueries.isContentPanelAtLeast4xl);
 
-  const [searchName, setSearchName] = useState(DEFAULT_FILTERS_STATE.searchName);
+  const sortingMethods = useMemo(
+    () => [
+      { meiliAttribute: "sortable_name:asc", displayedName: langui.name },
+      { meiliAttribute: "sortable_date:asc", displayedName: langui.release_date },
+      { meiliAttribute: "sortable_price:asc", displayedName: langui.price },
+    ],
+    [langui.name, langui.price, langui.release_date]
+  );
+
+  const router = useTypedRouter(queryParamSchema);
+  const [page, setPage] = useState<number>(router.query.page ?? DEFAULT_FILTERS_STATE.page);
+  const [libraryItems, setLibraryItems] = useState<CustomSearchResponse<MeiliLibraryItem>>();
+  const [query, setQuery] = useState(router.query.query ?? DEFAULT_FILTERS_STATE.query);
 
   const {
     value: showSubitems,
     toggle: toggleShowSubitems,
     setValue: setShowSubitems,
-  } = useBoolean(DEFAULT_FILTERS_STATE.showSubitems);
+  } = useBoolean(router.query.subitems ?? DEFAULT_FILTERS_STATE.showSubitems);
 
   const {
     value: showPrimaryItems,
     toggle: toggleShowPrimaryItems,
     setValue: setShowPrimaryItems,
-  } = useBoolean(DEFAULT_FILTERS_STATE.showPrimaryItems);
+  } = useBoolean(router.query.primary ?? DEFAULT_FILTERS_STATE.showPrimaryItems);
 
   const {
     value: showSecondaryItems,
     toggle: toggleShowSecondaryItems,
     setValue: setShowSecondaryItems,
-  } = useBoolean(DEFAULT_FILTERS_STATE.showSecondaryItems);
+  } = useBoolean(router.query.secondary ?? DEFAULT_FILTERS_STATE.showSecondaryItems);
 
   const {
     value: keepInfoVisible,
@@ -99,136 +108,128 @@ const Library = ({ items, ...otherProps }: Props): JSX.Element => {
     setValue: setKeepInfoVisible,
   } = useBoolean(DEFAULT_FILTERS_STATE.keepInfoVisible);
 
-  const [sortingMethod, setSortingMethod] = useState<number>(DEFAULT_FILTERS_STATE.sortingMethod);
-
-  const [groupingMethod, setGroupingMethod] = useState<number>(
-    DEFAULT_FILTERS_STATE.groupingMethod
+  const [sortingMethod, setSortingMethod] = useState<number>(
+    router.query.sort ?? DEFAULT_FILTERS_STATE.sortingMethod
   );
 
   const [filterUserStatus, setFilterUserStatus] = useState<LibraryItemUserStatus | undefined>(
-    DEFAULT_FILTERS_STATE.filterUserStatus
+    fromStringToLibraryItemUserStatus(router.query.status) ?? DEFAULT_FILTERS_STATE.filterUserStatus
   );
 
-  const filteringFunction = useCallback(
-    (item: SelectiveNonNullable<Props["items"][number], "attributes" | "id">) => {
-      if (!showSubitems && !item.attributes.root_item) return false;
-      if (showSubitems && isUntangibleGroupItem(item.attributes.metadata?.[0])) {
-        return false;
-      }
-      if (item.attributes.primary && !showPrimaryItems) return false;
-      if (!item.attributes.primary && !showSecondaryItems) return false;
+  useEffect(() => {
+    const fetchLibraryItems = async () => {
+      const currentSortingMethod = sortingMethods[sortingMethod];
+      const filter: string[] = [];
 
-      if (isDefined(filterUserStatus) && item.id) {
-        if (isUntangibleGroupItem(item.attributes.metadata?.[0])) {
-          return false;
-        }
+      if (!showPrimaryItems && !showSecondaryItems) {
+        filter.push("primary NOT EXISTS");
+      } else if (showPrimaryItems && !showSecondaryItems) {
+        filter.push("primary = true");
+      } else if (!showPrimaryItems && showSecondaryItems) {
+        filter.push("primary = false");
+      }
+
+      if (showSubitems) {
+        filter.push("untangible_group_item = false");
+      } else {
+        filter.push("root_item = true");
+      }
+
+      if (isDefined(filterUserStatus)) {
+        filter.push("untangible_group_item = false");
         if (filterUserStatus === LibraryItemUserStatus.None) {
-          if (libraryItemUserStatus[item.id]) {
-            return false;
-          }
-        } else if (filterUserStatus !== libraryItemUserStatus[item.id]) {
-          return false;
+          filter.push(
+            `id NOT IN [${Object.entries(libraryItemUserStatus)
+              .filter(([, value]) => value !== filterUserStatus)
+              .map(([id]) => id)
+              .join(", ")}]`
+          );
+        } else {
+          filter.push(
+            `id IN [${Object.entries(libraryItemUserStatus)
+              .filter(([, value]) => value === filterUserStatus)
+              .map(([id]) => id)
+              .join(", ")}]`
+          );
         }
       }
-      return true;
-    },
-    [libraryItemUserStatus, filterUserStatus, showPrimaryItems, showSecondaryItems, showSubitems]
-  );
 
-  const sortingFunction = useCallback(
-    (
-      a: SelectiveNonNullable<Props["items"][number], "attributes" | "id">,
-      b: SelectiveNonNullable<Props["items"][number], "attributes" | "id">
-    ) => {
-      switch (sortingMethod) {
-        case 0: {
-          const titleA = prettyInlineTitle("", a.attributes.title, a.attributes.subtitle);
-          const titleB = prettyInlineTitle("", b.attributes.title, b.attributes.subtitle);
-          return naturalCompare(titleA, titleB);
+      const searchResult = await meiliSearch(MeiliIndices.LIBRARY_ITEM, query, {
+        hitsPerPage: 25,
+        page,
+        attributesToCrop: ["descriptions"],
+        sort: isDefined(currentSortingMethod) ? [currentSortingMethod.meiliAttribute] : undefined,
+        filter,
+      });
+      searchResult.hits = searchResult.hits.map((item) => {
+        if (
+          isDefined(item._formatted) &&
+          item._matchesPosition.descriptions &&
+          item._matchesPosition.descriptions.length > 0
+        ) {
+          item._formatted.descriptions = filterDefined(item._formatted.descriptions).filter(
+            (description) => description.includes("</mark>")
+          );
         }
-        case 1: {
-          const commonCurrency = currencies[0];
-          if (isUndefined(commonCurrency)) return 0;
+        return item;
+      });
+      setLibraryItems(searchResult);
+    };
+    fetchLibraryItems();
+  }, [
+    filterUserStatus,
+    libraryItemUserStatus,
+    page,
+    query,
+    showPrimaryItems,
+    showSecondaryItems,
+    showSubitems,
+    sortingMethod,
+    sortingMethods,
+  ]);
 
-          const priceA = a.attributes.price
-            ? convertPrice(a.attributes.price, commonCurrency)
-            : Infinity;
-          const priceB = b.attributes.price
-            ? convertPrice(b.attributes.price, commonCurrency)
-            : Infinity;
-          return priceA - priceB;
-        }
-        case 2: {
-          return compareDate(a.attributes.release_date, b.attributes.release_date);
-        }
-        default:
-          return 0;
-      }
-    },
-    [currencies, sortingMethod]
-  );
+  useEffect(() => {
+    if (router.isReady) console.log(router.query, filterUserStatus);
+    router.updateQuery({
+      page,
+      query,
+      sort: sortingMethod,
+      primary: showPrimaryItems,
+      secondary: showSecondaryItems,
+      subitems: showSubitems,
+      status: fromLibraryItemUserStatusToString(filterUserStatus),
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    page,
+    query,
+    sortingMethod,
+    router.isReady,
+    showPrimaryItems,
+    showSecondaryItems,
+    showSubitems,
+    filterUserStatus,
+  ]);
 
-  const groupingFunction = useCallback(
-    (item: SelectiveNonNullable<Props["items"][number], "attributes" | "id">): string[] => {
-      switch (groupingMethod) {
-        case 0: {
-          const categories = filterHasAttributes(item.attributes.categories?.data, [
-            "attributes",
-          ] as const);
-          if (categories.length > 0) {
-            return categories.map((category) => category.attributes.name);
-          }
-          return [langui.no_category ?? "No category"];
-        }
-        case 1: {
-          if (item.attributes.metadata && item.attributes.metadata.length > 0) {
-            switch (item.attributes.metadata[0]?.__typename) {
-              case "ComponentMetadataAudio":
-                return [langui.audio ?? "Audio"];
-              case "ComponentMetadataGame":
-                return [langui.game ?? "Game"];
-              case "ComponentMetadataBooks":
-                return [langui.textual ?? "Textual"];
-              case "ComponentMetadataVideo":
-                return [langui.video ?? "Video"];
-              case "ComponentMetadataOther":
-                return [langui.other ?? "Other"];
-              case "ComponentMetadataGroup": {
-                switch (item.attributes.metadata[0]?.subitems_type?.data?.attributes?.slug) {
-                  case "audio":
-                    return [langui.audio ?? "Audio"];
-                  case "video":
-                    return [langui.video ?? "Video"];
-                  case "game":
-                    return [langui.game ?? "Game"];
-                  case "textual":
-                    return [langui.textual ?? "Textual"];
-                  case "mixed":
-                    return [langui.group ?? "Group"];
-                  default: {
-                    return [langui.no_type ?? "No type"];
-                  }
-                }
-              }
-              default:
-                return [langui.no_type ?? "No type"];
-            }
-          } else {
-            return [langui.no_type ?? "No type"];
-          }
-        }
-        case 2: {
-          if (item.attributes.release_date?.year) {
-            return [item.attributes.release_date.year.toString()];
-          }
-          return [langui.no_year ?? "No year"];
-        }
-        default:
-          return [""];
-      }
-    },
-    [groupingMethod, langui]
-  );
+  useEffect(() => {
+    if (router.isReady) {
+      console.log(router.query);
+      if (isDefined(router.query.page)) setPage(router.query.page);
+      if (isDefined(router.query.query)) setQuery(router.query.query);
+      if (isDefined(router.query.sort)) setSortingMethod(router.query.sort);
+      if (isDefined(router.query.primary)) setShowPrimaryItems(router.query.primary);
+      if (isDefined(router.query.secondary)) setShowSecondaryItems(router.query.secondary);
+      if (isDefined(router.query.subitems)) setShowSubitems(router.query.subitems);
+      if (isDefined(router.query.status))
+        setFilterUserStatus(fromStringToLibraryItemUserStatus(router.query.status));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router.isReady]);
+
+  useEffect(() => {
+    const totalPages = libraryItems?.totalPages;
+    if (isDefined(totalPages) && totalPages < page && totalPages >= 1) setPage(totalPages);
+  }, [libraryItems?.totalPages, page]);
 
   const subPanel = (
     <SubPanel>
@@ -243,9 +244,10 @@ const Library = ({ items, ...otherProps }: Props): JSX.Element => {
       <TextInput
         className="mb-6 w-full"
         placeholder={langui.search_title ?? "Search..."}
-        value={searchName}
+        value={query}
         onChange={(name) => {
-          setSearchName(name);
+          setPage(1);
+          setQuery(name);
           if (isDefinedAndNotEmpty(name)) {
             sendAnalytics("Library", "Change search term");
           } else {
@@ -254,40 +256,17 @@ const Library = ({ items, ...otherProps }: Props): JSX.Element => {
         }}
       />
 
-      <WithLabel label={langui.group_by}>
-        <Select
-          className="w-full"
-          options={[
-            langui.category ?? "Category",
-            langui.type ?? "Type",
-            langui.release_year ?? "Year",
-          ]}
-          value={groupingMethod}
-          onChange={(value) => {
-            setGroupingMethod(value);
-            sendAnalytics(
-              "Library",
-              `Change grouping method (${["none", "category", "type", "year"][value + 1]})`
-            );
-          }}
-          allowEmpty
-        />
-      </WithLabel>
-
       <WithLabel label={langui.order_by}>
         <Select
           className="w-full"
-          options={[
-            langui.name ?? "Name",
-            langui.price ?? "Price",
-            langui.release_date ?? "Release date",
-          ]}
+          options={sortingMethods.map((item) => item.displayedName ?? "")}
           value={sortingMethod}
-          onChange={(value) => {
-            setSortingMethod(value);
+          onChange={(newSort) => {
+            setPage(1);
+            setSortingMethod(newSort);
             sendAnalytics(
               "Library",
-              `Change sorting method (${["name", "price", "release date"][value]})`
+              `Change sorting method (${sortingMethods.map((item) => item.displayedName)[newSort]})`
             );
           }}
         />
@@ -297,6 +276,7 @@ const Library = ({ items, ...otherProps }: Props): JSX.Element => {
         <Switch
           value={showSubitems}
           onClick={() => {
+            setPage(1);
             toggleShowSubitems();
             sendAnalytics("Library", `${showSubitems ? "Hide" : "Show"} subitems`);
           }}
@@ -307,6 +287,7 @@ const Library = ({ items, ...otherProps }: Props): JSX.Element => {
         <Switch
           value={showPrimaryItems}
           onClick={() => {
+            setPage(1);
             toggleShowPrimaryItems();
             sendAnalytics("Library", `${showPrimaryItems ? "Hide" : "Show"} primary items`);
           }}
@@ -317,6 +298,7 @@ const Library = ({ items, ...otherProps }: Props): JSX.Element => {
         <Switch
           value={showSecondaryItems}
           onClick={() => {
+            setPage(1);
             toggleShowSecondaryItems();
             sendAnalytics("Library", `${showSecondaryItems ? "Hide" : "Show"} secondary items`);
           }}
@@ -342,6 +324,7 @@ const Library = ({ items, ...otherProps }: Props): JSX.Element => {
             tooltip: langui.only_display_items_i_want,
             icon: Icon.Favorite,
             onClick: () => {
+              setPage(1);
               setFilterUserStatus(LibraryItemUserStatus.Want);
               sendAnalytics("Library", "Set filter status (I want)");
             },
@@ -351,6 +334,7 @@ const Library = ({ items, ...otherProps }: Props): JSX.Element => {
             tooltip: langui.only_display_items_i_have,
             icon: Icon.BackHand,
             onClick: () => {
+              setPage(1);
               setFilterUserStatus(LibraryItemUserStatus.Have);
               sendAnalytics("Library", "Set filter status (I have)");
             },
@@ -360,6 +344,7 @@ const Library = ({ items, ...otherProps }: Props): JSX.Element => {
             tooltip: langui.only_display_unmarked_items,
             icon: Icon.RadioButtonUnchecked,
             onClick: () => {
+              setPage(1);
               setFilterUserStatus(LibraryItemUserStatus.None);
               sendAnalytics("Library", "Set filter status (unmarked)");
             },
@@ -369,6 +354,7 @@ const Library = ({ items, ...otherProps }: Props): JSX.Element => {
             tooltip: langui.only_display_unmarked_items,
             text: langui.all,
             onClick: () => {
+              setPage(1);
               setFilterUserStatus(undefined);
               sendAnalytics("Library", "Set filter status (all)");
             },
@@ -382,12 +368,11 @@ const Library = ({ items, ...otherProps }: Props): JSX.Element => {
         text={langui.reset_all_filters}
         icon={Icon.Replay}
         onClick={() => {
-          setSearchName(DEFAULT_FILTERS_STATE.searchName);
+          setQuery(DEFAULT_FILTERS_STATE.query);
           setShowSubitems(DEFAULT_FILTERS_STATE.showSubitems);
           setShowPrimaryItems(DEFAULT_FILTERS_STATE.showPrimaryItems);
           setShowSecondaryItems(DEFAULT_FILTERS_STATE.showSecondaryItems);
           setSortingMethod(DEFAULT_FILTERS_STATE.sortingMethod);
-          setGroupingMethod(DEFAULT_FILTERS_STATE.groupingMethod);
           setKeepInfoVisible(DEFAULT_FILTERS_STATE.keepInfoVisible);
           setFilterUserStatus(DEFAULT_FILTERS_STATE.filterUserStatus);
           sendAnalytics("Library", "Reset all filters");
@@ -398,53 +383,45 @@ const Library = ({ items, ...otherProps }: Props): JSX.Element => {
 
   const contentPanel = (
     <ContentPanel width={ContentPanelWidthSizes.Full}>
-      <SmartList
-        items={filterHasAttributes(items, ["id", "attributes"] as const)}
-        getItemId={(item) => item.id}
-        renderItem={({ item }) => (
-          <PreviewCard
-            href={`/library/${item.attributes.slug}`}
-            title={item.attributes.title}
-            subtitle={item.attributes.subtitle}
-            thumbnail={item.attributes.thumbnail?.data?.attributes}
-            thumbnailAspectRatio="21/29.7"
-            thumbnailRounded={false}
-            keepInfoVisible={keepInfoVisible}
-            topChips={
-              item.attributes.metadata &&
-              item.attributes.metadata.length > 0 &&
-              item.attributes.metadata[0]
-                ? [prettyItemSubType(item.attributes.metadata[0])]
-                : []
-            }
-            bottomChips={item.attributes.categories?.data.map(
-              (category) => category.attributes?.short ?? ""
-            )}
-            metadata={{
-              releaseDate: item.attributes.release_date,
-              price: item.attributes.price,
-              position: "Bottom",
-            }}
-            infoAppend={
-              !isUntangibleGroupItem(item.attributes.metadata?.[0]) && (
-                <PreviewCardCTAs id={item.id} />
-              )
-            }
-          />
-        )}
-        className={cJoin(
-          "grid-cols-2 items-end",
-          cIf(isContentPanelAtLeast4xl, "grid-cols-[repeat(auto-fill,_minmax(13rem,1fr))]")
-        )}
-        searchingTerm={searchName}
-        sortingFunction={sortingFunction}
-        groupingFunction={groupingFunction}
-        searchingBy={(item) =>
-          prettyInlineTitle("", item.attributes.title, item.attributes.subtitle)
-        }
-        filteringFunction={filteringFunction}
-        paginationItemPerPage={25}
-      />
+      <Paginator page={page} onPageChange={setPage} totalNumberOfPages={libraryItems?.totalPages}>
+        <div
+          className="grid grid-cols-[repeat(auto-fill,_minmax(12rem,1fr))] items-end
+              gap-x-6 gap-y-8">
+          {libraryItems?.hits.map((item) => (
+            <PreviewCard
+              key={item.id}
+              href={`/library/${item.slug}`}
+              title={item._formatted.title}
+              subtitle={item._formatted.subtitle}
+              description={
+                item._matchesPosition.descriptions && item._matchesPosition.descriptions.length > 0
+                  ? item._formatted.descriptions?.[0]
+                  : undefined
+              }
+              thumbnail={item.thumbnail?.data?.attributes}
+              thumbnailAspectRatio="21/29.7"
+              thumbnailRounded={false}
+              keepInfoVisible={keepInfoVisible}
+              topChips={
+                item.metadata && item.metadata.length > 0 && item.metadata[0]
+                  ? [prettyItemSubType(item.metadata[0])]
+                  : []
+              }
+              bottomChips={item.categories?.data.map(
+                (category) => category.attributes?.short ?? ""
+              )}
+              metadata={{
+                releaseDate: item.release_date,
+                price: item.price,
+                position: "Bottom",
+              }}
+              infoAppend={
+                !isUntangibleGroupItem(item.metadata?.[0]) && <PreviewCardCTAs id={item.id} />
+              }
+            />
+          ))}
+        </div>
+      </Paginator>
     </ContentPanel>
   );
 
@@ -453,7 +430,7 @@ const Library = ({ items, ...otherProps }: Props): JSX.Element => {
       subPanel={subPanel}
       contentPanel={contentPanel}
       subPanelIcon={Icon.Search}
-      {...otherProps}
+      {...props}
     />
   );
 };
@@ -464,19 +441,40 @@ export default Library;
  * ───────────────────────────────────╯  NEXT DATA FETCHING  ╰──────────────────────────────────────
  */
 
-export const getStaticProps: GetStaticProps = async (context) => {
-  const sdk = getReadySdk();
+export const getStaticProps: GetStaticProps = (context) => {
   const langui = getLangui(context.locale);
-  const items = await sdk.getLibraryItemsPreview({
-    language_code: context.locale ?? "en",
-  });
-  if (!items.libraryItems?.data) return { notFound: true };
-
   const props: Props = {
-    items: items.libraryItems.data,
     openGraph: getOpenGraph(langui, langui.library ?? "Library"),
   };
   return {
     props: props,
   };
+};
+
+const fromLibraryItemUserStatusToString = (status: LibraryItemUserStatus | undefined): string => {
+  switch (status) {
+    case LibraryItemUserStatus.None:
+      return "none";
+    case LibraryItemUserStatus.Have:
+      return "have";
+    case LibraryItemUserStatus.Want:
+      return "want";
+    default:
+      return "all";
+  }
+};
+
+const fromStringToLibraryItemUserStatus = (
+  status: string | undefined
+): LibraryItemUserStatus | undefined => {
+  switch (status) {
+    case "none":
+      return LibraryItemUserStatus.None;
+    case "have":
+      return LibraryItemUserStatus.Have;
+    case "want":
+      return LibraryItemUserStatus.Want;
+    default:
+      return undefined;
+  }
 };

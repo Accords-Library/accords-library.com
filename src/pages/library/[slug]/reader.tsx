@@ -688,9 +688,8 @@ interface PageFiltersProps {
 }
 
 const PageFilters = ({ page, bookType, options }: PageFiltersProps) => {
-  const isDarkMode = useAtomGetter(atoms.settings.darkMode);
   const commonCss = cJoin(
-    "absolute inset-0",
+    "absolute inset-0 dark:opacity-100",
     cIf(page === "right", "[background-position-x:-100%]")
   );
 
@@ -700,9 +699,9 @@ const PageFilters = ({ page, bookType, options }: PageFiltersProps) => {
         <div
           className={cJoin(
             commonCss,
-            `bg-blend-multiply mix-blend-exclusion [background-image:url(/reader/paper.webp)]
-          [background-size:20vmin_20vmin]`,
-            cIf(bookType === "book", "bg-[#000]/60")
+            `mix-blend-exclusion [background-image:url(/reader/paper.webp)]
+            [background-size:20vmin_20vmin]`,
+            cIf(bookType === "book", "opacity-60 dark:opacity-60")
           )}
         />
       )}
@@ -711,9 +710,8 @@ const PageFilters = ({ page, bookType, options }: PageFiltersProps) => {
         <div
           className={cJoin(
             commonCss,
-            `bg-blend-lighten mix-blend-multiply [background-image:url(/reader/book-fold.webp)]
-          [background-size:200%_100%]`,
-            cIf(!isDarkMode, "bg-[#FFF]/50")
+            `opacity-50 mix-blend-multiply
+            [background-image:url(/reader/book-fold.webp)] [background-size:200%_100%]`
           )}
         />
       )}
@@ -723,8 +721,7 @@ const PageFilters = ({ page, bookType, options }: PageFiltersProps) => {
           <div
             className={cJoin(
               commonCss,
-              `bg-blend-lighten mix-blend-multiply [background-size:200%_100%]`,
-              cIf(!isDarkMode, "bg-[#FFF]/50"),
+              "opacity-50 mix-blend-multiply [background-size:200%_100%]",
               cIf(
                 page === "single",
                 "[background-image:url(/reader/lighting-single-page.webp)]",
@@ -735,8 +732,8 @@ const PageFilters = ({ page, bookType, options }: PageFiltersProps) => {
           <div
             className={cJoin(
               commonCss,
-              `bg-blend-lighten mix-blend-soft-light [background-size:200%_100%]`,
-              cIf(!isDarkMode, "bg-[#FFF]/30"),
+              `bg-[#FFF]/30 bg-blend-lighten mix-blend-soft-light [background-size:200%_100%]
+               dark:bg-[#000]`,
               cIf(
                 page === "single",
                 "[background-image:url(/reader/specular-single-page.webp)]",

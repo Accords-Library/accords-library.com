@@ -23,6 +23,7 @@ import { SettingsPopup } from "components/Panels/SettingsPopup";
 import { useSettings } from "contexts/settings";
 import { useContainerQueries } from "contexts/containerQueries";
 import { useWebkitFixes } from "contexts/webkitFixes";
+import { SearchPopup } from "components/Panels/SearchPopup";
 
 const AccordsLibraryApp = (props: AppProps): JSX.Element => {
   useLocalData();
@@ -33,6 +34,7 @@ const AccordsLibraryApp = (props: AppProps): JSX.Element => {
 
   return (
     <>
+      <SearchPopup />
       <SettingsPopup />
       <LightBoxProvider />
       <Script

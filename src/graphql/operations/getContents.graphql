@@ -35,33 +35,6 @@ query getContents($language_code: String) {
             }
           }
         }
-        ranged_contents(pagination: { limit: -1 }) {
-          data {
-            id
-            attributes {
-              slug
-              scan_set {
-                id
-              }
-              library_item {
-                data {
-                  attributes {
-                    slug
-                    title
-                    subtitle
-                    thumbnail {
-                      data {
-                        attributes {
-                          ...uploadImage
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
         thumbnail {
           data {
             attributes {

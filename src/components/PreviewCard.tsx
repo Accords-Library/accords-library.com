@@ -1,9 +1,10 @@
 import { useCallback } from "react";
 import { useRouter } from "next/router";
-import { Chip } from "./Chip";
-import { Ico, Icon } from "./Ico";
-import { Img } from "./Img";
-import { UpPressable } from "./Containers/UpPressable";
+import { Markdown } from "./Markdown/Markdown";
+import { Chip } from "components/Chip";
+import { Ico, Icon } from "components/Ico";
+import { Img } from "components/Img";
+import { UpPressable } from "components/Containers/UpPressable";
 import { DatePickerFragment, PricePickerFragment, UploadImageFragment } from "graphql/generated";
 import { cIf, cJoin } from "helpers/className";
 import { prettyDate, prettyDuration, prettyPrice, prettyShortenNumber } from "helpers/formatters";
@@ -48,6 +49,7 @@ interface Props {
       }
     | { __typename: "anotherHoverlayName" };
   disabled?: boolean;
+  className?: string;
 }
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
@@ -68,6 +70,7 @@ export const PreviewCard = ({
   metadata,
   hoverlay,
   infoAppend,
+  className,
   disabled = false,
 }: Props): JSX.Element => {
   const currency = useAtomGetter(atoms.settings.currency);
@@ -100,7 +103,7 @@ export const PreviewCard = ({
           {metadata.author && (
             <p className="text-sm">
               <Ico icon={Icon.Person} className="mr-1 translate-y-[.15em] !text-base" />
-              {metadata.author}
+              <Markdown text={metadata.author} className="inline-block" />
             </p>
           )}
         </div>
@@ -109,7 +112,11 @@ export const PreviewCard = ({
   );
 
   return (
-    <UpPressable className="grid items-end text-left" href={href} noBackground disabled={disabled}>
+    <UpPressable
+      className={cJoin("grid items-end text-left", className)}
+      href={href}
+      noBackground
+      disabled={disabled}>
       <div className={cJoin("group", cIf(disabled, "pointer-events-none touch-none select-none"))}>
         {thumbnail ? (
           <div
@@ -132,17 +139,16 @@ export const PreviewCard = ({
             {hoverlay && hoverlay.__typename === "Video" && (
               <>
                 <div
-                  className="group absolute inset-0 grid place-content-center bg-shade bg-opacity-0
-                  text-light transition-colors
-                  hover:bg-opacity-50">
+                  className="absolute inset-0 grid place-content-center bg-shade bg-opacity-0
+                  text-light transition-colors group-hover:bg-opacity-50">
                   <Ico
                     icon={Icon.PlayCircleOutline}
                     className="!text-6xl text-black opacity-0 drop-shadow-lg transition-opacity
-                  shadow-shade group-hover:opacity-100"
+                    shadow-shade group-hover:opacity-100"
                   />
                 </div>
                 <div
-                  className="absolute right-2 bottom-2 rounded-full bg-black bg-opacity-60 px-2
+                  className="absolute right-2 bottom-2 rounded-full bg-black/60 px-2
                   text-light">
                   {prettyDuration(hoverlay.duration)}
                 </div>
@@ -174,24 +180,27 @@ export const PreviewCard = ({
           {topChips && topChips.length > 0 && (
             <div
               className="grid grid-flow-col place-content-start gap-1 overflow-x-scroll
-            scrollbar-none">
+              scrollbar-none">
               {topChips.map((text, index) => (
                 <Chip key={index} text={text} />
               ))}
             </div>
           )}
           <div className="my-1">
-            {pre_title && <p className="mb-1 leading-none break-words">{pre_title}</p>}
+            {pre_title && <Markdown text={pre_title} className="mb-1 leading-none break-words" />}
             {title && (
-              <p className="font-headers text-lg font-bold leading-none break-words">{title}</p>
+              <Markdown
+                text={title}
+                className="font-headers text-lg font-bold leading-none break-words"
+              />
             )}
-            {subtitle && <p className="leading-none break-words">{subtitle}</p>}
+            {subtitle && <Markdown text={subtitle} className="leading-none break-words" />}
           </div>
-          {description && <p>{description}</p>}
+          {description && <Markdown text={description} className="break-words" />}
           {bottomChips && bottomChips.length > 0 && (
             <div
               className="grid grid-flow-col place-content-start gap-1 overflow-x-scroll
-            scrollbar-none">
+              scrollbar-none">
               {bottomChips.map((text, index) => (
                 <Chip key={index} className="text-sm" text={text} />
               ))}

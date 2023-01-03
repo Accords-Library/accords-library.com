@@ -5,7 +5,7 @@ const rgb = (color) => [color.r, color.g, color.b].join(" ");
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  darkMode: "class",
+  darkMode: ["class", ".set-theme-dark"],
   content: ["./src/**/*.{tsx,ts}"],
   theme: {
     colors: {

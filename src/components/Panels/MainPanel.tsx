@@ -22,6 +22,7 @@ export const MainPanel = (): JSX.Element => {
   const langui = useAtomGetter(atoms.localData.langui);
   const [isMainPanelReduced, setMainPanelReduced] = useAtomPair(atoms.layout.mainPanelReduced);
   const setSettingsOpened = useAtomSetter(atoms.layout.settingsOpened);
+  const setSearchOpened = useAtomSetter(atoms.layout.searchOpened);
 
   return (
     <div
@@ -82,6 +83,19 @@ export const MainPanel = (): JSX.Element => {
                   sendAnalytics("Settings", "Open settings");
                 }}
                 icon={Icon.Settings}
+              />
+            </ToolTip>
+            <ToolTip
+              content={<h3 className="text-2xl">{langui.open_search}</h3>}
+              placement="right"
+              className="text-left"
+              disabled={!isMainPanelReduced}>
+              <Button
+                onClick={() => {
+                  setSearchOpened(true);
+                  sendAnalytics("Search", "Open search");
+                }}
+                icon={Icon.Search}
               />
             </ToolTip>
           </div>

@@ -1,29 +1,34 @@
 import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useBoolean } from "usehooks-ts";
+import { z } from "zod";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
+import { Icon } from "components/Ico";
 import { Switch } from "components/Inputs/Switch";
+import { TextInput } from "components/Inputs/TextInput";
+import { WithLabel } from "components/Inputs/WithLabel";
 import { PanelHeader } from "components/PanelComponents/PanelHeader";
 import { ReturnButton } from "components/PanelComponents/ReturnButton";
 import { ContentPanel, ContentPanelWidthSizes } from "components/Containers/ContentPanel";
 import { SubPanel } from "components/Containers/SubPanel";
-import { PreviewCard } from "components/PreviewCard";
-import { GetVideoChannelQuery } from "graphql/generated";
-import { getReadySdk } from "graphql/sdk";
-import { getVideoThumbnailURL } from "helpers/videos";
-import { Icon } from "components/Ico";
 import { useDeviceSupportsHover } from "hooks/useMediaQuery";
-import { WithLabel } from "components/Inputs/WithLabel";
-import { filterHasAttributes, isDefined } from "helpers/asserts";
 import { getOpenGraph } from "helpers/openGraph";
-import { compareDate } from "helpers/date";
 import { HorizontalLine } from "components/HorizontalLine";
-import { SmartList } from "components/SmartList";
-import { cIf } from "helpers/className";
-import { TextInput } from "components/Inputs/TextInput";
 import { getLangui } from "graphql/fetchLocalData";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter } from "helpers/atoms";
+import { CustomSearchResponse, meiliSearch } from "helpers/search";
+import { MeiliIndices, MeiliVideo } from "shared/meilisearch-graphql-typings/meiliTypes";
+import { PreviewCard } from "components/PreviewCard";
+import { filterHasAttributes, isDefined, isDefinedAndNotEmpty } from "helpers/asserts";
+import { getVideoThumbnailURL } from "helpers/videos";
+import { useTypedRouter } from "hooks/useTypedRouter";
+import { Select } from "components/Inputs/Select";
+import { sendAnalytics } from "helpers/analytics";
+import { Button } from "components/Inputs/Button";
+import { GetVideoChannelQuery } from "graphql/generated";
+import { getReadySdk } from "graphql/sdk";
+import { Paginator } from "components/Containers/Paginator";
 
 /*
  *                                         ╭─────────────╮
@@ -32,7 +37,18 @@ import { useAtomGetter } from "helpers/atoms";
 
 const DEFAULT_FILTERS_STATE = {
   searchName: "",
+  page: 1,
+  sortingMethod: 1,
+  onlyShowGone: false,
+  keepInfoVisible: true,
 };
+
+const queryParamSchema = z.object({
+  query: z.coerce.string().optional(),
+  page: z.coerce.number().positive().optional(),
+  sort: z.coerce.number().min(0).max(5).optional(),
+  gone: z.coerce.boolean().optional(),
+});
 
 /*
  *                                           ╭────────╮
@@ -40,21 +56,111 @@ const DEFAULT_FILTERS_STATE = {
  */
 
 interface Props extends AppLayoutRequired {
-  channel: NonNullable<GetVideoChannelQuery["videoChannels"]>["data"][number]["attributes"];
+  channel: NonNullable<
+    NonNullable<GetVideoChannelQuery["videoChannels"]>["data"][number]["attributes"]
+  >;
 }
 
 const Channel = ({ channel, ...otherProps }: Props): JSX.Element => {
-  const { value: keepInfoVisible, toggle: toggleKeepInfoVisible } = useBoolean(true);
   const langui = useAtomGetter(atoms.localData.langui);
   const hoverable = useDeviceSupportsHover();
-  const isContentPanelAtLeast4xl = useAtomGetter(atoms.containerQueries.isContentPanelAtLeast4xl);
+  const router = useTypedRouter(queryParamSchema);
 
-  const [searchName, setSearchName] = useState(DEFAULT_FILTERS_STATE.searchName);
+  const sortingMethods = useMemo(
+    () => [
+      { meiliAttribute: "sortable_published_date:asc", displayedName: langui.oldest },
+      { meiliAttribute: "sortable_published_date:desc", displayedName: langui.newest },
+      { meiliAttribute: "views:asc", displayedName: langui.least_popular },
+      { meiliAttribute: "views:desc", displayedName: langui.most_popular },
+      { meiliAttribute: "duration:asc", displayedName: langui.shortest },
+      { meiliAttribute: "duration:desc", displayedName: langui.longest },
+    ],
+    [
+      langui.least_popular,
+      langui.longest,
+      langui.most_popular,
+      langui.newest,
+      langui.oldest,
+      langui.shortest,
+    ]
+  );
+
+  const {
+    value: keepInfoVisible,
+    toggle: toggleKeepInfoVisible,
+    setValue: setKeepInfoVisible,
+  } = useBoolean(DEFAULT_FILTERS_STATE.keepInfoVisible);
+
+  const {
+    value: onlyShowGone,
+    toggle: toggleOnlyShowGone,
+    setValue: setOnlyShowGone,
+  } = useBoolean(router.query.gone ?? DEFAULT_FILTERS_STATE.onlyShowGone);
+
+  const [query, setQuery] = useState<string>(
+    router.query.query ?? DEFAULT_FILTERS_STATE.searchName
+  );
+
+  const [page, setPage] = useState<number>(router.query.page ?? DEFAULT_FILTERS_STATE.page);
+
+  const [sortingMethod, setSortingMethod] = useState<number>(
+    router.query.sort ?? DEFAULT_FILTERS_STATE.sortingMethod
+  );
+
+  const [videos, setVideos] = useState<CustomSearchResponse<MeiliVideo>>();
+
+  useEffect(() => {
+    const fetchVideos = async () => {
+      const currentSortingMethod = sortingMethods[sortingMethod];
+      const searchResult = await meiliSearch(MeiliIndices.VIDEOS, query, {
+        hitsPerPage: 25,
+        page,
+        attributesToRetrieve: [
+          "title",
+          "channel",
+          "uid",
+          "published_date",
+          "views",
+          "duration",
+          "description",
+        ],
+        attributesToCrop: ["description"],
+        attributesToHighlight: ["*"],
+        sort: isDefined(currentSortingMethod) ? [currentSortingMethod.meiliAttribute] : undefined,
+        filter: [onlyShowGone ? "gone = true" : "", `channel_uid = ${channel.uid}`],
+      });
+
+      setVideos(searchResult);
+    };
+    fetchVideos();
+  }, [query, page, sortingMethod, onlyShowGone, channel, sortingMethods]);
+
+  useEffect(() => {
+    if (router.isReady)
+      router.updateQuery({
+        page,
+        query,
+        sort: sortingMethod,
+        gone: onlyShowGone,
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, query, sortingMethod, onlyShowGone, router.isReady]);
+
+  useEffect(() => {
+    if (router.isReady) {
+      console.log(router.query);
+      if (isDefined(router.query.page)) setPage(router.query.page);
+      if (isDefined(router.query.query)) setQuery(router.query.query);
+      if (isDefined(router.query.sort)) setSortingMethod(router.query.sort);
+      if (isDefined(router.query.gone)) setOnlyShowGone(router.query.gone);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router.isReady]);
 
   const subPanel = (
     <SubPanel>
       <ReturnButton
-        href="/archives/videos/"
+        href="/archives/videos"
         title={langui.videos}
         displayOnlyOn={"3ColumnsLayout"}
         className="mb-10"
@@ -62,65 +168,110 @@ const Channel = ({ channel, ...otherProps }: Props): JSX.Element => {
 
       <PanelHeader
         icon={Icon.Movie}
-        title={langui.videos}
-        description={langui.archives_description}
+        title={channel.title}
+        description={`${channel.subscribers.toLocaleString()} ${langui.subscribers?.toLowerCase()}`}
       />
 
       <HorizontalLine />
 
       <TextInput
         className="mb-6 w-full"
-        placeholder={langui.search_title ?? "Search title..."}
-        value={searchName}
-        onChange={setSearchName}
+        placeholder={langui.search_title}
+        value={query}
+        onChange={(newQuery) => {
+          setPage(1);
+          setQuery(newQuery);
+          if (isDefinedAndNotEmpty(newQuery)) {
+            sendAnalytics("Videos", "Change search term");
+          } else {
+            sendAnalytics("Videos", "Clear search term");
+          }
+        }}
       />
+
+      <WithLabel label={langui.order_by}>
+        <Select
+          className="w-full"
+          options={sortingMethods.map((item) => item.displayedName ?? "")}
+          value={sortingMethod}
+          onChange={(newSort) => {
+            setPage(1);
+            setSortingMethod(newSort);
+            sendAnalytics(
+              "Videos",
+              `Change sorting method (${sortingMethods.map((item) => item.displayedName)[newSort]})`
+            );
+          }}
+        />
+      </WithLabel>
+
+      <WithLabel label={langui.only_unavailable_videos}>
+        <Switch
+          value={onlyShowGone}
+          onClick={() => {
+            toggleOnlyShowGone();
+          }}
+        />
+      </WithLabel>
 
       {hoverable && (
         <WithLabel label={langui.always_show_info}>
           <Switch value={keepInfoVisible} onClick={toggleKeepInfoVisible} />
         </WithLabel>
       )}
+
+      <Button
+        className="mt-8"
+        text={langui.reset_all_filters}
+        icon={Icon.Replay}
+        onClick={() => {
+          setOnlyShowGone(DEFAULT_FILTERS_STATE.onlyShowGone);
+          setPage(DEFAULT_FILTERS_STATE.page);
+          setQuery(DEFAULT_FILTERS_STATE.searchName);
+          setSortingMethod(DEFAULT_FILTERS_STATE.sortingMethod);
+          setKeepInfoVisible(DEFAULT_FILTERS_STATE.keepInfoVisible);
+          sendAnalytics("Videos", "Reset all filters");
+        }}
+      />
     </SubPanel>
   );
 
   const contentPanel = (
     <ContentPanel width={ContentPanelWidthSizes.Full}>
-      <SmartList
-        items={filterHasAttributes(channel?.videos?.data, ["id", "attributes"] as const)}
-        getItemId={(item) => item.id}
-        renderItem={({ item }) => (
-          <PreviewCard
-            href={`/archives/videos/v/${item.attributes.uid}`}
-            title={item.attributes.title}
-            thumbnail={getVideoThumbnailURL(item.attributes.uid)}
-            thumbnailAspectRatio="16/9"
-            thumbnailForceAspectRatio
-            keepInfoVisible={keepInfoVisible}
-            metadata={{
-              releaseDate: item.attributes.published_date,
-              views: item.attributes.views,
-              author: channel?.title,
-              position: "Top",
-            }}
-            hoverlay={{
-              __typename: "Video",
-              duration: item.attributes.duration,
-            }}
-          />
-        )}
-        className={cIf(
-          isContentPanelAtLeast4xl,
-          "grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] gap-x-6 gap-y-8",
-          "grid-cols-2 gap-x-3 gap-y-5"
-        )}
-        groupingFunction={() => [channel?.title ?? ""]}
-        paginationItemPerPage={25}
-        searchingTerm={searchName}
-        searchingBy={(item) => item.attributes.title}
-      />
+      <Paginator page={page} onPageChange={setPage} totalNumberOfPages={videos?.totalPages}>
+        <div
+          className="grid grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] items-start
+          gap-x-6 gap-y-8">
+          {videos?.hits.map((item) => (
+            <PreviewCard
+              key={item.uid}
+              href={`/archives/videos/v/${item.uid}`}
+              title={item._formatted.title}
+              thumbnail={getVideoThumbnailURL(item.uid)}
+              thumbnailAspectRatio="16/9"
+              thumbnailForceAspectRatio
+              keepInfoVisible={keepInfoVisible}
+              metadata={{
+                releaseDate: item.published_date,
+                views: item.views,
+                author: item._formatted.channel?.data?.attributes?.title,
+                position: "Top",
+              }}
+              description={
+                item._matchesPosition.description && item._matchesPosition.description.length > 0
+                  ? item._formatted.description
+                  : undefined
+              }
+              hoverlay={{
+                __typename: "Video",
+                duration: item.duration,
+              }}
+            />
+          ))}
+        </div>
+      </Paginator>
     </ContentPanel>
   );
-
   return <AppLayout subPanel={subPanel} contentPanel={contentPanel} {...otherProps} />;
 };
 export default Channel;
@@ -137,10 +288,6 @@ export const getStaticProps: GetStaticProps = async (context) => {
     channel: context.params && isDefined(context.params.uid) ? context.params.uid.toString() : "",
   });
   if (!channel.videoChannels?.data[0]?.attributes) return { notFound: true };
-
-  channel.videoChannels.data[0].attributes.videos?.data
-    .sort((a, b) => compareDate(a.attributes?.published_date, b.attributes?.published_date))
-    .reverse();
 
   const props: Props = {
     channel: channel.videoChannels.data[0].attributes,

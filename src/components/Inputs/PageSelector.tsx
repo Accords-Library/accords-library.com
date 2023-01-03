@@ -21,24 +21,24 @@ export const PageSelector = ({ page, className, pagesCount, onChange }: Props): 
     className={cJoin("flex flex-row place-content-center", className)}
     buttonsProps={[
       {
-        onClick: () => onChange(0),
-        disabled: page === 0,
+        onClick: () => onChange(1),
+        disabled: page === 1,
         icon: Icon.FirstPage,
       },
       {
-        onClick: () => page > 0 && onChange(page - 1),
-        disabled: page === 0,
+        onClick: () => page > 1 && onChange(page - 1),
+        disabled: page === 1,
         icon: Icon.NavigateBefore,
       },
-      { text: `${page + 1} / ${pagesCount}` },
+      { text: `${page} / ${pagesCount}` },
       {
-        onClick: () => page < pagesCount - 1 && onChange(page + 1),
-        disabled: page === pagesCount - 1,
+        onClick: () => page < pagesCount && onChange(page + 1),
+        disabled: page === pagesCount,
         icon: Icon.NavigateNext,
       },
       {
-        onClick: () => onChange(pagesCount - 1),
-        disabled: page === pagesCount - 1,
+        onClick: () => onChange(pagesCount),
+        disabled: page === pagesCount,
         icon: Icon.LastPage,
       },
     ]}

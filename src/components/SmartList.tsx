@@ -70,10 +70,10 @@ export const SmartList = <T,>({
   sortingFunction = defaultSortingFunction,
   className,
 }: Props<T>): JSX.Element => {
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
   const langui = useAtomGetter(atoms.localData.langui);
   useScrollTopOnChange(Ids.ContentPanel, [page], paginationScroolTop);
-  useEffect(() => setPage(0), [searchingTerm, groupingFunction, groupSortingFunction]);
+  useEffect(() => setPage(1), [searchingTerm, groupingFunction, groupSortingFunction]);
 
   const searchFilter = useCallback(() => {
     if (isDefinedAndNotEmpty(searchingTerm) && isDefined(searchingBy)) {
@@ -158,9 +158,9 @@ export const SmartList = <T,>({
     return memo;
   })();
 
-  useHotkeys("left", () => setPage((current) => current - 1), { enabled: page > 0 });
+  useHotkeys("left", () => setPage((current) => current - 1), { enabled: page > 1 });
   useHotkeys("right", () => setPage((current) => current + 1), {
-    enabled: page < pages.length - 1,
+    enabled: page < pages.length,
   });
 
   return (
@@ -170,8 +170,8 @@ export const SmartList = <T,>({
       )}
 
       <div className="mb-8">
-        {(pages[page]?.length ?? 0) > 0 ? (
-          pages[page]?.map(
+        {(pages[page - 1]?.length ?? 0) > 0 ? (
+          pages[page - 1]?.map(
             (group) =>
               group.items.length > 0 && (
                 <Fragment key={group.name}>

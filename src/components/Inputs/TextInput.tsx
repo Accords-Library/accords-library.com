@@ -12,7 +12,7 @@ interface Props {
   onChange: (newValue: string) => void;
   className?: string;
   name?: string;
-  placeholder?: string;
+  placeholder?: string | null;
   disabled?: boolean;
 }
 
@@ -33,7 +33,7 @@ export const TextInput = ({
       name={name}
       value={value}
       disabled={disabled}
-      placeholder={placeholder}
+      placeholder={placeholder ?? undefined}
       onChange={(event) => {
         onChange(event.target.value);
       }}

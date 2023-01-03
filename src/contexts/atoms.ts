@@ -14,13 +14,15 @@ import { lightBox } from "contexts/LightBoxProvider";
 /* [ APPLAYOUT ATOMS ] */
 
 const mainPanelReduced = atomPairing(atomWithStorage("isMainPanelReduced", false));
-const settingsOpened = atomPairing(atomWithStorage("isSettingsOpened", false));
-const subPanelOpened = atomPairing(atomWithStorage("isSubPanelOpened", false));
-const mainPanelOpened = atomPairing(atomWithStorage("isMainPanelOpened", false));
+const searchOpened = atomPairing(atom(false));
+const settingsOpened = atomPairing(atom(false));
+const subPanelOpened = atomPairing(atom(false));
+const mainPanelOpened = atomPairing(atom(false));
 const menuGesturesEnabled = atomPairing(atomWithStorage("isMenuGesturesEnabled", false));
 const terminalMode = atom((get) => get(settings.playerName[0]) === "root");
 
 const layout = {
+  searchOpened,
   mainPanelReduced,
   settingsOpened,
   subPanelOpened,

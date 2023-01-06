@@ -143,8 +143,8 @@ export const PreviewCard = ({
                   text-light transition-colors group-hover:bg-opacity-50">
                   <Ico
                     icon="play_circle"
-                    className="!text-6xl text-black opacity-0 drop-shadow-lg transition-opacity
-                    shadow-shade group-hover:opacity-100"
+                    className="!text-6xl text-light opacity-0 drop-shadow-lg transition-opacity
+                    shadow-shade group-hover:opacity-100 dark:text-black"
                   />
                 </div>
                 <div

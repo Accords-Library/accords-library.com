@@ -88,16 +88,15 @@ const Contents = (props: Props): JSX.Element => {
     const fetchPosts = async () => {
       const currentSortingMethod = sortingMethods[sortingMethod];
       const searchResult = await meiliSearch(MeiliIndices.CONTENT, query, {
-        attributesToCrop: ["translations.description"],
+        attributesToRetrieve: ["translations", "id", "slug", "categories", "type", "thumbnail"],
+        attributesToHighlight: ["translations"],
+        attributesToCrop: ["translations.displayable_description"],
         hitsPerPage: 25,
         page,
         sort: isDefined(currentSortingMethod) ? [currentSortingMethod.meiliAttribute] : undefined,
       });
       searchResult.hits = searchResult.hits.map((item) => {
-        if (
-          Object.keys(item._matchesPosition).filter((match) => match.startsWith("translations"))
-            .length > 0
-        ) {
+        if (Object.keys(item._matchesPosition).some((match) => match.startsWith("translations"))) {
           item._formatted.translations = filterDefined(item._formatted.translations).filter(
             (translation) => containsHighlight(JSON.stringify(translation))
           );
@@ -212,9 +211,11 @@ const Contents = (props: Props): JSX.Element => {
               href={`/contents/${item.slug}`}
               translations={filterHasAttributes(item._formatted.translations, [
                 "language.data.attributes.code",
-              ] as const).map(({ description, language, ...otherAttributes }) => ({
+              ] as const).map(({ displayable_description, language, ...otherAttributes }) => ({
                 ...otherAttributes,
-                description: containsHighlight(description) ? description : undefined,
+                description: containsHighlight(displayable_description)
+                  ? displayable_description
+                  : undefined,
                 language: language.data.attributes.code,
               }))}
               fallback={{ title: prettySlug(item.slug) }}

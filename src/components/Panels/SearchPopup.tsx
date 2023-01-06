@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { MaterialSymbol } from "material-symbols";
 import { Popup } from "components/Containers/Popup";
 import { sendAnalytics } from "helpers/analytics";
 import { atoms } from "contexts/atoms";
@@ -46,16 +47,25 @@ export const SearchPopup = (): JSX.Element => {
     const fetchLibraryItems = async () => {
       const searchResult = await meiliSearch(MeiliIndices.LIBRARY_ITEM, query, {
         limit: SEARCH_LIMIT,
+        attributesToRetrieve: [
+          "title",
+          "subtitle",
+          "descriptions",
+          "id",
+          "slug",
+          "thumbnail",
+          "release_date",
+          "price",
+          "categories",
+          "metadata",
+        ],
+        attributesToHighlight: ["title", "subtitle", "descriptions"],
         attributesToCrop: ["descriptions"],
       });
       searchResult.hits = searchResult.hits.map((item) => {
-        if (
-          isDefined(item._formatted) &&
-          item._matchesPosition.descriptions &&
-          item._matchesPosition.descriptions.length > 0
-        ) {
+        if (Object.keys(item._matchesPosition).some((match) => match.startsWith("descriptions"))) {
           item._formatted.descriptions = filterDefined(item._formatted.descriptions).filter(
-            (description) => description.includes("</mark>")
+            (description) => containsHighlight(JSON.stringify(description))
           );
         }
         return item;
@@ -65,16 +75,15 @@ export const SearchPopup = (): JSX.Element => {
 
     const fetchContents = async () => {
       const searchResult = await meiliSearch(MeiliIndices.CONTENT, query, {
-        attributesToCrop: ["translations.description"],
         limit: SEARCH_LIMIT,
+        attributesToRetrieve: ["translations", "id", "slug", "categories", "type", "thumbnail"],
+        attributesToHighlight: ["translations"],
+        attributesToCrop: ["translations.displayable_description"],
       });
       searchResult.hits = searchResult.hits.map((item) => {
-        if (
-          Object.keys(item._matchesPosition).filter((match) => match.startsWith("translations"))
-            .length > 0
-        ) {
+        if (Object.keys(item._matchesPosition).some((match) => match.startsWith("translations"))) {
           item._formatted.translations = filterDefined(item._formatted.translations).filter(
-            (translation) => JSON.stringify(translation).includes("</mark>")
+            (translation) => containsHighlight(JSON.stringify(translation))
           );
         }
         return item;
@@ -94,8 +103,8 @@ export const SearchPopup = (): JSX.Element => {
           "duration",
           "description",
         ],
+        attributesToHighlight: ["title", "channel", "description"],
         attributesToCrop: ["description"],
-        sort: ["sortable_published_date:desc"],
       });
       setVideos(searchResult);
     };
@@ -106,8 +115,15 @@ export const SearchPopup = (): JSX.Element => {
         attributesToRetrieve: ["translations", "thumbnail", "slug", "date", "categories"],
         attributesToHighlight: ["translations.title", "translations.excerpt", "translations.body"],
         attributesToCrop: ["translations.body"],
-        sort: ["sortable_date:desc"],
         filter: ["hidden = false"],
+      });
+      searchResult.hits = searchResult.hits.map((item) => {
+        if (Object.keys(item._matchesPosition).some((match) => match.startsWith("translations"))) {
+          item._formatted.translations = filterDefined(item._formatted.translations).filter(
+            (translation) => JSON.stringify(translation).includes("</mark>")
+          );
+        }
+        return item;
       });
       setPosts(searchResult);
     };
@@ -122,6 +138,17 @@ export const SearchPopup = (): JSX.Element => {
           "translations.displayable_description",
         ],
         attributesToCrop: ["translations.displayable_description"],
+      });
+      searchResult.hits = searchResult.hits.map((item) => {
+        if (
+          Object.keys(item._matchesPosition).filter((match) => match.startsWith("translations"))
+            .length > 0
+        ) {
+          item._formatted.translations = filterDefined(item._formatted.translations).filter(
+            (translation) => JSON.stringify(translation).includes("</mark>")
+          );
+        }
+        return item;
       });
       setWikiPages(searchResult);
     };
@@ -159,22 +186,27 @@ export const SearchPopup = (): JSX.Element => {
         {isDefined(libraryItems) && (
           <SearchResultSection
             title={langui.library}
-            href={`/library?page=1&query=${query}&sort=0&primary=true&secondary=true&subitems=true&status=all`}
+            icon="auto_stories"
+            href={`/library?page=1&query=${query}\
+&sort=0&primary=true&secondary=true&subitems=true&status=all`}
             totalHits={libraryItems.estimatedTotalHits}>
             <div className="flex flex-wrap items-start gap-x-6 gap-y-8">
               {libraryItems.hits.map((item) => (
-                <PreviewCard
+                <TranslatedPreviewCard
                   key={item.id}
-                  className="w-52"
+                  className="w-56"
                   href={`/library/${item.slug}`}
-                  title={item._formatted.title}
-                  subtitle={item._formatted.subtitle}
-                  description={
-                    item._matchesPosition.descriptions &&
-                    item._matchesPosition.descriptions.length > 0
-                      ? item._formatted.descriptions?.[0]
-                      : undefined
-                  }
+                  translations={filterHasAttributes(item._formatted.descriptions, [
+                    "language.data.attributes.code",
+                  ] as const).map((translation) => ({
+                    language: translation.language.data.attributes.code,
+                    title: item.title,
+                    subtitle: item.subtitle,
+                    description: containsHighlight(translation.description)
+                      ? translation.description
+                      : undefined,
+                  }))}
+                  fallback={{ title: item._formatted.title, subtitle: item._formatted.subtitle }}
                   thumbnail={item.thumbnail?.data?.attributes}
                   thumbnailAspectRatio="21/29.7"
                   thumbnailRounded={false}
@@ -201,18 +233,25 @@ export const SearchPopup = (): JSX.Element => {
         {isDefined(contents) && (
           <SearchResultSection
             title={langui.contents}
+            icon="workspaces"
             href={`/contents/all?page=1&query=${query}&sort=0`}
             totalHits={contents.estimatedTotalHits}>
             <div className="flex flex-wrap items-start gap-x-6 gap-y-8">
               {contents.hits.map((item) => (
-                <PreviewCard
+                <TranslatedPreviewCard
                   key={item.id}
                   className="w-56"
                   href={`/contents/${item.slug}`}
-                  pre_title={item._formatted.translations?.[0]?.pre_title}
-                  title={item._formatted.translations?.[0]?.title}
-                  subtitle={item._formatted.translations?.[0]?.subtitle}
-                  description={item._formatted.translations?.[0]?.description}
+                  translations={filterHasAttributes(item._formatted.translations, [
+                    "language.data.attributes.code",
+                  ] as const).map(({ displayable_description, language, ...otherAttributes }) => ({
+                    ...otherAttributes,
+                    description: containsHighlight(displayable_description)
+                      ? displayable_description
+                      : undefined,
+                    language: language.data.attributes.code,
+                  }))}
+                  fallback={{ title: prettySlug(item.slug) }}
                   thumbnail={item.thumbnail?.data?.attributes}
                   thumbnailAspectRatio="3/2"
                   thumbnailForceAspectRatio
@@ -238,7 +277,8 @@ export const SearchPopup = (): JSX.Element => {
         {isDefined(wikiPages) && (
           <SearchResultSection
             title={langui.wiki}
-            href={"/wiki"}
+            icon="travel_explore"
+            href={`/wiki?page=1&query=${query}`}
             totalHits={wikiPages.estimatedTotalHits}>
             <div className="flex flex-wrap items-start gap-x-6 gap-y-8">
               {wikiPages.hits.map((item) => (
@@ -288,6 +328,7 @@ export const SearchPopup = (): JSX.Element => {
         {isDefined(posts) && (
           <SearchResultSection
             title={langui.news}
+            icon="newspaper"
             href={`/news?page=1&query=${query}`}
             totalHits={posts.estimatedTotalHits}>
             <div className="flex flex-wrap items-start gap-x-6 gap-y-8">
@@ -329,6 +370,7 @@ export const SearchPopup = (): JSX.Element => {
         {isDefined(videos) && (
           <SearchResultSection
             title={langui.videos}
+            icon="movie"
             href={`/archives/videos?page=1&query=${query}&sort=1&gone=`}
             totalHits={videos.estimatedTotalHits}>
             <div className="flex flex-wrap items-start gap-x-6 gap-y-8">
@@ -370,21 +412,34 @@ export const SearchPopup = (): JSX.Element => {
 
 interface SearchResultSectionProps {
   title?: string | null;
+  icon: MaterialSymbol;
   href: string;
   totalHits?: number;
   children: React.ReactNode;
 }
 
-const SearchResultSection = ({ title, href, totalHits, children }: SearchResultSectionProps) => (
+const SearchResultSection = ({
+  title,
+  icon,
+  href,
+  totalHits,
+  children,
+}: SearchResultSectionProps) => (
   <>
     {isDefined(totalHits) && totalHits > 0 && (
       <div>
         <div className="mb-6 grid place-content-start">
-          <UpPressable className="px-6 py-4" href={href}>
-            <p className="font-headers text-lg">{title}</p>
-            {isDefined(totalHits) && totalHits > SEARCH_LIMIT && (
-              <p className="text-sm">{`(showing ${SEARCH_LIMIT} out of ${totalHits} results)`}</p>
-            )}
+          <UpPressable
+            className="grid grid-cols-[auto_1fr] place-items-center gap-6 px-6 py-4"
+            href={href}>
+            <Ico icon={icon} className="!text-3xl" isFilled />
+            <div>
+              <p className="font-headers text-lg">{title}</p>
+              {isDefined(totalHits) && totalHits > SEARCH_LIMIT && (
+                /* TODO: Langui */
+                <p className="text-sm">{`(showing ${SEARCH_LIMIT} out of ${totalHits} results)`}</p>
+              )}
+            </div>
           </UpPressable>
         </div>
         {children}

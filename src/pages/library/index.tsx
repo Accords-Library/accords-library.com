@@ -14,17 +14,23 @@ import { TextInput } from "components/Inputs/TextInput";
 import { Button } from "components/Inputs/Button";
 import { useDeviceSupportsHover } from "hooks/useMediaQuery";
 import { ButtonGroup } from "components/Inputs/ButtonGroup";
-import { filterDefined, isDefined, isDefinedAndNotEmpty, isUndefined } from "helpers/asserts";
+import {
+  filterDefined,
+  filterHasAttributes,
+  isDefined,
+  isDefinedAndNotEmpty,
+  isUndefined,
+} from "helpers/asserts";
 import { getOpenGraph } from "helpers/openGraph";
 import { HorizontalLine } from "components/HorizontalLine";
 import { getLangui } from "graphql/fetchLocalData";
 import { sendAnalytics } from "helpers/analytics";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter } from "helpers/atoms";
-import { CustomSearchResponse, meiliSearch } from "helpers/search";
+import { containsHighlight, CustomSearchResponse, meiliSearch } from "helpers/search";
 import { MeiliIndices, MeiliLibraryItem } from "shared/meilisearch-graphql-typings/meiliTypes";
 import { useTypedRouter } from "hooks/useTypedRouter";
-import { PreviewCard } from "components/PreviewCard";
+import { TranslatedPreviewCard } from "components/PreviewCard";
 import { prettyItemSubType } from "helpers/formatters";
 import { isUntangibleGroupItem } from "helpers/libraryItem";
 import { PreviewCardCTAs } from "components/Library/PreviewCardCTAs";
@@ -156,18 +162,27 @@ const Library = (props: Props): JSX.Element => {
       const searchResult = await meiliSearch(MeiliIndices.LIBRARY_ITEM, query, {
         hitsPerPage: 25,
         page,
+        attributesToRetrieve: [
+          "title",
+          "subtitle",
+          "descriptions",
+          "id",
+          "slug",
+          "thumbnail",
+          "release_date",
+          "price",
+          "categories",
+          "metadata",
+        ],
+        attributesToHighlight: ["title", "subtitle", "descriptions"],
         attributesToCrop: ["descriptions"],
         sort: isDefined(currentSortingMethod) ? [currentSortingMethod.meiliAttribute] : undefined,
         filter,
       });
       searchResult.hits = searchResult.hits.map((item) => {
-        if (
-          isDefined(item._formatted) &&
-          item._matchesPosition.descriptions &&
-          item._matchesPosition.descriptions.length > 0
-        ) {
+        if (Object.keys(item._matchesPosition).some((match) => match.startsWith("descriptions"))) {
           item._formatted.descriptions = filterDefined(item._formatted.descriptions).filter(
-            (description) => description.includes("</mark>")
+            (description) => containsHighlight(JSON.stringify(description))
           );
         }
         return item;
@@ -188,16 +203,17 @@ const Library = (props: Props): JSX.Element => {
   ]);
 
   useEffect(() => {
-    if (router.isReady) console.log(router.query, filterUserStatus);
-    router.updateQuery({
-      page,
-      query,
-      sort: sortingMethod,
-      primary: showPrimaryItems,
-      secondary: showSecondaryItems,
-      subitems: showSubitems,
-      status: fromLibraryItemUserStatusToString(filterUserStatus),
-    });
+    if (router.isReady) {
+      router.updateQuery({
+        page,
+        query,
+        sort: sortingMethod,
+        primary: showPrimaryItems,
+        secondary: showSecondaryItems,
+        subitems: showSubitems,
+        status: fromLibraryItemUserStatusToString(filterUserStatus),
+      });
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     page,
@@ -212,7 +228,6 @@ const Library = (props: Props): JSX.Element => {
 
   useEffect(() => {
     if (router.isReady) {
-      console.log(router.query);
       if (isDefined(router.query.page)) setPage(router.query.page);
       if (isDefined(router.query.query)) setQuery(router.query.query);
       if (isDefined(router.query.sort)) setSortingMethod(router.query.sort);
@@ -387,16 +402,20 @@ const Library = (props: Props): JSX.Element => {
           className="grid grid-cols-[repeat(auto-fill,_minmax(12rem,1fr))] items-end
               gap-x-6 gap-y-8">
           {libraryItems?.hits.map((item) => (
-            <PreviewCard
+            <TranslatedPreviewCard
               key={item.id}
               href={`/library/${item.slug}`}
-              title={item._formatted.title}
-              subtitle={item._formatted.subtitle}
-              description={
-                item._matchesPosition.descriptions && item._matchesPosition.descriptions.length > 0
-                  ? item._formatted.descriptions?.[0]
-                  : undefined
-              }
+              translations={filterHasAttributes(item._formatted.descriptions, [
+                "language.data.attributes.code",
+              ] as const).map((translation) => ({
+                language: translation.language.data.attributes.code,
+                title: item.title,
+                subtitle: item.subtitle,
+                description: containsHighlight(translation.description)
+                  ? translation.description
+                  : undefined,
+              }))}
+              fallback={{ title: item._formatted.title, subtitle: item._formatted.subtitle }}
               thumbnail={item.thumbnail?.data?.attributes}
               thumbnailAspectRatio="21/29.7"
               thumbnailRounded={false}

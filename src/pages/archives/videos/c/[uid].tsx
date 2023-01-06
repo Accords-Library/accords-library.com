@@ -123,8 +123,8 @@ const Channel = ({ channel, ...otherProps }: Props): JSX.Element => {
           "duration",
           "description",
         ],
+        attributesToHighlight: ["title", "channel", "description"],
         attributesToCrop: ["description"],
-        attributesToHighlight: ["*"],
         sort: isDefined(currentSortingMethod) ? [currentSortingMethod.meiliAttribute] : undefined,
         filter: [onlyShowGone ? "gone = true" : "", `channel_uid = ${channel.uid}`],
       });
@@ -147,7 +147,6 @@ const Channel = ({ channel, ...otherProps }: Props): JSX.Element => {
 
   useEffect(() => {
     if (router.isReady) {
-      console.log(router.query);
       if (isDefined(router.query.page)) setPage(router.query.page);
       if (isDefined(router.query.query)) setQuery(router.query.query);
       if (isDefined(router.query.sort)) setSortingMethod(router.query.sort);

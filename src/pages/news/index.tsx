@@ -11,7 +11,12 @@ import { WithLabel } from "components/Inputs/WithLabel";
 import { TextInput } from "components/Inputs/TextInput";
 import { Button } from "components/Inputs/Button";
 import { useDeviceSupportsHover } from "hooks/useMediaQuery";
-import { filterHasAttributes, isDefined, isDefinedAndNotEmpty } from "helpers/asserts";
+import {
+  filterDefined,
+  filterHasAttributes,
+  isDefined,
+  isDefinedAndNotEmpty,
+} from "helpers/asserts";
 import { getOpenGraph } from "helpers/openGraph";
 import { TranslatedPreviewCard } from "components/PreviewCard";
 import { HorizontalLine } from "components/HorizontalLine";
@@ -77,6 +82,14 @@ const News = ({ ...otherProps }: Props): JSX.Element => {
         attributesToCrop: ["translations.body"],
         sort: ["sortable_date:desc"],
         filter: ["hidden = false"],
+      });
+      searchResult.hits = searchResult.hits.map((item) => {
+        if (Object.keys(item._matchesPosition).some((match) => match.startsWith("translations"))) {
+          item._formatted.translations = filterDefined(item._formatted.translations).filter(
+            (translation) => JSON.stringify(translation).includes("</mark>")
+          );
+        }
+        return item;
       });
       setPosts(searchResult);
     };

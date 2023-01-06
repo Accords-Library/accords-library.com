@@ -11,9 +11,8 @@ import {
   WikiPageAttributesFragment,
 } from "./generated";
 
-export interface MeiliLibraryItem extends Omit<LibraryItemAttributesFragment, "descriptions"> {
+export interface MeiliLibraryItem extends LibraryItemAttributesFragment {
   id: string;
-  descriptions: string[];
   sortable_name: string;
   sortable_price: number | undefined;
   sortable_date: number | undefined;
@@ -23,20 +22,12 @@ export interface MeiliLibraryItem extends Omit<LibraryItemAttributesFragment, "d
 export interface MeiliContent
   extends Omit<ContentAttributesFragment, "translations" | "updatedAt"> {
   id: string;
-  translations?: Array<{
-    __typename?: "ComponentTranslationsTitle";
-    pre_title?: string | null;
-    title: string;
-    subtitle?: string | null;
-    description?: string | null;
-    language?: {
-      __typename?: "LanguageEntityResponse";
-      data?: {
-        __typename?: "LanguageEntity";
-        attributes?: { __typename?: "Language"; code: string } | null;
-      } | null;
-    } | null;
-  } | null> | null;
+  translations: (Omit<
+    NonNullable<NonNullable<ContentAttributesFragment["translations"]>[number]>,
+    "text_set" | "description"
+  > & {
+    displayable_description?: string | null;
+  })[];
   sortable_updated_date: number;
 }
 

@@ -109,7 +109,8 @@ const Video = ({ video, ...otherProps }: Props): JSX.Element => {
               <h2 className="text-2xl">{langui.channel}</h2>
               <div>
                 <Button
-                  href={`/archives/videos/c/${video.channel.data.attributes.uid}?page=1&query=&sort=1&gone=`}
+                  href={`/archives/videos/c/${video.channel.data.attributes.uid}\
+?page=1&query=&sort=1&gone=`}
                   text={video.channel.data.attributes.title}
                 />
                 <p>

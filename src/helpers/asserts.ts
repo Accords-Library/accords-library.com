@@ -36,7 +36,7 @@ type Split<Str, Acc extends string[] = []> = Str extends `${infer Head}.${infer 
   ? [...Acc, Last]
   : never;
 
-export type SelectiveNonNullable<T, P extends PathDot<T>> = Recursive<NonNullable<T>, Split<P>>;
+type SelectiveNonNullable<T, P extends PathDot<T>> = Recursive<NonNullable<T>, Split<P>>;
 
 export const isDefined = <T>(t: T): t is NonNullable<T> => t !== null && t !== undefined;
 

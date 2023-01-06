@@ -1,4 +1,4 @@
 {
   "upgrade": false,
-  "reject": ["@types/react", "react-hotkeys-hook"]
+  "reject": ["react-hotkeys-hook"]
 }

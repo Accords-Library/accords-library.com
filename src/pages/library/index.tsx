@@ -9,7 +9,6 @@ import { PanelHeader } from "components/PanelComponents/PanelHeader";
 import { ContentPanel, ContentPanelWidthSizes } from "components/Containers/ContentPanel";
 import { SubPanel } from "components/Containers/SubPanel";
 import { LibraryItemUserStatus } from "types/types";
-import { Icon } from "components/Ico";
 import { WithLabel } from "components/Inputs/WithLabel";
 import { TextInput } from "components/Inputs/TextInput";
 import { Button } from "components/Inputs/Button";
@@ -234,7 +233,7 @@ const Library = (props: Props): JSX.Element => {
   const subPanel = (
     <SubPanel>
       <PanelHeader
-        icon={Icon.LibraryBooks}
+        icon="auto_stories"
         title={langui.library}
         description={langui.library_description}
       />
@@ -322,7 +321,7 @@ const Library = (props: Props): JSX.Element => {
         buttonsProps={[
           {
             tooltip: langui.only_display_items_i_want,
-            icon: Icon.Favorite,
+            icon: "favorite",
             onClick: () => {
               setPage(1);
               setFilterUserStatus(LibraryItemUserStatus.Want);
@@ -332,7 +331,7 @@ const Library = (props: Props): JSX.Element => {
           },
           {
             tooltip: langui.only_display_items_i_have,
-            icon: Icon.BackHand,
+            icon: "back_hand",
             onClick: () => {
               setPage(1);
               setFilterUserStatus(LibraryItemUserStatus.Have);
@@ -342,7 +341,7 @@ const Library = (props: Props): JSX.Element => {
           },
           {
             tooltip: langui.only_display_unmarked_items,
-            icon: Icon.RadioButtonUnchecked,
+            icon: "nearby_off",
             onClick: () => {
               setPage(1);
               setFilterUserStatus(LibraryItemUserStatus.None);
@@ -366,7 +365,7 @@ const Library = (props: Props): JSX.Element => {
       <Button
         className="mt-8"
         text={langui.reset_all_filters}
-        icon={Icon.Replay}
+        icon="settings_backup_restore"
         onClick={() => {
           setQuery(DEFAULT_FILTERS_STATE.query);
           setShowSubitems(DEFAULT_FILTERS_STATE.showSubitems);
@@ -426,12 +425,7 @@ const Library = (props: Props): JSX.Element => {
   );
 
   return (
-    <AppLayout
-      subPanel={subPanel}
-      contentPanel={contentPanel}
-      subPanelIcon={Icon.Search}
-      {...props}
-    />
+    <AppLayout subPanel={subPanel} contentPanel={contentPanel} subPanelIcon="search" {...props} />
   );
 };
 export default Library;

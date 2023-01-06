@@ -7,7 +7,6 @@ import { Markdawn, TableOfContents } from "components/Markdown/Markdawn";
 import { ContentPanel, ContentPanelWidthSizes } from "components/Containers/ContentPanel";
 import { Popup } from "components/Containers/Popup";
 import { ToolTip } from "components/ToolTip";
-import { Icon } from "components/Ico";
 import { getOpenGraph } from "helpers/openGraph";
 import { getLangui } from "graphql/fetchLocalData";
 
@@ -208,15 +207,15 @@ const Editor = (props: Props): JSX.Element => {
               <Button onClick={() => preline("###### ")} text={"H6"} />
             </div>
           }>
-          <Button icon={Icon.Title} />
+          <Button icon="title" />
         </ToolTip>
 
         <ToolTip placement="bottom" content={<h3 className="text-lg">Toggle Bold</h3>}>
-          <Button onClick={() => toggleWrap("**")} icon={Icon.FormatBold} />
+          <Button onClick={() => toggleWrap("**")} icon="format_bold" />
         </ToolTip>
 
         <ToolTip placement="bottom" content={<h3 className="text-lg">Toggle Italic</h3>}>
-          <Button onClick={() => toggleWrap("_")} icon={Icon.FormatItalic} />
+          <Button onClick={() => toggleWrap("_")} icon="format_italic" />
         </ToolTip>
 
         <ToolTip
@@ -230,7 +229,7 @@ const Editor = (props: Props): JSX.Element => {
               </p>
             </>
           }>
-          <Button onClick={() => toggleWrap("`")} icon={Icon.Code} />
+          <Button onClick={() => toggleWrap("`")} icon="code" />
         </ToolTip>
 
         <ToolTip
@@ -246,7 +245,7 @@ const Editor = (props: Props): JSX.Element => {
               insert("[^x]");
               appendDoc("\n\n[^x]: This is a footnote.");
             }}
-            icon={Icon.Superscript}
+            icon="superscript"
           />
         </ToolTip>
 
@@ -267,7 +266,7 @@ const Editor = (props: Props): JSX.Element => {
                       <h3 className="text-lg">Transcript container</h3>
                     </>
                   }>
-                  <Button onClick={() => wrap("Transcript", {}, true)} icon={Icon.AddBox} />
+                  <Button onClick={() => wrap("Transcript", {}, true)} icon="add_box" />
                 </ToolTip>
                 <ToolTip
                   placement="right"
@@ -282,20 +281,20 @@ const Editor = (props: Props): JSX.Element => {
                   }>
                   <Button
                     onClick={() => wrap("Line", { name: "speaker" })}
-                    icon={Icon.RecordVoiceOver}
+                    icon="record_voice_over"
                   />
                 </ToolTip>
               </div>
             </>
           }>
-          <Button icon={Icon.RecordVoiceOver} />
+          <Button icon="record_voice_over" />
         </ToolTip>
 
         <ToolTip placement="bottom" content={<h3 className="text-lg">Inset box</h3>}>
-          <Button onClick={() => wrap("InsetBox", {}, true)} icon={Icon.CheckBoxOutlineBlank} />
+          <Button onClick={() => wrap("InsetBox", {}, true)} icon="check_box_outline_blank" />
         </ToolTip>
         <ToolTip placement="bottom" content={<h3 className="text-lg">Scene break</h3>}>
-          <Button onClick={() => insert("\n* * *\n")} icon={Icon.MoreHoriz} />
+          <Button onClick={() => insert("\n* * *\n")} icon="more_horiz" />
         </ToolTip>
         <ToolTip
           content={
@@ -311,7 +310,7 @@ const Editor = (props: Props): JSX.Element => {
                 }>
                 <Button
                   onClick={() => insert("[Link name](https://domain.com)")}
-                  icon={Icon.Link}
+                  icon="link"
                   text={"External"}
                 />
               </ToolTip>
@@ -326,7 +325,7 @@ const Editor = (props: Props): JSX.Element => {
                     </p>
                   </>
                 }>
-                <Button onClick={() => wrap("IntraLink", {})} icon={Icon.Link} text={"Internal"} />
+                <Button onClick={() => wrap("IntraLink", {})} icon="link" text={"Internal"} />
               </ToolTip>
               <ToolTip
                 placement="right"
@@ -341,19 +340,19 @@ const Editor = (props: Props): JSX.Element => {
                 }>
                 <Button
                   onClick={() => wrap("IntraLink", { target: "target" })}
-                  icon={Icon.Link}
+                  icon="link"
                   text="Internal (w/ target)"
                 />
               </ToolTip>
             </div>
           }>
-          <Button icon={Icon.Link} />
+          <Button icon="link" />
         </ToolTip>
 
         <ToolTip
           placement="bottom"
           content={<h3 className="text-lg">Player&rsquo;s name placeholder</h3>}>
-          <Button onClick={() => insert("@player")} icon={Icon.Person} />
+          <Button onClick={() => insert("@player")} icon="person" />
         </ToolTip>
 
         <ToolTip placement="bottom" content={<h3 className="text-lg">Open HTML Converter</h3>}>
@@ -361,7 +360,7 @@ const Editor = (props: Props): JSX.Element => {
             onClick={() => {
               setConverterOpened(true);
             }}
-            icon={Icon.Html}
+            icon="html"
           />
         </ToolTip>
       </div>

@@ -13,7 +13,6 @@ import { HorizontalLine } from "components/HorizontalLine";
 import { GetChroniclesChaptersQuery } from "graphql/generated";
 import { prettyInlineTitle, prettySlug } from "helpers/formatters";
 import { ReturnButton } from "components/PanelComponents/ReturnButton";
-import { Icon } from "components/Ico";
 import { getOpenGraph } from "helpers/openGraph";
 import { getDefaultPreferredLanguages, staticSmartLanguage } from "helpers/locales";
 import { getDescription } from "helpers/description";
@@ -21,6 +20,8 @@ import { TranslatedChroniclesList } from "components/Chronicles/ChroniclesList";
 import { getLangui } from "graphql/fetchLocalData";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter } from "helpers/atoms";
+import { useScrollTopOnChange } from "hooks/useScrollTopOnChange";
+import { Ids } from "types/ids";
 
 /*
  *                                           ╭────────╮
@@ -34,6 +35,8 @@ interface Props extends AppLayoutRequired {
 
 const Chronicle = ({ chronicle, chapters, ...otherProps }: Props): JSX.Element => {
   const langui = useAtomGetter(atoms.localData.langui);
+  useScrollTopOnChange(Ids.ContentPanel, [chronicle.slug]);
+
   const [selectedTranslation, LanguageSwitcher, languageSwitcherProps] = useSmartLanguage({
     items: chronicle.translations,
     languageExtractor: useCallback(
@@ -143,7 +146,7 @@ const Chronicle = ({ chronicle, chapters, ...otherProps }: Props): JSX.Element =
     <AppLayout
       contentPanel={contentPanel}
       subPanel={subPanel}
-      subPanelIcon={Icon.FormatListNumbered}
+      subPanelIcon="format_list_numbered"
       {...otherProps}
     />
   );

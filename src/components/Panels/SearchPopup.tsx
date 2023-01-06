@@ -13,10 +13,12 @@ import {
   MeiliLibraryItem,
   MeiliPost,
   MeiliVideo,
+  MeiliWikiPage,
 } from "shared/meilisearch-graphql-typings/meiliTypes";
 import { getVideoThumbnailURL } from "helpers/videos";
 import { UpPressable } from "components/Containers/UpPressable";
 import { prettyItemSubType, prettySlug } from "helpers/formatters";
+import { Ico } from "components/Ico";
 
 /*
  *                                         ╭─────────────╮
@@ -38,6 +40,7 @@ export const SearchPopup = (): JSX.Element => {
   const [contents, setContents] = useState<CustomSearchResponse<MeiliContent>>();
   const [videos, setVideos] = useState<CustomSearchResponse<MeiliVideo>>();
   const [posts, setPosts] = useState<CustomSearchResponse<MeiliPost>>();
+  const [wikiPages, setWikiPages] = useState<CustomSearchResponse<MeiliWikiPage>>();
 
   useEffect(() => {
     const fetchLibraryItems = async () => {
@@ -109,12 +112,28 @@ export const SearchPopup = (): JSX.Element => {
       setPosts(searchResult);
     };
 
+    const fetchWikiPages = async () => {
+      const searchResult = await meiliSearch(MeiliIndices.WIKI_PAGE, query, {
+        limit: SEARCH_LIMIT,
+        attributesToHighlight: [
+          "translations.title",
+          "translations.aliases",
+          "translations.summary",
+          "translations.displayable_description",
+        ],
+        attributesToCrop: ["translations.displayable_description"],
+      });
+      setWikiPages(searchResult);
+    };
+
     if (query === "") {
+      setWikiPages(undefined);
       setLibraryItems(undefined);
       setContents(undefined);
       setVideos(undefined);
       setPosts(undefined);
     } else {
+      fetchWikiPages();
       fetchLibraryItems();
       fetchContents();
       fetchVideos();
@@ -130,10 +149,13 @@ export const SearchPopup = (): JSX.Element => {
         sendAnalytics("Search", "Close search");
       }}
       fillViewport>
-      <h2 className="text-2xl">{langui.search}</h2>
+      <h2 className="inline-flex place-items-center gap-2 text-2xl">
+        <Ico icon="search" isFilled />
+        {langui.search}
+      </h2>
       <TextInput onChange={setQuery} value={query} placeholder={langui.search_title} />
 
-      <div className="flex flex-wrap gap-12 gap-x-16">
+      <div className="flex w-full flex-wrap gap-12 gap-x-16">
         {isDefined(libraryItems) && (
           <SearchResultSection
             title={langui.library}
@@ -184,8 +206,8 @@ export const SearchPopup = (): JSX.Element => {
             <div className="flex flex-wrap items-start gap-x-6 gap-y-8">
               {contents.hits.map((item) => (
                 <PreviewCard
-                  className="w-56"
                   key={item.id}
+                  className="w-56"
                   href={`/contents/${item.slug}`}
                   pre_title={item._formatted.translations?.[0]?.pre_title}
                   title={item._formatted.translations?.[0]?.title}
@@ -207,6 +229,56 @@ export const SearchPopup = (): JSX.Element => {
                     (category) => category.attributes?.short ?? ""
                   )}
                   keepInfoVisible
+                />
+              ))}
+            </div>
+          </SearchResultSection>
+        )}
+
+        {isDefined(wikiPages) && (
+          <SearchResultSection
+            title={langui.wiki}
+            href={"/wiki"}
+            totalHits={wikiPages.estimatedTotalHits}>
+            <div className="flex flex-wrap items-start gap-x-6 gap-y-8">
+              {wikiPages.hits.map((item) => (
+                <TranslatedPreviewCard
+                  key={item.id}
+                  className="w-56"
+                  href={`/wiki/${item.slug}`}
+                  translations={filterHasAttributes(item._formatted.translations, [
+                    "language.data.attributes.code",
+                  ] as const).map(
+                    ({
+                      aliases,
+                      summary,
+                      displayable_description,
+                      language,
+                      ...otherAttributes
+                    }) => ({
+                      ...otherAttributes,
+                      subtitle:
+                        aliases && aliases.length > 0
+                          ? aliases.map((alias) => alias?.alias).join("・")
+                          : undefined,
+                      description: containsHighlight(displayable_description)
+                        ? displayable_description
+                        : summary,
+                      language: language.data.attributes.code,
+                    })
+                  )}
+                  fallback={{ title: prettySlug(item.slug) }}
+                  thumbnail={item.thumbnail?.data?.attributes}
+                  thumbnailAspectRatio={"4/3"}
+                  thumbnailRounded
+                  thumbnailForceAspectRatio
+                  keepInfoVisible
+                  topChips={filterHasAttributes(item.tags?.data, ["attributes"] as const).map(
+                    (tag) => tag.attributes.titles?.[0]?.title ?? prettySlug(tag.attributes.slug)
+                  )}
+                  bottomChips={filterHasAttributes(item.categories?.data, [
+                    "attributes",
+                  ] as const).map((category) => category.attributes.short)}
                 />
               ))}
             </div>

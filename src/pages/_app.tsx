@@ -1,5 +1,4 @@
-import "@fontsource/material-icons";
-import "@fontsource/material-icons-outlined";
+import "material-symbols/rounded.css";
 import "@fontsource/opendyslexic/400.css";
 import "@fontsource/share-tech-mono/400.css";
 import "@fontsource/opendyslexic/700.css";

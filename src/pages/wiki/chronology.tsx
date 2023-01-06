@@ -19,7 +19,7 @@ import { getOpenGraph } from "helpers/openGraph";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { ToolTip } from "components/ToolTip";
 import { Chip } from "components/Chip";
-import { Ico, Icon } from "components/Ico";
+import { Ico } from "components/Ico";
 import { AnchorShare } from "components/AnchorShare";
 import { datePickerToDate } from "helpers/date";
 import { TranslatedProps } from "types/TranslatedProps";
@@ -333,7 +333,7 @@ export const ChronologyEvent = ({ event, id }: ChronologyEventProps): JSX.Elemen
                 `(${event.source.data.attributes?.name})`
               ) : (
                 <div className="flex items-center gap-1">
-                  <Ico icon={Icon.Warning} className="!text-sm" />
+                  <Ico icon="warning" className="!text-sm" />
                   {langui.no_source_warning}
                 </div>
               )}

@@ -1,6 +1,7 @@
 import { MouseEventHandler, useCallback } from "react";
+import { MaterialSymbol } from "material-symbols";
 import { Link } from "./Link";
-import { Ico, Icon } from "components/Ico";
+import { Ico } from "components/Ico";
 import { cIf, cJoin } from "helpers/className";
 import { isDefined, isDefinedAndNotEmpty } from "helpers/asserts";
 import { TranslatedProps } from "types/TranslatedProps";
@@ -16,7 +17,7 @@ interface Props {
   className?: string;
   href?: string;
   active?: boolean;
-  icon?: Icon;
+  icon?: MaterialSymbol;
   text?: string | null | undefined;
   alwaysNewTab?: boolean;
   onClick?: MouseEventHandler<HTMLDivElement>;
@@ -34,7 +35,7 @@ export const Button = ({
   id,
   onClick,
   onMouseUp,
-  active,
+  active = false,
   className,
   icon,
   text,
@@ -81,7 +82,13 @@ export const Button = ({
           </div>
         )}
         {isDefinedAndNotEmpty(icon) && (
-          <Ico className="[font-size:150%] [line-height:0.66]" icon={icon} />
+          <Ico
+            className="[font-size:150%] [line-height:0.66]"
+            icon={icon}
+            isFilled={active}
+            opticalSize={size === "normal" ? 24 : 20}
+            weight={size === "normal" ? 500 : 800}
+          />
         )}
         {isDefinedAndNotEmpty(text) && <p className="-translate-y-[0.05em] text-center">{text}</p>}
       </div>

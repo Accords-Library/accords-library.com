@@ -1,4 +1,4 @@
-import { Ico, Icon } from "components/Ico";
+import { Ico } from "components/Ico";
 import { cIf, cJoin } from "helpers/className";
 import { isDefinedAndNotEmpty } from "helpers/asserts";
 
@@ -42,7 +42,7 @@ export const TextInput = ({
       <div className="absolute right-4 top-0 bottom-0 grid place-items-center">
         <Ico
           className={cJoin("!text-xs", cIf(disabled, "opacity-30 grayscale", "cursor-pointer"))}
-          icon={Icon.Close}
+          icon="close"
           onClick={() => !disabled && onChange("")}
         />
       </div>

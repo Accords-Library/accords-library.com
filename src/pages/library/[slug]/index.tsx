@@ -42,7 +42,7 @@ import { useScrollTopOnChange } from "hooks/useScrollTopOnChange";
 import { isUntangibleGroupItem } from "helpers/libraryItem";
 import { useDeviceSupportsHover } from "hooks/useMediaQuery";
 import { WithLabel } from "components/Inputs/WithLabel";
-import { Ico, Icon } from "components/Ico";
+import { Ico } from "components/Ico";
 import { cJoin, cIf } from "helpers/className";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { getOpenGraph } from "helpers/openGraph";
@@ -740,7 +740,7 @@ const ContentLine = ({
         className={`grid-flow-col place-content-start place-items-center gap-2 ${
           isOpened ? "grid" : "hidden"
         }`}>
-        <Ico icon={Icon.SubdirectoryArrowRight} className="text-dark" />
+        <Ico icon={"subdirectory_arrow_right"} className="text-dark" />
 
         {hasScanSet || isDefined(content) ? (
           <>

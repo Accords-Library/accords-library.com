@@ -1,5 +1,5 @@
 import { Fragment, useCallback } from "react";
-import { Ico, Icon } from "components/Ico";
+import { Ico } from "components/Ico";
 import { arrayMove } from "helpers/others";
 import { isDefinedAndNotEmpty } from "helpers/asserts";
 
@@ -71,7 +71,7 @@ export const OrderableList = ({ onChange, items, insertLabels }: Props): JSX.Ele
             <div className="grid grid-rows-[.8em_.8em] place-items-center">
               {index > 0 && (
                 <Ico
-                  icon={Icon.ArrowDropUp}
+                  icon="arrow_drop_up"
                   className="row-start-1 cursor-pointer"
                   onClick={() => {
                     updateOrder(index, index - 1);
@@ -80,7 +80,7 @@ export const OrderableList = ({ onChange, items, insertLabels }: Props): JSX.Ele
               )}
               {index < items.length - 1 && (
                 <Ico
-                  icon={Icon.ArrowDropDown}
+                  icon="arrow_drop_down"
                   className="row-start-2 cursor-pointer"
                   onClick={() => {
                     updateOrder(index, index + 1);

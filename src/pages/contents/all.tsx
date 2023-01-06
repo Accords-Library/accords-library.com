@@ -12,7 +12,6 @@ import { TextInput } from "components/Inputs/TextInput";
 import { WithLabel } from "components/Inputs/WithLabel";
 import { Button } from "components/Inputs/Button";
 import { useDeviceSupportsHover } from "hooks/useMediaQuery";
-import { Icon } from "components/Ico";
 import {
   filterDefined,
   filterHasAttributes,
@@ -132,14 +131,14 @@ const Contents = (props: Props): JSX.Element => {
   const subPanel = (
     <SubPanel>
       <PanelHeader
-        icon={Icon.Workspaces}
+        icon="workspaces"
         title={langui.contents}
         description={langui.contents_description}
       />
 
       <HorizontalLine />
 
-      <Button href="/contents" text={langui.switch_to_folder_view} icon={Icon.Folder} />
+      <Button href="/contents" text={langui.switch_to_folder_view} icon="folder" />
 
       <HorizontalLine />
 
@@ -189,7 +188,7 @@ const Contents = (props: Props): JSX.Element => {
       <Button
         className="mt-8"
         text={langui.reset_all_filters}
-        icon={Icon.Replay}
+        icon="settings_backup_restore"
         onClick={() => {
           setPage(1);
           setQuery(DEFAULT_FILTERS_STATE.query);
@@ -243,12 +242,7 @@ const Contents = (props: Props): JSX.Element => {
   );
 
   return (
-    <AppLayout
-      subPanel={subPanel}
-      contentPanel={contentPanel}
-      subPanelIcon={Icon.Search}
-      {...props}
-    />
+    <AppLayout subPanel={subPanel} contentPanel={contentPanel} subPanelIcon="search" {...props} />
   );
 };
 export default Contents;

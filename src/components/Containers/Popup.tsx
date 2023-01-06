@@ -4,7 +4,6 @@ import { cIf, cJoin } from "helpers/className";
 import { atoms } from "contexts/atoms";
 import { useAtomSetter } from "helpers/atoms";
 import { Button } from "components/Inputs/Button";
-import { Icon } from "components/Ico";
 
 /*
  *                                        ╭─────────────╮
@@ -68,7 +67,7 @@ export const Popup = ({
         )}>
         {withCloseButton && (
           <div className="absolute right-6 top-6">
-            <Button icon={Icon.Close} onClick={onCloseRequest} />
+            <Button icon="close" onClick={onCloseRequest} />
           </div>
         )}
         {children}

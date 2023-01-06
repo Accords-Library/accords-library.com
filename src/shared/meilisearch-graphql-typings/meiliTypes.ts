@@ -4,17 +4,24 @@ import {
   GetLibraryItemQuery,
   GetPostQuery,
   GetVideoQuery,
+  GetWikiPageQuery,
   LibraryItemAttributesFragment,
   PostAttributesFragment,
   VideoAttributesFragment,
+  WikiPageAttributesFragment,
 } from "./generated";
 
 export interface MeiliLibraryItem extends Omit<LibraryItemAttributesFragment, "descriptions"> {
   id: string;
   descriptions: string[];
+  sortable_name: string;
+  sortable_price: number | undefined;
+  sortable_date: number | undefined;
+  untangible_group_item: boolean;
 }
 
-export interface MeiliContent extends Omit<ContentAttributesFragment, "translations"> {
+export interface MeiliContent
+  extends Omit<ContentAttributesFragment, "translations" | "updatedAt"> {
   id: string;
   translations?: Array<{
     __typename?: "ComponentTranslationsTitle";
@@ -30,6 +37,7 @@ export interface MeiliContent extends Omit<ContentAttributesFragment, "translati
       } | null;
     } | null;
   } | null> | null;
+  sortable_updated_date: number;
 }
 
 export interface MeiliVideo extends VideoAttributesFragment {
@@ -43,11 +51,22 @@ export interface MeiliPost extends PostAttributesFragment {
   sortable_date: number;
 }
 
+export interface MeiliWikiPage extends Omit<WikiPageAttributesFragment, "translations"> {
+  id: string;
+  translations: (Omit<
+    NonNullable<NonNullable<WikiPageAttributesFragment["translations"]>[number]>,
+    "body"
+  > & {
+    displayable_description?: string | null;
+  })[];
+}
+
 export enum MeiliIndices {
   LIBRARY_ITEM = "library-item",
   CONTENT = "content",
   VIDEOS = "video",
   POST = "post",
+  WIKI_PAGE = "wiki-page",
 }
 
 export type MeiliDocumentsType =
@@ -70,4 +89,9 @@ export type MeiliDocumentsType =
       index: MeiliIndices.POST;
       documents: MeiliPost;
       strapi: GetPostQuery["post"];
+    }
+  | {
+      index: MeiliIndices.WIKI_PAGE;
+      documents: MeiliWikiPage;
+      strapi: GetWikiPageQuery["wikiPage"];
     };

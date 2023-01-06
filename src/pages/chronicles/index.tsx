@@ -2,7 +2,6 @@ import { GetStaticProps } from "next";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { PanelHeader } from "components/PanelComponents/PanelHeader";
 import { SubPanel } from "components/Containers/SubPanel";
-import { Icon } from "components/Ico";
 import { getReadySdk } from "graphql/sdk";
 import { GetChroniclesChaptersQuery } from "graphql/generated";
 import { filterHasAttributes } from "helpers/asserts";
@@ -28,7 +27,7 @@ const Chronicles = ({ chapters, ...otherProps }: Props): JSX.Element => {
   const subPanel = (
     <SubPanel>
       <PanelHeader
-        icon={Icon.WatchLater}
+        icon="schedule"
         title={langui.chronicles}
         description={langui.chronicles_description}
       />

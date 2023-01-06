@@ -3,7 +3,6 @@ import { useEffect, useMemo, useState } from "react";
 import { useBoolean } from "usehooks-ts";
 import { z } from "zod";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
-import { Icon } from "components/Ico";
 import { Switch } from "components/Inputs/Switch";
 import { TextInput } from "components/Inputs/TextInput";
 import { WithLabel } from "components/Inputs/WithLabel";
@@ -160,11 +159,7 @@ const Videos = ({ ...otherProps }: Props): JSX.Element => {
         className="mb-10"
       />
 
-      <PanelHeader
-        icon={Icon.Movie}
-        title={langui.videos}
-        description={langui.archives_description}
-      />
+      <PanelHeader icon="movie" title={langui.videos} description={langui.archives_description} />
 
       <HorizontalLine />
 
@@ -217,7 +212,7 @@ const Videos = ({ ...otherProps }: Props): JSX.Element => {
       <Button
         className="mt-8"
         text={langui.reset_all_filters}
-        icon={Icon.Replay}
+        icon="settings_backup_restore"
         onClick={() => {
           setPage(1);
           setOnlyShowGone(DEFAULT_FILTERS_STATE.onlyShowGone);

@@ -7,7 +7,6 @@ import { getLangui } from "graphql/fetchLocalData";
 import { getOpenGraph } from "helpers/openGraph";
 import { ContentPanel, ContentPanelWidthSizes } from "components/Containers/ContentPanel";
 import { Button } from "components/Inputs/Button";
-import { Icon } from "components/Ico";
 import { cJoin } from "helpers/className";
 import { HorizontalLine } from "components/HorizontalLine";
 import { Switch } from "components/Inputs/Switch";
@@ -172,24 +171,24 @@ const DesignSystem = (props: Props): JSX.Element => {
           <p>Icon + Text</p>
 
           <p className="self-center justify-self-start">Normal</p>
-          <Button icon={Icon.Check} />
+          <Button icon="check" />
           <Button text="Label" />
-          <Button icon={Icon.NavigateBefore} text="Label" />
+          <Button icon="navigate_before" text="Label" />
 
           <p className="self-center justify-self-start">Active</p>
-          <Button icon={Icon.Camera} active />
+          <Button icon="camera" active />
           <Button text="Label" active />
-          <Button icon={Icon.NavigateBefore} text="Label" active />
+          <Button icon="navigate_before" text="Label" active />
 
           <p className="self-center justify-self-start">Disabled</p>
-          <Button icon={Icon.Air} disabled />
+          <Button icon="air" disabled />
           <Button text="Label" disabled />
-          <Button icon={Icon.NavigateBefore} text="Label" disabled />
+          <Button icon="navigate_before" text="Label" disabled />
 
           <p className="self-center justify-self-start">Badge</p>
-          <Button icon={Icon.Snooze} badgeNumber={5} />
+          <Button icon="snooze" badgeNumber={5} />
           <Button text="Label" badgeNumber={12} />
-          <Button icon={Icon.NavigateBefore} text="Label" badgeNumber={201} />
+          <Button icon="navigate_before" text="Label" badgeNumber={201} />
         </div>
 
         <HorizontalLine />
@@ -197,43 +196,39 @@ const DesignSystem = (props: Props): JSX.Element => {
 
         <div className="grid grid-cols-[repeat(4,auto)] place-content-center gap-4">
           <p className="self-center justify-self-start">Normal</p>
-          <Button icon={Icon.Check} size={"small"} />
+          <Button icon="check" size={"small"} />
           <Button text="Label" size={"small"} />
-          <Button icon={Icon.NavigateBefore} text="Label" size={"small"} />
+          <Button icon="navigate_before" text="Label" size={"small"} />
 
           <p className="self-center justify-self-start">Active</p>
-          <Button icon={Icon.Camera} active size={"small"} />
+          <Button icon="camera" active size={"small"} />
           <Button text="Label" active size={"small"} />
-          <Button icon={Icon.NavigateBefore} text="Label" active size={"small"} />
+          <Button icon="navigate_before" text="Label" active size={"small"} />
 
           <p className="self-center justify-self-start">Disabled</p>
-          <Button icon={Icon.Air} disabled size={"small"} />
+          <Button icon="air" disabled size={"small"} />
           <Button text="Label" disabled size={"small"} />
-          <Button icon={Icon.NavigateBefore} text="Label" disabled size={"small"} />
+          <Button icon="navigate_before" text="Label" disabled size={"small"} />
 
           <p className="self-center justify-self-start">Badge</p>
-          <Button icon={Icon.Snooze} badgeNumber={5} size={"small"} />
+          <Button icon="snooze" badgeNumber={5} size={"small"} />
           <Button text="Label" badgeNumber={12} size={"small"} />
-          <Button icon={Icon.NavigateBefore} text="Label" badgeNumber={201} size={"small"} />
+          <Button icon="navigate_before" text="Label" badgeNumber={201} size={"small"} />
         </div>
 
         <HorizontalLine />
         <h3 className="text-xl">Groups</h3>
         <div className="grid place-items-center gap-4">
-          <ButtonGroup buttonsProps={[{ icon: Icon.CallEnd }, { icon: Icon.ZoomInMap }]} />
+          <ButtonGroup buttonsProps={[{ icon: "call_end" }, { icon: "zoom_in_map" }]} />
           <ButtonGroup
-            buttonsProps={[
-              { icon: Icon.CarCrash },
-              { icon: Icon.TimeToLeave },
-              { icon: Icon.LeakAdd },
-            ]}
+            buttonsProps={[{ icon: "car_crash" }, { icon: "timelapse" }, { icon: "leak_add" }]}
           />
           <ButtonGroup
             buttonsProps={[
-              { icon: Icon.CarCrash },
-              { icon: Icon.TimeToLeave, text: "Label", active: true },
+              { icon: "car_crash" },
+              { icon: "timelapse", text: "Label", active: true },
               { text: "Another Label" },
-              { icon: Icon.Cable },
+              { icon: "cable" },
             ]}
           />
           <ButtonGroup
@@ -244,7 +239,7 @@ const DesignSystem = (props: Props): JSX.Element => {
                 onClick: () => setButtonGroupState(0),
               },
               {
-                icon: Icon.AdUnits,
+                icon: "ad_units",
                 text: "Label",
                 active: buttonGroupState === 1,
                 onClick: () => setButtonGroupState(1),
@@ -255,7 +250,7 @@ const DesignSystem = (props: Props): JSX.Element => {
                 onClick: () => setButtonGroupState(2),
               },
               {
-                icon: Icon.Security,
+                icon: "security",
                 active: buttonGroupState === 3,
                 onClick: () => setButtonGroupState(3),
               },
@@ -462,52 +457,41 @@ const DesignSystem = (props: Props): JSX.Element => {
 
           <p>Normal</p>
           <NavOption title="Title" url="#" />
-          <NavOption icon={Icon.Home} title="Title" url="#" />
+          <NavOption icon="home" title="Title" url="#" />
           <NavOption title="Title" subtitle="This is a subtitle" url="#" />
+          <NavOption title="Title" subtitle="This is a subtitle" url="#" icon="calendar_month" />
           <NavOption
             title="Title"
             subtitle="This is a subtitle"
             url="#"
-            icon={Icon.CalendarMonth}
-          />
-          <NavOption
-            title="Title"
-            subtitle="This is a subtitle"
-            url="#"
-            icon={Icon.AccountBalance}
+            icon="account_balance"
             reduced
           />
 
           <p>Border</p>
           <NavOption title="Title" url="#" border />
-          <NavOption icon={Icon.TravelExplore} title="Title" url="#" border />
+          <NavOption icon="travel_explore" title="Title" url="#" border />
           <NavOption title="Title" subtitle="This is a subtitle" url="#" border />
-          <NavOption title="Title" subtitle="This is a subtitle" url="#" icon={Icon.Help} border />
+          <NavOption title="Title" subtitle="This is a subtitle" url="#" icon="help" border />
           <NavOption
             title="Title"
             subtitle="This is a subtitle"
             url="#"
-            icon={Icon.TableRestaurant}
+            icon="table_restaurant"
             border
             reduced
           />
 
           <p>Active</p>
           <NavOption title="Title" url="#" active />
-          <NavOption icon={Icon.Hail} title="Title" url="#" active />
+          <NavOption icon="hail" title="Title" url="#" active />
           <NavOption title="Title" subtitle="This is a subtitle" url="#" active />
+          <NavOption title="Title" subtitle="This is a subtitle" url="#" icon="grading" active />
           <NavOption
             title="Title"
             subtitle="This is a subtitle"
             url="#"
-            icon={Icon.Grading}
-            active
-          />
-          <NavOption
-            title="Title"
-            subtitle="This is a subtitle"
-            url="#"
-            icon={Icon.Timer}
+            icon="timer"
             active
             reduced
           />
@@ -517,13 +501,13 @@ const DesignSystem = (props: Props): JSX.Element => {
             <br />+ Border
           </p>
           <NavOption title="Title" url="#" active />
-          <NavOption icon={Icon.Upcoming} title="Title" url="#" active border />
+          <NavOption icon="upcoming" title="Title" url="#" active border />
           <NavOption title="Title" subtitle="This is a subtitle" url="#" active border />
           <NavOption
             title="Title"
             subtitle="This is a subtitle"
             url="#"
-            icon={Icon.Gamepad}
+            icon="gamepad"
             active
             border
           />
@@ -531,7 +515,7 @@ const DesignSystem = (props: Props): JSX.Element => {
             title="Title"
             subtitle="This is a subtitle"
             url="#"
-            icon={Icon.Scale}
+            icon="scale"
             active
             border
             reduced
@@ -539,20 +523,20 @@ const DesignSystem = (props: Props): JSX.Element => {
 
           <p>Disabled</p>
           <NavOption title="Title" url="#" disabled />
-          <NavOption icon={Icon.Lan} title="Title" url="#" disabled />
+          <NavOption icon="lan" title="Title" url="#" disabled />
           <NavOption title="Title" subtitle="This is a subtitle" url="#" disabled />
           <NavOption
             title="Title"
             subtitle="This is a subtitle"
             url="#"
-            icon={Icon.AlignHorizontalRight}
+            icon="align_horizontal_right"
             disabled
           />
           <NavOption
             title="Title"
             subtitle="This is a subtitle"
             url="#"
-            icon={Icon.YoutubeSearchedFor}
+            icon="youtube_searched_for"
             reduced
             disabled
           />
@@ -562,13 +546,13 @@ const DesignSystem = (props: Props): JSX.Element => {
             <br />+ Border
           </p>
           <NavOption title="Title" url="#" border disabled />
-          <NavOption icon={Icon.Sanitizer} title="Title" url="#" border disabled />
+          <NavOption icon="sanitizer" title="Title" url="#" border disabled />
           <NavOption title="Title" subtitle="This is a subtitle" url="#" border disabled />
           <NavOption
             title="Title"
             subtitle="This is a subtitle"
             url="#"
-            icon={Icon.Pages}
+            icon="pages"
             border
             disabled
           />
@@ -576,7 +560,7 @@ const DesignSystem = (props: Props): JSX.Element => {
             title="Title"
             subtitle="This is a subtitle"
             url="#"
-            icon={Icon.Synagogue}
+            icon="synagogue"
             border
             reduced
             disabled
@@ -587,13 +571,13 @@ const DesignSystem = (props: Props): JSX.Element => {
             <br />+ Active
           </p>
           <NavOption title="Title" url="#" active disabled />
-          <NavOption icon={Icon.Stairs} title="Title" url="#" active disabled />
+          <NavOption icon="stairs" title="Title" url="#" active disabled />
           <NavOption title="Title" subtitle="This is a subtitle" url="#" active disabled />
           <NavOption
             title="Title"
             subtitle="This is a subtitle"
             url="#"
-            icon={Icon.Park}
+            icon="park"
             active
             disabled
           />
@@ -601,7 +585,7 @@ const DesignSystem = (props: Props): JSX.Element => {
             title="Title"
             subtitle="This is a subtitle"
             url="#"
-            icon={Icon.Password}
+            icon="password"
             active
             reduced
             disabled

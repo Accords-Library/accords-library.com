@@ -1,4 +1,4 @@
-import { Ico, Icon } from "components/Ico";
+import { Ico } from "components/Ico";
 import { PageSelector } from "components/Inputs/PageSelector";
 import { atoms } from "contexts/atoms";
 import { isUndefined } from "helpers/asserts";
@@ -54,9 +54,9 @@ const DefaultRenderWhenEmpty = () => {
       <div
         className="grid grid-flow-col place-items-center gap-9 rounded-2xl border-2 border-dotted
         border-dark p-8 text-dark opacity-40">
-        {is3ColumnsLayout && <Ico icon={Icon.ChevronLeft} className="!text-[300%]" />}
+        {is3ColumnsLayout && <Ico icon="chevron_left" className="!text-[300%]" />}
         <p className="max-w-xs text-2xl">{langui.no_results_message}</p>
-        {!is3ColumnsLayout && <Ico icon={Icon.ChevronRight} className="!text-[300%]" />}
+        {!is3ColumnsLayout && <Ico icon="chevron_right" className="!text-[300%]" />}
       </div>
     </div>
   );

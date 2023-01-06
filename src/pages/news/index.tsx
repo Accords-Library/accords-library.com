@@ -7,7 +7,6 @@ import { Switch } from "components/Inputs/Switch";
 import { PanelHeader } from "components/PanelComponents/PanelHeader";
 import { ContentPanel, ContentPanelWidthSizes } from "components/Containers/ContentPanel";
 import { SubPanel } from "components/Containers/SubPanel";
-import { Icon } from "components/Ico";
 import { WithLabel } from "components/Inputs/WithLabel";
 import { TextInput } from "components/Inputs/TextInput";
 import { Button } from "components/Inputs/Button";
@@ -103,7 +102,7 @@ const News = ({ ...otherProps }: Props): JSX.Element => {
 
   const subPanel = (
     <SubPanel>
-      <PanelHeader icon={Icon.Feed} title={langui.news} description={langui.news_description} />
+      <PanelHeader icon="newspaper" title={langui.news} description={langui.news_description} />
 
       <HorizontalLine />
 
@@ -136,7 +135,7 @@ const News = ({ ...otherProps }: Props): JSX.Element => {
       <Button
         className="mt-8"
         text={langui.reset_all_filters}
-        icon={Icon.Replay}
+        icon="settings_backup_restore"
         onClick={() => {
           setQuery(DEFAULT_FILTERS_STATE.query);
           setKeepInfoVisible(DEFAULT_FILTERS_STATE.keepInfoVisible);
@@ -195,7 +194,7 @@ const News = ({ ...otherProps }: Props): JSX.Element => {
     <AppLayout
       subPanel={subPanel}
       contentPanel={contentPanel}
-      subPanelIcon={Icon.Search}
+      subPanelIcon="search"
       {...otherProps}
     />
   );

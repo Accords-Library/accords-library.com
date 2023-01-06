@@ -9,7 +9,7 @@ import { GetContentsFolderQuery } from "graphql/generated";
 import { getDefaultPreferredLanguages, staticSmartLanguage } from "helpers/locales";
 import { prettySlug } from "helpers/formatters";
 import { SmartList } from "components/SmartList";
-import { Ico, Icon } from "components/Ico";
+import { Ico } from "components/Ico";
 import { Button, TranslatedButton } from "components/Inputs/Button";
 import { PanelHeader } from "components/PanelComponents/PanelHeader";
 import { SubPanel } from "components/Containers/SubPanel";
@@ -39,14 +39,14 @@ const ContentsFolder = ({ openGraph, folder, ...otherProps }: Props): JSX.Elemen
   const subPanel = (
     <SubPanel>
       <PanelHeader
-        icon={Icon.Workspaces}
+        icon="workspaces"
         title={langui.contents}
         description={langui.contents_description}
       />
 
       <HorizontalLine />
 
-      <Button href="/contents/all" text={langui.switch_to_grid_view} icon={Icon.Apps} />
+      <Button href="/contents/all" text={langui.switch_to_grid_view} icon="apps" />
     </SubPanel>
   );
 
@@ -56,7 +56,7 @@ const ContentsFolder = ({ openGraph, folder, ...otherProps }: Props): JSX.Elemen
         {folder.parent_folder?.data?.attributes && (
           <>
             {folder.parent_folder.data.attributes.slug === "root" ? (
-              <Button href="/contents" icon={Icon.Home} />
+              <Button href="/contents" icon="home" />
             ) : (
               <TranslatedButton
                 href={`/contents/folder/${folder.parent_folder.data.attributes.slug}`}
@@ -71,12 +71,12 @@ const ContentsFolder = ({ openGraph, folder, ...otherProps }: Props): JSX.Elemen
                 }}
               />
             )}
-            <Ico icon={Icon.ChevronRight} />
+            <Ico icon="chevron_right" />
           </>
         )}
 
         {folder.slug === "root" ? (
-          <Button href="/contents" icon={Icon.Home} active />
+          <Button href="/contents" icon="home" active />
         ) : (
           <TranslatedButton
             translations={filterHasAttributes(folder.titles, [

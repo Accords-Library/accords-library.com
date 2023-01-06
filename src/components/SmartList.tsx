@@ -3,7 +3,7 @@ import { useHotkeys } from "react-hotkeys-hook";
 import naturalCompare from "string-natural-compare";
 import { Chip } from "./Chip";
 import { PageSelector } from "./Inputs/PageSelector";
-import { Ico, Icon } from "./Ico";
+import { Ico } from "./Ico";
 import { cJoin } from "helpers/className";
 import { isDefined, isDefinedAndNotEmpty } from "helpers/asserts";
 import { useScrollTopOnChange } from "hooks/useScrollTopOnChange";
@@ -229,9 +229,9 @@ const DefaultRenderWhenEmpty = () => {
       <div
         className="grid grid-flow-col place-items-center gap-9 rounded-2xl border-2 border-dotted
         border-dark p-8 text-dark opacity-40">
-        {is3ColumnsLayout && <Ico icon={Icon.ChevronLeft} className="!text-[300%]" />}
+        {is3ColumnsLayout && <Ico icon="chevron_left" className="!text-[300%]" />}
         <p className="max-w-xs text-2xl">{langui.no_results_message}</p>
-        {!is3ColumnsLayout && <Ico icon={Icon.ChevronRight} className="!text-[300%]" />}
+        {!is3ColumnsLayout && <Ico icon="chevron_right" className="!text-[300%]" />}
       </div>
     </div>
   );

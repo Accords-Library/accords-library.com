@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import { MouseEventHandler, useCallback } from "react";
-import { Ico, Icon } from "components/Ico";
+import { MaterialSymbol } from "material-symbols";
+import { Ico } from "components/Ico";
 import { ToolTip } from "components/ToolTip";
 import { cIf, cJoin } from "helpers/className";
 import { isDefinedAndNotEmpty } from "helpers/asserts";
@@ -15,7 +16,7 @@ import { DownPressable } from "components/Containers/DownPressable";
 
 interface Props {
   url: string;
-  icon?: Icon;
+  icon?: MaterialSymbol;
   title: string | null | undefined;
   subtitle?: string | null | undefined;
   border?: boolean;

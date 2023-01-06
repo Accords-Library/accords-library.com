@@ -2,7 +2,7 @@ import { useCallback } from "react";
 import { useRouter } from "next/router";
 import { Markdown } from "./Markdown/Markdown";
 import { Chip } from "components/Chip";
-import { Ico, Icon } from "components/Ico";
+import { Ico } from "components/Ico";
 import { Img } from "components/Img";
 import { UpPressable } from "components/Containers/UpPressable";
 import { DatePickerFragment, PricePickerFragment, UploadImageFragment } from "graphql/generated";
@@ -84,25 +84,25 @@ export const PreviewCard = ({
         <div className="flex w-full flex-row flex-wrap gap-x-3">
           {metadata.releaseDate && (
             <p className="text-sm">
-              <Ico icon={Icon.Event} className="mr-1 translate-y-[.15em] !text-base" />
+              <Ico icon="event" className="mr-1 translate-y-[.15em] !text-base" />
               {prettyDate(metadata.releaseDate, router.locale)}
             </p>
           )}
           {metadata.price && (
             <p className="justify-self-end text-sm">
-              <Ico icon={Icon.ShoppingCart} className="mr-1 translate-y-[.15em] !text-base" />
+              <Ico icon="shopping_cart" className="mr-1 translate-y-[.15em] !text-base" />
               {prettyPrice(metadata.price, currencies, currency)}
             </p>
           )}
           {metadata.views && (
             <p className="text-sm">
-              <Ico icon={Icon.Visibility} className="mr-1 translate-y-[.15em] !text-base" />
+              <Ico icon="visibility" className="mr-1 translate-y-[.15em] !text-base" />
               {prettyShortenNumber(metadata.views)}
             </p>
           )}
           {metadata.author && (
             <p className="text-sm">
-              <Ico icon={Icon.Person} className="mr-1 translate-y-[.15em] !text-base" />
+              <Ico icon="person" className="mr-1 translate-y-[.15em] !text-base" />
               <Markdown text={metadata.author} className="inline-block" />
             </p>
           )}
@@ -142,7 +142,7 @@ export const PreviewCard = ({
                   className="absolute inset-0 grid place-content-center bg-shade bg-opacity-0
                   text-light transition-colors group-hover:bg-opacity-50">
                   <Ico
-                    icon={Icon.PlayCircleOutline}
+                    icon="play_circle"
                     className="!text-6xl text-black opacity-0 drop-shadow-lg transition-opacity
                     shadow-shade group-hover:opacity-100"
                   />

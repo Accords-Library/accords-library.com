@@ -1,5 +1,4 @@
 import { ButtonGroup } from "./ButtonGroup";
-import { Icon } from "components/Ico";
 import { cJoin } from "helpers/className";
 
 /*
@@ -23,23 +22,23 @@ export const PageSelector = ({ page, className, pagesCount, onChange }: Props): 
       {
         onClick: () => onChange(1),
         disabled: page === 1,
-        icon: Icon.FirstPage,
+        icon: "first_page",
       },
       {
         onClick: () => page > 1 && onChange(page - 1),
         disabled: page === 1,
-        icon: Icon.NavigateBefore,
+        icon: "navigate_before",
       },
       { text: `${page} / ${pagesCount}` },
       {
         onClick: () => page < pagesCount && onChange(page + 1),
         disabled: page === pagesCount,
-        icon: Icon.NavigateNext,
+        icon: "navigate_next",
       },
       {
         onClick: () => onChange(pagesCount),
         disabled: page === pagesCount,
-        icon: Icon.LastPage,
+        icon: "last_page",
       },
     ]}
   />

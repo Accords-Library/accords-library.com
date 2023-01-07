@@ -1,5 +1,4 @@
 import { ButtonGroup } from "./ButtonGroup";
-import { Icon } from "components/Ico";
 import { cJoin } from "helpers/className";
 
 /*
@@ -21,25 +20,25 @@ export const PageSelector = ({ page, className, pagesCount, onChange }: Props): 
     className={cJoin("flex flex-row place-content-center", className)}
     buttonsProps={[
       {
-        onClick: () => onChange(0),
-        disabled: page === 0,
-        icon: Icon.FirstPage,
+        onClick: () => onChange(1),
+        disabled: page === 1,
+        icon: "first_page",
       },
       {
-        onClick: () => page > 0 && onChange(page - 1),
-        disabled: page === 0,
-        icon: Icon.NavigateBefore,
+        onClick: () => page > 1 && onChange(page - 1),
+        disabled: page === 1,
+        icon: "navigate_before",
       },
-      { text: `${page + 1} / ${pagesCount}` },
+      { text: `${page} / ${pagesCount}` },
       {
-        onClick: () => page < pagesCount - 1 && onChange(page + 1),
-        disabled: page === pagesCount - 1,
-        icon: Icon.NavigateNext,
+        onClick: () => page < pagesCount && onChange(page + 1),
+        disabled: page === pagesCount,
+        icon: "navigate_next",
       },
       {
-        onClick: () => onChange(pagesCount - 1),
-        disabled: page === pagesCount - 1,
-        icon: Icon.LastPage,
+        onClick: () => onChange(pagesCount),
+        disabled: page === pagesCount,
+        icon: "last_page",
       },
     ]}
   />

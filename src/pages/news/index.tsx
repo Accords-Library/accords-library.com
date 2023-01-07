@@ -1,31 +1,35 @@
 import { GetStaticProps } from "next";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useBoolean } from "usehooks-ts";
+import { z } from "zod";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { Switch } from "components/Inputs/Switch";
 import { PanelHeader } from "components/PanelComponents/PanelHeader";
 import { ContentPanel, ContentPanelWidthSizes } from "components/Containers/ContentPanel";
 import { SubPanel } from "components/Containers/SubPanel";
-import { GetPostsPreviewQuery } from "graphql/generated";
-import { getReadySdk } from "graphql/sdk";
-import { prettySlug } from "helpers/formatters";
-import { Icon } from "components/Ico";
 import { WithLabel } from "components/Inputs/WithLabel";
 import { TextInput } from "components/Inputs/TextInput";
 import { Button } from "components/Inputs/Button";
 import { useDeviceSupportsHover } from "hooks/useMediaQuery";
-import { filterHasAttributes, isDefinedAndNotEmpty } from "helpers/asserts";
-import { SmartList } from "components/SmartList";
+import {
+  filterDefined,
+  filterHasAttributes,
+  isDefined,
+  isDefinedAndNotEmpty,
+} from "helpers/asserts";
 import { getOpenGraph } from "helpers/openGraph";
-import { compareDate } from "helpers/date";
 import { TranslatedPreviewCard } from "components/PreviewCard";
 import { HorizontalLine } from "components/HorizontalLine";
-import { cIf } from "helpers/className";
 import { getLangui } from "graphql/fetchLocalData";
 import { sendAnalytics } from "helpers/analytics";
 import { Terminal } from "components/Cli/Terminal";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter } from "helpers/atoms";
+import { containsHighlight, CustomSearchResponse, meiliSearch } from "helpers/search";
+import { MeiliIndices, MeiliPost } from "shared/meilisearch-graphql-typings/meiliTypes";
+import { useTypedRouter } from "hooks/useTypedRouter";
+import { prettySlug } from "helpers/formatters";
+import { Paginator } from "components/Containers/Paginator";
 
 /*
  *                                         ╭─────────────╮
@@ -33,43 +37,94 @@ import { useAtomGetter } from "helpers/atoms";
  */
 
 const DEFAULT_FILTERS_STATE = {
-  searchName: "",
+  query: "",
   keepInfoVisible: true,
+  page: 1,
 };
+
+const queryParamSchema = z.object({
+  query: z.coerce.string().optional(),
+  page: z.coerce.number().positive().optional(),
+});
 
 /*
  *                                           ╭────────╮
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
  */
 
-interface Props extends AppLayoutRequired {
-  posts: NonNullable<GetPostsPreviewQuery["posts"]>["data"];
-}
+interface Props extends AppLayoutRequired {}
 
-const News = ({ posts, ...otherProps }: Props): JSX.Element => {
-  const isContentPanelAtLeast4xl = useAtomGetter(atoms.containerQueries.isContentPanelAtLeast4xl);
+const News = ({ ...otherProps }: Props): JSX.Element => {
   const langui = useAtomGetter(atoms.localData.langui);
   const hoverable = useDeviceSupportsHover();
-  const [searchName, setSearchName] = useState(DEFAULT_FILTERS_STATE.searchName);
+  const router = useTypedRouter(queryParamSchema);
+
+  const [query, setQuery] = useState(router.query.query ?? DEFAULT_FILTERS_STATE.query);
+
   const {
     value: keepInfoVisible,
     toggle: toggleKeepInfoVisible,
     setValue: setKeepInfoVisible,
   } = useBoolean(DEFAULT_FILTERS_STATE.keepInfoVisible);
+
   const isTerminalMode = useAtomGetter(atoms.layout.terminalMode);
+
+  const [page, setPage] = useState<number>(router.query.page ?? DEFAULT_FILTERS_STATE.page);
+  const [posts, setPosts] = useState<CustomSearchResponse<MeiliPost>>();
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      const searchResult = await meiliSearch(MeiliIndices.POST, query, {
+        hitsPerPage: 25,
+        page,
+        attributesToRetrieve: ["translations", "thumbnail", "slug", "date", "categories"],
+        attributesToHighlight: ["translations.title", "translations.excerpt", "translations.body"],
+        attributesToCrop: ["translations.body"],
+        sort: ["sortable_date:desc"],
+        filter: ["hidden = false"],
+      });
+      searchResult.hits = searchResult.hits.map((item) => {
+        if (Object.keys(item._matchesPosition).some((match) => match.startsWith("translations"))) {
+          item._formatted.translations = filterDefined(item._formatted.translations).filter(
+            (translation) => JSON.stringify(translation).includes("</mark>")
+          );
+        }
+        return item;
+      });
+      setPosts(searchResult);
+    };
+    fetchPosts();
+  }, [query, page]);
+
+  useEffect(() => {
+    if (router.isReady)
+      router.updateQuery({
+        page,
+        query,
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, query, router.isReady]);
+
+  useEffect(() => {
+    if (router.isReady) {
+      if (isDefined(router.query.page)) setPage(router.query.page);
+      if (isDefined(router.query.query)) setQuery(router.query.query);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router.isReady]);
 
   const subPanel = (
     <SubPanel>
-      <PanelHeader icon={Icon.Feed} title={langui.news} description={langui.news_description} />
+      <PanelHeader icon="newspaper" title={langui.news} description={langui.news_description} />
 
       <HorizontalLine />
 
       <TextInput
         className="mb-6 w-full"
         placeholder={langui.search_title ?? "Search..."}
-        value={searchName}
+        value={query}
         onChange={(name) => {
-          setSearchName(name);
+          setQuery(name);
           if (isDefinedAndNotEmpty(name)) {
             sendAnalytics("News", "Change search term");
           } else {
@@ -93,9 +148,9 @@ const News = ({ posts, ...otherProps }: Props): JSX.Element => {
       <Button
         className="mt-8"
         text={langui.reset_all_filters}
-        icon={Icon.Replay}
+        icon="settings_backup_restore"
         onClick={() => {
-          setSearchName(DEFAULT_FILTERS_STATE.searchName);
+          setQuery(DEFAULT_FILTERS_STATE.query);
           setKeepInfoVisible(DEFAULT_FILTERS_STATE.keepInfoVisible);
           sendAnalytics("News", "Reset all filters");
         }}
@@ -105,66 +160,54 @@ const News = ({ posts, ...otherProps }: Props): JSX.Element => {
 
   const contentPanel = (
     <ContentPanel width={ContentPanelWidthSizes.Full}>
-      <SmartList
-        items={filterHasAttributes(posts, ["attributes", "id"] as const)}
-        getItemId={(post) => post.id}
-        renderItem={({ item: post }) => (
-          <TranslatedPreviewCard
-            href={`/news/${post.attributes.slug}`}
-            translations={filterHasAttributes(post.attributes.translations, [
-              "language.data.attributes.code",
-            ] as const).map((translation) => ({
-              language: translation.language.data.attributes.code,
-              title: translation.title,
-              description: translation.excerpt,
-            }))}
-            fallback={{ title: prettySlug(post.attributes.slug) }}
-            thumbnail={post.attributes.thumbnail?.data?.attributes}
-            thumbnailAspectRatio="3/2"
-            thumbnailForceAspectRatio
-            bottomChips={post.attributes.categories?.data.map(
-              (category) => category.attributes?.short ?? ""
-            )}
-            keepInfoVisible={keepInfoVisible}
-            metadata={{
-              releaseDate: post.attributes.date,
-              releaseDateFormat: "long",
-              position: "Top",
-            }}
-          />
-        )}
-        className={cIf(
-          isContentPanelAtLeast4xl,
-          "grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] gap-x-6 gap-y-8",
-          "grid-cols-2 gap-x-4 gap-y-6"
-        )}
-        searchingTerm={searchName}
-        searchingBy={(post) =>
-          `${prettySlug(post.attributes.slug)} ${post.attributes.translations
-            ?.map((translation) => translation?.title)
-            .join(" ")}`
-        }
-        paginationItemPerPage={25}
-      />
+      <Paginator page={page} onPageChange={setPage} totalNumberOfPages={posts?.totalPages}>
+        <div
+          className="grid grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] items-start
+              gap-x-6 gap-y-8">
+          {posts?.hits.map((item) => (
+            <TranslatedPreviewCard
+              key={item.id}
+              href={`/news/${item.slug}`}
+              translations={filterHasAttributes(item._formatted.translations, [
+                "language.data.attributes.code",
+              ] as const).map(({ excerpt, body, language, ...otherAttributes }) => ({
+                ...otherAttributes,
+                description: containsHighlight(excerpt)
+                  ? excerpt
+                  : containsHighlight(body)
+                  ? body
+                  : excerpt,
+                language: language.data.attributes.code,
+              }))}
+              fallback={{ title: prettySlug(item.slug) }}
+              thumbnail={item.thumbnail?.data?.attributes}
+              thumbnailAspectRatio="3/2"
+              thumbnailForceAspectRatio
+              keepInfoVisible={keepInfoVisible}
+              bottomChips={item.categories?.data.map(
+                (category) => category.attributes?.short ?? ""
+              )}
+              metadata={{
+                releaseDate: item.date,
+                releaseDateFormat: "long",
+                position: "Top",
+              }}
+            />
+          ))}
+        </div>
+      </Paginator>
     </ContentPanel>
   );
 
   if (isTerminalMode) {
-    return (
-      <Terminal
-        parentPath="/"
-        childrenPaths={filterHasAttributes(posts, ["attributes"] as const).map(
-          (post) => post.attributes.slug
-        )}
-      />
-    );
+    return <Terminal parentPath="/" childrenPaths={posts?.hits.map((post) => post.slug) ?? []} />;
   }
 
   return (
     <AppLayout
       subPanel={subPanel}
       contentPanel={contentPanel}
-      subPanelIcon={Icon.Search}
+      subPanelIcon="search"
       {...otherProps}
     />
   );
@@ -176,25 +219,12 @@ export default News;
  * ───────────────────────────────────╯  NEXT DATA FETCHING  ╰──────────────────────────────────────
  */
 
-export const getStaticProps: GetStaticProps = async (context) => {
-  const sdk = getReadySdk();
+export const getStaticProps: GetStaticProps = (context) => {
   const langui = getLangui(context.locale);
-  const posts = await sdk.getPostsPreview();
-  if (!posts.posts) return { notFound: true };
-
   const props: Props = {
-    posts: sortPosts(posts.posts.data),
     openGraph: getOpenGraph(langui, langui.news ?? "News"),
   };
   return {
     props: props,
   };
 };
-
-/*
- *                                      ╭───────────────────╮
- * ─────────────────────────────────────╯  PRIVATE METHODS  ╰───────────────────────────────────────
- */
-
-const sortPosts = (posts: Props["posts"]): Props["posts"] =>
-  posts.sort((a, b) => compareDate(a.attributes?.date, b.attributes?.date)).reverse();

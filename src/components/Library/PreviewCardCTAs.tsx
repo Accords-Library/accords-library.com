@@ -1,4 +1,3 @@
-import { Icon } from "components/Ico";
 import { Button } from "components/Inputs/Button";
 import { ToolTip } from "components/ToolTip";
 import { LibraryItemUserStatus } from "types/types";
@@ -31,7 +30,7 @@ export const PreviewCardCTAs = ({ id, expand = false }: Props): JSX.Element => {
       )}>
       <ToolTip content={langui.want_it} disabled={expand}>
         <Button
-          icon={Icon.Favorite}
+          icon="favorite"
           text={expand ? langui.want_it : undefined}
           active={libraryItemUserStatus[id] === LibraryItemUserStatus.Want}
           onClick={(event) => {
@@ -49,7 +48,7 @@ export const PreviewCardCTAs = ({ id, expand = false }: Props): JSX.Element => {
       </ToolTip>
       <ToolTip content={langui.have_it} disabled={expand}>
         <Button
-          icon={Icon.BackHand}
+          icon="back_hand"
           text={expand ? langui.have_it : undefined}
           active={libraryItemUserStatus[id] === LibraryItemUserStatus.Have}
           onClick={(event) => {

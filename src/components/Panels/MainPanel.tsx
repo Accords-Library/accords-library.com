@@ -2,7 +2,6 @@ import { HorizontalLine } from "components/HorizontalLine";
 import { Button } from "components/Inputs/Button";
 import { NavOption } from "components/PanelComponents/NavOption";
 import { ToolTip } from "components/ToolTip";
-import { Icon } from "components/Ico";
 import { cIf, cJoin } from "helpers/className";
 import { isDefinedAndNotEmpty } from "helpers/asserts";
 import { Link } from "components/Inputs/Link";
@@ -22,6 +21,7 @@ export const MainPanel = (): JSX.Element => {
   const langui = useAtomGetter(atoms.localData.langui);
   const [isMainPanelReduced, setMainPanelReduced] = useAtomPair(atoms.layout.mainPanelReduced);
   const setSettingsOpened = useAtomSetter(atoms.layout.settingsOpened);
+  const setSearchOpened = useAtomSetter(atoms.layout.searchOpened);
 
   return (
     <div
@@ -46,7 +46,7 @@ export const MainPanel = (): JSX.Element => {
               setMainPanelReduced((current) => !current);
             }}
             className="z-50 bg-light !px-2"
-            icon={isMainPanelReduced ? Icon.ChevronRight : Icon.ChevronLeft}
+            icon={isMainPanelReduced ? "chevron_right" : "chevron_left"}
           />
         </div>
       )}
@@ -73,15 +73,24 @@ export const MainPanel = (): JSX.Element => {
             )}>
             <ToolTip
               content={<h3 className="text-2xl">{langui.open_settings}</h3>}
-              placement="right"
-              className="text-left"
-              disabled={!isMainPanelReduced}>
+              placement={isMainPanelReduced ? "right" : "top"}>
               <Button
                 onClick={() => {
                   setSettingsOpened(true);
                   sendAnalytics("Settings", "Open settings");
                 }}
-                icon={Icon.Settings}
+                icon="discover_tune"
+              />
+            </ToolTip>
+            <ToolTip
+              content={<h3 className="text-2xl">{langui.open_search}</h3>}
+              placement={isMainPanelReduced ? "right" : "top"}>
+              <Button
+                onClick={() => {
+                  setSearchOpened(true);
+                  sendAnalytics("Search", "Open search");
+                }}
+                icon="search"
               />
             </ToolTip>
           </div>
@@ -92,7 +101,7 @@ export const MainPanel = (): JSX.Element => {
 
       <NavOption
         url="/library"
-        icon={Icon.LibraryBooks}
+        icon="auto_stories"
         title={langui.library}
         subtitle={langui.library_short_description}
         reduced={isMainPanelReduced && is3ColumnsLayout}
@@ -100,7 +109,7 @@ export const MainPanel = (): JSX.Element => {
 
       <NavOption
         url="/contents"
-        icon={Icon.Workspaces}
+        icon="workspaces"
         title={langui.contents}
         subtitle={langui.contents_short_description}
         reduced={isMainPanelReduced && is3ColumnsLayout}
@@ -108,7 +117,7 @@ export const MainPanel = (): JSX.Element => {
 
       <NavOption
         url="/wiki"
-        icon={Icon.TravelExplore}
+        icon="travel_explore"
         title={langui.wiki}
         subtitle={langui.wiki_short_description}
         reduced={isMainPanelReduced && is3ColumnsLayout}
@@ -116,7 +125,7 @@ export const MainPanel = (): JSX.Element => {
 
       <NavOption
         url="/chronicles"
-        icon={Icon.WatchLater}
+        icon="schedule"
         title={langui.chronicles}
         subtitle={langui.chronicles_short_description}
         reduced={isMainPanelReduced && is3ColumnsLayout}
@@ -126,7 +135,7 @@ export const MainPanel = (): JSX.Element => {
 
       <NavOption
         url="/news"
-        icon={Icon.Feed}
+        icon="newspaper"
         title={langui.news}
         reduced={isMainPanelReduced && is3ColumnsLayout}
       />
@@ -134,7 +143,7 @@ export const MainPanel = (): JSX.Element => {
       {/*
       <NavOption
         url="/merch"
-        icon={Icon.Store}
+        icon="store"
         title={langui.merch}
         reduced={isMainPanelReduced && is3ColumnsLayout}
       />
@@ -142,21 +151,21 @@ export const MainPanel = (): JSX.Element => {
 
       <NavOption
         url="https://gallery.accords-library.com/posts/"
-        icon={Icon.Collections}
+        icon="perm_media"
         title={langui.gallery}
         reduced={isMainPanelReduced && is3ColumnsLayout}
       />
 
       <NavOption
         url="/archives"
-        icon={Icon.Inventory2}
+        icon="save"
         title={langui.archives}
         reduced={isMainPanelReduced && is3ColumnsLayout}
       />
 
       <NavOption
         url="/about-us"
-        icon={Icon.Info}
+        icon="info"
         title={langui.about_us}
         reduced={isMainPanelReduced && is3ColumnsLayout}
       />

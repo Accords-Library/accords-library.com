@@ -2,7 +2,7 @@ import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { HorizontalLine } from "components/HorizontalLine";
-import { Ico, Icon } from "components/Ico";
+import { Ico } from "components/Ico";
 import { Button } from "components/Inputs/Button";
 import { InsetBox } from "components/Containers/InsetBox";
 import { NavOption } from "components/PanelComponents/NavOption";
@@ -79,18 +79,18 @@ const Video = ({ video, ...otherProps }: Props): JSX.Element => {
             <h1 className="text-2xl">{video.title}</h1>
             <div className="flex w-full flex-row flex-wrap gap-x-6">
               <p>
-                <Ico icon={Icon.Event} className="mr-1 translate-y-[.15em] !text-base" />
+                <Ico icon="event" className="mr-1 translate-y-[.15em] !text-base" />
                 {prettyDate(video.published_date, router.locale)}
               </p>
               <p>
-                <Ico icon={Icon.Visibility} className="mr-1 translate-y-[.15em] !text-base" />
+                <Ico icon="visibility" className="mr-1 translate-y-[.15em] !text-base" />
                 {isContentPanelAtLeast4xl
                   ? video.views.toLocaleString()
                   : prettyShortenNumber(video.views)}
               </p>
               {video.channel?.data?.attributes && (
                 <p>
-                  <Ico icon={Icon.ThumbUp} className="mr-1 translate-y-[.15em] !text-base" />
+                  <Ico icon="thumb_up" className="mr-1 translate-y-[.15em] !text-base" />
                   {isContentPanelAtLeast4xl
                     ? video.likes.toLocaleString()
                     : prettyShortenNumber(video.likes)}
@@ -109,7 +109,8 @@ const Video = ({ video, ...otherProps }: Props): JSX.Element => {
               <h2 className="text-2xl">{langui.channel}</h2>
               <div>
                 <Button
-                  href={`/archives/videos/c/${video.channel.data.attributes.uid}`}
+                  href={`/archives/videos/c/${video.channel.data.attributes.uid}\
+?page=1&query=&sort=1&gone=`}
                   text={video.channel.data.attributes.title}
                 />
                 <p>

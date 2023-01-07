@@ -1,5 +1,4 @@
 import { useCallback } from "react";
-import { Icon } from "components/Ico";
 import { Button } from "components/Inputs/Button";
 import { TranslatedProps } from "types/TranslatedProps";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
@@ -32,7 +31,7 @@ export const ReturnButton = ({ href, title, displayOnlyOn, className }: Props): 
         (!is3ColumnsLayout && displayOnlyOn === "1ColumnLayout") ||
         isUndefined(displayOnlyOn)) && (
         <div className={className}>
-          <Button href={href} text={`${langui.return_to} ${title}`} icon={Icon.NavigateBefore} />
+          <Button href={href} text={`${langui.return_to} ${title}`} icon="navigate_before" />
         </div>
       )}
     </>

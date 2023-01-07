@@ -1,6 +1,5 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { Icon } from "components/Ico";
 import { Button } from "components/Inputs/Button";
 import { ButtonGroup } from "components/Inputs/ButtonGroup";
 import { OrderableList } from "components/Inputs/OrderableList";
@@ -14,6 +13,7 @@ import { filterHasAttributes, isDefined } from "helpers/asserts";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter, useAtomPair } from "helpers/atoms";
 import { ThemeMode } from "contexts/settings";
+import { Ico } from "components/Ico";
 
 export const SettingsPopup = (): JSX.Element => {
   const [preferredLanguages, setPreferredLanguages] = useAtomPair(
@@ -50,7 +50,10 @@ export const SettingsPopup = (): JSX.Element => {
         setSettingsOpened(false);
         sendAnalytics("Settings", "Close settings");
       }}>
-      <h2 className="text-2xl">{langui.settings}</h2>
+      <h2 className="inline-flex place-items-center gap-2 text-2xl">
+        <Ico icon="discover_tune" isFilled />
+        {langui.settings}
+      </h2>
 
       <div
         className={cJoin(
@@ -154,7 +157,7 @@ export const SettingsPopup = (): JSX.Element => {
                       })}%)`
                     );
                   },
-                  icon: Icon.TextDecrease,
+                  icon: "text_decrease",
                 },
                 {
                   onClick: () => {
@@ -175,7 +178,7 @@ export const SettingsPopup = (): JSX.Element => {
                       })}%)`
                     );
                   },
-                  icon: Icon.TextIncrease,
+                  icon: "text_increase",
                 },
               ]}
             />

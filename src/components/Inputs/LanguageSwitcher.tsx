@@ -1,7 +1,6 @@
 import { Fragment } from "react";
 import { ToolTip } from "../ToolTip";
 import { Button } from "./Button";
-import { Icon } from "components/Ico";
 import { cJoin } from "helpers/className";
 import { prettyLanguage } from "helpers/formatters";
 import { iterateMap } from "helpers/others";
@@ -54,7 +53,7 @@ export const LanguageSwitcher = ({
       }>
       <Button
         badgeNumber={showBadge && locales.size > 1 ? locales.size : undefined}
-        icon={Icon.Translate}
+        icon="translate"
         size={size}
       />
     </ToolTip>

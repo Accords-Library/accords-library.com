@@ -185,7 +185,15 @@
           "double_page_view": "Double page view",
           "reset_all_options": "Reset all options",
           "reading_layout": "Reading layout",
-          "quality": "Quality"
+          "quality": "Quality",
+          "only_unavailable_videos": "Only unavailable videos",
+          "oldest": "Oldest",
+          "newest": "Newest",
+          "least_popular": "Least popular",
+          "most_popular": "Most popular",
+          "shortest": "Shortest",
+          "longest": "Longest",
+          "search": "Search"
         }
       },
       {
@@ -372,7 +380,15 @@
           "double_page_view": "Vue 2 pages",
           "reset_all_options": "Réinitialiser les options",
           "reading_layout": "Mode de lecture",
-          "quality": "Qualité"
+          "quality": "Qualité",
+          "only_unavailable_videos": "Seulement les vidéos indisponibles",
+          "oldest": "Plus anciennes",
+          "newest": "Plus récentes",
+          "least_popular": "Plus populaires",
+          "most_popular": "Moins populaires",
+          "shortest": "Plus courtes",
+          "longest": "Plus longues",
+          "search": "Rechercher"
         }
       },
       {
@@ -559,7 +575,15 @@
           "double_page_view": null,
           "reset_all_options": null,
           "reading_layout": null,
-          "quality": null
+          "quality": null,
+          "only_unavailable_videos": null,
+          "oldest": null,
+          "newest": null,
+          "least_popular": null,
+          "most_popular": null,
+          "shortest": null,
+          "longest": null,
+          "search": null
         }
       },
       {
@@ -746,7 +770,15 @@
           "double_page_view": null,
           "reset_all_options": null,
           "reading_layout": null,
-          "quality": null
+          "quality": null,
+          "only_unavailable_videos": null,
+          "oldest": null,
+          "newest": null,
+          "least_popular": null,
+          "most_popular": null,
+          "shortest": null,
+          "longest": null,
+          "search": null
         }
       },
       {
@@ -933,7 +965,15 @@
           "double_page_view": null,
           "reset_all_options": null,
           "reading_layout": null,
-          "quality": null
+          "quality": null,
+          "only_unavailable_videos": null,
+          "oldest": null,
+          "newest": null,
+          "least_popular": null,
+          "most_popular": null,
+          "shortest": null,
+          "longest": null,
+          "search": null
         }
       }
     ]

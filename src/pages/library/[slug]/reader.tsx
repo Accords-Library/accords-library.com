@@ -2,8 +2,8 @@ import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next";
 import { Fragment, useCallback, useEffect, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import Slider from "rc-slider";
-import { useRouter } from "next/router";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
+import { z } from "zod";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import {
   Enum_Componentmetadatabooks_Page_Order as PageOrder,
@@ -22,7 +22,6 @@ import { cIf, cJoin } from "helpers/className";
 import { clamp, isInteger } from "helpers/numbers";
 import { SubPanel } from "components/Containers/SubPanel";
 import { Button } from "components/Inputs/Button";
-import { Icon } from "components/Ico";
 import { Ids } from "types/ids";
 import { Switch } from "components/Inputs/Switch";
 import { WithLabel } from "components/Inputs/WithLabel";
@@ -40,6 +39,15 @@ import { atoms } from "contexts/atoms";
 import { useAtomGetter } from "helpers/atoms";
 import { FilterSettings, useReaderSettings } from "hooks/useReaderSettings";
 import { useIsWebkit } from "hooks/useIsWebkit";
+import { useTypedRouter } from "hooks/useTypedRouter";
+
+type BookType = "book" | "manga";
+type DisplayMode = "double" | "single";
+
+/*
+ *                                         ╭─────────────╮
+ * ────────────────────────────────────────╯  CONSTANTS  ╰──────────────────────────────────────────
+ */
 
 const CUSTOM_DARK_DROPSHADOW = `
   drop-shadow(0 0    0.5em rgb(var(--theme-color-shade) / 30%))
@@ -56,8 +64,10 @@ const CUSTOM_LIGHT_DROPSHADOW = `
 const SIDEPAGES_PAGE_COUNT_ON_TEXTURE = 200;
 const SIDEPAGES_PAGE_WIDTH = 0.02;
 
-type BookType = "book" | "manga";
-type DisplayMode = "double" | "single";
+const queryParamSchema = z.object({
+  query: z.coerce.string().optional(),
+  page: z.coerce.number().positive().optional(),
+});
 
 /*
  *                                           ╭────────╮
@@ -107,7 +117,7 @@ const LibrarySlug = ({
   const [displayMode, setDisplayMode] = useState<DisplayMode>(
     is1ColumnLayout ? "single" : "double"
   );
-  const router = useRouter();
+  const router = useTypedRouter(queryParamSchema);
   const isWebkit = useIsWebkit();
 
   const { isFullscreen, toggleFullscreen, requestFullscreen } = useFullscreen(Ids.ContentPanel);
@@ -119,12 +129,7 @@ const LibrarySlug = ({
 
   const changeCurrentPageIndex = useCallback(
     (callbackFn: (current: number) => number) => {
-      setCurrentPageIndex((current) => {
-        let result = callbackFn(current);
-        result = clamp(result, 0, pages.length - 1);
-        window.history.replaceState({}, "", `?page=${result - 1}`);
-        return result;
-      });
+      setCurrentPageIndex((current) => clamp(callbackFn(current), 0, pages.length - 1));
     },
     [pages.length]
   );
@@ -132,13 +137,19 @@ const LibrarySlug = ({
   useEffect(() => setDisplayMode(is1ColumnLayout ? "single" : "double"), [is1ColumnLayout]);
 
   useEffect(() => {
-    const indexQueryString = router.asPath.indexOf("?page=");
-    if (indexQueryString > 0) {
-      const page = parseInt(router.asPath.slice(indexQueryString + "?page=".length), 10);
-      changeCurrentPageIndex(() => page + 1);
+    if (router.isReady)
+      router.updateQuery({
+        page: currentPageIndex - 1,
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPageIndex, router.isReady]);
+
+  useEffect(() => {
+    if (router.isReady) {
+      if (isDefined(router.query.page)) setCurrentPageIndex(router.query.page + 1);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router.asPath]);
+  }, [router.isReady]);
 
   const changeDisplayMode = useCallback(
     (newDisplayMode: DisplayMode) => {
@@ -311,13 +322,13 @@ const LibrarySlug = ({
         <ButtonGroup
           buttonsProps={[
             {
-              icon: Icon.Description,
+              icon: "description",
               tooltip: langui.single_page_view,
               active: displayMode === "single",
               onClick: () => changeDisplayMode("single"),
             },
             {
-              icon: Icon.AutoStories,
+              icon: "auto_stories",
               tooltip: langui.double_page_view,
               active: displayMode === "double",
               onClick: () => changeDisplayMode("double"),
@@ -347,7 +358,7 @@ const LibrarySlug = ({
       <Button
         className="mt-8"
         text={langui.reset_all_options}
-        icon={Icon.Replay}
+        icon="settings_backup_restore"
         onClick={() => {
           resetReaderSettings();
           setDisplayMode(is1ColumnLayout ? "single" : "double");
@@ -364,7 +375,6 @@ const LibrarySlug = ({
           onZoom={(zoom) => setCurrentZoom(zoom.state.scale)}
           panning={{ disabled: currentZoom <= 1, velocityDisabled: false }}
           doubleClick={{ disabled: true, mode: "reset" }}
-          zoomAnimation={{ size: 0.1 }}
           velocityAnimation={{ animationTime: 0, equalToMove: true }}>
           <TransformComponent
             wrapperStyle={{ overflow: "visible", placeSelf: "center" }}
@@ -497,12 +507,12 @@ const LibrarySlug = ({
           />
           <div className="flex gap-2">
             <Button
-              icon={isGalleryMode ? Icon.ExpandMore : Icon.ExpandLess}
+              icon={isGalleryMode ? "expand_more" : "expand_less"}
               onClick={() => setIsGalleryMode((current) => !current)}
               size="small"
             />
             <Button
-              icon={isFullscreen ? Icon.FullscreenExit : Icon.Fullscreen}
+              icon={isFullscreen ? "fullscreen_exit" : "fullscreen"}
               onClick={toggleFullscreen}
               size="small"
             />
@@ -688,9 +698,8 @@ interface PageFiltersProps {
 }
 
 const PageFilters = ({ page, bookType, options }: PageFiltersProps) => {
-  const isDarkMode = useAtomGetter(atoms.settings.darkMode);
   const commonCss = cJoin(
-    "absolute inset-0",
+    "absolute inset-0 dark:opacity-100",
     cIf(page === "right", "[background-position-x:-100%]")
   );
 
@@ -700,9 +709,9 @@ const PageFilters = ({ page, bookType, options }: PageFiltersProps) => {
         <div
           className={cJoin(
             commonCss,
-            `bg-blend-multiply mix-blend-exclusion [background-image:url(/reader/paper.webp)]
-          [background-size:20vmin_20vmin]`,
-            cIf(bookType === "book", "bg-[#000]/60")
+            `mix-blend-exclusion [background-image:url(/reader/paper.webp)]
+            [background-size:20vmin_20vmin]`,
+            cIf(bookType === "book", "opacity-60 dark:opacity-60")
           )}
         />
       )}
@@ -711,9 +720,8 @@ const PageFilters = ({ page, bookType, options }: PageFiltersProps) => {
         <div
           className={cJoin(
             commonCss,
-            `bg-blend-lighten mix-blend-multiply [background-image:url(/reader/book-fold.webp)]
-          [background-size:200%_100%]`,
-            cIf(!isDarkMode, "bg-[#FFF]/50")
+            `opacity-50 mix-blend-multiply
+            [background-image:url(/reader/book-fold.webp)] [background-size:200%_100%]`
           )}
         />
       )}
@@ -723,8 +731,7 @@ const PageFilters = ({ page, bookType, options }: PageFiltersProps) => {
           <div
             className={cJoin(
               commonCss,
-              `bg-blend-lighten mix-blend-multiply [background-size:200%_100%]`,
-              cIf(!isDarkMode, "bg-[#FFF]/50"),
+              "opacity-50 mix-blend-multiply [background-size:200%_100%]",
               cIf(
                 page === "single",
                 "[background-image:url(/reader/lighting-single-page.webp)]",
@@ -735,8 +742,8 @@ const PageFilters = ({ page, bookType, options }: PageFiltersProps) => {
           <div
             className={cJoin(
               commonCss,
-              `bg-blend-lighten mix-blend-soft-light [background-size:200%_100%]`,
-              cIf(!isDarkMode, "bg-[#FFF]/30"),
+              `bg-[#FFF]/30 bg-blend-lighten mix-blend-soft-light [background-size:200%_100%]
+               dark:bg-[#000]`,
               cIf(
                 page === "single",
                 "[background-image:url(/reader/specular-single-page.webp)]",

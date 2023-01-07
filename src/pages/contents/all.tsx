@@ -1,36 +1,35 @@
 import { GetStaticProps } from "next";
-import { useState, useCallback } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useBoolean } from "usehooks-ts";
-import naturalCompare from "string-natural-compare";
+import { z } from "zod";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { Select } from "components/Inputs/Select";
 import { Switch } from "components/Inputs/Switch";
 import { PanelHeader } from "components/PanelComponents/PanelHeader";
 import { ContentPanel, ContentPanelWidthSizes } from "components/Containers/ContentPanel";
 import { SubPanel } from "components/Containers/SubPanel";
-import { getReadySdk } from "graphql/sdk";
-import { prettyInlineTitle, prettySlug } from "helpers/formatters";
 import { TextInput } from "components/Inputs/TextInput";
 import { WithLabel } from "components/Inputs/WithLabel";
 import { Button } from "components/Inputs/Button";
 import { useDeviceSupportsHover } from "hooks/useMediaQuery";
-import { Icon } from "components/Ico";
 import {
   filterDefined,
   filterHasAttributes,
+  isDefined,
   isDefinedAndNotEmpty,
-  SelectiveNonNullable,
 } from "helpers/asserts";
-import { GetContentsQuery } from "graphql/generated";
-import { SmartList } from "components/SmartList";
 import { getOpenGraph } from "helpers/openGraph";
 import { HorizontalLine } from "components/HorizontalLine";
-import { TranslatedPreviewCard } from "components/PreviewCard";
-import { cJoin, cIf } from "helpers/className";
 import { getLangui } from "graphql/fetchLocalData";
 import { sendAnalytics } from "helpers/analytics";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter } from "helpers/atoms";
+import { containsHighlight, CustomSearchResponse, meiliSearch } from "helpers/search";
+import { MeiliContent, MeiliIndices } from "shared/meilisearch-graphql-typings/meiliTypes";
+import { useTypedRouter } from "hooks/useTypedRouter";
+import { TranslatedPreviewCard } from "components/PreviewCard";
+import { prettySlug } from "helpers/formatters";
+import { Paginator } from "components/Containers/Paginator";
 
 /*
  *                                         ╭─────────────╮
@@ -38,108 +37,117 @@ import { useAtomGetter } from "helpers/atoms";
  */
 
 const DEFAULT_FILTERS_STATE = {
-  groupingMethod: -1,
-  keepInfoVisible: false,
-  searchName: "",
+  sortingMethod: 0,
+  keepInfoVisible: true,
+  query: "",
+  page: 1,
 };
+
+const queryParamSchema = z.object({
+  query: z.coerce.string().optional(),
+  page: z.coerce.number().positive().optional(),
+  sort: z.coerce.number().min(0).max(5).optional(),
+});
 
 /*
  *                                           ╭────────╮
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
  */
 
-interface Props extends AppLayoutRequired {
-  contents: NonNullable<GetContentsQuery["contents"]>["data"];
-}
+interface Props extends AppLayoutRequired {}
 
-const Contents = ({ contents, ...otherProps }: Props): JSX.Element => {
+const Contents = (props: Props): JSX.Element => {
   const hoverable = useDeviceSupportsHover();
   const langui = useAtomGetter(atoms.localData.langui);
-  const isContentPanelAtLeast4xl = useAtomGetter(atoms.containerQueries.isContentPanelAtLeast4xl);
+  const router = useTypedRouter(queryParamSchema);
 
-  const [groupingMethod, setGroupingMethod] = useState<number>(
-    DEFAULT_FILTERS_STATE.groupingMethod
+  const sortingMethods = useMemo(
+    () => [
+      { meiliAttribute: "slug:asc", displayedName: langui.name },
+      { meiliAttribute: "sortable_updated_date:asc", displayedName: langui.oldest },
+      { meiliAttribute: "sortable_updated_date:desc", displayedName: langui.newest },
+    ],
+    [langui.name, langui.newest, langui.oldest]
   );
+
+  const [sortingMethod, setSortingMethod] = useState<number>(
+    router.query.sort ?? DEFAULT_FILTERS_STATE.sortingMethod
+  );
+
   const {
     value: keepInfoVisible,
     toggle: toggleKeepInfoVisible,
     setValue: setKeepInfoVisible,
   } = useBoolean(DEFAULT_FILTERS_STATE.keepInfoVisible);
 
-  const [searchName, setSearchName] = useState(DEFAULT_FILTERS_STATE.searchName);
+  const [page, setPage] = useState<number>(router.query.page ?? DEFAULT_FILTERS_STATE.page);
+  const [contents, setContents] = useState<CustomSearchResponse<MeiliContent>>();
+  const [query, setQuery] = useState(router.query.query ?? DEFAULT_FILTERS_STATE.query);
 
-  const groupingFunction = useCallback(
-    (
-      item: SelectiveNonNullable<
-        NonNullable<GetContentsQuery["contents"]>["data"][number],
-        "attributes" | "id"
-      >
-    ): string[] => {
-      switch (groupingMethod) {
-        case 0: {
-          const categories = filterHasAttributes(item.attributes.categories?.data, [
-            "attributes",
-          ] as const);
-          if (categories.length > 0) {
-            return categories.map((category) => category.attributes.name);
-          }
-          return [langui.no_category ?? "No category"];
+  useEffect(() => {
+    const fetchPosts = async () => {
+      const currentSortingMethod = sortingMethods[sortingMethod];
+      const searchResult = await meiliSearch(MeiliIndices.CONTENT, query, {
+        attributesToRetrieve: ["translations", "id", "slug", "categories", "type", "thumbnail"],
+        attributesToHighlight: ["translations"],
+        attributesToCrop: ["translations.displayable_description"],
+        hitsPerPage: 25,
+        page,
+        sort: isDefined(currentSortingMethod) ? [currentSortingMethod.meiliAttribute] : undefined,
+      });
+      searchResult.hits = searchResult.hits.map((item) => {
+        if (Object.keys(item._matchesPosition).some((match) => match.startsWith("translations"))) {
+          item._formatted.translations = filterDefined(item._formatted.translations).filter(
+            (translation) => containsHighlight(JSON.stringify(translation))
+          );
         }
-        case 1: {
-          return [
-            item.attributes.type?.data?.attributes?.titles?.[0]?.title ??
-            item.attributes.type?.data?.attributes?.slug
-              ? prettySlug(item.attributes.type.data.attributes.slug)
-              : langui.no_type ?? "No type",
-          ];
-        }
-        default: {
-          return [""];
-        }
-      }
-    },
-    [groupingMethod, langui]
-  );
+        return item;
+      });
+      setContents(searchResult);
+    };
+    fetchPosts();
+  }, [query, page, sortingMethod, sortingMethods]);
 
-  const filteringFunction = useCallback(
-    (item: SelectiveNonNullable<Props["contents"][number], "attributes" | "id">) => {
-      if (searchName.length > 1) {
-        if (
-          filterDefined(item.attributes.translations).find((translation) =>
-            prettyInlineTitle(translation.pre_title, translation.title, translation.subtitle)
-              .toLowerCase()
-              .includes(searchName.toLowerCase())
-          )
-        ) {
-          return true;
-        }
-        return false;
-      }
-      return true;
-    },
-    [searchName]
-  );
+  useEffect(() => {
+    if (router.isReady)
+      router.updateQuery({
+        page,
+        query,
+        sort: sortingMethod,
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, query, sortingMethod, router.isReady]);
+
+  useEffect(() => {
+    if (router.isReady) {
+      if (isDefined(router.query.page)) setPage(router.query.page);
+      if (isDefined(router.query.query)) setQuery(router.query.query);
+      if (isDefined(router.query.sort)) setSortingMethod(router.query.sort);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router.isReady]);
 
   const subPanel = (
     <SubPanel>
       <PanelHeader
-        icon={Icon.Workspaces}
+        icon="workspaces"
         title={langui.contents}
         description={langui.contents_description}
       />
 
       <HorizontalLine />
 
-      <Button href="/contents" text={langui.switch_to_folder_view} icon={Icon.Folder} />
+      <Button href="/contents" text={langui.switch_to_folder_view} icon="folder" />
 
       <HorizontalLine />
 
       <TextInput
         className="mb-6 w-full"
         placeholder={langui.search_title ?? "Search..."}
-        value={searchName}
+        value={query}
         onChange={(name) => {
-          setSearchName(name);
+          setPage(1);
+          setQuery(name);
           if (isDefinedAndNotEmpty(name)) {
             sendAnalytics("Contents/All", "Change search term");
           } else {
@@ -148,19 +156,19 @@ const Contents = ({ contents, ...otherProps }: Props): JSX.Element => {
         }}
       />
 
-      <WithLabel label={langui.group_by}>
+      <WithLabel label={langui.order_by}>
         <Select
           className="w-full"
-          options={[langui.category ?? "Category", langui.type ?? "Type"]}
-          value={groupingMethod}
-          onChange={(value) => {
-            setGroupingMethod(value);
+          options={sortingMethods.map((item) => item.displayedName ?? "")}
+          value={sortingMethod}
+          onChange={(newSort) => {
+            setPage(1);
+            setSortingMethod(newSort);
             sendAnalytics(
               "Contents/All",
-              `Change grouping method (${["none", "category", "type"][value + 1]})`
+              `Change sorting method (${sortingMethods.map((item) => item.displayedName)[newSort]})`
             );
           }}
-          allowEmpty
         />
       </WithLabel>
 
@@ -179,10 +187,11 @@ const Contents = ({ contents, ...otherProps }: Props): JSX.Element => {
       <Button
         className="mt-8"
         text={langui.reset_all_filters}
-        icon={Icon.Replay}
+        icon="settings_backup_restore"
         onClick={() => {
-          setSearchName(DEFAULT_FILTERS_STATE.searchName);
-          setGroupingMethod(DEFAULT_FILTERS_STATE.groupingMethod);
+          setPage(1);
+          setQuery(DEFAULT_FILTERS_STATE.query);
+          setSortingMethod(DEFAULT_FILTERS_STATE.sortingMethod);
           setKeepInfoVisible(DEFAULT_FILTERS_STATE.keepInfoVisible);
           sendAnalytics("Contents/All", "Reset all filters");
         }}
@@ -192,71 +201,49 @@ const Contents = ({ contents, ...otherProps }: Props): JSX.Element => {
 
   const contentPanel = (
     <ContentPanel width={ContentPanelWidthSizes.Full}>
-      <SmartList
-        items={filterHasAttributes(contents, ["attributes", "id"] as const)}
-        getItemId={(item) => item.id}
-        renderItem={({ item }) => (
-          <TranslatedPreviewCard
-            href={`/contents/${item.attributes.slug}`}
-            translations={filterHasAttributes(item.attributes.translations, [
-              "language.data.attributes.code",
-            ] as const).map((translation) => ({
-              pre_title: translation.pre_title,
-              title: translation.title,
-              subtitle: translation.subtitle,
-              language: translation.language.data.attributes.code,
-            }))}
-            fallback={{ title: prettySlug(item.attributes.slug) }}
-            thumbnail={item.attributes.thumbnail?.data?.attributes}
-            thumbnailAspectRatio="3/2"
-            thumbnailForceAspectRatio
-            topChips={
-              item.attributes.type?.data?.attributes
-                ? [
-                    item.attributes.type.data.attributes.titles?.[0]
-                      ? item.attributes.type.data.attributes.titles[0]?.title
-                      : prettySlug(item.attributes.type.data.attributes.slug),
-                  ]
-                : undefined
-            }
-            bottomChips={item.attributes.categories?.data.map(
-              (category) => category.attributes?.short ?? ""
-            )}
-            keepInfoVisible={keepInfoVisible}
-          />
-        )}
-        className={cJoin(
-          "items-end",
-          cIf(
-            isContentPanelAtLeast4xl,
-            "grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] gap-x-6 gap-y-8",
-            "grid-cols-2 gap-x-3 gap-y-5"
-          )
-        )}
-        groupingFunction={groupingFunction}
-        filteringFunction={filteringFunction}
-        searchingTerm={searchName}
-        searchingBy={(item) =>
-          `
-            ${item.attributes.slug}
-            ${filterDefined(item.attributes.translations)
-              .map((translation) =>
-                prettyInlineTitle(translation.pre_title, translation.title, translation.subtitle)
-              )
-              .join(" ")}`
-        }
-        paginationItemPerPage={50}
-      />
+      <Paginator page={page} onPageChange={setPage} totalNumberOfPages={contents?.totalPages}>
+        <div
+          className="grid grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] items-start
+              gap-x-6 gap-y-8">
+          {contents?.hits.map((item) => (
+            <TranslatedPreviewCard
+              key={item.id}
+              href={`/contents/${item.slug}`}
+              translations={filterHasAttributes(item._formatted.translations, [
+                "language.data.attributes.code",
+              ] as const).map(({ displayable_description, language, ...otherAttributes }) => ({
+                ...otherAttributes,
+                description: containsHighlight(displayable_description)
+                  ? displayable_description
+                  : undefined,
+                language: language.data.attributes.code,
+              }))}
+              fallback={{ title: prettySlug(item.slug) }}
+              thumbnail={item.thumbnail?.data?.attributes}
+              thumbnailAspectRatio="3/2"
+              thumbnailForceAspectRatio
+              topChips={
+                item.type?.data?.attributes
+                  ? [
+                      item.type.data.attributes.titles?.[0]
+                        ? item.type.data.attributes.titles[0]?.title
+                        : prettySlug(item.type.data.attributes.slug),
+                    ]
+                  : undefined
+              }
+              bottomChips={item.categories?.data.map(
+                (category) => category.attributes?.short ?? ""
+              )}
+              keepInfoVisible={keepInfoVisible}
+            />
+          ))}
+        </div>
+      </Paginator>
     </ContentPanel>
   );
 
   return (
-    <AppLayout
-      subPanel={subPanel}
-      contentPanel={contentPanel}
-      subPanelIcon={Icon.Search}
-      {...otherProps}
-    />
+    <AppLayout subPanel={subPanel} contentPanel={contentPanel} subPanelIcon="search" {...props} />
   );
 };
 export default Contents;
@@ -266,22 +253,10 @@ export default Contents;
  * ───────────────────────────────────╯  NEXT DATA FETCHING  ╰──────────────────────────────────────
  */
 
-export const getStaticProps: GetStaticProps = async (context) => {
-  const sdk = getReadySdk();
+export const getStaticProps: GetStaticProps = (context) => {
   const langui = getLangui(context.locale);
-  const contents = await sdk.getContents({
-    language_code: context.locale ?? "en",
-  });
-  if (!contents.contents) return { notFound: true };
-
-  contents.contents.data.sort((a, b) => {
-    const titleA = a.attributes?.slug ?? "";
-    const titleB = b.attributes?.slug ?? "";
-    return naturalCompare(titleA, titleB);
-  });
 
   const props: Props = {
-    contents: contents.contents.data,
     openGraph: getOpenGraph(langui, langui.contents ?? "Contents"),
   };
   return {

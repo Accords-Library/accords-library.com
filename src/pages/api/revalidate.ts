@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { i18n } from "../../../next.config";
 import { cartesianProduct } from "helpers/others";
-import { filterHasAttributes, isDefined } from "helpers/asserts";
+import { filterHasAttributes } from "helpers/asserts";
 import { fetchLocalData } from "graphql/fetchLocalData";
 import { getReadySdk } from "graphql/sdk";
 
@@ -169,13 +169,11 @@ const Revalidate = async (
 
   switch (body.model) {
     case "post": {
-      paths.push(`/news`);
       paths.push(`/news/${body.entry.slug}`);
       break;
     }
 
     case "library-item": {
-      paths.push(`/library`);
       paths.push(`/library/${body.entry.slug}`);
       paths.push(`/library/${body.entry.slug}/reader`);
 
@@ -193,8 +191,6 @@ const Revalidate = async (
     }
 
     case "content": {
-      paths.push(`/contents`);
-      paths.push(`/contents/all`);
       paths.push(`/contents/${body.entry.slug}`);
 
       if (body.entry.folder.count > 0 || body.entry.ranged_contents.count > 0) {
@@ -205,7 +201,11 @@ const Revalidate = async (
 
         const folderSlug = content.contents?.data[0]?.attributes?.folder?.data?.attributes?.slug;
         if (folderSlug) {
-          paths.push(`/contents/folder/${folderSlug}`);
+          if (folderSlug === "root") {
+            paths.push(`/contents`);
+          } else {
+            paths.push(`/contents/folder/${folderSlug}`);
+          }
         }
 
         filterHasAttributes(content.contents?.data[0]?.attributes?.ranged_contents?.data, [
@@ -248,8 +248,9 @@ const Revalidate = async (
     case "contents-folder": {
       if (body.entry.slug === "root") {
         paths.push(`/contents`);
+      } else {
+        paths.push(`/contents/folder/${body.entry.slug}`);
       }
-      paths.push(`/contents/folder/${body.entry.slug}`);
 
       if (
         body.entry.contents.count > 0 ||
@@ -278,7 +279,6 @@ const Revalidate = async (
     }
 
     case "wiki-page": {
-      paths.push(`/wiki`);
       paths.push(`/wiki/${body.entry.slug}`);
       break;
     }
@@ -306,13 +306,7 @@ const Revalidate = async (
 
     case "video": {
       if (body.entry.uid) {
-        paths.push(`/archives/videos`);
         paths.push(`/archives/videos/v/${body.entry.uid}`);
-        const video = await sdk.getVideo({ uid: body.entry.uid });
-        const channelUid = video.videos?.data[0]?.attributes?.channel?.data?.attributes?.uid;
-        if (isDefined(channelUid)) {
-          paths.push(`/archives/videos/c/${channelUid}`);
-        }
       }
       break;
     }

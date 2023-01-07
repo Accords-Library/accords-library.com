@@ -23,8 +23,14 @@ h6 {
   @apply bg-dark text-light;
 }
 
+/* MARKS */
+
 mark {
-  @apply bg-mid px-2;
+  @apply -mx-1 inline-block bg-mid px-1 text-black dark:bg-dark/50;
+}
+
+mark + mark {
+  @apply ml-0 pl-0;
 }
 
 /* INPUT */

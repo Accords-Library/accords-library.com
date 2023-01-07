@@ -3,7 +3,6 @@ import { useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { Img } from "./Img";
 import { Button } from "./Inputs/Button";
-import { Icon } from "components/Ico";
 import { cIf, cJoin } from "helpers/className";
 import { useFullscreen } from "hooks/useFullscreen";
 import { Ids } from "types/ids";
@@ -142,24 +141,17 @@ const ControlButtons = ({
   const is1ColumnLayout = useAtomGetter(atoms.containerQueries.is1ColumnLayout);
 
   const PreviousButton = () => (
-    <Button
-      icon={Icon.NavigateBefore}
-      onClick={onPressPrevious}
-      disabled={!isPreviousImageAvailable}
-    />
+    <Button icon="navigate_before" onClick={onPressPrevious} disabled={!isPreviousImageAvailable} />
   );
   const NextButton = () => (
-    <Button icon={Icon.NavigateNext} onClick={onPressNext} disabled={!isNextImageAvailable} />
+    <Button icon="navigate_next" onClick={onPressNext} disabled={!isNextImageAvailable} />
   );
 
   const FullscreenButton = () => (
-    <Button
-      icon={isFullscreen ? Icon.FullscreenExit : Icon.Fullscreen}
-      onClick={toggleFullscreen}
-    />
+    <Button icon={isFullscreen ? "fullscreen_exit" : "fullscreen"} onClick={toggleFullscreen} />
   );
 
-  const CloseButton = () => <Button onClick={onCloseRequest} icon={Icon.Close} />;
+  const CloseButton = () => <Button onClick={onCloseRequest} icon="close" />;
 
   return is1ColumnLayout ? (
     <>

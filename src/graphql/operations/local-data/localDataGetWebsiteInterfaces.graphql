@@ -191,6 +191,14 @@ query localDataGetWebsiteInterfaces {
         reset_all_options
         reading_layout
         quality
+        only_unavailable_videos
+        oldest
+        newest
+        least_popular
+        most_popular
+        shortest
+        longest
+        search
       }
     }
   }

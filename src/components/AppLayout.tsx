@@ -1,7 +1,8 @@
 import Head from "next/head";
 import { useSwipeable } from "react-swipeable";
+import { MaterialSymbol } from "material-symbols";
 import { layout } from "../../design.config";
-import { Ico, Icon } from "./Ico";
+import { Ico } from "./Ico";
 import { MainPanel } from "./Panels/MainPanel";
 import { isDefined, isUndefined } from "helpers/asserts";
 import { cIf, cJoin } from "helpers/className";
@@ -28,7 +29,7 @@ export interface AppLayoutRequired {
 
 interface Props extends AppLayoutRequired {
   subPanel?: React.ReactNode;
-  subPanelIcon?: Icon;
+  subPanelIcon?: MaterialSymbol;
   contentPanel?: React.ReactNode;
   contentPanelScroolbar?: boolean;
 }
@@ -39,7 +40,7 @@ export const AppLayout = ({
   subPanel,
   contentPanel,
   openGraph,
-  subPanelIcon = Icon.Tune,
+  subPanelIcon = "tune",
   contentPanelScroolbar = true,
 }: Props): JSX.Element => {
   const isMainPanelReduced = useAtomGetter(atoms.layout.mainPanelReduced);
@@ -148,10 +149,7 @@ export const AppLayout = ({
         {isDefined(contentPanel) ? (
           contentPanel
         ) : (
-          <ContentPlaceholder
-            message={langui.select_option_sidebar ?? ""}
-            icon={Icon.ChevronLeft}
-          />
+          <ContentPlaceholder message={langui.select_option_sidebar ?? ""} icon={"chevron_left"} />
         )}
       </div>
 
@@ -195,7 +193,7 @@ export const AppLayout = ({
           cIf(!is1ColumnLayout, "hidden")
         )}>
         <Ico
-          icon={isMainPanelOpened ? Icon.Close : Icon.Menu}
+          icon={isMainPanelOpened ? "close" : "menu"}
           className="cursor-pointer !text-2xl"
           onClick={() => {
             setMainPanelOpened((current) => !current);
@@ -213,7 +211,7 @@ export const AppLayout = ({
         </p>
         {isDefined(subPanel) && !turnSubIntoContent && (
           <Ico
-            icon={isSubPanelOpened ? Icon.Close : subPanelIcon}
+            icon={isSubPanelOpened ? "close" : subPanelIcon}
             className="cursor-pointer !text-2xl"
             onClick={() => {
               setSubPanelOpened((current) => !current);
@@ -230,7 +228,7 @@ export const AppLayout = ({
 
 interface ContentPlaceholderProps {
   message: string;
-  icon?: Icon;
+  icon?: MaterialSymbol;
 }
 
 const ContentPlaceholder = ({ message, icon }: ContentPlaceholderProps): JSX.Element => (

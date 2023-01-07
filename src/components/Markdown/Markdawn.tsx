@@ -10,7 +10,7 @@ import { getAssetURL, ImageQuality } from "helpers/img";
 import { isDefined, isDefinedAndNotEmpty, isUndefined } from "helpers/asserts";
 import { AnchorShare } from "components/AnchorShare";
 import { useIntersectionList } from "hooks/useIntersectionList";
-import { Ico, Icon } from "components/Ico";
+import { Ico } from "components/Ico";
 import { useDeviceSupportsHover } from "hooks/useMediaQuery";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter } from "helpers/atoms";
@@ -268,9 +268,9 @@ const Header = ({ level, title, slug }: HeaderProps): JSX.Element => {
       <div className="ml-10 flex place-items-center gap-4">
         {title === "* * *" ? (
           <div className="mt-8 mb-12 space-x-3 text-dark">
-            <Ico icon={Icon.Emergency} />
-            <Ico icon={Icon.Emergency} />
-            <Ico icon={Icon.Emergency} />
+            <Ico icon="emergency" />
+            <Ico icon="emergency" />
+            <Ico icon="emergency" />
           </div>
         ) : (
           <div className="font-headers">{title}</div>

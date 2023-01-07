@@ -146,7 +146,7 @@ const WikiPage = ({ page, ...otherProps }: Props): JSX.Element => {
                             "/contents/",
                             definition.source.data.attributes.content.data.attributes.slug
                           )
-                        : cJoin(
+                        : sJoin(
                             "/library/",
                             definition.source?.data?.attributes?.ranged_content?.data?.attributes
                               ?.library_item?.data?.attributes?.slug
@@ -164,6 +164,10 @@ const WikiPage = ({ page, ...otherProps }: Props): JSX.Element => {
                   />
                 </div>
               )
+            )}
+
+            {isDefined(selectedTranslation.body) && (
+              <div className="whitespace-pre-line">{selectedTranslation.body.body}</div>
             )}
           </div>
         </>

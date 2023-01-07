@@ -1,4 +1,5 @@
-import { Ico, Icon } from "components/Ico";
+import { MaterialSymbol } from "material-symbols";
+import { Ico } from "components/Ico";
 import { isDefinedAndNotEmpty } from "helpers/asserts";
 
 /*
@@ -7,7 +8,7 @@ import { isDefinedAndNotEmpty } from "helpers/asserts";
  */
 
 interface Props {
-  icon?: Icon;
+  icon?: MaterialSymbol;
   title: string | null | undefined;
   description?: string | null | undefined;
 }

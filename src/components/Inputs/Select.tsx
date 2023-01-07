@@ -1,6 +1,6 @@
 import { Fragment, useCallback, useRef } from "react";
 import { useBoolean, useOnClickOutside } from "usehooks-ts";
-import { Ico, Icon } from "components/Ico";
+import { Ico } from "components/Ico";
 import { cIf, cJoin } from "helpers/className";
 
 /*
@@ -72,12 +72,12 @@ export const Select = ({
         </p>
         {value >= 0 && allowEmpty && (
           <Ico
-            icon={Icon.Close}
+            icon="close"
             className="!text-xs"
             onClick={() => !disabled && onSelectionChanged(-1)}
           />
         )}
-        <Ico onClick={tryToggling} icon={isOpened ? Icon.ArrowDropUp : Icon.ArrowDropDown} />
+        <Ico onClick={tryToggling} icon={isOpened ? "arrow_drop_up" : "arrow_drop_down"} />
       </div>
       <div className={cJoin("left-0 right-0 rounded-b-[1em]", cIf(isOpened, "absolute", "hidden"))}>
         {options.map((option, index) => (

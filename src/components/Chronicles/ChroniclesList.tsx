@@ -4,7 +4,7 @@ import { TranslatedChroniclePreview } from "./ChroniclePreview";
 import { GetChroniclesChaptersQuery } from "graphql/generated";
 import { filterHasAttributes } from "helpers/asserts";
 import { prettyInlineTitle, prettySlug, sJoin } from "helpers/formatters";
-import { Ico, Icon } from "components/Ico";
+import { Ico } from "components/Ico";
 import { compareDate } from "helpers/date";
 import { TranslatedProps } from "types/TranslatedProps";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
@@ -33,7 +33,7 @@ const ChroniclesList = ({ chronicles, currentSlug, title }: Props): JSX.Element 
     <div>
       <div className="grid place-content-center">
         <div className="grid cursor-pointer grid-cols-[1em_1fr] gap-4" onClick={toggleOpen}>
-          <Ico className="!text-xl" icon={isOpen ? Icon.ArrowDropUp : Icon.ArrowDropDown} />
+          <Ico className="!text-xl" icon={isOpen ? "arrow_drop_up" : "arrow_drop_down"} />
           <p className="mb-4 font-headers text-xl">{title}</p>
         </div>
       </div>

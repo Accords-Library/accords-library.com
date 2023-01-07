@@ -1,5 +1,4 @@
-import "@fontsource/material-icons";
-import "@fontsource/material-icons-outlined";
+import "material-symbols/rounded.css";
 import "@fontsource/opendyslexic/400.css";
 import "@fontsource/share-tech-mono/400.css";
 import "@fontsource/opendyslexic/700.css";
@@ -23,6 +22,7 @@ import { SettingsPopup } from "components/Panels/SettingsPopup";
 import { useSettings } from "contexts/settings";
 import { useContainerQueries } from "contexts/containerQueries";
 import { useWebkitFixes } from "contexts/webkitFixes";
+import { SearchPopup } from "components/Panels/SearchPopup";
 
 const AccordsLibraryApp = (props: AppProps): JSX.Element => {
   useLocalData();
@@ -33,6 +33,7 @@ const AccordsLibraryApp = (props: AppProps): JSX.Element => {
 
   return (
     <>
+      <SearchPopup />
       <SettingsPopup />
       <LightBoxProvider />
       <Script

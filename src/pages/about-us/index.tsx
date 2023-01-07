@@ -1,6 +1,5 @@
 import { GetStaticProps } from "next";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
-import { Icon } from "components/Ico";
 import { NavOption } from "components/PanelComponents/NavOption";
 import { PanelHeader } from "components/PanelComponents/PanelHeader";
 import { SubPanel } from "components/Containers/SubPanel";
@@ -24,7 +23,7 @@ const AboutUs = (props: Props): JSX.Element => {
       subPanel={
         <SubPanel>
           <PanelHeader
-            icon={Icon.Info}
+            icon="info"
             title={langui.about_us}
             description={langui.about_us_description}
           />

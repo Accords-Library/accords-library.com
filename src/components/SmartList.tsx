@@ -3,7 +3,7 @@ import { useHotkeys } from "react-hotkeys-hook";
 import naturalCompare from "string-natural-compare";
 import { Chip } from "./Chip";
 import { PageSelector } from "./Inputs/PageSelector";
-import { Ico, Icon } from "./Ico";
+import { Ico } from "./Ico";
 import { cJoin } from "helpers/className";
 import { isDefined, isDefinedAndNotEmpty } from "helpers/asserts";
 import { useScrollTopOnChange } from "hooks/useScrollTopOnChange";
@@ -70,10 +70,10 @@ export const SmartList = <T,>({
   sortingFunction = defaultSortingFunction,
   className,
 }: Props<T>): JSX.Element => {
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
   const langui = useAtomGetter(atoms.localData.langui);
   useScrollTopOnChange(Ids.ContentPanel, [page], paginationScroolTop);
-  useEffect(() => setPage(0), [searchingTerm, groupingFunction, groupSortingFunction]);
+  useEffect(() => setPage(1), [searchingTerm, groupingFunction, groupSortingFunction]);
 
   const searchFilter = useCallback(() => {
     if (isDefinedAndNotEmpty(searchingTerm) && isDefined(searchingBy)) {
@@ -158,9 +158,9 @@ export const SmartList = <T,>({
     return memo;
   })();
 
-  useHotkeys("left", () => setPage((current) => current - 1), { enabled: page > 0 });
+  useHotkeys("left", () => setPage((current) => current - 1), { enabled: page > 1 });
   useHotkeys("right", () => setPage((current) => current + 1), {
-    enabled: page < pages.length - 1,
+    enabled: page < pages.length,
   });
 
   return (
@@ -170,8 +170,8 @@ export const SmartList = <T,>({
       )}
 
       <div className="mb-8">
-        {(pages[page]?.length ?? 0) > 0 ? (
-          pages[page]?.map(
+        {(pages[page - 1]?.length ?? 0) > 0 ? (
+          pages[page - 1]?.map(
             (group) =>
               group.items.length > 0 && (
                 <Fragment key={group.name}>
@@ -229,9 +229,9 @@ const DefaultRenderWhenEmpty = () => {
       <div
         className="grid grid-flow-col place-items-center gap-9 rounded-2xl border-2 border-dotted
         border-dark p-8 text-dark opacity-40">
-        {is3ColumnsLayout && <Ico icon={Icon.ChevronLeft} className="!text-[300%]" />}
+        {is3ColumnsLayout && <Ico icon="chevron_left" className="!text-[300%]" />}
         <p className="max-w-xs text-2xl">{langui.no_results_message}</p>
-        {!is3ColumnsLayout && <Ico icon={Icon.ChevronRight} className="!text-[300%]" />}
+        {!is3ColumnsLayout && <Ico icon="chevron_right" className="!text-[300%]" />}
       </div>
     </div>
   );

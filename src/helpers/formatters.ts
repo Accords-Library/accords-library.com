@@ -208,12 +208,12 @@ export const prettyItemSubType = (
 /* eslint-enable id-denylist */
 
 export const prettyShortenNumber = (number: number): string => {
-  if (number > 1000000) {
-    return number.toLocaleString(undefined, {
+  if (number > 1_000_000) {
+    return `${(number / 1_000_000).toLocaleString(undefined, {
       maximumSignificantDigits: 3,
-    });
-  } else if (number > 1000) {
-    return `${(number / 1000).toLocaleString(undefined, {
+    })}M`;
+  } else if (number > 1_000) {
+    return `${(number / 1_000).toLocaleString(undefined, {
       maximumSignificantDigits: 2,
     })}K`;
   }

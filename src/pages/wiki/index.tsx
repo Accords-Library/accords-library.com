@@ -1,13 +1,11 @@
 import { GetStaticProps } from "next";
-import { useCallback, useState } from "react";
+import { useEffect, useState } from "react";
 import { useBoolean } from "usehooks-ts";
+import { z } from "zod";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { NavOption } from "components/PanelComponents/NavOption";
 import { PanelHeader } from "components/PanelComponents/PanelHeader";
 import { SubPanel } from "components/Containers/SubPanel";
-import { Icon } from "components/Ico";
-import { getReadySdk } from "graphql/sdk";
-import { GetWikiPageQuery, GetWikiPagesPreviewsQuery } from "graphql/generated";
 import { ContentPanel, ContentPanelWidthSizes } from "components/Containers/ContentPanel";
 import { HorizontalLine } from "components/HorizontalLine";
 import { Button } from "components/Inputs/Button";
@@ -15,23 +13,18 @@ import { Switch } from "components/Inputs/Switch";
 import { TextInput } from "components/Inputs/TextInput";
 import { WithLabel } from "components/Inputs/WithLabel";
 import { useDeviceSupportsHover } from "hooks/useMediaQuery";
-import {
-  filterDefined,
-  filterHasAttributes,
-  isDefinedAndNotEmpty,
-  SelectiveNonNullable,
-} from "helpers/asserts";
-import { SmartList } from "components/SmartList";
-import { Select } from "components/Inputs/Select";
+import { filterHasAttributes, isDefined, isDefinedAndNotEmpty } from "helpers/asserts";
 import { prettySlug } from "helpers/formatters";
 import { getOpenGraph } from "helpers/openGraph";
 import { TranslatedPreviewCard } from "components/PreviewCard";
-import { cIf } from "helpers/className";
 import { getLangui } from "graphql/fetchLocalData";
 import { sendAnalytics } from "helpers/analytics";
-import { Terminal } from "components/Cli/Terminal";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter } from "helpers/atoms";
+import { useTypedRouter } from "hooks/useTypedRouter";
+import { MeiliIndices, MeiliWikiPage } from "shared/meilisearch-graphql-typings/meiliTypes";
+import { containsHighlight, CustomSearchResponse, meiliSearch } from "helpers/search";
+import { Paginator } from "components/Containers/Paginator";
 
 /*
  *                                         ╭─────────────╮
@@ -39,31 +32,28 @@ import { useAtomGetter } from "helpers/atoms";
  */
 
 const DEFAULT_FILTERS_STATE = {
-  searchName: "",
+  query: "",
   keepInfoVisible: true,
-  groupingMethod: -1,
+  page: 1,
 };
+
+const queryParamSchema = z.object({
+  query: z.coerce.string().optional(),
+  page: z.coerce.number().positive().optional(),
+});
 
 /*
  *                                           ╭────────╮
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
  */
 
-interface Props extends AppLayoutRequired {
-  pages: NonNullable<GetWikiPagesPreviewsQuery["wikiPages"]>["data"];
-}
+interface Props extends AppLayoutRequired {}
 
-const Wiki = ({ pages, ...otherProps }: Props): JSX.Element => {
+const Wiki = (props: Props): JSX.Element => {
   const hoverable = useDeviceSupportsHover();
   const langui = useAtomGetter(atoms.localData.langui);
-  const isContentPanelAtLeast4xl = useAtomGetter(atoms.containerQueries.isContentPanelAtLeast4xl);
-  const isTerminalMode = useAtomGetter(atoms.layout.terminalMode);
-
-  const [searchName, setSearchName] = useState(DEFAULT_FILTERS_STATE.searchName);
-
-  const [groupingMethod, setGroupingMethod] = useState<number>(
-    DEFAULT_FILTERS_STATE.groupingMethod
-  );
+  const router = useTypedRouter(queryParamSchema);
+  const [query, setQuery] = useState(router.query.query ?? DEFAULT_FILTERS_STATE.query);
 
   const {
     value: keepInfoVisible,
@@ -71,10 +61,48 @@ const Wiki = ({ pages, ...otherProps }: Props): JSX.Element => {
     setValue: setKeepInfoVisible,
   } = useBoolean(DEFAULT_FILTERS_STATE.keepInfoVisible);
 
+  const [page, setPage] = useState<number>(router.query.page ?? DEFAULT_FILTERS_STATE.page);
+  const [wikiPages, setWikiPages] = useState<CustomSearchResponse<MeiliWikiPage>>();
+
+  useEffect(() => {
+    const fetchWikiPages = async () => {
+      const searchResult = await meiliSearch(MeiliIndices.WIKI_PAGE, query, {
+        hitsPerPage: 25,
+        page,
+        attributesToHighlight: [
+          "translations.title",
+          "translations.aliases",
+          "translations.summary",
+          "translations.displayable_description",
+        ],
+        attributesToCrop: ["translations.displayable_description"],
+      });
+      setWikiPages(searchResult);
+    };
+    fetchWikiPages();
+  }, [query, page]);
+
+  useEffect(() => {
+    if (router.isReady)
+      router.updateQuery({
+        page,
+        query,
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, query, router.isReady]);
+
+  useEffect(() => {
+    if (router.isReady) {
+      if (isDefined(router.query.page)) setPage(router.query.page);
+      if (isDefined(router.query.query)) setQuery(router.query.query);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router.isReady]);
+
   const subPanel = (
     <SubPanel>
       <PanelHeader
-        icon={Icon.TravelExplore}
+        icon="travel_explore"
         title={langui.wiki}
         description={langui.wiki_description}
       />
@@ -84,9 +112,10 @@ const Wiki = ({ pages, ...otherProps }: Props): JSX.Element => {
       <TextInput
         className="mb-6 w-full"
         placeholder={langui.search_title ?? "Search..."}
-        value={searchName}
+        value={query}
         onChange={(name) => {
-          setSearchName(name);
+          setPage(1);
+          setQuery(name);
           if (isDefinedAndNotEmpty(name)) {
             sendAnalytics("Wiki", "Change search term");
           } else {
@@ -94,19 +123,6 @@ const Wiki = ({ pages, ...otherProps }: Props): JSX.Element => {
           }
         }}
       />
-
-      <WithLabel label={langui.group_by}>
-        <Select
-          className="w-full"
-          options={[langui.category ?? "Category"]}
-          value={groupingMethod}
-          onChange={(value) => {
-            setGroupingMethod(value);
-            sendAnalytics("Wiki", `Change grouping method (${["none", "category"][value + 1]})`);
-          }}
-          allowEmpty
-        />
-      </WithLabel>
 
       {hoverable && (
         <WithLabel label={langui.always_show_info}>
@@ -123,10 +139,10 @@ const Wiki = ({ pages, ...otherProps }: Props): JSX.Element => {
       <Button
         className="mt-8"
         text={langui.reset_all_filters}
-        icon={Icon.Replay}
+        icon="settings_backup_restore"
         onClick={() => {
-          setSearchName(DEFAULT_FILTERS_STATE.searchName);
-          setGroupingMethod(DEFAULT_FILTERS_STATE.groupingMethod);
+          setPage(1);
+          setQuery(DEFAULT_FILTERS_STATE.query);
           setKeepInfoVisible(DEFAULT_FILTERS_STATE.keepInfoVisible);
           sendAnalytics("Wiki", "Reset all filters");
         }}
@@ -140,104 +156,52 @@ const Wiki = ({ pages, ...otherProps }: Props): JSX.Element => {
     </SubPanel>
   );
 
-  const groupingFunction = useCallback(
-    (
-      item: SelectiveNonNullable<
-        NonNullable<GetWikiPageQuery["wikiPages"]>["data"][number],
-        "attributes" | "id"
-      >
-    ): string[] => {
-      switch (groupingMethod) {
-        case 0: {
-          const categories = filterHasAttributes(item.attributes.categories?.data, [
-            "attributes",
-          ] as const);
-          if (categories.length > 0) {
-            return categories.map((category) => category.attributes.name);
-          }
-          return [langui.no_category ?? "No category"];
-        }
-        default: {
-          return [""];
-        }
-      }
-    },
-    [groupingMethod, langui]
-  );
-
   const contentPanel = (
     <ContentPanel width={ContentPanelWidthSizes.Full}>
-      <SmartList
-        items={filterHasAttributes(pages, ["id", "attributes"] as const)}
-        getItemId={(item) => item.id}
-        renderItem={({ item }) => (
-          <TranslatedPreviewCard
-            href={`/wiki/${item.attributes.slug}`}
-            translations={filterHasAttributes(item.attributes.translations, [
-              "language.data.attributes.code",
-            ] as const).map((translation) => ({
-              title: translation.title,
-              subtitle:
-                translation.aliases && translation.aliases.length > 0
-                  ? translation.aliases.map((alias) => alias?.alias).join("・")
-                  : undefined,
-              description: translation.summary,
-              language: translation.language.data.attributes.code,
-            }))}
-            fallback={{ title: prettySlug(item.attributes.slug) }}
-            thumbnail={item.attributes.thumbnail?.data?.attributes}
-            thumbnailAspectRatio={"4/3"}
-            thumbnailRounded
-            thumbnailForceAspectRatio
-            keepInfoVisible={keepInfoVisible}
-            topChips={filterHasAttributes(item.attributes.tags?.data, ["attributes"] as const).map(
-              (tag) => tag.attributes.titles?.[0]?.title ?? prettySlug(tag.attributes.slug)
-            )}
-            bottomChips={filterHasAttributes(item.attributes.categories?.data, [
-              "attributes",
-            ] as const).map((category) => category.attributes.short)}
-          />
-        )}
-        className={cIf(
-          isContentPanelAtLeast4xl,
-          "grid-cols-[repeat(auto-fill,minmax(15rem,1fr))] gap-x-6 gap-y-8",
-          "grid-cols-2 gap-x-3 gap-y-5"
-        )}
-        searchingTerm={searchName}
-        searchingBy={(item) =>
-          filterDefined(item.attributes.translations)
-            .map(
-              (translation) =>
-                `${translation.title} ${filterDefined(translation.aliases)
-                  .map((alias) => alias.alias)
-                  .join(" ")}`
-            )
-            .join(" ")
-        }
-        groupingFunction={groupingFunction}
-        paginationItemPerPage={25}
-      />
+      <Paginator page={page} onPageChange={setPage} totalNumberOfPages={wikiPages?.totalPages}>
+        <div
+          className="grid grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] items-start
+              gap-x-6 gap-y-8">
+          {wikiPages?.hits.map((item) => (
+            <TranslatedPreviewCard
+              key={item.id}
+              href={`/wiki/${item.slug}`}
+              translations={filterHasAttributes(item._formatted.translations, [
+                "language.data.attributes.code",
+              ] as const).map(
+                ({ aliases, summary, displayable_description, language, ...otherAttributes }) => ({
+                  ...otherAttributes,
+                  subtitle:
+                    aliases && aliases.length > 0
+                      ? aliases.map((alias) => alias?.alias).join("・")
+                      : undefined,
+                  description: containsHighlight(displayable_description)
+                    ? displayable_description
+                    : summary,
+                  language: language.data.attributes.code,
+                })
+              )}
+              fallback={{ title: prettySlug(item.slug) }}
+              thumbnail={item.thumbnail?.data?.attributes}
+              thumbnailAspectRatio={"4/3"}
+              thumbnailRounded
+              thumbnailForceAspectRatio
+              keepInfoVisible
+              topChips={filterHasAttributes(item.tags?.data, ["attributes"] as const).map(
+                (tag) => tag.attributes.titles?.[0]?.title ?? prettySlug(tag.attributes.slug)
+              )}
+              bottomChips={filterHasAttributes(item.categories?.data, ["attributes"] as const).map(
+                (category) => category.attributes.short
+              )}
+            />
+          ))}
+        </div>
+      </Paginator>
     </ContentPanel>
   );
 
-  if (isTerminalMode) {
-    return (
-      <Terminal
-        parentPath="/"
-        childrenPaths={filterHasAttributes(pages, ["attributes"] as const).map(
-          (page) => page.attributes.slug
-        )}
-      />
-    );
-  }
-
   return (
-    <AppLayout
-      subPanel={subPanel}
-      contentPanel={contentPanel}
-      subPanelIcon={Icon.Search}
-      {...otherProps}
-    />
+    <AppLayout subPanel={subPanel} contentPanel={contentPanel} subPanelIcon="search" {...props} />
   );
 };
 export default Wiki;
@@ -247,31 +211,12 @@ export default Wiki;
  * ───────────────────────────────────╯  NEXT DATA FETCHING  ╰──────────────────────────────────────
  */
 
-export const getStaticProps: GetStaticProps = async (context) => {
-  const sdk = getReadySdk();
+export const getStaticProps: GetStaticProps = (context) => {
   const langui = getLangui(context.locale);
-  const pages = await sdk.getWikiPagesPreviews({
-    language_code: context.locale ?? "en",
-  });
-  if (!pages.wikiPages?.data) return { notFound: true };
-
   const props: Props = {
-    pages: sortPages(pages.wikiPages.data),
     openGraph: getOpenGraph(langui, langui.wiki ?? "Wiki"),
   };
   return {
     props: props,
   };
 };
-
-/*
- *                                      ╭───────────────────╮
- * ─────────────────────────────────────╯  PRIVATE METHODS  ╰───────────────────────────────────────
- */
-
-const sortPages = (pages: Props["pages"]): Props["pages"] =>
-  pages.sort((a, b) => {
-    const slugA = a.attributes?.slug ?? "";
-    const slugB = b.attributes?.slug ?? "";
-    return slugA.localeCompare(slugB);
-  });

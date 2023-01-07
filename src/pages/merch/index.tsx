@@ -2,7 +2,6 @@ import { GetStaticProps } from "next";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { PanelHeader } from "components/PanelComponents/PanelHeader";
 import { SubPanel } from "components/Containers/SubPanel";
-import { Icon } from "components/Ico";
 import { getOpenGraph } from "helpers/openGraph";
 import { getLangui } from "graphql/fetchLocalData";
 import { atoms } from "contexts/atoms";
@@ -20,11 +19,7 @@ const Merch = (props: Props): JSX.Element => {
     <AppLayout
       subPanel={
         <SubPanel>
-          <PanelHeader
-            icon={Icon.Store}
-            title={langui.merch}
-            description={langui.merch_description}
-          />
+          <PanelHeader icon="store" title={langui.merch} description={langui.merch_description} />
         </SubPanel>
       }
       {...props}

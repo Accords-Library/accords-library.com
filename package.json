@@ -25,7 +25,7 @@
     "autoprefixer": "^10.4.13",
     "cuid": "^2.1.8",
     "isomorphic-dompurify": "^0.25.0",
-    "jotai": "^1.12.1",
+    "jotai": "^1.13.1",
     "markdown-to-jsx": "^7.1.8",
     "marked": "^4.2.5",
     "material-symbols": "^0.4.2",

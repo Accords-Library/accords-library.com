@@ -66,7 +66,7 @@ const SIDEPAGES_PAGE_WIDTH = 0.02;
 
 const queryParamSchema = z.object({
   query: z.coerce.string().optional(),
-  page: z.coerce.number().positive().optional(),
+  page: z.coerce.number().optional(),
 });
 
 /*

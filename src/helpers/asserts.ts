@@ -51,11 +51,11 @@ export const filterDefined = <T>(t: T[] | null | undefined): NonNullable<T>[] =>
 export const filterHasAttributes = <T, P extends PathDot<T>>(
   t: T[] | null | undefined,
   paths: readonly P[]
-): SelectiveNonNullable<T, typeof paths[number]>[] =>
+): SelectiveNonNullable<T, (typeof paths)[number]>[] =>
   isDefined(t)
     ? (t.filter((item) => hasAttributes(item, paths)) as unknown as SelectiveNonNullable<
         T,
-        typeof paths[number]
+        (typeof paths)[number]
       >[])
     : [];
 

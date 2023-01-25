@@ -357,11 +357,11 @@ const DesignSystem = (props: Props): JSX.Element => {
         <h3 className="-mt-6 mb-2 text-xl">Text area</h3>
 
         <WithLabel label="Empty">
-          <textarea value="" name="test" title="aria" />
+          <textarea value="" name="test" title="aria" readOnly />
         </WithLabel>
 
         <WithLabel label="Placeholder">
-          <textarea value="" placeholder="Placeholder..." />
+          <textarea value="" placeholder="Placeholder..." readOnly />
         </WithLabel>
 
         <WithLabel label="Filled">
@@ -373,6 +373,7 @@ const DesignSystem = (props: Props): JSX.Element => {
           Itaque atque architecto maiores qui et optio.
           Et consequatur dolorem omnis cupiditate."
             placeholder="Placeholder..."
+            readOnly
           />
         </WithLabel>
 
@@ -386,6 +387,7 @@ const DesignSystem = (props: Props): JSX.Element => {
           Itaque atque architecto maiores qui et optio.
           Et consequatur dolorem omnis cupiditate."
             placeholder="Placeholder..."
+            readOnly
           />
         </WithLabel>
 
@@ -399,6 +401,7 @@ const DesignSystem = (props: Props): JSX.Element => {
           Et consequatur dolorem omnis cupiditate."
             placeholder="Placeholder..."
             disabled
+            readOnly
           />
         </WithLabel>
 

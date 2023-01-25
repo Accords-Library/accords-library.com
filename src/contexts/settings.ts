@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useLayoutEffect, useEffect } from "react";
+import { useEffect } from "react";
 import { atom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
 import { atomPairing, useAtomGetter, useAtomPair } from "helpers/atoms";
@@ -39,14 +39,14 @@ export const useSettings = (): void => {
   const [isDarkMode, setDarkMode] = useAtomPair(darkModeAtom);
   const themeMode = useAtomGetter(themeModeAtom);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const html = document.getElementsByTagName("html")[0];
     if (isDefined(html)) {
       html.style.fontSize = `${fontSize * 100}%`;
     }
   }, [fontSize]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const next = document.getElementById("__next");
     if (isDefined(next)) {
       if (isDyslexic) {
@@ -66,7 +66,7 @@ export const useSettings = (): void => {
     setDarkMode(themeMode === ThemeMode.Auto ? prefersDarkMode : themeMode === ThemeMode.Dark);
   }, [prefersDarkMode, setDarkMode, themeMode]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const next = document.getElementById("__next");
     if (isDefined(next)) {
       if (isDarkMode) {

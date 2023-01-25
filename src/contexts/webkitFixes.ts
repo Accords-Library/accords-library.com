@@ -1,11 +1,11 @@
-import { useLayoutEffect } from "react";
+import { useEffect } from "react";
 import { isDefined } from "helpers/asserts";
 import { useIsWebkit } from "hooks/useIsWebkit";
 
 export const useWebkitFixes = (): void => {
   const isWebkit = useIsWebkit();
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const next = document.getElementById("__next");
     if (isDefined(next)) {
       if (isWebkit) {

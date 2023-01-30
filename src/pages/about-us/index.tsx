@@ -6,8 +6,7 @@ import { SubPanel } from "components/Containers/SubPanel";
 import { getOpenGraph } from "helpers/openGraph";
 import { HorizontalLine } from "components/HorizontalLine";
 import { getLangui } from "graphql/fetchLocalData";
-import { atoms } from "contexts/atoms";
-import { useAtomGetter } from "helpers/atoms";
+import { useFormat } from "hooks/useFormat";
 
 /*
  *                                           ╭────────╮
@@ -17,23 +16,23 @@ import { useAtomGetter } from "helpers/atoms";
 interface Props extends AppLayoutRequired {}
 
 const AboutUs = (props: Props): JSX.Element => {
-  const langui = useAtomGetter(atoms.localData.langui);
+  const { format } = useFormat();
   return (
     <AppLayout
       subPanel={
         <SubPanel>
           <PanelHeader
             icon="info"
-            title={langui.about_us}
-            description={langui.about_us_description}
+            title={format("about_us")}
+            description={format("about_us_description")}
           />
 
           <HorizontalLine />
 
-          <NavOption title={langui.accords_handbook} url="/about-us/accords-handbook" border />
-          <NavOption title={langui.legality} url="/about-us/legality" border />
-          <NavOption title={langui.sharing_policy} url="/about-us/sharing-policy" border />
-          <NavOption title={langui.contact_us} url="/about-us/contact" border />
+          <NavOption title={format("accords_handbook")} url="/about-us/accords-handbook" border />
+          <NavOption title={format("legality")} url="/about-us/legality" border />
+          <NavOption title={format("sharing_policy")} url="/about-us/sharing-policy" border />
+          <NavOption title={format("contact_us")} url="/about-us/contact" border />
         </SubPanel>
       }
       {...props}

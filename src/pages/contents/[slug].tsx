@@ -21,7 +21,6 @@ import {
   prettySlug,
 } from "helpers/formatters";
 import { isUntangibleGroupItem } from "helpers/libraryItem";
-import { getStatusDescription } from "helpers/others";
 import { filterHasAttributes, isDefinedAndNotEmpty } from "helpers/asserts";
 import { ContentWithTranslations } from "types/types";
 import { useScrollTopOnChange } from "hooks/useScrollTopOnChange";
@@ -35,6 +34,7 @@ import { getLangui } from "graphql/fetchLocalData";
 import { Ids } from "types/ids";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter } from "helpers/atoms";
+import { useFormat } from "hooks/useFormat";
 
 /*
  *                                           ╭────────╮
@@ -49,7 +49,7 @@ const Content = ({ content, ...otherProps }: Props): JSX.Element => {
   const isContentPanelAtLeast2xl = useAtomGetter(atoms.containerQueries.isContentPanelAtLeast2xl);
   const is1ColumnLayout = useAtomGetter(atoms.containerQueries.is1ColumnLayout);
 
-  const langui = useAtomGetter(atoms.localData.langui);
+  const { format, formatStatusDescription } = useFormat();
   const languages = useAtomGetter(atoms.localData.languages);
 
   const [selectedTranslation, LanguageSwitcher, languageSwitcherProps] = useSmartLanguage({
@@ -86,9 +86,8 @@ const Content = ({ content, ...otherProps }: Props): JSX.Element => {
     fallback: {
       title: content.folder?.data?.attributes
         ? prettySlug(content.folder.data.attributes.slug)
-        : langui.contents,
+        : format("contents"),
     },
-    langui,
   };
 
   const subPanel = (
@@ -102,14 +101,14 @@ const Content = ({ content, ...otherProps }: Props): JSX.Element => {
             <h2 className="text-xl">
               {selectedTranslation.text_set.source_language.data.attributes.code ===
               selectedTranslation.language?.data?.attributes?.code
-                ? langui.transcript_notice
-                : langui.translation_notice}
+                ? format("transcript_notice")
+                : format("translation_notice")}
             </h2>
 
             {selectedTranslation.text_set.source_language.data.attributes.code !==
               selectedTranslation.language?.data?.attributes?.code && (
               <div className="grid place-items-center gap-2">
-                <p className="font-headers font-bold">{langui.source_language}:</p>
+                <p className="font-headers font-bold">{format("source_language")}:</p>
                 <Chip
                   text={prettyLanguage(
                     selectedTranslation.text_set.source_language.data.attributes.code,
@@ -120,10 +119,10 @@ const Content = ({ content, ...otherProps }: Props): JSX.Element => {
             )}
 
             <div className="grid grid-flow-col place-content-center place-items-center gap-2">
-              <p className="font-headers font-bold">{langui.status}:</p>
+              <p className="font-headers font-bold">{format("status")}:</p>
 
               <ToolTip
-                content={getStatusDescription(selectedTranslation.text_set.status, langui)}
+                content={formatStatusDescription(selectedTranslation.text_set.status)}
                 maxWidth={"20rem"}>
                 <Chip text={selectedTranslation.text_set.status} />
               </ToolTip>
@@ -132,7 +131,7 @@ const Content = ({ content, ...otherProps }: Props): JSX.Element => {
             {selectedTranslation.text_set.transcribers &&
               selectedTranslation.text_set.transcribers.data.length > 0 && (
                 <div>
-                  <p className="font-headers font-bold">{langui.transcribers}:</p>
+                  <p className="font-headers font-bold">{format("transcribers")}:</p>
                   <div className="grid place-content-center place-items-center gap-2">
                     {filterHasAttributes(selectedTranslation.text_set.transcribers.data, [
                       "attributes",
@@ -149,7 +148,7 @@ const Content = ({ content, ...otherProps }: Props): JSX.Element => {
             {selectedTranslation.text_set.translators &&
               selectedTranslation.text_set.translators.data.length > 0 && (
                 <div>
-                  <p className="font-headers font-bold">{langui.translators}:</p>
+                  <p className="font-headers font-bold">{format("translators")}:</p>
                   <div className="grid place-content-center place-items-center gap-2">
                     {filterHasAttributes(selectedTranslation.text_set.translators.data, [
                       "attributes",
@@ -166,7 +165,7 @@ const Content = ({ content, ...otherProps }: Props): JSX.Element => {
             {selectedTranslation.text_set.proofreaders &&
               selectedTranslation.text_set.proofreaders.data.length > 0 && (
                 <div>
-                  <p className="font-headers font-bold">{langui.proofreaders}:</p>
+                  <p className="font-headers font-bold">{format("proofreaders")}:</p>
                   <div className="grid place-content-center place-items-center gap-2">
                     {filterHasAttributes(selectedTranslation.text_set.proofreaders.data, [
                       "attributes",
@@ -182,7 +181,7 @@ const Content = ({ content, ...otherProps }: Props): JSX.Element => {
 
             {isDefinedAndNotEmpty(selectedTranslation.text_set.notes) && (
               <div>
-                <p className="font-headers font-bold">{langui.notes}:</p>
+                <p className="font-headers font-bold">{format("notes")}:</p>
                 <div className="grid place-content-center place-items-center gap-2">
                   <Markdawn text={selectedTranslation.text_set.notes} />
                 </div>
@@ -210,7 +209,7 @@ const Content = ({ content, ...otherProps }: Props): JSX.Element => {
         <>
           <HorizontalLine />
           <div>
-            <p className="font-headers text-2xl font-bold">{langui.source}</p>
+            <p className="font-headers text-2xl font-bold">{format("source")}</p>
             <div className="mt-6 grid place-items-center gap-6">
               {filterHasAttributes(content.ranged_contents.data, [
                 "attributes.library_item.data.attributes",
@@ -283,7 +282,7 @@ const Content = ({ content, ...otherProps }: Props): JSX.Element => {
 
         {previousContent?.attributes && (
           <div className="mt-12 mb-8 w-full">
-            <h2 className="mb-4 text-center text-2xl">{langui.previous_content}</h2>
+            <h2 className="mb-4 text-center text-2xl">{format("previous_content")}</h2>
             <TranslatedPreviewLine
               href={`/contents/${previousContent.attributes.slug}`}
               translations={filterHasAttributes(previousContent.attributes.translations, [
@@ -328,7 +327,7 @@ const Content = ({ content, ...otherProps }: Props): JSX.Element => {
         {nextContent?.attributes && (
           <>
             <HorizontalLine />
-            <h2 className="mb-4 text-center text-2xl">{langui.followup_content}</h2>
+            <h2 className="mb-4 text-center text-2xl">{format("followup_content")}</h2>
             <TranslatedPreviewLine
               href={`/contents/${nextContent.attributes.slug}`}
               translations={filterHasAttributes(nextContent.attributes.translations, [
@@ -404,7 +403,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
             [langui.type ?? "Type"]: [
               content.contents.data[0].attributes.type?.data?.attributes?.titles?.[0]?.title,
             ],
-            [langui.categories ?? "Categories"]: filterHasAttributes(
+            [langui.category ?? "Categories"]: filterHasAttributes(
               content.contents.data[0].attributes.categories?.data,
               ["attributes"] as const
             ).map((category) => category.attributes.short),

@@ -11,11 +11,9 @@ import { ThumbnailHeader } from "./ThumbnailHeader";
 import { ToolTip } from "./ToolTip";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { PostWithTranslations } from "types/types";
-import { getStatusDescription } from "helpers/others";
 import { filterHasAttributes } from "helpers/asserts";
 import { prettySlug } from "helpers/formatters";
-import { atoms } from "contexts/atoms";
-import { useAtomGetter } from "helpers/atoms";
+import { useFormat } from "hooks/useFormat";
 
 /*
  *                                        ╭─────────────╮
@@ -50,7 +48,8 @@ export const PostPage = ({
   displayTitle = true,
   ...otherProps
 }: Props): JSX.Element => {
-  const langui = useAtomGetter(atoms.localData.langui);
+  const { format, formatStatusDescription } = useFormat();
+
   const [selectedTranslation, LanguageSwitcher, languageSwitcherProps] = useSmartLanguage({
     items: post.translations,
     languageExtractor: useCallback(
@@ -79,10 +78,10 @@ export const PostPage = ({
 
             {selectedTranslation && (
               <div className="grid grid-flow-col place-content-center place-items-center gap-2">
-                <p className="font-headers font-bold">{langui.status}:</p>
+                <p className="font-headers font-bold">{format("status")}:</p>
 
                 <ToolTip
-                  content={getStatusDescription(selectedTranslation.status, langui)}
+                  content={formatStatusDescription(selectedTranslation.status)}
                   maxWidth={"20rem"}>
                   <Chip text={selectedTranslation.status} />
                 </ToolTip>

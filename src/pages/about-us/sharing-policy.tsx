@@ -1,7 +1,6 @@
 import { PostPage } from "components/PostPage";
 import { getPostStaticProps, PostStaticProps } from "graphql/getPostStaticProps";
-import { atoms } from "contexts/atoms";
-import { useAtomGetter } from "helpers/atoms";
+import { useFormat } from "hooks/useFormat";
 
 /*
  *                                           ╭────────╮
@@ -9,12 +8,12 @@ import { useAtomGetter } from "helpers/atoms";
  */
 
 const SharingPolicy = (props: PostStaticProps): JSX.Element => {
-  const langui = useAtomGetter(atoms.localData.langui);
+  const { format } = useFormat();
   return (
     <PostPage
       {...props}
       returnHref="/about-us/"
-      returnTitle={langui.about_us}
+      returnTitle={format("about_us")}
       displayToc
       displayLanguageSwitcher
     />

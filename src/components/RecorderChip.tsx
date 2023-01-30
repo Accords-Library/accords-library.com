@@ -6,8 +6,7 @@ import { Chip } from "components/Chip";
 import { RecorderChipFragment } from "graphql/generated";
 import { ImageQuality } from "helpers/img";
 import { filterHasAttributes } from "helpers/asserts";
-import { atoms } from "contexts/atoms";
-import { useAtomGetter } from "helpers/atoms";
+import { useFormat } from "hooks/useFormat";
 
 /*
  *                                        ╭─────────────╮
@@ -22,7 +21,7 @@ interface Props {
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
 export const RecorderChip = ({ recorder }: Props): JSX.Element => {
-  const langui = useAtomGetter(atoms.localData.langui);
+  const { format } = useFormat();
 
   return (
     <ToolTip
@@ -40,7 +39,7 @@ export const RecorderChip = ({ recorder }: Props): JSX.Element => {
               <h3 className=" text-2xl">{recorder.username}</h3>
               {recorder.languages?.data && recorder.languages.data.length > 0 && (
                 <div className="flex flex-row flex-wrap gap-1">
-                  <p>{langui.languages}:</p>
+                  <p>{format("language", { count: recorder.languages.data.length })}:</p>
                   {filterHasAttributes(recorder.languages.data, ["attributes"] as const).map(
                     (language) => (
                       <Fragment key={language.__typename}>
@@ -52,7 +51,7 @@ export const RecorderChip = ({ recorder }: Props): JSX.Element => {
               )}
               {recorder.pronouns && (
                 <div className="flex flex-row flex-wrap gap-1">
-                  <p>{langui.pronouns}:</p>
+                  <p>{format("pronouns")}:</p>
                   <Chip text={recorder.pronouns} />
                 </div>
               )}

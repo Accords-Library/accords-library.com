@@ -14,8 +14,6 @@ import { useDeviceSupportsHover } from "hooks/useMediaQuery";
 import { getOpenGraph } from "helpers/openGraph";
 import { HorizontalLine } from "components/HorizontalLine";
 import { getLangui } from "graphql/fetchLocalData";
-import { atoms } from "contexts/atoms";
-import { useAtomGetter } from "helpers/atoms";
 import { CustomSearchResponse, meiliSearch } from "helpers/search";
 import { MeiliIndices, MeiliVideo } from "shared/meilisearch-graphql-typings/meiliTypes";
 import { PreviewCard } from "components/PreviewCard";
@@ -28,6 +26,7 @@ import { Button } from "components/Inputs/Button";
 import { GetVideoChannelQuery } from "graphql/generated";
 import { getReadySdk } from "graphql/sdk";
 import { Paginator } from "components/Containers/Paginator";
+import { useFormat } from "hooks/useFormat";
 
 /*
  *                                         ╭─────────────╮
@@ -61,27 +60,20 @@ interface Props extends AppLayoutRequired {
 }
 
 const Channel = ({ channel, ...otherProps }: Props): JSX.Element => {
-  const langui = useAtomGetter(atoms.localData.langui);
+  const { format } = useFormat();
   const hoverable = useDeviceSupportsHover();
   const router = useTypedRouter(queryParamSchema);
 
   const sortingMethods = useMemo(
     () => [
-      { meiliAttribute: "sortable_published_date:asc", displayedName: langui.oldest },
-      { meiliAttribute: "sortable_published_date:desc", displayedName: langui.newest },
-      { meiliAttribute: "views:asc", displayedName: langui.least_popular },
-      { meiliAttribute: "views:desc", displayedName: langui.most_popular },
-      { meiliAttribute: "duration:asc", displayedName: langui.shortest },
-      { meiliAttribute: "duration:desc", displayedName: langui.longest },
+      { meiliAttribute: "sortable_published_date:asc", displayedName: format("oldest") },
+      { meiliAttribute: "sortable_published_date:desc", displayedName: format("newest") },
+      { meiliAttribute: "views:asc", displayedName: format("least_popular") },
+      { meiliAttribute: "views:desc", displayedName: format("most_popular") },
+      { meiliAttribute: "duration:asc", displayedName: format("shortest") },
+      { meiliAttribute: "duration:desc", displayedName: format("longest") },
     ],
-    [
-      langui.least_popular,
-      langui.longest,
-      langui.most_popular,
-      langui.newest,
-      langui.oldest,
-      langui.shortest,
-    ]
+    [format]
   );
 
   const {
@@ -159,7 +151,7 @@ const Channel = ({ channel, ...otherProps }: Props): JSX.Element => {
     <SubPanel>
       <ReturnButton
         href="/archives/videos"
-        title={langui.videos}
+        title={format("videos")}
         displayOnlyOn={"3ColumnsLayout"}
         className="mb-10"
       />
@@ -167,14 +159,16 @@ const Channel = ({ channel, ...otherProps }: Props): JSX.Element => {
       <PanelHeader
         icon="movie"
         title={channel.title}
-        description={`${channel.subscribers.toLocaleString()} ${langui.subscribers?.toLowerCase()}`}
+        description={`${channel.subscribers.toLocaleString()} ${format(
+          "subscribers"
+        ).toLowerCase()}`}
       />
 
       <HorizontalLine />
 
       <TextInput
         className="mb-6 w-full"
-        placeholder={langui.search_title}
+        placeholder={format("search_title")}
         value={query}
         onChange={(newQuery) => {
           setPage(1);
@@ -187,10 +181,10 @@ const Channel = ({ channel, ...otherProps }: Props): JSX.Element => {
         }}
       />
 
-      <WithLabel label={langui.order_by}>
+      <WithLabel label={format("order_by")}>
         <Select
           className="w-full"
-          options={sortingMethods.map((item) => item.displayedName ?? "")}
+          options={sortingMethods.map((item) => item.displayedName)}
           value={sortingMethod}
           onChange={(newSort) => {
             setPage(1);
@@ -203,7 +197,7 @@ const Channel = ({ channel, ...otherProps }: Props): JSX.Element => {
         />
       </WithLabel>
 
-      <WithLabel label={langui.only_unavailable_videos}>
+      <WithLabel label={format("only_unavailable_videos")}>
         <Switch
           value={onlyShowGone}
           onClick={() => {
@@ -213,14 +207,14 @@ const Channel = ({ channel, ...otherProps }: Props): JSX.Element => {
       </WithLabel>
 
       {hoverable && (
-        <WithLabel label={langui.always_show_info}>
+        <WithLabel label={format("always_show_info")}>
           <Switch value={keepInfoVisible} onClick={toggleKeepInfoVisible} />
         </WithLabel>
       )}
 
       <Button
         className="mt-8"
-        text={langui.reset_all_filters}
+        text={format("reset_all_filters")}
         icon="settings_backup_restore"
         onClick={() => {
           setOnlyShowGone(DEFAULT_FILTERS_STATE.onlyShowGone);

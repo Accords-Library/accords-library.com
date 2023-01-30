@@ -11,7 +11,7 @@ import {
   UploadImageFragment,
 } from "graphql/generated";
 import { getReadySdk } from "graphql/sdk";
-import { getStatusDescription, sortRangedContent } from "helpers/others";
+import { sortRangedContent } from "helpers/others";
 import { filterHasAttributes, isDefined, isDefinedAndNotEmpty } from "helpers/asserts";
 import { getOpenGraph } from "helpers/openGraph";
 import { getLangui } from "graphql/fetchLocalData";
@@ -40,6 +40,7 @@ import { useAtomGetter } from "helpers/atoms";
 import { FilterSettings, useReaderSettings } from "hooks/useReaderSettings";
 import { useIsWebkit } from "hooks/useIsWebkit";
 import { useTypedRouter } from "hooks/useTypedRouter";
+import { useFormat } from "hooks/useFormat";
 
 type BookType = "book" | "manga";
 type DisplayMode = "double" | "single";
@@ -96,7 +97,7 @@ const LibrarySlug = ({
   ...otherProps
 }: Props): JSX.Element => {
   const is1ColumnLayout = useAtomGetter(atoms.containerQueries.is1ColumnLayout);
-  const langui = useAtomGetter(atoms.localData.langui);
+  const { format } = useFormat();
   const isDarkMode = useAtomGetter(atoms.settings.darkMode);
   const {
     filterSettings,
@@ -278,34 +279,34 @@ const LibrarySlug = ({
 
   const subPanel = (
     <SubPanel>
-      <ReturnButton title={langui.item} href={`/library/${itemSlug}`} />
+      <ReturnButton title={format("item", { count: Infinity })} href={`/library/${itemSlug}`} />
 
       <div className="mt-4 grid gap-2">
-        <WithLabel label={langui.paper_texture}>
+        <WithLabel label={format("paper_texture")}>
           <Switch value={filterSettings.paperTexture} onClick={togglePaperTexture} />
         </WithLabel>
 
-        <WithLabel label={langui.book_fold}>
+        <WithLabel label={format("book_fold")}>
           <Switch value={filterSettings.bookFold} onClick={toggleBookFold} />
         </WithLabel>
 
-        <WithLabel label={langui.lighting}>
+        <WithLabel label={format("lighting")}>
           <Switch value={filterSettings.lighting} onClick={toggleLighting} />
         </WithLabel>
 
-        <WithLabel label={langui.side_pages}>
+        <WithLabel label={format("side_pages")}>
           <Switch value={isSidePagesEnabled} onClick={toggleIsSidePagesEnabled} />
         </WithLabel>
 
         {!isWebkit && (
-          <WithLabel label={langui.shadow}>
+          <WithLabel label={format("shadow")}>
             <Switch value={filterSettings.dropShadow} onClick={toggleDropShadow} />
           </WithLabel>
         )}
       </div>
 
       <div className="mt-4 grid">
-        <p>{langui.night_reader}:</p>
+        <p>{format("night_reader")}:</p>
         <Slider
           min={0}
           max={10}
@@ -318,18 +319,18 @@ const LibrarySlug = ({
       </div>
 
       <div className="mt-8 grid gap-2">
-        <p>{langui.reading_layout}:</p>
+        <p>{format("reading_layout")}:</p>
         <ButtonGroup
           buttonsProps={[
             {
               icon: "description",
-              tooltip: langui.single_page_view,
+              tooltip: format("single_page_view"),
               active: displayMode === "single",
               onClick: () => changeDisplayMode("single"),
             },
             {
               icon: "auto_stories",
-              tooltip: langui.double_page_view,
+              tooltip: format("double_page_view"),
               active: displayMode === "double",
               onClick: () => changeDisplayMode("double"),
             },
@@ -338,7 +339,7 @@ const LibrarySlug = ({
       </div>
 
       <div className="mt-4 grid gap-2">
-        <p>{langui.quality}:</p>
+        <p>{format("quality")}:</p>
         <ButtonGroup
           buttonsProps={[
             {
@@ -357,7 +358,7 @@ const LibrarySlug = ({
 
       <Button
         className="mt-8"
-        text={langui.reset_all_options}
+        text={format("reset_all_options")}
         icon="settings_backup_restore"
         onClick={() => {
           resetReaderSettings();
@@ -787,7 +788,7 @@ interface ScanSetProps {
 
 const ScanSet = ({ onClickOnImage, scanSet, id, title, content }: ScanSetProps): JSX.Element => {
   const is1ColumnLayout = useAtomGetter(atoms.containerQueries.is1ColumnLayout);
-  const langui = useAtomGetter(atoms.localData.langui);
+  const { format, formatStatusDescription } = useFormat();
   const [selectedScan, LanguageSwitcher, languageSwitcherProps] = useSmartLanguage({
     items: scanSet,
     languageExtractor: useCallback(
@@ -844,8 +845,8 @@ const ScanSet = ({ onClickOnImage, scanSet, id, title, content }: ScanSetProps):
               text={
                 selectedScan.language?.data?.attributes?.code ===
                 selectedScan.source_language?.data?.attributes?.code
-                  ? langui.scan ?? "Scan"
-                  : langui.scanlation ?? "Scanlation"
+                  ? format("scan")
+                  : format("scanlation")
               }
             />
           </div>
@@ -854,7 +855,7 @@ const ScanSet = ({ onClickOnImage, scanSet, id, title, content }: ScanSetProps):
             {content?.data?.attributes && isDefinedAndNotEmpty(content.data.attributes.slug) && (
               <Button
                 href={`/contents/${content.data.attributes.slug}`}
-                text={langui.open_content}
+                text={format("open_content")}
               />
             )}
 
@@ -863,17 +864,15 @@ const ScanSet = ({ onClickOnImage, scanSet, id, title, content }: ScanSetProps):
             )}
 
             <div className="grid place-content-center place-items-center">
-              <p className="font-headers font-bold">{langui.status}:</p>
-              <ToolTip
-                content={getStatusDescription(selectedScan.status, langui)}
-                maxWidth={"20rem"}>
+              <p className="font-headers font-bold">{format("status")}:</p>
+              <ToolTip content={formatStatusDescription(selectedScan.status)} maxWidth={"20rem"}>
                 <Chip text={selectedScan.status} />
               </ToolTip>
             </div>
 
             {selectedScan.scanners && selectedScan.scanners.data.length > 0 && (
               <div>
-                <p className="font-headers font-bold">{langui.scanners}:</p>
+                <p className="font-headers font-bold">{format("scanners")}:</p>
                 <div className="grid place-content-center place-items-center gap-2">
                   {filterHasAttributes(selectedScan.scanners.data, [
                     "id",
@@ -889,7 +888,7 @@ const ScanSet = ({ onClickOnImage, scanSet, id, title, content }: ScanSetProps):
 
             {selectedScan.cleaners && selectedScan.cleaners.data.length > 0 && (
               <div>
-                <p className="font-headers font-bold">{langui.cleaners}:</p>
+                <p className="font-headers font-bold">{format("cleaners")}:</p>
                 <div className="grid place-content-center place-items-center gap-2">
                   {filterHasAttributes(selectedScan.cleaners.data, [
                     "id",
@@ -905,7 +904,7 @@ const ScanSet = ({ onClickOnImage, scanSet, id, title, content }: ScanSetProps):
 
             {selectedScan.typesetters && selectedScan.typesetters.data.length > 0 && (
               <div>
-                <p className="font-headers font-bold">{langui.typesetters}:</p>
+                <p className="font-headers font-bold">{format("typesetters")}:</p>
                 <div className="grid place-content-center place-items-center gap-2">
                   {filterHasAttributes(selectedScan.typesetters.data, [
                     "id",
@@ -921,7 +920,7 @@ const ScanSet = ({ onClickOnImage, scanSet, id, title, content }: ScanSetProps):
 
             {isDefinedAndNotEmpty(selectedScan.notes) && (
               <ToolTip content={selectedScan.notes}>
-                <Chip text={langui.notes ?? "Notes"} />
+                <Chip text={format("notes")} />
               </ToolTip>
             )}
           </div>

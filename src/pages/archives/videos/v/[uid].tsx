@@ -19,6 +19,7 @@ import { getLangui } from "graphql/fetchLocalData";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter } from "helpers/atoms";
 import { Link } from "components/Inputs/Link";
+import { useFormat } from "hooks/useFormat";
 
 /*
  *                                           ╭────────╮
@@ -31,22 +32,22 @@ interface Props extends AppLayoutRequired {
 
 const Video = ({ video, ...otherProps }: Props): JSX.Element => {
   const isContentPanelAtLeast4xl = useAtomGetter(atoms.containerQueries.isContentPanelAtLeast4xl);
-  const langui = useAtomGetter(atoms.localData.langui);
+  const { format } = useFormat();
   const router = useRouter();
 
   const subPanel = (
     <SubPanel>
       <ReturnButton
         href="/archives/videos/"
-        title={langui.videos}
+        title={format("videos")}
         displayOnlyOn={"3ColumnsLayout"}
       />
 
       <HorizontalLine />
 
-      <NavOption title={langui.video} url="#video" border />
-      <NavOption title={langui.channel} url="#channel" border />
-      <NavOption title={langui.description} url="#description" border />
+      <NavOption title={format("video")} url="#video" border />
+      <NavOption title={format("channel")} url="#channel" border />
+      <NavOption title={format("description")} url="#description" border />
     </SubPanel>
   );
 
@@ -54,7 +55,7 @@ const Video = ({ video, ...otherProps }: Props): JSX.Element => {
     <ContentPanel width={ContentPanelWidthSizes.Full}>
       <ReturnButton
         href="/library/"
-        title={langui.library}
+        title={format("library")}
         displayOnlyOn={"1ColumnLayout"}
         className="mb-10"
       />
@@ -97,7 +98,7 @@ const Video = ({ video, ...otherProps }: Props): JSX.Element => {
                 </p>
               )}
               <Link href={`https://youtu.be/${video.uid}`} alwaysNewTab>
-                <Button size="small" text={`${langui.view_on} ${video.source}`} />
+                <Button size="small" text={`${format("view_on")} ${video.source}`} />
               </Link>
             </div>
           </div>
@@ -106,7 +107,7 @@ const Video = ({ video, ...otherProps }: Props): JSX.Element => {
         {video.channel?.data?.attributes && (
           <InsetBox id="channel" className="grid place-items-center">
             <div className="grid w-[clamp(0px,100%,42rem)] place-items-center gap-4 text-center">
-              <h2 className="text-2xl">{langui.channel}</h2>
+              <h2 className="text-2xl">{format("channel")}</h2>
               <div>
                 <Button
                   href={`/archives/videos/c/${video.channel.data.attributes.uid}\
@@ -115,7 +116,7 @@ const Video = ({ video, ...otherProps }: Props): JSX.Element => {
                 />
                 <p>
                   {`${video.channel.data.attributes.subscribers.toLocaleString()}
-                   ${langui.subscribers?.toLowerCase()}`}
+                   ${format("subscribers").toLowerCase()}`}
                 </p>
               </div>
             </div>
@@ -124,7 +125,7 @@ const Video = ({ video, ...otherProps }: Props): JSX.Element => {
 
         <InsetBox id="description" className="grid place-items-center">
           <div className="grid w-[clamp(0px,100%,42rem)] place-items-center gap-8">
-            <h2 className="text-2xl">{langui.description}</h2>
+            <h2 className="text-2xl">{format("description")}</h2>
             <p className="whitespace-pre-line">{video.description}</p>
           </div>
         </InsetBox>

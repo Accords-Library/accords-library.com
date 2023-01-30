@@ -9,6 +9,7 @@ import { RequestMailProps, ResponseMailProps } from "pages/api/mail";
 import { sendAnalytics } from "helpers/analytics";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter } from "helpers/atoms";
+import { useFormat } from "hooks/useFormat";
 
 /*
  *                                           ╭────────╮
@@ -17,7 +18,7 @@ import { useAtomGetter } from "helpers/atoms";
 
 const AboutUs = (props: PostStaticProps): JSX.Element => {
   const router = useRouter();
-  const langui = useAtomGetter(atoms.localData.langui);
+  const { format } = useFormat();
   const is1ColumnLayout = useAtomGetter(atoms.containerQueries.is1ColumnLayout);
   const [formResponse, setFormResponse] = useState("");
   const [formState, setFormState] = useState<"completed" | "ongoing" | "stale">("stale");
@@ -65,13 +66,13 @@ const AboutUs = (props: PostStaticProps): JSX.Element => {
               .then((response: ResponseMailProps) => {
                 switch (response.code) {
                   case "OKAY":
-                    setFormResponse(langui.response_email_success ?? "");
+                    setFormResponse(format("response_email_success"));
                     setFormState("completed");
                     sendAnalytics("Contact", "Send email (success)");
                     break;
 
                   case "EENVELOPE":
-                    setFormResponse(langui.response_invalid_email ?? "");
+                    setFormResponse(format("response_invalid_email"));
                     setFormState("stale");
                     sendAnalytics("Contact", "Send email (invalid email)");
                     break;
@@ -84,7 +85,7 @@ const AboutUs = (props: PostStaticProps): JSX.Element => {
                 }
               });
           } else {
-            setFormResponse(langui.response_invalid_code ?? "");
+            setFormResponse(format("response_invalid_code"));
             setFormState("stale");
             setRandomNumber1(randomInt(0, 10));
             setRandomNumber2(randomInt(0, 10));
@@ -94,7 +95,7 @@ const AboutUs = (props: PostStaticProps): JSX.Element => {
           fields.verif.value = "";
         }}>
         <div className="flex flex-col place-items-center gap-1">
-          <label htmlFor="name">{langui.name}:</label>
+          <label htmlFor="name">{format("name")}:</label>
           <input
             type="text"
             className={cIf(is1ColumnLayout, "w-full")}
@@ -106,7 +107,7 @@ const AboutUs = (props: PostStaticProps): JSX.Element => {
         </div>
 
         <div className="flex flex-col place-items-center gap-1">
-          <label htmlFor="email">{langui.email}:</label>
+          <label htmlFor="email">{format("email")}:</label>
           <input
             type="email"
             className={cIf(is1ColumnLayout, "w-full")}
@@ -115,11 +116,11 @@ const AboutUs = (props: PostStaticProps): JSX.Element => {
             required
             disabled={formState !== "stale"}
           />
-          <p className="text-sm italic text-dark opacity-70">{langui.email_gdpr_notice}</p>
+          <p className="text-sm italic text-dark opacity-70">{format("email_gdpr_notice")}</p>
         </div>
 
         <div className="flex w-full flex-col place-items-center gap-1">
-          <label htmlFor="message">{langui.message}:</label>
+          <label htmlFor="message">{format("message")}:</label>
           <textarea
             name="message"
             id="message"
@@ -147,7 +148,7 @@ const AboutUs = (props: PostStaticProps): JSX.Element => {
 
           <input
             type="submit"
-            value={langui.send ?? "Send"}
+            value={format("send")}
             className="w-min !px-6"
             disabled={formState !== "stale"}
           />
@@ -168,7 +169,7 @@ const AboutUs = (props: PostStaticProps): JSX.Element => {
     <PostPage
       {...props}
       returnHref="/about-us/"
-      returnTitle={langui.about_us}
+      returnTitle={format("about_us")}
       displayToc
       appendBody={contactForm}
       displayLanguageSwitcher

@@ -10,6 +10,7 @@ import { ColoredSvg } from "components/ColoredSvg";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter, useAtomPair, useAtomSetter } from "helpers/atoms";
 import { Markdawn } from "components/Markdown/Markdawn";
+import { useFormat } from "hooks/useFormat";
 
 /*
  *                                        ╭─────────────╮
@@ -18,7 +19,7 @@ import { Markdawn } from "components/Markdown/Markdawn";
 
 export const MainPanel = (): JSX.Element => {
   const is3ColumnsLayout = useAtomGetter(atoms.containerQueries.is3ColumnsLayout);
-  const langui = useAtomGetter(atoms.localData.langui);
+  const { format } = useFormat();
   const [isMainPanelReduced, setMainPanelReduced] = useAtomPair(atoms.layout.mainPanelReduced);
   const setSettingsOpened = useAtomSetter(atoms.layout.settingsOpened);
   const setSearchOpened = useAtomSetter(atoms.layout.searchOpened);
@@ -72,7 +73,7 @@ export const MainPanel = (): JSX.Element => {
               cIf(isMainPanelReduced && is3ColumnsLayout, "flex-col gap-3", "flex-row")
             )}>
             <ToolTip
-              content={<h3 className="text-2xl">{langui.open_settings}</h3>}
+              content={<h3 className="text-2xl">{format("open_settings")}</h3>}
               placement={isMainPanelReduced ? "right" : "top"}>
               <Button
                 onClick={() => {
@@ -83,7 +84,7 @@ export const MainPanel = (): JSX.Element => {
               />
             </ToolTip>
             <ToolTip
-              content={<h3 className="text-2xl">{langui.open_search}</h3>}
+              content={<h3 className="text-2xl">{format("open_search")}</h3>}
               placement={isMainPanelReduced ? "right" : "top"}>
               <Button
                 onClick={() => {
@@ -102,32 +103,32 @@ export const MainPanel = (): JSX.Element => {
       <NavOption
         url="/library"
         icon="auto_stories"
-        title={langui.library}
-        subtitle={langui.library_short_description}
+        title={format("library")}
+        subtitle={format("library_short_description")}
         reduced={isMainPanelReduced && is3ColumnsLayout}
       />
 
       <NavOption
         url="/contents"
         icon="workspaces"
-        title={langui.contents}
-        subtitle={langui.contents_short_description}
+        title={format("contents")}
+        subtitle={format("contents_short_description")}
         reduced={isMainPanelReduced && is3ColumnsLayout}
       />
 
       <NavOption
         url="/wiki"
         icon="travel_explore"
-        title={langui.wiki}
-        subtitle={langui.wiki_short_description}
+        title={format("wiki")}
+        subtitle={format("wiki_short_description")}
         reduced={isMainPanelReduced && is3ColumnsLayout}
       />
 
       <NavOption
         url="/chronicles"
         icon="schedule"
-        title={langui.chronicles}
-        subtitle={langui.chronicles_short_description}
+        title={format("chronicles")}
+        subtitle={format("chronicles_short_description")}
         reduced={isMainPanelReduced && is3ColumnsLayout}
       />
 
@@ -136,7 +137,7 @@ export const MainPanel = (): JSX.Element => {
       <NavOption
         url="/news"
         icon="newspaper"
-        title={langui.news}
+        title={format("news")}
         reduced={isMainPanelReduced && is3ColumnsLayout}
       />
 
@@ -144,7 +145,7 @@ export const MainPanel = (): JSX.Element => {
       <NavOption
         url="/merch"
         icon="store"
-        title={langui.merch}
+        title={format("merch")}
         reduced={isMainPanelReduced && is3ColumnsLayout}
       />
       */}
@@ -152,30 +153,30 @@ export const MainPanel = (): JSX.Element => {
       <NavOption
         url="https://gallery.accords-library.com/posts/"
         icon="perm_media"
-        title={langui.gallery}
+        title={format("gallery")}
         reduced={isMainPanelReduced && is3ColumnsLayout}
       />
 
       <NavOption
         url="/archives"
         icon="save"
-        title={langui.archives}
+        title={format("archives")}
         reduced={isMainPanelReduced && is3ColumnsLayout}
       />
 
       <NavOption
         url="/about-us"
         icon="info"
-        title={langui.about_us}
+        title={format("about_us")}
         reduced={isMainPanelReduced && is3ColumnsLayout}
       />
 
       {(!isMainPanelReduced || !is3ColumnsLayout) && <HorizontalLine />}
 
       <div className={cJoin("text-center", cIf(isMainPanelReduced && is3ColumnsLayout, "hidden"))}>
-        {isDefinedAndNotEmpty(langui.licensing_notice) && (
+        {isDefinedAndNotEmpty(format("licensing_notice")) && (
           <p>
-            <Markdawn text={langui.licensing_notice} />
+            <Markdawn text={format("licensing_notice")} />
           </p>
         )}
         <div className="mt-4 mb-8 grid place-content-center">
@@ -199,9 +200,9 @@ export const MainPanel = (): JSX.Element => {
             />
           </Link>
         </div>
-        {isDefinedAndNotEmpty(langui.copyright_notice) && (
+        {isDefinedAndNotEmpty(format("copyright_notice")) && (
           <p>
-            <Markdawn text={langui.copyright_notice} />
+            <Markdawn text={format("copyright_notice")} />
           </p>
         )}
         <div className="mt-12 mb-4 grid h-4 grid-flow-col place-content-center gap-8">

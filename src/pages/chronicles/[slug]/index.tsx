@@ -18,10 +18,9 @@ import { getDefaultPreferredLanguages, staticSmartLanguage } from "helpers/local
 import { getDescription } from "helpers/description";
 import { TranslatedChroniclesList } from "components/Chronicles/ChroniclesList";
 import { getLangui } from "graphql/fetchLocalData";
-import { atoms } from "contexts/atoms";
-import { useAtomGetter } from "helpers/atoms";
 import { useScrollTopOnChange } from "hooks/useScrollTopOnChange";
 import { Ids } from "types/ids";
+import { useFormat } from "hooks/useFormat";
 
 /*
  *                                           ╭────────╮
@@ -34,7 +33,7 @@ interface Props extends AppLayoutRequired {
 }
 
 const Chronicle = ({ chronicle, chapters, ...otherProps }: Props): JSX.Element => {
-  const langui = useAtomGetter(atoms.localData.langui);
+  const { format } = useFormat();
   useScrollTopOnChange(Ids.ContentPanel, [chronicle.slug]);
 
   const [selectedTranslation, LanguageSwitcher, languageSwitcherProps] = useSmartLanguage({
@@ -71,7 +70,7 @@ const Chronicle = ({ chronicle, chapters, ...otherProps }: Props): JSX.Element =
       <ReturnButton
         displayOnlyOn={"1ColumnLayout"}
         href="/chronicles"
-        title={langui.chronicles}
+        title={format("chronicles")}
         className="mb-10"
       />
 
@@ -119,7 +118,11 @@ const Chronicle = ({ chronicle, chapters, ...otherProps }: Props): JSX.Element =
 
   const subPanel = (
     <SubPanel>
-      <ReturnButton displayOnlyOn={"3ColumnsLayout"} href="/chronicles" title={langui.chronicles} />
+      <ReturnButton
+        displayOnlyOn={"3ColumnsLayout"}
+        href="/chronicles"
+        title={format("chronicles")}
+      />
 
       <HorizontalLine />
 
@@ -194,7 +197,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
                 chronicle.chronicles.data[0].attributes.contents.data[0].attributes.type?.data
                   ?.attributes?.titles?.[0]?.title,
               ],
-              [langui.categories ?? "Categories"]: filterHasAttributes(
+              [langui.category ?? "Categories"]: filterHasAttributes(
                 chronicle.chronicles.data[0].attributes.contents.data[0].attributes.categories
                   ?.data,
                 ["attributes"] as const

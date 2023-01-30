@@ -11,6 +11,7 @@ import { prettyTerminalBoxedTitle } from "helpers/terminal";
 import { prettyMarkdown } from "helpers/description";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter } from "helpers/atoms";
+import { useFormat } from "hooks/useFormat";
 /*
  *                                           ╭────────╮
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
@@ -19,7 +20,7 @@ import { useAtomGetter } from "helpers/atoms";
 interface Props extends PostStaticProps {}
 
 const LibrarySlug = (props: Props): JSX.Element => {
-  const langui = useAtomGetter(atoms.localData.langui);
+  const { format } = useFormat();
   const isTerminalMode = useAtomGetter(atoms.layout.terminalMode);
   const router = useRouter();
 
@@ -36,7 +37,7 @@ const LibrarySlug = (props: Props): JSX.Element => {
   return (
     <PostPage
       returnHref="/news"
-      returnTitle={langui.news}
+      returnTitle={format("news")}
       displayCredits
       displayThumbnailHeader
       displayToc

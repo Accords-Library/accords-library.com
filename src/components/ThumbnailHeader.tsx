@@ -8,6 +8,7 @@ import { ImageQuality } from "helpers/img";
 import { filterHasAttributes } from "helpers/asserts";
 import { useAtomGetter } from "helpers/atoms";
 import { atoms } from "contexts/atoms";
+import { useFormat } from "hooks/useFormat";
 
 /*
  *                                        ╭─────────────╮
@@ -42,7 +43,7 @@ export const ThumbnailHeader = ({
   description,
   languageSwitcher,
 }: Props): JSX.Element => {
-  const langui = useAtomGetter(atoms.localData.langui);
+  const { format } = useFormat();
   const { showLightBox } = useAtomGetter(atoms.lightBox);
 
   return (
@@ -72,7 +73,7 @@ export const ThumbnailHeader = ({
       <div className="flew-wrap flex flex-row place-content-center gap-8">
         {type?.data?.attributes && (
           <div className="flex flex-col place-items-center gap-2">
-            <h3 className="text-xl">{langui.type}</h3>
+            <h3 className="text-xl">{format("type", { count: 1 })}</h3>
             <div className="flex flex-row flex-wrap">
               <Chip
                 text={
@@ -85,7 +86,7 @@ export const ThumbnailHeader = ({
 
         {categories && categories.data.length > 0 && (
           <div className="flex flex-col place-items-center gap-2">
-            <h3 className="text-xl">{langui.categories}</h3>
+            <h3 className="text-xl">{format("category", { count: categories.data.length })}</h3>
             <div className="flex flex-row flex-wrap place-content-center gap-2">
               {filterHasAttributes(categories.data, ["attributes", "id"] as const).map(
                 (category) => (

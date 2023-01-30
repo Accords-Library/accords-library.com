@@ -5,8 +5,7 @@ import { ContentPanel } from "components/Containers/ContentPanel";
 import { getOpenGraph } from "helpers/openGraph";
 import { getLangui } from "graphql/fetchLocalData";
 import { Img } from "components/Img";
-import { atoms } from "contexts/atoms";
-import { useAtomGetter } from "helpers/atoms";
+import { useFormat } from "hooks/useFormat";
 
 /*
  *                                           ╭────────╮
@@ -16,7 +15,7 @@ import { useAtomGetter } from "helpers/atoms";
 interface Props extends AppLayoutRequired {}
 
 const FourOhFour = ({ openGraph, ...otherProps }: Props): JSX.Element => {
-  const langui = useAtomGetter(atoms.localData.langui);
+  const { format } = useFormat();
   return (
     <AppLayout
       contentPanel={
@@ -26,7 +25,7 @@ const FourOhFour = ({ openGraph, ...otherProps }: Props): JSX.Element => {
             className="animate-zoom-in drop-shadow-lg shadow-shade"
           />
           <div className="mt-8 grid place-items-center gap-6">
-            <h2>{langui.page_not_found}</h2>
+            <h2>{format("page_not_found")}</h2>
             <ReturnButton href="/" title="Home" />
           </div>
         </ContentPanel>

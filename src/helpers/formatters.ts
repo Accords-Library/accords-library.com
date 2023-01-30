@@ -1,7 +1,7 @@
 import { convertPrice } from "./numbers";
 import { isDefinedAndNotEmpty, isUndefined } from "./asserts";
 import { datePickerToDate } from "./date";
-import { Currencies, Languages, Langui } from "./localData";
+import { Currencies, Languages } from "./localData";
 import { DatePickerFragment, PricePickerFragment } from "graphql/generated";
 
 export const prettyDate = (
@@ -56,25 +56,6 @@ export const prettyInlineTitle = (
   result += title;
   if (subtitle) result += ` - ${subtitle}`;
   return result;
-};
-
-export const prettyItemType = (metadata: { __typename: string }, langui: Langui): string => {
-  switch (metadata.__typename) {
-    case "ComponentMetadataAudio":
-      return langui.audio ?? "Audio";
-    case "ComponentMetadataBooks":
-      return langui.textual ?? "Textual";
-    case "ComponentMetadataGame":
-      return langui.game ?? "Game";
-    case "ComponentMetadataVideo":
-      return langui.video ?? "Video";
-    case "ComponentMetadataGroup":
-      return langui.group ?? "Group";
-    case "ComponentMetadataOther":
-      return langui.other ?? "Other";
-    default:
-      return "";
-  }
 };
 
 /* eslint-disable id-denylist */

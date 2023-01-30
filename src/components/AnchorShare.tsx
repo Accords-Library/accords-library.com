@@ -1,8 +1,7 @@
 import { Ico } from "./Ico";
 import { ToolTip } from "./ToolTip";
 import { cJoin } from "helpers/className";
-import { useAtomGetter } from "helpers/atoms";
-import { atoms } from "contexts/atoms";
+import { useFormat } from "hooks/useFormat";
 
 /*
  *                                        ╭─────────────╮
@@ -17,10 +16,10 @@ interface Props {
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
 export const AnchorShare = ({ id, className }: Props): JSX.Element => {
-  const langui = useAtomGetter(atoms.localData.langui);
+  const { format } = useFormat();
   return (
-    <ToolTip content={langui.copy_anchor_link} trigger="mouseenter" className="text-sm">
-      <ToolTip content={langui.anchor_link_copied} trigger="click" className="text-sm">
+    <ToolTip content={format("copy_anchor_link")} trigger="mouseenter" className="text-sm">
+      <ToolTip content={format("anchor_link_copied")} trigger="click" className="text-sm">
         <Ico
           icon="link"
           className={cJoin("cursor-pointer transition-colors hover:text-dark", className)}

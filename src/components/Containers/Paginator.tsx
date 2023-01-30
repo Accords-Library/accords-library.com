@@ -3,6 +3,7 @@ import { PageSelector } from "components/Inputs/PageSelector";
 import { atoms } from "contexts/atoms";
 import { isUndefined } from "helpers/asserts";
 import { useAtomGetter } from "helpers/atoms";
+import { useFormat } from "hooks/useFormat";
 import { useScrollTopOnChange } from "hooks/useScrollTopOnChange";
 import { Ids } from "types/ids";
 
@@ -48,14 +49,14 @@ export const Paginator = ({
 
 const DefaultRenderWhenEmpty = () => {
   const is3ColumnsLayout = useAtomGetter(atoms.containerQueries.is3ColumnsLayout);
-  const langui = useAtomGetter(atoms.localData.langui);
+  const { format } = useFormat();
   return (
     <div className="grid h-full place-content-center">
       <div
         className="grid grid-flow-col place-items-center gap-9 rounded-2xl border-2 border-dotted
         border-dark p-8 text-dark opacity-40">
         {is3ColumnsLayout && <Ico icon="chevron_left" className="!text-[300%]" />}
-        <p className="max-w-xs text-2xl">{langui.no_results_message}</p>
+        <p className="max-w-xs text-2xl">{format("no_results_message")}</p>
         {!is3ColumnsLayout && <Ico icon="chevron_right" className="!text-[300%]" />}
       </div>
     </div>

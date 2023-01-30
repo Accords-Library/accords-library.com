@@ -10,8 +10,7 @@ import { getOpenGraph } from "helpers/openGraph";
 import { TranslatedChroniclesList } from "components/Chronicles/ChroniclesList";
 import { HorizontalLine } from "components/HorizontalLine";
 import { getLangui } from "graphql/fetchLocalData";
-import { atoms } from "contexts/atoms";
-import { useAtomGetter } from "helpers/atoms";
+import { useFormat } from "hooks/useFormat";
 
 /*
  *                                           ╭────────╮
@@ -23,13 +22,13 @@ interface Props extends AppLayoutRequired {
 }
 
 const Chronicles = ({ chapters, ...otherProps }: Props): JSX.Element => {
-  const langui = useAtomGetter(atoms.localData.langui);
+  const { format } = useFormat();
   const subPanel = (
     <SubPanel>
       <PanelHeader
         icon="schedule"
-        title={langui.chronicles}
-        description={langui.chronicles_description}
+        title={format("chronicles")}
+        description={format("chronicles_description")}
       />
 
       <HorizontalLine />

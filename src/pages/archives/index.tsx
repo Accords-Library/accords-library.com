@@ -6,8 +6,7 @@ import { SubPanel } from "components/Containers/SubPanel";
 import { getOpenGraph } from "helpers/openGraph";
 import { HorizontalLine } from "components/HorizontalLine";
 import { getLangui } from "graphql/fetchLocalData";
-import { atoms } from "contexts/atoms";
-import { useAtomGetter } from "helpers/atoms";
+import { useFormat } from "hooks/useFormat";
 
 /*
  *                                           ╭────────╮
@@ -17,10 +16,14 @@ import { useAtomGetter } from "helpers/atoms";
 interface Props extends AppLayoutRequired {}
 
 const Archives = (props: Props): JSX.Element => {
-  const langui = useAtomGetter(atoms.localData.langui);
+  const { format } = useFormat();
   const subPanel = (
     <SubPanel>
-      <PanelHeader icon="save" title={langui.archives} description={langui.archives_description} />
+      <PanelHeader
+        icon="save"
+        title={format("archives")}
+        description={format("archives_description")}
+      />
       <HorizontalLine />
       <NavOption title={"Videos"} url="/archives/videos/" border />
     </SubPanel>

@@ -41,7 +41,7 @@ export const getPostStaticProps =
         [langui.release_date ?? "Release date"]: [
           prettyDate(post.posts.data[0].attributes.date, context.locale),
         ],
-        [langui.categories ?? "Categories"]: filterHasAttributes(
+        [langui.category ?? "Categories"]: filterHasAttributes(
           post.posts.data[0].attributes.categories?.data,
           ["attributes"] as const
         ).map((category) => category.attributes.short),

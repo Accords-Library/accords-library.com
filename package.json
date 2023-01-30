@@ -47,7 +47,7 @@
     "zod": "^3.20.2"
   },
   "devDependencies": {
-    "@digitak/esrun": "^3.2.18",
+    "@digitak/esrun": "^3.2.19",
     "@graphql-codegen/cli": "^2.16.4",
     "@graphql-codegen/typescript": "2.8.7",
     "@graphql-codegen/typescript-graphql-request": "^4.5.8",

@@ -19,12 +19,12 @@ import { getOpenGraph } from "helpers/openGraph";
 import { getDefaultPreferredLanguages, staticSmartLanguage } from "helpers/locales";
 import { getDescription } from "helpers/description";
 import { cIf, cJoin } from "helpers/className";
-import { getLangui } from "graphql/fetchLocalData";
 import { Terminal } from "components/Cli/Terminal";
 import { prettyTerminalBoxedTitle, prettyTerminalUnderlinedTitle } from "helpers/terminal";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter } from "helpers/atoms";
 import { useFormat } from "hooks/useFormat";
+import { getFormat } from "helpers/i18n";
 
 /*
  *                                           ╭────────╮
@@ -231,7 +231,7 @@ export default WikiPage;
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
-  const langui = getLangui(context.locale);
+  const { format } = getFormat(context.locale);
   const slug =
     context.params && isDefined(context.params.slug) ? context.params.slug.toString() : "";
   const page = await sdk.getWikiPage({
@@ -242,12 +242,12 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   const { title, description } = (() => {
     const chipsGroups = {
-      [langui.tags ?? "Tags"]: filterHasAttributes(page.wikiPages.data[0].attributes.tags?.data, [
+      [format("tags")]: filterHasAttributes(page.wikiPages.data[0].attributes.tags?.data, [
         "attributes",
       ] as const).map(
         (tag) => tag.attributes.titles?.[0]?.title ?? prettySlug(tag.attributes.slug)
       ),
-      [langui.category ?? "Categories"]: filterHasAttributes(
+      [format("category", { count: Infinity })]: filterHasAttributes(
         page.wikiPages.data[0].attributes.categories?.data,
         ["attributes"] as const
       ).map((category) => category.attributes.short),
@@ -277,7 +277,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   const props: Props = {
     page: page.wikiPages.data[0].attributes as WikiPageWithTranslations,
-    openGraph: getOpenGraph(langui, title, description, thumbnail),
+    openGraph: getOpenGraph(format, title, description, thumbnail),
   };
   return {
     props: props,

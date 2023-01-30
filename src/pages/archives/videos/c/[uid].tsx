@@ -13,7 +13,6 @@ import { SubPanel } from "components/Containers/SubPanel";
 import { useDeviceSupportsHover } from "hooks/useMediaQuery";
 import { getOpenGraph } from "helpers/openGraph";
 import { HorizontalLine } from "components/HorizontalLine";
-import { getLangui } from "graphql/fetchLocalData";
 import { CustomSearchResponse, meiliSearch } from "helpers/search";
 import { MeiliIndices, MeiliVideo } from "shared/meilisearch-graphql-typings/meiliTypes";
 import { PreviewCard } from "components/PreviewCard";
@@ -27,6 +26,7 @@ import { GetVideoChannelQuery } from "graphql/generated";
 import { getReadySdk } from "graphql/sdk";
 import { Paginator } from "components/Containers/Paginator";
 import { useFormat } from "hooks/useFormat";
+import { getFormat } from "helpers/i18n";
 
 /*
  *                                         ╭─────────────╮
@@ -275,7 +275,7 @@ export default Channel;
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
-  const langui = getLangui(context.locale);
+  const { format } = getFormat(context.locale);
   const channel = await sdk.getVideoChannel({
     channel: context.params && isDefined(context.params.uid) ? context.params.uid.toString() : "",
   });
@@ -283,7 +283,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   const props: Props = {
     channel: channel.videoChannels.data[0].attributes,
-    openGraph: getOpenGraph(langui, channel.videoChannels.data[0].attributes.title),
+    openGraph: getOpenGraph(format, channel.videoChannels.data[0].attributes.title),
   };
   return {
     props: props,

@@ -30,11 +30,11 @@ import { getDefaultPreferredLanguages, staticSmartLanguage } from "helpers/local
 import { getDescription } from "helpers/description";
 import { TranslatedPreviewLine } from "components/PreviewLine";
 import { cIf } from "helpers/className";
-import { getLangui } from "graphql/fetchLocalData";
 import { Ids } from "types/ids";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter } from "helpers/atoms";
 import { useFormat } from "hooks/useFormat";
+import { getFormat } from "helpers/i18n";
 
 /*
  *                                           ╭────────╮
@@ -374,7 +374,7 @@ export default Content;
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
-  const langui = getLangui(context.locale);
+  const { format } = getFormat(context.locale);
   const slug = context.params?.slug ? context.params.slug.toString() : "";
   const content = await sdk.getContentText({
     slug: slug,
@@ -400,10 +400,10 @@ export const getStaticProps: GetStaticProps = async (context) => {
             selectedTranslation.subtitle
           ),
           description: getDescription(selectedTranslation.description, {
-            [langui.type ?? "Type"]: [
+            [format("type", { count: Infinity })]: [
               content.contents.data[0].attributes.type?.data?.attributes?.titles?.[0]?.title,
             ],
-            [langui.category ?? "Categories"]: filterHasAttributes(
+            [format("category", { count: Infinity })]: filterHasAttributes(
               content.contents.data[0].attributes.categories?.data,
               ["attributes"] as const
             ).map((category) => category.attributes.short),
@@ -425,7 +425,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   const props: Props = {
     content: content.contents.data[0].attributes as ContentWithTranslations,
-    openGraph: getOpenGraph(langui, title, description, thumbnail),
+    openGraph: getOpenGraph(format, title, description, thumbnail),
   };
   return {
     props: props,

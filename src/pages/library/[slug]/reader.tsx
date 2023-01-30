@@ -14,7 +14,6 @@ import { getReadySdk } from "graphql/sdk";
 import { sortRangedContent } from "helpers/others";
 import { filterHasAttributes, isDefined, isDefinedAndNotEmpty } from "helpers/asserts";
 import { getOpenGraph } from "helpers/openGraph";
-import { getLangui } from "graphql/fetchLocalData";
 import { ContentPanel, ContentPanelWidthSizes } from "components/Containers/ContentPanel";
 import { Img } from "components/Img";
 import { getAssetFilename, ImageQuality } from "helpers/img";
@@ -41,6 +40,7 @@ import { FilterSettings, useReaderSettings } from "hooks/useReaderSettings";
 import { useIsWebkit } from "hooks/useIsWebkit";
 import { useTypedRouter } from "hooks/useTypedRouter";
 import { useFormat } from "hooks/useFormat";
+import { getFormat } from "helpers/i18n";
 
 type BookType = "book" | "manga";
 type DisplayMode = "double" | "single";
@@ -577,7 +577,7 @@ export default LibrarySlug;
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
-  const langui = getLangui(context.locale);
+  const { format } = getFormat(context.locale);
   const item = await sdk.getLibraryItemScans({
     slug: context.params && isDefined(context.params.slug) ? context.params.slug.toString() : "",
     language_code: context.locale ?? "en",
@@ -658,7 +658,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     itemSlug: item.libraryItems.data[0].attributes.slug,
     pageRatio: `${pages[0]?.width ?? 21} / ${pages[0]?.height ?? 29.7}`,
     openGraph: getOpenGraph(
-      langui,
+      format,
       item.libraryItems.data[0].attributes.title,
       undefined,
       item.libraryItems.data[0].attributes.thumbnail?.data?.attributes

@@ -16,11 +16,11 @@ import { SubPanel } from "components/Containers/SubPanel";
 import { TranslatedPreviewCard } from "components/PreviewCard";
 import { HorizontalLine } from "components/HorizontalLine";
 import { cJoin, cIf } from "helpers/className";
-import { getLangui } from "graphql/fetchLocalData";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter } from "helpers/atoms";
 import { TranslatedPreviewFolder } from "components/Contents/PreviewFolder";
 import { useFormat } from "hooks/useFormat";
+import { getFormat } from "helpers/i18n";
 
 /*
  *                                           ╭────────╮
@@ -187,7 +187,7 @@ export default ContentsFolder;
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
-  const langui = getLangui(context.locale);
+  const { format } = getFormat(context.locale);
   const slug = context.params?.slug ? context.params.slug.toString() : "";
   const contentsFolder = await sdk.getContentsFolder({
     slug: slug,
@@ -209,7 +209,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   const title = (() => {
     if (slug === "root") {
-      return langui.contents ?? "Contents";
+      return format("contents");
     }
     if (context.locale && context.locales) {
       const selectedTranslation = staticSmartLanguage({
@@ -225,7 +225,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   })();
 
   const props: Props = {
-    openGraph: getOpenGraph(langui, title),
+    openGraph: getOpenGraph(format, title),
     folder,
   };
   return {

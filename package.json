@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev -p 12499",
-    "precommit": "npm run fetch-local-data && npm run icu-to-ts && npm run prettier && npm run unused-exports && npm run eslint && npm run tsc && echo ALL PRECOMMIT CHECKS PASSED SUCCESSFULLY, LET\\'S FUCKING GO!",
+    "precommit": "npm run fetch-local-data && npm run icu-to-ts && npm run unused-exports && npm run prettier && npm run eslint && npm run tsc && echo ALL PRECOMMIT CHECKS PASSED SUCCESSFULLY, LET\\'S FUCKING GO!",
     "unused-exports": "ts-unused-exports ./tsconfig.json --excludePathsFromReport=src/pages --ignoreFiles=generated",
     "fetch-local-data": "npm run generate && esrun src/graphql/fetchLocalData.ts --esrun",
     "icu-to-ts": "esrun src/graphql/icuToTypescript.ts --icu",

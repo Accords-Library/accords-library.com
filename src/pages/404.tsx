@@ -3,9 +3,9 @@ import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { ReturnButton } from "components/PanelComponents/ReturnButton";
 import { ContentPanel } from "components/Containers/ContentPanel";
 import { getOpenGraph } from "helpers/openGraph";
-import { getLangui } from "graphql/fetchLocalData";
 import { Img } from "components/Img";
 import { useFormat } from "hooks/useFormat";
+import { getFormat } from "helpers/i18n";
 
 /*
  *                                           ╭────────╮
@@ -43,9 +43,9 @@ export default FourOhFour;
  */
 
 export const getStaticProps: GetStaticProps = (context) => {
-  const langui = getLangui(context.locale);
+  const { format } = getFormat(context.locale);
   const props: Props = {
-    openGraph: getOpenGraph(langui, `404 - ${langui.page_not_found}`),
+    openGraph: getOpenGraph(format, `404 - ${format("page_not_found")}`),
   };
   return {
     props: props,

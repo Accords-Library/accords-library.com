@@ -23,7 +23,6 @@ import {
 } from "helpers/asserts";
 import { getOpenGraph } from "helpers/openGraph";
 import { HorizontalLine } from "components/HorizontalLine";
-import { getLangui } from "graphql/fetchLocalData";
 import { sendAnalytics } from "helpers/analytics";
 import { containsHighlight, CustomSearchResponse, meiliSearch } from "helpers/search";
 import { MeiliIndices, MeiliLibraryItem } from "shared/meilisearch-graphql-typings/meiliTypes";
@@ -35,6 +34,7 @@ import { PreviewCardCTAs } from "components/Library/PreviewCardCTAs";
 import { useLibraryItemUserStatus } from "hooks/useLibraryItemUserStatus";
 import { Paginator } from "components/Containers/Paginator";
 import { useFormat } from "hooks/useFormat";
+import { getFormat } from "helpers/i18n";
 
 /*
  *                                         ╭─────────────╮
@@ -454,9 +454,9 @@ export default Library;
  */
 
 export const getStaticProps: GetStaticProps = (context) => {
-  const langui = getLangui(context.locale);
+  const { format } = getFormat(context.locale);
   const props: Props = {
-    openGraph: getOpenGraph(langui, langui.library ?? "Library"),
+    openGraph: getOpenGraph(format, format("library")),
   };
   return {
     props: props,

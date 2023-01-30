@@ -1,17 +1,16 @@
 import { PostPage } from "components/PostPage";
 import { getPostStaticProps, PostStaticProps } from "graphql/getPostStaticProps";
-import { getOpenGraph } from "helpers/openGraph";
 import { Terminal } from "components/Cli/Terminal";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter } from "helpers/atoms";
+import { TITLE_PREFIX } from "helpers/openGraph";
 
 /*
  *                                           ╭────────╮
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
  */
 
-const Home = ({ ...otherProps }: PostStaticProps): JSX.Element => {
-  const langui = useAtomGetter(atoms.localData.langui);
+const Home = (props: PostStaticProps): JSX.Element => {
   const isTerminalMode = useAtomGetter(atoms.layout.terminalMode);
 
   if (isTerminalMode) {
@@ -34,7 +33,7 @@ const Home = ({ ...otherProps }: PostStaticProps): JSX.Element => {
 
   return (
     <PostPage
-      {...otherProps}
+      {...props}
       prependBody={
         <div className="grid w-full place-content-center place-items-center gap-5 text-center">
           <div
@@ -46,7 +45,7 @@ const Home = ({ ...otherProps }: PostStaticProps): JSX.Element => {
         </div>
       }
       displayTitle={false}
-      openGraph={getOpenGraph(langui)}
+      openGraph={{ ...props.openGraph, title: TITLE_PREFIX }}
       displayLanguageSwitcher
     />
   );

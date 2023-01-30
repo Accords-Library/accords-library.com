@@ -13,7 +13,6 @@ import { SubPanel } from "components/Containers/SubPanel";
 import { useDeviceSupportsHover } from "hooks/useMediaQuery";
 import { getOpenGraph } from "helpers/openGraph";
 import { HorizontalLine } from "components/HorizontalLine";
-import { getLangui } from "graphql/fetchLocalData";
 import { CustomSearchResponse, meiliSearch } from "helpers/search";
 import { MeiliIndices, MeiliVideo } from "shared/meilisearch-graphql-typings/meiliTypes";
 import { PreviewCard } from "components/PreviewCard";
@@ -25,6 +24,7 @@ import { sendAnalytics } from "helpers/analytics";
 import { Button } from "components/Inputs/Button";
 import { Paginator } from "components/Containers/Paginator";
 import { useFormat } from "hooks/useFormat";
+import { getFormat } from "helpers/i18n";
 
 /*
  *                                         ╭─────────────╮
@@ -267,9 +267,9 @@ export default Videos;
  */
 
 export const getStaticProps: GetStaticProps = (context) => {
-  const langui = getLangui(context.locale);
+  const { format } = getFormat(context.locale);
   const props: Props = {
-    openGraph: getOpenGraph(langui, langui.videos ?? "Videos"),
+    openGraph: getOpenGraph(format, format("videos")),
   };
   return {
     props: props,

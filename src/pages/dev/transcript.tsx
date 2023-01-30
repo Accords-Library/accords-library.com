@@ -6,7 +6,7 @@ import { ButtonGroup } from "components/Inputs/ButtonGroup";
 import { ContentPanel, ContentPanelWidthSizes } from "components/Containers/ContentPanel";
 import { ToolTip } from "components/ToolTip";
 import { getOpenGraph } from "helpers/openGraph";
-import { getLangui } from "graphql/fetchLocalData";
+import { getFormat } from "helpers/i18n";
 
 /*
  *                                         ╭─────────────╮
@@ -533,9 +533,9 @@ export default Transcript;
  */
 
 export const getStaticProps: GetStaticProps = (context) => {
-  const langui = getLangui(context.locale);
+  const { format } = getFormat(context.locale);
   const props: Props = {
-    openGraph: getOpenGraph(langui, "Japanese Transcription Tool"),
+    openGraph: getOpenGraph(format, "Japanese Transcription Tool"),
   };
   return {
     props: props,

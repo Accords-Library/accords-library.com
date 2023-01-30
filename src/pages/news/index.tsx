@@ -20,7 +20,6 @@ import {
 import { getOpenGraph } from "helpers/openGraph";
 import { TranslatedPreviewCard } from "components/PreviewCard";
 import { HorizontalLine } from "components/HorizontalLine";
-import { getLangui } from "graphql/fetchLocalData";
 import { sendAnalytics } from "helpers/analytics";
 import { Terminal } from "components/Cli/Terminal";
 import { atoms } from "contexts/atoms";
@@ -31,6 +30,7 @@ import { useTypedRouter } from "hooks/useTypedRouter";
 import { prettySlug } from "helpers/formatters";
 import { Paginator } from "components/Containers/Paginator";
 import { useFormat } from "hooks/useFormat";
+import { getFormat } from "helpers/i18n";
 
 /*
  *                                         ╭─────────────╮
@@ -225,9 +225,9 @@ export default News;
  */
 
 export const getStaticProps: GetStaticProps = (context) => {
-  const langui = getLangui(context.locale);
+  const { format } = getFormat(context.locale);
   const props: Props = {
-    openGraph: getOpenGraph(langui, langui.news ?? "News"),
+    openGraph: getOpenGraph(format, format("news")),
   };
   return {
     props: props,

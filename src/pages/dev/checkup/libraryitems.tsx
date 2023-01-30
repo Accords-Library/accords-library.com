@@ -11,8 +11,8 @@ import {
 import { getReadySdk } from "graphql/sdk";
 import { Report, Severity } from "types/Report";
 import { getOpenGraph } from "helpers/openGraph";
-import { getLangui } from "graphql/fetchLocalData";
 import { sJoin } from "helpers/formatters";
+import { getFormat } from "helpers/i18n";
 
 /*
  *                                           ╭────────╮
@@ -85,12 +85,12 @@ export default CheckupLibraryItems;
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
-  const langui = getLangui(context.locale);
+  const { format } = getFormat(context.locale);
   const libraryItems = await sdk.devGetLibraryItems();
 
   const props: Props = {
     libraryItems: libraryItems,
-    openGraph: getOpenGraph(langui, "Checkup Library Items"),
+    openGraph: getOpenGraph(format, "Checkup Library Items"),
   };
   return {
     props: props,

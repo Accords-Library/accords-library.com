@@ -15,11 +15,11 @@ import { prettyDate, prettyShortenNumber } from "helpers/formatters";
 import { filterHasAttributes, isDefined } from "helpers/asserts";
 import { getVideoFile } from "helpers/videos";
 import { getOpenGraph } from "helpers/openGraph";
-import { getLangui } from "graphql/fetchLocalData";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter } from "helpers/atoms";
 import { Link } from "components/Inputs/Link";
 import { useFormat } from "hooks/useFormat";
+import { getFormat } from "helpers/i18n";
 
 /*
  *                                           ╭────────╮
@@ -144,7 +144,7 @@ export default Video;
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
-  const langui = getLangui(context.locale);
+  const { format } = getFormat(context.locale);
   const videos = await sdk.getVideo({
     uid: context.params && isDefined(context.params.uid) ? context.params.uid.toString() : "",
   });
@@ -152,7 +152,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   const props: Props = {
     video: videos.videos.data[0].attributes,
-    openGraph: getOpenGraph(langui, videos.videos.data[0].attributes.title),
+    openGraph: getOpenGraph(format, videos.videos.data[0].attributes.title),
   };
   return {
     props: props,

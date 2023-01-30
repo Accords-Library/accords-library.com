@@ -9,8 +9,8 @@ import { getReadySdk } from "graphql/sdk";
 import { filterDefined, filterHasAttributes } from "helpers/asserts";
 import { Report, Severity } from "types/Report";
 import { getOpenGraph } from "helpers/openGraph";
-import { getLangui } from "graphql/fetchLocalData";
 import { sJoin } from "helpers/formatters";
+import { getFormat } from "helpers/i18n";
 
 /*
  *                                           ╭────────╮
@@ -83,11 +83,11 @@ export default CheckupContents;
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
-  const langui = getLangui(context.locale);
+  const { format } = getFormat(context.locale);
   const contents = await sdk.devGetContents();
   const props: Props = {
     contents: contents,
-    openGraph: getOpenGraph(langui, "Checkup Contents"),
+    openGraph: getOpenGraph(format, "Checkup Contents"),
   };
   return {
     props: props,

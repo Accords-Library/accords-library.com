@@ -48,12 +48,12 @@ import { getOpenGraph } from "helpers/openGraph";
 import { getDescription } from "helpers/description";
 import { useIntersectionList } from "hooks/useIntersectionList";
 import { HorizontalLine } from "components/HorizontalLine";
-import { getLangui } from "graphql/fetchLocalData";
 import { Ids } from "types/ids";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter } from "helpers/atoms";
 import { Link } from "components/Inputs/Link";
 import { useFormat } from "hooks/useFormat";
+import { getFormat } from "helpers/i18n";
 
 /*
  *                                         ╭─────────────╮
@@ -576,7 +576,7 @@ export default LibrarySlug;
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
-  const langui = getLangui(context.locale);
+  const { format } = getFormat(context.locale);
   const item = await sdk.getLibraryItem({
     slug: context.params && isDefined(context.params.slug) ? context.params.slug.toString() : "",
     language_code: context.locale ?? "en",
@@ -589,14 +589,14 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const description = getDescription(
     item.libraryItems.data[0].attributes.descriptions?.[0]?.description,
     {
-      [langui.category ?? "Categories"]: filterHasAttributes(
+      [format("category", { count: Infinity })]: filterHasAttributes(
         item.libraryItems.data[0].attributes.categories?.data,
         ["attributes.short"]
       ).map((category) => category.attributes.short),
-      [langui.type ?? "Type"]: item.libraryItems.data[0].attributes.metadata?.[0]
+      [format("type", { count: Infinity })]: item.libraryItems.data[0].attributes.metadata?.[0]
         ? [prettyItemSubType(item.libraryItems.data[0].attributes.metadata[0])]
         : [],
-      [langui.release_date ?? "Release date"]: [
+      [format("release_date")]: [
         item.libraryItems.data[0].attributes.release_date
           ? prettyDate(item.libraryItems.data[0].attributes.release_date, context.locale)
           : undefined,
@@ -607,7 +607,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const props: Props = {
     item: item.libraryItems.data[0].attributes,
     itemId: item.libraryItems.data[0].id,
-    openGraph: getOpenGraph(langui, title, description, thumbnail?.data?.attributes),
+    openGraph: getOpenGraph(format, title, description, thumbnail?.data?.attributes),
   };
   return {
     props: props,

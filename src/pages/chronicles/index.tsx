@@ -9,8 +9,8 @@ import { prettySlug } from "helpers/formatters";
 import { getOpenGraph } from "helpers/openGraph";
 import { TranslatedChroniclesList } from "components/Chronicles/ChroniclesList";
 import { HorizontalLine } from "components/HorizontalLine";
-import { getLangui } from "graphql/fetchLocalData";
 import { useFormat } from "hooks/useFormat";
+import { getFormat } from "helpers/i18n";
 
 /*
  *                                           ╭────────╮
@@ -62,13 +62,13 @@ export default Chronicles;
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
-  const langui = getLangui(context.locale);
+  const { format } = getFormat(context.locale);
   const chronicles = await sdk.getChroniclesChapters();
   if (!chronicles.chroniclesChapters?.data) return { notFound: true };
 
   const props: Props = {
     chapters: chronicles.chroniclesChapters.data,
-    openGraph: getOpenGraph(langui, langui.chronicles ?? "Chronicles"),
+    openGraph: getOpenGraph(format, format("chronicles")),
   };
   return {
     props: props,

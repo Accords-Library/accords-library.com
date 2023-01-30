@@ -17,13 +17,13 @@ import { filterHasAttributes, isDefined, isDefinedAndNotEmpty } from "helpers/as
 import { prettySlug } from "helpers/formatters";
 import { getOpenGraph } from "helpers/openGraph";
 import { TranslatedPreviewCard } from "components/PreviewCard";
-import { getLangui } from "graphql/fetchLocalData";
 import { sendAnalytics } from "helpers/analytics";
 import { useTypedRouter } from "hooks/useTypedRouter";
 import { MeiliIndices, MeiliWikiPage } from "shared/meilisearch-graphql-typings/meiliTypes";
 import { containsHighlight, CustomSearchResponse, meiliSearch } from "helpers/search";
 import { Paginator } from "components/Containers/Paginator";
 import { useFormat } from "hooks/useFormat";
+import { getFormat } from "helpers/i18n";
 
 /*
  *                                         ╭─────────────╮
@@ -211,9 +211,9 @@ export default Wiki;
  */
 
 export const getStaticProps: GetStaticProps = (context) => {
-  const langui = getLangui(context.locale);
+  const { format } = getFormat(context.locale);
   const props: Props = {
-    openGraph: getOpenGraph(langui, langui.wiki ?? "Wiki"),
+    openGraph: getOpenGraph(format, format("wiki")),
   };
   return {
     props: props,

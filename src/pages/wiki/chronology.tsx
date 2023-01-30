@@ -25,8 +25,8 @@ import { TranslatedProps } from "types/TranslatedProps";
 import { TranslatedNavOption } from "components/PanelComponents/NavOption";
 import { useIntersectionList } from "hooks/useIntersectionList";
 import { HorizontalLine } from "components/HorizontalLine";
-import { getLangui } from "graphql/fetchLocalData";
 import { useFormat } from "hooks/useFormat";
+import { getFormat } from "helpers/i18n";
 
 /*
  *                                           ╭────────╮
@@ -117,7 +117,7 @@ export default Chronology;
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
-  const langui = getLangui(context.locale);
+  const { format } = getFormat(context.locale);
   const chronologyItems = await sdk.getChronologyItems();
   const chronologyEras = await sdk.getEras();
   if (!chronologyItems.chronologyItems || !chronologyEras.chronologyEras) return { notFound: true };
@@ -125,7 +125,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const props: Props = {
     chronologyItems: chronologyItems.chronologyItems.data,
     chronologyEras: chronologyEras.chronologyEras.data,
-    openGraph: getOpenGraph(langui, langui.chronology ?? "Chronology"),
+    openGraph: getOpenGraph(format, format("chronology")),
   };
   return {
     props: props,

@@ -1,4 +1,5 @@
 src/graphql/generated.ts
+src/graphql/icuParams.ts
 src/shared
 .eslintrc.js
 graphql-codegen.config.js

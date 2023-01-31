@@ -4,69 +4,128 @@
 [![GitHub](https://img.shields.io/github/license/Accords-Library/accords-library.com?style=flat-square)](https://github.com/Accords-Library/accords-library.com/blob/main/LICENSE)
 ![Libraries.io dependency status for GitHub repo](https://img.shields.io/librariesio/github/Accords-Library/accords-library.com?style=flat-square)
 
+## Introduction
+
+Accord’s Library is a fan-site that aims at gathering and archiving all of Yoko Taro’s work.
+Yoko Taro is a Japanese video game director and scenario writer. He is best-known for his work on the NieR and Drakengard (Drag-on Dragoon) franchises.
+
 ## Technologies
 
-#### [Back](https://github.com/Accords-Library/strapi.accords-library.com)
+### Overview
 
-- CMS: Stapi
-  - GraphQL endpoint
-  - Multilanguage support
-  - Markdown format for the rich text fields
-  - Use webhooks to notify the front-end and image processor of updates
+![](docs/project-mind-map.png)
 
-#### [Image Processor](https://github.com/Accords-Library/img.accords-library.com)
+_Purple connections are actions done at build-time only. Grey connections can be at build-time or run-time._
 
-- Convert the images from the CMS to 4 formats
-  - Small: 512x512, quality 60, .webp
-  - Medium: 1024x1024, quality 75, .webp
-  - Large: 2048x2048, quality 80, .webp
-  - Og: 512x512, quality 60, .jpg
+### [strapi.accords-library.com](https://github.com/Accords-Library/strapi.accords-library.com)
 
-#### [Front](https://github.com/Accords-Library/accords-library.com) (this repository)
+Our Content Management System (CMS) that uses [Strapi](https://strapi.io/).
+
+- Use the official [GraphQL plugin](https://market.strapi.io/plugins/@strapi-plugin-graphql)
+- Multilanguage support
+- Markdown format for the rich text fields
+- Use webhooks to notify the front-end, search engine, and image processor when new content/media has been created/modified/deleted
+
+### [img.accords-library.com](https://github.com/Accords-Library/img.accords-library.com)
+
+A custom made image processor to overcome the lack of customization offered by Strapi build-in image processor. There is a python script to bulk process all images uploaded to Strapi. Subsequent changes to Strapi's media library can be handled using webhooks. The repo includes a server that listen to these webhook calls, and another to serve the images.  
+
+Each image in Strapi's media library is converted to four different formats:
+- Small: 512x512, quality 60, .webp
+- Medium: 1024x1024, quality 75, .webp
+- Large: 2048x2048, quality 80, .webp
+- Og: 512x512, quality 60, .jpg
+
+### [search.accords-library.com](https://github.com/Accords-Library/search.accords-library.com)
+
+A search engine that uses [Meilisearch](https://www.meilisearch.com/).
+The repo includes a docker-compose file to run an instance of Meilisearch. There is also a server that populates Meilisearch's documents at startup, then listen to webhooks sent by Strapi for subsequent changes. 
+
+### [gallery.accords-library.com](https://github.com/Accords-Library/gallery.accords-library.com)
+
+An image board engine, uses [Szurubooru](https://github.com/rr-/szurubooru), a lighweight engine inspired by Danbooru (and Booru-type galleries in general). Unlike the other subdomains, this repo is completely separated from the rest of the stack.
+
+### [watch.accords-library.com](https://github.com/Accords-Library/watch.accords-library.com)
+
+A set of tools to archive videos on multiple platforms. The repo contains a CLI tool to archive YouTube videos. There is also a Python script which import the videos metadata to Strapi using GraphQL mutations. Finally, there's a server to serve the video files and thumbnail.
+
+### [umami.accords-library.com](https://umami.is/)
+
+An open-source self-hosted alternative to Google Analytics which doesn't require a cookie notice to be GDPR compliant.
+
+### [accords-library.com](https://github.com/Accords-Library/accords-library.com) (this repository)
+
+A detailled look at the technologies used in this repository:
 
 - Language: [TypeScript](https://www.typescriptlang.org/)
+
 - Framework: [Next.js 13](https://nextjs.org/) (React 18)
+
+- SSG + ISR (Static Site Generation + Incremental Static Regeneration)
+
+  - The website is built before running in production
+  - Performances are great, and it's possible to deploy the app on a CDN
+  - On-Demand ISR to continuously update the website when new content is added or existing content is modified/deleted
+  - UI localizations are downloaded separetely into the `public/local-data` to avoid fetching the same static props for every pages.
+
 - Queries: [GraphQL Code Generator](https://www.graphql-code-generator.com/)
+
   - Fetch the GraphQL schema from the GraphQL back-end endpoint
   - Read the operations and fragments stored as graphql files in the `src/graphql` folder
   - Automatically generates a typesafe ready to use SDK using [graphql-request](https://www.npmjs.com/package/graphql-request) as the GraphQL client
-- Markdown: [markdown-to-jsx](https://www.npmjs.com/package/markdown-to-jsx)
-  - Support for arbitrary React Components and Component Props!
-  - Autogenerated multi-level table of content and anchor links for the different headers
+
 - Styling: [Tailwind CSS](https://tailwindcss.com/)
-  - Support for [Material Symbols](https://fonts.google.com/icons)
-  - Support for creating any arbitrary theming mode by swapping CSS variables
+
+  - Support for creating any arbitrary theme by swapping CSS variables
   - Support for Container Queries (media queries at the element level)
   - The website has a three-column layout, which turns into one-column + 2 toggleable side-menus if the screen is too narrow.
   - Check out our [Design System Showcase](https://accords-library.com/dev/showcase/design-system)
+
 - State Management: [Jōtai](https://jotai.org/)
+
   - Jōtai is a small-weighted library for atomic state management
   - Persistent app state using LocalStorage and SessionStorage
+
+- Markdown
+
+  - Use [Marked](https://www.npmjs.com/package/marked) to convert markdown to HTML (which is then sanitized using [DOMPurify](https://www.npmjs.com/package/isomorphic-dompurify))
+  - Support for arbitrary React Components and Component Props using [markdown-to-jsx](https://www.npmjs.com/package/markdown-to-jsx)
+  - Autogenerated multi-level table of content and anchor links for the different headers
+
 - Accessibility
+
   - Gestures using [react-swipeable](https://www.npmjs.com/package/react-swipeable)
   - Keyboard hotkeys using [react-hotkeys-hook](https://www.npmjs.com/package/react-hotkeys-hook)
   - Support for light and dark mode with a manual switch and system's selected theme by default
   - Fonts can be swaped to [OpenDyslexic](https://www.npmjs.com/package/@fontsource/opendyslexic)
+
 - Multilingual
+
   - By default, use the browser's language as the main language
   - Fallback languages are used for content which are not available in the main language
   - Main and fallback languages can be ordered manually by the user
   - At the content level, the user can know which language is available
   - Furthermore, the user can temporary select another language then the one that was automatically selected
-- SSG + ISR (Static Site Generation + Incremental Static Regeneration)
-  - The website is built before running in production
-  - Performances are great, and possibility to deploy the app on a CDN
-  - On-Demand ISR to continuously update the website when new content is added or existing content is modified/deleted
-  - UI localizations are downloaded separetely into the `public/local-data` to avoid fetching the same static props for every page.
+
+- UI Localizations
+
+  - The translated wordings use [ICU Message Format](https://unicode-org.github.io/icu/userguide/format_parse/messages/) to include variables, plural, dates...
+  - Use a custom ICU Typescript transformation script to provide type safety when formatting ICU wordings
+  - Fallback to English if a specific working isn't available in the user's language
+
 - SEO
+
   - Good defaults for the metadata and OpenGraph properties
   - Each page can provide a custom thumbnail, title, description to be used
   - Automatic generation of the sitemap using [next-sitemap](https://www.npmjs.com/package/next-sitemap)
-- Data quality testing
+
+- Data Quality Testing
+
   - Data from the CMS is subject to a battery of tests (about 20 warning types and 40 error types) at build time
   - Each warning/error comes with a front-end link to the incriminating element, as well as a link to the CMS to fix it
   - Check for completeness, conformity, and integrity
-- Code quality and style
+
+- Code Quality and Style
 
   - React Strict Mode
   - [Eslint](https://www.npmjs.com/package/eslint) with [eslint-plugin-import](https://www.npmjs.com/package/eslint-plugin-import), [typescript-eslint](https://www.npmjs.com/package/@typescript-eslint/eslint-plugin)
@@ -75,7 +134,11 @@
 
 - Other
   - Custom book reader based on [Okuma-Reader](https://github.com/DrMint/Okuma-Reader)
+  - Support for [Material Symbols](https://fonts.google.com/icons)
   - Custom lightbox using [react-zoom-pan-pinch](https://www.npmjs.com/package/react-zoom-pan-pinch)
+  - Handle query params using [Zod](https://zod.dev/)
+  - A secret "Terminal" mode. Can you find it?
+
 
 ## Installation
 
@@ -91,9 +154,9 @@ Create a env file:
 nano .env.local
 ```
 
-Enter the followind information:
+Enter the following information:
 
-```txt
+```
 URL_GRAPHQL=https://url-to.strapi-accords-library.com/graphql
 ACCESS_TOKEN=abcdef0123456789
 REVALIDATION_TOKEN=abcdef0123456789
@@ -104,7 +167,8 @@ NEXT_PUBLIC_URL_CMS=https://url-to.strapi-accords-library.com
 NEXT_PUBLIC_URL_IMG=https://url-to.img-accords-library.com
 NEXT_PUBLIC_URL_WATCH=https://url-to.watch-accords-library.com
 NEXT_PUBLIC_URL_SELF=https://url-to-front-accords-library.com
-NEXT_PUBLIC_URL_SEARCH=https://url-to.search-accords-library.com
+NEXT_PUBLIC_URL_MEILISEARCH=https://url-to.search-accords-library.com
+NEXT_PUBLIC_MEILISEARCH_KEY=abcdef0123456789
 NEXT_PUBLIC_UMAMI_URL=https://url-to.umami-accords-library.com
 NEXT_PUBLIC_UMAMI_ID=abcdef0123456789
 ```

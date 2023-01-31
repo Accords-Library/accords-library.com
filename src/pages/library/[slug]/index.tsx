@@ -24,7 +24,6 @@ import {
   prettyDate,
   prettyInlineTitle,
   prettyItemSubType,
-  prettyItemType,
   prettyPrice,
   prettySlug,
   prettyURL,
@@ -49,11 +48,12 @@ import { getOpenGraph } from "helpers/openGraph";
 import { getDescription } from "helpers/description";
 import { useIntersectionList } from "hooks/useIntersectionList";
 import { HorizontalLine } from "components/HorizontalLine";
-import { getLangui } from "graphql/fetchLocalData";
 import { Ids } from "types/ids";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter } from "helpers/atoms";
 import { Link } from "components/Inputs/Link";
+import { useFormat } from "hooks/useFormat";
+import { getFormat } from "helpers/i18n";
 
 /*
  *                                         ╭─────────────╮
@@ -74,7 +74,7 @@ interface Props extends AppLayoutRequired {
 
 const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
   const currency = useAtomGetter(atoms.settings.currency);
-  const langui = useAtomGetter(atoms.localData.langui);
+  const { format, formatLibraryItemType } = useFormat();
   const currencies = useAtomGetter(atoms.localData.currencies);
 
   const isContentPanelAtLeast3xl = useAtomGetter(atoms.containerQueries.isContentPanelAtLeast3xl);
@@ -99,13 +99,13 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
 
   const subPanel = (
     <SubPanel>
-      <ReturnButton href="/library/" title={langui.library} displayOnlyOn="3ColumnsLayout" />
+      <ReturnButton href="/library/" title={format("library")} displayOnlyOn="3ColumnsLayout" />
 
       <HorizontalLine />
 
       <div className="grid gap-4">
         <NavOption
-          title={langui.summary}
+          title={format("summary")}
           url={`#${intersectionIds[0]}`}
           border
           active={currentIntersection === 0}
@@ -113,7 +113,7 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
 
         {item.gallery && item.gallery.data.length > 0 && (
           <NavOption
-            title={langui.gallery}
+            title={format("gallery")}
             url={`#${intersectionIds[1]}`}
             border
             active={currentIntersection === 1}
@@ -121,7 +121,7 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
         )}
 
         <NavOption
-          title={langui.details}
+          title={format("details")}
           url={`#${intersectionIds[2]}`}
           border
           active={currentIntersection === 2}
@@ -129,7 +129,7 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
 
         {item.subitems && item.subitems.data.length > 0 && (
           <NavOption
-            title={isVariantSet ? langui.variants : langui.subitems}
+            title={format(isVariantSet ? "variant" : "subitem", { count: Infinity })}
             url={`#${intersectionIds[3]}`}
             border
             active={currentIntersection === 3}
@@ -138,7 +138,7 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
 
         {item.contents && item.contents.data.length > 0 && (
           <NavOption
-            title={langui.contents}
+            title={format("contents")}
             url={`#${intersectionIds[4]}`}
             border
             active={currentIntersection === 4}
@@ -152,7 +152,7 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
     <ContentPanel width={ContentPanelWidthSizes.Full}>
       <ReturnButton
         href="/library/"
-        title={langui.library}
+        title={format("library")}
         displayOnlyOn="1ColumnLayout"
         className="mb-10"
       />
@@ -180,7 +180,7 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
           <div className="grid w-[clamp(0px,100%,42rem)] place-items-center gap-8">
             {item.subitem_of?.data[0]?.attributes && (
               <div className="grid place-items-center">
-                <p>{langui.subitem_of}</p>
+                <p>{format("subitem_of_x", { x: "" })}</p>
                 <Button
                   href={`/library/${item.subitem_of.data[0].attributes.slug}`}
                   text={prettyInlineTitle(
@@ -212,7 +212,7 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
               <>
                 {item.urls?.length ? (
                   <div className="flex flex-row place-items-center gap-3">
-                    <p>{langui.available_at}</p>
+                    <p>{format("available_at")}</p>
                     {filterHasAttributes(item.urls, ["url"] as const).map((url, index) => (
                       <Fragment key={index}>
                         <Button href={url.url} text={prettyURL(url.url)} alwaysNewTab />
@@ -220,7 +220,7 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
                     ))}
                   </div>
                 ) : (
-                  <p>{langui.item_not_available}</p>
+                  <p>{format("item_not_available")}</p>
                 )}
               </>
             )}
@@ -229,7 +229,7 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
 
         {item.gallery && item.gallery.data.length > 0 && (
           <div id={intersectionIds[1]} className="grid w-full place-items-center  gap-8">
-            <h2 className="text-2xl">{langui.gallery}</h2>
+            <h2 className="text-2xl">{format("gallery")}</h2>
             <div
               className="grid w-full grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] items-end
               gap-8">
@@ -262,7 +262,7 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
 
         <InsetBox id={intersectionIds[2]} className="grid place-items-center">
           <div className="place-items grid w-[clamp(0px,100%,42rem)] gap-10">
-            <h2 className="text-center text-2xl">{langui.details}</h2>
+            <h2 className="text-center text-2xl">{format("details")}</h2>
             <div
               className={cJoin(
                 "grid place-items-center gap-y-8",
@@ -270,9 +270,9 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
               )}>
               {item.metadata?.[0] && (
                 <div className="grid place-content-start place-items-center">
-                  <h3 className="text-xl">{langui.type}</h3>
+                  <h3 className="text-xl">{format("type", { count: 1 })}</h3>
                   <div className="grid grid-flow-col gap-1">
-                    <Chip text={prettyItemType(item.metadata[0], langui)} />
+                    <Chip text={formatLibraryItemType(item.metadata[0])} />
                     {"›"}
                     <Chip text={prettyItemSubType(item.metadata[0])} />
                   </div>
@@ -281,14 +281,14 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
 
               {item.release_date && (
                 <div className="grid place-content-start place-items-center">
-                  <h3 className="text-xl">{langui.release_date}</h3>
+                  <h3 className="text-xl">{format("release_date")}</h3>
                   <p>{prettyDate(item.release_date, router.locale)}</p>
                 </div>
               )}
 
               {item.price && (
                 <div className="grid place-content-start place-items-center text-center">
-                  <h3 className="text-xl">{langui.price}</h3>
+                  <h3 className="text-xl">{format("price")}</h3>
                   <p>
                     {prettyPrice(
                       item.price,
@@ -299,7 +299,7 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
                   {item.price.currency?.data?.attributes?.code !== currency && (
                     <p>
                       {prettyPrice(item.price, currencies, currency)} <br />(
-                      {langui.calculated?.toLowerCase()})
+                      {format("calculated").toLowerCase()})
                     </p>
                   )}
                 </div>
@@ -308,7 +308,9 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
 
             {item.categories && item.categories.data.length > 0 && (
               <div className="flex flex-col place-items-center gap-2">
-                <h3 className="text-xl">{langui.categories}</h3>
+                <h3 className="text-xl">
+                  {format("category", { count: item.categories.data.length })}
+                </h3>
                 <div className="flex flex-row flex-wrap place-content-center gap-2">
                   {filterHasAttributes(item.categories.data, ["attributes"] as const).map(
                     (category) => (
@@ -325,7 +327,7 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
                   "grid gap-4",
                   cIf(!isContentPanelAtLeast3xl, "place-items-center")
                 )}>
-                <h3 className="text-xl">{langui.size}</h3>
+                <h3 className="text-xl">{format("size")}</h3>
                 <div
                   className={cJoin(
                     "grid w-full",
@@ -344,7 +346,7 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
                         "place-items-center"
                       )
                     )}>
-                    <p className="font-bold">{langui.width}:</p>
+                    <p className="font-bold">{format("width")}:</p>
                     <div>
                       <p>{item.size.width} mm</p>
                       <p>{convertMmToInch(item.size.width)} in</p>
@@ -359,7 +361,7 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
                         "place-items-center"
                       )
                     )}>
-                    <p className="font-bold">{langui.height}:</p>
+                    <p className="font-bold">{format("height")}:</p>
                     <div>
                       <p>{item.size.height} mm</p>
                       <p>{convertMmToInch(item.size.height)} in</p>
@@ -375,7 +377,7 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
                           "place-items-center"
                         )
                       )}>
-                      <p className="font-bold">{langui.thickness}:</p>
+                      <p className="font-bold">{format("thickness")}:</p>
                       <div>
                         <p>{item.size.thickness} mm</p>
                         <p>{convertMmToInch(item.size.thickness)} in</p>
@@ -393,44 +395,53 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
                     "grid gap-4",
                     cIf(!isContentPanelAtLeast3xl, "place-items-center")
                   )}>
-                  <h3 className="text-xl">{langui.type_information}</h3>
+                  <h3 className="text-xl">{format("type_information")}</h3>
                   <div className="flex flex-wrap place-content-between gap-x-8">
                     {item.metadata?.[0]?.__typename === "ComponentMetadataBooks" && (
                       <>
-                        <div className="flex flex-row place-content-start gap-4">
-                          <p className="font-bold">{langui.pages}:</p>
-                          <p>{item.metadata[0].page_count}</p>
-                        </div>
+                        {isDefined(item.metadata[0].page_count) && (
+                          <div className="flex flex-row place-content-start gap-4">
+                            <p className="font-bold">{format("page", { count: Infinity })}:</p>
+                            <p>{item.metadata[0].page_count}</p>
+                          </div>
+                        )}
 
                         <div className="flex flex-row place-content-start gap-4">
-                          <p className="font-bold">{langui.binding}:</p>
+                          <p className="font-bold">{format("binding")}:</p>
                           <p>
                             {item.metadata[0].binding_type ===
                             Enum_Componentmetadatabooks_Binding_Type.Paperback
-                              ? langui.paperback
+                              ? format("paperback")
                               : item.metadata[0].binding_type ===
                                 Enum_Componentmetadatabooks_Binding_Type.Hardcover
-                              ? langui.hardcover
+                              ? format("hardcover")
                               : ""}
                           </p>
                         </div>
 
                         <div className="flex flex-row place-content-start gap-4">
-                          <p className="font-bold">{langui.page_order}:</p>
+                          <p className="font-bold">{format("page_order")}:</p>
                           <p>
                             {item.metadata[0].page_order ===
                             Enum_Componentmetadatabooks_Page_Order.LeftToRight
-                              ? langui.left_to_right
-                              : langui.right_to_left}
+                              ? format("left_to_right")
+                              : format("right_to_left")}
                           </p>
                         </div>
 
-                        <div className="flex flex-row place-content-start gap-4">
-                          <p className="font-bold">{langui.languages}:</p>
-                          {item.metadata[0]?.languages?.data.map((lang) => (
-                            <p key={lang.attributes?.code}>{lang.attributes?.name}</p>
-                          ))}
-                        </div>
+                        {isDefined(item.metadata[0].languages) && (
+                          <div className="flex flex-row place-content-start gap-4">
+                            <p className="font-bold">
+                              {format("language", {
+                                count: item.metadata[0].languages.data.length,
+                              })}
+                              :
+                            </p>
+                            {item.metadata[0].languages.data.map((lang) => (
+                              <p key={lang.attributes?.code}>{lang.attributes?.name}</p>
+                            ))}
+                          </div>
+                        )}
                       </>
                     )}
                   </div>
@@ -441,10 +452,12 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
 
         {item.subitems && item.subitems.data.length > 0 && (
           <div id={intersectionIds[3]} className="grid w-full place-items-center gap-8">
-            <h2 className="text-2xl">{isVariantSet ? langui.variants : langui.subitems}</h2>
+            <h2 className="text-2xl">
+              {format(isVariantSet ? "variant" : "subitem", { count: Infinity })}
+            </h2>
 
             {hoverable && (
-              <WithLabel label={langui.always_show_info}>
+              <WithLabel label={format("always_show_info")}>
                 <Switch onClick={toggleKeepInfoVisible} value={keepInfoVisible} />
               </WithLabel>
             )}
@@ -493,10 +506,10 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
 
         {item.contents && item.contents.data.length > 0 && (
           <div id={intersectionIds[4]} className="grid w-full place-items-center gap-8">
-            <h2 className="-mb-6 text-2xl">{langui.contents}</h2>
+            <h2 className="-mb-6 text-2xl">{format("contents")}</h2>
             {displayOpenScans && (
               <div className="grid grid-flow-col gap-4">
-                <Button href={`/library/${item.slug}/reader`} text={langui.view_scans} />
+                <Button href={`/library/${item.slug}/reader`} text={format("view_scans")} />
               </div>
             )}
             <div className="max-w- grid w-full gap-4">
@@ -563,7 +576,7 @@ export default LibrarySlug;
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
-  const langui = getLangui(context.locale);
+  const { format } = getFormat(context.locale);
   const item = await sdk.getLibraryItem({
     slug: context.params && isDefined(context.params.slug) ? context.params.slug.toString() : "",
     language_code: context.locale ?? "en",
@@ -576,14 +589,14 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const description = getDescription(
     item.libraryItems.data[0].attributes.descriptions?.[0]?.description,
     {
-      [langui.categories ?? "Categories"]: filterHasAttributes(
+      [format("category", { count: Infinity })]: filterHasAttributes(
         item.libraryItems.data[0].attributes.categories?.data,
         ["attributes.short"]
       ).map((category) => category.attributes.short),
-      [langui.type ?? "Type"]: item.libraryItems.data[0].attributes.metadata?.[0]
+      [format("type", { count: Infinity })]: item.libraryItems.data[0].attributes.metadata?.[0]
         ? [prettyItemSubType(item.libraryItems.data[0].attributes.metadata[0])]
         : [],
-      [langui.release_date ?? "Release date"]: [
+      [format("release_date")]: [
         item.libraryItems.data[0].attributes.release_date
           ? prettyDate(item.libraryItems.data[0].attributes.release_date, context.locale)
           : undefined,
@@ -594,7 +607,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const props: Props = {
     item: item.libraryItems.data[0].attributes,
     itemId: item.libraryItems.data[0].id,
-    openGraph: getOpenGraph(langui, title, description, thumbnail?.data?.attributes),
+    openGraph: getOpenGraph(format, title, description, thumbnail?.data?.attributes),
   };
   return {
     props: props,
@@ -651,7 +664,7 @@ const ContentLine = ({
   parentSlug,
   condensed,
 }: ContentLineProps): JSX.Element => {
-  const langui = useAtomGetter(atoms.localData.langui);
+  const { format } = useFormat();
   const { value: isOpened, toggle: toggleOpened } = useBoolean(false);
   const [selectedTranslation] = useSmartLanguage({
     items: content?.translations ?? [],
@@ -692,15 +705,15 @@ const ContentLine = ({
               {hasScanSet && (
                 <Button
                   href={`/library/${parentSlug}/reader?page=${rangeStart}`}
-                  text={langui.view_scans}
+                  text={format("view_scans")}
                 />
               )}
               {isDefined(content) && (
-                <Button href={`/contents/${content.slug}`} text={langui.open_content} />
+                <Button href={`/contents/${content.slug}`} text={format("open_content")} />
               )}
             </>
           ) : (
-            langui.content_is_not_available
+            format("content_is_not_available")
           )}
         </div>
       </div>
@@ -747,15 +760,15 @@ const ContentLine = ({
             {hasScanSet && (
               <Button
                 href={`/library/${parentSlug}/reader?page=${rangeStart}`}
-                text={langui.view_scans}
+                text={format("view_scans")}
               />
             )}
             {isDefined(content) && (
-              <Button href={`/contents/${content.slug}`} text={langui.open_content} />
+              <Button href={`/contents/${content.slug}`} text={format("open_content")} />
             )}
           </>
         ) : (
-          langui.content_is_not_available
+          format("content_is_not_available")
         )}
       </div>
     </div>

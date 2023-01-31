@@ -23,10 +23,7 @@ import {
 } from "helpers/asserts";
 import { getOpenGraph } from "helpers/openGraph";
 import { HorizontalLine } from "components/HorizontalLine";
-import { getLangui } from "graphql/fetchLocalData";
 import { sendAnalytics } from "helpers/analytics";
-import { atoms } from "contexts/atoms";
-import { useAtomGetter } from "helpers/atoms";
 import { containsHighlight, CustomSearchResponse, meiliSearch } from "helpers/search";
 import { MeiliIndices, MeiliLibraryItem } from "shared/meilisearch-graphql-typings/meiliTypes";
 import { useTypedRouter } from "hooks/useTypedRouter";
@@ -36,6 +33,8 @@ import { isUntangibleGroupItem } from "helpers/libraryItem";
 import { PreviewCardCTAs } from "components/Library/PreviewCardCTAs";
 import { useLibraryItemUserStatus } from "hooks/useLibraryItemUserStatus";
 import { Paginator } from "components/Containers/Paginator";
+import { useFormat } from "hooks/useFormat";
+import { getFormat } from "helpers/i18n";
 
 /*
  *                                         ╭─────────────╮
@@ -72,16 +71,16 @@ interface Props extends AppLayoutRequired {}
 
 const Library = (props: Props): JSX.Element => {
   const hoverable = useDeviceSupportsHover();
-  const langui = useAtomGetter(atoms.localData.langui);
+  const { format } = useFormat();
   const { libraryItemUserStatus } = useLibraryItemUserStatus();
 
   const sortingMethods = useMemo(
     () => [
-      { meiliAttribute: "sortable_name:asc", displayedName: langui.name },
-      { meiliAttribute: "sortable_date:asc", displayedName: langui.release_date },
-      { meiliAttribute: "sortable_price:asc", displayedName: langui.price },
+      { meiliAttribute: "sortable_name:asc", displayedName: format("name") },
+      { meiliAttribute: "sortable_date:asc", displayedName: format("release_date") },
+      { meiliAttribute: "sortable_price:asc", displayedName: format("price") },
     ],
-    [langui.name, langui.price, langui.release_date]
+    [format]
   );
 
   const router = useTypedRouter(queryParamSchema);
@@ -249,15 +248,15 @@ const Library = (props: Props): JSX.Element => {
     <SubPanel>
       <PanelHeader
         icon="auto_stories"
-        title={langui.library}
-        description={langui.library_description}
+        title={format("library")}
+        description={format("library_description")}
       />
 
       <HorizontalLine />
 
       <TextInput
         className="mb-6 w-full"
-        placeholder={langui.search_title ?? "Search..."}
+        placeholder={format("search_title")}
         value={query}
         onChange={(name) => {
           setPage(1);
@@ -270,10 +269,10 @@ const Library = (props: Props): JSX.Element => {
         }}
       />
 
-      <WithLabel label={langui.order_by}>
+      <WithLabel label={format("order_by")}>
         <Select
           className="w-full"
-          options={sortingMethods.map((item) => item.displayedName ?? "")}
+          options={sortingMethods.map((item) => item.displayedName)}
           value={sortingMethod}
           onChange={(newSort) => {
             setPage(1);
@@ -286,7 +285,7 @@ const Library = (props: Props): JSX.Element => {
         />
       </WithLabel>
 
-      <WithLabel label={langui.show_subitems}>
+      <WithLabel label={format("show_subitems")}>
         <Switch
           value={showSubitems}
           onClick={() => {
@@ -297,7 +296,7 @@ const Library = (props: Props): JSX.Element => {
         />
       </WithLabel>
 
-      <WithLabel label={langui.show_primary_items}>
+      <WithLabel label={format("show_primary_items")}>
         <Switch
           value={showPrimaryItems}
           onClick={() => {
@@ -308,7 +307,7 @@ const Library = (props: Props): JSX.Element => {
         />
       </WithLabel>
 
-      <WithLabel label={langui.show_secondary_items}>
+      <WithLabel label={format("show_secondary_items")}>
         <Switch
           value={showSecondaryItems}
           onClick={() => {
@@ -320,7 +319,7 @@ const Library = (props: Props): JSX.Element => {
       </WithLabel>
 
       {hoverable && (
-        <WithLabel label={langui.always_show_info}>
+        <WithLabel label={format("always_show_info")}>
           <Switch
             value={keepInfoVisible}
             onClick={() => {
@@ -335,7 +334,7 @@ const Library = (props: Props): JSX.Element => {
         className="mt-4"
         buttonsProps={[
           {
-            tooltip: langui.only_display_items_i_want,
+            tooltip: format("only_display_items_i_want"),
             icon: "favorite",
             onClick: () => {
               setPage(1);
@@ -345,7 +344,7 @@ const Library = (props: Props): JSX.Element => {
             active: filterUserStatus === LibraryItemUserStatus.Want,
           },
           {
-            tooltip: langui.only_display_items_i_have,
+            tooltip: format("only_display_items_i_have"),
             icon: "back_hand",
             onClick: () => {
               setPage(1);
@@ -355,7 +354,7 @@ const Library = (props: Props): JSX.Element => {
             active: filterUserStatus === LibraryItemUserStatus.Have,
           },
           {
-            tooltip: langui.only_display_unmarked_items,
+            tooltip: format("only_display_unmarked_items"),
             icon: "nearby_off",
             onClick: () => {
               setPage(1);
@@ -365,8 +364,8 @@ const Library = (props: Props): JSX.Element => {
             active: filterUserStatus === LibraryItemUserStatus.None,
           },
           {
-            tooltip: langui.only_display_unmarked_items,
-            text: langui.all,
+            tooltip: format("only_display_unmarked_items"),
+            text: format("all"),
             onClick: () => {
               setPage(1);
               setFilterUserStatus(undefined);
@@ -379,7 +378,7 @@ const Library = (props: Props): JSX.Element => {
 
       <Button
         className="mt-8"
-        text={langui.reset_all_filters}
+        text={format("reset_all_filters")}
         icon="settings_backup_restore"
         onClick={() => {
           setQuery(DEFAULT_FILTERS_STATE.query);
@@ -455,9 +454,9 @@ export default Library;
  */
 
 export const getStaticProps: GetStaticProps = (context) => {
-  const langui = getLangui(context.locale);
+  const { format } = getFormat(context.locale);
   const props: Props = {
-    openGraph: getOpenGraph(langui, langui.library ?? "Library"),
+    openGraph: getOpenGraph(format, format("library")),
   };
   return {
     props: props,

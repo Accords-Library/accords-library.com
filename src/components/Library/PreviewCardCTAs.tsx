@@ -3,8 +3,7 @@ import { ToolTip } from "components/ToolTip";
 import { LibraryItemUserStatus } from "types/types";
 import { cIf, cJoin } from "helpers/className";
 import { useLibraryItemUserStatus } from "hooks/useLibraryItemUserStatus";
-import { atoms } from "contexts/atoms";
-import { useAtomGetter } from "helpers/atoms";
+import { useFormat } from "hooks/useFormat";
 
 /*
  *                                        ╭─────────────╮
@@ -20,7 +19,7 @@ interface Props {
 
 export const PreviewCardCTAs = ({ id, expand = false }: Props): JSX.Element => {
   const { libraryItemUserStatus, setLibraryItemUserStatus } = useLibraryItemUserStatus();
-  const langui = useAtomGetter(atoms.localData.langui);
+  const { format } = useFormat();
 
   return (
     <div
@@ -28,10 +27,10 @@ export const PreviewCardCTAs = ({ id, expand = false }: Props): JSX.Element => {
         "flex flex-row flex-wrap place-content-center place-items-center",
         cIf(expand, "gap-4", "gap-2")
       )}>
-      <ToolTip content={langui.want_it} disabled={expand}>
+      <ToolTip content={format("want_it")} disabled={expand}>
         <Button
           icon="favorite"
-          text={expand ? langui.want_it : undefined}
+          text={expand ? format("want_it") : undefined}
           active={libraryItemUserStatus[id] === LibraryItemUserStatus.Want}
           onClick={(event) => {
             event.preventDefault();
@@ -46,10 +45,10 @@ export const PreviewCardCTAs = ({ id, expand = false }: Props): JSX.Element => {
           }}
         />
       </ToolTip>
-      <ToolTip content={langui.have_it} disabled={expand}>
+      <ToolTip content={format("have_it")} disabled={expand}>
         <Button
           icon="back_hand"
-          text={expand ? langui.have_it : undefined}
+          text={expand ? format("have_it") : undefined}
           active={libraryItemUserStatus[id] === LibraryItemUserStatus.Have}
           onClick={(event) => {
             event.preventDefault();

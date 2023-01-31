@@ -18,7 +18,6 @@ query localDataGetWebsiteInterfaces {
         wiki_short_description
         chronicles_short_description
         news
-        merch
         gallery
         archives
         about_us
@@ -27,7 +26,6 @@ query localDataGetWebsiteInterfaces {
         contents_description
         type
         category
-        categories
         size
         release_date
         release_year
@@ -37,22 +35,16 @@ query localDataGetWebsiteInterfaces {
         height
         thickness
         subitem
-        subitems
-        subitem_of
         variant
-        variants
-        variant_of
         summary
         audio
         video
         textual
         game
         other
-        return_to
         left_to_right
         right_to_left
         page
-        pages
         page_order
         binding
         type_information
@@ -65,15 +57,12 @@ query localDataGetWebsiteInterfaces {
         view_scans
         paperback
         hardcover
-        languages
         select_language
         language
         library_description
         wiki_description
         chronicles_description
         news_description
-        merch_description
-        gallery_description
         archives_description
         about_us_description
         page_not_found
@@ -82,8 +71,6 @@ query localDataGetWebsiteInterfaces {
         show_subitems
         show_primary_items
         show_secondary_items
-        no_type
-        no_year
         order_by
         group_by
         select_option_sidebar
@@ -114,20 +101,14 @@ query localDataGetWebsiteInterfaces {
         translation_notice
         source_language
         pronouns
-        no_category
         item
-        items
         content
-        result
-        results
-        language_switch_message
         open_settings
         change_language
         open_search
         chronology
         accords_handbook
         legality
-        members
         sharing_policy
         contact_us
         email
@@ -160,7 +141,6 @@ query localDataGetWebsiteInterfaces {
         only_display_unmarked_items
         display_all_items
         table_of_contents
-        definition
         no_results_message
         all
         special_pages
@@ -199,6 +179,12 @@ query localDataGetWebsiteInterfaces {
         shortest
         longest
         search
+        showing_x_out_of_y_results
+        return_to_x
+        x_results
+        definition_x
+        subitem_of_x
+        variant_of_x
       }
     }
   }

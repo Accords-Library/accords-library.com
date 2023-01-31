@@ -1,0 +1,134 @@
+<?xml version="1.0"?>
+<minder version="1.14.0" parent-etag="2844169042" etag="3777682473">
+  <theme name="dark" label="Dark" index="-1"/>
+  <styles>
+    <style level="0" isset="true" branchmargin="100" branchradius="25" linktype="straight" linkwidth="4" linkarrow="false" linkdash="solid" nodeborder="rounded" nodewidth="200" nodeborderwidth="4" nodefill="false" nodemargin="10" nodepadding="11" nodefont="Sans 11" nodemarkup="true" connectiondash="dotted" connectionlwidth="2" connectionarrow="fromto" connectionpadding="3" connectionfont="Sans 9" connectiontwidth="100"/>
+    <style level="1" isset="true" branchmargin="100" branchradius="25" linktype="straight" linkwidth="4" linkarrow="false" linkdash="solid" nodeborder="underlined" nodewidth="200" nodeborderwidth="4" nodefill="false" nodemargin="8" nodepadding="11" nodefont="Sans 11" nodemarkup="true" connectiondash="dotted" connectionlwidth="2" connectionarrow="fromto" connectionpadding="3" connectionfont="Sans 9" connectiontwidth="100"/>
+    <style level="2" isset="true" branchmargin="100" branchradius="25" linktype="straight" linkwidth="4" linkarrow="false" linkdash="solid" nodeborder="underlined" nodewidth="200" nodeborderwidth="4" nodefill="false" nodemargin="8" nodepadding="11" nodefont="Sans 11" nodemarkup="true" connectiondash="dotted" connectionlwidth="2" connectionarrow="fromto" connectionpadding="3" connectionfont="Sans 9" connectiontwidth="100"/>
+    <style level="3" isset="true" branchmargin="100" branchradius="25" linktype="straight" linkwidth="4" linkarrow="false" linkdash="solid" nodeborder="underlined" nodewidth="200" nodeborderwidth="4" nodefill="false" nodemargin="8" nodepadding="11" nodefont="Sans 11" nodemarkup="true" connectiondash="dotted" connectionlwidth="2" connectionarrow="fromto" connectionpadding="3" connectionfont="Sans 9" connectiontwidth="100"/>
+    <style level="4" isset="true" branchmargin="100" branchradius="25" linktype="straight" linkwidth="4" linkarrow="false" linkdash="solid" nodeborder="underlined" nodewidth="200" nodeborderwidth="4" nodefill="false" nodemargin="8" nodepadding="11" nodefont="Sans 11" nodemarkup="true" connectiondash="dotted" connectionlwidth="2" connectionarrow="fromto" connectionpadding="3" connectionfont="Sans 9" connectiontwidth="100"/>
+    <style level="5" isset="true" branchmargin="100" branchradius="25" linktype="straight" linkwidth="4" linkarrow="false" linkdash="solid" nodeborder="underlined" nodewidth="200" nodeborderwidth="4" nodefill="false" nodemargin="8" nodepadding="11" nodefont="Sans 11" nodemarkup="true" connectiondash="dotted" connectionlwidth="2" connectionarrow="fromto" connectionpadding="3" connectionfont="Sans 9" connectiontwidth="100"/>
+    <style level="6" isset="true" branchmargin="100" branchradius="25" linktype="straight" linkwidth="4" linkarrow="false" linkdash="solid" nodeborder="underlined" nodewidth="200" nodeborderwidth="4" nodefill="false" nodemargin="8" nodepadding="11" nodefont="Sans 11" nodemarkup="true" connectiondash="dotted" connectionlwidth="2" connectionarrow="fromto" connectionpadding="3" connectionfont="Sans 9" connectiontwidth="100"/>
+    <style level="7" isset="true" branchmargin="100" branchradius="25" linktype="straight" linkwidth="4" linkarrow="false" linkdash="solid" nodeborder="underlined" nodewidth="200" nodeborderwidth="4" nodefill="false" nodemargin="8" nodepadding="11" nodefont="Sans 11" nodemarkup="true" connectiondash="dotted" connectionlwidth="2" connectionarrow="fromto" connectionpadding="3" connectionfont="Sans 9" connectiontwidth="100"/>
+    <style level="8" isset="true" branchmargin="100" branchradius="25" linktype="straight" linkwidth="4" linkarrow="false" linkdash="solid" nodeborder="underlined" nodewidth="200" nodeborderwidth="4" nodefill="false" nodemargin="8" nodepadding="11" nodefont="Sans 11" nodemarkup="true" connectiondash="dotted" connectionlwidth="2" connectionarrow="fromto" connectionpadding="3" connectionfont="Sans 9" connectiontwidth="100"/>
+    <style level="9" isset="true" branchmargin="100" branchradius="25" linktype="straight" linkwidth="4" linkarrow="false" linkdash="solid" nodeborder="underlined" nodewidth="200" nodeborderwidth="4" nodefill="false" nodemargin="8" nodepadding="11" nodefont="Sans 11" nodemarkup="true" connectiondash="dotted" connectionlwidth="2" connectionarrow="fromto" connectionpadding="3" connectionfont="Sans 9" connectiontwidth="100"/>
+    <style level="10" isset="true" branchmargin="100" branchradius="25" linktype="straight" linkwidth="4" linkarrow="false" linkdash="solid" nodeborder="underlined" nodewidth="200" nodeborderwidth="4" nodefill="false" nodemargin="8" nodepadding="11" nodefont="Sans 11" nodemarkup="true" connectiondash="dotted" connectionlwidth="2" connectionarrow="fromto" connectionpadding="3" connectionfont="Sans 9" connectiontwidth="100"/>
+  </styles>
+  <drawarea x="-736.36765543619742" y="32.05864461263036" scale="1.5"/>
+  <images/>
+  <nodes>
+    <node id="0" posx="648.76816813151015" posy="501.13512166341127" width="181" height="56" side="left" fold="false" treesize="56" layout="Horizontal" group="false">
+      <style branchmargin="100" branchradius="25" linktype="straight" linkwidth="4" linkarrow="false" linkdash="solid" nodeborder="underlined" nodewidth="200" nodeborderwidth="4" nodefill="false" nodemargin="8" nodepadding="11" nodefont="Sans 11" nodemarkup="true"/>
+      <nodename posx="667.76816813151015" posy="520.13512166341127" maxwidth="200">
+        <text data="accords-library.com"/>
+      </nodename>
+      <nodenote></nodenote>
+    </node>
+    <node id="1" posx="603.1911417643222" posy="198.59891764322904" width="228" height="56" side="right" fold="false" treesize="56" layout="Horizontal" group="false">
+      <style branchmargin="100" branchradius="25" linktype="straight" linkwidth="4" linkarrow="false" linkdash="solid" nodeborder="underlined" nodewidth="200" nodeborderwidth="4" nodefill="false" nodemargin="8" nodepadding="11" nodefont="Sans 11" nodemarkup="true"/>
+      <nodename posx="622.1911417643222" posy="217.59891764322904" maxwidth="200">
+        <text data="strapi.accords-library.com"/>
+      </nodename>
+      <nodenote></nodenote>
+    </node>
+    <node id="2" posx="508.77593994140574" posy="358.0493469238279" width="230" height="56" side="right" fold="false" treesize="56" layout="Horizontal" group="false">
+      <style branchmargin="100" branchradius="25" linktype="straight" linkwidth="4" linkarrow="false" linkdash="solid" nodeborder="underlined" nodewidth="200" nodeborderwidth="4" nodefill="false" nodemargin="8" nodepadding="11" nodefont="Sans 11" nodemarkup="true"/>
+      <nodename posx="527.7759399414058" posy="377.0493469238279" maxwidth="200">
+        <text data="watch.accords-library.com"/>
+      </nodename>
+      <nodenote></nodenote>
+    </node>
+    <node id="3" posx="959.78491210937489" posy="490.81981404622388" width="235" height="56" side="left" fold="false" treesize="56" layout="Horizontal" group="false">
+      <style branchmargin="100" branchradius="25" linktype="straight" linkwidth="4" linkarrow="false" linkdash="solid" nodeborder="underlined" nodewidth="200" nodeborderwidth="4" nodefill="false" nodemargin="8" nodepadding="11" nodefont="Sans 11" nodemarkup="true"/>
+      <nodename posx="978.78491210937489" posy="509.81981404622388" maxwidth="200">
+        <text data="search.accords-library.com"/>
+      </nodename>
+      <nodenote></nodenote>
+    </node>
+    <node id="4" posx="300.46666463216098" posy="474.56320190429688" width="213" height="56" side="left" fold="false" treesize="56" layout="Horizontal" group="false">
+      <style branchmargin="100" branchradius="25" linktype="straight" linkwidth="4" linkarrow="false" linkdash="solid" nodeborder="underlined" nodewidth="200" nodeborderwidth="4" nodefill="false" nodemargin="8" nodepadding="11" nodefont="Sans 11" nodemarkup="true"/>
+      <nodename posx="319.46666463216098" posy="493.56320190429688" maxwidth="200">
+        <text data="img.accords-library.com"/>
+      </nodename>
+      <nodenote></nodenote>
+    </node>
+    <node id="5" posx="753.05198160807242" posy="709.79446411132812" width="236" height="56" side="right" fold="false" treesize="56" layout="Horizontal" group="false">
+      <style branchmargin="100" branchradius="25" linktype="straight" linkwidth="4" linkarrow="false" linkdash="solid" nodeborder="underlined" nodewidth="200" nodeborderwidth="4" nodefill="false" nodemargin="8" nodepadding="11" nodefont="Sans 11" nodemarkup="true"/>
+      <nodename posx="772.05198160807242" posy="728.79446411132812" maxwidth="200">
+        <text data="umami.accords-library.com"/>
+      </nodename>
+      <nodenote></nodenote>
+    </node>
+    <node id="6" posx="468.00632731119703" posy="709.85610961914062" width="234" height="56" side="right" fold="false" treesize="56" layout="Horizontal" group="false">
+      <style branchmargin="100" branchradius="25" linktype="straight" linkwidth="4" linkarrow="false" linkdash="solid" nodeborder="underlined" nodewidth="200" nodeborderwidth="4" nodefill="false" nodemargin="8" nodepadding="11" nodefont="Sans 11" nodemarkup="true"/>
+      <nodename posx="487.00632731119703" posy="728.85610961914062" maxwidth="200">
+        <text data="gallery.accords-library.com"/>
+      </nodename>
+      <nodenote></nodenote>
+    </node>
+  </nodes>
+  <groups/>
+  <connections>
+    <connection from_id="3" to_id="1" drag_x="1038.6269124348951" drag_y="296.62844848632801" color="#813d9c">
+      <style connectiondash="dotted" connectionlwidth="2" connectionarrow="fromto" connectionpadding="3" connectionfont="Sans 9" connectiontwidth="100"/>
+      <title>GraphQL queries</title>
+      <note></note>
+    </connection>
+    <connection from_id="1" to_id="3" drag_x="982.0184326171875" drag_y="347.55404663085926">
+      <style connectiondash="dotted" connectionlwidth="2" connectionarrow="fromto" connectionpadding="3" connectionfont="Sans 9" connectiontwidth="100"/>
+      <title>Webhook</title>
+      <note></note>
+    </connection>
+    <connection from_id="2" to_id="1" drag_x="640.25118001302098" drag_y="308.37991333007801" color="#813d9c">
+      <style connectiondash="dotted" connectionlwidth="2" connectionarrow="fromto" connectionpadding="3" connectionfont="Sans 9" connectiontwidth="100"/>
+      <title>GraphQL mutations</title>
+      <note></note>
+    </connection>
+    <connection from_id="0" to_id="5" drag_x="801.02655029296898" drag_y="644.59735107421943">
+      <style connectiondash="dotted" connectionlwidth="2" connectionarrow="fromto" connectionpadding="3" connectionfont="Sans 9" connectiontwidth="100"/>
+      <title>Sends events</title>
+      <note></note>
+    </connection>
+    <connection from_id="4" to_id="0" drag_x="531.34985351562477" drag_y="582.42803955078148">
+      <style connectiondash="dotted" connectionlwidth="2" connectionarrow="fromto" connectionpadding="3" connectionfont="Sans 9" connectiontwidth="150"/>
+      <title>Provides the images</title>
+      <note></note>
+    </connection>
+    <connection from_id="3" to_id="0" drag_x="917.41172281901027" drag_y="585.41107177734443">
+      <style connectiondash="dotted" connectionlwidth="2" connectionarrow="fromto" connectionpadding="3" connectionfont="Sans 9" connectiontwidth="150"/>
+      <title>Provides search results</title>
+      <note></note>
+    </connection>
+    <connection from_id="0" to_id="1" drag_x="872.998291015625" drag_y="408.14896647135413">
+      <style connectiondash="dotted" connectionlwidth="2" connectionarrow="fromto" connectionpadding="3" connectionfont="Sans 9" connectiontwidth="100"/>
+      <title>GraphQL queries</title>
+      <note></note>
+    </connection>
+    <connection from_id="0" to_id="6" drag_x="664.23213704427053" drag_y="645.67006429036542">
+      <style connectiondash="dotted" connectionlwidth="2" connectionarrow="fromto" connectionpadding="3" connectionfont="Sans 9" connectiontwidth="100"/>
+      <title>Links to</title>
+      <note></note>
+    </connection>
+    <connection from_id="4" to_id="1" drag_x="400.83854166666663" drag_y="295.4715677897135" color="#813d9c">
+      <style connectiondash="dotted" connectionlwidth="2" connectionarrow="fromto" connectionpadding="3" connectionfont="Sans 9" connectiontwidth="100"/>
+      <title>Python script</title>
+      <note></note>
+    </connection>
+    <connection from_id="2" to_id="0" drag_x="645.96777343749955" drag_y="448.91068522135413">
+      <style connectiondash="dotted" connectionlwidth="2" connectionarrow="fromto" connectionpadding="3" connectionfont="Sans 9" connectiontwidth="150"/>
+      <title>Provides the videos</title>
+      <note></note>
+    </connection>
+    <connection from_id="1" to_id="4" drag_x="441.14660644531227" drag_y="342.38249715169252">
+      <style connectiondash="dotted" connectionlwidth="2" connectionarrow="fromto" connectionpadding="3" connectionfont="Sans 9" connectiontwidth="100"/>
+      <title>Webhook</title>
+      <note></note>
+    </connection>
+    <connection from_id="1" to_id="0" drag_x="790.7373046875" drag_y="369.4803466796875">
+      <style connectiondash="dotted" connectionlwidth="2" connectionarrow="fromto" connectionpadding="3" connectionfont="Sans 9" connectiontwidth="100"/>
+      <title>Webhook</title>
+      <note></note>
+    </connection>
+  </connections>
+  <stickers/>
+</minder>

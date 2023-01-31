@@ -1,17 +1,22 @@
+import { GetStaticProps } from "next";
 import { PostPage } from "components/PostPage";
-import { getPostStaticProps, PostStaticProps } from "graphql/getPostStaticProps";
-import { getOpenGraph } from "helpers/openGraph";
+import { PostStaticProps } from "graphql/getPostStaticProps";
 import { Terminal } from "components/Cli/Terminal";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter } from "helpers/atoms";
+import { getOpenGraph } from "helpers/openGraph";
+import { useFormat } from "hooks/useFormat";
+import { getFormat } from "helpers/i18n";
+import { getReadySdk } from "graphql/sdk";
+import { PostWithTranslations } from "types/types";
 
 /*
  *                                           ╭────────╮
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
  */
 
-const Home = ({ ...otherProps }: PostStaticProps): JSX.Element => {
-  const langui = useAtomGetter(atoms.localData.langui);
+const Home = (props: PostStaticProps): JSX.Element => {
+  const { format } = useFormat();
   const isTerminalMode = useAtomGetter(atoms.layout.terminalMode);
 
   if (isTerminalMode) {
@@ -34,7 +39,7 @@ const Home = ({ ...otherProps }: PostStaticProps): JSX.Element => {
 
   return (
     <PostPage
-      {...otherProps}
+      {...props}
       prependBody={
         <div className="grid w-full place-content-center place-items-center gap-5 text-center">
           <div
@@ -46,7 +51,6 @@ const Home = ({ ...otherProps }: PostStaticProps): JSX.Element => {
         </div>
       }
       displayTitle={false}
-      openGraph={getOpenGraph(langui)}
       displayLanguageSwitcher
     />
   );
@@ -59,4 +63,21 @@ export default Home;
  * ───────────────────────────────────╯  NEXT DATA FETCHING  ╰──────────────────────────────────────
  */
 
-export const getStaticProps = getPostStaticProps("home");
+export const getStaticProps: GetStaticProps = async (context) => {
+  const sdk = getReadySdk();
+  const { format } = getFormat(context.locale);
+  const post = await sdk.getPost({
+    slug: "home",
+    language_code: context.locale ?? "en",
+  });
+  if (post.posts?.data && post.posts.data.length > 0) {
+    const props: PostStaticProps = {
+      post: post.posts.data[0]?.attributes as PostWithTranslations,
+      openGraph: getOpenGraph(format),
+    };
+    return {
+      props: props,
+    };
+  }
+  return { notFound: true };
+};

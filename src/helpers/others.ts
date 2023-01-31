@@ -1,10 +1,5 @@
-import { Langui } from "./localData";
 import { isDefined } from "./asserts";
-import {
-  Enum_Componentsetstextset_Status,
-  GetLibraryItemQuery,
-  GetLibraryItemScansQuery,
-} from "graphql/generated";
+import { GetLibraryItemQuery, GetLibraryItemScansQuery } from "graphql/generated";
 
 type SortRangedContentProps =
   | NonNullable<
@@ -24,25 +19,6 @@ export const sortRangedContent = (contents: SortRangedContentProps): void => {
     }
     return 0;
   });
-};
-
-export const getStatusDescription = (status: string, langui: Langui): string | null | undefined => {
-  switch (status) {
-    case Enum_Componentsetstextset_Status.Incomplete:
-      return langui.status_incomplete;
-
-    case Enum_Componentsetstextset_Status.Draft:
-      return langui.status_draft;
-
-    case Enum_Componentsetstextset_Status.Review:
-      return langui.status_review;
-
-    case Enum_Componentsetstextset_Status.Done:
-      return langui.status_done;
-
-    default:
-      return "";
-  }
 };
 
 export const iterateMap = <K, V, U>(

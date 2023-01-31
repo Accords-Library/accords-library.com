@@ -5,6 +5,7 @@ import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { isUndefined } from "helpers/asserts";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter } from "helpers/atoms";
+import { useFormat } from "hooks/useFormat";
 
 /*
  *                                        ╭─────────────╮
@@ -22,7 +23,7 @@ interface Props {
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
 export const ReturnButton = ({ href, title, displayOnlyOn, className }: Props): JSX.Element => {
-  const langui = useAtomGetter(atoms.localData.langui);
+  const { format } = useFormat();
   const is3ColumnsLayout = useAtomGetter(atoms.containerQueries.is3ColumnsLayout);
 
   return (
@@ -31,7 +32,7 @@ export const ReturnButton = ({ href, title, displayOnlyOn, className }: Props): 
         (!is3ColumnsLayout && displayOnlyOn === "1ColumnLayout") ||
         isUndefined(displayOnlyOn)) && (
         <div className={className}>
-          <Button href={href} text={`${langui.return_to} ${title}`} icon="navigate_before" />
+          <Button href={href} text={format("return_to_x", { x: title })} icon="navigate_before" />
         </div>
       )}
     </>

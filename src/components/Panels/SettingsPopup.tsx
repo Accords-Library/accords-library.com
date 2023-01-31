@@ -14,6 +14,7 @@ import { atoms } from "contexts/atoms";
 import { useAtomGetter, useAtomPair } from "helpers/atoms";
 import { ThemeMode } from "contexts/settings";
 import { Ico } from "components/Ico";
+import { useFormat } from "hooks/useFormat";
 
 export const SettingsPopup = (): JSX.Element => {
   const [preferredLanguages, setPreferredLanguages] = useAtomPair(
@@ -27,7 +28,7 @@ export const SettingsPopup = (): JSX.Element => {
   const [themeMode, setThemeMode] = useAtomPair(atoms.settings.themeMode);
 
   const languages = useAtomGetter(atoms.localData.languages);
-  const langui = useAtomGetter(atoms.localData.langui);
+  const { format } = useFormat();
   const currencies = useAtomGetter(atoms.localData.currencies);
 
   const is1ColumnLayout = useAtomGetter(atoms.containerQueries.is1ColumnLayout);
@@ -52,7 +53,7 @@ export const SettingsPopup = (): JSX.Element => {
       }}>
       <h2 className="inline-flex place-items-center gap-2 text-2xl">
         <Ico icon="discover_tune" isFilled />
-        {langui.settings}
+        {format("settings")}
       </h2>
 
       <div
@@ -62,7 +63,7 @@ export const SettingsPopup = (): JSX.Element => {
         )}>
         {router.locales && (
           <div>
-            <h3 className="text-xl">{langui.languages}</h3>
+            <h3 className="text-xl">{format("language", { count: preferredLanguages.length })}</h3>
             {preferredLanguages.length > 0 && (
               <OrderableList
                 items={preferredLanguages.map((locale) => ({
@@ -72,11 +73,11 @@ export const SettingsPopup = (): JSX.Element => {
                 insertLabels={[
                   {
                     insertAt: 0,
-                    name: langui.primary_language ?? "Primary language",
+                    name: format("primary_language"),
                   },
                   {
                     insertAt: 1,
-                    name: langui.secondary_language ?? "Secondary languages",
+                    name: format("secondary_language"),
                   },
                 ]}
                 onChange={(items) => {
@@ -94,7 +95,7 @@ export const SettingsPopup = (): JSX.Element => {
             cIf(!is1ColumnLayout, "grid-cols-2")
           )}>
           <div>
-            <h3 className="text-xl">{langui.theme}</h3>
+            <h3 className="text-xl">{format("theme")}</h3>
             <ButtonGroup
               buttonsProps={[
                 {
@@ -103,7 +104,7 @@ export const SettingsPopup = (): JSX.Element => {
                     sendAnalytics("Settings", "Change theme (light)");
                   },
                   active: themeMode === ThemeMode.Light,
-                  text: langui.light,
+                  text: format("light"),
                 },
                 {
                   onClick: () => {
@@ -111,7 +112,7 @@ export const SettingsPopup = (): JSX.Element => {
                     sendAnalytics("Settings", "Change theme (auto)");
                   },
                   active: themeMode === ThemeMode.Auto,
-                  text: langui.auto,
+                  text: format("auto"),
                 },
                 {
                   onClick: () => {
@@ -119,14 +120,14 @@ export const SettingsPopup = (): JSX.Element => {
                     sendAnalytics("Settings", "Change theme (dark)");
                   },
                   active: themeMode === ThemeMode.Dark,
-                  text: langui.dark,
+                  text: format("dark"),
                 },
               ]}
             />
           </div>
 
           <div>
-            <h3 className="text-xl">{langui.currency}</h3>
+            <h3 className="text-xl">{format("currency")}</h3>
             <div>
               <Select
                 options={currencyOptions}
@@ -144,7 +145,7 @@ export const SettingsPopup = (): JSX.Element => {
           </div>
 
           <div>
-            <h3 className="text-xl">{langui.font_size}</h3>
+            <h3 className="text-xl">{format("font_size")}</h3>
             <ButtonGroup
               buttonsProps={[
                 {
@@ -185,7 +186,7 @@ export const SettingsPopup = (): JSX.Element => {
           </div>
 
           <div>
-            <h3 className="text-xl">{langui.font}</h3>
+            <h3 className="text-xl">{format("font")}</h3>
             <div className="grid gap-2">
               <Button
                 active={!isDyslexic}
@@ -209,7 +210,7 @@ export const SettingsPopup = (): JSX.Element => {
           </div>
 
           <div>
-            <h3 className="text-xl">{langui.player_name}</h3>
+            <h3 className="text-xl">{format("player_name")}</h3>
             <TextInput
               placeholder="<player>"
               className="w-48"

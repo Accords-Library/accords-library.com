@@ -17,14 +17,13 @@ import { filterHasAttributes, isDefined, isDefinedAndNotEmpty } from "helpers/as
 import { prettySlug } from "helpers/formatters";
 import { getOpenGraph } from "helpers/openGraph";
 import { TranslatedPreviewCard } from "components/PreviewCard";
-import { getLangui } from "graphql/fetchLocalData";
 import { sendAnalytics } from "helpers/analytics";
-import { atoms } from "contexts/atoms";
-import { useAtomGetter } from "helpers/atoms";
 import { useTypedRouter } from "hooks/useTypedRouter";
 import { MeiliIndices, MeiliWikiPage } from "shared/meilisearch-graphql-typings/meiliTypes";
 import { containsHighlight, CustomSearchResponse, meiliSearch } from "helpers/search";
 import { Paginator } from "components/Containers/Paginator";
+import { useFormat } from "hooks/useFormat";
+import { getFormat } from "helpers/i18n";
 
 /*
  *                                         ╭─────────────╮
@@ -51,7 +50,7 @@ interface Props extends AppLayoutRequired {}
 
 const Wiki = (props: Props): JSX.Element => {
   const hoverable = useDeviceSupportsHover();
-  const langui = useAtomGetter(atoms.localData.langui);
+  const { format } = useFormat();
   const router = useTypedRouter(queryParamSchema);
   const [query, setQuery] = useState(router.query.query ?? DEFAULT_FILTERS_STATE.query);
 
@@ -103,15 +102,15 @@ const Wiki = (props: Props): JSX.Element => {
     <SubPanel>
       <PanelHeader
         icon="travel_explore"
-        title={langui.wiki}
-        description={langui.wiki_description}
+        title={format("wiki")}
+        description={format("wiki_description")}
       />
 
       <HorizontalLine />
 
       <TextInput
         className="mb-6 w-full"
-        placeholder={langui.search_title ?? "Search..."}
+        placeholder={format("search_title")}
         value={query}
         onChange={(name) => {
           setPage(1);
@@ -125,7 +124,7 @@ const Wiki = (props: Props): JSX.Element => {
       />
 
       {hoverable && (
-        <WithLabel label={langui.always_show_info}>
+        <WithLabel label={format("always_show_info")}>
           <Switch
             value={keepInfoVisible}
             onClick={() => {
@@ -138,7 +137,7 @@ const Wiki = (props: Props): JSX.Element => {
 
       <Button
         className="mt-8"
-        text={langui.reset_all_filters}
+        text={format("reset_all_filters")}
         icon="settings_backup_restore"
         onClick={() => {
           setPage(1);
@@ -150,9 +149,9 @@ const Wiki = (props: Props): JSX.Element => {
 
       <HorizontalLine />
 
-      <p className="mb-4 font-headers text-xl font-bold">{langui.special_pages}</p>
+      <p className="mb-4 font-headers text-xl font-bold">{format("special_pages")}</p>
 
-      <NavOption title={langui.chronology} url="/wiki/chronology" border />
+      <NavOption title={format("chronology")} url="/wiki/chronology" border />
     </SubPanel>
   );
 
@@ -212,9 +211,9 @@ export default Wiki;
  */
 
 export const getStaticProps: GetStaticProps = (context) => {
-  const langui = getLangui(context.locale);
+  const { format } = getFormat(context.locale);
   const props: Props = {
-    openGraph: getOpenGraph(langui, langui.wiki ?? "Wiki"),
+    openGraph: getOpenGraph(format, format("wiki")),
   };
   return {
     props: props,

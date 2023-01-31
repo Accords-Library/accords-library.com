@@ -3,7 +3,6 @@ import { GetStaticProps } from "next";
 import { ReactNode, useState } from "react";
 import Slider from "rc-slider";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
-import { getLangui } from "graphql/fetchLocalData";
 import { getOpenGraph } from "helpers/openGraph";
 import { ContentPanel, ContentPanelWidthSizes } from "components/Containers/ContentPanel";
 import { Button } from "components/Inputs/Button";
@@ -19,6 +18,7 @@ import { PreviewCard } from "components/PreviewCard";
 import { PreviewLine } from "components/PreviewLine";
 import { ChroniclePreview } from "components/Chronicles/ChroniclePreview";
 import { PreviewFolder } from "components/Contents/PreviewFolder";
+import { getFormat } from "helpers/i18n";
 
 /*
  *                                           ╭────────╮
@@ -880,9 +880,9 @@ export default DesignSystem;
  */
 
 export const getStaticProps: GetStaticProps = (context) => {
-  const langui = getLangui(context.locale);
+  const { format } = getFormat(context.locale);
   const props: Props = {
-    openGraph: getOpenGraph(langui, "Design System"),
+    openGraph: getOpenGraph(format, "Design System"),
   };
   return {
     props: props,

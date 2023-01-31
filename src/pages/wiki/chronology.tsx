@@ -13,7 +13,6 @@ import {
 } from "graphql/generated";
 import { getReadySdk } from "graphql/sdk";
 import { prettySlug } from "helpers/formatters";
-import { getStatusDescription } from "helpers/others";
 import { filterHasAttributes, isDefined, isDefinedAndNotEmpty } from "helpers/asserts";
 import { getOpenGraph } from "helpers/openGraph";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
@@ -26,9 +25,8 @@ import { TranslatedProps } from "types/TranslatedProps";
 import { TranslatedNavOption } from "components/PanelComponents/NavOption";
 import { useIntersectionList } from "hooks/useIntersectionList";
 import { HorizontalLine } from "components/HorizontalLine";
-import { getLangui } from "graphql/fetchLocalData";
-import { atoms } from "contexts/atoms";
-import { useAtomGetter } from "helpers/atoms";
+import { useFormat } from "hooks/useFormat";
+import { getFormat } from "helpers/i18n";
 
 /*
  *                                           ╭────────╮
@@ -41,7 +39,7 @@ interface Props extends AppLayoutRequired {
 }
 
 const Chronology = ({ chronologyItems, chronologyEras, ...otherProps }: Props): JSX.Element => {
-  const langui = useAtomGetter(atoms.localData.langui);
+  const { format } = useFormat();
   const ids = filterHasAttributes(chronologyEras, ["attributes"] as const).map(
     (era) => era.attributes.slug
   );
@@ -50,7 +48,7 @@ const Chronology = ({ chronologyItems, chronologyEras, ...otherProps }: Props): 
 
   const subPanel = (
     <SubPanel>
-      <ReturnButton href="/wiki" title={langui.wiki} displayOnlyOn="3ColumnsLayout" />
+      <ReturnButton href="/wiki" title={format("wiki")} displayOnlyOn="3ColumnsLayout" />
 
       <HorizontalLine />
 
@@ -81,7 +79,7 @@ const Chronology = ({ chronologyItems, chronologyEras, ...otherProps }: Props): 
     <ContentPanel>
       <ReturnButton
         href="/wiki"
-        title={langui.wiki}
+        title={format("wiki")}
         displayOnlyOn="1ColumnLayout"
         className="mb-10"
       />
@@ -119,7 +117,7 @@ export default Chronology;
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
-  const langui = getLangui(context.locale);
+  const { format } = getFormat(context.locale);
   const chronologyItems = await sdk.getChronologyItems();
   const chronologyEras = await sdk.getEras();
   if (!chronologyItems.chronologyItems || !chronologyEras.chronologyEras) return { notFound: true };
@@ -127,7 +125,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const props: Props = {
     chronologyItems: chronologyItems.chronologyItems.data,
     chronologyEras: chronologyEras.chronologyEras.data,
-    openGraph: getOpenGraph(langui, langui.chronology ?? "Chronology"),
+    openGraph: getOpenGraph(format, format("chronology")),
   };
   return {
     props: props,
@@ -302,7 +300,7 @@ interface ChronologyEventProps {
 }
 
 export const ChronologyEvent = ({ event, id }: ChronologyEventProps): JSX.Element => {
-  const langui = useAtomGetter(atoms.localData.langui);
+  const { format, formatStatusDescription } = useFormat();
   const [selectedTranslation, LanguageSwitcher, languageSwitcherProps] = useSmartLanguage({
     items: event.translations ?? [],
     languageExtractor: useCallback(
@@ -322,7 +320,7 @@ export const ChronologyEvent = ({ event, id }: ChronologyEventProps): JSX.Elemen
             {selectedTranslation.status !==
               Enum_Componenttranslationschronologyitem_Status.Done && (
               <ToolTip
-                content={getStatusDescription(selectedTranslation.status, langui)}
+                content={formatStatusDescription(selectedTranslation.status)}
                 maxWidth={"20rem"}>
                 <Chip text={selectedTranslation.status} />
               </ToolTip>
@@ -334,7 +332,7 @@ export const ChronologyEvent = ({ event, id }: ChronologyEventProps): JSX.Elemen
               ) : (
                 <div className="flex items-center gap-1">
                   <Ico icon="warning" className="!text-sm" />
-                  {langui.no_source_warning}
+                  {format("no_source_warning")}
                 </div>
               )}
             </p>
@@ -354,7 +352,7 @@ export const ChronologyEvent = ({ event, id }: ChronologyEventProps): JSX.Elemen
             <p className="whitespace-pre-line">{selectedTranslation.description}</p>
           )}
 
-          {selectedTranslation.note && <em>{`${langui.notes}: ${selectedTranslation.note}`}</em>}
+          {selectedTranslation.note && <em>{`${format("notes")}: ${selectedTranslation.note}`}</em>}
         </>
       )}
     </div>

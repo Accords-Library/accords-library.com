@@ -10,6 +10,7 @@ import { useScrollTopOnChange } from "hooks/useScrollTopOnChange";
 import { Ids } from "types/ids";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter } from "helpers/atoms";
+import { useFormat } from "hooks/useFormat";
 
 interface Group<T> {
   name: string;
@@ -71,7 +72,7 @@ export const SmartList = <T,>({
   className,
 }: Props<T>): JSX.Element => {
   const [page, setPage] = useState(1);
-  const langui = useAtomGetter(atoms.localData.langui);
+  const { format } = useFormat();
   useScrollTopOnChange(Ids.ContentPanel, [page], paginationScroolTop);
   useEffect(() => setPage(1), [searchingTerm, groupingFunction, groupSortingFunction]);
 
@@ -180,13 +181,7 @@ export const SmartList = <T,>({
                       className="flex flex-row place-items-center gap-2 pb-2 pt-10 text-2xl
                       first-of-type:pt-0">
                       {group.name}
-                      <Chip
-                        text={`${group.totalCount} ${
-                          group.items.length <= 1
-                            ? langui.result?.toLowerCase() ?? ""
-                            : langui.results?.toLowerCase() ?? ""
-                        }`}
-                      />
+                      <Chip text={format("x_results", { x: group.totalCount })} />
                     </h2>
                   )}
                   <div
@@ -222,15 +217,15 @@ export const SmartList = <T,>({
  */
 
 const DefaultRenderWhenEmpty = () => {
+  const { format } = useFormat();
   const is3ColumnsLayout = useAtomGetter(atoms.containerQueries.is3ColumnsLayout);
-  const langui = useAtomGetter(atoms.localData.langui);
   return (
     <div className="grid h-full place-content-center">
       <div
         className="grid grid-flow-col place-items-center gap-9 rounded-2xl border-2 border-dotted
         border-dark p-8 text-dark opacity-40">
         {is3ColumnsLayout && <Ico icon="chevron_left" className="!text-[300%]" />}
-        <p className="max-w-xs text-2xl">{langui.no_results_message}</p>
+        <p className="max-w-xs text-2xl">{format("no_results_message")}</p>
         {!is3ColumnsLayout && <Ico icon="chevron_right" className="!text-[300%]" />}
       </div>
     </div>

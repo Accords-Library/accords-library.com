@@ -1,7 +1,8 @@
 import { OgImage, getImgSizesByQuality, ImageQuality, getAssetURL } from "./img";
 import { isDefinedAndNotEmpty } from "./asserts";
-import { Langui } from "./localData";
+import { getFormat } from "./i18n";
 import { UploadImageFragment } from "graphql/generated";
+import { useFormat } from "hooks/useFormat";
 
 const DEFAULT_OG_THUMBNAIL = {
   image: `${process.env.NEXT_PUBLIC_URL_SELF}/default_og.jpg`,
@@ -20,13 +21,13 @@ export interface OpenGraph {
 }
 
 export const getOpenGraph = (
-  langui: Langui,
+  format: ReturnType<typeof getFormat>["format"] | ReturnType<typeof useFormat>["format"],
   title?: string | null | undefined,
   description?: string | null | undefined,
   thumbnail?: UploadImageFragment | null | undefined
 ): OpenGraph => ({
   title: `${TITLE_PREFIX}${isDefinedAndNotEmpty(title) ? `${TITLE_SEPARATOR}${title}` : ""}`,
-  description: isDefinedAndNotEmpty(description) ? description : langui.default_description ?? "",
+  description: isDefinedAndNotEmpty(description) ? description : format("default_description"),
   thumbnail: thumbnail ? getOgImage(thumbnail) : DEFAULT_OG_THUMBNAIL,
 });
 

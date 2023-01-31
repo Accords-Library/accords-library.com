@@ -15,6 +15,7 @@ import { useDeviceSupportsHover } from "hooks/useMediaQuery";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter } from "helpers/atoms";
 import { Link } from "components/Inputs/Link";
+import { useFormat } from "hooks/useFormat";
 
 /*
  *                                        ╭─────────────╮
@@ -225,7 +226,7 @@ export const TableOfContents = ({
   title,
   horizontalLine = false,
 }: TableOfContentsProps): JSX.Element => {
-  const langui = useAtomGetter(atoms.localData.langui);
+  const { format } = useFormat();
   const toc = getTocFromMarkdawn(preprocessMarkDawn(text), title);
 
   return (
@@ -233,7 +234,7 @@ export const TableOfContents = ({
       {toc.children.length > 0 && (
         <>
           {horizontalLine && <HorizontalLine />}
-          <h3 className="text-xl">{langui.table_of_contents}</h3>
+          <h3 className="text-xl">{format("table_of_contents")}</h3>
           <div className="max-w-[14.5rem] text-left">
             <p
               className="relative my-2 overflow-x-hidden text-ellipsis whitespace-nowrap

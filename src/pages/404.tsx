@@ -3,10 +3,9 @@ import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { ReturnButton } from "components/PanelComponents/ReturnButton";
 import { ContentPanel } from "components/Containers/ContentPanel";
 import { getOpenGraph } from "helpers/openGraph";
-import { getLangui } from "graphql/fetchLocalData";
 import { Img } from "components/Img";
-import { atoms } from "contexts/atoms";
-import { useAtomGetter } from "helpers/atoms";
+import { useFormat } from "hooks/useFormat";
+import { getFormat } from "helpers/i18n";
 
 /*
  *                                           ╭────────╮
@@ -16,7 +15,7 @@ import { useAtomGetter } from "helpers/atoms";
 interface Props extends AppLayoutRequired {}
 
 const FourOhFour = ({ openGraph, ...otherProps }: Props): JSX.Element => {
-  const langui = useAtomGetter(atoms.localData.langui);
+  const { format } = useFormat();
   return (
     <AppLayout
       contentPanel={
@@ -26,7 +25,7 @@ const FourOhFour = ({ openGraph, ...otherProps }: Props): JSX.Element => {
             className="animate-zoom-in drop-shadow-lg shadow-shade"
           />
           <div className="mt-8 grid place-items-center gap-6">
-            <h2>{langui.page_not_found}</h2>
+            <h2>{format("page_not_found")}</h2>
             <ReturnButton href="/" title="Home" />
           </div>
         </ContentPanel>
@@ -44,9 +43,9 @@ export default FourOhFour;
  */
 
 export const getStaticProps: GetStaticProps = (context) => {
-  const langui = getLangui(context.locale);
+  const { format } = getFormat(context.locale);
   const props: Props = {
-    openGraph: getOpenGraph(langui, `404 - ${langui.page_not_found}`),
+    openGraph: getOpenGraph(format, `404 - ${format("page_not_found")}`),
   };
   return {
     props: props,

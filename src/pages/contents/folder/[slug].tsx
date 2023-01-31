@@ -16,10 +16,11 @@ import { SubPanel } from "components/Containers/SubPanel";
 import { TranslatedPreviewCard } from "components/PreviewCard";
 import { HorizontalLine } from "components/HorizontalLine";
 import { cJoin, cIf } from "helpers/className";
-import { getLangui } from "graphql/fetchLocalData";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter } from "helpers/atoms";
 import { TranslatedPreviewFolder } from "components/Contents/PreviewFolder";
+import { useFormat } from "hooks/useFormat";
+import { getFormat } from "helpers/i18n";
 
 /*
  *                                           ╭────────╮
@@ -33,20 +34,20 @@ interface Props extends AppLayoutRequired {
 }
 
 const ContentsFolder = ({ openGraph, folder, ...otherProps }: Props): JSX.Element => {
-  const langui = useAtomGetter(atoms.localData.langui);
+  const { format } = useFormat();
   const isContentPanelAtLeast4xl = useAtomGetter(atoms.containerQueries.isContentPanelAtLeast4xl);
 
   const subPanel = (
     <SubPanel>
       <PanelHeader
         icon="workspaces"
-        title={langui.contents}
-        description={langui.contents_description}
+        title={format("contents")}
+        description={format("contents_description")}
       />
 
       <HorizontalLine />
 
-      <Button href="/contents/all" text={langui.switch_to_grid_view} icon="apps" />
+      <Button href="/contents/all" text={format("switch_to_grid_view")} icon="apps" />
     </SubPanel>
   );
 
@@ -117,7 +118,7 @@ const ContentsFolder = ({ openGraph, folder, ...otherProps }: Props): JSX.Elemen
           )
         )}
         renderWhenEmpty={() => <></>}
-        groupingFunction={() => [langui.folders ?? "Folders"]}
+        groupingFunction={() => [format("folders")]}
       />
 
       <SmartList
@@ -159,7 +160,7 @@ const ContentsFolder = ({ openGraph, folder, ...otherProps }: Props): JSX.Elemen
           "grid-cols-2 gap-x-3 gap-y-5"
         )}
         renderWhenEmpty={() => <></>}
-        groupingFunction={() => [langui.contents ?? "Contents"]}
+        groupingFunction={() => [format("contents")]}
       />
 
       {folder.contents?.data.length === 0 && folder.subfolders?.data.length === 0 && (
@@ -186,7 +187,7 @@ export default ContentsFolder;
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
-  const langui = getLangui(context.locale);
+  const { format } = getFormat(context.locale);
   const slug = context.params?.slug ? context.params.slug.toString() : "";
   const contentsFolder = await sdk.getContentsFolder({
     slug: slug,
@@ -208,7 +209,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   const title = (() => {
     if (slug === "root") {
-      return langui.contents ?? "Contents";
+      return format("contents");
     }
     if (context.locale && context.locales) {
       const selectedTranslation = staticSmartLanguage({
@@ -224,7 +225,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   })();
 
   const props: Props = {
-    openGraph: getOpenGraph(langui, title),
+    openGraph: getOpenGraph(format, title),
     folder,
   };
   return {
@@ -258,13 +259,13 @@ export const getStaticPaths: GetStaticPaths = async (context) => {
  */
 
 const NoContentNorFolderMessage = () => {
-  const langui = useAtomGetter(atoms.localData.langui);
+  const { format } = useFormat();
   return (
     <div className="grid place-content-center">
       <div
         className="grid grid-flow-col place-items-center gap-9 rounded-2xl border-2 border-dotted
       border-dark p-8 text-dark opacity-40">
-        <p className="max-w-xs text-2xl">{langui.empty_folder_message}</p>
+        <p className="max-w-xs text-2xl">{format("empty_folder_message")}</p>
       </div>
     </div>
   );

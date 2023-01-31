@@ -3,7 +3,7 @@ import { MaterialSymbol } from "material-symbols";
 import { Popup } from "components/Containers/Popup";
 import { sendAnalytics } from "helpers/analytics";
 import { atoms } from "contexts/atoms";
-import { useAtomPair, useAtomGetter } from "helpers/atoms";
+import { useAtomPair } from "helpers/atoms";
 import { TextInput } from "components/Inputs/TextInput";
 import { containsHighlight, CustomSearchResponse, meiliSearch } from "helpers/search";
 import { PreviewCard, TranslatedPreviewCard } from "components/PreviewCard";
@@ -20,6 +20,7 @@ import { getVideoThumbnailURL } from "helpers/videos";
 import { UpPressable } from "components/Containers/UpPressable";
 import { prettyItemSubType, prettySlug } from "helpers/formatters";
 import { Ico } from "components/Ico";
+import { useFormat } from "hooks/useFormat";
 
 /*
  *                                         ╭─────────────╮
@@ -36,7 +37,7 @@ const SEARCH_LIMIT = 8;
 export const SearchPopup = (): JSX.Element => {
   const [isSearchOpened, setSearchOpened] = useAtomPair(atoms.layout.searchOpened);
   const [query, setQuery] = useState("");
-  const langui = useAtomGetter(atoms.localData.langui);
+  const { format } = useFormat();
   const [libraryItems, setLibraryItems] = useState<CustomSearchResponse<MeiliLibraryItem>>();
   const [contents, setContents] = useState<CustomSearchResponse<MeiliContent>>();
   const [videos, setVideos] = useState<CustomSearchResponse<MeiliVideo>>();
@@ -178,14 +179,14 @@ export const SearchPopup = (): JSX.Element => {
       fillViewport>
       <h2 className="inline-flex place-items-center gap-2 text-2xl">
         <Ico icon="search" isFilled />
-        {langui.search}
+        {format("search")}
       </h2>
-      <TextInput onChange={setQuery} value={query} placeholder={langui.search_title} />
+      <TextInput onChange={setQuery} value={query} placeholder={format("search_title")} />
 
       <div className="flex w-full flex-wrap gap-12 gap-x-16">
         {isDefined(libraryItems) && (
           <SearchResultSection
-            title={langui.library}
+            title={format("library")}
             icon="auto_stories"
             href={`/library?page=1&query=${query}\
 &sort=0&primary=true&secondary=true&subitems=true&status=all`}
@@ -232,7 +233,7 @@ export const SearchPopup = (): JSX.Element => {
 
         {isDefined(contents) && (
           <SearchResultSection
-            title={langui.contents}
+            title={format("contents")}
             icon="workspaces"
             href={`/contents/all?page=1&query=${query}&sort=0`}
             totalHits={contents.estimatedTotalHits}>
@@ -276,7 +277,7 @@ export const SearchPopup = (): JSX.Element => {
 
         {isDefined(wikiPages) && (
           <SearchResultSection
-            title={langui.wiki}
+            title={format("wiki")}
             icon="travel_explore"
             href={`/wiki?page=1&query=${query}`}
             totalHits={wikiPages.estimatedTotalHits}>
@@ -327,7 +328,7 @@ export const SearchPopup = (): JSX.Element => {
 
         {isDefined(posts) && (
           <SearchResultSection
-            title={langui.news}
+            title={format("news")}
             icon="newspaper"
             href={`/news?page=1&query=${query}`}
             totalHits={posts.estimatedTotalHits}>
@@ -369,7 +370,7 @@ export const SearchPopup = (): JSX.Element => {
 
         {isDefined(videos) && (
           <SearchResultSection
-            title={langui.videos}
+            title={format("videos")}
             icon="movie"
             href={`/archives/videos?page=1&query=${query}&sort=1&gone=`}
             totalHits={videos.estimatedTotalHits}>
@@ -424,26 +425,30 @@ const SearchResultSection = ({
   href,
   totalHits,
   children,
-}: SearchResultSectionProps) => (
-  <>
-    {isDefined(totalHits) && totalHits > 0 && (
-      <div>
-        <div className="mb-6 grid place-content-start">
-          <UpPressable
-            className="grid grid-cols-[auto_1fr] place-items-center gap-6 px-6 py-4"
-            href={href}>
-            <Ico icon={icon} className="!text-3xl" isFilled />
-            <div>
-              <p className="font-headers text-lg">{title}</p>
-              {isDefined(totalHits) && totalHits > SEARCH_LIMIT && (
-                /* TODO: Langui */
-                <p className="text-sm">{`(showing ${SEARCH_LIMIT} out of ${totalHits} results)`}</p>
-              )}
-            </div>
-          </UpPressable>
+}: SearchResultSectionProps) => {
+  const { format } = useFormat();
+  return (
+    <>
+      {isDefined(totalHits) && totalHits > 0 && (
+        <div>
+          <div className="mb-6 grid place-content-start">
+            <UpPressable
+              className="grid grid-cols-[auto_1fr] place-items-center gap-6 px-6 py-4"
+              href={href}>
+              <Ico icon={icon} className="!text-3xl" isFilled />
+              <div>
+                <p className="font-headers text-lg">{title}</p>
+                {isDefined(totalHits) && totalHits > SEARCH_LIMIT && (
+                  <p className="text-sm">
+                    ({format("showing_x_out_of_y_results", { x: SEARCH_LIMIT, y: totalHits })})
+                  </p>
+                )}
+              </div>
+            </UpPressable>
+          </div>
+          {children}
         </div>
-        {children}
-      </div>
-    )}
-  </>
-);
+      )}
+    </>
+  );
+};

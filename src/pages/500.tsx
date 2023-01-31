@@ -3,10 +3,9 @@ import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { ReturnButton } from "components/PanelComponents/ReturnButton";
 import { ContentPanel } from "components/Containers/ContentPanel";
 import { getOpenGraph } from "helpers/openGraph";
-import { getLangui } from "graphql/fetchLocalData";
 import { Img } from "components/Img";
-import { atoms } from "contexts/atoms";
-import { useAtomGetter } from "helpers/atoms";
+import { useFormat } from "hooks/useFormat";
+import { getFormat } from "helpers/i18n";
 
 /*
  *                                           ╭────────╮
@@ -16,7 +15,7 @@ import { useAtomGetter } from "helpers/atoms";
 interface Props extends AppLayoutRequired {}
 
 const FiveHundred = ({ openGraph, ...otherProps }: Props): JSX.Element => {
-  const langui = useAtomGetter(atoms.localData.langui);
+  const { format } = useFormat();
   return (
     <AppLayout
       contentPanel={
@@ -26,7 +25,7 @@ const FiveHundred = ({ openGraph, ...otherProps }: Props): JSX.Element => {
             className="animate-zoom-in drop-shadow-lg shadow-shade"
           />
           <div className="mt-8 grid place-items-center gap-6">
-            <h2>{langui.page_not_found}</h2>
+            <h2>{format("page_not_found")}</h2>
             <ReturnButton href="/" title="Home" />
           </div>
         </ContentPanel>
@@ -44,9 +43,10 @@ export default FiveHundred;
  */
 
 export const getStaticProps: GetStaticProps = (context) => {
-  const langui = getLangui(context.locale);
+  const { format } = getFormat(context.locale);
   const props: Props = {
-    openGraph: getOpenGraph(langui, "500 - Internal Server Error"),
+    /* TODO: Langui */
+    openGraph: getOpenGraph(format, "500 - Internal Server Error"),
   };
   return {
     props: props,

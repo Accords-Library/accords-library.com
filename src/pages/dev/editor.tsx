@@ -8,7 +8,7 @@ import { ContentPanel, ContentPanelWidthSizes } from "components/Containers/Cont
 import { Popup } from "components/Containers/Popup";
 import { ToolTip } from "components/ToolTip";
 import { getOpenGraph } from "helpers/openGraph";
-import { getLangui } from "graphql/fetchLocalData";
+import { getFormat } from "helpers/i18n";
 
 /*
  *                                           ╭────────╮
@@ -404,9 +404,9 @@ export default Editor;
  */
 
 export const getStaticProps: GetStaticProps = (context) => {
-  const langui = getLangui(context.locale);
+  const { format } = getFormat(context.locale);
   const props: Props = {
-    openGraph: getOpenGraph(langui, "Markdawn Editor"),
+    openGraph: getOpenGraph(format, "Markdawn Editor"),
   };
   return {
     props: props,

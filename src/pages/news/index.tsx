@@ -20,7 +20,6 @@ import {
 import { getOpenGraph } from "helpers/openGraph";
 import { TranslatedPreviewCard } from "components/PreviewCard";
 import { HorizontalLine } from "components/HorizontalLine";
-import { getLangui } from "graphql/fetchLocalData";
 import { sendAnalytics } from "helpers/analytics";
 import { Terminal } from "components/Cli/Terminal";
 import { atoms } from "contexts/atoms";
@@ -30,6 +29,8 @@ import { MeiliIndices, MeiliPost } from "shared/meilisearch-graphql-typings/meil
 import { useTypedRouter } from "hooks/useTypedRouter";
 import { prettySlug } from "helpers/formatters";
 import { Paginator } from "components/Containers/Paginator";
+import { useFormat } from "hooks/useFormat";
+import { getFormat } from "helpers/i18n";
 
 /*
  *                                         ╭─────────────╮
@@ -55,7 +56,7 @@ const queryParamSchema = z.object({
 interface Props extends AppLayoutRequired {}
 
 const News = ({ ...otherProps }: Props): JSX.Element => {
-  const langui = useAtomGetter(atoms.localData.langui);
+  const { format } = useFormat();
   const hoverable = useDeviceSupportsHover();
   const router = useTypedRouter(queryParamSchema);
 
@@ -115,13 +116,17 @@ const News = ({ ...otherProps }: Props): JSX.Element => {
 
   const subPanel = (
     <SubPanel>
-      <PanelHeader icon="newspaper" title={langui.news} description={langui.news_description} />
+      <PanelHeader
+        icon="newspaper"
+        title={format("news")}
+        description={format("news_description")}
+      />
 
       <HorizontalLine />
 
       <TextInput
         className="mb-6 w-full"
-        placeholder={langui.search_title ?? "Search..."}
+        placeholder={format("search_title")}
         value={query}
         onChange={(name) => {
           setQuery(name);
@@ -134,7 +139,7 @@ const News = ({ ...otherProps }: Props): JSX.Element => {
       />
 
       {hoverable && (
-        <WithLabel label={langui.always_show_info}>
+        <WithLabel label={format("always_show_info")}>
           <Switch
             value={keepInfoVisible}
             onClick={() => {
@@ -147,7 +152,7 @@ const News = ({ ...otherProps }: Props): JSX.Element => {
 
       <Button
         className="mt-8"
-        text={langui.reset_all_filters}
+        text={format("reset_all_filters")}
         icon="settings_backup_restore"
         onClick={() => {
           setQuery(DEFAULT_FILTERS_STATE.query);
@@ -220,9 +225,9 @@ export default News;
  */
 
 export const getStaticProps: GetStaticProps = (context) => {
-  const langui = getLangui(context.locale);
+  const { format } = getFormat(context.locale);
   const props: Props = {
-    openGraph: getOpenGraph(langui, langui.news ?? "News"),
+    openGraph: getOpenGraph(format, format("news")),
   };
   return {
     props: props,

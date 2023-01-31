@@ -1,6 +1,5 @@
 import { GetStaticProps } from "next";
 import { getReadySdk } from "./sdk";
-import { getLangui } from "./fetchLocalData";
 import { PostWithTranslations } from "types/types";
 import { getOpenGraph } from "helpers/openGraph";
 import { prettyDate, prettySlug } from "helpers/formatters";
@@ -8,6 +7,7 @@ import { getDefaultPreferredLanguages, staticSmartLanguage } from "helpers/local
 import { filterHasAttributes, isDefined } from "helpers/asserts";
 import { getDescription } from "helpers/description";
 import { AppLayoutRequired } from "components/AppLayout";
+import { getFormat } from "helpers/i18n";
 
 export interface PostStaticProps extends AppLayoutRequired {
   post: PostWithTranslations;
@@ -17,7 +17,7 @@ export const getPostStaticProps =
   (slug: string): GetStaticProps =>
   async (context) => {
     const sdk = getReadySdk();
-    const langui = getLangui(context.locale);
+    const { format } = getFormat(context.locale);
     const post = await sdk.getPost({
       slug: slug,
       language_code: context.locale ?? "en",
@@ -38,10 +38,8 @@ export const getPostStaticProps =
       const title = selectedTranslation?.title ?? prettySlug(slug);
 
       const description = getDescription(selectedTranslation?.excerpt, {
-        [langui.release_date ?? "Release date"]: [
-          prettyDate(post.posts.data[0].attributes.date, context.locale),
-        ],
-        [langui.categories ?? "Categories"]: filterHasAttributes(
+        [format("release_date")]: [prettyDate(post.posts.data[0].attributes.date, context.locale)],
+        [format("category", { count: Infinity })]: filterHasAttributes(
           post.posts.data[0].attributes.categories?.data,
           ["attributes"] as const
         ).map((category) => category.attributes.short),
@@ -53,7 +51,7 @@ export const getPostStaticProps =
 
       const props: PostStaticProps = {
         post: post.posts.data[0].attributes as PostWithTranslations,
-        openGraph: getOpenGraph(langui, title, description, thumbnail),
+        openGraph: getOpenGraph(format, title, description, thumbnail),
       };
       return {
         props: props,

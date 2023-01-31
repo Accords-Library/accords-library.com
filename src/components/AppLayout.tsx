@@ -10,6 +10,7 @@ import { OpenGraph, TITLE_PREFIX, TITLE_SEPARATOR } from "helpers/openGraph";
 import { Ids } from "types/ids";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter, useAtomPair } from "helpers/atoms";
+import { useFormat } from "hooks/useFormat";
 
 /*
  *                                         ╭─────────────╮
@@ -48,7 +49,7 @@ export const AppLayout = ({
   const [isMainPanelOpened, setMainPanelOpened] = useAtomPair(atoms.layout.mainPanelOpened);
   const isMenuGesturesEnabled = useAtomGetter(atoms.layout.menuGesturesEnabled);
 
-  const langui = useAtomGetter(atoms.localData.langui);
+  const { format } = useFormat();
 
   const is1ColumnLayout = useAtomGetter(atoms.containerQueries.is1ColumnLayout);
   const isScreenAtLeastXs = useAtomGetter(atoms.containerQueries.isScreenAtLeastXs);
@@ -149,7 +150,7 @@ export const AppLayout = ({
         {isDefined(contentPanel) ? (
           contentPanel
         ) : (
-          <ContentPlaceholder message={langui.select_option_sidebar ?? ""} icon={"chevron_left"} />
+          <ContentPlaceholder message={format("select_option_sidebar")} icon={"chevron_left"} />
         )}
       </div>
 

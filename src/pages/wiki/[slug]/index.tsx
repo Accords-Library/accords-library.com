@@ -19,11 +19,12 @@ import { getOpenGraph } from "helpers/openGraph";
 import { getDefaultPreferredLanguages, staticSmartLanguage } from "helpers/locales";
 import { getDescription } from "helpers/description";
 import { cIf, cJoin } from "helpers/className";
-import { getLangui } from "graphql/fetchLocalData";
 import { Terminal } from "components/Cli/Terminal";
 import { prettyTerminalBoxedTitle, prettyTerminalUnderlinedTitle } from "helpers/terminal";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter } from "helpers/atoms";
+import { useFormat } from "hooks/useFormat";
+import { getFormat } from "helpers/i18n";
 
 /*
  *                                           ╭────────╮
@@ -35,7 +36,7 @@ interface Props extends AppLayoutRequired {
 }
 
 const WikiPage = ({ page, ...otherProps }: Props): JSX.Element => {
-  const langui = useAtomGetter(atoms.localData.langui);
+  const { format } = useFormat();
   const router = useRouter();
   const isTerminalMode = useAtomGetter(atoms.layout.terminalMode);
   const { showLightBox } = useAtomGetter(atoms.lightBox);
@@ -51,7 +52,7 @@ const WikiPage = ({ page, ...otherProps }: Props): JSX.Element => {
 
   const subPanel = (
     <SubPanel>
-      <ReturnButton href={`/wiki`} title={langui.wiki} displayOnlyOn={"3ColumnsLayout"} />
+      <ReturnButton href={`/wiki`} title={format("wiki")} displayOnlyOn={"3ColumnsLayout"} />
     </SubPanel>
   );
 
@@ -59,7 +60,7 @@ const WikiPage = ({ page, ...otherProps }: Props): JSX.Element => {
     <ContentPanel width={ContentPanelWidthSizes.Large}>
       <ReturnButton
         href={`/wiki`}
-        title={langui.wiki}
+        title={format("wiki")}
         displayOnlyOn={"1ColumnLayout"}
         className="mb-10"
       />
@@ -98,7 +99,9 @@ const WikiPage = ({ page, ...otherProps }: Props): JSX.Element => {
               <div className="my-4 grid gap-4 p-4">
                 {page.categories?.data && page.categories.data.length > 0 && (
                   <>
-                    <p className="font-headers text-xl font-bold">{langui.categories}</p>
+                    <p className="font-headers text-xl font-bold">
+                      {format("category", { count: page.categories.data.length })}
+                    </p>
 
                     <div className="flex flex-row flex-wrap place-content-center gap-2">
                       {filterHasAttributes(page.categories.data, ["attributes"] as const).map(
@@ -112,7 +115,7 @@ const WikiPage = ({ page, ...otherProps }: Props): JSX.Element => {
 
                 {page.tags?.data && page.tags.data.length > 0 && (
                   <>
-                    <p className="font-headers text-xl font-bold">{langui.tags}</p>
+                    <p className="font-headers text-xl font-bold">{format("tags")}</p>
                     <div className="flex flex-row flex-wrap place-content-center gap-2">
                       {filterHasAttributes(page.tags.data, ["attributes"] as const).map((tag) => (
                         <Chip
@@ -130,7 +133,7 @@ const WikiPage = ({ page, ...otherProps }: Props): JSX.Element => {
 
             {isDefinedAndNotEmpty(selectedTranslation.summary) && (
               <div className="mb-12">
-                <p className="font-headers text-lg font-bold">{langui.summary}</p>
+                <p className="font-headers text-lg font-bold">{format("summary")}</p>
                 <p>{selectedTranslation.summary}</p>
               </div>
             )}
@@ -188,13 +191,13 @@ const WikiPage = ({ page, ...otherProps }: Props): JSX.Element => {
           }`
         )}${
           isDefinedAndNotEmpty(selectedTranslation?.summary)
-            ? `${prettyTerminalUnderlinedTitle(langui.summary)}${selectedTranslation?.summary}`
+            ? `${prettyTerminalUnderlinedTitle(format("summary"))}${selectedTranslation?.summary}`
             : ""
         }${
           page.definitions && page.definitions.length > 0
             ? `${filterHasAttributes(page.definitions, ["translations"] as const).map(
                 (definition, index) =>
-                  `${prettyTerminalUnderlinedTitle(`${langui.definition} ${index + 1}`)}${
+                  `${prettyTerminalUnderlinedTitle(format("definition_x", { x: index + 1 }))}${
                     staticSmartLanguage({
                       items: filterHasAttributes(definition.translations, [
                         "language.data.attributes.code",
@@ -228,7 +231,7 @@ export default WikiPage;
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
-  const langui = getLangui(context.locale);
+  const { format } = getFormat(context.locale);
   const slug =
     context.params && isDefined(context.params.slug) ? context.params.slug.toString() : "";
   const page = await sdk.getWikiPage({
@@ -239,12 +242,12 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   const { title, description } = (() => {
     const chipsGroups = {
-      [langui.tags ?? "Tags"]: filterHasAttributes(page.wikiPages.data[0].attributes.tags?.data, [
+      [format("tags")]: filterHasAttributes(page.wikiPages.data[0].attributes.tags?.data, [
         "attributes",
       ] as const).map(
         (tag) => tag.attributes.titles?.[0]?.title ?? prettySlug(tag.attributes.slug)
       ),
-      [langui.categories ?? "Categories"]: filterHasAttributes(
+      [format("category", { count: Infinity })]: filterHasAttributes(
         page.wikiPages.data[0].attributes.categories?.data,
         ["attributes"] as const
       ).map((category) => category.attributes.short),
@@ -274,7 +277,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   const props: Props = {
     page: page.wikiPages.data[0].attributes as WikiPageWithTranslations,
-    openGraph: getOpenGraph(langui, title, description, thumbnail),
+    openGraph: getOpenGraph(format, title, description, thumbnail),
   };
   return {
     props: props,

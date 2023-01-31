@@ -20,16 +20,15 @@ import {
 } from "helpers/asserts";
 import { getOpenGraph } from "helpers/openGraph";
 import { HorizontalLine } from "components/HorizontalLine";
-import { getLangui } from "graphql/fetchLocalData";
 import { sendAnalytics } from "helpers/analytics";
-import { atoms } from "contexts/atoms";
-import { useAtomGetter } from "helpers/atoms";
 import { containsHighlight, CustomSearchResponse, meiliSearch } from "helpers/search";
 import { MeiliContent, MeiliIndices } from "shared/meilisearch-graphql-typings/meiliTypes";
 import { useTypedRouter } from "hooks/useTypedRouter";
 import { TranslatedPreviewCard } from "components/PreviewCard";
 import { prettySlug } from "helpers/formatters";
 import { Paginator } from "components/Containers/Paginator";
+import { useFormat } from "hooks/useFormat";
+import { getFormat } from "helpers/i18n";
 
 /*
  *                                         ╭─────────────╮
@@ -58,16 +57,16 @@ interface Props extends AppLayoutRequired {}
 
 const Contents = (props: Props): JSX.Element => {
   const hoverable = useDeviceSupportsHover();
-  const langui = useAtomGetter(atoms.localData.langui);
+  const { format } = useFormat();
   const router = useTypedRouter(queryParamSchema);
 
   const sortingMethods = useMemo(
     () => [
-      { meiliAttribute: "slug:asc", displayedName: langui.name },
-      { meiliAttribute: "sortable_updated_date:asc", displayedName: langui.oldest },
-      { meiliAttribute: "sortable_updated_date:desc", displayedName: langui.newest },
+      { meiliAttribute: "slug:asc", displayedName: format("name") },
+      { meiliAttribute: "sortable_updated_date:asc", displayedName: format("oldest") },
+      { meiliAttribute: "sortable_updated_date:desc", displayedName: format("newest") },
     ],
-    [langui.name, langui.newest, langui.oldest]
+    [format]
   );
 
   const [sortingMethod, setSortingMethod] = useState<number>(
@@ -131,19 +130,19 @@ const Contents = (props: Props): JSX.Element => {
     <SubPanel>
       <PanelHeader
         icon="workspaces"
-        title={langui.contents}
-        description={langui.contents_description}
+        title={format("contents")}
+        description={format("contents_description")}
       />
 
       <HorizontalLine />
 
-      <Button href="/contents" text={langui.switch_to_folder_view} icon="folder" />
+      <Button href="/contents" text={format("switch_to_folder_view")} icon="folder" />
 
       <HorizontalLine />
 
       <TextInput
         className="mb-6 w-full"
-        placeholder={langui.search_title ?? "Search..."}
+        placeholder={format("search_title")}
         value={query}
         onChange={(name) => {
           setPage(1);
@@ -156,10 +155,10 @@ const Contents = (props: Props): JSX.Element => {
         }}
       />
 
-      <WithLabel label={langui.order_by}>
+      <WithLabel label={format("order_by")}>
         <Select
           className="w-full"
-          options={sortingMethods.map((item) => item.displayedName ?? "")}
+          options={sortingMethods.map((item) => item.displayedName)}
           value={sortingMethod}
           onChange={(newSort) => {
             setPage(1);
@@ -173,7 +172,7 @@ const Contents = (props: Props): JSX.Element => {
       </WithLabel>
 
       {hoverable && (
-        <WithLabel label={langui.always_show_info}>
+        <WithLabel label={format("always_show_info")}>
           <Switch
             value={keepInfoVisible}
             onClick={() => {
@@ -186,7 +185,7 @@ const Contents = (props: Props): JSX.Element => {
 
       <Button
         className="mt-8"
-        text={langui.reset_all_filters}
+        text={format("reset_all_filters")}
         icon="settings_backup_restore"
         onClick={() => {
           setPage(1);
@@ -254,10 +253,10 @@ export default Contents;
  */
 
 export const getStaticProps: GetStaticProps = (context) => {
-  const langui = getLangui(context.locale);
+  const { format } = getFormat(context.locale);
 
   const props: Props = {
-    openGraph: getOpenGraph(langui, langui.contents ?? "Contents"),
+    openGraph: getOpenGraph(format, format("contents")),
   };
   return {
     props: props,

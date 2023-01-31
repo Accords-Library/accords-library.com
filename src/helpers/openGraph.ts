@@ -2,6 +2,7 @@ import { OgImage, getImgSizesByQuality, ImageQuality, getAssetURL } from "./img"
 import { isDefinedAndNotEmpty } from "./asserts";
 import { getFormat } from "./i18n";
 import { UploadImageFragment } from "graphql/generated";
+import { useFormat } from "hooks/useFormat";
 
 const DEFAULT_OG_THUMBNAIL = {
   image: `${process.env.NEXT_PUBLIC_URL_SELF}/default_og.jpg`,
@@ -20,7 +21,7 @@ export interface OpenGraph {
 }
 
 export const getOpenGraph = (
-  format: ReturnType<typeof getFormat>["format"],
+  format: ReturnType<typeof getFormat>["format"] | ReturnType<typeof useFormat>["format"],
   title?: string | null | undefined,
   description?: string | null | undefined,
   thumbnail?: UploadImageFragment | null | undefined

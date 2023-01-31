@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<minder version="1.14.0" parent-etag="565269084" etag="3671330291">
+<minder version="1.14.0" parent-etag="2844169042" etag="3777682473">
   <theme name="dark" label="Dark" index="-1"/>
   <styles>
     <style level="0" isset="true" branchmargin="100" branchradius="25" linktype="straight" linkwidth="4" linkarrow="false" linkdash="solid" nodeborder="rounded" nodewidth="200" nodeborderwidth="4" nodefill="false" nodemargin="10" nodepadding="11" nodefont="Sans 11" nodemarkup="true" connectiondash="dotted" connectionlwidth="2" connectionarrow="fromto" connectionpadding="3" connectionfont="Sans 9" connectiontwidth="100"/>
@@ -14,54 +14,54 @@
     <style level="9" isset="true" branchmargin="100" branchradius="25" linktype="straight" linkwidth="4" linkarrow="false" linkdash="solid" nodeborder="underlined" nodewidth="200" nodeborderwidth="4" nodefill="false" nodemargin="8" nodepadding="11" nodefont="Sans 11" nodemarkup="true" connectiondash="dotted" connectionlwidth="2" connectionarrow="fromto" connectionpadding="3" connectionfont="Sans 9" connectiontwidth="100"/>
     <style level="10" isset="true" branchmargin="100" branchradius="25" linktype="straight" linkwidth="4" linkarrow="false" linkdash="solid" nodeborder="underlined" nodewidth="200" nodeborderwidth="4" nodefill="false" nodemargin="8" nodepadding="11" nodefont="Sans 11" nodemarkup="true" connectiondash="dotted" connectionlwidth="2" connectionarrow="fromto" connectionpadding="3" connectionfont="Sans 9" connectiontwidth="100"/>
   </styles>
-  <drawarea x="-706.6563110351558" y="37.12041219075536" scale="1.5"/>
+  <drawarea x="-736.36765543619742" y="32.05864461263036" scale="1.5"/>
   <images/>
   <nodes>
-    <node id="0" posx="619.05682373046852" posy="496.07335408528627" width="181" height="56" side="left" fold="false" treesize="56" layout="Horizontal" group="false">
+    <node id="0" posx="648.76816813151015" posy="501.13512166341127" width="181" height="56" side="left" fold="false" treesize="56" layout="Horizontal" group="false">
       <style branchmargin="100" branchradius="25" linktype="straight" linkwidth="4" linkarrow="false" linkdash="solid" nodeborder="underlined" nodewidth="200" nodeborderwidth="4" nodefill="false" nodemargin="8" nodepadding="11" nodefont="Sans 11" nodemarkup="true"/>
-      <nodename posx="638.05682373046852" posy="515.07335408528627" maxwidth="200">
+      <nodename posx="667.76816813151015" posy="520.13512166341127" maxwidth="200">
         <text data="accords-library.com"/>
       </nodename>
       <nodenote></nodenote>
     </node>
-    <node id="1" posx="573.47979736328057" posy="193.53715006510404" width="228" height="56" side="right" fold="false" treesize="56" layout="Horizontal" group="false">
+    <node id="1" posx="603.1911417643222" posy="198.59891764322904" width="228" height="56" side="right" fold="false" treesize="56" layout="Horizontal" group="false">
       <style branchmargin="100" branchradius="25" linktype="straight" linkwidth="4" linkarrow="false" linkdash="solid" nodeborder="underlined" nodewidth="200" nodeborderwidth="4" nodefill="false" nodemargin="8" nodepadding="11" nodefont="Sans 11" nodemarkup="true"/>
-      <nodename posx="592.47979736328057" posy="212.53715006510404" maxwidth="200">
+      <nodename posx="622.1911417643222" posy="217.59891764322904" maxwidth="200">
         <text data="strapi.accords-library.com"/>
       </nodename>
       <nodenote></nodenote>
     </node>
-    <node id="2" posx="479.06459554036411" posy="352.9875793457029" width="230" height="56" side="right" fold="false" treesize="56" layout="Horizontal" group="false">
+    <node id="2" posx="508.77593994140574" posy="358.0493469238279" width="230" height="56" side="right" fold="false" treesize="56" layout="Horizontal" group="false">
       <style branchmargin="100" branchradius="25" linktype="straight" linkwidth="4" linkarrow="false" linkdash="solid" nodeborder="underlined" nodewidth="200" nodeborderwidth="4" nodefill="false" nodemargin="8" nodepadding="11" nodefont="Sans 11" nodemarkup="true"/>
-      <nodename posx="498.06459554036411" posy="371.9875793457029" maxwidth="200">
+      <nodename posx="527.7759399414058" posy="377.0493469238279" maxwidth="200">
         <text data="watch.accords-library.com"/>
       </nodename>
       <nodenote></nodenote>
     </node>
-    <node id="3" posx="930.07356770833326" posy="485.75804646809888" width="235" height="56" side="left" fold="false" treesize="56" layout="Horizontal" group="false">
+    <node id="3" posx="959.78491210937489" posy="490.81981404622388" width="235" height="56" side="left" fold="false" treesize="56" layout="Horizontal" group="false">
       <style branchmargin="100" branchradius="25" linktype="straight" linkwidth="4" linkarrow="false" linkdash="solid" nodeborder="underlined" nodewidth="200" nodeborderwidth="4" nodefill="false" nodemargin="8" nodepadding="11" nodefont="Sans 11" nodemarkup="true"/>
-      <nodename posx="949.07356770833326" posy="504.75804646809888" maxwidth="200">
+      <nodename posx="978.78491210937489" posy="509.81981404622388" maxwidth="200">
         <text data="search.accords-library.com"/>
       </nodename>
       <nodenote></nodenote>
     </node>
-    <node id="4" posx="270.75532023111936" posy="469.50143432617188" width="213" height="56" side="left" fold="false" treesize="56" layout="Horizontal" group="false">
+    <node id="4" posx="300.46666463216098" posy="474.56320190429688" width="213" height="56" side="left" fold="false" treesize="56" layout="Horizontal" group="false">
       <style branchmargin="100" branchradius="25" linktype="straight" linkwidth="4" linkarrow="false" linkdash="solid" nodeborder="underlined" nodewidth="200" nodeborderwidth="4" nodefill="false" nodemargin="8" nodepadding="11" nodefont="Sans 11" nodemarkup="true"/>
-      <nodename posx="289.75532023111936" posy="488.50143432617188" maxwidth="200">
+      <nodename posx="319.46666463216098" posy="493.56320190429688" maxwidth="200">
         <text data="img.accords-library.com"/>
       </nodename>
       <nodenote></nodenote>
     </node>
-    <node id="5" posx="723.3406372070308" posy="704.73269653320312" width="236" height="56" side="right" fold="false" treesize="56" layout="Horizontal" group="false">
+    <node id="5" posx="753.05198160807242" posy="709.79446411132812" width="236" height="56" side="right" fold="false" treesize="56" layout="Horizontal" group="false">
       <style branchmargin="100" branchradius="25" linktype="straight" linkwidth="4" linkarrow="false" linkdash="solid" nodeborder="underlined" nodewidth="200" nodeborderwidth="4" nodefill="false" nodemargin="8" nodepadding="11" nodefont="Sans 11" nodemarkup="true"/>
-      <nodename posx="742.3406372070308" posy="723.73269653320312" maxwidth="200">
+      <nodename posx="772.05198160807242" posy="728.79446411132812" maxwidth="200">
         <text data="umami.accords-library.com"/>
       </nodename>
       <nodenote></nodenote>
     </node>
-    <node id="6" posx="438.2949829101554" posy="704.79434204101562" width="234" height="56" side="right" fold="false" treesize="56" layout="Horizontal" group="false">
+    <node id="6" posx="468.00632731119703" posy="709.85610961914062" width="234" height="56" side="right" fold="false" treesize="56" layout="Horizontal" group="false">
       <style branchmargin="100" branchradius="25" linktype="straight" linkwidth="4" linkarrow="false" linkdash="solid" nodeborder="underlined" nodewidth="200" nodeborderwidth="4" nodefill="false" nodemargin="8" nodepadding="11" nodefont="Sans 11" nodemarkup="true"/>
-      <nodename posx="457.2949829101554" posy="723.79434204101562" maxwidth="200">
+      <nodename posx="487.00632731119703" posy="728.85610961914062" maxwidth="200">
         <text data="gallery.accords-library.com"/>
       </nodename>
       <nodenote></nodenote>
@@ -69,57 +69,62 @@
   </nodes>
   <groups/>
   <connections>
-    <connection from_id="3" to_id="1" drag_x="1008.9155680338538" drag_y="291.56668090820301" color="#813d9c">
+    <connection from_id="3" to_id="1" drag_x="1038.6269124348951" drag_y="296.62844848632801" color="#813d9c">
       <style connectiondash="dotted" connectionlwidth="2" connectionarrow="fromto" connectionpadding="3" connectionfont="Sans 9" connectiontwidth="100"/>
       <title>GraphQL queries</title>
       <note></note>
     </connection>
-    <connection from_id="1" to_id="3" drag_x="952.30708821614598" drag_y="342.49227905273426">
+    <connection from_id="1" to_id="3" drag_x="982.0184326171875" drag_y="347.55404663085926">
       <style connectiondash="dotted" connectionlwidth="2" connectionarrow="fromto" connectionpadding="3" connectionfont="Sans 9" connectiontwidth="100"/>
       <title>Webhook</title>
       <note></note>
     </connection>
-    <connection from_id="2" to_id="1" drag_x="610.53983561197947" drag_y="303.31814575195307" color="#813d9c">
+    <connection from_id="2" to_id="1" drag_x="640.25118001302098" drag_y="308.37991333007801" color="#813d9c">
       <style connectiondash="dotted" connectionlwidth="2" connectionarrow="fromto" connectionpadding="3" connectionfont="Sans 9" connectiontwidth="100"/>
       <title>GraphQL mutations</title>
       <note></note>
     </connection>
-    <connection from_id="0" to_id="5" drag_x="771.31520589192746" drag_y="639.53558349609443">
+    <connection from_id="0" to_id="5" drag_x="801.02655029296898" drag_y="644.59735107421943">
       <style connectiondash="dotted" connectionlwidth="2" connectionarrow="fromto" connectionpadding="3" connectionfont="Sans 9" connectiontwidth="100"/>
       <title>Sends events</title>
       <note></note>
     </connection>
-    <connection from_id="4" to_id="0" drag_x="501.63850911458314" drag_y="577.36627197265648">
+    <connection from_id="4" to_id="0" drag_x="531.34985351562477" drag_y="582.42803955078148">
       <style connectiondash="dotted" connectionlwidth="2" connectionarrow="fromto" connectionpadding="3" connectionfont="Sans 9" connectiontwidth="150"/>
       <title>Provides the images</title>
       <note></note>
     </connection>
-    <connection from_id="3" to_id="0" drag_x="887.70037841796875" drag_y="580.34930419921943">
+    <connection from_id="3" to_id="0" drag_x="917.41172281901027" drag_y="585.41107177734443">
       <style connectiondash="dotted" connectionlwidth="2" connectionarrow="fromto" connectionpadding="3" connectionfont="Sans 9" connectiontwidth="150"/>
       <title>Provides search results</title>
       <note></note>
     </connection>
-    <connection from_id="0" to_id="1" drag_x="825.44006347656227" drag_y="376.72006225585938">
+    <connection from_id="0" to_id="1" drag_x="872.998291015625" drag_y="408.14896647135413">
       <style connectiondash="dotted" connectionlwidth="2" connectionarrow="fromto" connectionpadding="3" connectionfont="Sans 9" connectiontwidth="100"/>
       <title>GraphQL queries</title>
       <note></note>
     </connection>
-    <connection from_id="0" to_id="6" drag_x="634.52079264322902" drag_y="640.60829671224042">
+    <connection from_id="0" to_id="6" drag_x="664.23213704427053" drag_y="645.67006429036542">
       <style connectiondash="dotted" connectionlwidth="2" connectionarrow="fromto" connectionpadding="3" connectionfont="Sans 9" connectiontwidth="100"/>
       <title>Links to</title>
       <note></note>
     </connection>
-    <connection from_id="4" to_id="1" drag_x="371.127197265625" drag_y="290.4098002115885" color="#813d9c">
+    <connection from_id="4" to_id="1" drag_x="400.83854166666663" drag_y="295.4715677897135" color="#813d9c">
       <style connectiondash="dotted" connectionlwidth="2" connectionarrow="fromto" connectionpadding="3" connectionfont="Sans 9" connectiontwidth="100"/>
       <title>Python script</title>
       <note></note>
     </connection>
-    <connection from_id="2" to_id="0" drag_x="616.25642903645803" drag_y="443.84891764322913">
+    <connection from_id="2" to_id="0" drag_x="645.96777343749955" drag_y="448.91068522135413">
       <style connectiondash="dotted" connectionlwidth="2" connectionarrow="fromto" connectionpadding="3" connectionfont="Sans 9" connectiontwidth="150"/>
       <title>Provides the videos</title>
       <note></note>
     </connection>
-    <connection from_id="1" to_id="4" drag_x="411.43526204427064" drag_y="337.32072957356752">
+    <connection from_id="1" to_id="4" drag_x="441.14660644531227" drag_y="342.38249715169252">
+      <style connectiondash="dotted" connectionlwidth="2" connectionarrow="fromto" connectionpadding="3" connectionfont="Sans 9" connectiontwidth="100"/>
+      <title>Webhook</title>
+      <note></note>
+    </connection>
+    <connection from_id="1" to_id="0" drag_x="790.7373046875" drag_y="369.4803466796875">
       <style connectiondash="dotted" connectionlwidth="2" connectionarrow="fromto" connectionpadding="3" connectionfont="Sans 9" connectiontwidth="100"/>
       <title>Webhook</title>
       <note></note>

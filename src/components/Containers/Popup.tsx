@@ -47,8 +47,8 @@ export const Popup = ({
       )}>
       <div
         className={cJoin(
-          "fixed inset-0 bg-shade transition-all duration-500",
-          cIf(isVisible, "bg-opacity-50", "bg-opacity-0")
+          "fixed inset-0 transition-colors duration-500",
+          cIf(isVisible, "bg-shade/50", "bg-shade/0")
         )}
         onClick={onCloseRequest}
       />

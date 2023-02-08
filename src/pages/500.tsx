@@ -45,7 +45,6 @@ export default FiveHundred;
 export const getStaticProps: GetStaticProps = (context) => {
   const { format } = getFormat(context.locale);
   const props: Props = {
-    /* TODO: Langui */
     openGraph: getOpenGraph(format, "500 - Internal Server Error"),
   };
   return {

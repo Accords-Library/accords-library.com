@@ -15,6 +15,7 @@ import { useAtomGetter, useAtomPair } from "helpers/atoms";
 import { ThemeMode } from "contexts/settings";
 import { Ico } from "components/Ico";
 import { useFormat } from "hooks/useFormat";
+import { ToolTip } from "components/ToolTip";
 
 export const SettingsPopup = (): JSX.Element => {
   const [preferredLanguages, setPreferredLanguages] = useAtomPair(
@@ -95,7 +96,12 @@ export const SettingsPopup = (): JSX.Element => {
             cIf(!is1ColumnLayout, "grid-cols-2")
           )}>
           <div>
-            <h3 className="text-xl">{format("theme")}</h3>
+            <div className="flex place-content-center place-items-center gap-1">
+              <h3 className="text-xl">{format("theme")}</h3>
+              <ToolTip content={format("dark_mode_extension_warning")} placement="top">
+                <Ico icon="info" />
+              </ToolTip>
+            </div>
             <ButtonGroup
               buttonsProps={[
                 {

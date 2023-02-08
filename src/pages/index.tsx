@@ -5,7 +5,6 @@ import { Terminal } from "components/Cli/Terminal";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter } from "helpers/atoms";
 import { getOpenGraph } from "helpers/openGraph";
-import { useFormat } from "hooks/useFormat";
 import { getFormat } from "helpers/i18n";
 import { getReadySdk } from "graphql/sdk";
 import { PostWithTranslations } from "types/types";
@@ -16,7 +15,6 @@ import { PostWithTranslations } from "types/types";
  */
 
 const Home = (props: PostStaticProps): JSX.Element => {
-  const { format } = useFormat();
   const isTerminalMode = useAtomGetter(atoms.layout.terminalMode);
 
   if (isTerminalMode) {

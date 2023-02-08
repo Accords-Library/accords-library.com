@@ -139,8 +139,8 @@ export const PreviewCard = ({
             {hoverlay && hoverlay.__typename === "Video" && (
               <>
                 <div
-                  className="absolute inset-0 grid place-content-center bg-shade bg-opacity-0
-                  text-light transition-colors group-hover:bg-opacity-50">
+                  className="absolute inset-0 grid place-content-center bg-shade/0
+                   text-light transition-colors group-hover:bg-shade/50">
                   <Ico
                     icon="play_circle"
                     className="!text-6xl text-light opacity-0 drop-shadow-lg transition-opacity

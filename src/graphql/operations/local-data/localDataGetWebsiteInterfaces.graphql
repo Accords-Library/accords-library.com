@@ -185,6 +185,7 @@ query localDataGetWebsiteInterfaces {
         definition_x
         subitem_of_x
         variant_of_x
+        dark_mode_extension_warning
       }
     }
   }

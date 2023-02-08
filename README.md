@@ -28,9 +28,10 @@ Our Content Management System (CMS) that uses [Strapi](https://strapi.io/).
 
 ### [img.accords-library.com](https://github.com/Accords-Library/img.accords-library.com)
 
-A custom made image processor to overcome the lack of customization offered by Strapi build-in image processor. There is a python script to bulk process all images uploaded to Strapi. Subsequent changes to Strapi's media library can be handled using webhooks. The repo includes a server that listen to these webhook calls, and another to serve the images.  
+A custom made image processor to overcome the lack of customization offered by Strapi build-in image processor. There is a python script to bulk process all images uploaded to Strapi. Subsequent changes to Strapi's media library can be handled using webhooks. The repo includes a server that listen to these webhook calls, and another to serve the images.
 
 Each image in Strapi's media library is converted to four different formats:
+
 - Small: 512x512, quality 60, .webp
 - Medium: 1024x1024, quality 75, .webp
 - Large: 2048x2048, quality 80, .webp
@@ -39,7 +40,7 @@ Each image in Strapi's media library is converted to four different formats:
 ### [search.accords-library.com](https://github.com/Accords-Library/search.accords-library.com)
 
 A search engine that uses [Meilisearch](https://www.meilisearch.com/).
-The repo includes a docker-compose file to run an instance of Meilisearch. There is also a server that populates Meilisearch's documents at startup, then listen to webhooks sent by Strapi for subsequent changes. 
+The repo includes a docker-compose file to run an instance of Meilisearch. There is also a server that populates Meilisearch's documents at startup, then listen to webhooks sent by Strapi for subsequent changes.
 
 ### [gallery.accords-library.com](https://github.com/Accords-Library/gallery.accords-library.com)
 
@@ -138,7 +139,6 @@ A detailled look at the technologies used in this repository:
   - Custom lightbox using [react-zoom-pan-pinch](https://www.npmjs.com/package/react-zoom-pan-pinch)
   - Handle query params using [Zod](https://zod.dev/)
   - A secret "Terminal" mode. Can you find it?
-
 
 ## Installation
 

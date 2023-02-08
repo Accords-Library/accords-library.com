@@ -374,7 +374,7 @@ const Editor = (props: Props): JSX.Element => {
               const textarea = event.target as HTMLTextAreaElement;
               handleInput(textarea.value);
             }}
-            className="h-[70vh] w-full rounded-xl bg-mid !bg-opacity-40 p-8
+            className="h-[70vh] w-full rounded-xl bg-mid/40 p-8
               font-mono text-black outline-none"
             value={markdown}
             title="Input textarea"
@@ -382,7 +382,7 @@ const Editor = (props: Props): JSX.Element => {
         </div>
         <div>
           <h2>Preview</h2>
-          <div className="h-[70vh] overflow-scroll rounded-xl bg-mid bg-opacity-40 p-8">
+          <div className="h-[70vh] overflow-scroll rounded-xl bg-mid/40 p-8">
             <Markdawn className="w-full" text={markdown} />
           </div>
         </div>

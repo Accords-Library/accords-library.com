@@ -179,7 +179,8 @@
           "x_results": "{ x, plural, =0 {No results} one {# result} other {# results} }",
           "definition_x": "Definition {x}",
           "subitem_of_x": "Subitem of {x}",
-          "variant_of_x": "Variant of {x}"
+          "variant_of_x": "Variant of {x}",
+          "dark_mode_extension_warning": "This website offers a light and dark theme. If you are using a \"dark mode\" browser extension, make sure to disable it for an optimal experience."
         }
       },
       {
@@ -360,7 +361,8 @@
           "x_results": "{ x, plural, =0 {Pas de résultat} one {# résultat} other {# résultats} }",
           "definition_x": "Définition {x}",
           "subitem_of_x": "Sous-item de {x}",
-          "variant_of_x": "Variante de {x}"
+          "variant_of_x": "Variante de {x}",
+          "dark_mode_extension_warning": "Ce site web propose un thème clair et un thème sombre. Si vous utilisez une extension de navigateur qui simule un thème sombre, veillez à la désactiver pour une expérience optimale."
         }
       },
       {
@@ -541,7 +543,8 @@
           "x_results": null,
           "definition_x": null,
           "subitem_of_x": null,
-          "variant_of_x": null
+          "variant_of_x": null,
+          "dark_mode_extension_warning": null
         }
       },
       {
@@ -722,7 +725,8 @@
           "x_results": null,
           "definition_x": null,
           "subitem_of_x": null,
-          "variant_of_x": null
+          "variant_of_x": null,
+          "dark_mode_extension_warning": null
         }
       },
       {
@@ -903,7 +907,8 @@
           "x_results": null,
           "definition_x": null,
           "subitem_of_x": null,
-          "variant_of_x": null
+          "variant_of_x": null,
+          "dark_mode_extension_warning": null
         }
       }
     ]

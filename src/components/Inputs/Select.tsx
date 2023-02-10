@@ -58,13 +58,12 @@ export const Select = ({
       <div
         className={cJoin(
           `grid cursor-pointer select-none grid-flow-col grid-cols-[1fr_auto_auto]
-           place-items-center rounded-3xl p-1 outline outline-1 -outline-offset-1
-           outline-mid`,
+           place-items-center rounded-3xl p-1 outline outline-1 -outline-offset-1`,
           cIf(isOpened, "rounded-b-none bg-highlight outline-transparent"),
           cIf(
             disabled,
             "cursor-not-allowed text-dark opacity-50 outline-dark/60 grayscale",
-            "transition-all hover:bg-mid hover:outline-transparent"
+            "outline-mid transition-all hover:bg-mid hover:outline-transparent"
           )
         )}>
         <p onClick={tryToggling} className="w-full px-4 py-1">

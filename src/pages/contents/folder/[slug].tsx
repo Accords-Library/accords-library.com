@@ -17,7 +17,7 @@ import { TranslatedPreviewCard } from "components/PreviewCard";
 import { HorizontalLine } from "components/HorizontalLine";
 import { cJoin, cIf } from "helpers/className";
 import { atoms } from "contexts/atoms";
-import { useAtomGetter } from "helpers/atoms";
+import { useAtomGetter, useAtomSetter } from "helpers/atoms";
 import { TranslatedPreviewFolder } from "components/Contents/PreviewFolder";
 import { useFormat } from "hooks/useFormat";
 import { getFormat } from "helpers/i18n";
@@ -35,6 +35,7 @@ interface Props extends AppLayoutRequired {
 
 const ContentsFolder = ({ openGraph, folder, ...otherProps }: Props): JSX.Element => {
   const { format } = useFormat();
+  const setSubPanelOpened = useAtomSetter(atoms.layout.subPanelOpened);
   const isContentPanelAtLeast4xl = useAtomGetter(atoms.containerQueries.isContentPanelAtLeast4xl);
 
   const subPanel = (
@@ -47,7 +48,12 @@ const ContentsFolder = ({ openGraph, folder, ...otherProps }: Props): JSX.Elemen
 
       <HorizontalLine />
 
-      <Button href="/contents/all" text={format("switch_to_grid_view")} icon="apps" />
+      <Button
+        href="/contents/all"
+        text={format("switch_to_grid_view")}
+        icon="apps"
+        onClick={() => setSubPanelOpened(false)}
+      />
     </SubPanel>
   );
 

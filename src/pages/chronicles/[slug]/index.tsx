@@ -21,6 +21,7 @@ import { useScrollTopOnChange } from "hooks/useScrollTopOnChange";
 import { Ids } from "types/ids";
 import { useFormat } from "hooks/useFormat";
 import { getFormat } from "helpers/i18n";
+import { ElementsSeparator } from "helpers/component";
 
 /*
  *                                           ╭────────╮
@@ -87,29 +88,29 @@ const Chronicle = ({ chronicle, chapters, ...otherProps }: Props): JSX.Element =
       ) : (
         <>
           {selectedContentTranslation && (
-            <>
-              <ThumbnailHeader
-                pre_title={selectedContentTranslation.pre_title}
-                title={selectedContentTranslation.title}
-                subtitle={selectedContentTranslation.subtitle}
-                languageSwitcher={
-                  ContentLanguageSwitcherProps.locales.size > 1 ? (
-                    <ContentLanguageSwitcher {...ContentLanguageSwitcherProps} />
-                  ) : undefined
-                }
-                categories={primaryContent?.categories}
-                type={primaryContent?.type}
-                description={selectedContentTranslation.description}
-                thumbnail={primaryContent?.thumbnail?.data?.attributes}
-              />
+            <ElementsSeparator>
+              {[
+                <ThumbnailHeader
+                  key="thumbnailHeader"
+                  pre_title={selectedContentTranslation.pre_title}
+                  title={selectedContentTranslation.title}
+                  subtitle={selectedContentTranslation.subtitle}
+                  languageSwitcher={
+                    ContentLanguageSwitcherProps.locales.size > 1 ? (
+                      <ContentLanguageSwitcher {...ContentLanguageSwitcherProps} />
+                    ) : undefined
+                  }
+                  categories={primaryContent?.categories}
+                  type={primaryContent?.type}
+                  description={selectedContentTranslation.description}
+                  thumbnail={primaryContent?.thumbnail?.data?.attributes}
+                />,
 
-              {selectedContentTranslation.text_set?.text && (
-                <>
-                  <HorizontalLine />
+                selectedContentTranslation.text_set?.text && (
                   <Markdawn text={selectedContentTranslation.text_set.text} />
-                </>
-              )}
-            </>
+                ),
+              ]}
+            </ElementsSeparator>
           )}
         </>
       )}

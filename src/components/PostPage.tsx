@@ -11,9 +11,12 @@ import { ThumbnailHeader } from "./ThumbnailHeader";
 import { ToolTip } from "./ToolTip";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { PostWithTranslations } from "types/types";
-import { filterHasAttributes } from "helpers/asserts";
+import { filterHasAttributes, isDefined } from "helpers/asserts";
 import { prettySlug } from "helpers/formatters";
 import { useFormat } from "hooks/useFormat";
+import { useAtomGetter, useAtomSetter } from "helpers/atoms";
+import { atoms } from "contexts/atoms";
+import { ElementsSeparator } from "helpers/component";
 
 /*
  *                                        ╭─────────────╮
@@ -49,6 +52,8 @@ export const PostPage = ({
   ...otherProps
 }: Props): JSX.Element => {
   const { format, formatStatusDescription } = useFormat();
+  const setSubPanelOpened = useAtomSetter(atoms.layout.subPanelOpened);
+  const is1ColumnLayout = useAtomGetter(atoms.containerQueries.is1ColumnLayout);
 
   const [selectedTranslation, LanguageSwitcher, languageSwitcherProps] = useSmartLanguage({
     items: post.translations,
@@ -65,49 +70,56 @@ export const PostPage = ({
   const title = selectedTranslation?.title ?? prettySlug(post.slug);
   const excerpt = selectedTranslation?.excerpt ?? "";
 
-  const subPanel =
-    returnHref || returnTitle || displayCredits || displayToc ? (
-      <SubPanel>
-        {returnHref && returnTitle && (
-          <ReturnButton href={returnHref} title={returnTitle} displayOnlyOn={"3ColumnsLayout"} />
-        )}
+  const subPanel = (
+    <SubPanel>
+      <ElementsSeparator>
+        {[
+          returnHref && returnTitle && !is1ColumnLayout && (
+            <ReturnButton href={returnHref} title={returnTitle} />
+          ),
 
-        {displayCredits && (
-          <>
-            <HorizontalLine />
+          displayCredits && (
+            <>
+              {selectedTranslation && (
+                <div className="grid grid-flow-col place-content-center place-items-center gap-2">
+                  <p className="font-headers font-bold">{format("status")}:</p>
 
-            {selectedTranslation && (
-              <div className="grid grid-flow-col place-content-center place-items-center gap-2">
-                <p className="font-headers font-bold">{format("status")}:</p>
-
-                <ToolTip
-                  content={formatStatusDescription(selectedTranslation.status)}
-                  maxWidth={"20rem"}>
-                  <Chip text={selectedTranslation.status} />
-                </ToolTip>
-              </div>
-            )}
-
-            {post.authors && post.authors.data.length > 0 && (
-              <div>
-                <p className="font-headers font-bold">{"Authors"}:</p>
-                <div className="grid place-content-center place-items-center gap-2">
-                  {filterHasAttributes(post.authors.data, ["id", "attributes"] as const).map(
-                    (author) => (
-                      <Fragment key={author.id}>
-                        <RecorderChip recorder={author.attributes} />
-                      </Fragment>
-                    )
-                  )}
+                  <ToolTip
+                    content={formatStatusDescription(selectedTranslation.status)}
+                    maxWidth={"20rem"}>
+                    <Chip text={selectedTranslation.status} />
+                  </ToolTip>
                 </div>
-              </div>
-            )}
-          </>
-        )}
+              )}
 
-        {displayToc && <TableOfContents text={body} title={title} horizontalLine />}
-      </SubPanel>
-    ) : undefined;
+              {post.authors && post.authors.data.length > 0 && (
+                <div>
+                  <p className="font-headers font-bold">{"Authors"}:</p>
+                  <div className="grid place-content-center place-items-center gap-2">
+                    {filterHasAttributes(post.authors.data, ["id", "attributes"] as const).map(
+                      (author) => (
+                        <Fragment key={author.id}>
+                          <RecorderChip recorder={author.attributes} />
+                        </Fragment>
+                      )
+                    )}
+                  </div>
+                </div>
+              )}
+            </>
+          ),
+
+          displayToc && (
+            <TableOfContents
+              text={body}
+              title={title}
+              onContentClicked={() => setSubPanelOpened(false)}
+            />
+          ),
+        ]}
+      </ElementsSeparator>
+    </SubPanel>
+  );
 
   const contentPanel = (
     <ContentPanel>
@@ -133,6 +145,7 @@ export const PostPage = ({
               ) : undefined
             }
           />
+          {(isDefined(prependBody) || isDefined(body)) && <HorizontalLine />}
         </>
       ) : (
         <>
@@ -148,12 +161,7 @@ export const PostPage = ({
       )}
 
       {prependBody}
-      {body && (
-        <>
-          {displayThumbnailHeader && <HorizontalLine />}
-          <Markdawn text={body} />
-        </>
-      )}
+      {body && <Markdawn text={body} />}
 
       {appendBody}
     </ContentPanel>

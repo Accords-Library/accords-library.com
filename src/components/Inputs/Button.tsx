@@ -55,9 +55,9 @@ export const Button = ({
         onFocus={(event) => event.target.blur()}
         className={cJoin(
           `group grid cursor-pointer select-none grid-flow-col place-content-center 
-          place-items-center gap-2 rounded-full border border-dark py-3 px-4
+          place-items-center gap-2 rounded-full border border-dark 
           leading-none text-dark transition-all`,
-          cIf(size === "small", "px-3 py-1 text-xs"),
+          cIf(size === "small", "px-3 py-1 text-xs", "py-3 px-4"),
           cIf(active, "!border-black bg-black !text-light drop-shadow-lg shadow-black"),
           cIf(
             disabled,
@@ -74,16 +74,16 @@ export const Button = ({
         {isDefined(badgeNumber) && (
           <div
             className={cJoin(
-              `absolute -top-3 -right-2 grid h-8 w-8 place-items-center rounded-full bg-dark
+              `absolute grid place-items-center rounded-full bg-dark
               font-bold text-light transition-opacity group-hover:opacity-0`,
-              cIf(size === "small", "-top-2 -right-2 h-5 w-5")
+              cIf(size === "small", "-top-2 -right-2 h-5 w-5", "-top-3 -right-2 h-8 w-8")
             )}>
             <p className="-translate-y-[0.05em]">{badgeNumber}</p>
           </div>
         )}
         {isDefinedAndNotEmpty(icon) && (
           <Ico
-            className="[font-size:150%] [line-height:0.66]"
+            className="![font-size:150%] ![line-height:0.66]"
             icon={icon}
             isFilled={active}
             opticalSize={size === "normal" ? 24 : 20}

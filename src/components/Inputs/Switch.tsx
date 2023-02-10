@@ -21,10 +21,14 @@ export const Switch = ({ value, onClick, className, disabled = false }: Props): 
     <div
       className={cJoin(
         `relative grid h-6 w-12 content-center rounded-full border-mid outline
-        outline-1 -outline-offset-1 outline-mid transition-colors`,
-        cIf(value, "border-none bg-mid shadow-inner-sm outline-transparent shadow-shade"),
-        cIf(disabled, "cursor-not-allowed opacity-50 grayscale", "cursor-pointer"),
-        cIf(disabled, cIf(value, "bg-dark/40 outline-transparent", "outline-dark/60")),
+        outline-1 -outline-offset-1 transition-colors`,
+        cIf(value, "border-none shadow-inner-sm shadow-shade"),
+        cIf(disabled, "cursor-not-allowed opacity-50 grayscale", "cursor-pointer outline-mid"),
+        cIf(
+          disabled,
+          cIf(value, "bg-dark/40 outline-transparent", "outline-dark/60"),
+          cIf(value, "bg-mid outline-transparent")
+        ),
         className
       )}
       onClick={() => {

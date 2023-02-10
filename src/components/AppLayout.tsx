@@ -77,15 +77,19 @@ export const AppLayout = ({
     },
   });
 
-  const turnSubIntoContent = isDefined(subPanel) && isUndefined(contentPanel);
+  const turnSubIntoContent = isDefined(subPanel) && isUndefined(contentPanel) && is1ColumnLayout;
 
   return (
     <div
       {...handlers}
       id={Ids.Body}
       className={cJoin(
-        "fixed inset-0 m-0 grid touch-pan-y bg-light p-0 [grid-template-areas:'main_sub_content']",
-        cIf(is1ColumnLayout, "grid-rows-[1fr_5rem] [grid-template-areas:'content''navbar']")
+        "fixed inset-0 m-0 grid touch-pan-y bg-light p-0",
+        cIf(
+          is1ColumnLayout,
+          "grid-rows-[1fr_5rem] [grid-template-areas:'content''navbar']",
+          "[grid-template-areas:'main_sub_content']"
+        )
       )}
       style={{
         gridTemplateColumns: is1ColumnLayout
@@ -113,6 +117,22 @@ export const AppLayout = ({
         <meta property="og:image:type" content="image/jpeg" />
       </Head>
 
+      {/* Content panel */}
+      <div
+        id={Ids.ContentPanel}
+        className={cJoin(
+          "bg-light texture-paper-dots [grid-area:content]",
+          cIf(contentPanelScroolbar, "overflow-y-scroll")
+        )}>
+        {isDefined(contentPanel) ? (
+          contentPanel
+        ) : turnSubIntoContent ? (
+          subPanel
+        ) : (
+          <ContentPlaceholder message={format("select_option_sidebar")} icon={"chevron_left"} />
+        )}
+      </div>
+
       {/* Background when navbar is opened */}
       <div
         className={cJoin(
@@ -120,7 +140,7 @@ export const AppLayout = ({
             [grid-area:content]`,
           cIf(
             (isMainPanelOpened || isSubPanelOpened) && is1ColumnLayout,
-            "z-10 backdrop-blur",
+            "backdrop-blur",
             "pointer-events-none touch-none"
           )
         )}>
@@ -140,57 +160,11 @@ export const AppLayout = ({
         />
       </div>
 
-      {/* Content panel */}
-      <div
-        id={Ids.ContentPanel}
-        className={cJoin(
-          "bg-light texture-paper-dots [grid-area:content]",
-          cIf(contentPanelScroolbar, "overflow-y-scroll")
-        )}>
-        {isDefined(contentPanel) ? (
-          contentPanel
-        ) : (
-          <ContentPlaceholder message={format("select_option_sidebar")} icon={"chevron_left"} />
-        )}
-      </div>
-
-      {/* Sub panel */}
-      {isDefined(subPanel) && (
-        <div
-          id={Ids.SubPanel}
-          className={cJoin(
-            `z-20 overflow-y-scroll border-r border-dark/50 bg-light
-              transition-transform duration-300 scrollbar-none texture-paper-dots`,
-            cIf(
-              is1ColumnLayout,
-              "justify-self-end border-r-0 [grid-area:content]",
-              "[grid-area:sub]"
-            ),
-            cIf(is1ColumnLayout && isScreenAtLeastXs, "w-[min(30rem,90%)] border-l"),
-            cIf(is1ColumnLayout && !isSubPanelOpened && !turnSubIntoContent, "translate-x-[100vw]"),
-            cIf(is1ColumnLayout && turnSubIntoContent, "w-full border-l-0")
-          )}>
-          {subPanel}
-        </div>
-      )}
-
-      {/* Main panel */}
-      <div
-        className={cJoin(
-          `z-30 overflow-y-scroll border-r border-dark/50 bg-light
-            transition-transform duration-300 scrollbar-none texture-paper-dots`,
-          cIf(is1ColumnLayout, "justify-self-start [grid-area:content]", "[grid-area:main]"),
-          cIf(is1ColumnLayout && isScreenAtLeastXs, "w-[min(30rem,90%)]"),
-          cIf(!isMainPanelOpened && is1ColumnLayout, "-translate-x-full")
-        )}>
-        <MainPanel />
-      </div>
-
       {/* Navbar */}
       <div
         className={cJoin(
-          `z-10 grid grid-cols-[5rem_1fr_5rem] place-items-center border-t
-            border-dotted border-black bg-light texture-paper-dots [grid-area:navbar]`,
+          `z-40 grid grid-cols-[5rem_1fr_5rem] place-items-center border-t
+          border-dotted border-black bg-light texture-paper-dots [grid-area:navbar]`,
           cIf(!is1ColumnLayout, "hidden")
         )}>
         <Ico
@@ -220,6 +194,37 @@ export const AppLayout = ({
             }}
           />
         )}
+      </div>
+
+      {/* Sub panel */}
+      {isDefined(subPanel) && !turnSubIntoContent && (
+        <div
+          id={Ids.SubPanel}
+          className={cJoin(
+            `z-40 overflow-y-scroll border-r border-dark/50 bg-light
+              transition-transform duration-300 scrollbar-none texture-paper-dots`,
+            cIf(
+              is1ColumnLayout,
+              "justify-self-end border-r-0 [grid-area:content]",
+              "[grid-area:sub]"
+            ),
+            cIf(is1ColumnLayout && isScreenAtLeastXs, "w-[min(30rem,90%)] border-l"),
+            cIf(is1ColumnLayout && !isSubPanelOpened, "translate-x-[100vw]")
+          )}>
+          {subPanel}
+        </div>
+      )}
+
+      {/* Main panel */}
+      <div
+        className={cJoin(
+          `z-40 overflow-y-scroll border-r border-dark/50 bg-light
+            transition-transform duration-300 scrollbar-none texture-paper-dots`,
+          cIf(is1ColumnLayout, "justify-self-start [grid-area:content]", "[grid-area:main]"),
+          cIf(is1ColumnLayout && isScreenAtLeastXs, "w-[min(30rem,90%)]"),
+          cIf(!isMainPanelOpened && is1ColumnLayout, "-translate-x-full")
+        )}>
+        <MainPanel />
       </div>
     </div>
   );

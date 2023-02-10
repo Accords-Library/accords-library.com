@@ -19,6 +19,12 @@ export enum ContentPanelWidthSizes {
   Full = "full",
 }
 
+const contentPanelWidthSizesToClassName: Record<ContentPanelWidthSizes, string> = {
+  default: "max-w-2xl",
+  large: "max-w-4xl",
+  full: "w-full",
+};
+
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
 export const ContentPanel = ({
@@ -31,13 +37,9 @@ export const ContentPanel = ({
     <div className="grid h-full">
       <main
         className={cJoin(
-          "relative justify-self-center px-4 pt-10 pb-20",
-          cIf(isContentPanelAtLeast3xl, "px-10 pt-20 pb-32"),
-          width === ContentPanelWidthSizes.Default
-            ? "max-w-2xl"
-            : width === ContentPanelWidthSizes.Large
-            ? "max-w-4xl"
-            : "w-full",
+          "relative justify-self-center",
+          cIf(isContentPanelAtLeast3xl, "px-10 pt-20 pb-32", "px-4 pt-10 pb-20"),
+          contentPanelWidthSizesToClassName[width],
           className
         )}>
         {children}

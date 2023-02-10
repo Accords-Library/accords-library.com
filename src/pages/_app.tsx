@@ -16,20 +16,20 @@ import "styles/rc-slider.css";
 import "styles/tippy.css";
 
 import { useLocalData } from "contexts/localData";
-import { useAppLayout } from "contexts/appLayout";
 import { LightBoxProvider } from "contexts/LightBoxProvider";
 import { SettingsPopup } from "components/Panels/SettingsPopup";
 import { useSettings } from "contexts/settings";
 import { useContainerQueries } from "contexts/containerQueries";
 import { useWebkitFixes } from "contexts/webkitFixes";
 import { SearchPopup } from "components/Panels/SearchPopup";
+import { useScrollIntoView } from "hooks/useScrollIntoView";
 
 const AccordsLibraryApp = (props: AppProps): JSX.Element => {
   useLocalData();
-  useAppLayout();
   useSettings();
   useContainerQueries();
   useWebkitFixes();
+  useScrollIntoView();
 
   return (
     <>

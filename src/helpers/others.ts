@@ -46,3 +46,17 @@ export const cartesianProduct = <T, U>(arrayA: T[], arrayB: U[]): [T, U][] => {
   arrayA.forEach((a) => arrayB.forEach((b) => result.push([a, b])));
   return result;
 };
+
+export const insertInBetweenArray = <T>(elems: T[], elemToInsert: T): T[] => {
+  if (elems.length < 2) return elems;
+  const elemsCopy = [...elems];
+  const lastElem = elemsCopy.pop() as T;
+
+  const result: T[] = [];
+  for (const elem of elemsCopy) {
+    result.push(elem, elemToInsert);
+  }
+  result.push(lastElem);
+
+  return result;
+};

@@ -931,7 +931,7 @@ const ScanSet = ({ onClickOnImage, scanSet, id, title, content }: ScanSetProps):
                last-of-type:border-0`,
               cIf(
                 is1ColumnLayout,
-                "grid-cols-2 gap-[4vmin]",
+                "grid-cols-3 gap-[4vmin]",
                 "grid-cols-[repeat(auto-fill,_minmax(10rem,1fr))]"
               )
             )}>

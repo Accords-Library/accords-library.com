@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { MouseEventHandler, useCallback } from "react";
 import { DatePickerFragment } from "graphql/generated";
 import { TranslatedProps } from "types/TranslatedProps";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
@@ -17,12 +17,21 @@ interface Props {
   url: string;
   active?: boolean;
   disabled?: boolean;
+  onClick?: MouseEventHandler<HTMLAnchorElement>;
 }
 
-export const ChroniclePreview = ({ date, url, title, active, disabled }: Props): JSX.Element => (
+export const ChroniclePreview = ({
+  date,
+  url,
+  title,
+  active,
+  disabled,
+  onClick,
+}: Props): JSX.Element => (
   <DownPressable
     className="flex w-full gap-4 py-4 px-5"
     href={url}
+    onClick={onClick}
     active={active}
     border
     disabled={disabled}>

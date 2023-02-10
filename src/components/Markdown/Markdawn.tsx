@@ -1,5 +1,5 @@
 import Markdown from "markdown-to-jsx";
-import React, { Fragment, useMemo } from "react";
+import React, { Fragment, MouseEventHandler, useMemo } from "react";
 import ReactDOMServer from "react-dom/server";
 import { HorizontalLine } from "components/HorizontalLine";
 import { Img } from "components/Img";
@@ -218,13 +218,13 @@ export const Markdawn = ({ className, text: rawText }: MarkdawnProps): JSX.Eleme
 interface TableOfContentsProps {
   text: string;
   title?: string;
-  horizontalLine?: boolean;
+  onContentClicked?: MouseEventHandler<HTMLAnchorElement>;
 }
 
 export const TableOfContents = ({
   text,
   title,
-  horizontalLine = false,
+  onContentClicked,
 }: TableOfContentsProps): JSX.Element => {
   const { format } = useFormat();
   const toc = getTocFromMarkdawn(preprocessMarkDawn(text), title);
@@ -233,17 +233,20 @@ export const TableOfContents = ({
     <>
       {toc.children.length > 0 && (
         <>
-          {horizontalLine && <HorizontalLine />}
           <h3 className="text-xl">{format("table_of_contents")}</h3>
           <div className="max-w-[14.5rem] text-left">
             <p
               className="relative my-2 overflow-x-hidden text-ellipsis whitespace-nowrap
                 text-left">
-              <Link href={`#${toc.slug}`} linkStyled>
+              <Link href={`#${toc.slug}`} linkStyled onClick={onContentClicked}>
                 {<abbr title={toc.title}>{toc.title}</abbr>}
               </Link>
             </p>
-            <TocLevel tocchildren={toc.children} parentNumbering="" />
+            <TocLevel
+              tocchildren={toc.children}
+              parentNumbering=""
+              onContentClicked={onContentClicked}
+            />
           </div>
         </>
       )}
@@ -334,12 +337,14 @@ interface LevelProps {
   tocchildren: TocInterface[];
   parentNumbering: string;
   allowIntersection?: boolean;
+  onContentClicked?: MouseEventHandler<HTMLAnchorElement>;
 }
 
 const TocLevel = ({
   tocchildren,
   parentNumbering,
   allowIntersection = true,
+  onContentClicked,
 }: LevelProps): JSX.Element => {
   const ids = useMemo(() => tocchildren.map((child) => child.slug), [tocchildren]);
   const currentIntersection = useIntersectionList(ids);
@@ -354,7 +359,7 @@ const TocLevel = ({
               cIf(allowIntersection && currentIntersection === childIndex, "text-dark")
             )}>
             <span className="text-dark">{`${parentNumbering}${childIndex + 1}.`}</span>{" "}
-            <Link href={`#${child.slug}`} linkStyled>
+            <Link href={`#${child.slug}`} linkStyled onClick={onContentClicked}>
               {<abbr title={child.title}>{child.title}</abbr>}
             </Link>
           </li>
@@ -362,6 +367,7 @@ const TocLevel = ({
             tocchildren={child.children}
             parentNumbering={`${parentNumbering}${childIndex + 1}.`}
             allowIntersection={allowIntersection && currentIntersection === childIndex}
+            onContentClicked={onContentClicked}
           />
         </Fragment>
       ))}

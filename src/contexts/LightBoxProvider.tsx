@@ -1,28 +1,19 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import { useEffectOnce } from "usehooks-ts";
-import { atom } from "jotai";
 import { UploadImageFragment } from "graphql/generated";
 import { LightBox } from "components/LightBox";
 import { filterDefined } from "helpers/asserts";
-import { atomPairing, useAtomSetter } from "helpers/atoms";
-
-const lightBoxAtom = atomPairing(
-  atom<{
-    showLightBox: (
-      images: (UploadImageFragment | string | null | undefined)[],
-      index?: number
-    ) => void;
-  }>({ showLightBox: () => null })
-);
-
-export const lightBox = lightBoxAtom[0];
+import { useAtomSetter } from "helpers/atoms";
+import { internalAtoms } from "contexts/atoms";
 
 export const LightBoxProvider = (): JSX.Element => {
+  const router = useRouter();
   const [isLightBoxVisible, setLightBoxVisibility] = useState(false);
   const [lightBoxImages, setLightBoxImages] = useState<(UploadImageFragment | string)[]>([]);
   const [lightBoxIndex, setLightBoxIndex] = useState(0);
 
-  const setShowLightBox = useAtomSetter(lightBoxAtom);
+  const setShowLightBox = useAtomSetter(internalAtoms.lightBox);
 
   useEffectOnce(() =>
     setShowLightBox({
@@ -39,6 +30,8 @@ export const LightBoxProvider = (): JSX.Element => {
     setLightBoxVisibility(false);
     setTimeout(() => setLightBoxImages([]), 100);
   }, []);
+
+  useEffect(() => router.events.on("routeChangeStart", closeLightBox));
 
   return (
     <LightBox

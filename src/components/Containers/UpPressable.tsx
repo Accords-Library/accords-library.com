@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { MouseEventHandler, useState } from "react";
 import { Link } from "components/Inputs/Link";
 import { cIf, cJoin } from "helpers/className";
 
@@ -8,6 +8,7 @@ interface Props {
   className?: string;
   noBackground?: boolean;
   disabled?: boolean;
+  onClick?: MouseEventHandler<HTMLAnchorElement>;
 }
 
 export const UpPressable = ({
@@ -16,12 +17,14 @@ export const UpPressable = ({
   className,
   disabled = false,
   noBackground = false,
+  onClick,
 }: Props): JSX.Element => {
   const [isFocused, setFocused] = useState(false);
   return (
     <Link
       href={href}
       onFocusChanged={setFocused}
+      onClick={onClick}
       className={cJoin(
         `drop-shadow-lg transition-all duration-300 shadow-shade`,
         cIf(!noBackground, "overflow-hidden rounded-md bg-highlight"),

@@ -50,7 +50,7 @@ import { useIntersectionList } from "hooks/useIntersectionList";
 import { HorizontalLine } from "components/HorizontalLine";
 import { Ids } from "types/ids";
 import { atoms } from "contexts/atoms";
-import { useAtomGetter } from "helpers/atoms";
+import { useAtomGetter, useAtomSetter } from "helpers/atoms";
 import { Link } from "components/Inputs/Link";
 import { useFormat } from "hooks/useFormat";
 import { getFormat } from "helpers/i18n";
@@ -85,6 +85,8 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
   const { value: keepInfoVisible, toggle: toggleKeepInfoVisible } = useBoolean(false);
 
   const { showLightBox } = useAtomGetter(atoms.lightBox);
+  const setSubPanelOpened = useAtomSetter(atoms.layout.subPanelOpened);
+  const closeSubPanel = useCallback(() => setSubPanelOpened(false), [setSubPanelOpened]);
 
   useScrollTopOnChange(Ids.ContentPanel, [item]);
   const currentIntersection = useIntersectionList(intersectionIds);
@@ -109,6 +111,7 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
           url={`#${intersectionIds[0]}`}
           border
           active={currentIntersection === 0}
+          onClick={closeSubPanel}
         />
 
         {item.gallery && item.gallery.data.length > 0 && (
@@ -117,6 +120,7 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
             url={`#${intersectionIds[1]}`}
             border
             active={currentIntersection === 1}
+            onClick={closeSubPanel}
           />
         )}
 
@@ -125,6 +129,7 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
           url={`#${intersectionIds[2]}`}
           border
           active={currentIntersection === 2}
+          onClick={closeSubPanel}
         />
 
         {item.subitems && item.subitems.data.length > 0 && (
@@ -133,6 +138,7 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
             url={`#${intersectionIds[3]}`}
             border
             active={currentIntersection === 3}
+            onClick={closeSubPanel}
           />
         )}
 
@@ -142,6 +148,7 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
             url={`#${intersectionIds[4]}`}
             border
             active={currentIntersection === 4}
+            onClick={closeSubPanel}
           />
         )}
       </div>

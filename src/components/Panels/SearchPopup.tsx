@@ -3,7 +3,7 @@ import { MaterialSymbol } from "material-symbols";
 import { Popup } from "components/Containers/Popup";
 import { sendAnalytics } from "helpers/analytics";
 import { atoms } from "contexts/atoms";
-import { useAtomPair } from "helpers/atoms";
+import { useAtomPair, useAtomSetter } from "helpers/atoms";
 import { TextInput } from "components/Inputs/TextInput";
 import { containsHighlight, CustomSearchResponse, meiliSearch } from "helpers/search";
 import { PreviewCard, TranslatedPreviewCard } from "components/PreviewCard";
@@ -197,6 +197,7 @@ export const SearchPopup = (): JSX.Element => {
                   key={item.id}
                   className="w-56"
                   href={`/library/${item.slug}`}
+                  onClick={() => setSearchOpened(false)}
                   translations={filterHasAttributes(item._formatted.descriptions, [
                     "language.data.attributes.code",
                   ] as const).map((translation) => ({
@@ -243,6 +244,7 @@ export const SearchPopup = (): JSX.Element => {
                   key={item.id}
                   className="w-56"
                   href={`/contents/${item.slug}`}
+                  onClick={() => setSearchOpened(false)}
                   translations={filterHasAttributes(item._formatted.translations, [
                     "language.data.attributes.code",
                   ] as const).map(({ displayable_description, language, ...otherAttributes }) => ({
@@ -287,6 +289,7 @@ export const SearchPopup = (): JSX.Element => {
                   key={item.id}
                   className="w-56"
                   href={`/wiki/${item.slug}`}
+                  onClick={() => setSearchOpened(false)}
                   translations={filterHasAttributes(item._formatted.translations, [
                     "language.data.attributes.code",
                   ] as const).map(
@@ -338,6 +341,7 @@ export const SearchPopup = (): JSX.Element => {
                   className="w-56"
                   key={item.id}
                   href={`/news/${item.slug}`}
+                  onClick={() => setSearchOpened(false)}
                   translations={filterHasAttributes(item._formatted.translations, [
                     "language.data.attributes.code",
                   ] as const).map(({ excerpt, body, language, ...otherAttributes }) => ({
@@ -380,6 +384,7 @@ export const SearchPopup = (): JSX.Element => {
                   className="w-56"
                   key={item.uid}
                   href={`/archives/videos/v/${item.uid}`}
+                  onClick={() => setSearchOpened(false)}
                   title={item._formatted.title}
                   thumbnail={getVideoThumbnailURL(item.uid)}
                   thumbnailAspectRatio="16/9"
@@ -427,6 +432,7 @@ const SearchResultSection = ({
   children,
 }: SearchResultSectionProps) => {
   const { format } = useFormat();
+  const setSearchOpened = useAtomSetter(atoms.layout.searchOpened);
   return (
     <>
       {isDefined(totalHits) && totalHits > 0 && (
@@ -434,7 +440,8 @@ const SearchResultSection = ({
           <div className="mb-6 grid place-content-start">
             <UpPressable
               className="grid grid-cols-[auto_1fr] place-items-center gap-6 px-6 py-4"
-              href={href}>
+              href={href}
+              onClick={() => setSearchOpened(false)}>
               <Ico icon={icon} className="!text-3xl" isFilled />
               <div>
                 <p className="font-headers text-lg">{title}</p>

@@ -9,7 +9,7 @@ interface Props {
   className?: string;
   alwaysNewTab?: boolean;
   children: React.ReactNode;
-  onClick?: MouseEventHandler<HTMLDivElement>;
+  onClick?: MouseEventHandler<HTMLAnchorElement>;
   onFocusChanged?: (isFocused: boolean) => void;
   disabled?: boolean;
   linkStyled?: boolean;
@@ -22,6 +22,7 @@ export const Link = ({
   alwaysNewTab,
   disabled,
   linkStyled = false,
+  onClick,
   onFocusChanged,
 }: Props): JSX.Element => (
   <ConditionalWrapper
@@ -29,6 +30,7 @@ export const Link = ({
     wrapperProps={{
       href: href ?? "",
       alwaysNewTab,
+      onClick,
       onFocusChanged,
       className: cJoin(
         cIf(
@@ -51,12 +53,14 @@ interface LinkWrapperProps {
   className?: string;
   alwaysNewTab?: boolean;
   onFocusChanged?: (isFocused: boolean) => void;
+  onClick?: MouseEventHandler<HTMLAnchorElement>;
 }
 
 const LinkWrapper = ({
   children,
   className,
   onFocusChanged,
+  onClick,
   alwaysNewTab = false,
   href,
 }: LinkWrapperProps & Wrapper) => (
@@ -65,6 +69,7 @@ const LinkWrapper = ({
     className={className}
     target={alwaysNewTab ? "_blank" : "_self"}
     replace={href.startsWith("#")}
+    onClick={onClick}
     onMouseLeave={() => onFocusChanged?.(false)}
     onMouseDown={() => onFocusChanged?.(true)}
     onMouseUp={() => onFocusChanged?.(false)}>

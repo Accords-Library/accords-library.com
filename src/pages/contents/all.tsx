@@ -29,6 +29,8 @@ import { prettySlug } from "helpers/formatters";
 import { Paginator } from "components/Containers/Paginator";
 import { useFormat } from "hooks/useFormat";
 import { getFormat } from "helpers/i18n";
+import { useAtomSetter } from "helpers/atoms";
+import { atoms } from "contexts/atoms";
 
 /*
  *                                         ╭─────────────╮
@@ -59,6 +61,7 @@ const Contents = (props: Props): JSX.Element => {
   const hoverable = useDeviceSupportsHover();
   const { format } = useFormat();
   const router = useTypedRouter(queryParamSchema);
+  const setSubPanelOpened = useAtomSetter(atoms.layout.subPanelOpened);
 
   const sortingMethods = useMemo(
     () => [
@@ -136,7 +139,12 @@ const Contents = (props: Props): JSX.Element => {
 
       <HorizontalLine />
 
-      <Button href="/contents" text={format("switch_to_folder_view")} icon="folder" />
+      <Button
+        href="/contents"
+        text={format("switch_to_folder_view")}
+        icon="folder"
+        onClick={() => setSubPanelOpened(false)}
+      />
 
       <HorizontalLine />
 

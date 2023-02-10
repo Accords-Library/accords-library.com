@@ -3,7 +3,6 @@ import { Fragment, useCallback } from "react";
 import naturalCompare from "string-natural-compare";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { Chip } from "components/Chip";
-import { HorizontalLine } from "components/HorizontalLine";
 import { PreviewCardCTAs } from "components/Library/PreviewCardCTAs";
 import { Markdawn, TableOfContents } from "components/Markdown/Markdawn";
 import { TranslatedReturnButton } from "components/PanelComponents/ReturnButton";
@@ -32,9 +31,10 @@ import { TranslatedPreviewLine } from "components/PreviewLine";
 import { cIf } from "helpers/className";
 import { Ids } from "types/ids";
 import { atoms } from "contexts/atoms";
-import { useAtomGetter } from "helpers/atoms";
+import { useAtomGetter, useAtomSetter } from "helpers/atoms";
 import { useFormat } from "hooks/useFormat";
 import { getFormat } from "helpers/i18n";
+import { ElementsSeparator } from "helpers/component";
 
 /*
  *                                           ╭────────╮
@@ -47,6 +47,7 @@ interface Props extends AppLayoutRequired {
 
 const Content = ({ content, ...otherProps }: Props): JSX.Element => {
   const isContentPanelAtLeast2xl = useAtomGetter(atoms.containerQueries.isContentPanelAtLeast2xl);
+  const setSubPanelOpened = useAtomSetter(atoms.layout.subPanelOpened);
   const is1ColumnLayout = useAtomGetter(atoms.containerQueries.is1ColumnLayout);
 
   const { format, formatStatusDescription } = useFormat();
@@ -92,167 +93,165 @@ const Content = ({ content, ...otherProps }: Props): JSX.Element => {
 
   const subPanel = (
     <SubPanel>
-      <TranslatedReturnButton {...returnButtonProps} displayOnlyOn="3ColumnsLayout" />
+      <ElementsSeparator>
+        {[
+          !is1ColumnLayout && <TranslatedReturnButton {...returnButtonProps} />,
 
-      {selectedTranslation?.text_set?.source_language?.data?.attributes?.code !== undefined && (
-        <>
-          <HorizontalLine />
-          <div className="grid gap-5">
-            <h2 className="text-xl">
-              {selectedTranslation.text_set.source_language.data.attributes.code ===
-              selectedTranslation.language?.data?.attributes?.code
-                ? format("transcript_notice")
-                : format("translation_notice")}
-            </h2>
+          selectedTranslation?.text_set?.source_language?.data?.attributes?.code !== undefined && (
+            <div className="grid gap-5">
+              <h2 className="text-xl">
+                {selectedTranslation.text_set.source_language.data.attributes.code ===
+                selectedTranslation.language?.data?.attributes?.code
+                  ? format("transcript_notice")
+                  : format("translation_notice")}
+              </h2>
 
-            {selectedTranslation.text_set.source_language.data.attributes.code !==
-              selectedTranslation.language?.data?.attributes?.code && (
-              <div className="grid place-items-center gap-2">
-                <p className="font-headers font-bold">{format("source_language")}:</p>
-                <Chip
-                  text={prettyLanguage(
-                    selectedTranslation.text_set.source_language.data.attributes.code,
-                    languages
-                  )}
-                />
+              {selectedTranslation.text_set.source_language.data.attributes.code !==
+                selectedTranslation.language?.data?.attributes?.code && (
+                <div className="grid place-items-center gap-2">
+                  <p className="font-headers font-bold">{format("source_language")}:</p>
+                  <Chip
+                    text={prettyLanguage(
+                      selectedTranslation.text_set.source_language.data.attributes.code,
+                      languages
+                    )}
+                  />
+                </div>
+              )}
+
+              <div className="grid grid-flow-col place-content-center place-items-center gap-2">
+                <p className="font-headers font-bold">{format("status")}:</p>
+
+                <ToolTip
+                  content={formatStatusDescription(selectedTranslation.text_set.status)}
+                  maxWidth={"20rem"}>
+                  <Chip text={selectedTranslation.text_set.status} />
+                </ToolTip>
               </div>
-            )}
 
-            <div className="grid grid-flow-col place-content-center place-items-center gap-2">
-              <p className="font-headers font-bold">{format("status")}:</p>
-
-              <ToolTip
-                content={formatStatusDescription(selectedTranslation.text_set.status)}
-                maxWidth={"20rem"}>
-                <Chip text={selectedTranslation.text_set.status} />
-              </ToolTip>
-            </div>
-
-            {selectedTranslation.text_set.transcribers &&
-              selectedTranslation.text_set.transcribers.data.length > 0 && (
-                <div>
-                  <p className="font-headers font-bold">{format("transcribers")}:</p>
-                  <div className="grid place-content-center place-items-center gap-2">
-                    {filterHasAttributes(selectedTranslation.text_set.transcribers.data, [
-                      "attributes",
-                      "id",
-                    ] as const).map((recorder) => (
-                      <Fragment key={recorder.id}>
-                        <RecorderChip recorder={recorder.attributes} />
-                      </Fragment>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-            {selectedTranslation.text_set.translators &&
-              selectedTranslation.text_set.translators.data.length > 0 && (
-                <div>
-                  <p className="font-headers font-bold">{format("translators")}:</p>
-                  <div className="grid place-content-center place-items-center gap-2">
-                    {filterHasAttributes(selectedTranslation.text_set.translators.data, [
-                      "attributes",
-                      "id",
-                    ] as const).map((recorder) => (
-                      <Fragment key={recorder.id}>
-                        <RecorderChip recorder={recorder.attributes} />
-                      </Fragment>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-            {selectedTranslation.text_set.proofreaders &&
-              selectedTranslation.text_set.proofreaders.data.length > 0 && (
-                <div>
-                  <p className="font-headers font-bold">{format("proofreaders")}:</p>
-                  <div className="grid place-content-center place-items-center gap-2">
-                    {filterHasAttributes(selectedTranslation.text_set.proofreaders.data, [
-                      "attributes",
-                      "id",
-                    ] as const).map((recorder) => (
-                      <Fragment key={recorder.id}>
-                        <RecorderChip recorder={recorder.attributes} />
-                      </Fragment>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-            {isDefinedAndNotEmpty(selectedTranslation.text_set.notes) && (
-              <div>
-                <p className="font-headers font-bold">{format("notes")}:</p>
-                <div className="grid place-content-center place-items-center gap-2">
-                  <Markdawn text={selectedTranslation.text_set.notes} />
-                </div>
-              </div>
-            )}
-          </div>
-        </>
-      )}
-
-      {selectedTranslation?.text_set?.text && (
-        <>
-          <TableOfContents
-            text={selectedTranslation.text_set.text}
-            title={prettyInlineTitle(
-              selectedTranslation.pre_title,
-              selectedTranslation.title,
-              selectedTranslation.subtitle
-            )}
-            horizontalLine
-          />
-        </>
-      )}
-
-      {content.ranged_contents?.data && content.ranged_contents.data.length > 0 && (
-        <>
-          <HorizontalLine />
-          <div>
-            <p className="font-headers text-2xl font-bold">{format("source")}</p>
-            <div className="mt-6 grid place-items-center gap-6">
-              {filterHasAttributes(content.ranged_contents.data, [
-                "attributes.library_item.data.attributes",
-                "attributes.library_item.data.id",
-              ] as const).map((rangedContent) => {
-                const libraryItem = rangedContent.attributes.library_item.data;
-                return (
-                  <div key={libraryItem.attributes.slug} className={cIf(is1ColumnLayout, "w-3/4")}>
-                    <PreviewCard
-                      href={`/library/${libraryItem.attributes.slug}`}
-                      title={libraryItem.attributes.title}
-                      subtitle={libraryItem.attributes.subtitle}
-                      thumbnail={libraryItem.attributes.thumbnail?.data?.attributes}
-                      thumbnailAspectRatio="21/29.7"
-                      thumbnailRounded={false}
-                      topChips={
-                        libraryItem.attributes.metadata &&
-                        libraryItem.attributes.metadata.length > 0 &&
-                        libraryItem.attributes.metadata[0]
-                          ? [prettyItemSubType(libraryItem.attributes.metadata[0])]
-                          : []
-                      }
-                      bottomChips={filterHasAttributes(libraryItem.attributes.categories?.data, [
+              {selectedTranslation.text_set.transcribers &&
+                selectedTranslation.text_set.transcribers.data.length > 0 && (
+                  <div>
+                    <p className="font-headers font-bold">{format("transcribers")}:</p>
+                    <div className="grid place-content-center place-items-center gap-2">
+                      {filterHasAttributes(selectedTranslation.text_set.transcribers.data, [
                         "attributes",
-                      ] as const).map((category) => category.attributes.short)}
-                      metadata={{
-                        releaseDate: libraryItem.attributes.release_date,
-                        price: libraryItem.attributes.price,
-                        position: "Bottom",
-                      }}
-                      infoAppend={
-                        !isUntangibleGroupItem(libraryItem.attributes.metadata?.[0]) && (
-                          <PreviewCardCTAs id={libraryItem.id} />
-                        )
-                      }
-                    />
+                        "id",
+                      ] as const).map((recorder) => (
+                        <Fragment key={recorder.id}>
+                          <RecorderChip recorder={recorder.attributes} />
+                        </Fragment>
+                      ))}
+                    </div>
                   </div>
-                );
-              })}
+                )}
+
+              {selectedTranslation.text_set.translators &&
+                selectedTranslation.text_set.translators.data.length > 0 && (
+                  <div>
+                    <p className="font-headers font-bold">{format("translators")}:</p>
+                    <div className="grid place-content-center place-items-center gap-2">
+                      {filterHasAttributes(selectedTranslation.text_set.translators.data, [
+                        "attributes",
+                        "id",
+                      ] as const).map((recorder) => (
+                        <Fragment key={recorder.id}>
+                          <RecorderChip recorder={recorder.attributes} />
+                        </Fragment>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+              {selectedTranslation.text_set.proofreaders &&
+                selectedTranslation.text_set.proofreaders.data.length > 0 && (
+                  <div>
+                    <p className="font-headers font-bold">{format("proofreaders")}:</p>
+                    <div className="grid place-content-center place-items-center gap-2">
+                      {filterHasAttributes(selectedTranslation.text_set.proofreaders.data, [
+                        "attributes",
+                        "id",
+                      ] as const).map((recorder) => (
+                        <Fragment key={recorder.id}>
+                          <RecorderChip recorder={recorder.attributes} />
+                        </Fragment>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+              {isDefinedAndNotEmpty(selectedTranslation.text_set.notes) && (
+                <div>
+                  <p className="font-headers font-bold">{format("notes")}:</p>
+                  <div className="grid place-content-center place-items-center gap-2">
+                    <Markdawn text={selectedTranslation.text_set.notes} />
+                  </div>
+                </div>
+              )}
             </div>
-          </div>
-        </>
-      )}
+          ),
+
+          selectedTranslation?.text_set?.text && (
+            <TableOfContents
+              text={selectedTranslation.text_set.text}
+              title={prettyInlineTitle(
+                selectedTranslation.pre_title,
+                selectedTranslation.title,
+                selectedTranslation.subtitle
+              )}
+              onContentClicked={() => setSubPanelOpened(false)}
+            />
+          ),
+
+          content.ranged_contents?.data && content.ranged_contents.data.length > 0 && (
+            <div>
+              <p className="font-headers text-2xl font-bold">{format("source")}</p>
+              <div className="mt-6 grid place-items-center gap-6">
+                {filterHasAttributes(content.ranged_contents.data, [
+                  "attributes.library_item.data.attributes",
+                  "attributes.library_item.data.id",
+                ] as const).map((rangedContent) => {
+                  const libraryItem = rangedContent.attributes.library_item.data;
+                  return (
+                    <div
+                      key={libraryItem.attributes.slug}
+                      className={cIf(is1ColumnLayout, "w-3/4")}>
+                      <PreviewCard
+                        href={`/library/${libraryItem.attributes.slug}`}
+                        title={libraryItem.attributes.title}
+                        subtitle={libraryItem.attributes.subtitle}
+                        thumbnail={libraryItem.attributes.thumbnail?.data?.attributes}
+                        thumbnailAspectRatio="21/29.7"
+                        thumbnailRounded={false}
+                        topChips={
+                          libraryItem.attributes.metadata &&
+                          libraryItem.attributes.metadata.length > 0 &&
+                          libraryItem.attributes.metadata[0]
+                            ? [prettyItemSubType(libraryItem.attributes.metadata[0])]
+                            : []
+                        }
+                        bottomChips={filterHasAttributes(libraryItem.attributes.categories?.data, [
+                          "attributes",
+                        ] as const).map((category) => category.attributes.short)}
+                        metadata={{
+                          releaseDate: libraryItem.attributes.release_date,
+                          price: libraryItem.attributes.price,
+                          position: "Bottom",
+                        }}
+                        infoAppend={
+                          !isUntangibleGroupItem(libraryItem.attributes.metadata?.[0]) && (
+                            <PreviewCardCTAs id={libraryItem.id} />
+                          )
+                        }
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          ),
+        ]}
+      </ElementsSeparator>
     </SubPanel>
   );
 
@@ -265,100 +264,102 @@ const Content = ({ content, ...otherProps }: Props): JSX.Element => {
       />
 
       <div className="grid place-items-center">
-        <ThumbnailHeader
-          thumbnail={content.thumbnail?.data?.attributes}
-          pre_title={selectedTranslation?.pre_title}
-          title={selectedTranslation?.title}
-          subtitle={selectedTranslation?.subtitle}
-          description={selectedTranslation?.description}
-          type={content.type}
-          categories={content.categories}
-          languageSwitcher={
-            languageSwitcherProps.locales.size > 1 ? (
-              <LanguageSwitcher {...languageSwitcherProps} />
-            ) : undefined
-          }
-        />
+        <ElementsSeparator>
+          {[
+            <ThumbnailHeader
+              key="thumbnailHeader"
+              thumbnail={content.thumbnail?.data?.attributes}
+              pre_title={selectedTranslation?.pre_title}
+              title={selectedTranslation?.title}
+              subtitle={selectedTranslation?.subtitle}
+              description={selectedTranslation?.description}
+              type={content.type}
+              categories={content.categories}
+              languageSwitcher={
+                languageSwitcherProps.locales.size > 1 ? (
+                  <LanguageSwitcher {...languageSwitcherProps} />
+                ) : undefined
+              }
+            />,
+            <>
+              {previousContent?.attributes && (
+                <div className="mb-6 w-full">
+                  <h2 className="mb-4 text-center text-2xl">{format("previous_content")}</h2>
+                  <TranslatedPreviewLine
+                    href={`/contents/${previousContent.attributes.slug}`}
+                    translations={filterHasAttributes(previousContent.attributes.translations, [
+                      "language.data.attributes.code",
+                    ] as const).map((translation) => ({
+                      pre_title: translation.pre_title,
+                      title: translation.title,
+                      subtitle: translation.subtitle,
+                      language: translation.language.data.attributes.code,
+                    }))}
+                    fallback={{
+                      title: prettySlug(previousContent.attributes.slug),
+                    }}
+                    thumbnail={previousContent.attributes.thumbnail?.data?.attributes}
+                    topChips={
+                      isContentPanelAtLeast2xl && previousContent.attributes.type?.data?.attributes
+                        ? [
+                            previousContent.attributes.type.data.attributes.titles?.[0]
+                              ? previousContent.attributes.type.data.attributes.titles[0]?.title
+                              : prettySlug(previousContent.attributes.type.data.attributes.slug),
+                          ]
+                        : undefined
+                    }
+                    bottomChips={
+                      isContentPanelAtLeast2xl
+                        ? previousContent.attributes.categories?.data.map(
+                            (category) => category.attributes?.short ?? ""
+                          )
+                        : undefined
+                    }
+                  />
+                </div>
+              )}
+            </>,
 
-        {previousContent?.attributes && (
-          <div className="mt-12 mb-8 w-full">
-            <h2 className="mb-4 text-center text-2xl">{format("previous_content")}</h2>
-            <TranslatedPreviewLine
-              href={`/contents/${previousContent.attributes.slug}`}
-              translations={filterHasAttributes(previousContent.attributes.translations, [
-                "language.data.attributes.code",
-              ] as const).map((translation) => ({
-                pre_title: translation.pre_title,
-                title: translation.title,
-                subtitle: translation.subtitle,
-                language: translation.language.data.attributes.code,
-              }))}
-              fallback={{
-                title: prettySlug(previousContent.attributes.slug),
-              }}
-              thumbnail={previousContent.attributes.thumbnail?.data?.attributes}
-              topChips={
-                isContentPanelAtLeast2xl && previousContent.attributes.type?.data?.attributes
-                  ? [
-                      previousContent.attributes.type.data.attributes.titles?.[0]
-                        ? previousContent.attributes.type.data.attributes.titles[0]?.title
-                        : prettySlug(previousContent.attributes.type.data.attributes.slug),
-                    ]
-                  : undefined
-              }
-              bottomChips={
-                isContentPanelAtLeast2xl
-                  ? previousContent.attributes.categories?.data.map(
-                      (category) => category.attributes?.short ?? ""
-                    )
-                  : undefined
-              }
-            />
-          </div>
-        )}
+            selectedTranslation?.text_set?.text && (
+              <Markdawn text={selectedTranslation.text_set.text} />
+            ),
 
-        {selectedTranslation?.text_set?.text && (
-          <>
-            <HorizontalLine />
-            <Markdawn text={selectedTranslation.text_set.text} />
-          </>
-        )}
-
-        {nextContent?.attributes && (
-          <>
-            <HorizontalLine />
-            <h2 className="mb-4 text-center text-2xl">{format("followup_content")}</h2>
-            <TranslatedPreviewLine
-              href={`/contents/${nextContent.attributes.slug}`}
-              translations={filterHasAttributes(nextContent.attributes.translations, [
-                "language.data.attributes.code",
-              ] as const).map((translation) => ({
-                pre_title: translation.pre_title,
-                title: translation.title,
-                subtitle: translation.subtitle,
-                language: translation.language.data.attributes.code,
-              }))}
-              fallback={{ title: nextContent.attributes.slug }}
-              thumbnail={nextContent.attributes.thumbnail?.data?.attributes}
-              topChips={
-                isContentPanelAtLeast2xl && nextContent.attributes.type?.data?.attributes
-                  ? [
-                      nextContent.attributes.type.data.attributes.titles?.[0]
-                        ? nextContent.attributes.type.data.attributes.titles[0]?.title
-                        : prettySlug(nextContent.attributes.type.data.attributes.slug),
-                    ]
-                  : undefined
-              }
-              bottomChips={
-                isContentPanelAtLeast2xl
-                  ? nextContent.attributes.categories?.data.map(
-                      (category) => category.attributes?.short ?? ""
-                    )
-                  : undefined
-              }
-            />
-          </>
-        )}
+            nextContent?.attributes && (
+              <>
+                <h2 className="mb-4 text-center text-2xl">{format("followup_content")}</h2>
+                <TranslatedPreviewLine
+                  href={`/contents/${nextContent.attributes.slug}`}
+                  translations={filterHasAttributes(nextContent.attributes.translations, [
+                    "language.data.attributes.code",
+                  ] as const).map((translation) => ({
+                    pre_title: translation.pre_title,
+                    title: translation.title,
+                    subtitle: translation.subtitle,
+                    language: translation.language.data.attributes.code,
+                  }))}
+                  fallback={{ title: nextContent.attributes.slug }}
+                  thumbnail={nextContent.attributes.thumbnail?.data?.attributes}
+                  topChips={
+                    isContentPanelAtLeast2xl && nextContent.attributes.type?.data?.attributes
+                      ? [
+                          nextContent.attributes.type.data.attributes.titles?.[0]
+                            ? nextContent.attributes.type.data.attributes.titles[0]?.title
+                            : prettySlug(nextContent.attributes.type.data.attributes.slug),
+                        ]
+                      : undefined
+                  }
+                  bottomChips={
+                    isContentPanelAtLeast2xl
+                      ? nextContent.attributes.categories?.data.map(
+                          (category) => category.attributes?.short ?? ""
+                        )
+                      : undefined
+                  }
+                />
+              </>
+            ),
+          ]}
+        </ElementsSeparator>
       </div>
     </ContentPanel>
   );

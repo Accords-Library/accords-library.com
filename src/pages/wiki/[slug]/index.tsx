@@ -50,11 +50,11 @@ const WikiPage = ({ page, ...otherProps }: Props): JSX.Element => {
   });
   const is3ColumnsLayout = useAtomGetter(atoms.containerQueries.is3ColumnsLayout);
 
-  const subPanel = (
+  const subPanel = is3ColumnsLayout ? (
     <SubPanel>
       <ReturnButton href={`/wiki`} title={format("wiki")} displayOnlyOn={"3ColumnsLayout"} />
     </SubPanel>
-  );
+  ) : undefined;
 
   const contentPanel = (
     <ContentPanel width={ContentPanelWidthSizes.Large}>

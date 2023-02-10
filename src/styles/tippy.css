@@ -5,7 +5,7 @@
   max-width: calc(100vw - 10px);
 }
 .tippy-box {
-  @apply relative rounded-lg bg-light shadow-xl
+  @apply relative rounded-lg bg-highlight shadow-xl
   transition-[transform,visibility,opacity] shadow-shade;
 }
 .tippy-box[data-placement^="top"] > .tippy-arrow {
@@ -50,7 +50,7 @@
   transition-timing-function: cubic-bezier(0.54, 1.5, 0.38, 1.11);
 }
 .tippy-arrow {
-  @apply h-4 w-4 text-light;
+  @apply h-4 w-4 text-highlight;
 }
 .tippy-arrow:before {
   content: "";

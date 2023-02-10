@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { MouseEventHandler, useCallback } from "react";
 import { useRouter } from "next/router";
 import { Markdown } from "./Markdown/Markdown";
 import { Chip } from "components/Chip";
@@ -50,6 +50,7 @@ interface Props {
     | { __typename: "anotherHoverlayName" };
   disabled?: boolean;
   className?: string;
+  onClick?: MouseEventHandler<HTMLAnchorElement>;
 }
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
@@ -72,6 +73,7 @@ export const PreviewCard = ({
   infoAppend,
   className,
   disabled = false,
+  onClick,
 }: Props): JSX.Element => {
   const currency = useAtomGetter(atoms.settings.currency);
   const currencies = useAtomGetter(atoms.localData.currencies);
@@ -115,6 +117,7 @@ export const PreviewCard = ({
     <UpPressable
       className={cJoin("grid items-end text-left", className)}
       href={href}
+      onClick={onClick}
       noBackground
       disabled={disabled}>
       <div className={cJoin("group", cIf(disabled, "pointer-events-none touch-none select-none"))}>
@@ -139,17 +142,15 @@ export const PreviewCard = ({
             {hoverlay && hoverlay.__typename === "Video" && (
               <>
                 <div
-                  className="absolute inset-0 grid place-content-center bg-shade/0
-                   text-light transition-colors group-hover:bg-shade/50">
+                  className="absolute inset-0 grid place-content-center rounded-t-md
+                   bg-shade/0 text-light transition-colors group-hover:bg-shade/50">
                   <Ico
                     icon="play_circle"
                     className="!text-6xl text-light opacity-0 drop-shadow-lg transition-opacity
                     shadow-shade group-hover:opacity-100 dark:text-black"
                   />
                 </div>
-                <div
-                  className="absolute right-2 bottom-2 rounded-full bg-black/60 px-2
-                  text-light">
+                <div className="absolute right-2 bottom-2 rounded-full bg-black/60 px-2 text-light">
                   {prettyDuration(hoverlay.duration)}
                 </div>
               </>
@@ -166,14 +167,14 @@ export const PreviewCard = ({
         )}
         <div
           className={cJoin(
-            "z-20 grid gap-2 p-4 transition-opacity linearbg-obi",
+            "z-20 gap-2 p-4 transition-opacity linearbg-obi",
             cIf(
               !keepInfoVisible && isHoverable,
               `-inset-x-0.5 bottom-2 opacity-0 shadow-shade
                [border-radius:10%_10%_10%_10%_/_1%_1%_3%_3%]
                group-hover:opacity-100 hoverable:absolute hoverable:drop-shadow-lg
                notHoverable:rounded-b-md notHoverable:opacity-100`,
-              "[border-radius:0%_0%_10%_10%_/_0%_0%_3%_3%]"
+              "grid [border-radius:0%_0%_10%_10%_/_0%_0%_3%_3%]"
             )
           )}>
           {metadata?.position === "Top" && metadataJSX}

@@ -1,5 +1,6 @@
 import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next";
 import { useRouter } from "next/router";
+import { useCallback } from "react";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { HorizontalLine } from "components/HorizontalLine";
 import { Ico } from "components/Ico";
@@ -16,7 +17,7 @@ import { filterHasAttributes, isDefined } from "helpers/asserts";
 import { getVideoFile } from "helpers/videos";
 import { getOpenGraph } from "helpers/openGraph";
 import { atoms } from "contexts/atoms";
-import { useAtomGetter } from "helpers/atoms";
+import { useAtomGetter, useAtomSetter } from "helpers/atoms";
 import { Link } from "components/Inputs/Link";
 import { useFormat } from "hooks/useFormat";
 import { getFormat } from "helpers/i18n";
@@ -32,6 +33,8 @@ interface Props extends AppLayoutRequired {
 
 const Video = ({ video, ...otherProps }: Props): JSX.Element => {
   const isContentPanelAtLeast4xl = useAtomGetter(atoms.containerQueries.isContentPanelAtLeast4xl);
+  const setSubPanelOpened = useAtomSetter(atoms.layout.subPanelOpened);
+  const closeSubPanel = useCallback(() => setSubPanelOpened(false), [setSubPanelOpened]);
   const { format } = useFormat();
   const router = useRouter();
 
@@ -45,9 +48,9 @@ const Video = ({ video, ...otherProps }: Props): JSX.Element => {
 
       <HorizontalLine />
 
-      <NavOption title={format("video")} url="#video" border />
-      <NavOption title={format("channel")} url="#channel" border />
-      <NavOption title={format("description")} url="#description" border />
+      <NavOption title={format("video")} url="#video" border onClick={closeSubPanel} />
+      <NavOption title={format("channel")} url="#channel" border onClick={closeSubPanel} />
+      <NavOption title={format("description")} url="#description" border onClick={closeSubPanel} />
     </SubPanel>
   );
 
@@ -69,7 +72,6 @@ const Video = ({ video, ...otherProps }: Props): JSX.Element => {
               src={`https://www.youtube-nocookie.com/embed/${video.uid}`}
               className="aspect-video w-full"
               title="YouTube video player"
-              frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write;
               encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen

@@ -8,6 +8,8 @@ import { Ico } from "components/Ico";
 import { compareDate } from "helpers/date";
 import { TranslatedProps } from "types/TranslatedProps";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
+import { useAtomSetter } from "helpers/atoms";
+import { atoms } from "contexts/atoms";
 
 /*
  *                                        ╭─────────────╮
@@ -25,6 +27,7 @@ interface Props {
 }
 
 const ChroniclesList = ({ chronicles, currentSlug, title }: Props): JSX.Element => {
+  const setSubPanelOpened = useAtomSetter(atoms.layout.subPanelOpened);
   const { value: isOpen, toggle: toggleOpen } = useBoolean(
     chronicles.some((chronicle) => chronicle.attributes?.slug === currentSlug)
   );
@@ -75,6 +78,7 @@ const ChroniclesList = ({ chronicles, currentSlug, title }: Props): JSX.Element 
                         "/#chronicle-",
                         chronicle.attributes.slug
                       )}
+                      onClick={() => setSubPanelOpened(false)}
                     />
                   ))
                 : chronicle.attributes.translations.length > 0 && (

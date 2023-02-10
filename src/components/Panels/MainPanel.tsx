@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import { HorizontalLine } from "components/HorizontalLine";
 import { Button } from "components/Inputs/Button";
 import { NavOption } from "components/PanelComponents/NavOption";
@@ -21,6 +22,8 @@ export const MainPanel = (): JSX.Element => {
   const is3ColumnsLayout = useAtomGetter(atoms.containerQueries.is3ColumnsLayout);
   const { format } = useFormat();
   const [isMainPanelReduced, setMainPanelReduced] = useAtomPair(atoms.layout.mainPanelReduced);
+  const setMainPanelOpened = useAtomSetter(atoms.layout.mainPanelOpened);
+  const closeMainPanel = useCallback(() => setMainPanelOpened(false), [setMainPanelOpened]);
   const setSettingsOpened = useAtomSetter(atoms.layout.settingsOpened);
   const setSearchOpened = useAtomSetter(atoms.layout.searchOpened);
 
@@ -53,7 +56,10 @@ export const MainPanel = (): JSX.Element => {
       )}
       <div>
         <div className="grid place-items-center">
-          <Link href="/" className="flex w-full cursor-pointer justify-center">
+          <Link
+            href="/"
+            className="flex w-full cursor-pointer justify-center"
+            onClick={closeMainPanel}>
             <ColoredSvg
               src="/icons/accords.svg"
               className={cJoin(
@@ -77,6 +83,7 @@ export const MainPanel = (): JSX.Element => {
               placement={isMainPanelReduced ? "right" : "top"}>
               <Button
                 onClick={() => {
+                  closeMainPanel();
                   setSettingsOpened(true);
                   sendAnalytics("Settings", "Open settings");
                 }}
@@ -88,6 +95,7 @@ export const MainPanel = (): JSX.Element => {
               placement={isMainPanelReduced ? "right" : "top"}>
               <Button
                 onClick={() => {
+                  closeMainPanel();
                   setSearchOpened(true);
                   sendAnalytics("Search", "Open search");
                 }}
@@ -106,6 +114,7 @@ export const MainPanel = (): JSX.Element => {
         title={format("library")}
         subtitle={format("library_short_description")}
         reduced={isMainPanelReduced && is3ColumnsLayout}
+        onClick={closeMainPanel}
       />
 
       <NavOption
@@ -114,6 +123,7 @@ export const MainPanel = (): JSX.Element => {
         title={format("contents")}
         subtitle={format("contents_short_description")}
         reduced={isMainPanelReduced && is3ColumnsLayout}
+        onClick={closeMainPanel}
       />
 
       <NavOption
@@ -122,6 +132,7 @@ export const MainPanel = (): JSX.Element => {
         title={format("wiki")}
         subtitle={format("wiki_short_description")}
         reduced={isMainPanelReduced && is3ColumnsLayout}
+        onClick={closeMainPanel}
       />
 
       <NavOption
@@ -130,6 +141,7 @@ export const MainPanel = (): JSX.Element => {
         title={format("chronicles")}
         subtitle={format("chronicles_short_description")}
         reduced={isMainPanelReduced && is3ColumnsLayout}
+        onClick={closeMainPanel}
       />
 
       <HorizontalLine />
@@ -139,22 +151,15 @@ export const MainPanel = (): JSX.Element => {
         icon="newspaper"
         title={format("news")}
         reduced={isMainPanelReduced && is3ColumnsLayout}
+        onClick={closeMainPanel}
       />
-
-      {/*
-      <NavOption
-        url="/merch"
-        icon="store"
-        title={format("merch")}
-        reduced={isMainPanelReduced && is3ColumnsLayout}
-      />
-      */}
 
       <NavOption
         url="https://gallery.accords-library.com/posts/"
         icon="perm_media"
         title={format("gallery")}
         reduced={isMainPanelReduced && is3ColumnsLayout}
+        onClick={closeMainPanel}
       />
 
       <NavOption
@@ -162,6 +167,7 @@ export const MainPanel = (): JSX.Element => {
         icon="save"
         title={format("archives")}
         reduced={isMainPanelReduced && is3ColumnsLayout}
+        onClick={closeMainPanel}
       />
 
       <NavOption
@@ -169,6 +175,7 @@ export const MainPanel = (): JSX.Element => {
         icon="info"
         title={format("about_us")}
         reduced={isMainPanelReduced && is3ColumnsLayout}
+        onClick={closeMainPanel}
       />
 
       {(!isMainPanelReduced || !is3ColumnsLayout) && <HorizontalLine />}

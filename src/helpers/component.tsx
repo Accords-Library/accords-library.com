@@ -1,4 +1,6 @@
-import { isDefined } from "./asserts";
+import { HorizontalLine } from "components/HorizontalLine";
+import { insertInBetweenArray } from "helpers/others";
+import { isDefined } from "helpers/asserts";
 
 export interface Wrapper {
   children: React.ReactNode;
@@ -28,3 +30,15 @@ export const ConditionalWrapper = <T, U>({
   ) : (
     <>{children}</>
   );
+
+interface ElementsSeparatorProps {
+  children: React.ReactNode[];
+  separator?: React.ReactNode;
+}
+
+export const ElementsSeparator = ({
+  children,
+  separator = <HorizontalLine />,
+}: ElementsSeparatorProps): JSX.Element => (
+  <>{insertInBetweenArray(children.filter(Boolean), separator)}</>
+);

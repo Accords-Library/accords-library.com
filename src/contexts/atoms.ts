@@ -1,15 +1,37 @@
 import { atom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
-import { localData } from "contexts/localData";
 import { containerQueries } from "contexts/containerQueries";
 import { atomPairing } from "helpers/atoms";
 import { settings } from "contexts/settings";
-import { lightBox } from "contexts/LightBoxProvider";
+import { UploadImageFragment } from "graphql/generated";
+import { Languages, Currencies, Langui } from "helpers/localData";
 
-/*
- * I'm getting a weird error if I put those atoms in appLayout.ts
- * So I'm putting the atoms here. Sucks, I know.
- */
+/* [ LOCAL DATA ATOMS ] */
+
+const languages = atomPairing(atom<Languages>([]));
+const currencies = atomPairing(atom<Currencies>([]));
+const langui = atomPairing(atom<Langui>({}));
+const fallbackLangui = atomPairing(atom<Langui>({}));
+
+const localData = {
+  languages: languages[0],
+  currencies: currencies[0],
+  langui: langui[0],
+  fallbackLangui: fallbackLangui[0],
+};
+
+/* [ LIGHTBOX ATOMS ] */
+
+const lightBoxAtom = atomPairing(
+  atom<{
+    showLightBox: (
+      images: (UploadImageFragment | string | null | undefined)[],
+      index?: number
+    ) => void;
+  }>({ showLightBox: () => null })
+);
+
+const lightBox = lightBoxAtom[0];
 
 /* [ APPLAYOUT ATOMS ] */
 
@@ -48,4 +70,10 @@ export const atoms = {
   localData,
   lightBox,
   containerQueries,
+};
+
+// Do not import outside of the "contexts" folder
+export const internalAtoms = {
+  lightBox: lightBoxAtom,
+  localData: { languages, currencies, langui, fallbackLangui },
 };

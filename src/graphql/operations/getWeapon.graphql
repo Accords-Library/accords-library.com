@@ -1,0 +1,92 @@
+query getWeapon($slug: String, $language_code: String) {
+  weaponStories(filters: { slug: { eq: $slug } }) {
+    data {
+      attributes {
+        ...sharedWeaponFragment
+        stories(pagination: { limit: -1 }) {
+          id
+          categories(pagination: { limit: -1 }) {
+            data {
+              id
+              attributes {
+                name
+                short
+              }
+            }
+          }
+          translations(pagination: { limit: -1 }) {
+            id
+            description
+            level_1
+            level_2
+            level_3
+            level_4
+            status
+            language {
+              data {
+                attributes {
+                  code
+                }
+              }
+            }
+          }
+        }
+        weapon_group {
+          data {
+            attributes {
+              slug
+              weapons(pagination: { limit: -1 }, filters: { slug: { ne: $slug } }) {
+                data {
+                  id
+                  attributes {
+                    ...sharedWeaponFragment
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+fragment sharedWeaponFragment on WeaponStory {
+  type {
+    data {
+      id
+      attributes {
+        slug
+        translations(filters: { language: { code: { eq: $language_code } } }) {
+          name
+          language {
+            data {
+              attributes {
+                code
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  name(pagination: { limit: -1 }) {
+    id
+    name
+    language {
+      data {
+        attributes {
+          code
+        }
+      }
+    }
+  }
+  slug
+  thumbnail {
+    data {
+      attributes {
+        ...uploadImage
+      }
+    }
+  }
+}

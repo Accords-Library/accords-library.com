@@ -3,12 +3,13 @@ import { useCallback, useRef, useState } from "react";
 import TurndownService from "turndown";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { Button } from "components/Inputs/Button";
-import { Markdawn, TableOfContents } from "components/Markdown/Markdawn";
+import { getTocFromMarkdawn, Markdawn, TableOfContents } from "components/Markdown/Markdawn";
 import { ContentPanel, ContentPanelWidthSizes } from "components/Containers/ContentPanel";
 import { Popup } from "components/Containers/Popup";
 import { ToolTip } from "components/ToolTip";
 import { getOpenGraph } from "helpers/openGraph";
 import { getFormat } from "helpers/i18n";
+import { isDefined } from "helpers/asserts";
 
 /*
  *                                           ╭────────╮
@@ -154,6 +155,8 @@ const Editor = (props: Props): JSX.Element => {
     },
     [transformationWrapper]
   );
+
+  const toc = getTocFromMarkdawn(markdown);
 
   const contentPanel = (
     <ContentPanel width={ContentPanelWidthSizes.Full}>
@@ -388,9 +391,11 @@ const Editor = (props: Props): JSX.Element => {
         </div>
       </div>
 
-      <div className="mt-8">
-        <TableOfContents text={markdown} />
-      </div>
+      {isDefined(toc) && (
+        <div className="mt-8">
+          <TableOfContents toc={toc} />
+        </div>
+      )}
     </ContentPanel>
   );
 

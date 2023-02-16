@@ -4,10 +4,12 @@ import {
   GetLibraryItemQuery,
   GetPostQuery,
   GetVideoQuery,
+  GetWeaponQuery,
   GetWikiPageQuery,
   LibraryItemAttributesFragment,
   PostAttributesFragment,
   VideoAttributesFragment,
+  WeaponAttributesFragment,
   WikiPageAttributesFragment,
 } from "./generated";
 
@@ -24,7 +26,7 @@ export interface MeiliContent
   id: string;
   translations: (Omit<
     NonNullable<NonNullable<ContentAttributesFragment["translations"]>[number]>,
-    "text_set" | "description"
+    "description" | "text_set"
   > & {
     displayable_description?: string | null;
   })[];
@@ -52,24 +54,49 @@ export interface MeiliWikiPage extends Omit<WikiPageAttributesFragment, "transla
   })[];
 }
 
+type WeaponAttributesTranslation = NonNullable<
+  NonNullable<
+    NonNullable<NonNullable<WeaponAttributesFragment["stories"]>[number]>["translations"]
+  >[number]
+>;
+
+export interface MeiliWeapon extends Omit<WeaponAttributesFragment, "name" | "stories"> {
+  id: string;
+  categories: NonNullable<
+    NonNullable<NonNullable<WeaponAttributesFragment["stories"]>[number]>["categories"]
+  >["data"];
+  translations: {
+    id: NonNullable<NonNullable<WeaponAttributesFragment["stories"]>[number]>["id"];
+    names: string[];
+    description: string;
+    language: WeaponAttributesTranslation["language"];
+  }[];
+}
+
 export enum MeiliIndices {
   LIBRARY_ITEM = "library-item",
   CONTENT = "content",
   VIDEOS = "video",
   POST = "post",
   WIKI_PAGE = "wiki-page",
+  WEAPON = "weapon-story",
 }
 
 export type MeiliDocumentsType =
+  | {
+      index: MeiliIndices.CONTENT;
+      documents: MeiliContent;
+      strapi: GetContentQuery["content"];
+    }
   | {
       index: MeiliIndices.LIBRARY_ITEM;
       documents: MeiliLibraryItem;
       strapi: GetLibraryItemQuery["libraryItem"];
     }
   | {
-      index: MeiliIndices.CONTENT;
-      documents: MeiliContent;
-      strapi: GetContentQuery["content"];
+      index: MeiliIndices.POST;
+      documents: MeiliPost;
+      strapi: GetPostQuery["post"];
     }
   | {
       index: MeiliIndices.VIDEOS;
@@ -77,9 +104,9 @@ export type MeiliDocumentsType =
       strapi: GetVideoQuery["video"];
     }
   | {
-      index: MeiliIndices.POST;
-      documents: MeiliPost;
-      strapi: GetPostQuery["post"];
+      index: MeiliIndices.WEAPON;
+      documents: MeiliWeapon;
+      strapi: GetWeaponQuery["weaponStory"];
     }
   | {
       index: MeiliIndices.WIKI_PAGE;

@@ -1,3 +1,4 @@
+import { useHotkeys } from "react-hotkeys-hook";
 import { Ico } from "components/Ico";
 import { PageSelector } from "components/Inputs/PageSelector";
 import { atoms } from "contexts/atoms";
@@ -21,8 +22,14 @@ export const Paginator = ({
   children,
 }: Props): JSX.Element => {
   useScrollTopOnChange(Ids.ContentPanel, [page]);
+  useHotkeys("left", () => onPageChange(page - 1), { enabled: page > 1 }, [page]);
+  useHotkeys("right", () => onPageChange(page + 1), { enabled: page < (totalNumberOfPages ?? 0) }, [
+    page,
+  ]);
+
   if (totalNumberOfPages === 0) return <DefaultRenderWhenEmpty />;
   if (isUndefined(totalNumberOfPages) || totalNumberOfPages < 2) return <>{children}</>;
+
   return (
     <>
       <PageSelector
@@ -50,6 +57,7 @@ export const Paginator = ({
 const DefaultRenderWhenEmpty = () => {
   const is3ColumnsLayout = useAtomGetter(atoms.containerQueries.is3ColumnsLayout);
   const { format } = useFormat();
+
   return (
     <div className="grid h-full place-content-center">
       <div

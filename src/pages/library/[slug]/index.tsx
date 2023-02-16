@@ -47,13 +47,13 @@ import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { getOpenGraph } from "helpers/openGraph";
 import { getDescription } from "helpers/description";
 import { useIntersectionList } from "hooks/useIntersectionList";
-import { HorizontalLine } from "components/HorizontalLine";
 import { Ids } from "types/ids";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter, useAtomSetter } from "helpers/atoms";
 import { Link } from "components/Inputs/Link";
 import { useFormat } from "hooks/useFormat";
 import { getFormat } from "helpers/i18n";
+import { ElementsSeparator } from "helpers/component";
 
 /*
  *                                         ╭─────────────╮
@@ -99,59 +99,69 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
     (content) => content.attributes?.scan_set && content.attributes.scan_set.length > 0
   );
 
+  const is3ColumnsLayout = useAtomGetter(atoms.containerQueries.is3ColumnsLayout);
+
   const subPanel = (
     <SubPanel>
-      <ReturnButton href="/library/" title={format("library")} displayOnlyOn="3ColumnsLayout" />
+      <ElementsSeparator>
+        {[
+          is3ColumnsLayout && (
+            <ReturnButton
+              key="ReturnButton"
+              href="/library/"
+              title={format("library")}
+              displayOnlyOn="3ColumnsLayout"
+            />
+          ),
+          <div className="grid gap-4" key="NavOption">
+            <NavOption
+              title={format("summary")}
+              url={`#${intersectionIds[0]}`}
+              border
+              active={currentIntersection === 0}
+              onClick={closeSubPanel}
+            />
 
-      <HorizontalLine />
+            {item.gallery && item.gallery.data.length > 0 && (
+              <NavOption
+                title={format("gallery")}
+                url={`#${intersectionIds[1]}`}
+                border
+                active={currentIntersection === 1}
+                onClick={closeSubPanel}
+              />
+            )}
 
-      <div className="grid gap-4">
-        <NavOption
-          title={format("summary")}
-          url={`#${intersectionIds[0]}`}
-          border
-          active={currentIntersection === 0}
-          onClick={closeSubPanel}
-        />
+            <NavOption
+              title={format("details")}
+              url={`#${intersectionIds[2]}`}
+              border
+              active={currentIntersection === 2}
+              onClick={closeSubPanel}
+            />
 
-        {item.gallery && item.gallery.data.length > 0 && (
-          <NavOption
-            title={format("gallery")}
-            url={`#${intersectionIds[1]}`}
-            border
-            active={currentIntersection === 1}
-            onClick={closeSubPanel}
-          />
-        )}
+            {item.subitems && item.subitems.data.length > 0 && (
+              <NavOption
+                title={format(isVariantSet ? "variant" : "subitem", { count: Infinity })}
+                url={`#${intersectionIds[3]}`}
+                border
+                active={currentIntersection === 3}
+                onClick={closeSubPanel}
+              />
+            )}
 
-        <NavOption
-          title={format("details")}
-          url={`#${intersectionIds[2]}`}
-          border
-          active={currentIntersection === 2}
-          onClick={closeSubPanel}
-        />
-
-        {item.subitems && item.subitems.data.length > 0 && (
-          <NavOption
-            title={format(isVariantSet ? "variant" : "subitem", { count: Infinity })}
-            url={`#${intersectionIds[3]}`}
-            border
-            active={currentIntersection === 3}
-            onClick={closeSubPanel}
-          />
-        )}
-
-        {item.contents && item.contents.data.length > 0 && (
-          <NavOption
-            title={format("contents")}
-            url={`#${intersectionIds[4]}`}
-            border
-            active={currentIntersection === 4}
-            onClick={closeSubPanel}
-          />
-        )}
-      </div>
+            {item.contents && item.contents.data.length > 0 && (
+              <NavOption
+                title={format("contents")}
+                url={`#${intersectionIds[4]}`}
+                border
+                active={currentIntersection === 4}
+                onClick={closeSubPanel}
+              />
+            )}
+          </div>,
+        ]}
+      </ElementsSeparator>
     </SubPanel>
   );
 

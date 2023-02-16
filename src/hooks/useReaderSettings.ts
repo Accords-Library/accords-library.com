@@ -17,10 +17,10 @@ interface ReaderSettings extends FilterSettings {
 
 const DEFAULT_READER_SETTINGS: ReaderSettings = {
   bookFold: true,
-  lighting: true,
+  lighting: false,
   paperTexture: true,
   teint: 0.1,
-  dropShadow: true,
+  dropShadow: false,
   pageQuality: ImageQuality.Large,
   isSidePagesEnabled: true,
 };

@@ -2,6 +2,7 @@ import {
   GetChronicleQuery,
   GetContentTextQuery,
   GetPostQuery,
+  GetWeaponQuery,
   GetWikiPageQuery,
 } from "graphql/generated";
 
@@ -42,6 +43,28 @@ type Chronicle = NonNullable<
 export interface ChronicleWithTranslations extends Omit<Chronicle, "translations"> {
   translations: NonNullable<Chronicle["translations"]>;
 }
+
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
+
+export type Weapon = NonNullable<
+  NonNullable<NonNullable<GetWeaponQuery["weaponStories"]>["data"][number]>["attributes"]
+>;
+
+type WeaponStory = NonNullable<NonNullable<Weapon["stories"]>[number]>;
+
+export interface WeaponStoryWithTranslations extends Omit<WeaponStory, "translations"> {
+  translations: NonNullable<NonNullable<WeaponStory>["translations"]>;
+}
+
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
+
+export type WeaponGroupPreview = NonNullable<
+  NonNullable<
+    NonNullable<
+      NonNullable<NonNullable<NonNullable<Weapon["weapon_group"]>["data"]>["attributes"]>["weapons"]
+    >["data"][number]["attributes"]
+  >
+>;
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 

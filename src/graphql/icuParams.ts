@@ -179,4 +179,8 @@ export interface ICUParams {
   subitem_of_x: { x: Date | boolean | number | string };
   variant_of_x: { x: Date | boolean | number | string };
   dark_mode_extension_warning: never;
+  weapon: { count: number };
+  weapons_description: never;
+  level_x: { x: Date | boolean | number | string };
+  story_x: { x: Date | boolean | number | string };
 }

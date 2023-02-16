@@ -180,7 +180,11 @@
           "definition_x": "Definition {x}",
           "subitem_of_x": "Subitem of {x}",
           "variant_of_x": "Variant of {x}",
-          "dark_mode_extension_warning": "This website offers a light and dark theme. If you are using a \"dark mode\" browser extension, make sure to disable it for an optimal experience."
+          "dark_mode_extension_warning": "This website offers a light and dark theme. If you are using a \"dark mode\" browser extension, make sure to disable it for an optimal experience.",
+          "weapon": "{ count, plural, =0 {No weapons} one {Weapon} other {Weapons} }",
+          "weapons_description": "A list of all the weapons across all of the games. All distinguished weapons come with an “account.” It’s a document with various details like how the weapon was forged and how it’s been used in the past.",
+          "level_x": "Level {x}",
+          "story_x": "Story {x}"
         }
       },
       {
@@ -362,7 +366,11 @@
           "definition_x": "Définition {x}",
           "subitem_of_x": "Sous-item de {x}",
           "variant_of_x": "Variante de {x}",
-          "dark_mode_extension_warning": "Ce site web propose un thème clair et un thème sombre. Si vous utilisez une extension de navigateur qui simule un thème sombre, veillez à la désactiver pour une expérience optimale."
+          "dark_mode_extension_warning": "Ce site web propose un thème clair et un thème sombre. Si vous utilisez une extension de navigateur qui simule un thème sombre, veillez à la désactiver pour une expérience optimale.",
+          "weapon": null,
+          "weapons_description": null,
+          "level_x": null,
+          "story_x": null
         }
       },
       {
@@ -544,7 +552,11 @@
           "definition_x": null,
           "subitem_of_x": null,
           "variant_of_x": null,
-          "dark_mode_extension_warning": null
+          "dark_mode_extension_warning": null,
+          "weapon": null,
+          "weapons_description": null,
+          "level_x": null,
+          "story_x": null
         }
       },
       {
@@ -726,7 +738,11 @@
           "definition_x": null,
           "subitem_of_x": null,
           "variant_of_x": null,
-          "dark_mode_extension_warning": null
+          "dark_mode_extension_warning": null,
+          "weapon": null,
+          "weapons_description": null,
+          "level_x": null,
+          "story_x": null
         }
       },
       {
@@ -908,7 +924,11 @@
           "definition_x": null,
           "subitem_of_x": null,
           "variant_of_x": null,
-          "dark_mode_extension_warning": null
+          "dark_mode_extension_warning": null,
+          "weapon": null,
+          "weapons_description": null,
+          "level_x": null,
+          "story_x": null
         }
       }
     ]

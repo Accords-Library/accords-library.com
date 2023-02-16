@@ -59,7 +59,13 @@ export const useFormat = (): {
       if (isDefinedAndNotEmpty(result)) {
         return result;
       }
-      return new IntlMessageFormat(fallbackLangui[key] ?? "").format(processedValues).toString();
+      const fallback = new IntlMessageFormat(fallbackLangui[key] ?? "")
+        .format(processedValues)
+        .toString();
+      if (isDefinedAndNotEmpty(fallback)) {
+        return fallback;
+      }
+      return key;
     },
     [langui, fallbackLangui]
   );

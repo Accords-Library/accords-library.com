@@ -14,6 +14,7 @@ import {
   MeiliLibraryItem,
   MeiliPost,
   MeiliVideo,
+  MeiliWeapon,
   MeiliWikiPage,
 } from "shared/meilisearch-graphql-typings/meiliTypes";
 import { getVideoThumbnailURL } from "helpers/videos";
@@ -43,6 +44,7 @@ export const SearchPopup = (): JSX.Element => {
   const [videos, setVideos] = useState<CustomSearchResponse<MeiliVideo>>();
   const [posts, setPosts] = useState<CustomSearchResponse<MeiliPost>>();
   const [wikiPages, setWikiPages] = useState<CustomSearchResponse<MeiliWikiPage>>();
+  const [weapons, setWeapons] = useState<CustomSearchResponse<MeiliWeapon>>();
 
   useEffect(() => {
     const fetchLibraryItems = async () => {
@@ -129,6 +131,25 @@ export const SearchPopup = (): JSX.Element => {
       setPosts(searchResult);
     };
 
+    const fetchWeapons = async () => {
+      const searchResult = await meiliSearch(MeiliIndices.WEAPON, query, {
+        limit: SEARCH_LIMIT,
+        attributesToRetrieve: ["*"],
+        attributesToHighlight: ["translations.description", "translations.names"],
+        attributesToCrop: ["translations.description"],
+        sort: ["slug:asc"],
+      });
+      searchResult.hits = searchResult.hits.map((item) => {
+        if (Object.keys(item._matchesPosition).some((match) => match.startsWith("translations"))) {
+          item._formatted.translations = filterDefined(item._formatted.translations).filter(
+            (translation) => JSON.stringify(translation).includes("</mark>")
+          );
+        }
+        return item;
+      });
+      setWeapons(searchResult);
+    };
+
     const fetchWikiPages = async () => {
       const searchResult = await meiliSearch(MeiliIndices.WIKI_PAGE, query, {
         limit: SEARCH_LIMIT,
@@ -160,12 +181,14 @@ export const SearchPopup = (): JSX.Element => {
       setContents(undefined);
       setVideos(undefined);
       setPosts(undefined);
+      setWeapons(undefined);
     } else {
       fetchWikiPages();
       fetchLibraryItems();
       fetchContents();
       fetchVideos();
       fetchPosts();
+      fetchWeapons();
     }
   }, [query]);
 
@@ -411,6 +434,48 @@ export const SearchPopup = (): JSX.Element => {
             </div>
           </SearchResultSection>
         )}
+
+        {isDefined(weapons) && (
+          <SearchResultSection
+            title={format("weapon", { count: Infinity })}
+            icon="shield"
+            href={`/wiki/weapons?page=1&query=${query}`}
+            totalHits={weapons.estimatedTotalHits}>
+            <div className="flex flex-wrap items-start gap-x-6 gap-y-8">
+              {weapons.hits.map((item) => (
+                <TranslatedPreviewCard
+                  key={item.id}
+                  className="w-56"
+                  href={"/"}
+                  translations={filterHasAttributes(item._formatted.translations, [
+                    "language.data.attributes.code",
+                  ] as const).map(
+                    ({ description, language, names: [primaryName, ...aliases] }) => ({
+                      language: language.data.attributes.code,
+                      title: primaryName,
+                      subtitle: aliases.join("・"),
+                      description: containsHighlight(description) ? description : undefined,
+                    })
+                  )}
+                  fallback={{ title: prettySlug(item.slug) }}
+                  thumbnail={item.thumbnail?.data?.attributes}
+                  thumbnailAspectRatio="1/1"
+                  thumbnailForceAspectRatio
+                  thumbnailFitMethod="contain"
+                  keepInfoVisible
+                  topChips={
+                    item.type?.data?.attributes?.slug
+                      ? [prettySlug(item.type.data.attributes.slug)]
+                      : undefined
+                  }
+                  bottomChips={filterHasAttributes(item.categories, [
+                    "attributes.short",
+                  ] as const).map((category) => category.attributes.short)}
+                />
+              ))}
+            </div>
+          </SearchResultSection>
+        )}
       </div>
     </Popup>
   );
@@ -442,7 +507,7 @@ const SearchResultSection = ({
               className="grid grid-cols-[auto_1fr] place-items-center gap-6 px-6 py-4"
               href={href}
               onClick={() => setSearchOpened(false)}>
-              <Ico icon={icon} className="!text-3xl" isFilled />
+              <Ico icon={icon} className="!text-3xl" isFilled={false} />
               <div>
                 <p className="font-headers text-lg">{title}</p>
                 {isDefined(totalHits) && totalHits > SEARCH_LIMIT && (

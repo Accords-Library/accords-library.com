@@ -1,5 +1,5 @@
 import { GetStaticProps } from "next";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useBoolean } from "usehooks-ts";
 import { z } from "zod";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
@@ -24,6 +24,8 @@ import { containsHighlight, CustomSearchResponse, meiliSearch } from "helpers/se
 import { Paginator } from "components/Containers/Paginator";
 import { useFormat } from "hooks/useFormat";
 import { getFormat } from "helpers/i18n";
+import { useAtomSetter } from "helpers/atoms";
+import { atoms } from "contexts/atoms";
 
 /*
  *                                         ╭─────────────╮
@@ -50,6 +52,8 @@ interface Props extends AppLayoutRequired {}
 
 const Wiki = (props: Props): JSX.Element => {
   const hoverable = useDeviceSupportsHover();
+  const setSubPanelOpened = useAtomSetter(atoms.layout.subPanelOpened);
+  const closeSubPanel = useCallback(() => setSubPanelOpened(false), [setSubPanelOpened]);
   const { format } = useFormat();
   const router = useTypedRouter(queryParamSchema);
   const [query, setQuery] = useState(router.query.query ?? DEFAULT_FILTERS_STATE.query);
@@ -151,7 +155,18 @@ const Wiki = (props: Props): JSX.Element => {
 
       <p className="mb-4 font-headers text-xl font-bold">{format("special_pages")}</p>
 
-      <NavOption title={format("chronology")} url="/wiki/chronology" border />
+      <NavOption
+        title={format("chronology")}
+        url="/wiki/chronology"
+        onClick={closeSubPanel}
+        border
+      />
+      <NavOption
+        title={format("weapon", { count: Infinity })}
+        url="/wiki/weapons"
+        onClick={closeSubPanel}
+        border
+      />
     </SubPanel>
   );
 

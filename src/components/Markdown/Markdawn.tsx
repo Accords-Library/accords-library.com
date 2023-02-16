@@ -216,18 +216,12 @@ export const Markdawn = ({ className, text: rawText }: MarkdawnProps): JSX.Eleme
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
 interface TableOfContentsProps {
-  text: string;
-  title?: string;
+  toc: TocInterface;
   onContentClicked?: MouseEventHandler<HTMLAnchorElement>;
 }
 
-export const TableOfContents = ({
-  text,
-  title,
-  onContentClicked,
-}: TableOfContentsProps): JSX.Element => {
+export const TableOfContents = ({ toc, onContentClicked }: TableOfContentsProps): JSX.Element => {
   const { format } = useFormat();
-  const toc = getTocFromMarkdawn(preprocessMarkDawn(text), title);
 
   return (
     <>
@@ -435,7 +429,14 @@ const markdawnHeadersParser = (
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
-const getTocFromMarkdawn = (text: string, title?: string): TocInterface => {
+export const getTocFromMarkdawn = (
+  markdawn: string | null | undefined,
+  title?: string
+): TocInterface | undefined => {
+  if (isUndefined(markdawn)) return undefined;
+
+  const text = preprocessMarkDawn(markdawn);
+
   const toc: TocInterface = {
     title: title ?? "Return to top",
     slug: slugify(title),
@@ -522,5 +523,6 @@ const getTocFromMarkdawn = (text: string, title?: string): TocInterface => {
     }
   });
 
+  if (toc.children.length === 0) return undefined;
   return toc;
 };

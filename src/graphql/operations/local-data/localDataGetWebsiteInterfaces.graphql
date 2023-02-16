@@ -186,6 +186,10 @@ query localDataGetWebsiteInterfaces {
         subitem_of_x
         variant_of_x
         dark_mode_extension_warning
+        weapon
+        weapons_description
+        level_x
+        story_x
       }
     }
   }

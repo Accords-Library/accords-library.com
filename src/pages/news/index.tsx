@@ -129,6 +129,7 @@ const News = ({ ...otherProps }: Props): JSX.Element => {
         placeholder={format("search_title")}
         value={query}
         onChange={(name) => {
+          setPage(1);
           setQuery(name);
           if (isDefinedAndNotEmpty(name)) {
             sendAnalytics("News", "Change search term");

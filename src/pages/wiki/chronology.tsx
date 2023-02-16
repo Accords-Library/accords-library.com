@@ -1,5 +1,5 @@
 import { GetStaticProps } from "next";
-import { Fragment, useCallback } from "react";
+import { Fragment, useCallback, useMemo } from "react";
 import { useRouter } from "next/router";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { InsetBox } from "components/Containers/InsetBox";
@@ -27,6 +27,8 @@ import { useIntersectionList } from "hooks/useIntersectionList";
 import { HorizontalLine } from "components/HorizontalLine";
 import { useFormat } from "hooks/useFormat";
 import { getFormat } from "helpers/i18n";
+import { useAtomSetter } from "helpers/atoms";
+import { atoms } from "contexts/atoms";
 
 /*
  *                                           ╭────────╮
@@ -40,8 +42,14 @@ interface Props extends AppLayoutRequired {
 
 const Chronology = ({ chronologyItems, chronologyEras, ...otherProps }: Props): JSX.Element => {
   const { format } = useFormat();
-  const ids = filterHasAttributes(chronologyEras, ["attributes"] as const).map(
-    (era) => era.attributes.slug
+  const setSubPanelOpened = useAtomSetter(atoms.layout.subPanelOpened);
+  const closeSubPanel = useCallback(() => setSubPanelOpened(false), [setSubPanelOpened]);
+  const ids = useMemo(
+    () =>
+      filterHasAttributes(chronologyEras, ["attributes"] as const).map(
+        (era) => era.attributes.slug
+      ),
+    [chronologyEras]
   );
 
   const currentIntersection = useIntersectionList(ids);
@@ -69,6 +77,7 @@ const Chronology = ({ chronologyItems, chronologyEras, ...otherProps }: Props): 
             url={`#${era.attributes.slug}`}
             border
             active={currentIntersection === index}
+            onClick={closeSubPanel}
           />
         </Fragment>
       ))}

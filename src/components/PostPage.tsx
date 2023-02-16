@@ -2,7 +2,7 @@ import { Fragment, useCallback } from "react";
 import { AppLayout, AppLayoutRequired } from "./AppLayout";
 import { Chip } from "./Chip";
 import { HorizontalLine } from "./HorizontalLine";
-import { Markdawn, TableOfContents } from "./Markdown/Markdawn";
+import { getTocFromMarkdawn, Markdawn, TableOfContents } from "./Markdown/Markdawn";
 import { ReturnButton } from "./PanelComponents/ReturnButton";
 import { ContentPanel } from "./Containers/ContentPanel";
 import { SubPanel } from "./Containers/SubPanel";
@@ -70,56 +70,55 @@ export const PostPage = ({
   const title = selectedTranslation?.title ?? prettySlug(post.slug);
   const excerpt = selectedTranslation?.excerpt ?? "";
 
-  const subPanel = (
-    <SubPanel>
-      <ElementsSeparator>
-        {[
-          returnHref && returnTitle && !is1ColumnLayout && (
-            <ReturnButton href={returnHref} title={returnTitle} />
-          ),
+  const toc = getTocFromMarkdawn(body, title);
 
-          displayCredits && (
-            <>
-              {selectedTranslation && (
-                <div className="grid grid-flow-col place-content-center place-items-center gap-2">
-                  <p className="font-headers font-bold">{format("status")}:</p>
+  const subPanelElems = [
+    returnHref && returnTitle && !is1ColumnLayout && (
+      <ReturnButton href={returnHref} title={returnTitle} />
+    ),
 
-                  <ToolTip
-                    content={formatStatusDescription(selectedTranslation.status)}
-                    maxWidth={"20rem"}>
-                    <Chip text={selectedTranslation.status} />
-                  </ToolTip>
-                </div>
+    displayCredits && (
+      <>
+        {selectedTranslation && (
+          <div className="grid grid-flow-col place-content-center place-items-center gap-2">
+            <p className="font-headers font-bold">{format("status")}:</p>
+
+            <ToolTip
+              content={formatStatusDescription(selectedTranslation.status)}
+              maxWidth={"20rem"}>
+              <Chip text={selectedTranslation.status} />
+            </ToolTip>
+          </div>
+        )}
+
+        {post.authors && post.authors.data.length > 0 && (
+          <div>
+            <p className="font-headers font-bold">{"Authors"}:</p>
+            <div className="grid place-content-center place-items-center gap-2">
+              {filterHasAttributes(post.authors.data, ["id", "attributes"] as const).map(
+                (author) => (
+                  <Fragment key={author.id}>
+                    <RecorderChip recorder={author.attributes} />
+                  </Fragment>
+                )
               )}
+            </div>
+          </div>
+        )}
+      </>
+    ),
 
-              {post.authors && post.authors.data.length > 0 && (
-                <div>
-                  <p className="font-headers font-bold">{"Authors"}:</p>
-                  <div className="grid place-content-center place-items-center gap-2">
-                    {filterHasAttributes(post.authors.data, ["id", "attributes"] as const).map(
-                      (author) => (
-                        <Fragment key={author.id}>
-                          <RecorderChip recorder={author.attributes} />
-                        </Fragment>
-                      )
-                    )}
-                  </div>
-                </div>
-              )}
-            </>
-          ),
+    displayToc && isDefined(toc) && (
+      <TableOfContents toc={toc} onContentClicked={() => setSubPanelOpened(false)} />
+    ),
+  ];
 
-          displayToc && (
-            <TableOfContents
-              text={body}
-              title={title}
-              onContentClicked={() => setSubPanelOpened(false)}
-            />
-          ),
-        ]}
-      </ElementsSeparator>
-    </SubPanel>
-  );
+  const subPanel =
+    subPanelElems.filter(Boolean).length > 0 ? (
+      <SubPanel>
+        <ElementsSeparator>{subPanelElems}</ElementsSeparator>
+      </SubPanel>
+    ) : undefined;
 
   const contentPanel = (
     <ContentPanel>

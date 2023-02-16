@@ -4,7 +4,7 @@ import naturalCompare from "string-natural-compare";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { Chip } from "components/Chip";
 import { PreviewCardCTAs } from "components/Library/PreviewCardCTAs";
-import { Markdawn, TableOfContents } from "components/Markdown/Markdawn";
+import { getTocFromMarkdawn, Markdawn, TableOfContents } from "components/Markdown/Markdawn";
 import { TranslatedReturnButton } from "components/PanelComponents/ReturnButton";
 import { ContentPanel } from "components/Containers/ContentPanel";
 import { SubPanel } from "components/Containers/SubPanel";
@@ -90,6 +90,15 @@ const Content = ({ content, ...otherProps }: Props): JSX.Element => {
         : format("contents"),
     },
   };
+
+  const toc = getTocFromMarkdawn(
+    selectedTranslation?.text_set?.text,
+    prettyInlineTitle(
+      selectedTranslation?.pre_title,
+      selectedTranslation?.title,
+      selectedTranslation?.subtitle
+    )
+  );
 
   const subPanel = (
     <SubPanel>
@@ -191,17 +200,7 @@ const Content = ({ content, ...otherProps }: Props): JSX.Element => {
             </div>
           ),
 
-          selectedTranslation?.text_set?.text && (
-            <TableOfContents
-              text={selectedTranslation.text_set.text}
-              title={prettyInlineTitle(
-                selectedTranslation.pre_title,
-                selectedTranslation.title,
-                selectedTranslation.subtitle
-              )}
-              onContentClicked={() => setSubPanelOpened(false)}
-            />
-          ),
+          toc && <TableOfContents toc={toc} onContentClicked={() => setSubPanelOpened(false)} />,
 
           content.ranged_contents?.data && content.ranged_contents.data.length > 0 && (
             <div>

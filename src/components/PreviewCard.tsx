@@ -24,6 +24,7 @@ interface Props {
   thumbnail?: UploadImageFragment | string | null | undefined;
   thumbnailAspectRatio?: string;
   thumbnailForceAspectRatio?: boolean;
+  thumbnailFitMethod?: "contain" | "cover";
   thumbnailRounded?: boolean;
   href: string;
   pre_title?: string | null | undefined;
@@ -60,6 +61,7 @@ export const PreviewCard = ({
   thumbnail,
   thumbnailAspectRatio = "4/3",
   thumbnailForceAspectRatio = false,
+  thumbnailFitMethod = "cover",
   thumbnailRounded = true,
   pre_title,
   title,
@@ -133,7 +135,12 @@ export const PreviewCard = ({
                   thumbnailRounded,
                   cIf(keepInfoVisible, "rounded-t-md", "rounded-md notHoverable:rounded-b-none")
                 ),
-                cIf(thumbnailForceAspectRatio, "h-full w-full object-cover")
+                cIf(thumbnailForceAspectRatio, "h-full w-full"),
+                cIf(
+                  thumbnailForceAspectRatio && thumbnailFitMethod === "contain",
+                  "object-contain",
+                  "object-cover"
+                )
               )}
               src={thumbnail}
               quality={ImageQuality.Medium}

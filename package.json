@@ -28,7 +28,7 @@
     "cuid": "^2.1.8",
     "intl-messageformat": "^10.3.0",
     "isomorphic-dompurify": "^1.0.0",
-    "jotai": "^2.0.1",
+    "jotai": "^2.0.2",
     "markdown-to-jsx": "^7.1.9",
     "marked": "^4.2.12",
     "material-symbols": "^0.4.4",

@@ -1,6 +1,7 @@
 import { GetStaticProps } from "next";
 import { useCallback, useRef, useState } from "react";
 import TurndownService from "turndown";
+import { atomWithStorage } from "jotai/utils";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { Button } from "components/Inputs/Button";
 import { getTocFromMarkdawn, Markdawn, TableOfContents } from "components/Markdown/Markdawn";
@@ -10,6 +11,14 @@ import { ToolTip } from "components/ToolTip";
 import { getOpenGraph } from "helpers/openGraph";
 import { getFormat } from "helpers/i18n";
 import { isDefined } from "helpers/asserts";
+import { atomPairing, useAtomPair } from "helpers/atoms";
+
+/*
+ *                                         ╭─────────────╮
+ * ────────────────────────────────────────╯  CONSTANTS  ╰──────────────────────────────────────────
+ */
+
+const markdownAtom = atomPairing(atomWithStorage("editorState", ""));
 
 /*
  *                                           ╭────────╮
@@ -19,13 +28,10 @@ import { isDefined } from "helpers/asserts";
 interface Props extends AppLayoutRequired {}
 
 const Editor = (props: Props): JSX.Element => {
-  const handleInput = useCallback((text: string) => {
-    setMarkdown(text);
-  }, []);
-
-  const [markdown, setMarkdown] = useState("");
   const [converterOpened, setConverterOpened] = useState(false);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
+
+  const [markdown, setMarkdown] = useAtomPair(markdownAtom);
 
   const transformationWrapper = useCallback(
     (
@@ -45,14 +51,14 @@ const Editor = (props: Props): JSX.Element => {
         );
 
         textAreaRef.current.value = transformedValue;
-        handleInput(textAreaRef.current.value);
+        setMarkdown(textAreaRef.current.value);
 
         textAreaRef.current.focus();
         textAreaRef.current.selectionStart = selectionStart + prependLength;
         textAreaRef.current.selectionEnd = selectionEnd + prependLength;
       }
     },
-    [handleInput]
+    [setMarkdown]
   );
 
   const wrap = useCallback(
@@ -375,7 +381,7 @@ const Editor = (props: Props): JSX.Element => {
             ref={textAreaRef}
             onInput={(event) => {
               const textarea = event.target as HTMLTextAreaElement;
-              handleInput(textarea.value);
+              setMarkdown(textarea.value);
             }}
             className="h-[70vh] w-full rounded-xl bg-mid/40 p-8
               font-mono text-black outline-none"

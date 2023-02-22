@@ -28,7 +28,6 @@ const InsertedLabel = ({ label }: InsertedLabelProps) => (
 export const OrderableList = ({ onChange, items, insertLabels }: Props): JSX.Element => {
   const updateOrder = useCallback(
     (sourceIndex: number, targetIndex: number) => {
-      console.log("updateOrder");
       onChange?.(arrayMove(items, sourceIndex, targetIndex));
     },
     [items, onChange]

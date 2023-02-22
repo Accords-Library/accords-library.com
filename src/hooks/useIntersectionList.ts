@@ -4,6 +4,9 @@ import { useIsClient } from "usehooks-ts";
 import { useOnScroll } from "./useOnScroll";
 import { isDefined, isUndefined } from "helpers/asserts";
 import { Ids } from "types/ids";
+import { getLogger } from "helpers/logger";
+
+const logger = getLogger("⛒ [Intersection List]");
 
 export const useIntersectionList = (ids: string[]): number => {
   const [currentIntersection, setCurrentIntersection] = useState(-1);
@@ -14,7 +17,7 @@ export const useIntersectionList = (ids: string[]): number => {
 
   const refreshCurrentIntersection = useCallback(
     (scroll: number) => {
-      console.log("useIntersectionList");
+      logger.debug("Recalculating intersection");
 
       if (isUndefined(contentPanel)) {
         setCurrentIntersection(-1);

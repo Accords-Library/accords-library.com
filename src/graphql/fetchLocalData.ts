@@ -5,15 +5,17 @@ import { config } from "dotenv";
 import { getReadySdk } from "./sdk";
 import { LocalDataGetWebsiteInterfacesQuery } from "./generated";
 import { processLangui, Langui } from "helpers/localData";
+import { getLogger } from "helpers/logger";
 
 config({ path: resolve(process.cwd(), ".env.local") });
 
 const LOCAL_DATA_FOLDER = `${process.cwd()}/public/local-data`;
+const logger = getLogger("💽 [Local Data]");
 
 const writeLocalData = (name: LocalDataFile, localData: unknown) => {
   const path = `${LOCAL_DATA_FOLDER}/${name}.json`;
   writeFileSync(path, JSON.stringify(localData), { encoding: "utf-8" });
-  console.log(`${path} has been written!`);
+  logger.log(`${name}.json has been written`);
 };
 
 const readLocalData = <T>(name: LocalDataFile): T => {

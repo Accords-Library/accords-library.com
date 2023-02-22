@@ -5,11 +5,12 @@ import { useAtomGetter } from "helpers/atoms";
 import { LibraryItemMetadataDynamicZone } from "graphql/generated";
 import { ICUParams } from "graphql/icuParams";
 import { isDefined, isDefinedAndNotEmpty } from "helpers/asserts";
+import { getLogger } from "helpers/logger";
+
+const logger = getLogger("🗺️ [I18n]");
 
 type WordingKey = keyof ICUParams;
-
 type LibraryItemType = Exclude<LibraryItemMetadataDynamicZone["__typename"], undefined>;
-
 export type ContentStatus = "Done" | "Draft" | "Incomplete" | "Review";
 
 const componentMetadataToWording: Record<LibraryItemType, WordingKey> = {
@@ -59,12 +60,17 @@ export const useFormat = (): {
       if (isDefinedAndNotEmpty(result)) {
         return result;
       }
+      logger.warn(
+        `Missing ${langui.ui_language?.data?.attributes?.code} translation for ${key}. \
+Falling back to en translation.`
+      );
       const fallback = new IntlMessageFormat(fallbackLangui[key] ?? "")
         .format(processedValues)
         .toString();
       if (isDefinedAndNotEmpty(fallback)) {
         return fallback;
       }
+      logger.warn(`Missing fallback translation for ${key}. The key seems unvalid`);
       return key;
     },
     [langui, fallbackLangui]

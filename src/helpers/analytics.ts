@@ -1,10 +1,14 @@
+import { getLogger } from "helpers/logger";
+
+const logger = getLogger("📊 [Analytics]");
+
 export const sendAnalytics = (category: string, event: string): void => {
   const eventName = `[${category}] ${event}`;
-  console.log(`Event: ${eventName}`);
+  logger.log(eventName);
   try {
     umami(eventName);
   } catch (error) {
     if (error instanceof ReferenceError) return;
-    console.log(error);
+    logger.error(error);
   }
 };

@@ -3,8 +3,10 @@ import { createWriteStream } from "fs";
 import { parse, TYPE } from "@formatjs/icu-messageformat-parser";
 import { getLangui } from "./fetchLocalData";
 import { filterDefined } from "helpers/asserts";
+import { getLogger } from "helpers/logger";
 
 const OUTPUT_FOLDER = `${process.cwd()}/src/graphql`;
+const logger = getLogger("💽 [ICU to TS]");
 
 const icuToTypescript = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -45,7 +47,7 @@ const icuToTypescript = () => {
 
   output.write("}\n");
 
-  console.log(`${OUTPUT_FOLDER}/icu-params.ts has been written!`);
+  logger.log(`icu-params.ts has been written!`);
 };
 
 if (process.argv[2] === "--icu") {

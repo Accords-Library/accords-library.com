@@ -1,6 +1,9 @@
 import { useEffect } from "react";
 import { useIsClient } from "usehooks-ts";
 import { isDefined } from "helpers/asserts";
+import { getLogger } from "helpers/logger";
+
+const logger = getLogger("📏 [Resize Observer]");
 
 export const useOnResize = (
   id: string,
@@ -9,7 +12,7 @@ export const useOnResize = (
   const isClient = useIsClient();
 
   useEffect(() => {
-    console.log("[useOnResize]", id);
+    logger.log(`Creating observer for ${id}`);
     const elem = isClient ? document.querySelector(`#${id}`) : null;
     const ro = new ResizeObserver((resizeObserverEntry) => {
       const entry = resizeObserverEntry[0];

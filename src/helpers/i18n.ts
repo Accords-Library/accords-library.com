@@ -5,9 +5,7 @@ import { isDefined, isDefinedAndNotEmpty } from "helpers/asserts";
 import { getLangui } from "graphql/fetchLocalData";
 
 type WordingKey = keyof ICUParams;
-
 type LibraryItemType = Exclude<LibraryItemMetadataDynamicZone["__typename"], undefined>;
-
 type ContentStatus = "Done" | "Draft" | "Incomplete" | "Review";
 
 const componentMetadataToWording: Record<LibraryItemType, WordingKey> = {
@@ -58,7 +56,13 @@ export const getFormat = (
     if (isDefinedAndNotEmpty(result)) {
       return result;
     }
-    return new IntlMessageFormat(fallbackLangui[key] ?? "").format(processedValues).toString();
+    const fallback = new IntlMessageFormat(fallbackLangui[key] ?? "")
+      .format(processedValues)
+      .toString();
+    if (isDefinedAndNotEmpty(fallback)) {
+      return fallback;
+    }
+    return key;
   };
 
   const formatLibraryItemType = (metadata: { __typename: LibraryItemType }): string =>

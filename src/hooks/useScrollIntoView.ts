@@ -2,8 +2,11 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useCounter } from "usehooks-ts";
 import { isDefined } from "helpers/asserts";
+import { getLogger } from "helpers/logger";
 
 const NUM_RETRIES = 10;
+const DELAY_BETWEEN_RETRY = 200;
+const logger = getLogger("↕️ [Scroll Into View]");
 
 export const useScrollIntoView = (): void => {
   const router = useRouter();
@@ -18,14 +21,14 @@ export const useScrollIntoView = (): void => {
           if (hash !== "") {
             const element = document.getElementById(hash);
             if (isDefined(element)) {
-              console.log(`[useScrollIntoView] ${hash} found`);
+              logger.log(`#${hash} found`);
               element.scrollIntoView();
               setHasReachedElem(true);
             } else {
-              console.log(`[useScrollIntoView] ${hash} not found`);
+              logger.warn(`#${hash} not found, retrying in ${DELAY_BETWEEN_RETRY} ms`);
               setTimeout(() => {
                 increment();
-              }, 200);
+              }, DELAY_BETWEEN_RETRY);
             }
           }
         }

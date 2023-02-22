@@ -11,8 +11,10 @@ import {
 import { LocalDataFile } from "graphql/fetchLocalData";
 import { internalAtoms } from "contexts/atoms";
 import { processLanguages, processCurrencies, processLangui } from "helpers/localData";
+import { getLogger } from "helpers/logger";
 
 const getFileName = (name: LocalDataFile): string => `/local-data/${name}.json`;
+const logger = getLogger("💽 [Local Data]");
 
 export const useLocalData = (): void => {
   const setLanguages = useAtomSetter(internalAtoms.localData.languages);
@@ -28,22 +30,22 @@ export const useLocalData = (): void => {
   );
 
   useEffect(() => {
-    console.log("[useLocalData] Refresh languages");
+    logger.log("Refresh languages");
     setLanguages(processLanguages(rawLanguages));
   }, [rawLanguages, setLanguages]);
 
   useEffect(() => {
-    console.log("[useLocalData] Refresh currencies");
+    logger.log("Refresh currencies");
     setCurrencies(processCurrencies(rawCurrencies));
   }, [rawCurrencies, setCurrencies]);
 
   useEffect(() => {
-    console.log("[useLocalData] Refresh langui");
+    logger.log("Refresh langui");
     setLangui(processLangui(rawLangui, locale));
   }, [locale, rawLangui, setLangui]);
 
   useEffect(() => {
-    console.log("[useLocalData] Refresh fallback langui");
+    logger.log("Refresh fallback langui");
     setFallbackLangui(processLangui(rawLangui, "en"));
   }, [rawLangui, setFallbackLangui]);
 };

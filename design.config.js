@@ -4,7 +4,7 @@ const colors = {
     light: { r: 255, g: 237, b: 216 },
     mid: { r: 240, g: 209, b: 179 },
     dark: { r: 156, g: 102, b: 68 },
-    shade: { r: 156, g: 102, b: 68 },
+    shade: { r: 192, g: 132, b: 94 },
     black: { r: 27, g: 24, b: 17 },
   },
   dark: {
@@ -12,7 +12,7 @@ const colors = {
     light: { r: 38, g: 34, b: 30 },
     mid: { r: 57, g: 45, b: 34 },
     dark: { r: 192, g: 132, b: 94 },
-    shade: { r: 0, g: 0, b: 0 },
+    shade: { r: 25, g: 25, b: 20 },
     black: { r: 235, g: 234, b: 231 },
   },
 };

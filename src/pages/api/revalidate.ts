@@ -28,12 +28,29 @@ type RequestProps =
   | StrapiPostContent
   | StrapiRangedContent
   | StrapiVideo
+  | StrapiWeaponGroup
+  | StrapiWeaponStory
   | StrapiWebsiteInterface
   | StrapiWiki;
 
 interface CustomRequest {
   model: "custom";
   path: string;
+}
+
+interface StrapiWeaponStory extends StrapiEvent {
+  model: "weapon-story";
+  entry: {
+    slug: string;
+  };
+}
+
+interface StrapiWeaponGroup extends StrapiEvent {
+  model: "weapon-story-group";
+  entry: {
+    id: string;
+    slug: string;
+  };
 }
 
 interface StrapiRangedContent extends StrapiEvent {
@@ -308,6 +325,21 @@ const Revalidate = async (
       if (body.entry.uid) {
         paths.push(`/archives/videos/v/${body.entry.uid}`);
       }
+      break;
+    }
+
+    case "weapon-story": {
+      paths.push(`/wiki/weapons/${body.entry.slug}`);
+      break;
+    }
+
+    case "weapon-story-group": {
+      const group = await sdk.revalidationGetWeaponGroup({
+        id: body.entry.id,
+      });
+      filterHasAttributes(group.weaponStoryGroup?.data?.attributes?.weapons?.data, [
+        "attributes.slug",
+      ] as const).forEach((weapon) => paths.push(`/wiki/weapons/${weapon.attributes.slug}`));
       break;
     }
 

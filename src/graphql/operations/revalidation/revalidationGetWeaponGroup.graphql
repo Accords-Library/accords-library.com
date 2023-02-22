@@ -1,0 +1,15 @@
+query revalidationGetWeaponGroup($id: ID) {
+  weaponStoryGroup(id: $id) {
+    data {
+      attributes {
+        weapons(pagination: { limit: -1 }) {
+          data {
+            attributes {
+              slug
+            }
+          }
+        }
+      }
+    }
+  }
+}

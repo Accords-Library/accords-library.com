@@ -53,20 +53,9 @@ const layout = {
   terminalMode,
 };
 
-/* [ TERMINAL ATOMS ] */
-
-const previousLines = atomPairing(atom<string[]>([]));
-const previousCommands = atomPairing(atom<string[]>([]));
-
-const terminal = {
-  previousLines,
-  previousCommands,
-};
-
 export const atoms = {
   settings,
   layout,
-  terminal,
   localData,
   lightBox,
   containerQueries,

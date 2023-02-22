@@ -1,7 +1,6 @@
 import { Fragment, useCallback } from "react";
 import { AppLayout, AppLayoutRequired } from "./AppLayout";
 import { Chip } from "./Chip";
-import { HorizontalLine } from "./HorizontalLine";
 import { getTocFromMarkdawn, Markdawn, TableOfContents } from "./Markdown/Markdawn";
 import { ReturnButton } from "./PanelComponents/ReturnButton";
 import { ContentPanel } from "./Containers/ContentPanel";
@@ -132,20 +131,17 @@ export const PostPage = ({
       )}
 
       {displayThumbnailHeader ? (
-        <>
-          <ThumbnailHeader
-            thumbnail={thumbnail}
-            title={title}
-            description={excerpt}
-            categories={post.categories}
-            languageSwitcher={
-              languageSwitcherProps.locales.size > 1 ? (
-                <LanguageSwitcher {...languageSwitcherProps} />
-              ) : undefined
-            }
-          />
-          {(isDefined(prependBody) || isDefined(body)) && <HorizontalLine />}
-        </>
+        <ThumbnailHeader
+          thumbnail={thumbnail}
+          title={title}
+          description={excerpt}
+          categories={post.categories}
+          languageSwitcher={
+            languageSwitcherProps.locales.size > 1 ? (
+              <LanguageSwitcher {...languageSwitcherProps} />
+            ) : undefined
+          }
+        />
       ) : (
         <>
           {displayLanguageSwitcher && (

@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/router";
+import { atom } from "jotai";
 import { cJoin, cIf } from "helpers/className";
 import { isDefined, isDefinedAndNotEmpty } from "helpers/asserts";
 import { atoms } from "contexts/atoms";
-import { useAtomSetter, useAtomPair } from "helpers/atoms";
+import { useAtomSetter, useAtomPair, atomPairing } from "helpers/atoms";
 
 /*
  *                                         ╭─────────────╮
@@ -11,6 +12,9 @@ import { useAtomSetter, useAtomPair } from "helpers/atoms";
  */
 
 const LINE_PREFIX = "root@accords-library.com:";
+
+const previousLinesAtom = atomPairing(atom<string[]>([]));
+const previousCommandsAtom = atomPairing(atom<string[]>([]));
 
 /*
  *                                        ╭─────────────╮
@@ -33,8 +37,8 @@ export const Terminal = ({
   const [childrenPaths, setChildrenPaths] = useState(propsChildrenPaths);
   const setPlayerName = useAtomSetter(atoms.settings.playerName);
 
-  const [previousCommands, setPreviousCommands] = useAtomPair(atoms.terminal.previousCommands);
-  const [previousLines, setPreviousLines] = useAtomPair(atoms.terminal.previousLines);
+  const [previousCommands, setPreviousCommands] = useAtomPair(previousCommandsAtom);
+  const [previousLines, setPreviousLines] = useAtomPair(previousLinesAtom);
 
   const [line, setLine] = useState("");
   const [displayCurrentLine, setDisplayCurrentLine] = useState(true);
@@ -112,7 +116,6 @@ export const Terminal = ({
         key: "rm",
         description: "Remove files or directories",
         handle: (currentLine, parameters) => {
-          console.log(parameters);
           if (parameters.startsWith("-r ")) {
             const folder = parameters.slice("-r ".length);
             if (childrenPaths.includes(folder)) {

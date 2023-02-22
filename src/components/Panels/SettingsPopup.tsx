@@ -17,6 +17,11 @@ import { Ico } from "components/Ico";
 import { useFormat } from "hooks/useFormat";
 import { ToolTip } from "components/ToolTip";
 
+/*
+ *                                        ╭─────────────╮
+ * ───────────────────────────────────────╯  COMPONENT  ╰───────────────────────────────────────────
+ */
+
 export const SettingsPopup = (): JSX.Element => {
   const [preferredLanguages, setPreferredLanguages] = useAtomPair(
     atoms.settings.preferredLanguages
@@ -142,7 +147,7 @@ export const SettingsPopup = (): JSX.Element => {
                   const newCurrencyName = currencyOptions[newCurrency];
                   if (isDefined(newCurrencyName)) {
                     setCurrency(newCurrencyName);
-                    sendAnalytics("Settings", `Change currency (${currencyOptions[newCurrency]})}`);
+                    sendAnalytics("Settings", `Change currency (${currencyOptions[newCurrency]})`);
                   }
                 }}
                 className="w-28"

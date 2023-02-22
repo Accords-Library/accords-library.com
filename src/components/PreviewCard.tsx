@@ -174,14 +174,14 @@ export const PreviewCard = ({
         )}
         <div
           className={cJoin(
-            "z-20 gap-2 p-4 transition-opacity linearbg-obi",
+            "z-20 grid gap-2 p-4 transition-opacity linearbg-obi",
             cIf(
               !keepInfoVisible && isHoverable,
               `-inset-x-0.5 bottom-2 opacity-0 shadow-shade
                [border-radius:10%_10%_10%_10%_/_1%_1%_3%_3%]
                group-hover:opacity-100 hoverable:absolute hoverable:drop-shadow-lg
                notHoverable:rounded-b-md notHoverable:opacity-100`,
-              "grid [border-radius:0%_0%_10%_10%_/_0%_0%_3%_3%]"
+              "[border-radius:0%_0%_10%_10%_/_0%_0%_3%_3%]"
             )
           )}>
           {metadata?.position === "Top" && metadataJSX}

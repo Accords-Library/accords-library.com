@@ -173,7 +173,9 @@ const Contents = (props: Props): JSX.Element => {
             setSortingMethod(newSort);
             sendAnalytics(
               "Contents/All",
-              `Change sorting method (${sortingMethods.map((item) => item.displayedName)[newSort]})`
+              `Change sorting method (${
+                sortingMethods.map((item) => item.meiliAttribute)[newSort]
+              })`
             );
           }}
         />

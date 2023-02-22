@@ -279,7 +279,9 @@ const Library = (props: Props): JSX.Element => {
             setSortingMethod(newSort);
             sendAnalytics(
               "Library",
-              `Change sorting method (${sortingMethods.map((item) => item.displayedName)[newSort]})`
+              `Change sorting method (${
+                sortingMethods.map((item) => item.meiliAttribute)[newSort]
+              })`
             );
           }}
         />

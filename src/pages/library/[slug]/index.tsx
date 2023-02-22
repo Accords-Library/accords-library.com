@@ -88,7 +88,7 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
   const setSubPanelOpened = useAtomSetter(atoms.layout.subPanelOpened);
   const closeSubPanel = useCallback(() => setSubPanelOpened(false), [setSubPanelOpened]);
 
-  useScrollTopOnChange(Ids.ContentPanel, [item]);
+  useScrollTopOnChange(Ids.ContentPanel, [itemId]);
   const currentIntersection = useIntersectionList(intersectionIds);
 
   const isVariantSet =

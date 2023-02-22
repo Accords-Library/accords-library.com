@@ -183,7 +183,9 @@ const Videos = ({ ...otherProps }: Props): JSX.Element => {
             setSortingMethod(newSort);
             sendAnalytics(
               "Videos",
-              `Change sorting method (${sortingMethods.map((item) => item.displayedName)[newSort]})`
+              `Change sorting method (${
+                sortingMethods.map((item) => item.meiliAttribute)[newSort]
+              })`
             );
           }}
         />

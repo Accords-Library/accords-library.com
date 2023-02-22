@@ -4,11 +4,18 @@ import { TranslatedProps } from "types/TranslatedProps";
 import { UpPressable } from "components/Containers/UpPressable";
 import { cIf, cJoin } from "helpers/className";
 
+/*
+ *                                        ╭─────────────╮
+ * ───────────────────────────────────────╯  COMPONENT  ╰───────────────────────────────────────────
+ */
+
 interface PreviewFolderProps {
   href: string;
   title?: string | null;
   disabled?: boolean;
 }
+
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
 export const PreviewFolder = ({ href, title, disabled }: PreviewFolderProps): JSX.Element => (
   <UpPressable href={href} disabled={disabled}>
@@ -23,7 +30,10 @@ export const PreviewFolder = ({ href, title, disabled }: PreviewFolderProps): JS
   </UpPressable>
 );
 
-// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
+/*
+ *                                    ╭──────────────────────╮
+ * ───────────────────────────────────╯  TRANSLATED VARIANT  ╰──────────────────────────────────────
+ */
 
 export const TranslatedPreviewFolder = ({
   translations,

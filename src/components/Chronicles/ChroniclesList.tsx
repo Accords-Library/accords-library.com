@@ -26,6 +26,8 @@ interface Props {
   title: string;
 }
 
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
+
 const ChroniclesList = ({ chronicles, currentSlug, title }: Props): JSX.Element => {
   const setSubPanelOpened = useAtomSetter(atoms.layout.subPanelOpened);
   const { value: isOpen, toggle: toggleOpen } = useBoolean(

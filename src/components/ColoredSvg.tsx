@@ -1,9 +1,16 @@
 import { cJoin } from "helpers/className";
 
+/*
+ *                                         ╭─────────────╮
+ * ────────────────────────────────────────╯  CONSTANTS  ╰──────────────────────────────────────────
+ */
+
 interface Props {
   src: string;
   className?: string;
 }
+
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
 export const ColoredSvg = ({ src, className }: Props): JSX.Element => (
   <div

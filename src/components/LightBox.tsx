@@ -12,6 +12,11 @@ import { isDefined } from "helpers/asserts";
 import { useAtomGetter } from "helpers/atoms";
 import { atoms } from "contexts/atoms";
 
+/*
+ *                                        ╭─────────────╮
+ * ───────────────────────────────────────╯  COMPONENT  ╰───────────────────────────────────────────
+ */
+
 interface Props {
   onCloseRequest: () => void;
   isVisible: boolean;
@@ -118,6 +123,11 @@ export const LightBox = ({
     </div>
   );
 };
+
+/*
+ *                                    ╭──────────────────────╮
+ * ───────────────────────────────────╯  PRIVATE COMPONENTS  ╰──────────────────────────────────────
+ */
 
 interface ControlButtonsProps {
   isPreviousImageAvailable: boolean;

@@ -230,7 +230,10 @@ export const AppLayout = ({
   );
 };
 
-// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
+/*
+ *                                    ╭──────────────────────╮
+ * ───────────────────────────────────╯  PRIVATE COMPONENTS  ╰──────────────────────────────────────
+ */
 
 interface ContentPlaceholderProps {
   message: string;

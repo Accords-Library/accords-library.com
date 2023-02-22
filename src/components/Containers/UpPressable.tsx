@@ -2,6 +2,11 @@ import { MouseEventHandler, useState } from "react";
 import { Link } from "components/Inputs/Link";
 import { cIf, cJoin } from "helpers/className";
 
+/*
+ *                                        ╭─────────────╮
+ * ───────────────────────────────────────╯  COMPONENT  ╰───────────────────────────────────────────
+ */
+
 interface Props {
   children: React.ReactNode;
   href: string;
@@ -10,6 +15,8 @@ interface Props {
   disabled?: boolean;
   onClick?: MouseEventHandler<HTMLAnchorElement>;
 }
+
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
 export const UpPressable = ({
   children,

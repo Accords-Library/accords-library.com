@@ -20,6 +20,8 @@ interface Props {
   onClick?: MouseEventHandler<HTMLAnchorElement>;
 }
 
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
+
 export const ChroniclePreview = ({
   date,
   url,

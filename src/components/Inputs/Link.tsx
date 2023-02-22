@@ -4,6 +4,11 @@ import { ConditionalWrapper, Wrapper } from "helpers/component";
 import { isDefinedAndNotEmpty } from "helpers/asserts";
 import { cIf, cJoin } from "helpers/className";
 
+/*
+ *                                        ╭─────────────╮
+ * ───────────────────────────────────────╯  COMPONENT  ╰───────────────────────────────────────────
+ */
+
 interface Props {
   href: string | null | undefined;
   className?: string;
@@ -14,6 +19,8 @@ interface Props {
   disabled?: boolean;
   linkStyled?: boolean;
 }
+
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
 export const Link = ({
   href,
@@ -48,6 +55,11 @@ export const Link = ({
   </ConditionalWrapper>
 );
 
+/*
+ *                                    ╭──────────────────────╮
+ * ───────────────────────────────────╯  PRIVATE COMPONENTS  ╰──────────────────────────────────────
+ */
+
 interface LinkWrapperProps {
   href: string;
   className?: string;
@@ -76,6 +88,8 @@ const LinkWrapper = ({
     {children}
   </NextLink>
 );
+
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
 interface DisabledWrapperProps {
   className?: string;

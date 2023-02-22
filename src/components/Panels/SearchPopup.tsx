@@ -481,6 +481,11 @@ export const SearchPopup = (): JSX.Element => {
   );
 };
 
+/*
+ *                                    ╭──────────────────────╮
+ * ───────────────────────────────────╯  PRIVATE COMPONENTS  ╰──────────────────────────────────────
+ */
+
 interface SearchResultSectionProps {
   title?: string | null;
   icon: MaterialSymbol;

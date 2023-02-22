@@ -8,7 +8,6 @@ import { filterHasAttributes } from "helpers/asserts";
 import { GetContentsFolderQuery } from "graphql/generated";
 import { getDefaultPreferredLanguages, staticSmartLanguage } from "helpers/locales";
 import { prettySlug } from "helpers/formatters";
-import { SmartList } from "components/SmartList";
 import { Ico } from "components/Ico";
 import { Button, TranslatedButton } from "components/Inputs/Button";
 import { PanelHeader } from "components/PanelComponents/PanelHeader";
@@ -21,6 +20,7 @@ import { useAtomGetter, useAtomSetter } from "helpers/atoms";
 import { TranslatedPreviewFolder } from "components/Contents/PreviewFolder";
 import { useFormat } from "hooks/useFormat";
 import { getFormat } from "helpers/i18n";
+import { Chip } from "components/Chip";
 
 /*
  *                                           ╭────────╮
@@ -100,74 +100,91 @@ const ContentsFolder = ({ openGraph, folder, ...otherProps }: Props): JSX.Elemen
         )}
       </div>
 
-      <SmartList
-        items={filterHasAttributes(folder.subfolders?.data, ["id", "attributes"] as const)}
-        getItemId={(item) => item.id}
-        renderItem={({ item }) => (
-          <TranslatedPreviewFolder
-            href={`/contents/folder/${item.attributes.slug}`}
-            translations={filterHasAttributes(item.attributes.titles, [
-              "language.data.attributes.code",
-            ] as const).map((title) => ({
-              title: title.title,
-              language: title.language.data.attributes.code,
-            }))}
-            fallback={{ title: prettySlug(item.attributes.slug) }}
-          />
-        )}
-        className={cJoin(
-          "items-end",
-          cIf(
-            isContentPanelAtLeast4xl,
-            "grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] gap-x-6 gap-y-8",
-            "grid-cols-2 gap-4"
-          )
-        )}
-        renderWhenEmpty={() => <></>}
-        groupingFunction={() => [format("folders")]}
-      />
-
-      <SmartList
-        items={filterHasAttributes(folder.contents?.data, ["id", "attributes"] as const)}
-        getItemId={(item) => item.id}
-        renderItem={({ item }) => (
-          <TranslatedPreviewCard
-            href={`/contents/${item.attributes.slug}`}
-            translations={filterHasAttributes(item.attributes.translations, [
-              "language.data.attributes.code",
-            ] as const).map((translation) => ({
-              pre_title: translation.pre_title,
-              title: translation.title,
-              subtitle: translation.subtitle,
-              language: translation.language.data.attributes.code,
-            }))}
-            fallback={{ title: prettySlug(item.attributes.slug) }}
-            thumbnail={item.attributes.thumbnail?.data?.attributes}
-            thumbnailAspectRatio="3/2"
-            thumbnailForceAspectRatio
-            topChips={
-              item.attributes.type?.data?.attributes
-                ? [
-                    item.attributes.type.data.attributes.titles?.[0]
-                      ? item.attributes.type.data.attributes.titles[0]?.title
-                      : prettySlug(item.attributes.type.data.attributes.slug),
-                  ]
-                : undefined
-            }
-            bottomChips={item.attributes.categories?.data.map(
-              (category) => category.attributes?.short ?? ""
+      {folder.subfolders?.data && folder.subfolders.data.length > 0 && (
+        <div className="mb-8">
+          <h2 className="flex flex-row place-items-center gap-2 pb-2 text-2xl">
+            {format("folders")}
+            <Chip text={format("x_results", { x: folder.subfolders.data.length })} />
+          </h2>
+          <div
+            className={cJoin(
+              "grid items-start gap-8 pb-12",
+              cIf(
+                isContentPanelAtLeast4xl,
+                "grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] gap-x-6 gap-y-8",
+                "grid-cols-2 gap-4"
+              )
+            )}>
+            {filterHasAttributes(folder.subfolders.data, ["id", "attributes"] as const).map(
+              (subfolder) => (
+                <TranslatedPreviewFolder
+                  key={subfolder.id}
+                  href={`/contents/folder/${subfolder.attributes.slug}`}
+                  translations={filterHasAttributes(subfolder.attributes.titles, [
+                    "language.data.attributes.code",
+                  ] as const).map((title) => ({
+                    title: title.title,
+                    language: title.language.data.attributes.code,
+                  }))}
+                  fallback={{ title: prettySlug(subfolder.attributes.slug) }}
+                />
+              )
             )}
-            keepInfoVisible
-          />
-        )}
-        className={cIf(
-          isContentPanelAtLeast4xl,
-          "grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] gap-x-6 gap-y-8",
-          "grid-cols-2 gap-x-3 gap-y-5"
-        )}
-        renderWhenEmpty={() => <></>}
-        groupingFunction={() => [format("contents")]}
-      />
+          </div>
+        </div>
+      )}
+
+      {folder.contents?.data && folder.contents.data.length > 0 && (
+        <div className="mb-8">
+          <h2 className="flex flex-row place-items-center gap-2 pb-2 text-2xl">
+            {format("contents")}
+            <Chip text={format("x_results", { x: folder.contents.data.length })} />
+          </h2>
+          <div
+            className={cJoin(
+              "grid items-start gap-8 pb-12",
+              cIf(
+                isContentPanelAtLeast4xl,
+                "grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] gap-x-6 gap-y-8",
+                "grid-cols-2 gap-4"
+              )
+            )}>
+            {filterHasAttributes(folder.contents.data, ["id", "attributes"] as const).map(
+              (item) => (
+                <TranslatedPreviewCard
+                  key={item.id}
+                  href={`/contents/${item.attributes.slug}`}
+                  translations={filterHasAttributes(item.attributes.translations, [
+                    "language.data.attributes.code",
+                  ] as const).map((translation) => ({
+                    pre_title: translation.pre_title,
+                    title: translation.title,
+                    subtitle: translation.subtitle,
+                    language: translation.language.data.attributes.code,
+                  }))}
+                  fallback={{ title: prettySlug(item.attributes.slug) }}
+                  thumbnail={item.attributes.thumbnail?.data?.attributes}
+                  thumbnailAspectRatio="3/2"
+                  thumbnailForceAspectRatio
+                  topChips={
+                    item.attributes.type?.data?.attributes
+                      ? [
+                          item.attributes.type.data.attributes.titles?.[0]
+                            ? item.attributes.type.data.attributes.titles[0]?.title
+                            : prettySlug(item.attributes.type.data.attributes.slug),
+                        ]
+                      : undefined
+                  }
+                  bottomChips={item.attributes.categories?.data.map(
+                    (category) => category.attributes?.short ?? ""
+                  )}
+                  keepInfoVisible
+                />
+              )
+            )}
+          </div>
+        </div>
+      )}
 
       {folder.contents?.data.length === 0 && folder.subfolders?.data.length === 0 && (
         <NoContentNorFolderMessage />

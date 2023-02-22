@@ -10,7 +10,7 @@ import { getLogger } from "helpers/logger";
 config({ path: resolve(process.cwd(), ".env.local") });
 
 const LOCAL_DATA_FOLDER = `${process.cwd()}/public/local-data`;
-const logger = getLogger("💽 [Local Data]");
+const logger = getLogger("💽 [Local Data]", "server");
 
 const writeLocalData = (name: LocalDataFile, localData: unknown) => {
   const path = `${LOCAL_DATA_FOLDER}/${name}.json`;

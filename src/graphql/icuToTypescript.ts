@@ -6,7 +6,7 @@ import { filterDefined } from "helpers/asserts";
 import { getLogger } from "helpers/logger";
 
 const OUTPUT_FOLDER = `${process.cwd()}/src/graphql`;
-const logger = getLogger("💽 [ICU to TS]");
+const logger = getLogger("💽 [ICU to TS]", "server");
 
 const icuToTypescript = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

@@ -51,7 +51,7 @@
   },
   "devDependencies": {
     "@digitak/esrun": "^3.2.19",
-    "@graphql-codegen/cli": "^3.1.0",
+    "@graphql-codegen/cli": "^3.2.1",
     "@graphql-codegen/typescript": "3.0.1",
     "@graphql-codegen/typescript-graphql-request": "^4.5.8",
     "@graphql-codegen/typescript-operations": "^3.0.1",

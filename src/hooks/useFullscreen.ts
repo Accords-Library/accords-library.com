@@ -15,14 +15,14 @@ export const useFullscreen = (
 
   const elem = isClient ? document.querySelector(`#${id}`) : null;
 
-  const requestFullscreen = useCallback(() => elem?.requestFullscreen(), [elem]);
+  const requestFullscreen = useCallback(async () => elem?.requestFullscreen(), [elem]);
   const exitFullscreen = useCallback(
     async () => isFullscreen && document.exitFullscreen(),
     [isFullscreen]
   );
 
   const toggleFullscreen = useCallback(
-    () => (isFullscreen ? exitFullscreen() : requestFullscreen()),
+    async () => (isFullscreen ? exitFullscreen() : requestFullscreen()),
     [exitFullscreen, isFullscreen, requestFullscreen]
   );
 

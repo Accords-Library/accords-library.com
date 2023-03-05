@@ -280,44 +280,43 @@ const Content = ({ content, ...otherProps }: Props): JSX.Element => {
                 ) : undefined
               }
             />,
-            <>
-              {previousContent?.attributes && (
-                <div className="mb-6 w-full">
-                  <h2 className="mb-4 text-center text-2xl">{format("previous_content")}</h2>
-                  <TranslatedPreviewLine
-                    href={`/contents/${previousContent.attributes.slug}`}
-                    translations={filterHasAttributes(previousContent.attributes.translations, [
-                      "language.data.attributes.code",
-                    ] as const).map((translation) => ({
-                      pre_title: translation.pre_title,
-                      title: translation.title,
-                      subtitle: translation.subtitle,
-                      language: translation.language.data.attributes.code,
-                    }))}
-                    fallback={{
-                      title: prettySlug(previousContent.attributes.slug),
-                    }}
-                    thumbnail={previousContent.attributes.thumbnail?.data?.attributes}
-                    topChips={
-                      isContentPanelAtLeast2xl && previousContent.attributes.type?.data?.attributes
-                        ? [
-                            previousContent.attributes.type.data.attributes.titles?.[0]
-                              ? previousContent.attributes.type.data.attributes.titles[0]?.title
-                              : prettySlug(previousContent.attributes.type.data.attributes.slug),
-                          ]
-                        : undefined
-                    }
-                    bottomChips={
-                      isContentPanelAtLeast2xl
-                        ? previousContent.attributes.categories?.data.map(
-                            (category) => category.attributes?.short ?? ""
-                          )
-                        : undefined
-                    }
-                  />
-                </div>
-              )}
-            </>,
+
+            previousContent?.attributes && (
+              <div className="mb-6 w-full">
+                <h2 className="mb-4 text-center text-2xl">{format("previous_content")}</h2>
+                <TranslatedPreviewLine
+                  href={`/contents/${previousContent.attributes.slug}`}
+                  translations={filterHasAttributes(previousContent.attributes.translations, [
+                    "language.data.attributes.code",
+                  ] as const).map((translation) => ({
+                    pre_title: translation.pre_title,
+                    title: translation.title,
+                    subtitle: translation.subtitle,
+                    language: translation.language.data.attributes.code,
+                  }))}
+                  fallback={{
+                    title: prettySlug(previousContent.attributes.slug),
+                  }}
+                  thumbnail={previousContent.attributes.thumbnail?.data?.attributes}
+                  topChips={
+                    isContentPanelAtLeast2xl && previousContent.attributes.type?.data?.attributes
+                      ? [
+                          previousContent.attributes.type.data.attributes.titles?.[0]
+                            ? previousContent.attributes.type.data.attributes.titles[0]?.title
+                            : prettySlug(previousContent.attributes.type.data.attributes.slug),
+                        ]
+                      : undefined
+                  }
+                  bottomChips={
+                    isContentPanelAtLeast2xl
+                      ? previousContent.attributes.categories?.data.map(
+                          (category) => category.attributes?.short ?? ""
+                        )
+                      : undefined
+                  }
+                />
+              </div>
+            ),
 
             selectedTranslation?.text_set?.text && (
               <Markdawn text={selectedTranslation.text_set.text} />

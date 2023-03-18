@@ -22,9 +22,11 @@ import { cIf, cJoin } from "helpers/className";
 import { Terminal } from "components/Cli/Terminal";
 import { prettyTerminalBoxedTitle, prettyTerminalUnderlinedTitle } from "helpers/terminal";
 import { atoms } from "contexts/atoms";
-import { useAtomGetter } from "helpers/atoms";
+import { useAtomGetter, useAtomSetter } from "helpers/atoms";
 import { useFormat } from "hooks/useFormat";
 import { getFormat } from "helpers/i18n";
+import { getTocFromMarkdawn, Markdawn, TableOfContents } from "components/Markdown/Markdawn";
+import { ElementsSeparator } from "helpers/component";
 
 /*
  *                                           ╭────────╮
@@ -39,6 +41,7 @@ const WikiPage = ({ page, ...otherProps }: Props): JSX.Element => {
   const { format } = useFormat();
   const router = useRouter();
   const isTerminalMode = useAtomGetter(atoms.layout.terminalMode);
+  const setSubPanelOpened = useAtomSetter(atoms.layout.subPanelOpened);
   const { showLightBox } = useAtomGetter(atoms.lightBox);
   const [selectedTranslation, LanguageSwitcher, languageSwitcherProps] = useSmartLanguage({
     items: page.translations,
@@ -50,9 +53,27 @@ const WikiPage = ({ page, ...otherProps }: Props): JSX.Element => {
   });
   const is3ColumnsLayout = useAtomGetter(atoms.containerQueries.is3ColumnsLayout);
 
+  const toc = getTocFromMarkdawn(selectedTranslation?.body?.body, selectedTranslation?.title);
+
   const subPanel = is3ColumnsLayout ? (
     <SubPanel>
-      <ReturnButton href={`/wiki`} title={format("wiki")} displayOnlyOn={"3ColumnsLayout"} />
+      <ElementsSeparator>
+        {[
+          <ReturnButton
+            key="return"
+            href={`/wiki`}
+            title={format("wiki")}
+            displayOnlyOn={"3ColumnsLayout"}
+          />,
+          toc && (
+            <TableOfContents
+              key="toc"
+              toc={toc}
+              onContentClicked={() => setSubPanelOpened(false)}
+            />
+          ),
+        ]}
+      </ElementsSeparator>
     </SubPanel>
   ) : undefined;
 
@@ -170,7 +191,9 @@ const WikiPage = ({ page, ...otherProps }: Props): JSX.Element => {
             )}
 
             {isDefined(selectedTranslation.body) && (
-              <div className="whitespace-pre-line">{selectedTranslation.body.body}</div>
+              <div>
+                <Markdawn text={selectedTranslation.body.body} />
+              </div>
             )}
           </div>
         </>

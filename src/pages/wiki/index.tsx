@@ -167,6 +167,13 @@ const Wiki = (props: Props): JSX.Element => {
         onClick={closeSubPanel}
         border
       />
+      <NavOption
+        title={"Re[in]carnation"}
+        subtitle={format("costume", { count: Infinity })}
+        url="/wiki/rein/costumes"
+        onClick={closeSubPanel}
+        border
+      />
     </SubPanel>
   );
 

@@ -1,0 +1,22 @@
+query getReinEmblems {
+  reinEmblems(pagination: { limit: -1 }) {
+    data {
+      id
+      attributes {
+        slug
+        translations {
+          id
+          name
+          description
+          language {
+            data {
+              attributes {
+                code
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

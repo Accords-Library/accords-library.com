@@ -1,0 +1,10 @@
+query getReinCostumesWithoutEmblem {
+  reinCostumes(filters: { emblem: { id: { null: true } } }, pagination: { limit: -1 }) {
+    data {
+      id
+      attributes {
+        ...reinCostume
+      }
+    }
+  }
+}

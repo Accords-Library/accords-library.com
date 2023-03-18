@@ -1,0 +1,10 @@
+query getReinEmblemsSlugs {
+  reinEmblems(pagination: { limit: -1 }) {
+    data {
+      id
+      attributes {
+        slug
+      }
+    }
+  }
+}

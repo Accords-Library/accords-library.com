@@ -2,6 +2,8 @@ import {
   GetChronicleQuery,
   GetContentTextQuery,
   GetPostQuery,
+  GetReinCostumesQuery,
+  GetReinEmblemsQuery,
   GetWeaponQuery,
   GetWikiPageQuery,
 } from "graphql/generated";
@@ -65,6 +67,17 @@ export type WeaponGroupPreview = NonNullable<
     >["data"][number]["attributes"]
   >
 >;
+
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
+
+type ReinEmblem = NonNullable<GetReinEmblemsQuery["reinEmblems"]>["data"][number];
+
+export type ReinCostume = NonNullable<GetReinCostumesQuery["reinCostumes"]>["data"][number];
+
+export type ReinEmblemCostume = {
+  id: ReinEmblem["id"];
+  attributes: NonNullable<ReinEmblem["attributes"]> & { costumes: ReinCostume[] };
+};
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 

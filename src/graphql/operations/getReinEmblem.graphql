@@ -1,0 +1,30 @@
+query getReinEmblem($slug: String) {
+  reinEmblems(filters: { slug: { eq: $slug } }) {
+    data {
+      id
+      attributes {
+        slug
+        translations {
+          id
+          name
+          description
+          language {
+            data {
+              attributes {
+                code
+              }
+            }
+          }
+        }
+        costumes {
+          data {
+            id
+            attributes {
+              ...reinCostume
+            }
+          }
+        }
+      }
+    }
+  }
+}

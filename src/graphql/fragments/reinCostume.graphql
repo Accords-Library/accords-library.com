@@ -1,0 +1,27 @@
+fragment reinCostume on ReinCostume {
+  slug
+  sprite {
+    data {
+      attributes {
+        ...uploadImage
+      }
+    }
+  }
+  translations {
+    id
+    language {
+      data {
+        attributes {
+          code
+        }
+      }
+    }
+    name
+    description
+  }
+  emblem {
+    data {
+      id
+    }
+  }
+}

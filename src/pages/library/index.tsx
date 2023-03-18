@@ -408,7 +408,7 @@ const Library = (props: Props): JSX.Element => {
               href={`/library/${item.slug}`}
               translations={filterHasAttributes(item._formatted.descriptions, [
                 "language.data.attributes.code",
-              ] as const).map((translation) => ({
+              ]).map((translation) => ({
                 language: translation.language.data.attributes.code,
                 title: item.title,
                 subtitle: item.subtitle,

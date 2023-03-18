@@ -41,7 +41,7 @@ export const SettingsPopup = (): JSX.Element => {
 
   const router = useRouter();
 
-  const currencyOptions = filterHasAttributes(currencies, ["attributes"] as const).map(
+  const currencyOptions = filterHasAttributes(currencies, ["attributes"]).map(
     (currentCurrency) => currentCurrency.attributes.code
   );
 

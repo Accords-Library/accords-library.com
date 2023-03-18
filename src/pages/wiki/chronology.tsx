@@ -45,10 +45,7 @@ const Chronology = ({ chronologyItems, chronologyEras, ...otherProps }: Props): 
   const setSubPanelOpened = useAtomSetter(atoms.layout.subPanelOpened);
   const closeSubPanel = useCallback(() => setSubPanelOpened(false), [setSubPanelOpened]);
   const ids = useMemo(
-    () =>
-      filterHasAttributes(chronologyEras, ["attributes"] as const).map(
-        (era) => era.attributes.slug
-      ),
+    () => filterHasAttributes(chronologyEras, ["attributes"]).map((era) => era.attributes.slug),
     [chronologyEras]
   );
 
@@ -60,12 +57,12 @@ const Chronology = ({ chronologyItems, chronologyEras, ...otherProps }: Props): 
 
       <HorizontalLine />
 
-      {filterHasAttributes(chronologyEras, ["attributes", "id"] as const).map((era, index) => (
+      {filterHasAttributes(chronologyEras, ["attributes", "id"]).map((era, index) => (
         <Fragment key={era.id}>
           <TranslatedNavOption
             translations={filterHasAttributes(era.attributes.title, [
               "language.data.attributes.code",
-            ] as const).map((translation) => ({
+            ]).map((translation) => ({
               language: translation.language.data.attributes.code,
               title: translation.title,
               subtitle: `${era.attributes.starting_year} → ${era.attributes.ending_year}`,
@@ -93,19 +90,19 @@ const Chronology = ({ chronologyItems, chronologyEras, ...otherProps }: Props): 
         className="mb-10"
       />
 
-      {filterHasAttributes(chronologyEras, ["attributes"] as const).map((era) => (
+      {filterHasAttributes(chronologyEras, ["attributes"]).map((era) => (
         <TranslatedChronologyEra
           key={era.attributes.slug}
           id={era.attributes.slug}
           translations={filterHasAttributes(era.attributes.title, [
             "language.data.attributes.code",
-          ] as const).map((translation) => ({
+          ]).map((translation) => ({
             language: translation.language.data.attributes.code,
             title: translation.title,
             description: translation.description,
           }))}
           fallback={{ title: prettySlug(era.attributes.slug) }}
-          chronologyItems={filterHasAttributes(chronologyItems, ["attributes"] as const).filter(
+          chronologyItems={filterHasAttributes(chronologyItems, ["attributes"]).filter(
             (item) =>
               item.attributes.year >= era.attributes.starting_year &&
               item.attributes.year < era.attributes.ending_year
@@ -157,7 +154,7 @@ const ChronologyEra = ({ id, title, description, chronologyItems }: ChronologyEr
   const yearGroups = (() => {
     const memo: Props["chronologyItems"][] = [];
     let currentYear = -Infinity;
-    filterHasAttributes(chronologyItems, ["attributes"] as const).forEach((item) => {
+    filterHasAttributes(chronologyItems, ["attributes"]).forEach((item) => {
       if (currentYear === item.attributes.year) {
         memo[memo.length - 1]?.push(item);
       } else {
@@ -218,7 +215,7 @@ const ChronologyYear = ({ items }: ChronologyYearProps) => (
   <div
     className="rounded-2xl target:my-4 target:bg-mid target:py-4"
     id={generateAnchor(items[0]?.attributes?.year)}>
-    {filterHasAttributes(items, ["attributes.events"] as const).map((item, index) => (
+    {filterHasAttributes(items, ["attributes.events"]).map((item, index) => (
       <ChronologyDate
         key={index}
         date={{
@@ -284,7 +281,7 @@ export const ChronologyDate = ({ date, events }: ChronologyDateProps): JSX.Eleme
       </p>
 
       <div className="col-start-2 row-span-2 row-start-1 grid gap-4">
-        {filterHasAttributes(events, ["id", "translations"] as const).map((event) => (
+        {filterHasAttributes(events, ["id", "translations"]).map((event) => (
           <ChronologyEvent
             id={generateAnchor(date.year, date.month, date.day)}
             key={event.id}

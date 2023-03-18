@@ -537,7 +537,7 @@ const LibrarySlug = ({
                   id={content.attributes.slug}
                   translations={filterHasAttributes(
                     content.attributes.content?.data?.attributes?.translations,
-                    ["language.data.attributes"] as const
+                    ["language.data.attributes"]
                   ).map((translation) => ({
                     language: translation.language.data.attributes.code,
                     title: prettyInlineTitle(
@@ -596,9 +596,9 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   filterHasAttributes(item.libraryItems.data[0].attributes.contents?.data, [
     "attributes.scan_set",
-  ] as const).forEach((content) =>
-    filterHasAttributes(content.attributes.scan_set, ["pages.data"] as const).forEach((scanSet) =>
-      filterHasAttributes(scanSet.pages.data, ["attributes"] as const)
+  ]).forEach((content) =>
+    filterHasAttributes(content.attributes.scan_set, ["pages.data"]).forEach((scanSet) =>
+      filterHasAttributes(scanSet.pages.data, ["attributes"])
         .sort((a, b) => {
           if (isDefinedAndNotEmpty(a.attributes.url) && isDefinedAndNotEmpty(b.attributes.url)) {
             let aName = getAssetFilename(a.attributes.url);
@@ -675,7 +675,7 @@ export const getStaticPaths: GetStaticPaths = async (context) => {
   const sdk = getReadySdk();
   const libraryItems = await sdk.getLibraryItemsSlugs({});
   const paths: GetStaticPathsResult["paths"] = [];
-  filterHasAttributes(libraryItems.libraryItems?.data, ["attributes"] as const).map((item) => {
+  filterHasAttributes(libraryItems.libraryItems?.data, ["attributes"]).map((item) => {
     context.locales?.map((local) =>
       paths.push({ params: { slug: item.attributes.slug }, locale: local })
     );
@@ -874,14 +874,13 @@ const ScanSet = ({ onClickOnImage, scanSet, id, title, content }: ScanSetProps):
               <div>
                 <p className="font-headers font-bold">{format("scanners")}:</p>
                 <div className="grid place-content-center place-items-center gap-2">
-                  {filterHasAttributes(selectedScan.scanners.data, [
-                    "id",
-                    "attributes",
-                  ] as const).map((scanner) => (
-                    <Fragment key={scanner.id}>
-                      <RecorderChip recorder={scanner.attributes} />
-                    </Fragment>
-                  ))}
+                  {filterHasAttributes(selectedScan.scanners.data, ["id", "attributes"]).map(
+                    (scanner) => (
+                      <Fragment key={scanner.id}>
+                        <RecorderChip recorder={scanner.attributes} />
+                      </Fragment>
+                    )
+                  )}
                 </div>
               </div>
             )}
@@ -890,14 +889,13 @@ const ScanSet = ({ onClickOnImage, scanSet, id, title, content }: ScanSetProps):
               <div>
                 <p className="font-headers font-bold">{format("cleaners")}:</p>
                 <div className="grid place-content-center place-items-center gap-2">
-                  {filterHasAttributes(selectedScan.cleaners.data, [
-                    "id",
-                    "attributes",
-                  ] as const).map((cleaner) => (
-                    <Fragment key={cleaner.id}>
-                      <RecorderChip recorder={cleaner.attributes} />
-                    </Fragment>
-                  ))}
+                  {filterHasAttributes(selectedScan.cleaners.data, ["id", "attributes"]).map(
+                    (cleaner) => (
+                      <Fragment key={cleaner.id}>
+                        <RecorderChip recorder={cleaner.attributes} />
+                      </Fragment>
+                    )
+                  )}
                 </div>
               </div>
             )}
@@ -906,14 +904,13 @@ const ScanSet = ({ onClickOnImage, scanSet, id, title, content }: ScanSetProps):
               <div>
                 <p className="font-headers font-bold">{format("typesetters")}:</p>
                 <div className="grid place-content-center place-items-center gap-2">
-                  {filterHasAttributes(selectedScan.typesetters.data, [
-                    "id",
-                    "attributes",
-                  ] as const).map((typesetter) => (
-                    <Fragment key={typesetter.id}>
-                      <RecorderChip recorder={typesetter.attributes} />
-                    </Fragment>
-                  ))}
+                  {filterHasAttributes(selectedScan.typesetters.data, ["id", "attributes"]).map(
+                    (typesetter) => (
+                      <Fragment key={typesetter.id}>
+                        <RecorderChip recorder={typesetter.attributes} />
+                      </Fragment>
+                    )
+                  )}
                 </div>
               </div>
             )}

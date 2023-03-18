@@ -105,7 +105,7 @@ const testingContent = (contents: Props["contents"]): Report => {
     lines: [],
   };
 
-  filterHasAttributes(contents.contents?.data, ["attributes"] as const).map((content) => {
+  filterHasAttributes(contents.contents?.data, ["attributes"]).map((content) => {
     const backendUrl = sJoin(
       process.env.NEXT_PUBLIC_URL_CMS,
       "/admin/content-manager/collectionType/api::content.content/",

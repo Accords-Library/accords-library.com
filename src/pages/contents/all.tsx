@@ -220,7 +220,7 @@ const Contents = (props: Props): JSX.Element => {
               href={`/contents/${item.slug}`}
               translations={filterHasAttributes(item._formatted.translations, [
                 "language.data.attributes.code",
-              ] as const).map(({ displayable_description, language, ...otherAttributes }) => ({
+              ]).map(({ displayable_description, language, ...otherAttributes }) => ({
                 ...otherAttributes,
                 description: containsHighlight(displayable_description)
                   ? displayable_description

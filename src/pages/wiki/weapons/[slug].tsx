@@ -43,7 +43,7 @@ interface WeaponPreviewProps {
 const WeaponPreview = ({ weapon }: WeaponPreviewProps): JSX.Element => (
   <TranslatedPreviewCard
     href={`/wiki/weapons/${weapon.slug}`}
-    translations={filterHasAttributes(weapon.name, ["language.data.attributes.code"] as const).map(
+    translations={filterHasAttributes(weapon.name, ["language.data.attributes.code"]).map(
       ({ name, language }) => ({
         language: language.data.attributes.code,
         title: name,
@@ -111,7 +111,7 @@ const WeaponPage = ({ weapon, primaryName, aliases, ...otherProps }: Props): JSX
               <div className="grid gap-8">
                 {filterHasAttributes(weapon.weapon_group.data.attributes.weapons.data, [
                   "attributes",
-                ] as const).map((groupWeapon) => (
+                ]).map((groupWeapon) => (
                   <WeaponPreview key={groupWeapon.id} weapon={groupWeapon.attributes} />
                 ))}
               </div>
@@ -140,7 +140,7 @@ const WeaponPage = ({ weapon, primaryName, aliases, ...otherProps }: Props): JSX
 
       <div className="grid gap-8">
         <ElementsSeparator>
-          {filterHasAttributes(weapon.stories, ["translations"] as const).map((story, index) => (
+          {filterHasAttributes(weapon.stories, ["translations"]).map((story, index) => (
             <WeaponStory
               key={story.id}
               id={intersectionIds[index]}
@@ -201,7 +201,7 @@ export const getStaticPaths: GetStaticPaths = async (context) => {
   const sdk = getReadySdk();
   const weapons = await sdk.getWeaponsSlugs();
   const paths: GetStaticPathsResult["paths"] = [];
-  filterHasAttributes(weapons.weaponStories?.data, ["attributes"] as const).map((item) => {
+  filterHasAttributes(weapons.weaponStories?.data, ["attributes"]).map((item) => {
     context.locales?.map((local) => {
       paths.push({
         params: { slug: item.attributes.slug },
@@ -247,11 +247,9 @@ const WeaponStory = ({ story, storyNumber, id }: WeaponStoryProps): JSX.Element 
 
       {story.categories && story.categories.data.length > 0 && (
         <div className="mb-12 flex flex-row flex-wrap place-content-center gap-2">
-          {filterHasAttributes(story.categories.data, ["attributes.name"] as const).map(
-            (category) => (
-              <Chip key={category.id} text={category.attributes.name} />
-            )
-          )}
+          {filterHasAttributes(story.categories.data, ["attributes.name"]).map((category) => (
+            <Chip key={category.id} text={category.attributes.name} />
+          ))}
         </div>
       )}
 
@@ -286,7 +284,7 @@ export const getFilteredNames = (
   preferredLanguages: string[]
 ): string[] => {
   for (const language of preferredLanguages) {
-    const filteredNames = filterHasAttributes(names, ["name"] as const).filter(
+    const filteredNames = filterHasAttributes(names, ["name"]).filter(
       (name) => name.language?.data?.attributes?.code === language
     );
     if (filteredNames.length > 0) {

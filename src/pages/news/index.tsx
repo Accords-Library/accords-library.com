@@ -176,7 +176,7 @@ const News = ({ ...otherProps }: Props): JSX.Element => {
               href={`/news/${item.slug}`}
               translations={filterHasAttributes(item._formatted.translations, [
                 "language.data.attributes.code",
-              ] as const).map(({ excerpt, body, language, ...otherAttributes }) => ({
+              ]).map(({ excerpt, body, language, ...otherAttributes }) => ({
                 ...otherAttributes,
                 description: containsHighlight(excerpt)
                   ? excerpt

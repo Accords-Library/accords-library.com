@@ -300,7 +300,7 @@ export const getStaticPaths: GetStaticPaths = async (context) => {
   const paths: GetStaticPathsResult["paths"] = [];
 
   if (channels.videoChannels?.data)
-    filterHasAttributes(channels.videoChannels.data, ["attributes"] as const).map((channel) => {
+    filterHasAttributes(channels.videoChannels.data, ["attributes"]).map((channel) => {
       context.locales?.map((local) => {
         paths.push({
           params: { uid: channel.attributes.uid },

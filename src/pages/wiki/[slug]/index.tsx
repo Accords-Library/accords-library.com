@@ -125,11 +125,9 @@ const WikiPage = ({ page, ...otherProps }: Props): JSX.Element => {
                     </p>
 
                     <div className="flex flex-row flex-wrap place-content-center gap-2">
-                      {filterHasAttributes(page.categories.data, ["attributes"] as const).map(
-                        (category) => (
-                          <Chip key={category.id} text={category.attributes.name} />
-                        )
-                      )}
+                      {filterHasAttributes(page.categories.data, ["attributes"]).map((category) => (
+                        <Chip key={category.id} text={category.attributes.name} />
+                      ))}
                     </div>
                   </>
                 )}
@@ -138,7 +136,7 @@ const WikiPage = ({ page, ...otherProps }: Props): JSX.Element => {
                   <>
                     <p className="font-headers text-xl font-bold">{format("tags")}</p>
                     <div className="flex flex-row flex-wrap place-content-center gap-2">
-                      {filterHasAttributes(page.tags.data, ["attributes"] as const).map((tag) => (
+                      {filterHasAttributes(page.tags.data, ["attributes"]).map((tag) => (
                         <Chip
                           key={tag.id}
                           text={
@@ -159,36 +157,34 @@ const WikiPage = ({ page, ...otherProps }: Props): JSX.Element => {
               </div>
             )}
 
-            {filterHasAttributes(page.definitions, ["translations"] as const).map(
-              (definition, index) => (
-                <div key={index} className="mb-12">
-                  <DefinitionCard
-                    source={{
-                      name: definition.source?.data?.attributes?.name,
-                      url: definition.source?.data?.attributes?.content?.data?.attributes?.slug
-                        ? sJoin(
-                            "/contents/",
-                            definition.source.data.attributes.content.data.attributes.slug
-                          )
-                        : sJoin(
-                            "/library/",
-                            definition.source?.data?.attributes?.ranged_content?.data?.attributes
-                              ?.library_item?.data?.attributes?.slug
-                          ),
-                    }}
-                    translations={definition.translations.map((translation) => ({
-                      language: translation?.language?.data?.attributes?.code,
-                      definition: translation?.definition,
-                      status: translation?.status,
-                    }))}
-                    index={index + 1}
-                    categories={filterHasAttributes(definition.categories?.data, [
-                      "attributes",
-                    ] as const).map((category) => category.attributes.short)}
-                  />
-                </div>
-              )
-            )}
+            {filterHasAttributes(page.definitions, ["translations"]).map((definition, index) => (
+              <div key={index} className="mb-12">
+                <DefinitionCard
+                  source={{
+                    name: definition.source?.data?.attributes?.name,
+                    url: definition.source?.data?.attributes?.content?.data?.attributes?.slug
+                      ? sJoin(
+                          "/contents/",
+                          definition.source.data.attributes.content.data.attributes.slug
+                        )
+                      : sJoin(
+                          "/library/",
+                          definition.source?.data?.attributes?.ranged_content?.data?.attributes
+                            ?.library_item?.data?.attributes?.slug
+                        ),
+                  }}
+                  translations={definition.translations.map((translation) => ({
+                    language: translation?.language?.data?.attributes?.code,
+                    definition: translation?.definition,
+                    status: translation?.status,
+                  }))}
+                  index={index + 1}
+                  categories={filterHasAttributes(definition.categories?.data, ["attributes"]).map(
+                    (category) => category.attributes.short
+                  )}
+                />
+              </div>
+            ))}
 
             {isDefined(selectedTranslation.body) && (
               <div>
@@ -218,13 +214,13 @@ const WikiPage = ({ page, ...otherProps }: Props): JSX.Element => {
             : ""
         }${
           page.definitions && page.definitions.length > 0
-            ? `${filterHasAttributes(page.definitions, ["translations"] as const).map(
+            ? `${filterHasAttributes(page.definitions, ["translations"]).map(
                 (definition, index) =>
                   `${prettyTerminalUnderlinedTitle(format("definition_x", { x: index + 1 }))}${
                     staticSmartLanguage({
                       items: filterHasAttributes(definition.translations, [
                         "language.data.attributes.code",
-                      ] as const),
+                      ]),
                       languageExtractor: (item) => item.language.data.attributes.code,
                       preferredLanguages: getDefaultPreferredLanguages(
                         router.locale ?? "en",
@@ -267,12 +263,10 @@ export const getStaticProps: GetStaticProps = async (context) => {
     const chipsGroups = {
       [format("tags")]: filterHasAttributes(page.wikiPages.data[0].attributes.tags?.data, [
         "attributes",
-      ] as const).map(
-        (tag) => tag.attributes.titles?.[0]?.title ?? prettySlug(tag.attributes.slug)
-      ),
+      ]).map((tag) => tag.attributes.titles?.[0]?.title ?? prettySlug(tag.attributes.slug)),
       [format("category", { count: Infinity })]: filterHasAttributes(
         page.wikiPages.data[0].attributes.categories?.data,
-        ["attributes"] as const
+        ["attributes"]
       ).map((category) => category.attributes.short),
     };
 
@@ -313,7 +307,7 @@ export const getStaticPaths: GetStaticPaths = async (context) => {
   const sdk = getReadySdk();
   const contents = await sdk.getWikiPagesSlugs();
   const paths: GetStaticPathsResult["paths"] = [];
-  filterHasAttributes(contents.wikiPages?.data, ["attributes"] as const).map((wikiPage) => {
+  filterHasAttributes(contents.wikiPages?.data, ["attributes"]).map((wikiPage) => {
     context.locales?.map((local) =>
       paths.push({
         params: { slug: wikiPage.attributes.slug },

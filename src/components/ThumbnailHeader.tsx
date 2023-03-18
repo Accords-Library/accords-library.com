@@ -88,11 +88,9 @@ export const ThumbnailHeader = ({
           <div className="flex flex-col place-items-center gap-2">
             <h3 className="text-xl">{format("category", { count: categories.data.length })}</h3>
             <div className="flex flex-row flex-wrap place-content-center gap-2">
-              {filterHasAttributes(categories.data, ["attributes", "id"] as const).map(
-                (category) => (
-                  <Chip key={category.id} text={category.attributes.name} />
-                )
-              )}
+              {filterHasAttributes(categories.data, ["attributes", "id"]).map((category) => (
+                <Chip key={category.id} text={category.attributes.name} />
+              ))}
             </div>
           </div>
         )}

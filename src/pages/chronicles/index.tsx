@@ -34,13 +34,13 @@ const Chronicles = ({ chapters, ...otherProps }: Props): JSX.Element => {
       <HorizontalLine />
 
       <div className="grid gap-16">
-        {filterHasAttributes(chapters, ["attributes.chronicles", "id"] as const).map((chapter) => (
+        {filterHasAttributes(chapters, ["attributes.chronicles", "id"]).map((chapter) => (
           <TranslatedChroniclesList
             key={chapter.id}
             chronicles={chapter.attributes.chronicles.data}
             translations={filterHasAttributes(chapter.attributes.titles, [
               "language.data.attributes.code",
-            ] as const).map((translation) => ({
+            ]).map((translation) => ({
               title: translation.title,
               language: translation.language.data.attributes.code,
             }))}

@@ -223,7 +223,7 @@ export const SearchPopup = (): JSX.Element => {
                   onClick={() => setSearchOpened(false)}
                   translations={filterHasAttributes(item._formatted.descriptions, [
                     "language.data.attributes.code",
-                  ] as const).map((translation) => ({
+                  ]).map((translation) => ({
                     language: translation.language.data.attributes.code,
                     title: item.title,
                     subtitle: item.subtitle,
@@ -270,7 +270,7 @@ export const SearchPopup = (): JSX.Element => {
                   onClick={() => setSearchOpened(false)}
                   translations={filterHasAttributes(item._formatted.translations, [
                     "language.data.attributes.code",
-                  ] as const).map(({ displayable_description, language, ...otherAttributes }) => ({
+                  ]).map(({ displayable_description, language, ...otherAttributes }) => ({
                     ...otherAttributes,
                     description: containsHighlight(displayable_description)
                       ? displayable_description
@@ -315,7 +315,7 @@ export const SearchPopup = (): JSX.Element => {
                   onClick={() => setSearchOpened(false)}
                   translations={filterHasAttributes(item._formatted.translations, [
                     "language.data.attributes.code",
-                  ] as const).map(
+                  ]).map(
                     ({
                       aliases,
                       summary,
@@ -340,12 +340,12 @@ export const SearchPopup = (): JSX.Element => {
                   thumbnailRounded
                   thumbnailForceAspectRatio
                   keepInfoVisible
-                  topChips={filterHasAttributes(item.tags?.data, ["attributes"] as const).map(
+                  topChips={filterHasAttributes(item.tags?.data, ["attributes"]).map(
                     (tag) => tag.attributes.titles?.[0]?.title ?? prettySlug(tag.attributes.slug)
                   )}
-                  bottomChips={filterHasAttributes(item.categories?.data, [
-                    "attributes",
-                  ] as const).map((category) => category.attributes.short)}
+                  bottomChips={filterHasAttributes(item.categories?.data, ["attributes"]).map(
+                    (category) => category.attributes.short
+                  )}
                 />
               ))}
             </div>
@@ -367,7 +367,7 @@ export const SearchPopup = (): JSX.Element => {
                   onClick={() => setSearchOpened(false)}
                   translations={filterHasAttributes(item._formatted.translations, [
                     "language.data.attributes.code",
-                  ] as const).map(({ excerpt, body, language, ...otherAttributes }) => ({
+                  ]).map(({ excerpt, body, language, ...otherAttributes }) => ({
                     ...otherAttributes,
                     description: containsHighlight(excerpt)
                       ? excerpt
@@ -449,14 +449,12 @@ export const SearchPopup = (): JSX.Element => {
                   href={"/"}
                   translations={filterHasAttributes(item._formatted.translations, [
                     "language.data.attributes.code",
-                  ] as const).map(
-                    ({ description, language, names: [primaryName, ...aliases] }) => ({
-                      language: language.data.attributes.code,
-                      title: primaryName,
-                      subtitle: aliases.join("・"),
-                      description: containsHighlight(description) ? description : undefined,
-                    })
-                  )}
+                  ]).map(({ description, language, names: [primaryName, ...aliases] }) => ({
+                    language: language.data.attributes.code,
+                    title: primaryName,
+                    subtitle: aliases.join("・"),
+                    description: containsHighlight(description) ? description : undefined,
+                  }))}
                   fallback={{ title: prettySlug(item.slug) }}
                   thumbnail={item.thumbnail?.data?.attributes}
                   thumbnailAspectRatio="1/1"
@@ -468,9 +466,9 @@ export const SearchPopup = (): JSX.Element => {
                       ? [prettySlug(item.type.data.attributes.slug)]
                       : undefined
                   }
-                  bottomChips={filterHasAttributes(item.categories, [
-                    "attributes.short",
-                  ] as const).map((category) => category.attributes.short)}
+                  bottomChips={filterHasAttributes(item.categories, ["attributes.short"]).map(
+                    (category) => category.attributes.short
+                  )}
                 />
               ))}
             </div>

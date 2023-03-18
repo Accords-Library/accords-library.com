@@ -69,7 +69,7 @@ const ContentsFolder = ({ openGraph, folder, ...otherProps }: Props): JSX.Elemen
                 href={`/contents/folder/${folder.parent_folder.data.attributes.slug}`}
                 translations={filterHasAttributes(folder.parent_folder.data.attributes.titles, [
                   "language.data.attributes.code",
-                ] as const).map((title) => ({
+                ]).map((title) => ({
                   language: title.language.data.attributes.code,
                   text: title.title,
                 }))}
@@ -86,12 +86,12 @@ const ContentsFolder = ({ openGraph, folder, ...otherProps }: Props): JSX.Elemen
           <Button href="/contents" icon="home" active />
         ) : (
           <TranslatedButton
-            translations={filterHasAttributes(folder.titles, [
-              "language.data.attributes.code",
-            ] as const).map((title) => ({
-              language: title.language.data.attributes.code,
-              text: title.title,
-            }))}
+            translations={filterHasAttributes(folder.titles, ["language.data.attributes.code"]).map(
+              (title) => ({
+                language: title.language.data.attributes.code,
+                text: title.title,
+              })
+            )}
             fallback={{
               text: prettySlug(folder.slug),
             }}
@@ -115,21 +115,19 @@ const ContentsFolder = ({ openGraph, folder, ...otherProps }: Props): JSX.Elemen
                 "grid-cols-2 gap-4"
               )
             )}>
-            {filterHasAttributes(folder.subfolders.data, ["id", "attributes"] as const).map(
-              (subfolder) => (
-                <TranslatedPreviewFolder
-                  key={subfolder.id}
-                  href={`/contents/folder/${subfolder.attributes.slug}`}
-                  translations={filterHasAttributes(subfolder.attributes.titles, [
-                    "language.data.attributes.code",
-                  ] as const).map((title) => ({
-                    title: title.title,
-                    language: title.language.data.attributes.code,
-                  }))}
-                  fallback={{ title: prettySlug(subfolder.attributes.slug) }}
-                />
-              )
-            )}
+            {filterHasAttributes(folder.subfolders.data, ["id", "attributes"]).map((subfolder) => (
+              <TranslatedPreviewFolder
+                key={subfolder.id}
+                href={`/contents/folder/${subfolder.attributes.slug}`}
+                translations={filterHasAttributes(subfolder.attributes.titles, [
+                  "language.data.attributes.code",
+                ]).map((title) => ({
+                  title: title.title,
+                  language: title.language.data.attributes.code,
+                }))}
+                fallback={{ title: prettySlug(subfolder.attributes.slug) }}
+              />
+            ))}
           </div>
         </div>
       )}
@@ -149,39 +147,37 @@ const ContentsFolder = ({ openGraph, folder, ...otherProps }: Props): JSX.Elemen
                 "grid-cols-2 gap-4"
               )
             )}>
-            {filterHasAttributes(folder.contents.data, ["id", "attributes"] as const).map(
-              (item) => (
-                <TranslatedPreviewCard
-                  key={item.id}
-                  href={`/contents/${item.attributes.slug}`}
-                  translations={filterHasAttributes(item.attributes.translations, [
-                    "language.data.attributes.code",
-                  ] as const).map((translation) => ({
-                    pre_title: translation.pre_title,
-                    title: translation.title,
-                    subtitle: translation.subtitle,
-                    language: translation.language.data.attributes.code,
-                  }))}
-                  fallback={{ title: prettySlug(item.attributes.slug) }}
-                  thumbnail={item.attributes.thumbnail?.data?.attributes}
-                  thumbnailAspectRatio="3/2"
-                  thumbnailForceAspectRatio
-                  topChips={
-                    item.attributes.type?.data?.attributes
-                      ? [
-                          item.attributes.type.data.attributes.titles?.[0]
-                            ? item.attributes.type.data.attributes.titles[0]?.title
-                            : prettySlug(item.attributes.type.data.attributes.slug),
-                        ]
-                      : undefined
-                  }
-                  bottomChips={item.attributes.categories?.data.map(
-                    (category) => category.attributes?.short ?? ""
-                  )}
-                  keepInfoVisible
-                />
-              )
-            )}
+            {filterHasAttributes(folder.contents.data, ["id", "attributes"]).map((item) => (
+              <TranslatedPreviewCard
+                key={item.id}
+                href={`/contents/${item.attributes.slug}`}
+                translations={filterHasAttributes(item.attributes.translations, [
+                  "language.data.attributes.code",
+                ]).map((translation) => ({
+                  pre_title: translation.pre_title,
+                  title: translation.title,
+                  subtitle: translation.subtitle,
+                  language: translation.language.data.attributes.code,
+                }))}
+                fallback={{ title: prettySlug(item.attributes.slug) }}
+                thumbnail={item.attributes.thumbnail?.data?.attributes}
+                thumbnailAspectRatio="3/2"
+                thumbnailForceAspectRatio
+                topChips={
+                  item.attributes.type?.data?.attributes
+                    ? [
+                        item.attributes.type.data.attributes.titles?.[0]
+                          ? item.attributes.type.data.attributes.titles[0]?.title
+                          : prettySlug(item.attributes.type.data.attributes.slug),
+                      ]
+                    : undefined
+                }
+                bottomChips={item.attributes.categories?.data.map(
+                  (category) => category.attributes?.short ?? ""
+                )}
+                keepInfoVisible
+              />
+            ))}
           </div>
         </div>
       )}
@@ -262,7 +258,7 @@ export const getStaticPaths: GetStaticPaths = async (context) => {
   const sdk = getReadySdk();
   const contents = await sdk.getContentsFoldersSlugs();
   const paths: GetStaticPathsResult["paths"] = [];
-  filterHasAttributes(contents.contentsFolders?.data, ["attributes"] as const).map((item) => {
+  filterHasAttributes(contents.contentsFolders?.data, ["attributes"]).map((item) => {
     context.locales?.map((local) => {
       paths.push({
         params: { slug: item.attributes.slug },

@@ -201,7 +201,7 @@ const Revalidate = async (
         });
         filterHasAttributes(libraryItem.libraryItems?.data[0]?.attributes?.subitem_of?.data, [
           "attributes.slug",
-        ] as const).forEach((parentItem) => paths.push(`/library/${parentItem.attributes.slug}`));
+        ]).forEach((parentItem) => paths.push(`/library/${parentItem.attributes.slug}`));
       }
 
       break;
@@ -227,7 +227,7 @@ const Revalidate = async (
 
         filterHasAttributes(content.contents?.data[0]?.attributes?.ranged_contents?.data, [
           "attributes.library_item.data.attributes.slug",
-        ] as const).forEach((ranged_content) => {
+        ]).forEach((ranged_content) => {
           const parentSlug = ranged_content.attributes.library_item.data.attributes.slug;
           paths.push(`/library/${parentSlug}`);
           paths.push(`/library/${parentSlug}/reader`);
@@ -285,12 +285,10 @@ const Revalidate = async (
         }
         filterHasAttributes(folder.contentsFolders?.data[0]?.attributes?.subfolders?.data, [
           "attributes.slug",
-        ] as const).forEach((subfolder) =>
-          paths.push(`/contents/folder/${subfolder.attributes.slug}`)
-        );
+        ]).forEach((subfolder) => paths.push(`/contents/folder/${subfolder.attributes.slug}`));
         filterHasAttributes(folder.contentsFolders?.data[0]?.attributes?.contents?.data, [
           "attributes.slug",
-        ] as const).forEach((content) => paths.push(`/contents/${content.attributes.slug}`));
+        ]).forEach((content) => paths.push(`/contents/${content.attributes.slug}`));
       }
       break;
     }
@@ -339,7 +337,7 @@ const Revalidate = async (
       });
       filterHasAttributes(group.weaponStoryGroup?.data?.attributes?.weapons?.data, [
         "attributes.slug",
-      ] as const).forEach((weapon) => paths.push(`/wiki/weapons/${weapon.attributes.slug}`));
+      ]).forEach((weapon) => paths.push(`/wiki/weapons/${weapon.attributes.slug}`));
       break;
     }
 

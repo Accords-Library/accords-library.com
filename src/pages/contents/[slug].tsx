@@ -80,7 +80,7 @@ const Content = ({ content, ...otherProps }: Props): JSX.Element => {
 
     translations: filterHasAttributes(content.folder?.data?.attributes?.titles, [
       "language.data.attributes.code",
-    ] as const).map((title) => ({
+    ]).map((title) => ({
       language: title.language.data.attributes.code,
       title: title.title,
     })),
@@ -146,7 +146,7 @@ const Content = ({ content, ...otherProps }: Props): JSX.Element => {
                       {filterHasAttributes(selectedTranslation.text_set.transcribers.data, [
                         "attributes",
                         "id",
-                      ] as const).map((recorder) => (
+                      ]).map((recorder) => (
                         <Fragment key={recorder.id}>
                           <RecorderChip recorder={recorder.attributes} />
                         </Fragment>
@@ -163,7 +163,7 @@ const Content = ({ content, ...otherProps }: Props): JSX.Element => {
                       {filterHasAttributes(selectedTranslation.text_set.translators.data, [
                         "attributes",
                         "id",
-                      ] as const).map((recorder) => (
+                      ]).map((recorder) => (
                         <Fragment key={recorder.id}>
                           <RecorderChip recorder={recorder.attributes} />
                         </Fragment>
@@ -180,7 +180,7 @@ const Content = ({ content, ...otherProps }: Props): JSX.Element => {
                       {filterHasAttributes(selectedTranslation.text_set.proofreaders.data, [
                         "attributes",
                         "id",
-                      ] as const).map((recorder) => (
+                      ]).map((recorder) => (
                         <Fragment key={recorder.id}>
                           <RecorderChip recorder={recorder.attributes} />
                         </Fragment>
@@ -209,7 +209,7 @@ const Content = ({ content, ...otherProps }: Props): JSX.Element => {
                 {filterHasAttributes(content.ranged_contents.data, [
                   "attributes.library_item.data.attributes",
                   "attributes.library_item.data.id",
-                ] as const).map((rangedContent) => {
+                ]).map((rangedContent) => {
                   const libraryItem = rangedContent.attributes.library_item.data;
                   return (
                     <div
@@ -231,7 +231,7 @@ const Content = ({ content, ...otherProps }: Props): JSX.Element => {
                         }
                         bottomChips={filterHasAttributes(libraryItem.attributes.categories?.data, [
                           "attributes",
-                        ] as const).map((category) => category.attributes.short)}
+                        ]).map((category) => category.attributes.short)}
                         metadata={{
                           releaseDate: libraryItem.attributes.release_date,
                           price: libraryItem.attributes.price,
@@ -288,7 +288,7 @@ const Content = ({ content, ...otherProps }: Props): JSX.Element => {
                   href={`/contents/${previousContent.attributes.slug}`}
                   translations={filterHasAttributes(previousContent.attributes.translations, [
                     "language.data.attributes.code",
-                  ] as const).map((translation) => ({
+                  ]).map((translation) => ({
                     pre_title: translation.pre_title,
                     title: translation.title,
                     subtitle: translation.subtitle,
@@ -329,7 +329,7 @@ const Content = ({ content, ...otherProps }: Props): JSX.Element => {
                   href={`/contents/${nextContent.attributes.slug}`}
                   translations={filterHasAttributes(nextContent.attributes.translations, [
                     "language.data.attributes.code",
-                  ] as const).map((translation) => ({
+                  ]).map((translation) => ({
                     pre_title: translation.pre_title,
                     title: translation.title,
                     subtitle: translation.subtitle,
@@ -404,7 +404,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
             ],
             [format("category", { count: Infinity })]: filterHasAttributes(
               content.contents.data[0].attributes.categories?.data,
-              ["attributes"] as const
+              ["attributes"]
             ).map((category) => category.attributes.short),
           }),
         };
@@ -437,7 +437,7 @@ export const getStaticPaths: GetStaticPaths = async (context) => {
   const sdk = getReadySdk();
   const contents = await sdk.getContentsSlugs();
   const paths: GetStaticPathsResult["paths"] = [];
-  filterHasAttributes(contents.contents?.data, ["attributes"] as const).map((item) => {
+  filterHasAttributes(contents.contents?.data, ["attributes"]).map((item) => {
     context.locales?.map((local) => {
       paths.push({
         params: { slug: item.attributes.slug },

@@ -41,7 +41,7 @@ export const getPostStaticProps =
         [format("release_date")]: [prettyDate(post.posts.data[0].attributes.date, context.locale)],
         [format("category", { count: Infinity })]: filterHasAttributes(
           post.posts.data[0].attributes.categories?.data,
-          ["attributes"] as const
+          ["attributes"]
         ).map((category) => category.attributes.short),
       });
 

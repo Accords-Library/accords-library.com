@@ -65,7 +65,7 @@ export const getStaticPaths: GetStaticPaths = async (context) => {
   const posts = await sdk.getPostsSlugs();
   const paths: GetStaticPathsResult["paths"] = [];
 
-  filterHasAttributes(posts.posts?.data, ["attributes"] as const).map((item) => {
+  filterHasAttributes(posts.posts?.data, ["attributes"]).map((item) => {
     context.locales?.map((local) =>
       paths.push({ params: { slug: item.attributes.slug }, locale: local })
     );
@@ -80,7 +80,7 @@ const terminalPostPage = (post: PostWithTranslations, router: NextRouter): strin
   let result = "";
   if (router.locales && router.locale) {
     const selectedTranslation = staticSmartLanguage({
-      items: filterHasAttributes(post.translations, ["language.data.attributes.code"] as const),
+      items: filterHasAttributes(post.translations, ["language.data.attributes.code"]),
       languageExtractor: (item) => item.language.data.attributes.code,
       preferredLanguages: getDefaultPreferredLanguages(router.locale, router.locales),
     });

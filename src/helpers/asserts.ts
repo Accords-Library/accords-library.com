@@ -48,7 +48,7 @@ export const isDefinedAndNotEmpty = (string: string | null | undefined): string 
 export const filterDefined = <T>(t: T[] | null | undefined): NonNullable<T>[] =>
   isUndefined(t) ? [] : (t.filter((item) => isDefined(item)) as NonNullable<T>[]);
 
-export const filterHasAttributes = <T, P extends PathDot<T>>(
+export const filterHasAttributes = <T, const P extends PathDot<T>>(
   t: T[] | null | undefined,
   paths: readonly P[]
 ): SelectiveNonNullable<T, (typeof paths)[number]>[] =>
@@ -77,3 +77,5 @@ const hasAttribute = <T>(item: T, path: string): boolean => {
   }
   return false;
 };
+
+

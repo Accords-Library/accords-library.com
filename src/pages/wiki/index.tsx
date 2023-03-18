@@ -182,7 +182,7 @@ const Wiki = (props: Props): JSX.Element => {
               href={`/wiki/${item.slug}`}
               translations={filterHasAttributes(item._formatted.translations, [
                 "language.data.attributes.code",
-              ] as const).map(
+              ]).map(
                 ({ aliases, summary, displayable_description, language, ...otherAttributes }) => ({
                   ...otherAttributes,
                   subtitle:
@@ -201,10 +201,10 @@ const Wiki = (props: Props): JSX.Element => {
               thumbnailRounded
               thumbnailForceAspectRatio
               keepInfoVisible
-              topChips={filterHasAttributes(item.tags?.data, ["attributes"] as const).map(
+              topChips={filterHasAttributes(item.tags?.data, ["attributes"]).map(
                 (tag) => tag.attributes.titles?.[0]?.title ?? prettySlug(tag.attributes.slug)
               )}
-              bottomChips={filterHasAttributes(item.categories?.data, ["attributes"] as const).map(
+              bottomChips={filterHasAttributes(item.categories?.data, ["attributes"]).map(
                 (category) => category.attributes.short
               )}
             />

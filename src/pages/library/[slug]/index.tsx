@@ -230,7 +230,7 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
                 {item.urls?.length ? (
                   <div className="flex flex-row place-items-center gap-3">
                     <p>{format("available_at")}</p>
-                    {filterHasAttributes(item.urls, ["url"] as const).map((url, index) => (
+                    {filterHasAttributes(item.urls, ["url"]).map((url, index) => (
                       <Fragment key={index}>
                         <Button href={url.url} text={prettyURL(url.url)} alwaysNewTab />
                       </Fragment>
@@ -250,7 +250,7 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
             <div
               className="grid w-full grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] items-end
               gap-8">
-              {filterHasAttributes(item.gallery.data, ["id", "attributes"] as const).map(
+              {filterHasAttributes(item.gallery.data, ["id", "attributes"]).map(
                 (galleryItem, index) => (
                   <Fragment key={galleryItem.id}>
                     <div
@@ -258,7 +258,7 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
                       transition-transform hover:scale-102"
                       onClick={() => {
                         showLightBox(
-                          filterHasAttributes(item.gallery?.data, ["attributes"] as const).map(
+                          filterHasAttributes(item.gallery?.data, ["attributes"]).map(
                             (image) => image.attributes
                           ),
                           index
@@ -329,11 +329,9 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
                   {format("category", { count: item.categories.data.length })}
                 </h3>
                 <div className="flex flex-row flex-wrap place-content-center gap-2">
-                  {filterHasAttributes(item.categories.data, ["attributes"] as const).map(
-                    (category) => (
-                      <Chip key={category.id} text={category.attributes.name} />
-                    )
-                  )}
+                  {filterHasAttributes(item.categories.data, ["attributes"]).map((category) => (
+                    <Chip key={category.id} text={category.attributes.name} />
+                  ))}
                 </div>
               </div>
             )}
@@ -482,41 +480,39 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
             <div
               className="grid w-full grid-cols-[repeat(auto-fill,minmax(13rem,1fr))]
               items-end gap-8">
-              {filterHasAttributes(item.subitems.data, ["id", "attributes"] as const).map(
-                (subitem) => (
-                  <Fragment key={subitem.id}>
-                    <PreviewCard
-                      href={`/library/${subitem.attributes.slug}`}
-                      title={subitem.attributes.title}
-                      subtitle={subitem.attributes.subtitle}
-                      thumbnail={subitem.attributes.thumbnail?.data?.attributes}
-                      thumbnailAspectRatio="21/29.7"
-                      thumbnailRounded={false}
-                      keepInfoVisible={keepInfoVisible}
-                      topChips={
-                        subitem.attributes.metadata &&
-                        subitem.attributes.metadata.length > 0 &&
-                        subitem.attributes.metadata[0]
-                          ? [prettyItemSubType(subitem.attributes.metadata[0])]
-                          : []
-                      }
-                      bottomChips={subitem.attributes.categories?.data.map(
-                        (category) => category.attributes?.short ?? ""
-                      )}
-                      metadata={{
-                        releaseDate: subitem.attributes.release_date,
-                        price: subitem.attributes.price,
-                        position: "Bottom",
-                      }}
-                      infoAppend={
-                        !isUntangibleGroupItem(subitem.attributes.metadata?.[0]) && (
-                          <PreviewCardCTAs id={subitem.id} />
-                        )
-                      }
-                    />
-                  </Fragment>
-                )
-              )}
+              {filterHasAttributes(item.subitems.data, ["id", "attributes"]).map((subitem) => (
+                <Fragment key={subitem.id}>
+                  <PreviewCard
+                    href={`/library/${subitem.attributes.slug}`}
+                    title={subitem.attributes.title}
+                    subtitle={subitem.attributes.subtitle}
+                    thumbnail={subitem.attributes.thumbnail?.data?.attributes}
+                    thumbnailAspectRatio="21/29.7"
+                    thumbnailRounded={false}
+                    keepInfoVisible={keepInfoVisible}
+                    topChips={
+                      subitem.attributes.metadata &&
+                      subitem.attributes.metadata.length > 0 &&
+                      subitem.attributes.metadata[0]
+                        ? [prettyItemSubType(subitem.attributes.metadata[0])]
+                        : []
+                    }
+                    bottomChips={subitem.attributes.categories?.data.map(
+                      (category) => category.attributes?.short ?? ""
+                    )}
+                    metadata={{
+                      releaseDate: subitem.attributes.release_date,
+                      price: subitem.attributes.price,
+                      position: "Bottom",
+                    }}
+                    infoAppend={
+                      !isUntangibleGroupItem(subitem.attributes.metadata?.[0]) && (
+                        <PreviewCardCTAs id={subitem.id} />
+                      )
+                    }
+                  />
+                </Fragment>
+              ))}
             </div>
           </div>
         )}
@@ -530,51 +526,49 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
               </div>
             )}
             <div className="max-w- grid w-full gap-4">
-              {filterHasAttributes(item.contents.data, ["attributes"] as const).map(
-                (rangedContent) => (
-                  <ContentLine
-                    content={
-                      rangedContent.attributes.content?.data?.attributes
-                        ? {
-                            translations: filterDefined(
-                              rangedContent.attributes.content.data.attributes.translations
-                            ).map((translation) => ({
-                              pre_title: translation.pre_title,
-                              title: translation.title,
-                              subtitle: translation.subtitle,
-                              language: translation.language?.data?.attributes?.code,
-                            })),
-                            categories: filterHasAttributes(
-                              rangedContent.attributes.content.data.attributes.categories?.data,
-                              ["attributes"]
-                            ).map((category) => category.attributes.short),
-                            type:
+              {filterHasAttributes(item.contents.data, ["attributes"]).map((rangedContent) => (
+                <ContentLine
+                  content={
+                    rangedContent.attributes.content?.data?.attributes
+                      ? {
+                          translations: filterDefined(
+                            rangedContent.attributes.content.data.attributes.translations
+                          ).map((translation) => ({
+                            pre_title: translation.pre_title,
+                            title: translation.title,
+                            subtitle: translation.subtitle,
+                            language: translation.language?.data?.attributes?.code,
+                          })),
+                          categories: filterHasAttributes(
+                            rangedContent.attributes.content.data.attributes.categories?.data,
+                            ["attributes"]
+                          ).map((category) => category.attributes.short),
+                          type:
+                            rangedContent.attributes.content.data.attributes.type?.data?.attributes
+                              ?.titles?.[0]?.title ??
+                            prettySlug(
                               rangedContent.attributes.content.data.attributes.type?.data
-                                ?.attributes?.titles?.[0]?.title ??
-                              prettySlug(
-                                rangedContent.attributes.content.data.attributes.type?.data
-                                  ?.attributes?.slug
-                              ),
-                            slug: rangedContent.attributes.content.data.attributes.slug,
-                          }
-                        : undefined
-                    }
-                    rangeStart={
-                      rangedContent.attributes.range[0]?.__typename === "ComponentRangePageRange"
-                        ? `${rangedContent.attributes.range[0].starting_page}`
-                        : ""
-                    }
-                    slug={rangedContent.attributes.slug}
-                    parentSlug={item.slug}
-                    key={rangedContent.id}
-                    hasScanSet={
-                      isDefined(rangedContent.attributes.scan_set) &&
-                      rangedContent.attributes.scan_set.length > 0
-                    }
-                    condensed={!isContentPanelAtLeast3xl}
-                  />
-                )
-              )}
+                                ?.attributes?.slug
+                            ),
+                          slug: rangedContent.attributes.content.data.attributes.slug,
+                        }
+                      : undefined
+                  }
+                  rangeStart={
+                    rangedContent.attributes.range[0]?.__typename === "ComponentRangePageRange"
+                      ? `${rangedContent.attributes.range[0].starting_page}`
+                      : ""
+                  }
+                  slug={rangedContent.attributes.slug}
+                  parentSlug={item.slug}
+                  key={rangedContent.id}
+                  hasScanSet={
+                    isDefined(rangedContent.attributes.scan_set) &&
+                    rangedContent.attributes.scan_set.length > 0
+                  }
+                  condensed={!isContentPanelAtLeast3xl}
+                />
+              ))}
             </div>
           </div>
         )}
@@ -637,7 +631,7 @@ export const getStaticPaths: GetStaticPaths = async (context) => {
   const sdk = getReadySdk();
   const libraryItems = await sdk.getLibraryItemsSlugs();
   const paths: GetStaticPathsResult["paths"] = [];
-  filterHasAttributes(libraryItems.libraryItems?.data, ["attributes"] as const).map((item) => {
+  filterHasAttributes(libraryItems.libraryItems?.data, ["attributes"]).map((item) => {
     context.locales?.map((local) =>
       paths.push({ params: { slug: item.attributes.slug }, locale: local })
     );

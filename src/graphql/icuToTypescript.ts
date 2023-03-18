@@ -2,11 +2,17 @@
 import { createWriteStream } from "fs";
 import { parse, TYPE } from "@formatjs/icu-messageformat-parser";
 import { getLangui } from "./fetchLocalData";
-import { filterDefined } from "helpers/asserts";
 import { getLogger } from "helpers/logger";
 
 const OUTPUT_FOLDER = `${process.cwd()}/src/graphql`;
 const logger = getLogger("💽 [ICU to TS]", "server");
+
+const isDefined = <T>(t: T): t is NonNullable<T> => t !== null && t !== undefined;
+
+const isUndefined = <T>(t: T | null | undefined): t is null | undefined => !isDefined(t);
+
+const filterDefined = <T>(t: T[] | null | undefined): NonNullable<T>[] =>
+  isUndefined(t) ? [] : (t.filter((item) => isDefined(item)) as NonNullable<T>[]);
 
 const icuToTypescript = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

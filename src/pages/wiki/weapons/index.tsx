@@ -186,7 +186,7 @@ const Weapons = (props: Props): JSX.Element => {
               href={`/wiki/weapons/${item.slug}`}
               translations={filterHasAttributes(item._formatted.translations, [
                 "language.data.attributes.code",
-              ] as const).map(({ description, language, names: [primaryName, ...aliases] }) => ({
+              ]).map(({ description, language, names: [primaryName, ...aliases] }) => ({
                 language: language.data.attributes.code,
                 title: primaryName,
                 subtitle: aliases.join("・"),
@@ -203,7 +203,7 @@ const Weapons = (props: Props): JSX.Element => {
                   ? [prettySlug(item.type.data.attributes.slug)]
                   : undefined
               }
-              bottomChips={filterHasAttributes(item.categories, ["attributes.short"] as const).map(
+              bottomChips={filterHasAttributes(item.categories, ["attributes.short"]).map(
                 (category) => category.attributes.short
               )}
             />

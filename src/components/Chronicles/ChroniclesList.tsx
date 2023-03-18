@@ -45,10 +45,7 @@ const ChroniclesList = ({ chronicles, currentSlug, title }: Props): JSX.Element 
       <div
         className="grid gap-4 overflow-hidden transition-height duration-500"
         style={{ maxHeight: isOpen ? `${8 * chronicles.length}rem` : 0 }}>
-        {filterHasAttributes(chronicles, [
-          "attributes.contents",
-          "attributes.translations",
-        ] as const)
+        {filterHasAttributes(chronicles, ["attributes.contents", "attributes.translations"])
           .sort((a, b) => compareDate(a.attributes.date_start, b.attributes.date_start))
           .map((chronicle) => (
             <div key={chronicle.id} id={`chronicle-${chronicle.attributes.slug}`}>
@@ -56,14 +53,14 @@ const ChroniclesList = ({ chronicles, currentSlug, title }: Props): JSX.Element 
               chronicle.attributes.contents.data.length === 1
                 ? filterHasAttributes(chronicle.attributes.contents.data, [
                     "attributes.translations",
-                  ] as const).map((content, index) => (
+                  ]).map((content, index) => (
                     <TranslatedChroniclePreview
                       key={index}
                       active={chronicle.attributes.slug === currentSlug}
                       date={chronicle.attributes.date_start}
                       translations={filterHasAttributes(content.attributes.translations, [
                         "language.data.attributes.code",
-                      ] as const).map((translation) => ({
+                      ]).map((translation) => ({
                         title: prettyInlineTitle(
                           translation.pre_title,
                           translation.title,
@@ -90,7 +87,7 @@ const ChroniclesList = ({ chronicles, currentSlug, title }: Props): JSX.Element 
                       translations={filterHasAttributes(chronicle.attributes.translations, [
                         "language.data.attributes.code",
                         "title",
-                      ] as const).map((translation) => ({
+                      ]).map((translation) => ({
                         title: translation.title,
                         language: translation.language.data.attributes.code,
                       }))}

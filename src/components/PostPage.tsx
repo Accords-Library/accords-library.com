@@ -94,13 +94,11 @@ export const PostPage = ({
           <div>
             <p className="font-headers font-bold">{"Authors"}:</p>
             <div className="grid place-content-center place-items-center gap-2">
-              {filterHasAttributes(post.authors.data, ["id", "attributes"] as const).map(
-                (author) => (
-                  <Fragment key={author.id}>
-                    <RecorderChip recorder={author.attributes} />
-                  </Fragment>
-                )
-              )}
+              {filterHasAttributes(post.authors.data, ["id", "attributes"]).map((author) => (
+                <Fragment key={author.id}>
+                  <RecorderChip recorder={author.attributes} />
+                </Fragment>
+              ))}
             </div>
           </div>
         )}

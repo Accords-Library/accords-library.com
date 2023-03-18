@@ -40,13 +40,11 @@ export const RecorderChip = ({ recorder }: Props): JSX.Element => {
               {recorder.languages?.data && recorder.languages.data.length > 0 && (
                 <div className="flex flex-row flex-wrap gap-1">
                   <p>{format("language", { count: recorder.languages.data.length })}:</p>
-                  {filterHasAttributes(recorder.languages.data, ["attributes"] as const).map(
-                    (language) => (
-                      <Fragment key={language.__typename}>
-                        <Chip text={language.attributes.code.toUpperCase()} />
-                      </Fragment>
-                    )
-                  )}
+                  {filterHasAttributes(recorder.languages.data, ["attributes"]).map((language) => (
+                    <Fragment key={language.__typename}>
+                      <Chip text={language.attributes.code.toUpperCase()} />
+                    </Fragment>
+                  ))}
                 </div>
               )}
               {recorder.pronouns && (

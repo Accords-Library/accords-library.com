@@ -47,8 +47,7 @@ const Chronicle = ({ chronicle, chapters, ...otherProps }: Props): JSX.Element =
   });
 
   const primaryContent = chronicle.contents
-    ? filterHasAttributes(chronicle.contents.data, ["attributes.translations"] as const)[0]
-        ?.attributes
+    ? filterHasAttributes(chronicle.contents.data, ["attributes.translations"])[0]?.attributes
     : undefined;
 
   const [selectedContentTranslation, ContentLanguageSwitcher, ContentLanguageSwitcherProps] =
@@ -128,13 +127,13 @@ const Chronicle = ({ chronicle, chapters, ...otherProps }: Props): JSX.Element =
       <HorizontalLine />
 
       <div className="grid gap-16">
-        {filterHasAttributes(chapters, ["attributes.chronicles", "id"] as const).map((chapter) => (
+        {filterHasAttributes(chapters, ["attributes.chronicles", "id"]).map((chapter) => (
           <TranslatedChroniclesList
             key={chapter.id}
             chronicles={chapter.attributes.chronicles.data}
             translations={filterHasAttributes(chapter.attributes.titles, [
               "language.data.attributes.code",
-            ] as const).map((translation) => ({
+            ]).map((translation) => ({
               title: translation.title,
               language: translation.language.data.attributes.code,
             }))}
@@ -201,7 +200,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
               [format("category", { count: Infinity })]: filterHasAttributes(
                 chronicle.chronicles.data[0].attributes.contents.data[0].attributes.categories
                   ?.data,
-                ["attributes"] as const
+                ["attributes"]
               ).map((category) => category.attributes.short),
             }),
           };
@@ -248,7 +247,7 @@ export const getStaticPaths: GetStaticPaths = async (context) => {
   const sdk = getReadySdk();
   const contents = await sdk.getChroniclesSlugs();
   const paths: GetStaticPathsResult["paths"] = [];
-  filterHasAttributes(contents.chronicles?.data, ["attributes"] as const).map((wikiPage) => {
+  filterHasAttributes(contents.chronicles?.data, ["attributes"]).map((wikiPage) => {
     context.locales?.map((local) =>
       paths.push({
         params: { slug: wikiPage.attributes.slug },

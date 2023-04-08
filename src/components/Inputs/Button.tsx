@@ -57,7 +57,7 @@ export const Button = ({
           `group grid cursor-pointer select-none grid-flow-col place-content-center 
           place-items-center gap-2 rounded-full border border-dark 
           leading-none text-dark transition-all`,
-          cIf(size === "small", "px-3 py-1 text-xs", "py-3 px-4"),
+          cIf(size === "small", "px-3 py-1 text-xs", "px-4 py-3"),
           cIf(active, "!border-black bg-black !text-light drop-shadow-lg shadow-black"),
           cIf(
             disabled,
@@ -76,7 +76,7 @@ export const Button = ({
             className={cJoin(
               `absolute grid place-items-center rounded-full bg-dark
               font-bold text-light transition-opacity group-hover:opacity-0`,
-              cIf(size === "small", "-top-2 -right-2 h-5 w-5", "-top-3 -right-2 h-8 w-8")
+              cIf(size === "small", "-right-2 -top-2 h-5 w-5", "-right-2 -top-3 h-8 w-8")
             )}>
             <p className="-translate-y-[0.05em]">{badgeNumber}</p>
           </div>

@@ -1,10 +1,10 @@
-const plugin = require("tailwindcss/plugin");
-const { colors, fonts, fontFamilies } = require("./design.config.js");
+import type { Config } from "tailwindcss";
+import plugin from "tailwindcss/plugin";
+import { colors, fonts, fontFamilies } from "./design.config";
 
-const rgb = (color) => [color.r, color.g, color.b].join(" ");
+const rgb = (color: { r: number; g: number; b: number }) => [color.r, color.g, color.b].join(" ");
 
-/** @type {import('tailwindcss').Config} */
-module.exports = {
+export default {
   darkMode: ["class", ".set-theme-dark"],
   content: ["./src/**/*.{tsx,ts}"],
   theme: {
@@ -21,7 +21,8 @@ module.exports = {
       body: "var(--theme-font-body)",
       headers: "var(--theme-font-headers)",
       mono: "var(--theme-font-mono)",
-      realmono: `ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace`,
+      realmono: `ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+      "Liberation Mono", "Courier New", monospace`,
       ...fonts,
     },
     screens: {
@@ -66,11 +67,11 @@ module.exports = {
     },
     boxShadow: {
       sm: "0 1px 2px 0",
-      DEFAULT: ["0 1px 3px 0", "0 1px 2px -1px"],
-      md: ["0 4px 6px -1px", "0 1px 4px -2px"],
-      lg: ["0 10px 15px -3px", "0 0 6px -4px"],
-      xl: ["0 20px 25px -5px", "0 0 10px -6px"],
-      "2xl": ["0 25px 50px -5px", "0 15px 20px -5px"],
+      DEFAULT: ["0 1px 3px 0", "0 1px 2px -1px"].join(", "),
+      md: ["0 4px 6px -1px", "0 1px 4px -2px"].join(", "),
+      lg: ["0 10px 15px -3px", "0 0 6px -4px"].join(", "),
+      xl: ["0 20px 25px -5px", "0 0 10px -6px"].join(", "),
+      "2xl": ["0 25px 50px -5px", "0 15px 20px -5px"].join(", "),
       inner: "inset 0 2px 4px 0",
       "inner-sm": "inset 0 1px 4px -2px",
       none: "0 0 #0000",
@@ -104,8 +105,8 @@ module.exports = {
       transitionProperty: {
         height: "height, max-height, min-height",
         filter: "filter, backdrop-filter",
-        colors:
-          "color, background-color, border-color, text-decoration-color, fill, stroke, outline-color",
+        colors: `color, background-color, border-color,
+          text-decoration-color, fill, stroke, outline-color`,
       },
       scale: {
         102: "1.02",
@@ -114,7 +115,7 @@ module.exports = {
   },
   plugins: [
     /* Add support for coloring drop shadows */
-    plugin(function ({ matchUtilities, theme }) {
+    plugin(({ matchUtilities, theme }) => {
       matchUtilities(
         {
           shadow: (value) => ({
@@ -285,4 +286,4 @@ module.exports = {
       });
     }),
   ],
-};
+} satisfies Config;

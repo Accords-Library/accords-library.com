@@ -404,11 +404,11 @@ const LibrarySlug = ({
                 />
                 <PageFilters page="single" bookType={bookType} options={filterSettings} />
                 <div
-                  className="absolute left-0 top-0 bottom-0 w-1/2"
+                  className="absolute bottom-0 left-0 top-0 w-1/2"
                   onClick={() => currentZoom <= 1 && handlePageNavigation("left")}
                 />
                 <div
-                  className="absolute right-0 top-0 bottom-0 w-1/2"
+                  className="absolute bottom-0 right-0 top-0 w-1/2"
                   onClick={() => currentZoom <= 1 && handlePageNavigation("right")}
                 />
               </div>

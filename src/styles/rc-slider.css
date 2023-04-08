@@ -16,7 +16,7 @@
   width: 100%;
 }
 .rc-slider-track {
-  @apply h-2 rounded-full bg-mid bg-dark/20 shadow-inner-sm shadow-shade;
+  @apply h-2 rounded-full bg-dark/20 bg-mid shadow-inner-sm shadow-shade;
   position: absolute;
 }
 .rc-slider-handle {

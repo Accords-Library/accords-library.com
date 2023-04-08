@@ -1,4 +1,13 @@
+/*
+  COMMENTS
+    - graphql-request: we are stuck at version 5.1.0 because 5.2.0 has a typescript bug
+                       see https://github.com/dotansimha/graphql-code-generator/issues/9046
+
+    - react-hotkeys-hook: we are stuck at version 3.4.7 because 4.X is not working well.
+                          Need more experimenting.
+*/
+
 {
   "upgrade": false,
-  "reject": ["react-hotkeys-hook"]
+  "reject": ["react-hotkeys-hook", "graphql-request"]
 }

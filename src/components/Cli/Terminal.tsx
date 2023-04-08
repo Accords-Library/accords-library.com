@@ -249,7 +249,7 @@ export const Terminal = ({
 
         <div className="relative">
           <textarea
-            className="absolute -top-1 -left-6 -right-6 w-screen rounded-none opacity-0"
+            className="absolute -left-6 -right-6 -top-1 w-screen rounded-none opacity-0"
             spellCheck={false}
             autoCapitalize="none"
             autoCorrect="off"

@@ -251,7 +251,7 @@ export const ChronologyDate = ({ date, events }: ChronologyDateProps): JSX.Eleme
   return (
     <div
       className="grid grid-cols-[4em] grid-rows-[auto_1fr]
-        gap-x-8 rounded-2xl py-4 px-8 target:my-4 target:bg-mid target:py-8"
+        gap-x-8 rounded-2xl px-8 py-4 target:my-4 target:bg-mid target:py-8"
       id={generateAnchor(date.year, date.month, date.day)}>
       {date.displayYear && (
         <p className="mt-5 text-right text-lg font-bold">

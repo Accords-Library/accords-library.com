@@ -31,7 +31,7 @@ export const ChroniclePreview = ({
   onClick,
 }: Props): JSX.Element => (
   <DownPressable
-    className="flex w-full gap-4 py-4 px-5"
+    className="flex w-full gap-4 px-5 py-4"
     href={url}
     onClick={onClick}
     active={active}

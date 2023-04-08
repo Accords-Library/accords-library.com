@@ -19,7 +19,7 @@ export const SubPanel = ({ children }: Props): JSX.Element => {
     <div
       className={cJoin(
         "grid gap-y-2 text-center",
-        cIf(isSubPanelAtLeastXs, "px-10 pt-10 pb-20", "p-4")
+        cIf(isSubPanelAtLeastXs, "px-10 pb-20 pt-10", "p-4")
       )}>
       {children}
     </div>

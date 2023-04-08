@@ -241,7 +241,7 @@ const WeaponStory = ({ story, storyNumber, id }: WeaponStoryProps): JSX.Element 
 
   return (
     <InsetBox id={id} className="formatted">
-      <h2 className="!mt-4 !mb-4">{format("story_x", { x: storyNumber })}</h2>
+      <h2 className="!mb-4 !mt-4">{format("story_x", { x: storyNumber })}</h2>
 
       {languageSwitcherProps.locales.size > 1 && <LanguageSwitcher {...languageSwitcherProps} />}
 

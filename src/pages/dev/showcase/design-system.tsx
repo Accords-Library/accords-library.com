@@ -69,7 +69,7 @@ const DesignSystem = (props: Props): JSX.Element => {
       </WhiteSection>
 
       <h2 className="mb-4 text-3xl">Fonts</h2>
-      <WhiteSection className="grid grid-cols-[repeat(5,auto)] place-items-start gap-y-2 gap-x-12">
+      <WhiteSection className="grid grid-cols-[repeat(5,auto)] place-items-start gap-x-12 gap-y-2">
         <p />
         <p className="font-headers text-xl text-black/50">Vollkorn</p>
         <p className="font-body text-xl text-black/50">Zen Maru Gothic</p>
@@ -911,14 +911,14 @@ const TwoThemedSection = ({ children, className }: ThemedSectionProps) => (
 );
 
 const DarkThemeSection = ({ className, children }: ThemedSectionProps) => (
-  <div className={cJoin("bg-light py-10 px-14 set-theme-dark", className)}>{children}</div>
+  <div className={cJoin("bg-light px-14 py-10 set-theme-dark", className)}>{children}</div>
 );
 const LightThemeSection = ({ className, children }: ThemedSectionProps) => (
-  <div className={cJoin("bg-light py-10 px-14 set-theme-light", className)}>{children}</div>
+  <div className={cJoin("bg-light px-14 py-10 set-theme-light", className)}>{children}</div>
 );
 
 const WhiteSection = ({ className, children }: ThemedSectionProps) => (
-  <div className="mb-12 rounded-xl bg-[white] py-10 px-14 drop-shadow-lg shadow-shade">
+  <div className="mb-12 rounded-xl bg-[white] px-14 py-10 drop-shadow-lg shadow-shade">
     <div className={cJoin("text-black set-theme-light", className)}>{children}</div>
   </div>
 );

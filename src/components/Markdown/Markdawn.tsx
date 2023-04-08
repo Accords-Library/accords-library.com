@@ -202,7 +202,7 @@ export const Markdawn = ({ className, text: rawText }: MarkdawnProps): JSX.Eleme
               name?: string;
             }) => (
               <div
-                className="mt-8 mb-12 grid cursor-pointer place-content-center"
+                className="mb-12 mt-8 grid cursor-pointer place-content-center"
                 onClick={() => {
                   showLightBox([
                     compProps.src.startsWith("/uploads/")
@@ -296,7 +296,7 @@ const Header = ({ level, title, slug }: HeaderProps): JSX.Element => {
     <>
       <div className="ml-10 flex place-items-center gap-4">
         {title === "* * *" ? (
-          <div className="mt-8 mb-12 space-x-3 text-dark">
+          <div className="mb-12 mt-8 space-x-3 text-dark">
             <Ico icon="emergency" />
             <Ico icon="emergency" />
             <Ico icon="emergency" />

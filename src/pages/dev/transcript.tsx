@@ -373,7 +373,7 @@ const Transcript = (props: Props): JSX.Element => {
 
         <p
           className="h-[80vh] whitespace-nowrap font-[initial] font-bold
-          [writing-mode:vertical-rl] [transform-origin:top_right]"
+          [transform-origin:top_right] [writing-mode:vertical-rl]"
           style={{
             transform: `scale(${fontSize}) translateX(${fontSize * xOffset}px)`,
           }}>

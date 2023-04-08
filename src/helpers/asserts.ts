@@ -77,5 +77,3 @@ const hasAttribute = <T>(item: T, path: string): boolean => {
   }
   return false;
 };
-
-

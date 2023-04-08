@@ -38,7 +38,7 @@ export const ContentPanel = ({
       <main
         className={cJoin(
           "relative justify-self-center",
-          cIf(isContentPanelAtLeast3xl, "px-10 pt-20 pb-32", "px-4 pt-10 pb-20"),
+          cIf(isContentPanelAtLeast3xl, "px-10 pb-32 pt-20", "px-4 pb-20 pt-10"),
           contentPanelWidthSizesToClassName[width],
           className
         )}>

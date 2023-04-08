@@ -157,7 +157,7 @@ export const PreviewCard = ({
                     shadow-shade group-hover:opacity-100 dark:text-black"
                   />
                 </div>
-                <div className="absolute right-2 bottom-2 rounded-full bg-black/60 px-2 text-light">
+                <div className="absolute bottom-2 right-2 rounded-full bg-black/60 px-2 text-light">
                   {prettyDuration(hoverlay.duration)}
                 </div>
               </>

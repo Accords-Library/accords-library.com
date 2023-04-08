@@ -39,7 +39,7 @@ export const TextInput = ({
       }}
     />
     {isDefinedAndNotEmpty(value) && (
-      <div className="absolute right-4 top-0 bottom-0 grid place-items-center">
+      <div className="absolute bottom-0 right-4 top-0 grid place-items-center">
         <Ico
           className={cJoin("!text-xs", cIf(disabled, "opacity-30 grayscale", "cursor-pointer"))}
           icon="close"

@@ -186,7 +186,7 @@ export const MainPanel = (): JSX.Element => {
             <Markdawn text={format("licensing_notice")} />
           </p>
         )}
-        <div className="mt-4 mb-8 grid place-content-center">
+        <div className="mb-8 mt-4 grid place-content-center">
           <Link
             onClick={() => sendAnalytics("MainPanel", "Visit license")}
             aria-label="Read more about the license we use for this website"
@@ -212,7 +212,7 @@ export const MainPanel = (): JSX.Element => {
             <Markdawn text={format("copyright_notice")} />
           </p>
         )}
-        <div className="mt-12 mb-4 grid h-4 grid-flow-col place-content-center gap-8">
+        <div className="mb-4 mt-12 grid h-4 grid-flow-col place-content-center gap-8">
           <Link
             aria-label="Browse our GitHub repository, which include this website source code"
             onClick={() => sendAnalytics("MainPanel", "Visit GitHub")}

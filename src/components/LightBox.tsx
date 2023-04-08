@@ -172,7 +172,7 @@ const ControlButtons = ({
           <NextButton />
         </div>
       </div>
-      <div className="absolute top-2 right-2 grid gap-4 rounded-4xl p-4 backdrop-blur-lg">
+      <div className="absolute right-2 top-2 grid gap-4 rounded-4xl p-4 backdrop-blur-lg">
         <CloseButton />
       </div>
     </>
@@ -180,20 +180,20 @@ const ControlButtons = ({
     <>
       {isPreviousImageAvailable && (
         <div
-          className={`absolute top-1/2 left-8 grid gap-4 rounded-4xl p-4
+          className={`absolute left-8 top-1/2 grid gap-4 rounded-4xl p-4
           backdrop-blur-lg`}>
           <PreviousButton />
         </div>
       )}
       {isNextImageAvailable && (
         <div
-          className={`absolute top-1/2 right-8 grid gap-4 rounded-4xl p-4
+          className={`absolute right-8 top-1/2 grid gap-4 rounded-4xl p-4
           backdrop-blur-lg`}>
           <NextButton />
         </div>
       )}
       <div
-        className={`absolute top-4 right-8 grid gap-4 rounded-4xl p-4
+        className={`absolute right-8 top-4 grid gap-4 rounded-4xl p-4
         backdrop-blur-lg`}>
         <CloseButton />
         <FullscreenButton />

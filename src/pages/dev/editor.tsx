@@ -12,6 +12,7 @@ import { getOpenGraph } from "helpers/openGraph";
 import { getFormat } from "helpers/i18n";
 import { isDefined } from "helpers/asserts";
 import { atomPairing, useAtomPair } from "helpers/atoms";
+import { ButtonGroup } from "components/Inputs/ButtonGroup";
 
 /*
  *                                         ╭─────────────╮
@@ -39,23 +40,23 @@ const Editor = (props: Props): JSX.Element => {
         value: string,
         selectionStart: number,
         selectedEnd: number
-      ) => { prependLength: number; transformedValue: string }
+      ) => { prependLength: number; selectionLength?: number; transformedValue: string }
     ) => {
       if (textAreaRef.current) {
         const { value, selectionStart, selectionEnd } = textAreaRef.current;
 
-        const { prependLength, transformedValue } = transformation(
-          value,
-          selectionStart,
-          selectionEnd
-        );
+        const {
+          prependLength,
+          transformedValue,
+          selectionLength = selectionEnd - selectionStart,
+        } = transformation(value, selectionStart, selectionEnd);
 
         textAreaRef.current.value = transformedValue;
         setMarkdown(textAreaRef.current.value);
 
         textAreaRef.current.focus();
         textAreaRef.current.selectionStart = selectionStart + prependLength;
-        textAreaRef.current.selectionEnd = selectionEnd + prependLength;
+        textAreaRef.current.selectionEnd = selectionStart + selectionLength + prependLength;
       }
     },
     [setMarkdown]
@@ -92,13 +93,13 @@ const Editor = (props: Props): JSX.Element => {
   );
 
   const unwrap = useCallback(
-    (wrapper: string) => {
+    (openingWrapper: string, closingWrapper: string) => {
       transformationWrapper((value, selectionStart, selectionEnd) => {
         let newValue = "";
-        newValue += value.slice(0, selectionStart - wrapper.length);
+        newValue += value.slice(0, selectionStart - openingWrapper.length);
         newValue += value.slice(selectionStart, selectionEnd);
-        newValue += value.slice(wrapper.length + selectionEnd);
-        return { prependLength: -wrapper.length, transformedValue: newValue };
+        newValue += value.slice(closingWrapper.length + selectionEnd);
+        return { prependLength: -openingWrapper.length, transformedValue: newValue };
       });
     },
     [transformationWrapper]
@@ -109,11 +110,16 @@ const Editor = (props: Props): JSX.Element => {
       if (textAreaRef.current) {
         const { value, selectionStart, selectionEnd } = textAreaRef.current;
 
+        const openingWrapper =
+          properties && Object.keys(properties).length === 0 ? `<${wrapper}>` : wrapper;
+        const closingWrapper =
+          properties && Object.keys(properties).length === 0 ? `</${wrapper}>` : wrapper;
+
         if (
-          value.slice(selectionStart - wrapper.length, selectionStart) === wrapper &&
-          value.slice(selectionEnd, selectionEnd + wrapper.length) === wrapper
+          value.slice(selectionStart - openingWrapper.length, selectionStart) === openingWrapper &&
+          value.slice(selectionEnd, selectionEnd + closingWrapper.length) === closingWrapper
         ) {
-          unwrap(wrapper);
+          unwrap(openingWrapper, closingWrapper);
         } else {
           wrap(wrapper, properties, addInnerNewLines);
         }
@@ -124,18 +130,75 @@ const Editor = (props: Props): JSX.Element => {
 
   const preline = useCallback(
     (prepend: string) => {
-      transformationWrapper((value, selectionStart) => {
+      transformationWrapper((value, selectionStart, selectionEnd) => {
         const lastNewLine = value.slice(0, selectionStart).lastIndexOf("\n") + 1;
+        const nextNewLine = value.slice(selectionEnd).indexOf("\n") + selectionEnd;
+
+        const lines = value.slice(lastNewLine, nextNewLine).split("\n");
+
+        const processedLines = lines.map((line) => `${prepend}${line}`);
 
         let newValue = "";
         newValue += value.slice(0, lastNewLine);
-        newValue += prepend;
-        newValue += value.slice(lastNewLine);
+        newValue += processedLines.join("\n");
+        newValue += value.slice(nextNewLine);
 
-        return { prependLength: prepend.length, transformedValue: newValue };
+        return {
+          prependLength: prepend.length,
+          selectionLength: selectionEnd - selectionStart + (lines.length - 1) * prepend.length,
+          transformedValue: newValue,
+        };
       });
     },
     [transformationWrapper]
+  );
+
+  const unpreline = useCallback(
+    (prepend: string) => {
+      transformationWrapper((value, selectionStart, selectionEnd) => {
+        const lastNewLine = value.slice(0, selectionStart).lastIndexOf("\n") + 1;
+        const nextNewLine = value.slice(selectionEnd).indexOf("\n") + selectionEnd;
+
+        const lines = value.slice(lastNewLine, nextNewLine).split("\n");
+
+        const processedLines = lines.map((line) =>
+          line.startsWith(prepend) ? line.slice(prepend.length) : line
+        );
+
+        let newValue = "";
+        newValue += value.slice(0, lastNewLine);
+        newValue += processedLines.join("\n");
+        newValue += value.slice(nextNewLine);
+
+        return {
+          prependLength: -prepend.length,
+          selectionLength: selectionEnd - selectionStart + (lines.length - 1) * -prepend.length,
+          transformedValue: newValue,
+        };
+      });
+    },
+    [transformationWrapper]
+  );
+
+  const togglePreline = useCallback(
+    (prepend: string) => {
+      if (!textAreaRef.current) {
+        return;
+      }
+      const { value, selectionStart, selectionEnd } = textAreaRef.current;
+
+      const lastNewLine = value.slice(0, selectionStart).lastIndexOf("\n") + 1;
+      const nextNewLine = value.slice(selectionEnd).indexOf("\n") + selectionEnd;
+
+      const lines = value.slice(lastNewLine, nextNewLine).split("\n");
+
+      if (lines.every((line) => line.startsWith(prepend))) {
+        unpreline(prepend);
+      } else {
+        preline(prepend);
+      }
+    },
+    [preline, unpreline]
   );
 
   const insert = useCallback(
@@ -208,23 +271,48 @@ const Editor = (props: Props): JSX.Element => {
           content={
             <div className="grid gap-2">
               <h3 className="text-lg">Headers</h3>
-              <Button onClick={() => preline("# ")} text={"H1"} />
-              <Button onClick={() => preline("## ")} text={"H2"} />
-              <Button onClick={() => preline("### ")} text={"H3"} />
-              <Button onClick={() => preline("#### ")} text={"H4"} />
-              <Button onClick={() => preline("##### ")} text={"H5"} />
-              <Button onClick={() => preline("###### ")} text={"H6"} />
+              <Button onClick={() => togglePreline("# ")} text={"H1"} />
+              <Button onClick={() => togglePreline("## ")} text={"H2"} />
+              <Button onClick={() => togglePreline("### ")} text={"H3"} />
+              <Button onClick={() => togglePreline("#### ")} text={"H4"} />
+              <Button onClick={() => togglePreline("##### ")} text={"H5"} />
+              <Button onClick={() => togglePreline("###### ")} text={"H6"} />
             </div>
           }>
           <Button icon="title" />
         </ToolTip>
 
-        <ToolTip placement="bottom" content={<h3 className="text-lg">Toggle Bold</h3>}>
-          <Button onClick={() => toggleWrap("**")} icon="format_bold" />
-        </ToolTip>
+        <ButtonGroup
+          buttonsProps={[
+            {
+              onClick: () => toggleWrap("**"),
+              tooltip: <h3 className="text-lg">Toggle Bold</h3>,
+              tooltipPlacement: "bottom",
+              icon: "format_bold",
+            },
+            {
+              onClick: () => toggleWrap("_"),
+              tooltip: <h3 className="text-lg">Toggle Italic</h3>,
+              tooltipPlacement: "bottom",
+              icon: "format_italic",
+            },
+            {
+              onClick: () => toggleWrap("u", {}),
+              tooltip: <h3 className="text-lg">Toggle Underline</h3>,
+              tooltipPlacement: "bottom",
+              icon: "format_underlined",
+            },
+            {
+              onClick: () => toggleWrap("~~"),
+              tooltip: <h3 className="text-lg">Toggle Strikethrough</h3>,
+              tooltipPlacement: "bottom",
+              icon: "strikethrough_s",
+            },
+          ]}
+        />
 
-        <ToolTip placement="bottom" content={<h3 className="text-lg">Toggle Italic</h3>}>
-          <Button onClick={() => toggleWrap("_")} icon="format_italic" />
+        <ToolTip placement="bottom" content={<h3 className="text-lg">Highlight</h3>}>
+          <Button onClick={() => toggleWrap("==")} icon="format_ink_highlighter" />
         </ToolTip>
 
         <ToolTip
@@ -240,6 +328,40 @@ const Editor = (props: Props): JSX.Element => {
           }>
           <Button onClick={() => toggleWrap("`")} icon="code" />
         </ToolTip>
+
+        <ButtonGroup
+          buttonsProps={[
+            {
+              onClick: () => togglePreline("- "),
+              icon: "format_list_bulleted",
+              tooltip: <h3 className="text-lg">Bulleted List</h3>,
+              tooltipPlacement: "bottom",
+            },
+            {
+              onClick: () => togglePreline("1. "),
+              icon: "format_list_numbered",
+              tooltip: <h3 className="text-lg">Numbered List</h3>,
+              tooltipPlacement: "bottom",
+            },
+          ]}
+        />
+
+        <ButtonGroup
+          buttonsProps={[
+            {
+              onClick: () => preline("\t"),
+              icon: "format_indent_increase",
+              tooltip: <h3 className="text-lg">Increase Indent</h3>,
+              tooltipPlacement: "bottom",
+            },
+            {
+              onClick: () => unpreline("\t"),
+              icon: "format_indent_decrease",
+              tooltip: <h3 className="text-lg">Decrease Indent</h3>,
+              tooltipPlacement: "bottom",
+            },
+          ]}
+        />
 
         <ToolTip
           placement="bottom"
@@ -299,12 +421,28 @@ const Editor = (props: Props): JSX.Element => {
           <Button icon="record_voice_over" />
         </ToolTip>
 
-        <ToolTip placement="bottom" content={<h3 className="text-lg">Inset box</h3>}>
-          <Button onClick={() => wrap("InsetBox", {}, true)} icon="check_box_outline_blank" />
+        <ToolTip
+          placement="bottom"
+          content={
+            <>
+              <h3 className="text-lg">Layouts</h3>
+              <div className="grid gap-2">
+                <Button
+                  onClick={() => wrap("InsetBox", {}, true)}
+                  icon="check_box_outline_blank"
+                  text="InsetBox"
+                />
+                <Button onClick={() => togglePreline("> ")} icon="format_quote" text="Blockquote" />
+              </div>
+            </>
+          }>
+          <Button icon="dashboard" />
         </ToolTip>
+
         <ToolTip placement="bottom" content={<h3 className="text-lg">Scene break</h3>}>
           <Button onClick={() => insert("\n* * *\n")} icon="more_horiz" />
         </ToolTip>
+
         <ToolTip
           content={
             <div className="flex flex-col place-items-center gap-2">

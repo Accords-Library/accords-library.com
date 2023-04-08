@@ -1,6 +1,7 @@
 import Markdown from "markdown-to-jsx";
 import React, { Fragment, MouseEventHandler, useMemo } from "react";
 import ReactDOMServer from "react-dom/server";
+import { z } from "zod";
 import { HorizontalLine } from "components/HorizontalLine";
 import { Img } from "components/Img";
 import { InsetBox } from "components/Containers/InsetBox";
@@ -35,7 +36,7 @@ export const Markdawn = ({ className, text: rawText }: MarkdawnProps): JSX.Eleme
   const { showLightBox } = useAtomGetter(atoms.lightBox);
 
   /* eslint-disable no-irregular-whitespace */
-  const text = `${preprocessMarkDawn(rawText, playerName)}
+  const text = `${preprocessMarkDawn(rawText, playerName)}\n
   ​`;
   /* eslint-enable no-irregular-whitespace */
 
@@ -117,15 +118,30 @@ export const Markdawn = ({ className, text: rawText }: MarkdawnProps): JSX.Eleme
           },
 
           Line: {
-            component: (compProps) => (
-              <>
-                <strong
-                  className={cJoin("!my-0 text-dark/60", cIf(!isContentPanelAtLeastLg, "!-mb-4"))}>
-                  <Markdawn text={compProps.name} />
-                </strong>
-                <p className="whitespace-pre-line">{compProps.children}</p>
-              </>
-            ),
+            component: (compProps) => {
+              const schema = z.object({ name: z.string(), children: z.any() });
+              if (!schema.safeParse(compProps).success) {
+                return (
+                  <MarkdawnError
+                    message={`Error while parsing a <Line/> tag. Here is the correct usage:
+                    <Line name="John">Hello!</Line>`}
+                  />
+                );
+              }
+              const safeProps: z.infer<typeof schema> = compProps;
+              return (
+                <>
+                  <strong
+                    className={cJoin(
+                      "!my-0 text-dark/60",
+                      cIf(!isContentPanelAtLeastLg, "!-mb-4")
+                    )}>
+                    <Markdawn text={safeProps.name} />
+                  </strong>
+                  <p className="whitespace-pre-line">{safeProps.children}</p>
+                </>
+              );
+            },
           },
 
           InsetBox: {
@@ -212,6 +228,21 @@ export const Markdawn = ({ className, text: rawText }: MarkdawnProps): JSX.Eleme
     </Markdown>
   );
 };
+
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
+
+interface MarkdawnErrorProps {
+  message: string;
+}
+
+const MarkdawnError = ({ message }: MarkdawnErrorProps): JSX.Element => (
+  <div
+    className="flex place-items-center gap-4 whitespace-pre-line rounded-md
+  bg-[red]/10 px-4 text-[red]">
+    <Ico icon="error" isFilled={false} />
+    <p>{message}</p>
+  </div>
+);
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 

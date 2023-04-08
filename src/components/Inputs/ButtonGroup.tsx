@@ -1,8 +1,10 @@
+// eslint-disable-next-line import/named
+import { Placement } from "tippy.js";
 import { Button } from "./Button";
 import { ToolTip } from "components/ToolTip";
 import { cJoin } from "helpers/className";
 import { ConditionalWrapper, Wrapper } from "helpers/component";
-import { isDefinedAndNotEmpty } from "helpers/asserts";
+import { isDefined } from "helpers/asserts";
 
 /*
  *                                        ╭─────────────╮
@@ -12,7 +14,8 @@ import { isDefinedAndNotEmpty } from "helpers/asserts";
 interface Props {
   className?: string;
   buttonsProps: (Parameters<typeof Button>[0] & {
-    tooltip?: string | null | undefined;
+    tooltip?: React.ReactNode | null | undefined;
+    tooltipPlacement?: Placement;
   })[];
 }
 
@@ -23,9 +26,9 @@ export const ButtonGroup = ({ buttonsProps, className }: Props): JSX.Element => 
     {buttonsProps.map((buttonProps, index) => (
       <ConditionalWrapper
         key={index}
-        isWrapping={isDefinedAndNotEmpty(buttonProps.tooltip)}
+        isWrapping={isDefined(buttonProps.tooltip)}
         wrapper={ToolTipWrapper}
-        wrapperProps={{ text: buttonProps.tooltip ?? "" }}>
+        wrapperProps={{ text: buttonProps.tooltip ?? "", placement: buttonProps.tooltipPlacement }}>
         <Button
           {...buttonProps}
           className={
@@ -47,11 +50,12 @@ export const ButtonGroup = ({ buttonsProps, className }: Props): JSX.Element => 
  */
 
 interface ToolTipWrapperProps {
-  text: string;
+  text: React.ReactNode;
+  placement?: Placement;
 }
 
-const ToolTipWrapper = ({ text, children }: ToolTipWrapperProps & Wrapper) => (
-  <ToolTip content={text}>
+const ToolTipWrapper = ({ text, children, placement }: ToolTipWrapperProps & Wrapper) => (
+  <ToolTip content={text} placement={placement}>
     <>{children}</>
   </ToolTip>
 );

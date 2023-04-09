@@ -2,6 +2,7 @@
   "name": "accords-library.com",
   "private": true,
   "scripts": {
+    "postinstall": "patch-package",
     "dev": "next dev -p 12499",
     "precommit": "npm run fetch-local-data && npm run icu-to-ts && npm run unused-exports && npm run prettier && npm run eslint && npm run tsc && echo ALL PRECOMMIT CHECKS PASSED SUCCESSFULLY, LET\\'S FUCKING GO!",
     "unused-exports": "ts-unused-exports ./tsconfig.json --excludePathsFromReport='src/pages;tailwind.config.ts;src/graphql/generated.ts;src/shared/meilisearch-graphql-typings/generated.ts'",
@@ -36,6 +37,7 @@
     "meilisearch": "^0.32.3",
     "next": "^13.3.0",
     "nodemailer": "^6.9.1",
+    "patch-package": "^6.5.1",
     "rc-slider": "^10.1.1",
     "react": "^18.2.0",
     "react-dom": "18.2.0",

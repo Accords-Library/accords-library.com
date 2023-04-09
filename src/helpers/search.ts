@@ -1,7 +1,13 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-// eslint-disable-next-line import/named
-import { MatchesPosition, MeiliSearch, SearchParams, SearchResponse } from "meilisearch";
-import { isDefined } from "./asserts";
+import { MeiliSearch } from "meilisearch";
+import type {
+  SearchParams,
+  MatchesPosition,
+  SearchResponse,
+  MultiSearchQuery,
+  MultiSearchResponse,
+  MultiSearchResult,
+} from "meilisearch";
+import { filterDefined, isDefined } from "./asserts";
 import { MeiliDocumentsType } from "shared/meilisearch-graphql-typings/meiliTypes";
 
 const meili = new MeiliSearch({
@@ -12,19 +18,60 @@ const meili = new MeiliSearch({
 interface CustomSearchParams
   extends Omit<
     SearchParams,
-    "cropMarker" | "highlightPostTag" | "highlightPreTag" | "q" | "showMatchesPosition"
+    | "cropLength"
+    | "cropMarker"
+    | "cropMarker"
+    | "highlightPostTag"
+    | "highlightPreTag"
+    | "q"
+    | "showMatchesPosition"
   > {}
 
-type CustomHit<T = Record<string, any>> = T & {
+type CustomHit<T = Record<string, unknown>> = T & {
   _formatted: Partial<T>;
   _matchesPosition: MatchesPosition<T>;
 };
 
-type CustomHits<T = Record<string, any>> = CustomHit<T>[];
+type CustomHits<T = Record<string, unknown>> = CustomHit<T>[];
 
 export interface CustomSearchResponse<T> extends Omit<SearchResponse<T>, "hits"> {
   hits: CustomHits<T>;
 }
+
+export const meiliMultiSearch = async (queries: MultiSearchQuery[]): Promise<MultiSearchResponse> =>
+  await meili.multiSearch({
+    queries: queries.map((query) => ({
+      attributesToHighlight: ["*"],
+      ...query,
+      highlightPreTag: "<mark>",
+      highlightPostTag: "</mark>",
+      showMatchesPosition: true,
+      cropLength: 20,
+      cropMarker: "...",
+    })),
+  });
+
+export const filterHitsWithHighlight = <T extends MeiliDocumentsType["documents"]>(
+  searchResult: CustomSearchResponse<T> | MultiSearchResult<Record<string, unknown>>,
+  keyToFilter?: keyof T
+): CustomSearchResponse<T> => {
+  const result = searchResult as unknown as CustomSearchResponse<T>;
+  if (isDefined(keyToFilter)) {
+    result.hits = result.hits.map((item) => {
+      if (
+        Object.keys(item._matchesPosition).some((match) => match.startsWith(keyToFilter as string))
+      ) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        item._formatted[keyToFilter] = filterDefined(item._formatted[keyToFilter]).filter(
+          (translation) => JSON.stringify(translation).includes("</mark>")
+        );
+      }
+      return item;
+    });
+  }
+  return result;
+};
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const meiliSearch = async <I extends MeiliDocumentsType["index"]>(

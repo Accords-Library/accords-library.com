@@ -16,7 +16,7 @@
     "generate": "graphql-codegen --config graphql-codegen.config.js",
     "tsc": "tsc",
     "prettier": "prettier --end-of-line auto --write .",
-    "update": "ncu --interactive --format group"
+    "upgrade": "ncu --interactive --format group"
   },
   "dependencies": {
     "@fontsource/opendyslexic": "^4.5.4",
@@ -33,7 +33,7 @@
     "markdown-to-jsx": "^7.2.0",
     "marked": "^4.3.0",
     "material-symbols": "^0.5.5",
-    "meilisearch": "^0.31.1",
+    "meilisearch": "^0.32.3",
     "next": "^13.3.0",
     "nodemailer": "^6.9.1",
     "rc-slider": "^10.1.1",
@@ -73,7 +73,7 @@
     "eslint-plugin-import": "^2.27.5",
     "graphql": "^16.6.0",
     "graphql-request": "5.1.0",
-    "next-sitemap": "^4.0.6",
+    "next-sitemap": "^4.0.7",
     "prettier": "^2.8.7",
     "prettier-plugin-tailwindcss": "^0.2.7",
     "tailwindcss": "^3.3.1",

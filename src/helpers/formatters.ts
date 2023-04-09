@@ -58,7 +58,6 @@ export const prettyInlineTitle = (
   return result;
 };
 
-/* eslint-disable id-denylist */
 export const prettyItemSubType = (
   metadata:
     | {

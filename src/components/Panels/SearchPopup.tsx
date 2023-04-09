@@ -5,9 +5,14 @@ import { sendAnalytics } from "helpers/analytics";
 import { atoms } from "contexts/atoms";
 import { useAtomPair, useAtomSetter } from "helpers/atoms";
 import { TextInput } from "components/Inputs/TextInput";
-import { containsHighlight, CustomSearchResponse, meiliSearch } from "helpers/search";
+import {
+  containsHighlight,
+  CustomSearchResponse,
+  filterHitsWithHighlight,
+  meiliMultiSearch,
+} from "helpers/search";
 import { PreviewCard, TranslatedPreviewCard } from "components/PreviewCard";
-import { filterDefined, filterHasAttributes, isDefined } from "helpers/asserts";
+import { filterHasAttributes, isDefined } from "helpers/asserts";
 import {
   MeiliContent,
   MeiliIndices,
@@ -35,160 +40,154 @@ const SEARCH_LIMIT = 8;
  * ────────────────────────────────────────╯  COMPONENT  ╰──────────────────────────────────────────
  */
 
+interface MultiResult {
+  libraryItems?: CustomSearchResponse<MeiliLibraryItem>;
+  contents?: CustomSearchResponse<MeiliContent>;
+  videos?: CustomSearchResponse<MeiliVideo>;
+  posts?: CustomSearchResponse<MeiliPost>;
+  wikiPages?: CustomSearchResponse<MeiliWikiPage>;
+  weapons?: CustomSearchResponse<MeiliWeapon>;
+}
+
 export const SearchPopup = (): JSX.Element => {
   const [isSearchOpened, setSearchOpened] = useAtomPair(atoms.layout.searchOpened);
   const [query, setQuery] = useState("");
   const { format } = useFormat();
-  const [libraryItems, setLibraryItems] = useState<CustomSearchResponse<MeiliLibraryItem>>();
-  const [contents, setContents] = useState<CustomSearchResponse<MeiliContent>>();
-  const [videos, setVideos] = useState<CustomSearchResponse<MeiliVideo>>();
-  const [posts, setPosts] = useState<CustomSearchResponse<MeiliPost>>();
-  const [wikiPages, setWikiPages] = useState<CustomSearchResponse<MeiliWikiPage>>();
-  const [weapons, setWeapons] = useState<CustomSearchResponse<MeiliWeapon>>();
+  const [multiResult, setMultiResult] = useState<MultiResult>({});
 
   useEffect(() => {
-    const fetchLibraryItems = async () => {
-      const searchResult = await meiliSearch(MeiliIndices.LIBRARY_ITEM, query, {
-        limit: SEARCH_LIMIT,
-        attributesToRetrieve: [
-          "title",
-          "subtitle",
-          "descriptions",
-          "id",
-          "slug",
-          "thumbnail",
-          "release_date",
-          "price",
-          "categories",
-          "metadata",
-        ],
-        attributesToHighlight: ["title", "subtitle", "descriptions"],
-        attributesToCrop: ["descriptions"],
-      });
-      searchResult.hits = searchResult.hits.map((item) => {
-        if (Object.keys(item._matchesPosition).some((match) => match.startsWith("descriptions"))) {
-          item._formatted.descriptions = filterDefined(item._formatted.descriptions).filter(
-            (description) => containsHighlight(JSON.stringify(description))
-          );
-        }
-        return item;
-      });
-      setLibraryItems(searchResult);
-    };
+    const fetchMultiResult = async () => {
+      const searchResults = (
+        await meiliMultiSearch([
+          {
+            indexUid: MeiliIndices.LIBRARY_ITEM,
+            q: query,
+            limit: SEARCH_LIMIT,
+            attributesToRetrieve: [
+              "title",
+              "subtitle",
+              "descriptions",
+              "id",
+              "slug",
+              "thumbnail",
+              "release_date",
+              "price",
+              "categories",
+              "metadata",
+            ],
+            attributesToHighlight: ["title", "subtitle", "descriptions"],
+            attributesToCrop: ["descriptions"],
+          },
+          {
+            indexUid: MeiliIndices.CONTENT,
+            q: query,
+            limit: SEARCH_LIMIT,
+            attributesToRetrieve: ["translations", "id", "slug", "categories", "type", "thumbnail"],
+            attributesToHighlight: ["translations"],
+            attributesToCrop: ["translations.displayable_description"],
+          },
+          {
+            indexUid: MeiliIndices.VIDEOS,
+            q: query,
+            limit: SEARCH_LIMIT,
+            attributesToRetrieve: [
+              "title",
+              "channel",
+              "uid",
+              "published_date",
+              "views",
+              "duration",
+              "description",
+            ],
+            attributesToHighlight: ["title", "channel", "description"],
+            attributesToCrop: ["description"],
+          },
+          {
+            indexUid: MeiliIndices.POST,
+            q: query,
+            limit: SEARCH_LIMIT,
+            attributesToRetrieve: ["translations", "thumbnail", "slug", "date", "categories"],
+            attributesToHighlight: [
+              "translations.title",
+              "translations.excerpt",
+              "translations.body",
+            ],
+            attributesToCrop: ["translations.body"],
+            filter: ["hidden = false"],
+          },
+          {
+            indexUid: MeiliIndices.WEAPON,
+            q: query,
+            limit: SEARCH_LIMIT,
+            attributesToHighlight: ["translations.description", "translations.names"],
+            attributesToCrop: ["translations.description"],
+            sort: ["slug:asc"],
+          },
+          {
+            indexUid: MeiliIndices.WIKI_PAGE,
+            q: query,
+            limit: SEARCH_LIMIT,
+            attributesToHighlight: [
+              "translations.title",
+              "translations.aliases",
+              "translations.summary",
+              "translations.displayable_description",
+            ],
+            attributesToCrop: ["translations.displayable_description"],
+          },
+        ])
+      ).results;
 
-    const fetchContents = async () => {
-      const searchResult = await meiliSearch(MeiliIndices.CONTENT, query, {
-        limit: SEARCH_LIMIT,
-        attributesToRetrieve: ["translations", "id", "slug", "categories", "type", "thumbnail"],
-        attributesToHighlight: ["translations"],
-        attributesToCrop: ["translations.displayable_description"],
-      });
-      searchResult.hits = searchResult.hits.map((item) => {
-        if (Object.keys(item._matchesPosition).some((match) => match.startsWith("translations"))) {
-          item._formatted.translations = filterDefined(item._formatted.translations).filter(
-            (translation) => containsHighlight(JSON.stringify(translation))
-          );
-        }
-        return item;
-      });
-      setContents(searchResult);
-    };
+      const result: MultiResult = {};
 
-    const fetchVideos = async () => {
-      const searchResult = await meiliSearch(MeiliIndices.VIDEOS, query, {
-        limit: SEARCH_LIMIT,
-        attributesToRetrieve: [
-          "title",
-          "channel",
-          "uid",
-          "published_date",
-          "views",
-          "duration",
-          "description",
-        ],
-        attributesToHighlight: ["title", "channel", "description"],
-        attributesToCrop: ["description"],
-      });
-      setVideos(searchResult);
-    };
+      searchResults.map((searchResult) => {
+        switch (searchResult.indexUid) {
+          case MeiliIndices.LIBRARY_ITEM: {
+            result.libraryItems = filterHitsWithHighlight<MeiliLibraryItem>(
+              searchResult,
+              "descriptions"
+            );
+            break;
+          }
 
-    const fetchPosts = async () => {
-      const searchResult = await meiliSearch(MeiliIndices.POST, query, {
-        limit: SEARCH_LIMIT,
-        attributesToRetrieve: ["translations", "thumbnail", "slug", "date", "categories"],
-        attributesToHighlight: ["translations.title", "translations.excerpt", "translations.body"],
-        attributesToCrop: ["translations.body"],
-        filter: ["hidden = false"],
-      });
-      searchResult.hits = searchResult.hits.map((item) => {
-        if (Object.keys(item._matchesPosition).some((match) => match.startsWith("translations"))) {
-          item._formatted.translations = filterDefined(item._formatted.translations).filter(
-            (translation) => JSON.stringify(translation).includes("</mark>")
-          );
-        }
-        return item;
-      });
-      setPosts(searchResult);
-    };
+          case MeiliIndices.CONTENT: {
+            result.contents = filterHitsWithHighlight<MeiliContent>(searchResult, "translations");
+            break;
+          }
 
-    const fetchWeapons = async () => {
-      const searchResult = await meiliSearch(MeiliIndices.WEAPON, query, {
-        limit: SEARCH_LIMIT,
-        attributesToRetrieve: ["*"],
-        attributesToHighlight: ["translations.description", "translations.names"],
-        attributesToCrop: ["translations.description"],
-        sort: ["slug:asc"],
-      });
-      searchResult.hits = searchResult.hits.map((item) => {
-        if (Object.keys(item._matchesPosition).some((match) => match.startsWith("translations"))) {
-          item._formatted.translations = filterDefined(item._formatted.translations).filter(
-            (translation) => JSON.stringify(translation).includes("</mark>")
-          );
-        }
-        return item;
-      });
-      setWeapons(searchResult);
-    };
+          case MeiliIndices.VIDEOS: {
+            result.videos = filterHitsWithHighlight<MeiliVideo>(searchResult);
+            break;
+          }
 
-    const fetchWikiPages = async () => {
-      const searchResult = await meiliSearch(MeiliIndices.WIKI_PAGE, query, {
-        limit: SEARCH_LIMIT,
-        attributesToHighlight: [
-          "translations.title",
-          "translations.aliases",
-          "translations.summary",
-          "translations.displayable_description",
-        ],
-        attributesToCrop: ["translations.displayable_description"],
-      });
-      searchResult.hits = searchResult.hits.map((item) => {
-        if (
-          Object.keys(item._matchesPosition).filter((match) => match.startsWith("translations"))
-            .length > 0
-        ) {
-          item._formatted.translations = filterDefined(item._formatted.translations).filter(
-            (translation) => JSON.stringify(translation).includes("</mark>")
-          );
+          case MeiliIndices.POST: {
+            result.posts = filterHitsWithHighlight<MeiliPost>(searchResult, "translations");
+            break;
+          }
+
+          case MeiliIndices.WEAPON: {
+            result.weapons = filterHitsWithHighlight<MeiliWeapon>(searchResult, "translations");
+            break;
+          }
+
+          case MeiliIndices.WIKI_PAGE: {
+            result.wikiPages = filterHitsWithHighlight<MeiliWikiPage>(searchResult, "translations");
+            break;
+          }
+
+          default: {
+            console.log("What the fuck?");
+          }
         }
-        return item;
       });
-      setWikiPages(searchResult);
+
+      setMultiResult(result);
     };
 
     if (query === "") {
-      setWikiPages(undefined);
-      setLibraryItems(undefined);
-      setContents(undefined);
-      setVideos(undefined);
-      setPosts(undefined);
-      setWeapons(undefined);
+      setMultiResult({});
     } else {
-      fetchWikiPages();
-      fetchLibraryItems();
-      fetchContents();
-      fetchVideos();
-      fetchPosts();
-      fetchWeapons();
+      fetchMultiResult();
     }
   }, [query]);
 
@@ -207,15 +206,15 @@ export const SearchPopup = (): JSX.Element => {
       <TextInput onChange={setQuery} value={query} placeholder={format("search_title")} />
 
       <div className="flex w-full flex-wrap gap-12 gap-x-16">
-        {isDefined(libraryItems) && (
+        {isDefined(multiResult.libraryItems) && (
           <SearchResultSection
             title={format("library")}
             icon="auto_stories"
             href={`/library?page=1&query=${query}\
 &sort=0&primary=true&secondary=true&subitems=true&status=all`}
-            totalHits={libraryItems.estimatedTotalHits}>
+            totalHits={multiResult.libraryItems.estimatedTotalHits}>
             <div className="flex flex-wrap items-start gap-x-6 gap-y-8">
-              {libraryItems.hits.map((item) => (
+              {multiResult.libraryItems.hits.map((item) => (
                 <TranslatedPreviewCard
                   key={item.id}
                   className="w-56"
@@ -255,14 +254,14 @@ export const SearchPopup = (): JSX.Element => {
           </SearchResultSection>
         )}
 
-        {isDefined(contents) && (
+        {isDefined(multiResult.contents) && (
           <SearchResultSection
             title={format("contents")}
             icon="workspaces"
             href={`/contents/all?page=1&query=${query}&sort=0`}
-            totalHits={contents.estimatedTotalHits}>
+            totalHits={multiResult.contents.estimatedTotalHits}>
             <div className="flex flex-wrap items-start gap-x-6 gap-y-8">
-              {contents.hits.map((item) => (
+              {multiResult.contents.hits.map((item) => (
                 <TranslatedPreviewCard
                   key={item.id}
                   className="w-56"
@@ -300,14 +299,14 @@ export const SearchPopup = (): JSX.Element => {
           </SearchResultSection>
         )}
 
-        {isDefined(wikiPages) && (
+        {isDefined(multiResult.wikiPages) && (
           <SearchResultSection
             title={format("wiki")}
             icon="travel_explore"
             href={`/wiki?page=1&query=${query}`}
-            totalHits={wikiPages.estimatedTotalHits}>
+            totalHits={multiResult.wikiPages.estimatedTotalHits}>
             <div className="flex flex-wrap items-start gap-x-6 gap-y-8">
-              {wikiPages.hits.map((item) => (
+              {multiResult.wikiPages.hits.map((item) => (
                 <TranslatedPreviewCard
                   key={item.id}
                   className="w-56"
@@ -352,14 +351,14 @@ export const SearchPopup = (): JSX.Element => {
           </SearchResultSection>
         )}
 
-        {isDefined(posts) && (
+        {isDefined(multiResult.posts) && (
           <SearchResultSection
             title={format("news")}
             icon="newspaper"
             href={`/news?page=1&query=${query}`}
-            totalHits={posts.estimatedTotalHits}>
+            totalHits={multiResult.posts.estimatedTotalHits}>
             <div className="flex flex-wrap items-start gap-x-6 gap-y-8">
-              {posts.hits.map((item) => (
+              {multiResult.posts.hits.map((item) => (
                 <TranslatedPreviewCard
                   className="w-56"
                   key={item.id}
@@ -395,14 +394,14 @@ export const SearchPopup = (): JSX.Element => {
           </SearchResultSection>
         )}
 
-        {isDefined(videos) && (
+        {isDefined(multiResult.videos) && (
           <SearchResultSection
             title={format("videos")}
             icon="movie"
             href={`/archives/videos?page=1&query=${query}&sort=1&gone=`}
-            totalHits={videos.estimatedTotalHits}>
+            totalHits={multiResult.videos.estimatedTotalHits}>
             <div className="flex flex-wrap items-start gap-x-6 gap-y-8">
-              {videos.hits.map((item) => (
+              {multiResult.videos.hits.map((item) => (
                 <PreviewCard
                   className="w-56"
                   key={item.uid}
@@ -435,14 +434,14 @@ export const SearchPopup = (): JSX.Element => {
           </SearchResultSection>
         )}
 
-        {isDefined(weapons) && (
+        {isDefined(multiResult.weapons) && (
           <SearchResultSection
             title={format("weapon", { count: Infinity })}
             icon="shield"
             href={`/wiki/weapons?page=1&query=${query}`}
-            totalHits={weapons.estimatedTotalHits}>
+            totalHits={multiResult.weapons.estimatedTotalHits}>
             <div className="flex flex-wrap items-start gap-x-6 gap-y-8">
-              {weapons.hits.map((item) => (
+              {multiResult.weapons.hits.map((item) => (
                 <TranslatedPreviewCard
                   key={item.id}
                   className="w-56"

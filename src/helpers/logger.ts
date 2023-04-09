@@ -2,28 +2,30 @@ type LoggerMode = "both" | "client" | "server";
 
 const isServer = typeof window === "undefined";
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export const getLogger = (prefix: string, mode: LoggerMode = "client") => {
+type Logger = {
+  error: (message?: unknown, ...optionalParams: unknown[]) => void;
+  warn: (message?: unknown, ...optionalParams: unknown[]) => void;
+  log: (message?: unknown, ...optionalParams: unknown[]) => void;
+  info: (message?: unknown, ...optionalParams: unknown[]) => void;
+  debug: (message?: unknown, ...optionalParams: unknown[]) => void;
+};
+
+export const getLogger = (prefix: string, mode: LoggerMode = "client"): Logger => {
   if ((mode === "client" && isServer) || (mode === "server" && !isServer)) {
     return {
-      error: () => null,
-      warn: () => null,
-      log: () => null,
-      info: () => null,
-      debug: () => null,
+      error: () => undefined,
+      warn: () => undefined,
+      log: () => undefined,
+      info: () => undefined,
+      debug: () => undefined,
     };
   }
 
   return {
-    error: (message?: unknown, ...optionalParams: unknown[]) =>
-      console.error(prefix, message, ...optionalParams),
-    warn: (message?: unknown, ...optionalParams: unknown[]) =>
-      console.warn(prefix, message, ...optionalParams),
-    log: (message?: unknown, ...optionalParams: unknown[]) =>
-      console.log(prefix, message, ...optionalParams),
-    info: (message?: unknown, ...optionalParams: unknown[]) =>
-      console.info(prefix, message, ...optionalParams),
-    debug: (message?: unknown, ...optionalParams: unknown[]) =>
-      console.debug(prefix, message, ...optionalParams),
+    error: (message, ...optionalParams) => console.error(prefix, message, ...optionalParams),
+    warn: (message, ...optionalParams) => console.warn(prefix, message, ...optionalParams),
+    log: (message, ...optionalParams) => console.log(prefix, message, ...optionalParams),
+    info: (message, ...optionalParams) => console.info(prefix, message, ...optionalParams),
+    debug: (message, ...optionalParams) => console.debug(prefix, message, ...optionalParams),
   };
 };

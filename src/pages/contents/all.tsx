@@ -12,16 +12,16 @@ import { TextInput } from "components/Inputs/TextInput";
 import { WithLabel } from "components/Inputs/WithLabel";
 import { Button } from "components/Inputs/Button";
 import { useDeviceSupportsHover } from "hooks/useMediaQuery";
-import {
-  filterDefined,
-  filterHasAttributes,
-  isDefined,
-  isDefinedAndNotEmpty,
-} from "helpers/asserts";
+import { filterHasAttributes, isDefined, isDefinedAndNotEmpty } from "helpers/asserts";
 import { getOpenGraph } from "helpers/openGraph";
 import { HorizontalLine } from "components/HorizontalLine";
 import { sendAnalytics } from "helpers/analytics";
-import { containsHighlight, CustomSearchResponse, meiliSearch } from "helpers/search";
+import {
+  containsHighlight,
+  CustomSearchResponse,
+  filterHitsWithHighlight,
+  meiliSearch,
+} from "helpers/search";
 import { MeiliContent, MeiliIndices } from "shared/meilisearch-graphql-typings/meiliTypes";
 import { useTypedRouter } from "hooks/useTypedRouter";
 import { TranslatedPreviewCard } from "components/PreviewCard";
@@ -97,15 +97,7 @@ const Contents = (props: Props): JSX.Element => {
         page,
         sort: isDefined(currentSortingMethod) ? [currentSortingMethod.meiliAttribute] : undefined,
       });
-      searchResult.hits = searchResult.hits.map((item) => {
-        if (Object.keys(item._matchesPosition).some((match) => match.startsWith("translations"))) {
-          item._formatted.translations = filterDefined(item._formatted.translations).filter(
-            (translation) => containsHighlight(JSON.stringify(translation))
-          );
-        }
-        return item;
-      });
-      setContents(searchResult);
+      setContents(filterHitsWithHighlight<MeiliContent>(searchResult, "translations"));
     };
     fetchPosts();
   }, [query, page, sortingMethod, sortingMethods]);

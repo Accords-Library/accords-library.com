@@ -10,16 +10,16 @@ import { PanelHeader } from "components/PanelComponents/PanelHeader";
 import { TextInput } from "components/Inputs/TextInput";
 import { useTypedRouter } from "hooks/useTypedRouter";
 import { useFormat } from "hooks/useFormat";
-import {
-  filterDefined,
-  filterHasAttributes,
-  isDefined,
-  isDefinedAndNotEmpty,
-} from "helpers/asserts";
+import { filterHasAttributes, isDefined, isDefinedAndNotEmpty } from "helpers/asserts";
 import { sendAnalytics } from "helpers/analytics";
 import { Button } from "components/Inputs/Button";
 import { HorizontalLine } from "components/HorizontalLine";
-import { containsHighlight, CustomSearchResponse, meiliSearch } from "helpers/search";
+import {
+  containsHighlight,
+  CustomSearchResponse,
+  filterHitsWithHighlight,
+  meiliSearch,
+} from "helpers/search";
 import { MeiliIndices, MeiliWeapon } from "shared/meilisearch-graphql-typings/meiliTypes";
 import { ContentPanel, ContentPanelWidthSizes } from "components/Containers/ContentPanel";
 import { Paginator } from "components/Containers/Paginator";
@@ -79,17 +79,7 @@ const Weapons = (props: Props): JSX.Element => {
         attributesToCrop: ["translations.description"],
         sort: ["slug:asc"],
       });
-
-      searchResult.hits = searchResult.hits.map((item) => {
-        if (Object.keys(item._matchesPosition).some((match) => match.startsWith("translations"))) {
-          item._formatted.translations = filterDefined(item._formatted.translations).filter(
-            (translation) => JSON.stringify(translation).includes("</mark>")
-          );
-        }
-        return item;
-      });
-
-      setWeapons(searchResult);
+      setWeapons(filterHitsWithHighlight<MeiliWeapon>(searchResult, "translations"));
     };
     fetchPosts();
   }, [query, page]);

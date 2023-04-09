@@ -1,4 +1,3 @@
-/* eslint-disable id-denylist */
 import { GetStaticProps } from "next";
 import { ReactNode, useState } from "react";
 import Slider from "rc-slider";

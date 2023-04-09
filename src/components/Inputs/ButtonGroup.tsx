@@ -1,5 +1,4 @@
-// eslint-disable-next-line import/named
-import { Placement } from "tippy.js";
+import type { Placement } from "tippy.js";
 import { Button } from "./Button";
 import { ToolTip } from "components/ToolTip";
 import { cJoin } from "helpers/className";

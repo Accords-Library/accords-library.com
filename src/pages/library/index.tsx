@@ -14,17 +14,16 @@ import { TextInput } from "components/Inputs/TextInput";
 import { Button } from "components/Inputs/Button";
 import { useDeviceSupportsHover } from "hooks/useMediaQuery";
 import { ButtonGroup } from "components/Inputs/ButtonGroup";
-import {
-  filterDefined,
-  filterHasAttributes,
-  isDefined,
-  isDefinedAndNotEmpty,
-  isUndefined,
-} from "helpers/asserts";
+import { filterHasAttributes, isDefined, isDefinedAndNotEmpty, isUndefined } from "helpers/asserts";
 import { getOpenGraph } from "helpers/openGraph";
 import { HorizontalLine } from "components/HorizontalLine";
 import { sendAnalytics } from "helpers/analytics";
-import { containsHighlight, CustomSearchResponse, meiliSearch } from "helpers/search";
+import {
+  containsHighlight,
+  CustomSearchResponse,
+  filterHitsWithHighlight,
+  meiliSearch,
+} from "helpers/search";
 import { MeiliIndices, MeiliLibraryItem } from "shared/meilisearch-graphql-typings/meiliTypes";
 import { useTypedRouter } from "hooks/useTypedRouter";
 import { TranslatedPreviewCard } from "components/PreviewCard";
@@ -178,15 +177,7 @@ const Library = (props: Props): JSX.Element => {
         sort: isDefined(currentSortingMethod) ? [currentSortingMethod.meiliAttribute] : undefined,
         filter,
       });
-      searchResult.hits = searchResult.hits.map((item) => {
-        if (Object.keys(item._matchesPosition).some((match) => match.startsWith("descriptions"))) {
-          item._formatted.descriptions = filterDefined(item._formatted.descriptions).filter(
-            (description) => containsHighlight(JSON.stringify(description))
-          );
-        }
-        return item;
-      });
-      setLibraryItems(searchResult);
+      setLibraryItems(filterHitsWithHighlight<MeiliLibraryItem>(searchResult, "descriptions"));
     };
     fetchLibraryItems();
   }, [

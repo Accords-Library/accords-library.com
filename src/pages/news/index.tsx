@@ -11,12 +11,7 @@ import { WithLabel } from "components/Inputs/WithLabel";
 import { TextInput } from "components/Inputs/TextInput";
 import { Button } from "components/Inputs/Button";
 import { useDeviceSupportsHover } from "hooks/useMediaQuery";
-import {
-  filterDefined,
-  filterHasAttributes,
-  isDefined,
-  isDefinedAndNotEmpty,
-} from "helpers/asserts";
+import { filterHasAttributes, isDefined, isDefinedAndNotEmpty } from "helpers/asserts";
 import { getOpenGraph } from "helpers/openGraph";
 import { TranslatedPreviewCard } from "components/PreviewCard";
 import { HorizontalLine } from "components/HorizontalLine";
@@ -24,7 +19,12 @@ import { sendAnalytics } from "helpers/analytics";
 import { Terminal } from "components/Cli/Terminal";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter } from "helpers/atoms";
-import { containsHighlight, CustomSearchResponse, meiliSearch } from "helpers/search";
+import {
+  containsHighlight,
+  CustomSearchResponse,
+  filterHitsWithHighlight,
+  meiliSearch,
+} from "helpers/search";
 import { MeiliIndices, MeiliPost } from "shared/meilisearch-graphql-typings/meiliTypes";
 import { useTypedRouter } from "hooks/useTypedRouter";
 import { prettySlug } from "helpers/formatters";
@@ -84,15 +84,7 @@ const News = ({ ...otherProps }: Props): JSX.Element => {
         sort: ["sortable_date:desc"],
         filter: ["hidden = false"],
       });
-      searchResult.hits = searchResult.hits.map((item) => {
-        if (Object.keys(item._matchesPosition).some((match) => match.startsWith("translations"))) {
-          item._formatted.translations = filterDefined(item._formatted.translations).filter(
-            (translation) => JSON.stringify(translation).includes("</mark>")
-          );
-        }
-        return item;
-      });
-      setPosts(searchResult);
+      setPosts(filterHitsWithHighlight<MeiliPost>(searchResult, "translations"));
     };
     fetchPosts();
   }, [query, page]);

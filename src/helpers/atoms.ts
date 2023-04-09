@@ -1,7 +1,6 @@
 import { atom, PrimitiveAtom, Atom, WritableAtom, useAtom } from "jotai";
 import { Dispatch, SetStateAction } from "react";
 
-// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-arguments
 type AtomPair<T> = [Atom<T>, WritableAtom<null, [newText: T], void>];
 
 export const atomPairing = <T>(anAtom: PrimitiveAtom<T>): AtomPair<T> => {

@@ -4,7 +4,6 @@ export const isUntangibleGroupItem = (
   metadata:
     | {
         __typename: string;
-        // eslint-disable-next-line id-denylist
         subtype?: { data?: { attributes?: { slug: string } | null } | null } | null;
       }
     | null

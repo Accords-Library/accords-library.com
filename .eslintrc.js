@@ -46,7 +46,7 @@ module.exports = {
     "func-style": ["warn", "expression"],
     "grouped-accessor-pairs": "warn",
     "guard-for-in": "warn",
-    "id-denylist": ["error", "data", "err", "e", "cb", "callback", "i"],
+    "id-denylist": ["error", "err", "e", "cb", "callback", "i"],
     // "id-length": "warn",
     "id-match": "warn",
     "max-classes-per-file": ["error", 1],

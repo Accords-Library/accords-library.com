@@ -30,7 +30,7 @@
     "cuid": "^2.1.8",
     "intl-messageformat": "^10.3.3",
     "isomorphic-dompurify": "^1.2.0",
-    "jotai": "^2.0.3",
+    "jotai": "^2.0.4",
     "markdown-to-jsx": "^7.2.0",
     "marked": "^4.3.0",
     "material-symbols": "^0.5.5",

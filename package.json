@@ -20,6 +20,7 @@
     "upgrade": "ncu --interactive --format group"
   },
   "dependencies": {
+    "@fontsource/noto-serif-jp": "^4.5.12",
     "@fontsource/opendyslexic": "^4.5.4",
     "@fontsource/share-tech-mono": "^4.5.9",
     "@fontsource/vollkorn": "^4.5.14",

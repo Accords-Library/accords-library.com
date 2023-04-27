@@ -1,5 +1,7 @@
+import "@fontsource/noto-serif-jp";
 import { GetStaticProps } from "next";
 import { useCallback, useRef, useState } from "react";
+import { atomWithStorage } from "jotai/utils";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { Button } from "components/Inputs/Button";
 import { ButtonGroup } from "components/Inputs/ButtonGroup";
@@ -7,11 +9,16 @@ import { ContentPanel, ContentPanelWidthSizes } from "components/Containers/Cont
 import { ToolTip } from "components/ToolTip";
 import { getOpenGraph } from "helpers/openGraph";
 import { getFormat } from "helpers/i18n";
+import { atomPairing, useAtomPair } from "helpers/atoms";
 
 /*
  *                                         ╭─────────────╮
  * ────────────────────────────────────────╯  CONSTANTS  ╰──────────────────────────────────────────
  */
+
+const textAtom = atomPairing(atomWithStorage("transcriptText", ""));
+const fontSizeAtom = atomPairing(atomWithStorage("transcriptFontSize", 1));
+const textOffset = atomPairing(atomWithStorage("transcriptTextOffset", 0));
 
 const SIZE_MULTIPLIER = 1000;
 
@@ -39,9 +46,9 @@ const swapChar = (char: string, swaps: string[]): string => {
 };
 
 const Transcript = (props: Props): JSX.Element => {
-  const [text, setText] = useState("");
-  const [fontSize, setFontSize] = useState(1);
-  const [xOffset, setXOffset] = useState(0);
+  const [text, setText] = useAtomPair(textAtom);
+  const [fontSize, setFontSize] = useAtomPair(fontSizeAtom);
+  const [xOffset, setXOffset] = useAtomPair(textOffset);
   const [lineIndex, setLineIndex] = useState(0);
 
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -50,7 +57,7 @@ const Transcript = (props: Props): JSX.Element => {
     if (textAreaRef.current) {
       setText(textAreaRef.current.value);
     }
-  }, []);
+  }, [setText]);
 
   const updateLineIndex = useCallback(() => {
     if (textAreaRef.current) {
@@ -369,10 +376,11 @@ const Transcript = (props: Props): JSX.Element => {
           onKeyUp={updateLineIndex}
           title="Input textarea"
           className="whitespace-pre"
+          value={text}
         />
 
         <p
-          className="h-[80vh] whitespace-nowrap font-[initial] font-bold
+          className="h-[80vh] whitespace-nowrap font-bold [font-family:Noto_Serif_JP]
           [transform-origin:top_right] [writing-mode:vertical-rl]"
           style={{
             transform: `scale(${fontSize}) translateX(${fontSize * xOffset}px)`,

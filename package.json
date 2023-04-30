@@ -17,7 +17,7 @@
     "generate": "graphql-codegen --config graphql-codegen.config.js",
     "tsc": "tsc",
     "prettier": "prettier --end-of-line auto --write .",
-    "upgrade": "ncu --interactive --format group"
+    "upgrade": "ncu"
   },
   "dependencies": {
     "@fontsource/noto-serif-jp": "^4.5.12",

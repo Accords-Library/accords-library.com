@@ -13,7 +13,10 @@ type StrapiEvent = {
   entry: Record<string, unknown>;
 };
 
-type StrapiRelationalField = { count: number };
+type StrapiRelationalFieldEntry = {
+  id: string;
+  slug: string;
+};
 
 type RequestProps =
   | CustomRequest
@@ -58,8 +61,8 @@ interface StrapiRangedContent extends StrapiEvent {
   model: "ranged-content";
   entry: {
     id: string;
-    library_item: StrapiRelationalField;
-    content: StrapiRelationalField;
+    library_item?: StrapiRelationalFieldEntry;
+    content?: StrapiRelationalFieldEntry;
   };
 }
 
@@ -67,8 +70,8 @@ interface StrapiContent extends StrapiEvent {
   model: "content";
   entry: {
     slug: string;
-    folder: StrapiRelationalField;
-    ranged_contents: StrapiRelationalField;
+    folder?: StrapiRelationalFieldEntry;
+    ranged_contents: StrapiRelationalFieldEntry[];
   };
 }
 
@@ -109,7 +112,9 @@ interface StrapiLibraryItem extends StrapiEvent {
   model: "library-item";
   entry: {
     slug: string;
-    subitem_of: StrapiRelationalField;
+    subitems: StrapiRelationalFieldEntry[];
+    subitem_of: StrapiRelationalFieldEntry[];
+    contents: StrapiRelationalFieldEntry[];
   };
 }
 
@@ -118,9 +123,9 @@ interface StrapiContentFolder extends StrapiEvent {
   model: "contents-folder";
   entry: {
     slug: string;
-    parent_folder: StrapiRelationalField;
-    subfolders: StrapiRelationalField;
-    contents: StrapiRelationalField;
+    parent_folder?: StrapiRelationalFieldEntry;
+    subfolders: StrapiRelationalFieldEntry[];
+    contents: StrapiRelationalFieldEntry[];
   };
 }
 
@@ -149,7 +154,7 @@ interface StrapiChronicleChapter extends StrapiEvent {
   event: CRUDEvents;
   model: "chronicles-chapter";
   entry: {
-    chronicles: { slug: string }[];
+    chronicles: StrapiRelationalFieldEntry[];
   };
 }
 
@@ -158,7 +163,6 @@ interface StrapiVideo extends StrapiEvent {
   model: "video";
   entry: {
     uid: string;
-    channel: StrapiRelationalField;
   };
 }
 
@@ -182,7 +186,7 @@ const Revalidate = async (
 
   const paths: string[] = [];
 
-  console.log(body);
+  console.log(JSON.stringify(body, null, 2));
 
   switch (body.model) {
     case "post": {
@@ -194,15 +198,27 @@ const Revalidate = async (
       paths.push(`/library/${body.entry.slug}`);
       paths.push(`/library/${body.entry.slug}/reader`);
 
-      if (body.entry.subitem_of.count > 0) {
-        const libraryItem = await sdk.getLibraryItem({
-          language_code: "en",
-          slug: body.entry.slug,
-        });
-        filterHasAttributes(libraryItem.libraryItems?.data[0]?.attributes?.subitem_of?.data, [
-          "attributes.slug",
-        ]).forEach((parentItem) => paths.push(`/library/${parentItem.attributes.slug}`));
-      }
+      body.entry.subitem_of.map(({ slug: subItemOfSlug }) => {
+        paths.push(`/library/${subItemOfSlug}`);
+      }, []);
+
+      body.entry.subitems.map(({ slug: subItemSlug }) => {
+        paths.push(`/library/${subItemSlug}`);
+      }, []);
+
+      await Promise.all(
+        body.entry.contents.map(async ({ id }) => {
+          const rangedContent = await sdk.revalidationGetRangedContent({
+            id,
+          });
+
+          const contentSlug =
+            rangedContent.rangedContent?.data?.attributes?.content?.data?.attributes?.slug;
+          if (contentSlug) {
+            paths.push(`/contents/${contentSlug}`);
+          }
+        })
+      );
 
       break;
     }
@@ -210,29 +226,30 @@ const Revalidate = async (
     case "content": {
       paths.push(`/contents/${body.entry.slug}`);
 
-      if (body.entry.folder.count > 0 || body.entry.ranged_contents.count > 0) {
-        const content = await sdk.getContentText({
-          language_code: "en",
-          slug: body.entry.slug,
-        });
-
-        const folderSlug = content.contents?.data[0]?.attributes?.folder?.data?.attributes?.slug;
-        if (folderSlug) {
-          if (folderSlug === "root") {
-            paths.push(`/contents`);
-          } else {
-            paths.push(`/contents/folder/${folderSlug}`);
-          }
+      const folderSlug = body.entry.folder?.slug;
+      if (folderSlug) {
+        if (folderSlug === "root") {
+          paths.push(`/contents`);
+        } else {
+          paths.push(`/contents/folder/${body.entry.folder?.slug}`);
         }
-
-        filterHasAttributes(content.contents?.data[0]?.attributes?.ranged_contents?.data, [
-          "attributes.library_item.data.attributes.slug",
-        ]).forEach((ranged_content) => {
-          const parentSlug = ranged_content.attributes.library_item.data.attributes.slug;
-          paths.push(`/library/${parentSlug}`);
-          paths.push(`/library/${parentSlug}/reader`);
-        });
       }
+
+      await Promise.all(
+        body.entry.ranged_contents.map(async ({ id }) => {
+          const rangedContent = await sdk.revalidationGetRangedContent({
+            id,
+          });
+
+          const libraryItemSlug =
+            rangedContent.rangedContent?.data?.attributes?.library_item?.data?.attributes?.slug;
+          if (libraryItemSlug) {
+            paths.push(`/library/${libraryItemSlug}`);
+            paths.push(`/library/${libraryItemSlug}/reader`);
+          }
+        })
+      );
+
       break;
     }
 
@@ -243,21 +260,13 @@ const Revalidate = async (
     }
 
     case "ranged-content": {
-      if (body.entry.content.count > 0 || body.entry.library_item.count > 0) {
-        const rangedContent = await sdk.revalidationGetRangedContent({
-          id: body.entry.id,
-        });
-        const libraryItemSlug =
-          rangedContent.rangedContent?.data?.attributes?.content?.data?.attributes?.slug;
-        if (libraryItemSlug) {
-          paths.push(`/library/${libraryItemSlug}`);
-          paths.push(`/library/${libraryItemSlug}/reader`);
-        }
-        const contentSlug =
-          rangedContent.rangedContent?.data?.attributes?.content?.data?.attributes?.slug;
-        if (contentSlug) {
-          paths.push(`/contents/${contentSlug}`);
-        }
+      const libraryItemSlug = body.entry.library_item?.slug;
+      const contentSlug = body.entry.content?.slug;
+      if (libraryItemSlug) {
+        paths.push(`/library/${libraryItemSlug}`);
+      }
+      if (contentSlug) {
+        paths.push(`/contents/${contentSlug}`);
       }
       break;
     }
@@ -269,27 +278,22 @@ const Revalidate = async (
         paths.push(`/contents/folder/${body.entry.slug}`);
       }
 
-      if (
-        body.entry.contents.count > 0 ||
-        body.entry.parent_folder.count > 0 ||
-        body.entry.subfolders.count > 0
-      ) {
-        const folder = await sdk.getContentsFolder({
-          language_code: "en",
-          slug: body.entry.slug,
-        });
-        const parentSlug =
-          folder.contentsFolders?.data[0]?.attributes?.parent_folder?.data?.attributes?.slug;
-        if (parentSlug) {
-          paths.push(`/contents/folder/${parentSlug}`);
+      body.entry.contents.map(({ slug: contentSlug }) => {
+        paths.push(`/contents/${contentSlug}`);
+      });
+
+      if (body.entry.parent_folder) {
+        if (body.entry.parent_folder.slug === "root") {
+          paths.push(`/contents`);
+        } else {
+          paths.push(`/contents/folder/${body.entry.parent_folder.slug}`);
         }
-        filterHasAttributes(folder.contentsFolders?.data[0]?.attributes?.subfolders?.data, [
-          "attributes.slug",
-        ]).forEach((subfolder) => paths.push(`/contents/folder/${subfolder.attributes.slug}`));
-        filterHasAttributes(folder.contentsFolders?.data[0]?.attributes?.contents?.data, [
-          "attributes.slug",
-        ]).forEach((content) => paths.push(`/contents/${content.attributes.slug}`));
       }
+
+      body.entry.subfolders.map(({ slug: folderSlug }) => {
+        paths.push(`/contents/folder/${folderSlug}`);
+      });
+
       break;
     }
 

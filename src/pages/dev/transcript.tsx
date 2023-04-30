@@ -1,7 +1,8 @@
 import "@fontsource/noto-serif-jp";
 import { GetStaticProps } from "next";
-import { useCallback, useRef, useState } from "react";
+import { ChangeEvent, useCallback, useRef, useState } from "react";
 import { atomWithStorage } from "jotai/utils";
+import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { Button } from "components/Inputs/Button";
 import { ButtonGroup } from "components/Inputs/ButtonGroup";
@@ -10,6 +11,7 @@ import { ToolTip } from "components/ToolTip";
 import { getOpenGraph } from "helpers/openGraph";
 import { getFormat } from "helpers/i18n";
 import { atomPairing, useAtomPair } from "helpers/atoms";
+import { cIf, cJoin } from "helpers/className";
 
 /*
  *                                         ╭─────────────╮
@@ -366,27 +368,81 @@ const Transcript = (props: Props): JSX.Element => {
     [updateDisplayedText]
   );
 
+  const [image, setImage] = useState<string>();
+
+  const onImageUploaded = useCallback(
+    async (event: ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0];
+      if (file) {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("language", "jpn");
+        formData.append("FileType", ".Auto");
+        formData.append("scale", "true");
+        formData.append("OCREngine", "1");
+
+        type OCRApiResponse = {
+          ParsedResults: {
+            ParsedText: string;
+          }[];
+          OCRExitCode: number;
+          IsErroredOnProcessing: boolean;
+        };
+
+        const response = await fetch("https://api.ocr.space/parse/image", {
+          method: "POST",
+          body: formData,
+          headers: { apiKey: "d35acb001e88957" },
+        });
+
+        const jsonData: OCRApiResponse = await response.json();
+        const ocrText = jsonData.ParsedResults[0]?.ParsedText;
+
+        if (ocrText) {
+          setText(ocrText);
+        }
+
+        setImage(URL.createObjectURL(file));
+      }
+    },
+    [setText]
+  );
+
   const contentPanel = (
-    <ContentPanel width={ContentPanelWidthSizes.Full} className="overflow-hidden !pr-0 !pt-4">
-      <div className="grid grid-flow-col grid-cols-[1fr_5rem]">
+    <ContentPanel width={ContentPanelWidthSizes.Full} className="!pr-0 !pt-0">
+      <div
+        className={cJoin("grid", cIf(image, "grid-cols-[1fr_5rem_20rem]", "grid-cols-[1fr_5rem]"))}>
         <textarea
           ref={textAreaRef}
           onChange={updateDisplayedText}
           onClick={updateLineIndex}
           onKeyUp={updateLineIndex}
           title="Input textarea"
-          className="whitespace-pre"
+          className="mt-4 whitespace-pre"
           value={text}
         />
 
         <p
-          className="h-[80vh] whitespace-nowrap font-bold [font-family:Noto_Serif_JP]
-          [transform-origin:top_right] [writing-mode:vertical-rl]"
+          className="z-10 mt-4 h-[80vh] whitespace-nowrap
+          font-bold [font-family:Noto_Serif_JP] [transform-origin:top_right]
+          [writing-mode:vertical-rl]"
           style={{
             transform: `scale(${fontSize}) translateX(${fontSize * xOffset}px)`,
           }}>
           {text.split("\n")[lineIndex]}
         </p>
+
+        {image && (
+          <TransformWrapper
+            panning={{ velocityDisabled: true }}
+            alignmentAnimation={{ disabled: true }}
+            wheel={{ step: 0.05 }}
+            limitToBounds={false}>
+            <TransformComponent wrapperStyle={{ height: "95vh" }}>
+              <img src={image} alt="This provided image" className="w-full object-cover" />
+            </TransformComponent>
+          </TransformWrapper>
+        )}
       </div>
 
       <div className="flex flex-wrap place-items-center gap-4 pr-24">
@@ -397,8 +453,8 @@ const Transcript = (props: Props): JSX.Element => {
             type="range"
             min="0"
             max="100"
-            value={xOffset * 10}
-            onChange={(event) => setXOffset(parseInt(event.target.value, 10) / 10)}
+            value={xOffset * 5}
+            onChange={(event) => setXOffset(parseInt(event.target.value, 10) / 5)}
           />
         </div>
 
@@ -527,6 +583,12 @@ const Transcript = (props: Props): JSX.Element => {
           }>
           <Button text="Insert" />
         </ToolTip>
+
+        <input
+          type="file"
+          accept="image/png, image/jpeg, image/webp"
+          onChange={onImageUploaded}
+        />
       </div>
     </ContentPanel>
   );

@@ -171,6 +171,7 @@ NEXT_PUBLIC_URL_MEILISEARCH=https://url-to.search-accords-library.com
 NEXT_PUBLIC_MEILISEARCH_KEY=abcdef0123456789
 NEXT_PUBLIC_UMAMI_URL=https://url-to.umami-accords-library.com
 NEXT_PUBLIC_UMAMI_ID=abcdef0123456789
+NEXT_PUBLIC_API_OCR_KEY=abcdef0123456789
 ```
 
 Run in dev mode:

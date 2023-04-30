@@ -1,3 +1,4 @@
+upgrade: true
 interactive: true
 format: "group"
 reject:

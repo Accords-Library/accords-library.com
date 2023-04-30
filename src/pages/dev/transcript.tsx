@@ -584,11 +584,7 @@ const Transcript = (props: Props): JSX.Element => {
           <Button text="Insert" />
         </ToolTip>
 
-        <input
-          type="file"
-          accept="image/png, image/jpeg, image/webp"
-          onChange={onImageUploaded}
-        />
+        <input type="file" accept="image/png, image/jpeg, image/webp" onChange={onImageUploaded} />
       </div>
     </ContentPanel>
   );

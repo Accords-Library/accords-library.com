@@ -3,6 +3,7 @@ query getContentsFolder($slug: String, $language_code: String) {
     data {
       attributes {
         slug
+        sequence
         titles(pagination: { limit: -1 }) {
           id
           language {

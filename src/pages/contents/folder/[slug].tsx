@@ -222,9 +222,11 @@ export const getStaticProps: GetStaticProps = async (context) => {
     a.attributes && b.attributes ? naturalCompare(a.attributes.slug, b.attributes.slug) : 0
   );
 
-  folder.contents?.data.sort((a, b) =>
-    a.attributes && b.attributes ? naturalCompare(a.attributes.slug, b.attributes.slug) : 0
-  );
+  if (!folder.sequence) {
+    folder.contents?.data.sort((a, b) =>
+      a.attributes && b.attributes ? naturalCompare(a.attributes.slug, b.attributes.slug) : 0
+    );
+  }
 
   const title = (() => {
     if (slug === "root") {

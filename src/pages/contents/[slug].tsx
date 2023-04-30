@@ -282,7 +282,7 @@ const Content = ({ content, ...otherProps }: Props): JSX.Element => {
             />,
 
             previousContent?.attributes && (
-              <div className="mb-6 w-full">
+              <>
                 <h2 className="mb-4 text-center text-2xl">{format("previous_content")}</h2>
                 <TranslatedPreviewLine
                   href={`/contents/${previousContent.attributes.slug}`}
@@ -315,7 +315,7 @@ const Content = ({ content, ...otherProps }: Props): JSX.Element => {
                       : undefined
                   }
                 />
-              </div>
+              </>
             ),
 
             selectedTranslation?.text_set?.text && (
@@ -418,9 +418,11 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   const thumbnail = content.contents.data[0].attributes.thumbnail?.data?.attributes;
 
-  content.contents.data[0].attributes.folder?.data?.attributes?.contents?.data.sort((a, b) =>
-    a.attributes && b.attributes ? naturalCompare(a.attributes.slug, b.attributes.slug) : 0
-  );
+  if (content.contents.data[0].attributes.folder?.data?.attributes?.sequence === false) {
+    content.contents.data[0].attributes.folder.data.attributes.contents?.data.sort((a, b) =>
+      a.attributes && b.attributes ? naturalCompare(a.attributes.slug, b.attributes.slug) : 0
+    );
+  }
 
   const props: Props = {
     content: content.contents.data[0].attributes as ContentWithTranslations,

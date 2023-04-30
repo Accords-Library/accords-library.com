@@ -36,7 +36,7 @@ export const Markdawn = ({ className, text: rawText }: MarkdawnProps): JSX.Eleme
   const { showLightBox } = useAtomGetter(atoms.lightBox);
 
   /* eslint-disable no-irregular-whitespace */
-  const text = `${preprocessMarkDawn(rawText, playerName)}\n
+  const text = `${preprocessMarkDawn(rawText, playerName)}
   ​`;
   /* eslint-enable no-irregular-whitespace */
 

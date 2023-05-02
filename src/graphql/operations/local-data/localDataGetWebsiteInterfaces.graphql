@@ -190,6 +190,7 @@ query localDataGetWebsiteInterfaces {
         weapons_description
         level_x
         story_x
+        player_name_tooltip
       }
     }
   }

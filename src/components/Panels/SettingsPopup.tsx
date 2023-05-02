@@ -221,9 +221,14 @@ export const SettingsPopup = (): JSX.Element => {
           </div>
 
           <div>
-            <h3 className="text-xl">{format("player_name")}</h3>
+            <div className="flex place-content-center place-items-center gap-1">
+              <h3 className="text-xl">{format("player_name")}</h3>
+              <ToolTip content={format("player_name_tooltip")} placement="top">
+                <Ico icon="info" />
+              </ToolTip>
+            </div>
             <TextInput
-              placeholder="<player>"
+              placeholder="(player)"
               className="w-48"
               value={playerName}
               onChange={(newName) => {

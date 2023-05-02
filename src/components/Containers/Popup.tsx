@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { cIf, cJoin } from "helpers/className";
 import { atoms } from "contexts/atoms";
@@ -32,6 +32,8 @@ export const Popup = ({
   withCloseButton = true,
 }: Props): JSX.Element => {
   const setMenuGesturesEnabled = useAtomSetter(atoms.layout.menuGesturesEnabled);
+  const [isHidden, setHidden] = useState(!isVisible);
+  const [isActuallyVisible, setActuallyVisible] = useState(isVisible && !isHidden);
 
   useHotkeys("escape", () => onCloseRequest?.(), { enabled: isVisible }, [onCloseRequest]);
 
@@ -39,16 +41,32 @@ export const Popup = ({
     setMenuGesturesEnabled(!isVisible);
   }, [isVisible, setMenuGesturesEnabled]);
 
-  return (
+  // Used to unload the component if not visible
+  useEffect(() => {
+    const timeouts: NodeJS.Timeout[] = [];
+    if (isVisible) {
+      setHidden(false);
+      // We delay the visiblity of the element so that the opening animation is played
+      timeouts.push(setTimeout(() => setActuallyVisible(true), 100));
+    } else {
+      setActuallyVisible(false);
+      timeouts.push(setTimeout(() => setHidden(true), 600));
+    }
+    return () => timeouts.forEach(clearTimeout);
+  }, [isVisible]);
+
+  return isHidden ? (
+    <></>
+  ) : (
     <div
       className={cJoin(
         "fixed inset-0 z-50 grid place-content-center transition-filter duration-500",
-        cIf(isVisible, "backdrop-blur", "pointer-events-none touch-none")
+        cIf(isActuallyVisible, "backdrop-blur", "pointer-events-none touch-none")
       )}>
       <div
         className={cJoin(
           "fixed inset-0 transition-colors duration-500",
-          cIf(isVisible, "bg-shade/50", "bg-shade/0")
+          cIf(isActuallyVisible, "bg-shade/50", "bg-shade/0")
         )}
         onClick={onCloseRequest}
       />
@@ -57,7 +75,7 @@ export const Popup = ({
         className={cJoin(
           "grid place-items-center gap-4 transition-transform",
           cIf(padding, "p-10"),
-          cIf(isVisible, "scale-100", "scale-0"),
+          cIf(isActuallyVisible, "scale-100", "scale-0"),
           cIf(
             fillViewport,
             "absolute inset-10 content-start overflow-scroll",

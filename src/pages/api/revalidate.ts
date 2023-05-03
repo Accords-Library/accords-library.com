@@ -269,6 +269,7 @@ const Revalidate = async (
       const contentSlug = body.entry.content?.slug;
       if (libraryItemSlug) {
         paths.push(`/library/${libraryItemSlug}`);
+        paths.push(`/library/${libraryItemSlug}/reader`);
       }
       if (contentSlug) {
         paths.push(`/contents/${contentSlug}`);

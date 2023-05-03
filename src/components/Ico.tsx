@@ -33,8 +33,8 @@ export const Ico = ({
     <span
       onClick={onClick}
       className={cJoin(
-        `material-symbols-rounded [font-size:inherit]
-        [line-height:inherit]`,
+        `material-symbols-rounded select-none
+        [font-size:inherit] [line-height:inherit]`,
         className
       )}
       style={{

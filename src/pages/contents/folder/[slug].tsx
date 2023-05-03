@@ -4,7 +4,7 @@ import { ContentPanel, ContentPanelWidthSizes } from "components/Containers/Cont
 import { getOpenGraph } from "helpers/openGraph";
 import { getReadySdk } from "graphql/sdk";
 import { filterHasAttributes } from "helpers/asserts";
-import { GetContentsFolderQuery } from "graphql/generated";
+import { GetContentsFolderQuery, ParentFolderPreviewFragment } from "graphql/generated";
 import { getDefaultPreferredLanguages, staticSmartLanguage } from "helpers/locales";
 import { prettySlug } from "helpers/formatters";
 import { Ico } from "components/Ico";
@@ -20,6 +20,7 @@ import { TranslatedPreviewFolder } from "components/Contents/PreviewFolder";
 import { useFormat } from "hooks/useFormat";
 import { getFormat } from "helpers/i18n";
 import { Chip } from "components/Chip";
+import { useMemo } from "react";
 
 /*
  *                                           ╭────────╮
@@ -30,12 +31,21 @@ interface Props extends AppLayoutRequired {
   folder: NonNullable<
     NonNullable<GetContentsFolderQuery["contentsFolders"]>["data"][number]["attributes"]
   >;
+  path: ParentFolderPreviewFragment[];
 }
 
-const ContentsFolder = ({ openGraph, folder, ...otherProps }: Props): JSX.Element => {
+const ContentsFolder = ({ openGraph, folder, path, ...otherProps }: Props): JSX.Element => {
   const { format } = useFormat();
   const setSubPanelOpened = useAtomSetter(atoms.layout.subPanelOpened);
   const isContentPanelAtLeast4xl = useAtomGetter(atoms.containerQueries.isContentPanelAtLeast4xl);
+
+  const filteredPath = useMemo(
+    () =>
+      path.filter(
+        (_, index) => isContentPanelAtLeast4xl || index === 0 || index === path.length - 1
+      ),
+    [path, isContentPanelAtLeast4xl]
+  );
 
   const subPanel = (
     <SubPanel>
@@ -58,45 +68,29 @@ const ContentsFolder = ({ openGraph, folder, ...otherProps }: Props): JSX.Elemen
 
   const contentPanel = (
     <ContentPanel width={ContentPanelWidthSizes.Full}>
-      <div className="mb-10 grid grid-flow-col place-items-center justify-start gap-x-2">
-        {folder.parent_folder?.data?.attributes && (
+      <div className="mb-10 flex flex-wrap place-items-center justify-start gap-x-1 gap-y-4">
+        {filteredPath.map((pathFolder, index) => (
           <>
-            {folder.parent_folder.data.attributes.slug === "root" ? (
-              <Button href="/contents" icon="home" />
+            {pathFolder.slug === "root" ? (
+              <Button href="/contents" icon="home" active={index === filteredPath.length - 1} />
             ) : (
               <TranslatedButton
-                href={`/contents/folder/${folder.parent_folder.data.attributes.slug}`}
-                translations={filterHasAttributes(folder.parent_folder.data.attributes.titles, [
+                href={`/contents/folder/${pathFolder.slug}`}
+                translations={filterHasAttributes(pathFolder.titles, [
                   "language.data.attributes.code",
                 ]).map((title) => ({
                   language: title.language.data.attributes.code,
                   text: title.title,
                 }))}
                 fallback={{
-                  text: prettySlug(folder.parent_folder.data.attributes.slug),
+                  text: prettySlug(pathFolder.slug),
                 }}
+                active={index === filteredPath.length - 1}
               />
             )}
-            <Ico icon="chevron_right" />
+            {index < filteredPath.length - 1 && <Ico icon="chevron_right" />}
           </>
-        )}
-
-        {folder.slug === "root" ? (
-          <Button href="/contents" icon="home" active />
-        ) : (
-          <TranslatedButton
-            translations={filterHasAttributes(folder.titles, ["language.data.attributes.code"]).map(
-              (title) => ({
-                language: title.language.data.attributes.code,
-                text: title.title,
-              })
-            )}
-            fallback={{
-              text: prettySlug(folder.slug),
-            }}
-            active
-          />
-        )}
+        ))}
       </div>
 
       {folder.subfolders?.data && folder.subfolders.data.length > 0 && (
@@ -237,6 +231,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const props: Props = {
     openGraph: getOpenGraph(format, title),
     folder,
+    path: getRecursiveParentFolderPreview(folder),
   };
   return {
     props: props,
@@ -274,9 +269,31 @@ const NoContentNorFolderMessage = () => {
     <div className="grid place-content-center">
       <div
         className="grid grid-flow-col place-items-center gap-9 rounded-2xl border-2 border-dotted
-      border-dark p-8 text-dark opacity-40">
+      border-dark p-8 text-dark opacity-40 mt-12">
         <p className="max-w-xs text-2xl">{format("empty_folder_message")}</p>
       </div>
     </div>
   );
 };
+
+/*
+ *                                      ╭───────────────────╮
+ * ─────────────────────────────────────╯  PRIVATE METHODS  ╰───────────────────────────────────────
+ */
+
+type ParentFolderWithParentFolder = ParentFolderPreviewFragment & {
+  parent_folder?: {
+    data?: {
+      attributes?: ParentFolderPreviewFragment | ParentFolderWithParentFolder | null;
+    } | null;
+  } | null;
+};
+
+const getRecursiveParentFolderPreview = (
+  parentFolder: ParentFolderWithParentFolder
+): ParentFolderPreviewFragment[] => [
+  ...(parentFolder.parent_folder?.data?.attributes
+    ? getRecursiveParentFolderPreview(parentFolder.parent_folder.data.attributes)
+    : []),
+  { slug: parentFolder.slug, titles: parentFolder.titles },
+];

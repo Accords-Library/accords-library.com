@@ -2,36 +2,7 @@ query getContentsFolder($slug: String, $language_code: String) {
   contentsFolders(filters: { slug: { eq: $slug } }) {
     data {
       attributes {
-        slug
-        titles(pagination: { limit: -1 }) {
-          id
-          language {
-            data {
-              attributes {
-                code
-              }
-            }
-          }
-          title
-        }
-        parent_folder {
-          data {
-            attributes {
-              slug
-              titles(pagination: { limit: -1 }) {
-                id
-                language {
-                  data {
-                    attributes {
-                      code
-                    }
-                  }
-                }
-                title
-              }
-            }
-          }
-        }
+        ...parentFolderPreview
         contents(pagination: { limit: -1 }) {
           data {
             id
@@ -120,6 +91,55 @@ query getContentsFolder($slug: String, $language_code: String) {
                   }
                 }
                 title
+              }
+            }
+          }
+        }
+        parent_folder {
+          data {
+            attributes {
+              ...parentFolderPreview
+              parent_folder {
+                data {
+                  attributes {
+                    ...parentFolderPreview
+                    parent_folder {
+                      data {
+                        attributes {
+                          ...parentFolderPreview
+                          parent_folder {
+                            data {
+                              attributes {
+                                ...parentFolderPreview
+                                parent_folder {
+                                  data {
+                                    attributes {
+                                      ...parentFolderPreview
+                                      parent_folder {
+                                        data {
+                                          attributes {
+                                            ...parentFolderPreview
+                                            parent_folder {
+                                              data {
+                                                attributes {
+                                                  ...parentFolderPreview
+                                                }
+                                              }
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
               }
             }
           }

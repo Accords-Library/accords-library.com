@@ -1,0 +1,14 @@
+fragment parentFolderPreview on ContentsFolder {
+  slug
+  titles(pagination: { limit: -1 }) {
+    id
+    language {
+      data {
+        attributes {
+          code
+        }
+      }
+    }
+    title
+  }
+}

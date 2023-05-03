@@ -433,6 +433,11 @@ const Editor = (props: Props): JSX.Element => {
                   text="InsetBox"
                 />
                 <Button onClick={() => togglePreline("> ")} icon="format_quote" text="Blockquote" />
+                <Button
+                  onClick={() => toggleWrap("blockquote", { cite: "From X" })}
+                  icon="format_quote"
+                  text="Blockquote with source"
+                />
               </div>
             </>
           }>

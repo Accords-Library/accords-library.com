@@ -118,8 +118,8 @@
           "primary_language": "Primary language",
           "secondary_language": "Secondary languages",
           "combine_related_contents": "Combine related contents",
-          "previous_content": "Previous content",
-          "followup_content": "Follow-up content",
+          "previous_content": "{ count, plural, =0 {No previous content} one {Previous content} other {Previous contents} }",
+          "followup_content": "{ count, plural, =0 {No follow-up content} one {Follow-up content} other {Follow-up contents} }",
           "videos": "Videos",
           "view_on": "View on",
           "channel": "Channel",
@@ -184,7 +184,8 @@
           "weapon": "{ count, plural, =0 {No weapons} one {Weapon} other {Weapons} }",
           "weapons_description": "A list of all the weapons across all of the games. All distinguished weapons come with an “account.” It’s a document with various details like how the weapon was forged and how it’s been used in the past.",
           "level_x": "Level {x}",
-          "story_x": "Story {x}"
+          "story_x": "Story {x}",
+          "player_name_tooltip": "Certain in-game texts use the player's name as part of the dialogue/narration. If you want to see your name in the transcript found on this website, feel free to enter your player's name here. If left empty, '(player)' will be used instead."
         }
       },
       {
@@ -367,10 +368,11 @@
           "subitem_of_x": "Sous-item de {x}",
           "variant_of_x": "Variante de {x}",
           "dark_mode_extension_warning": "Ce site web propose un thème clair et un thème sombre. Si vous utilisez une extension de navigateur qui simule un thème sombre, veillez à la désactiver pour une expérience optimale.",
-          "weapon": null,
-          "weapons_description": null,
-          "level_x": null,
-          "story_x": null
+          "weapon": "{ count, plural, =0 {Pas d'arme} one {Arme} other {Armes} }",
+          "weapons_description": "Une liste de toutes les armes présentes dans tous les jeux. Toutes les armes distinguées sont accompagnées d'un \"compte\". Il s'agit d'un document contenant divers détails tels que la façon dont l'arme a été forgée et comment elle a été utilisée dans le passé.",
+          "level_x": "Niveau {x}",
+          "story_x": "Histoire {x}",
+          "player_name_tooltip": "Certains textes dans les jeux utilisent le nom du joueur dans les dialogue/la narration. Si vous voulez voir votre nom dans les transcriptions se trouvant sur ce site web, n'hésitez pas à entrer votre nom de joueur ici. S'il n'est pas renseigné, '(player)' sera utilisé à la place."
         }
       },
       {
@@ -556,7 +558,8 @@
           "weapon": null,
           "weapons_description": null,
           "level_x": null,
-          "story_x": null
+          "story_x": null,
+          "player_name_tooltip": null
         }
       },
       {
@@ -742,7 +745,8 @@
           "weapon": null,
           "weapons_description": null,
           "level_x": null,
-          "story_x": null
+          "story_x": null,
+          "player_name_tooltip": null
         }
       },
       {
@@ -928,7 +932,8 @@
           "weapon": null,
           "weapons_description": null,
           "level_x": null,
-          "story_x": null
+          "story_x": null,
+          "player_name_tooltip": null
         }
       }
     ]

@@ -16,7 +16,6 @@ import { ReturnButton } from "components/PanelComponents/ReturnButton";
 import { getOpenGraph } from "helpers/openGraph";
 import { getDefaultPreferredLanguages, staticSmartLanguage } from "helpers/locales";
 import { getDescription } from "helpers/description";
-import { TranslatedChroniclesList } from "components/Chronicles/ChroniclesList";
 import { useScrollTopOnChange } from "hooks/useScrollTopOnChange";
 import { Ids } from "types/ids";
 import { useFormat } from "hooks/useFormat";

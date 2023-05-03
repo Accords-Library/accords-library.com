@@ -34,11 +34,13 @@ export const ConditionalWrapper = <T, U>({
 interface ElementsSeparatorProps {
   children: React.ReactNode[];
   separator?: React.ReactNode;
+  className?: string;
 }
 
 export const ElementsSeparator = ({
   children,
-  separator = <HorizontalLine />,
+  className,
+  separator = <HorizontalLine className={className} />,
 }: ElementsSeparatorProps): JSX.Element => (
   <>{insertInBetweenArray(children.filter(Boolean), separator)}</>
 );

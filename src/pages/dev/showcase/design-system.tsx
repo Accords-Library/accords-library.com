@@ -14,7 +14,6 @@ import { WithLabel } from "components/Inputs/WithLabel";
 import { NavOption } from "components/PanelComponents/NavOption";
 import { ButtonGroup } from "components/Inputs/ButtonGroup";
 import { PreviewCard } from "components/PreviewCard";
-import { PreviewLine } from "components/PreviewLine";
 import { ChroniclePreview } from "components/Chronicles/ChroniclePreview";
 import { PreviewFolder } from "components/Contents/PreviewFolder";
 import { getFormat } from "helpers/i18n";
@@ -801,57 +800,6 @@ const DesignSystem = (props: Props): JSX.Element => {
               views: 550669,
               position: "Bottom",
             }}
-            disabled
-          />
-        </div>
-
-        <HorizontalLine />
-        <h3 className="-mt-6 mb-2 text-xl">Preview Line</h3>
-
-        <div className="grid grid-cols-[repeat(2,auto)] place-items-center gap-4">
-          <PreviewLine
-            href="#"
-            pre_title="Breaking News"
-            title="Accord's Library is live"
-            subtitle="I know, big deal, this is subtitle"
-          />
-          <PreviewLine
-            href="#"
-            pre_title="Breaking News"
-            title="Accord's Library is live"
-            subtitle="I know, big deal, this is subtitle"
-            thumbnail={"/default_og.jpg"}
-          />
-          <PreviewLine
-            href="#"
-            pre_title="Breaking News"
-            title="Accord's Library is live"
-            subtitle="I know, big deal, this is subtitle"
-            thumbnail={"/default_og.jpg"}
-            topChips={["Top chip 1", "Chip 2", "Chip 3", "Chip 4"]}
-          />
-          <PreviewLine
-            href="#"
-            pre_title="Breaking News"
-            title="This one has everything"
-            subtitle="I know, big deal, this is subtitle"
-            thumbnail={"/default_og.jpg"}
-            topChips={["Top chip 1", "Chip 2", "Chip 3", "Chip 4"]}
-            bottomChips={["Bottom chip 1", "Chip 2", "Chip 3", "Chip 4"]}
-          />
-          <PreviewLine
-            href="#"
-            title="Just a title"
-            thumbnail={"/default_og.jpg"}
-            topChips={["Top chip 1", "Chip 2", "Chip 3", "Chip 4"]}
-            bottomChips={["Bottom chip 1", "Chip 2", "Chip 3", "Chip 4"]}
-          />
-          <PreviewLine
-            href="#"
-            title="Disabled"
-            thumbnail={"/default_og.jpg"}
-            topChips={["Top chip 1", "Chip 2", "Chip 3", "Chip 4"]}
-            bottomChips={["Bottom chip 1", "Chip 2", "Chip 3", "Chip 4"]}
             disabled
           />
         </div>

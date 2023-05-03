@@ -1,5 +1,4 @@
 import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next";
-import naturalCompare from "string-natural-compare";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { ContentPanel, ContentPanelWidthSizes } from "components/Containers/ContentPanel";
 import { getOpenGraph } from "helpers/openGraph";
@@ -217,16 +216,6 @@ export const getStaticProps: GetStaticProps = async (context) => {
   }
 
   const folder = contentsFolder.contentsFolders.data[0].attributes;
-
-  folder.subfolders?.data.sort((a, b) =>
-    a.attributes && b.attributes ? naturalCompare(a.attributes.slug, b.attributes.slug) : 0
-  );
-
-  if (!folder.sequence) {
-    folder.contents?.data.sort((a, b) =>
-      a.attributes && b.attributes ? naturalCompare(a.attributes.slug, b.attributes.slug) : 0
-    );
-  }
 
   const title = (() => {
     if (slug === "root") {

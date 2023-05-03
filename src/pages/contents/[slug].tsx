@@ -1,14 +1,14 @@
 import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next";
-import { Fragment, useCallback } from "react";
-import naturalCompare from "string-natural-compare";
+import { Fragment, useCallback, useState } from "react";
+import Collapsible from "react-collapsible";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { Chip } from "components/Chip";
 import { PreviewCardCTAs } from "components/Library/PreviewCardCTAs";
 import { getTocFromMarkdawn, Markdawn, TableOfContents } from "components/Markdown/Markdawn";
 import { TranslatedReturnButton } from "components/PanelComponents/ReturnButton";
-import { ContentPanel } from "components/Containers/ContentPanel";
+import { ContentPanel, ContentPanelWidthSizes } from "components/Containers/ContentPanel";
 import { SubPanel } from "components/Containers/SubPanel";
-import { PreviewCard } from "components/PreviewCard";
+import { PreviewCard, TranslatedPreviewCard } from "components/PreviewCard";
 import { RecorderChip } from "components/RecorderChip";
 import { ThumbnailHeader } from "components/ThumbnailHeader";
 import { ToolTip } from "components/ToolTip";
@@ -27,14 +27,15 @@ import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { getOpenGraph } from "helpers/openGraph";
 import { getDefaultPreferredLanguages, staticSmartLanguage } from "helpers/locales";
 import { getDescription } from "helpers/description";
-import { TranslatedPreviewLine } from "components/PreviewLine";
-import { cIf } from "helpers/className";
+import { cIf, cJoin } from "helpers/className";
 import { Ids } from "types/ids";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter, useAtomSetter } from "helpers/atoms";
 import { useFormat } from "hooks/useFormat";
 import { getFormat } from "helpers/i18n";
 import { ElementsSeparator } from "helpers/component";
+import { RelatedContentPreviewFragment } from "graphql/generated";
+import { Button } from "components/Inputs/Button";
 
 /*
  *                                           ╭────────╮
@@ -46,7 +47,6 @@ interface Props extends AppLayoutRequired {
 }
 
 const Content = ({ content, ...otherProps }: Props): JSX.Element => {
-  const isContentPanelAtLeast2xl = useAtomGetter(atoms.containerQueries.isContentPanelAtLeast2xl);
   const setSubPanelOpened = useAtomSetter(atoms.layout.subPanelOpened);
   const is1ColumnLayout = useAtomGetter(atoms.containerQueries.is1ColumnLayout);
 
@@ -63,15 +63,6 @@ const Content = ({ content, ...otherProps }: Props): JSX.Element => {
   });
 
   useScrollTopOnChange(Ids.ContentPanel, [selectedTranslation]);
-
-  const previousContent =
-    content.folder?.data?.attributes?.contents && content.folder.data.attributes.sequence
-      ? getPreviousContent(content.folder.data.attributes.contents.data, content.slug)
-      : undefined;
-  const nextContent =
-    content.folder?.data?.attributes?.contents && content.folder.data.attributes.sequence
-      ? getNextContent(content.folder.data.attributes.contents.data, content.slug)
-      : undefined;
 
   const returnButtonProps = {
     href: content.folder?.data?.attributes
@@ -255,7 +246,7 @@ const Content = ({ content, ...otherProps }: Props): JSX.Element => {
   );
 
   const contentPanel = (
-    <ContentPanel>
+    <ContentPanel width={ContentPanelWidthSizes.Full}>
       <TranslatedReturnButton
         {...returnButtonProps}
         displayOnlyOn="1ColumnLayout"
@@ -263,10 +254,11 @@ const Content = ({ content, ...otherProps }: Props): JSX.Element => {
       />
 
       <div className="grid place-items-center">
-        <ElementsSeparator>
+        <ElementsSeparator className="max-w-2xl">
           {[
             <ThumbnailHeader
               key="thumbnailHeader"
+              className="max-w-2xl"
               thumbnail={content.thumbnail?.data?.attributes}
               pre_title={selectedTranslation?.pre_title}
               title={selectedTranslation?.title}
@@ -281,80 +273,27 @@ const Content = ({ content, ...otherProps }: Props): JSX.Element => {
               }
             />,
 
-            previousContent?.attributes && (
-              <>
-                <h2 className="mb-4 text-center text-2xl">{format("previous_content")}</h2>
-                <TranslatedPreviewLine
-                  href={`/contents/${previousContent.attributes.slug}`}
-                  translations={filterHasAttributes(previousContent.attributes.translations, [
-                    "language.data.attributes.code",
-                  ]).map((translation) => ({
-                    pre_title: translation.pre_title,
-                    title: translation.title,
-                    subtitle: translation.subtitle,
-                    language: translation.language.data.attributes.code,
-                  }))}
-                  fallback={{
-                    title: prettySlug(previousContent.attributes.slug),
-                  }}
-                  thumbnail={previousContent.attributes.thumbnail?.data?.attributes}
-                  topChips={
-                    isContentPanelAtLeast2xl && previousContent.attributes.type?.data?.attributes
-                      ? [
-                          previousContent.attributes.type.data.attributes.titles?.[0]
-                            ? previousContent.attributes.type.data.attributes.titles[0]?.title
-                            : prettySlug(previousContent.attributes.type.data.attributes.slug),
-                        ]
-                      : undefined
-                  }
-                  bottomChips={
-                    isContentPanelAtLeast2xl
-                      ? previousContent.attributes.categories?.data.map(
-                          (category) => category.attributes?.short ?? ""
-                        )
-                      : undefined
-                  }
-                />
-              </>
+            content.previous_contents?.data && content.previous_contents.data.length > 0 && (
+              <RelatedContentsSection
+                title={format("previous_content", { count: content.previous_contents.data.length })}
+                contents={filterHasAttributes(content.previous_contents.data, ["attributes"]).map(
+                  ({ attributes }) => attributes
+                )}
+                isInitiallyOpened={false}
+              />
             ),
 
             selectedTranslation?.text_set?.text && (
-              <Markdawn text={selectedTranslation.text_set.text} />
+              <Markdawn className="max-w-2xl" text={selectedTranslation.text_set.text} />
             ),
 
-            nextContent?.attributes && (
-              <>
-                <h2 className="mb-4 text-center text-2xl">{format("followup_content")}</h2>
-                <TranslatedPreviewLine
-                  href={`/contents/${nextContent.attributes.slug}`}
-                  translations={filterHasAttributes(nextContent.attributes.translations, [
-                    "language.data.attributes.code",
-                  ]).map((translation) => ({
-                    pre_title: translation.pre_title,
-                    title: translation.title,
-                    subtitle: translation.subtitle,
-                    language: translation.language.data.attributes.code,
-                  }))}
-                  fallback={{ title: nextContent.attributes.slug }}
-                  thumbnail={nextContent.attributes.thumbnail?.data?.attributes}
-                  topChips={
-                    isContentPanelAtLeast2xl && nextContent.attributes.type?.data?.attributes
-                      ? [
-                          nextContent.attributes.type.data.attributes.titles?.[0]
-                            ? nextContent.attributes.type.data.attributes.titles[0]?.title
-                            : prettySlug(nextContent.attributes.type.data.attributes.slug),
-                        ]
-                      : undefined
-                  }
-                  bottomChips={
-                    isContentPanelAtLeast2xl
-                      ? nextContent.attributes.categories?.data.map(
-                          (category) => category.attributes?.short ?? ""
-                        )
-                      : undefined
-                  }
-                />
-              </>
+            content.next_contents?.data && content.next_contents.data.length > 0 && (
+              <RelatedContentsSection
+                title={format("followup_content", { count: content.next_contents.data.length })}
+                contents={filterHasAttributes(content.next_contents.data, ["attributes"]).map(
+                  ({ attributes }) => attributes
+                )}
+              />
             ),
           ]}
         </ElementsSeparator>
@@ -418,12 +357,6 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   const thumbnail = content.contents.data[0].attributes.thumbnail?.data?.attributes;
 
-  if (content.contents.data[0].attributes.folder?.data?.attributes?.sequence === false) {
-    content.contents.data[0].attributes.folder.data.attributes.contents?.data.sort((a, b) =>
-      a.attributes && b.attributes ? naturalCompare(a.attributes.slug, b.attributes.slug) : 0
-    );
-  }
-
   const props: Props = {
     content: content.contents.data[0].attributes as ContentWithTranslations,
     openGraph: getOpenGraph(format, title, description, thumbnail),
@@ -454,34 +387,83 @@ export const getStaticPaths: GetStaticPaths = async (context) => {
 };
 
 /*
- *                                      ╭───────────────────╮
- * ─────────────────────────────────────╯  PRIVATE METHODS  ╰───────────────────────────────────────
+ *                                    ╭──────────────────────╮
+ * ───────────────────────────────────╯  PRIVATE COMPONENTS  ╰──────────────────────────────────────
  */
 
-type FolderContents = NonNullable<
-  NonNullable<
-    NonNullable<NonNullable<ContentWithTranslations["folder"]>["data"]>["attributes"]
-  >["contents"]
->["data"];
+interface RelatedContentsSectionProps {
+  title: string;
+  contents: RelatedContentPreviewFragment[];
+  isInitiallyOpened?: boolean;
+}
 
-const getPreviousContent = (contents: FolderContents, currentSlug: string) => {
-  for (let index = 0; index < contents.length; index++) {
-    const content = contents[index];
-    if (content?.attributes?.slug === currentSlug && index > 0) {
-      return contents[index - 1];
-    }
-  }
-  return undefined;
+const RelatedContentsSection = ({
+  title,
+  contents,
+  isInitiallyOpened = true,
+}: RelatedContentsSectionProps) => {
+  const [isOpened, setOpened] = useState(isInitiallyOpened);
+
+  return (
+    <Collapsible
+      open={isOpened}
+      onClosing={() => setOpened(false)}
+      onOpening={() => setOpened(true)}
+      trigger={
+        <div className="flex place-content-center place-items-center gap-4">
+          <h2 className="text-center text-2xl">{title}</h2>
+          <Button icon={isOpened ? "expand_less" : "expand_more"} active={isOpened} size="small" />
+        </div>
+      }
+      contentInnerClassName={cJoin(
+        cIf(contents.length > 1, "px-4 py-10", "px-4 py-6"),
+        "flex w-full flex-wrap place-content-center items-start gap-x-6 gap-y-8"
+      )}
+      easing="ease-in-out"
+      transitionTime={400}
+      lazyRender
+      contentHiddenWhenClosed>
+      {contents.map((relatedContent) => (
+        <RelatedContentPreview key={relatedContent.slug} {...relatedContent} />
+      ))}
+    </Collapsible>
+  );
 };
 
-// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
+const RelatedContentPreview = ({
+  slug,
+  translations,
+  thumbnail,
+  categories,
+  type,
+}: RelatedContentPreviewFragment) => {
+  const isContentPanelAtLeastXl = useAtomGetter(atoms.containerQueries.isContentPanelAtLeastXl);
 
-const getNextContent = (contents: FolderContents, currentSlug: string) => {
-  for (let index = 0; index < contents.length; index++) {
-    const content = contents[index];
-    if (content?.attributes?.slug === currentSlug && index < contents.length - 1) {
-      return contents[index + 1];
-    }
-  }
-  return undefined;
+  return (
+    <TranslatedPreviewCard
+      href={`/contents/${slug}`}
+      className={cIf(isContentPanelAtLeastXl, "max-w-xs")}
+      translations={filterHasAttributes(translations, ["language.data.attributes.code"]).map(
+        (translation) => ({
+          pre_title: translation.pre_title,
+          title: translation.title,
+          subtitle: translation.subtitle,
+          language: translation.language.data.attributes.code,
+        })
+      )}
+      fallback={{ title: slug }}
+      thumbnail={thumbnail?.data?.attributes}
+      topChips={
+        type?.data?.attributes
+          ? [
+              type.data.attributes.titles?.[0]
+                ? type.data.attributes.titles[0]?.title
+                : prettySlug(type.data.attributes.slug),
+            ]
+          : undefined
+      }
+      bottomChips={categories?.data.map((category) => category.attributes?.short ?? "")}
+      keepInfoVisible
+    />
+  );
 };

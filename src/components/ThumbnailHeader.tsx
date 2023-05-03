@@ -27,7 +27,7 @@ interface Props {
     NonNullable<GetContentTextQuery["contents"]>["data"][number]["attributes"]
   >["categories"];
   thumbnail?: UploadImageFragment | null | undefined;
-
+  className?: string;
   languageSwitcher?: JSX.Element;
 }
 
@@ -42,13 +42,14 @@ export const ThumbnailHeader = ({
   categories,
   description,
   languageSwitcher,
+  className,
 }: Props): JSX.Element => {
   const { format } = useFormat();
   const { showLightBox } = useAtomGetter(atoms.lightBox);
 
   return (
-    <>
-      <div className="mb-12 grid place-items-center gap-12">
+    <div className={className}>
+      <div className={"mb-12 grid place-items-center gap-12"}>
         <div className="drop-shadow-lg shadow-shade">
           {thumbnail ? (
             <Img
@@ -97,6 +98,6 @@ export const ThumbnailHeader = ({
         {languageSwitcher}
       </div>
       {description && <InsetBox className="mt-8">{<Markdawn text={description} />}</InsetBox>}
-    </>
+    </div>
   );
 };

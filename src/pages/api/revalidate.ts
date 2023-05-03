@@ -72,6 +72,8 @@ interface StrapiContent extends StrapiEvent {
     slug: string;
     folder?: StrapiRelationalFieldEntry;
     ranged_contents: StrapiRelationalFieldEntry[];
+    next_contents: StrapiRelationalFieldEntry[];
+    previous_contents: StrapiRelationalFieldEntry[];
   };
 }
 
@@ -234,6 +236,9 @@ const Revalidate = async (
           paths.push(`/contents/folder/${body.entry.folder?.slug}`);
         }
       }
+
+      body.entry.previous_contents.forEach(({ slug }) => paths.push(`/contents/${slug}`));
+      body.entry.next_contents.forEach(({ slug }) => paths.push(`/contents/${slug}`));
 
       await Promise.all(
         body.entry.ranged_contents.map(async ({ id }) => {

@@ -16,6 +16,7 @@ import { useFormat } from "hooks/useFormat";
 import { useAtomGetter, useAtomSetter } from "helpers/atoms";
 import { atoms } from "contexts/atoms";
 import { ElementsSeparator } from "helpers/component";
+import { HorizontalLine } from "components/HorizontalLine";
 
 /*
  *                                        ╭─────────────╮
@@ -129,17 +130,20 @@ export const PostPage = ({
       )}
 
       {displayThumbnailHeader ? (
-        <ThumbnailHeader
-          thumbnail={thumbnail}
-          title={title}
-          description={excerpt}
-          categories={post.categories}
-          languageSwitcher={
-            languageSwitcherProps.locales.size > 1 ? (
-              <LanguageSwitcher {...languageSwitcherProps} />
-            ) : undefined
-          }
-        />
+        <>
+          <ThumbnailHeader
+            thumbnail={thumbnail}
+            title={title}
+            description={excerpt}
+            categories={post.categories}
+            languageSwitcher={
+              languageSwitcherProps.locales.size > 1 ? (
+                <LanguageSwitcher {...languageSwitcherProps} />
+              ) : undefined
+            }
+          />
+          <HorizontalLine />
+        </>
       ) : (
         <>
           {displayLanguageSwitcher && (

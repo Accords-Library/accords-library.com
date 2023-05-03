@@ -113,8 +113,8 @@ export interface ICUParams {
   primary_language: never;
   secondary_language: never;
   combine_related_contents: never;
-  previous_content: never;
-  followup_content: never;
+  previous_content: { count: number };
+  followup_content: { count: number };
   videos: never;
   view_on: never;
   channel: never;

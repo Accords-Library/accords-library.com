@@ -1,0 +1,40 @@
+fragment relatedContentPreview on Content {
+  slug
+  translations(pagination: { limit: -1 }) {
+    pre_title
+    title
+    subtitle
+    language {
+      data {
+        attributes {
+          code
+        }
+      }
+    }
+  }
+  categories(pagination: { limit: -1 }) {
+    data {
+      id
+      attributes {
+        short
+      }
+    }
+  }
+  type {
+    data {
+      attributes {
+        slug
+        titles(filters: { language: { code: { eq: $language_code } } }) {
+          title
+        }
+      }
+    }
+  }
+  thumbnail {
+    data {
+      attributes {
+        ...uploadImage
+      }
+    }
+  }
+}

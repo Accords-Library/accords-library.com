@@ -4,13 +4,11 @@ import { PanelHeader } from "components/PanelComponents/PanelHeader";
 import { SubPanel } from "components/Containers/SubPanel";
 import { getReadySdk } from "graphql/sdk";
 import { GetChroniclesChaptersQuery } from "graphql/generated";
-import { filterHasAttributes } from "helpers/asserts";
-import { prettySlug } from "helpers/formatters";
 import { getOpenGraph } from "helpers/openGraph";
-import { TranslatedChroniclesList } from "components/Chronicles/ChroniclesList";
 import { HorizontalLine } from "components/HorizontalLine";
 import { useFormat } from "hooks/useFormat";
 import { getFormat } from "helpers/i18n";
+import { ChroniclesLists } from "components/Chronicles/ChroniclesLists";
 
 /*
  *                                           ╭────────╮
@@ -23,6 +21,7 @@ interface Props extends AppLayoutRequired {
 
 const Chronicles = ({ chapters, ...otherProps }: Props): JSX.Element => {
   const { format } = useFormat();
+
   const subPanel = (
     <SubPanel>
       <PanelHeader
@@ -30,24 +29,8 @@ const Chronicles = ({ chapters, ...otherProps }: Props): JSX.Element => {
         title={format("chronicles")}
         description={format("chronicles_description")}
       />
-
       <HorizontalLine />
-
-      <div className="grid gap-16">
-        {filterHasAttributes(chapters, ["attributes.chronicles", "id"]).map((chapter) => (
-          <TranslatedChroniclesList
-            key={chapter.id}
-            chronicles={chapter.attributes.chronicles.data}
-            translations={filterHasAttributes(chapter.attributes.titles, [
-              "language.data.attributes.code",
-            ]).map((translation) => ({
-              title: translation.title,
-              language: translation.language.data.attributes.code,
-            }))}
-            fallback={{ title: prettySlug(chapter.attributes.slug) }}
-          />
-        ))}
-      </div>
+      <ChroniclesLists chapters={chapters} />
     </SubPanel>
   );
 

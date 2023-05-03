@@ -22,6 +22,7 @@ import { Ids } from "types/ids";
 import { useFormat } from "hooks/useFormat";
 import { getFormat } from "helpers/i18n";
 import { ElementsSeparator } from "helpers/component";
+import { ChroniclesLists } from "components/Chronicles/ChroniclesLists";
 
 /*
  *                                           ╭────────╮
@@ -64,6 +65,18 @@ const Chronicle = ({ chronicle, chapters, ...otherProps }: Props): JSX.Element =
         []
       ),
     });
+
+  const subPanel = (
+    <SubPanel>
+      <ReturnButton
+        displayOnlyOn={"3ColumnsLayout"}
+        href="/chronicles"
+        title={format("chronicles")}
+      />
+      <HorizontalLine />
+      <ChroniclesLists chapters={chapters} currentChronicleSlug={chronicle.slug} />
+    </SubPanel>
+  );
 
   const contentPanel = (
     <ContentPanel>
@@ -114,35 +127,6 @@ const Chronicle = ({ chronicle, chapters, ...otherProps }: Props): JSX.Element =
         </>
       )}
     </ContentPanel>
-  );
-
-  const subPanel = (
-    <SubPanel>
-      <ReturnButton
-        displayOnlyOn={"3ColumnsLayout"}
-        href="/chronicles"
-        title={format("chronicles")}
-      />
-
-      <HorizontalLine />
-
-      <div className="grid gap-16">
-        {filterHasAttributes(chapters, ["attributes.chronicles", "id"]).map((chapter) => (
-          <TranslatedChroniclesList
-            key={chapter.id}
-            chronicles={chapter.attributes.chronicles.data}
-            translations={filterHasAttributes(chapter.attributes.titles, [
-              "language.data.attributes.code",
-            ]).map((translation) => ({
-              title: translation.title,
-              language: translation.language.data.attributes.code,
-            }))}
-            fallback={{ title: prettySlug(chapter.attributes.slug) }}
-            currentSlug={chronicle.slug}
-          />
-        ))}
-      </div>
-    </SubPanel>
   );
 
   return (

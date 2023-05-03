@@ -1,15 +1,15 @@
 import { useCallback } from "react";
-import { useBoolean } from "usehooks-ts";
+import Collapsible from "react-collapsible";
 import { TranslatedChroniclePreview } from "./ChroniclePreview";
 import { GetChroniclesChaptersQuery } from "graphql/generated";
 import { filterHasAttributes } from "helpers/asserts";
 import { prettyInlineTitle, prettySlug, sJoin } from "helpers/formatters";
-import { Ico } from "components/Ico";
 import { compareDate } from "helpers/date";
 import { TranslatedProps } from "types/TranslatedProps";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { useAtomSetter } from "helpers/atoms";
 import { atoms } from "contexts/atoms";
+import { Button } from "components/Inputs/Button";
 
 /*
  *                                        ╭─────────────╮
@@ -24,27 +24,41 @@ interface Props {
   >["data"];
   currentSlug?: string;
   title: string;
+  open?: boolean;
+  onTriggerClosing?: () => void;
+  onOpening?: () => void;
 }
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
-const ChroniclesList = ({ chronicles, currentSlug, title }: Props): JSX.Element => {
+const ChroniclesList = ({
+  chronicles,
+  currentSlug,
+  title,
+  open,
+  onTriggerClosing,
+  onOpening,
+}: Props): JSX.Element => {
   const setSubPanelOpened = useAtomSetter(atoms.layout.subPanelOpened);
-  const { value: isOpen, toggle: toggleOpen } = useBoolean(
-    chronicles.some((chronicle) => chronicle.attributes?.slug === currentSlug)
-  );
 
   return (
     <div>
-      <div className="grid place-content-center">
-        <div className="grid cursor-pointer grid-cols-[1em_1fr] gap-4" onClick={toggleOpen}>
-          <Ico className="!text-xl" icon={isOpen ? "arrow_drop_up" : "arrow_drop_down"} />
-          <p className="mb-4 font-headers text-xl">{title}</p>
-        </div>
-      </div>
-      <div
-        className="grid gap-4 overflow-hidden transition-height duration-500"
-        style={{ maxHeight: isOpen ? `${8 * chronicles.length}rem` : 0 }}>
+      <Collapsible
+        open={open}
+        accordionPosition={title}
+        contentInnerClassName="grid gap-4 pt-4"
+        onTriggerClosing={onTriggerClosing}
+        onOpening={onOpening}
+        easing="ease-in-out"
+        transitionTime={400}
+        lazyRender
+        contentHiddenWhenClosed
+        trigger={
+          <div className="flex place-content-center place-items-center gap-4">
+            <h2 className="text-center text-xl">{title}</h2>
+            <Button icon={open ? "expand_less" : "expand_more"} active={open} size="small" />
+          </div>
+        }>
         {filterHasAttributes(chronicles, ["attributes.contents", "attributes.translations"])
           .sort((a, b) => compareDate(a.attributes.date_start, b.attributes.date_start))
           .map((chronicle) => (
@@ -104,7 +118,7 @@ const ChroniclesList = ({ chronicles, currentSlug, title }: Props): JSX.Element 
                   )}
             </div>
           ))}
-      </div>
+      </Collapsible>
     </div>
   );
 };

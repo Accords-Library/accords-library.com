@@ -18,9 +18,14 @@ import { cIf, cJoin } from "helpers/className";
  * ────────────────────────────────────────╯  CONSTANTS  ╰──────────────────────────────────────────
  */
 
+type Orientation = "horizontal" | "vertical";
+
 const textAtom = atomPairing(atomWithStorage("transcriptText", ""));
 const fontSizeAtom = atomPairing(atomWithStorage("transcriptFontSize", 1));
-const textOffset = atomPairing(atomWithStorage("transcriptTextOffset", 0));
+const textOffsetAtom = atomPairing(atomWithStorage("transcriptTextOffset", 0));
+const orientationAtom = atomPairing(
+  atomWithStorage<Orientation>("transcriptOrientation", "vertical")
+);
 
 const SIZE_MULTIPLIER = 1000;
 
@@ -50,7 +55,8 @@ const swapChar = (char: string, swaps: string[]): string => {
 const Transcript = (props: Props): JSX.Element => {
   const [text, setText] = useAtomPair(textAtom);
   const [fontSize, setFontSize] = useAtomPair(fontSizeAtom);
-  const [xOffset, setXOffset] = useAtomPair(textOffset);
+  const [offset, setOffset] = useAtomPair(textOffsetAtom);
+  const [orientation, setOrientation] = useAtomPair(orientationAtom);
   const [lineIndex, setLineIndex] = useState(0);
 
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -409,52 +415,32 @@ const Transcript = (props: Props): JSX.Element => {
   );
 
   const contentPanel = (
-    <ContentPanel width={ContentPanelWidthSizes.Full} className="!pr-0 !pt-0">
-      <div
-        className={cJoin("grid", cIf(image, "grid-cols-[1fr_5rem_20rem]", "grid-cols-[1fr_5rem]"))}>
-        <textarea
-          ref={textAreaRef}
-          onChange={updateDisplayedText}
-          onClick={updateLineIndex}
-          onKeyUp={updateLineIndex}
-          title="Input textarea"
-          className="mt-4 whitespace-pre"
-          value={text}
+    <ContentPanel width={ContentPanelWidthSizes.Full} className="!pt-2">
+      <div className="flex flex-wrap items-end  gap-4 pr-24">
+        <ButtonGroup
+          buttonsProps={[
+            {
+              active: orientation === "horizontal",
+              icon: "text_rotation_none",
+              onClick: () => setOrientation("horizontal"),
+            },
+            {
+              active: orientation === "vertical",
+              icon: "text_rotate_vertical",
+              onClick: () => setOrientation("vertical"),
+            },
+          ]}
         />
 
-        <p
-          className="z-10 mt-4 h-[80vh] whitespace-nowrap
-          font-bold [font-family:Noto_Serif_JP] [transform-origin:top_right]
-          [writing-mode:vertical-rl]"
-          style={{
-            transform: `scale(${fontSize}) translateX(${fontSize * xOffset}px)`,
-          }}>
-          {text.split("\n")[lineIndex]}
-        </p>
-
-        {image && (
-          <TransformWrapper
-            panning={{ velocityDisabled: true }}
-            alignmentAnimation={{ disabled: true }}
-            wheel={{ step: 0.05 }}
-            limitToBounds={false}>
-            <TransformComponent wrapperStyle={{ height: "95vh" }}>
-              <img src={image} alt="This provided image" className="w-full object-cover" />
-            </TransformComponent>
-          </TransformWrapper>
-        )}
-      </div>
-
-      <div className="flex flex-wrap place-items-center gap-4 pr-24">
         <div className="grid place-items-center">
-          <p>Text offset: {xOffset}px</p>
+          <p>Text offset: {offset}px</p>
           <input
             title="Font size multiplier"
             type="range"
             min="0"
             max="100"
-            value={xOffset * 5}
-            onChange={(event) => setXOffset(parseInt(event.target.value, 10) / 5)}
+            value={offset * 5}
+            onChange={(event) => setOffset(parseInt(event.target.value, 10) / 5)}
           />
         </div>
 
@@ -585,6 +571,56 @@ const Transcript = (props: Props): JSX.Element => {
         </ToolTip>
 
         <input type="file" accept="image/png, image/jpeg, image/webp" onChange={onImageUploaded} />
+      </div>
+      <div
+        className={cJoin(
+          "grid h-[90vh]",
+          cIf(
+            orientation === "vertical",
+            cIf(image, "grid-cols-[1fr_5rem_20rem]", "grid-cols-[1fr_5rem]"),
+            cIf(image, "grid-rows-[1fr_5rem_20rem]", "grid-rows-[1fr_5rem]")
+          )
+        )}>
+        <textarea
+          ref={textAreaRef}
+          onChange={updateDisplayedText}
+          onClick={updateLineIndex}
+          onKeyUp={updateLineIndex}
+          title="Input textarea"
+          className="mt-4 whitespace-pre"
+          value={text}
+        />
+
+        <p
+          className={cJoin(
+            `z-10 mt-4 whitespace-nowrap
+            font-bold [font-family:Noto_Serif_JP]`,
+            cIf(
+              orientation === "vertical",
+              "[transform-origin:top_right] [writing-mode:vertical-rl]",
+              "[transform-origin:top_left]"
+            )
+          )}
+          style={{
+            transform: `scale(${fontSize}) ${
+              orientation === "vertical" ? "translateX" : "translateY"
+            }(${fontSize * offset}px)`,
+          }}>
+          {text.split("\n")[lineIndex]}
+        </p>
+
+        {image && (
+          <TransformWrapper
+            panning={{ velocityDisabled: true }}
+            alignmentAnimation={{ disabled: true }}
+            wheel={{ step: 0.05 }}
+            limitToBounds={false}
+            minScale={0.5}>
+            <TransformComponent wrapperStyle={{ height: "100%", width: "100%" }}>
+              <img src={image} alt="The provided image" className="w-full object-cover" />
+            </TransformComponent>
+          </TransformWrapper>
+        )}
       </div>
     </ContentPanel>
   );

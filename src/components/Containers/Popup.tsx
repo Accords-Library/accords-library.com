@@ -11,6 +11,7 @@ import { Button } from "components/Inputs/Button";
  */
 
 interface Props {
+  onOpen?: () => void;
   onCloseRequest?: () => void;
   isVisible: boolean;
   children: React.ReactNode;
@@ -23,6 +24,7 @@ interface Props {
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
 export const Popup = ({
+  onOpen,
   onCloseRequest,
   isVisible,
   children,
@@ -47,13 +49,18 @@ export const Popup = ({
     if (isVisible) {
       setHidden(false);
       // We delay the visiblity of the element so that the opening animation is played
-      timeouts.push(setTimeout(() => setActuallyVisible(true), 100));
+      timeouts.push(
+        setTimeout(() => {
+          setActuallyVisible(true);
+          onOpen?.();
+        }, 100)
+      );
     } else {
       setActuallyVisible(false);
       timeouts.push(setTimeout(() => setHidden(true), 600));
     }
     return () => timeouts.forEach(clearTimeout);
-  }, [isVisible]);
+  }, [isVisible, onOpen]);
 
   return isHidden ? (
     <></>

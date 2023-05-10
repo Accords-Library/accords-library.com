@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { MaterialSymbol } from "material-symbols";
 import { Popup } from "components/Containers/Popup";
 import { sendAnalytics } from "helpers/analytics";
@@ -55,13 +55,13 @@ export const SearchPopup = (): JSX.Element => {
   const { format } = useFormat();
   const [multiResult, setMultiResult] = useState<MultiResult>({});
 
-  useEffect(() => {
+  const fetchSearchResults = useCallback((q: string) => {
     const fetchMultiResult = async () => {
       const searchResults = (
         await meiliMultiSearch([
           {
             indexUid: MeiliIndices.LIBRARY_ITEM,
-            q: query,
+            q,
             limit: SEARCH_LIMIT,
             attributesToRetrieve: [
               "title",
@@ -80,7 +80,7 @@ export const SearchPopup = (): JSX.Element => {
           },
           {
             indexUid: MeiliIndices.CONTENT,
-            q: query,
+            q,
             limit: SEARCH_LIMIT,
             attributesToRetrieve: ["translations", "id", "slug", "categories", "type", "thumbnail"],
             attributesToHighlight: ["translations"],
@@ -88,7 +88,7 @@ export const SearchPopup = (): JSX.Element => {
           },
           {
             indexUid: MeiliIndices.VIDEOS,
-            q: query,
+            q,
             limit: SEARCH_LIMIT,
             attributesToRetrieve: [
               "title",
@@ -104,7 +104,7 @@ export const SearchPopup = (): JSX.Element => {
           },
           {
             indexUid: MeiliIndices.POST,
-            q: query,
+            q,
             limit: SEARCH_LIMIT,
             attributesToRetrieve: ["translations", "thumbnail", "slug", "date", "categories"],
             attributesToHighlight: [
@@ -117,7 +117,7 @@ export const SearchPopup = (): JSX.Element => {
           },
           {
             indexUid: MeiliIndices.WEAPON,
-            q: query,
+            q,
             limit: SEARCH_LIMIT,
             attributesToHighlight: ["translations.description", "translations.names"],
             attributesToCrop: ["translations.description"],
@@ -125,7 +125,7 @@ export const SearchPopup = (): JSX.Element => {
           },
           {
             indexUid: MeiliIndices.WIKI_PAGE,
-            q: query,
+            q,
             limit: SEARCH_LIMIT,
             attributesToHighlight: [
               "translations.title",
@@ -184,12 +184,16 @@ export const SearchPopup = (): JSX.Element => {
       setMultiResult(result);
     };
 
-    if (query === "") {
+    if (q === "") {
       setMultiResult({});
     } else {
       fetchMultiResult();
     }
-  }, [query]);
+
+    setQuery(q);
+  }, []);
+
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   return (
     <Popup
@@ -198,12 +202,18 @@ export const SearchPopup = (): JSX.Element => {
         setSearchOpened(false);
         sendAnalytics("Search", "Close search");
       }}
+      onOpen={() => searchInputRef.current?.focus()}
       fillViewport>
       <h2 className="inline-flex place-items-center gap-2 text-2xl">
         <Ico icon="search" isFilled />
         {format("search")}
       </h2>
-      <TextInput onChange={setQuery} value={query} placeholder={format("search_title")} />
+      <TextInput
+        ref={searchInputRef}
+        onChange={fetchSearchResults}
+        value={query}
+        placeholder={format("search_title")}
+      />
 
       <div className="flex w-full flex-wrap gap-12 gap-x-16">
         {isDefined(multiResult.libraryItems) && (

@@ -204,7 +204,7 @@ export const PreviewCard = ({
             )}
             {subtitle && <Markdown text={subtitle} className="leading-none break-words" />}
           </div>
-          {description && <Markdown text={description} className="break-words" />}
+          {description && <Markdown text={description} className="break-words overflow-hidden" />}
           {bottomChips && bottomChips.length > 0 && (
             <div
               className="grid grid-flow-col place-content-start gap-1 overflow-x-scroll

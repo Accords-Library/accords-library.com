@@ -366,6 +366,14 @@ const LibrarySlug = ({
           sendAnalytics("Reader", "Reset all options");
         }}
       />
+
+      {item.download_available && (
+        <Button
+          href={`${process.env.NEXT_PUBLIC_URL_SCANS_DOWNLOAD}/library/scans/${item.slug}.zip`}
+          icon="download"
+          text={format("download_scans")}
+        />
+      )}
     </SubPanel>
   );
 
@@ -855,6 +863,7 @@ const ScanSet = ({ onClickOnImage, scanSet, id, title, content }: ScanSetProps):
             {content?.data?.attributes && isDefinedAndNotEmpty(content.data.attributes.slug) && (
               <Button
                 href={`/contents/${content.data.attributes.slug}`}
+                icon="subject"
                 text={format("open_content")}
               />
             )}

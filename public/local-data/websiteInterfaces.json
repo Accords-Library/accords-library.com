@@ -185,7 +185,8 @@
           "weapons_description": "A list of all the weapons across all of the games. All distinguished weapons come with an “account.” It’s a document with various details like how the weapon was forged and how it’s been used in the past.",
           "level_x": "Level {x}",
           "story_x": "Story {x}",
-          "player_name_tooltip": "Certain in-game texts use the player's name as part of the dialogue/narration. If you want to see your name in the transcript found on this website, feel free to enter your player's name here. If left empty, '(player)' will be used instead."
+          "player_name_tooltip": "Certain in-game texts use the player's name as part of the dialogue/narration. If you want to see your name in the transcript found on this website, feel free to enter your player's name here. If left empty, '(player)' will be used instead.",
+          "download_scans": "Download scans"
         }
       },
       {
@@ -372,7 +373,8 @@
           "weapons_description": "Une liste de toutes les armes présentes dans tous les jeux. Toutes les armes distinguées sont accompagnées d'un \"compte\". Il s'agit d'un document contenant divers détails tels que la façon dont l'arme a été forgée et comment elle a été utilisée dans le passé.",
           "level_x": "Niveau {x}",
           "story_x": "Histoire {x}",
-          "player_name_tooltip": "Certains textes dans les jeux utilisent le nom du joueur dans les dialogue/la narration. Si vous voulez voir votre nom dans les transcriptions se trouvant sur ce site web, n'hésitez pas à entrer votre nom de joueur ici. S'il n'est pas renseigné, '(player)' sera utilisé à la place."
+          "player_name_tooltip": "Certains textes dans les jeux utilisent le nom du joueur dans les dialogue/la narration. Si vous voulez voir votre nom dans les transcriptions se trouvant sur ce site web, n'hésitez pas à entrer votre nom de joueur ici. S'il n'est pas renseigné, '(player)' sera utilisé à la place.",
+          "download_scans": "Télécharger les scans"
         }
       },
       {
@@ -559,7 +561,8 @@
           "weapons_description": null,
           "level_x": null,
           "story_x": null,
-          "player_name_tooltip": null
+          "player_name_tooltip": null,
+          "download_scans": null
         }
       },
       {
@@ -746,7 +749,8 @@
           "weapons_description": null,
           "level_x": null,
           "story_x": null,
-          "player_name_tooltip": null
+          "player_name_tooltip": null,
+          "download_scans": null
         }
       },
       {
@@ -933,7 +937,8 @@
           "weapons_description": null,
           "level_x": null,
           "story_x": null,
-          "player_name_tooltip": null
+          "player_name_tooltip": null,
+          "download_scans": null
         }
       }
     ]

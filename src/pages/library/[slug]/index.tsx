@@ -41,7 +41,6 @@ import { useScrollTopOnChange } from "hooks/useScrollTopOnChange";
 import { isUntangibleGroupItem } from "helpers/libraryItem";
 import { useDeviceSupportsHover } from "hooks/useMediaQuery";
 import { WithLabel } from "components/Inputs/WithLabel";
-import { Ico } from "components/Ico";
 import { cJoin, cIf } from "helpers/className";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { getOpenGraph } from "helpers/openGraph";
@@ -50,10 +49,10 @@ import { useIntersectionList } from "hooks/useIntersectionList";
 import { Ids } from "types/ids";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter, useAtomSetter } from "helpers/atoms";
-import { Link } from "components/Inputs/Link";
 import { useFormat } from "hooks/useFormat";
 import { getFormat } from "helpers/i18n";
 import { ElementsSeparator } from "helpers/component";
+import { ToolTip } from "components/ToolTip";
 
 /*
  *                                         ╭─────────────╮
@@ -95,9 +94,12 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
     item.metadata?.[0]?.__typename === "ComponentMetadataGroup" &&
     item.metadata[0].subtype?.data?.attributes?.slug === "variant-set";
 
-  const displayOpenScans = item.contents?.data.some(
+  const hasContentScans = item.contents?.data.some(
     (content) => content.attributes?.scan_set && content.attributes.scan_set.length > 0
   );
+
+  const hasContentSection =
+    (item.contents && item.contents.data.length > 0) || item.download_available;
 
   const is3ColumnsLayout = useAtomGetter(atoms.containerQueries.is3ColumnsLayout);
 
@@ -205,11 +207,12 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
                     item.subitem_of.data[0].attributes.title,
                     item.subitem_of.data[0].attributes.subtitle
                   )}
+                  size="small"
                 />
               </div>
             )}
             <div className="grid place-items-center text-center">
-              <h1 className="text-3xl">{item.title}</h1>
+              <h1 className="text-4xl">{item.title}</h1>
               {isDefinedAndNotEmpty(item.subtitle) && <h2 className="text-2xl">{item.subtitle}</h2>}
             </div>
 
@@ -517,58 +520,75 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
           </div>
         )}
 
-        {item.contents && item.contents.data.length > 0 && (
+        {hasContentSection && (
           <div id={intersectionIds[4]} className="grid w-full place-items-center gap-8">
             <h2 className="-mb-6 text-2xl">{format("contents")}</h2>
-            {displayOpenScans && (
-              <div className="grid grid-flow-col gap-4">
-                <Button href={`/library/${item.slug}/reader`} text={format("view_scans")} />
-              </div>
-            )}
-            <div className="max-w- grid w-full gap-4">
-              {filterHasAttributes(item.contents.data, ["attributes"]).map((rangedContent) => (
-                <ContentLine
-                  content={
-                    rangedContent.attributes.content?.data?.attributes
-                      ? {
-                          translations: filterDefined(
-                            rangedContent.attributes.content.data.attributes.translations
-                          ).map((translation) => ({
-                            pre_title: translation.pre_title,
-                            title: translation.title,
-                            subtitle: translation.subtitle,
-                            language: translation.language?.data?.attributes?.code,
-                          })),
-                          categories: filterHasAttributes(
-                            rangedContent.attributes.content.data.attributes.categories?.data,
-                            ["attributes"]
-                          ).map((category) => category.attributes.short),
-                          type:
-                            rangedContent.attributes.content.data.attributes.type?.data?.attributes
-                              ?.titles?.[0]?.title ??
-                            prettySlug(
-                              rangedContent.attributes.content.data.attributes.type?.data
-                                ?.attributes?.slug
-                            ),
-                          slug: rangedContent.attributes.content.data.attributes.slug,
-                        }
-                      : undefined
-                  }
-                  rangeStart={
-                    rangedContent.attributes.range[0]?.__typename === "ComponentRangePageRange"
-                      ? `${rangedContent.attributes.range[0].starting_page}`
-                      : ""
-                  }
-                  slug={rangedContent.attributes.slug}
-                  parentSlug={item.slug}
-                  key={rangedContent.id}
-                  hasScanSet={
-                    isDefined(rangedContent.attributes.scan_set) &&
-                    rangedContent.attributes.scan_set.length > 0
-                  }
-                  condensed={!isContentPanelAtLeast3xl}
+            <div className="grid grid-flow-col gap-4">
+              {hasContentScans && (
+                <Button
+                  href={`/library/${item.slug}/reader`}
+                  icon="auto_stories"
+                  text={format("view_scans")}
                 />
-              ))}
+              )}
+              {item.download_available && (
+                <Button
+                  href={`${process.env.NEXT_PUBLIC_URL_SCANS_DOWNLOAD}/library/scans/${item.slug}.zip`}
+                  icon="download"
+                  text={format("download_scans")}
+                />
+              )}
+            </div>
+            <div className="grid w-full gap-4">
+              <div
+                className={cJoin(
+                  "grid items-center",
+                  cIf(isContentPanelAtLeast3xl, "grid-cols-[1fr_auto_auto_auto] gap-4", "gap-4")
+                )}>
+                {filterHasAttributes(item.contents?.data, ["attributes"]).map((rangedContent) => (
+                  <ContentItem
+                    content={
+                      rangedContent.attributes.content?.data?.attributes
+                        ? {
+                            translations: filterDefined(
+                              rangedContent.attributes.content.data.attributes.translations
+                            ).map((translation) => ({
+                              pre_title: translation.pre_title,
+                              title: translation.title,
+                              subtitle: translation.subtitle,
+                              language: translation.language?.data?.attributes?.code,
+                            })),
+                            categories: filterHasAttributes(
+                              rangedContent.attributes.content.data.attributes.categories?.data,
+                              ["attributes"]
+                            ).map((category) => category.attributes.short),
+                            type:
+                              rangedContent.attributes.content.data.attributes.type?.data
+                                ?.attributes?.titles?.[0]?.title ??
+                              prettySlug(
+                                rangedContent.attributes.content.data.attributes.type?.data
+                                  ?.attributes?.slug
+                              ),
+                            slug: rangedContent.attributes.content.data.attributes.slug,
+                          }
+                        : undefined
+                    }
+                    rangeStart={
+                      rangedContent.attributes.range[0]?.__typename === "ComponentRangePageRange"
+                        ? `${rangedContent.attributes.range[0].starting_page}`
+                        : ""
+                    }
+                    slug={rangedContent.attributes.slug}
+                    parentSlug={item.slug}
+                    key={rangedContent.id}
+                    hasScanSet={
+                      isDefined(rangedContent.attributes.scan_set) &&
+                      rangedContent.attributes.scan_set.length > 0
+                    }
+                    displayType={isContentPanelAtLeast3xl ? "row" : "card"}
+                  />
+                ))}
+              </div>
             </div>
           </div>
         )}
@@ -647,7 +667,7 @@ export const getStaticPaths: GetStaticPaths = async (context) => {
  * ───────────────────────────────────╯  PRIVATE COMPONENTS  ╰──────────────────────────────────────
  */
 
-interface ContentLineProps {
+interface ContentItemProps {
   content?: {
     translations: {
       pre_title: string | null | undefined;
@@ -662,84 +682,32 @@ interface ContentLineProps {
   rangeStart: string;
   parentSlug: string;
   slug: string;
-
   hasScanSet: boolean;
-  condensed: boolean;
+  displayType: "card" | "row";
 }
 
-const ContentLine = ({
+const ContentItem = ({
   rangeStart,
   content,
   hasScanSet,
   slug,
   parentSlug,
-  condensed,
-}: ContentLineProps): JSX.Element => {
+  displayType,
+}: ContentItemProps): JSX.Element => {
   const { format } = useFormat();
-  const { value: isOpened, toggle: toggleOpened } = useBoolean(false);
   const [selectedTranslation] = useSmartLanguage({
     items: content?.translations ?? [],
     languageExtractor: useCallback(
-      (item: NonNullable<ContentLineProps["content"]>["translations"][number]) => item.language,
+      (item: NonNullable<ContentItemProps["content"]>["translations"][number]) => item.language,
       []
     ),
   });
 
-  if (condensed) {
+  if (displayType === "card") {
     return (
-      <div className="my-4 grid gap-2">
-        <div className="flex gap-2">
-          {content?.type && <Chip text={content.type} />}
-          <p className="h-4 w-full border-b-2 border-dotted border-black opacity-30" />
-          <p>{rangeStart}</p>
-        </div>
-
-        <h3 className="flex flex-wrap place-items-center gap-2">
-          {selectedTranslation
-            ? prettyInlineTitle(
-                selectedTranslation.pre_title,
-                selectedTranslation.title,
-                selectedTranslation.subtitle
-              )
-            : content
-            ? prettySlug(content.slug, parentSlug)
-            : prettySlug(slug, parentSlug)}
-        </h3>
-        <div className="flex flex-row flex-wrap gap-1">
-          {content?.categories?.map((category, index) => (
-            <Chip key={index} text={category} />
-          ))}
-        </div>
-        <div className="grid grid-cols-2 gap-3">
-          {hasScanSet || isDefined(content) ? (
-            <>
-              {hasScanSet && (
-                <Button
-                  href={`/library/${parentSlug}/reader?page=${rangeStart}`}
-                  text={format("view_scans")}
-                />
-              )}
-              {isDefined(content) && (
-                <Button href={`/contents/${content.slug}`} text={format("open_content")} />
-              )}
-            </>
-          ) : (
-            format("content_is_not_available")
-          )}
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div
-      className={cJoin(
-        "grid gap-2 rounded-lg px-4",
-        cIf(isOpened, "my-2 h-auto bg-mid py-3 shadow-inner-sm shadow-shade")
-      )}>
-      <div className="grid grid-cols-[auto_auto_1fr_auto_12ch] place-items-center gap-4">
-        <Link href={""} linkStyled>
-          <h3 className="cursor-pointer" onClick={toggleOpened}>
+      <div className="grid w-full gap-3 rounded-xl bg-light p-8 shadow-sm shadow-shade">
+        <div className="grid grid-cols-[auto_1fr_auto] items-center gap-3">
+          <h3 className="text-lg">
             {selectedTranslation
               ? prettyInlineTitle(
                   selectedTranslation.pre_title,
@@ -750,38 +718,95 @@ const ContentLine = ({
               ? prettySlug(content.slug, parentSlug)
               : prettySlug(slug, parentSlug)}
           </h3>
-        </Link>
-        <div className="flex flex-row flex-wrap gap-1">
-          {content?.categories?.map((category, index) => (
-            <Chip key={index} text={category} />
-          ))}
+          <p className="h-4 w-full border-b-2 border-dotted border-mid" />
+          <p className="text-right">{rangeStart}</p>
         </div>
-        <p className="h-4 w-full border-b-2 border-dotted border-black opacity-30" />
-        <p>{rangeStart}</p>
-        {content?.type && <Chip className="justify-self-end" text={content.type} />}
-      </div>
-      <div
-        className={`grid-flow-col place-content-start place-items-center gap-2 ${
-          isOpened ? "grid" : "hidden"
-        }`}>
-        <Ico icon={"subdirectory_arrow_right"} className="text-dark" />
 
-        {hasScanSet || isDefined(content) ? (
-          <>
+        {content && (
+          <div>
+            {content.categories && (
+              <div className="flex items-center gap-2">
+                <p>{format("category", { count: content.categories.length })}</p>
+                <div className="flex flex-row flex-wrap gap-1">
+                  {content.categories.map((category, index) => (
+                    <Chip key={index} text={category} />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {content.type && (
+              <div className="flex items-center gap-2">
+                <p>{format("type", { count: 1 })}</p>
+                <Chip className="justify-self-end" text={content.type} />
+              </div>
+            )}
+          </div>
+        )}
+
+        {(hasScanSet || content) && (
+          <div className="flex flex-wrap gap-3">
             {hasScanSet && (
               <Button
                 href={`/library/${parentSlug}/reader?page=${rangeStart}`}
+                icon="auto_stories"
                 text={format("view_scans")}
               />
             )}
             {isDefined(content) && (
-              <Button href={`/contents/${content.slug}`} text={format("open_content")} />
+              <Button
+                href={`/contents/${content.slug}`}
+                icon="subject"
+                text={format("open_content")}
+              />
             )}
-          </>
-        ) : (
-          format("content_is_not_available")
+          </div>
         )}
       </div>
-    </div>
+    );
+  }
+
+  return (
+    <>
+      <div className="grid grid-cols-[auto_auto_1fr_auto] items-center gap-3">
+        <h3>
+          {selectedTranslation
+            ? prettyInlineTitle(
+                selectedTranslation.pre_title,
+                selectedTranslation.title,
+                selectedTranslation.subtitle
+              )
+            : content
+            ? prettySlug(content.slug, parentSlug)
+            : prettySlug(slug, parentSlug)}
+        </h3>
+        <div className="flex flex-wrap place-content-center gap-1">
+          {content?.categories?.map((category, index) => (
+            <Chip key={index} text={category} />
+          ))}
+        </div>
+        <p className="h-4 w-full border-b-2 border-dotted border-mid" />
+        {content?.type && <Chip className="justify-self-end" text={content.type} />}
+      </div>
+      <p className="text-right">{rangeStart}</p>
+      <div>
+        {hasScanSet && (
+          <ToolTip content={format("view_scans")}>
+            <Button
+              href={`/library/${parentSlug}/reader?page=${rangeStart}`}
+              icon="auto_stories"
+              size="small"
+            />
+          </ToolTip>
+        )}
+      </div>
+      <div>
+        {isDefined(content) && (
+          <ToolTip content={format("open_content")}>
+            <Button href={`/contents/${content.slug}`} icon="subject" size="small" />
+          </ToolTip>
+        )}
+      </div>
+    </>
   );
 };

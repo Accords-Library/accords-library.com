@@ -1,4 +1,5 @@
 import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next";
+import { useMemo } from "react";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { ContentPanel, ContentPanelWidthSizes } from "components/Containers/ContentPanel";
 import { getOpenGraph } from "helpers/openGraph";
@@ -20,7 +21,6 @@ import { TranslatedPreviewFolder } from "components/Contents/PreviewFolder";
 import { useFormat } from "hooks/useFormat";
 import { getFormat } from "helpers/i18n";
 import { Chip } from "components/Chip";
-import { useMemo } from "react";
 
 /*
  *                                           ╭────────╮
@@ -268,8 +268,8 @@ const NoContentNorFolderMessage = () => {
   return (
     <div className="grid place-content-center">
       <div
-        className="grid grid-flow-col place-items-center gap-9 rounded-2xl border-2 border-dotted
-      border-dark p-8 text-dark opacity-40 mt-12">
+        className="mt-12 grid grid-flow-col place-items-center gap-9 rounded-2xl border-2
+      border-dotted border-dark p-8 text-dark opacity-40">
         <p className="max-w-xs text-2xl">{format("empty_folder_message")}</p>
       </div>
     </div>

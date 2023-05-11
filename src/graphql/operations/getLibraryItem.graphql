@@ -9,6 +9,7 @@ query getLibraryItem($slug: String, $language_code: String) {
         root_item
         primary
         digital
+        download_available
         thumbnail {
           data {
             attributes {

@@ -6,6 +6,7 @@ query getLibraryItemScans($slug: String, $language_code: String) {
         slug
         title
         subtitle
+        download_available
         images(pagination: { limit: -1 }) {
           status
           language {

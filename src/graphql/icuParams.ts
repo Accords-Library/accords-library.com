@@ -184,4 +184,5 @@ export interface ICUParams {
   level_x: { x: Date | boolean | number | string };
   story_x: { x: Date | boolean | number | string };
   player_name_tooltip: never;
+  download_scans: never;
 }

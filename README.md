@@ -134,10 +134,11 @@ A detailled look at the technologies used in this repository:
   - [ts-unused-exports](https://www.npmjs.com/package/ts-unused-exports) to find unused exported functions/constants...
 
 - Other
+
   - Custom book reader based on [Okuma-Reader](https://github.com/DrMint/Okuma-Reader)
   - Support for [Material Symbols](https://fonts.google.com/icons)
   - Custom lightbox using [react-zoom-pan-pinch](https://www.npmjs.com/package/react-zoom-pan-pinch)
-  - Handle query params using [Zod](https://zod.dev/)
+  - Handle query params type-validation using [Zod](https://zod.dev/)
   - A secret "Terminal" mode. Can you find it?
 
 ## Installation
@@ -148,31 +149,14 @@ cd accords-library.com
 npm install
 ```
 
-Create a env file:
+Create a env file based on the example one:
 
 ```bash
+cp .env.example .env.local
 nano .env.local
 ```
 
-Enter the following information:
-
-```
-URL_GRAPHQL=https://url-to.strapi-accords-library.com/graphql
-ACCESS_TOKEN=abcdef0123456789
-REVALIDATION_TOKEN=abcdef0123456789
-SMTP_HOST=email.provider.com
-SMTP_USER=email@example.com
-SMTP_PASSWORD=mypassword123
-NEXT_PUBLIC_URL_CMS=https://url-to.strapi-accords-library.com
-NEXT_PUBLIC_URL_IMG=https://url-to.img-accords-library.com
-NEXT_PUBLIC_URL_WATCH=https://url-to.watch-accords-library.com
-NEXT_PUBLIC_URL_SELF=https://url-to-front-accords-library.com
-NEXT_PUBLIC_URL_MEILISEARCH=https://url-to.search-accords-library.com
-NEXT_PUBLIC_MEILISEARCH_KEY=abcdef0123456789
-NEXT_PUBLIC_UMAMI_URL=https://url-to.umami-accords-library.com
-NEXT_PUBLIC_UMAMI_ID=abcdef0123456789
-NEXT_PUBLIC_API_OCR_KEY=abcdef0123456789
-```
+Change the variables
 
 Run in dev mode:
 

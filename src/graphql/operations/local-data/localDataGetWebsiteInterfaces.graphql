@@ -192,6 +192,7 @@ query localDataGetWebsiteInterfaces {
         story_x
         player_name_tooltip
         download_scans
+        search_placeholder
       }
     }
   }

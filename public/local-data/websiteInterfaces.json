@@ -186,7 +186,8 @@
           "level_x": "Level {x}",
           "story_x": "Story {x}",
           "player_name_tooltip": "Certain in-game texts use the player's name as part of the dialogue/narration. If you want to see your name in the transcript found on this website, feel free to enter your player's name here. If left empty, '(player)' will be used instead.",
-          "download_scans": "Download scans"
+          "download_scans": "Download scans",
+          "search_placeholder": "Search..."
         }
       },
       {
@@ -374,7 +375,8 @@
           "level_x": "Niveau {x}",
           "story_x": "Histoire {x}",
           "player_name_tooltip": "Certains textes dans les jeux utilisent le nom du joueur dans les dialogue/la narration. Si vous voulez voir votre nom dans les transcriptions se trouvant sur ce site web, n'hésitez pas à entrer votre nom de joueur ici. S'il n'est pas renseigné, '(player)' sera utilisé à la place.",
-          "download_scans": "Télécharger les scans"
+          "download_scans": "Télécharger les scans",
+          "search_placeholder": "Rechercher ..."
         }
       },
       {
@@ -562,7 +564,8 @@
           "level_x": null,
           "story_x": null,
           "player_name_tooltip": null,
-          "download_scans": null
+          "download_scans": null,
+          "search_placeholder": null
         }
       },
       {
@@ -750,7 +753,8 @@
           "level_x": null,
           "story_x": null,
           "player_name_tooltip": null,
-          "download_scans": null
+          "download_scans": null,
+          "search_placeholder": null
         }
       },
       {
@@ -938,7 +942,8 @@
           "level_x": null,
           "story_x": null,
           "player_name_tooltip": null,
-          "download_scans": null
+          "download_scans": null,
+          "search_placeholder": null
         }
       }
     ]

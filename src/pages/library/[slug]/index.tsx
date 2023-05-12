@@ -38,7 +38,7 @@ import {
   isDefinedAndNotEmpty,
 } from "helpers/asserts";
 import { useScrollTopOnChange } from "hooks/useScrollTopOnChange";
-import { isUntangibleGroupItem } from "helpers/libraryItem";
+import { getScanArchiveURL, isUntangibleGroupItem } from "helpers/libraryItem";
 import { useDeviceSupportsHover } from "hooks/useMediaQuery";
 import { WithLabel } from "components/Inputs/WithLabel";
 import { cJoin, cIf } from "helpers/className";
@@ -533,7 +533,7 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
               )}
               {item.download_available && (
                 <Button
-                  href={`${process.env.NEXT_PUBLIC_URL_SCANS_DOWNLOAD}/library/scans/${item.slug}.zip`}
+                  href={getScanArchiveURL(item.slug)}
                   icon="download"
                   text={format("download_scans")}
                 />

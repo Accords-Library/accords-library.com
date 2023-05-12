@@ -114,7 +114,7 @@ const Wiki = (props: Props): JSX.Element => {
 
       <TextInput
         className="mb-6 w-full"
-        placeholder={format("search_title")}
+        placeholder={format("search_placeholder")}
         value={query}
         onChange={(name) => {
           setPage(1);

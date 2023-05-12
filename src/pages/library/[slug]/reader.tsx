@@ -41,6 +41,7 @@ import { useIsWebkit } from "hooks/useIsWebkit";
 import { useTypedRouter } from "hooks/useTypedRouter";
 import { useFormat } from "hooks/useFormat";
 import { getFormat } from "helpers/i18n";
+import { getScanArchiveURL } from "helpers/libraryItem";
 
 type BookType = "book" | "manga";
 type DisplayMode = "double" | "single";
@@ -369,7 +370,7 @@ const LibrarySlug = ({
 
       {item.download_available && (
         <Button
-          href={`${process.env.NEXT_PUBLIC_URL_SCANS_DOWNLOAD}/library/scans/${item.slug}.zip`}
+          href={getScanArchiveURL(item.slug)}
           icon="download"
           text={format("download_scans")}
         />

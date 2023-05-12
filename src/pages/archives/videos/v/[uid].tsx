@@ -18,7 +18,6 @@ import { getVideoFile } from "helpers/videos";
 import { getOpenGraph } from "helpers/openGraph";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter, useAtomSetter } from "helpers/atoms";
-import { Link } from "components/Inputs/Link";
 import { useFormat } from "hooks/useFormat";
 import { getFormat } from "helpers/i18n";
 
@@ -80,7 +79,7 @@ const Video = ({ video, ...otherProps }: Props): JSX.Element => {
 
           <div className="mt-2 p-6">
             <h1 className="text-2xl">{video.title}</h1>
-            <div className="flex w-full flex-row flex-wrap gap-x-6">
+            <div className="flex w-full flex-row flex-wrap place-items-center gap-x-6">
               <p>
                 <Ico icon="event" className="mr-1 translate-y-[.15em] !text-base" />
                 {prettyDate(video.published_date, router.locale)}
@@ -99,9 +98,14 @@ const Video = ({ video, ...otherProps }: Props): JSX.Element => {
                     : prettyShortenNumber(video.likes)}
                 </p>
               )}
-              <Link href={`https://youtu.be/${video.uid}`} alwaysNewTab>
-                <Button size="small" text={`${format("view_on")} ${video.source}`} />
-              </Link>
+              {video.source === "YouTube" && (
+                <Button
+                  size="small"
+                  text={`${format("view_on")} ${video.source}`}
+                  href={`https://youtu.be/${video.uid}`}
+                  alwaysNewTab
+                />
+              )}
             </div>
           </div>
         </div>

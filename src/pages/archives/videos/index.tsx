@@ -160,7 +160,7 @@ const Videos = ({ ...otherProps }: Props): JSX.Element => {
 
       <TextInput
         className="mb-6 w-full"
-        placeholder={format("search_title")}
+        placeholder={format("search_placeholder")}
         value={query}
         onChange={(newQuery) => {
           setPage(1);
@@ -195,6 +195,7 @@ const Videos = ({ ...otherProps }: Props): JSX.Element => {
         <Switch
           value={onlyShowGone}
           onClick={() => {
+            setPage(1);
             toggleOnlyShowGone();
           }}
         />

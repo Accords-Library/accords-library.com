@@ -168,7 +168,7 @@ const Channel = ({ channel, ...otherProps }: Props): JSX.Element => {
 
       <TextInput
         className="mb-6 w-full"
-        placeholder={format("search_title")}
+        placeholder={format("search_placeholder")}
         value={query}
         onChange={(newQuery) => {
           setPage(1);

@@ -212,7 +212,7 @@ export const SearchPopup = (): JSX.Element => {
         ref={searchInputRef}
         onChange={fetchSearchResults}
         value={query}
-        placeholder={format("search_title")}
+        placeholder={format("search_placeholder")}
       />
 
       <div className="flex w-full flex-wrap gap-12 gap-x-16">

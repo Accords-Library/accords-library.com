@@ -39,6 +39,7 @@ export const LightBox = ({
   onPressNext,
 }: Props): JSX.Element => {
   const [currentZoom, setCurrentZoom] = useState(1);
+  const isPerfModeEnabled = useAtomGetter(atoms.settings.isPerfModeEnabled);
   const { isFullscreen, toggleFullscreen, exitFullscreen, requestFullscreen } = useFullscreen(
     Ids.LightBox
   );
@@ -62,7 +63,7 @@ export const LightBox = ({
       id={Ids.LightBox}
       className={cJoin(
         "fixed inset-0 z-50 grid place-content-center transition-filter duration-500",
-        cIf(isVisible, "backdrop-blur", "pointer-events-none touch-none")
+        cIf(isVisible, cIf(!isPerfModeEnabled, "backdrop-blur"), "pointer-events-none touch-none")
       )}>
       <div
         className={cJoin(
@@ -90,8 +91,10 @@ export const LightBox = ({
                 }}>
                 {isDefined(src) && (
                   <Img
-                    className={`h-[calc(100vh-4rem)] w-full object-contain drop-shadow-2xl
-                    shadow-shade`}
+                    className={cJoin(
+                      `h-[calc(100vh-4rem)] w-full object-contain`,
+                      cIf(!isPerfModeEnabled, "drop-shadow-2xl shadow-shade")
+                    )}
                     src={src}
                     quality={ImageQuality.Large}
                   />

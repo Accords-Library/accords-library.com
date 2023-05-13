@@ -77,6 +77,7 @@ export const PreviewCard = ({
   disabled = false,
   onClick,
 }: Props): JSX.Element => {
+  const isPerfModeEnabled = useAtomGetter(atoms.settings.isPerfModeEnabled);
   const currency = useAtomGetter(atoms.settings.currency);
   const currencies = useAtomGetter(atoms.localData.currencies);
   const isHoverable = useDeviceSupportsHover();
@@ -117,7 +118,7 @@ export const PreviewCard = ({
 
   return (
     <UpPressable
-      className={cJoin("grid items-end text-left", className)}
+      className={cJoin("relative grid items-end text-left", className)}
       href={href}
       onClick={onClick}
       noBackground
@@ -177,11 +178,11 @@ export const PreviewCard = ({
             "z-20 grid gap-2 p-4 transition-opacity linearbg-obi",
             cIf(
               !keepInfoVisible && isHoverable,
-              `-inset-x-0.5 bottom-2 opacity-0 shadow-shade
+              `-inset-x-0.5 bottom-2 opacity-0 !shadow-shade
                [border-radius:10%_10%_10%_10%_/_1%_1%_3%_3%]
-               group-hover:opacity-100 hoverable:absolute hoverable:drop-shadow-lg
+               group-hover:opacity-100 hoverable:absolute hoverable:shadow-lg
                notHoverable:rounded-b-md notHoverable:opacity-100`,
-              "[border-radius:0%_0%_10%_10%_/_0%_0%_3%_3%]"
+              cIf(!isPerfModeEnabled, "[border-radius:0%_0%_10%_10%_/_0%_0%_3%_3%]")
             )
           )}>
           {metadata?.position === "Top" && metadataJSX}

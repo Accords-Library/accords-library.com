@@ -1,6 +1,7 @@
 import { atom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
 import { containerQueries } from "contexts/containerQueries";
+import { userAgent } from "contexts/userAgent";
 import { atomPairing } from "helpers/atoms";
 import { settings } from "contexts/settings";
 import { UploadImageFragment } from "graphql/generated";
@@ -40,6 +41,8 @@ const searchOpened = atomPairing(atom(false));
 const settingsOpened = atomPairing(atom(false));
 const subPanelOpened = atomPairing(atom(false));
 const mainPanelOpened = atomPairing(atom(false));
+const debugMenuOpened = atomPairing(atom(false));
+const debugMenuAvailable = atom((get) => get(settings.playerName[0]) === "debug");
 const menuGesturesEnabled = atomPairing(atomWithStorage("isMenuGesturesEnabled", false));
 const terminalMode = atom((get) => get(settings.playerName[0]) === "root");
 
@@ -51,6 +54,8 @@ const layout = {
   mainPanelOpened,
   menuGesturesEnabled,
   terminalMode,
+  debugMenuAvailable,
+  debugMenuOpened,
 };
 
 export const atoms = {
@@ -59,6 +64,7 @@ export const atoms = {
   localData,
   lightBox,
   containerQueries,
+  userAgent,
 };
 
 // Do not import outside of the "contexts" folder

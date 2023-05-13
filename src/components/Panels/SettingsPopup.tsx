@@ -11,11 +11,12 @@ import { cJoin, cIf } from "helpers/className";
 import { prettyLanguage } from "helpers/formatters";
 import { filterHasAttributes, isDefined } from "helpers/asserts";
 import { atoms } from "contexts/atoms";
-import { useAtomGetter, useAtomPair } from "helpers/atoms";
-import { ThemeMode } from "contexts/settings";
+import { useAtomGetter, useAtomPair, useAtomSetter } from "helpers/atoms";
+import { PerfMode, ThemeMode } from "contexts/settings";
 import { Ico } from "components/Ico";
 import { useFormat } from "hooks/useFormat";
 import { ToolTip } from "components/ToolTip";
+import { Switch } from "components/Inputs/Switch";
 
 /*
  *                                        ╭─────────────╮
@@ -32,6 +33,9 @@ export const SettingsPopup = (): JSX.Element => {
   const [fontSize, setFontSize] = useAtomPair(atoms.settings.fontSize);
   const [playerName, setPlayerName] = useAtomPair(atoms.settings.playerName);
   const [themeMode, setThemeMode] = useAtomPair(atoms.settings.themeMode);
+  const setPerfMode = useAtomSetter(atoms.settings.perfMode);
+  const perfModeEnabled = useAtomGetter(atoms.settings.isPerfModeEnabled);
+  const isPerfModeToggleable = useAtomGetter(atoms.settings.isPerfModeToggleable);
 
   const languages = useAtomGetter(atoms.localData.languages);
   const { format } = useFormat();
@@ -235,6 +239,20 @@ export const SettingsPopup = (): JSX.Element => {
                 setPlayerName(newName);
                 sendAnalytics("Settings", "Change username");
               }}
+            />
+          </div>
+
+          <div className="grid place-items-center">
+            <div className="flex place-content-center place-items-center gap-1">
+              <h3 className="text-xl">{format("performance_mode")}</h3>
+              <ToolTip content={format("performance_mode_tooltip")} placement="top">
+                <Ico icon="info" />
+              </ToolTip>
+            </div>
+            <Switch
+              value={perfModeEnabled}
+              onClick={() => setPerfMode(perfModeEnabled ? PerfMode.Off : PerfMode.On)}
+              disabled={!isPerfModeToggleable}
             />
           </div>
         </div>

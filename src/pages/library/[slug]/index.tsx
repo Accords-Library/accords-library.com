@@ -73,6 +73,7 @@ interface Props extends AppLayoutRequired {
 
 const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
   const currency = useAtomGetter(atoms.settings.currency);
+  const isPerfModeEnabled = useAtomGetter(atoms.settings.isPerfModeEnabled);
   const { format, formatLibraryItemType } = useFormat();
   const currencies = useAtomGetter(atoms.localData.currencies);
 
@@ -178,7 +179,8 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
       <div className="grid place-items-center gap-12">
         <div
           className={cJoin(
-            "relative h-[50vh] w-full cursor-pointer drop-shadow-xl shadow-shade",
+            "relative h-[50vh] w-full cursor-pointer",
+            cIf(!isPerfModeEnabled, "drop-shadow-xl shadow-shade"),
             cIf(isContentPanelAtLeast3xl, "mb-16", "h-[60vh]")
           )}>
           {item.thumbnail?.data?.attributes ? (

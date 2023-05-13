@@ -23,9 +23,12 @@ export const MainPanel = (): JSX.Element => {
   const { format } = useFormat();
   const [isMainPanelReduced, setMainPanelReduced] = useAtomPair(atoms.layout.mainPanelReduced);
   const setMainPanelOpened = useAtomSetter(atoms.layout.mainPanelOpened);
+  const [isSettingsOpened, setSettingsOpened] = useAtomPair(atoms.layout.settingsOpened);
+  const [isSearchOpened, setSearchOpened] = useAtomPair(atoms.layout.searchOpened);
+  const [isDebugMenuOpened, setDebugMenuOpened] = useAtomPair(atoms.layout.debugMenuOpened);
+  const isDebugMenuAvailable = useAtomGetter(atoms.layout.debugMenuAvailable);
+
   const closeMainPanel = useCallback(() => setMainPanelOpened(false), [setMainPanelOpened]);
-  const setSettingsOpened = useAtomSetter(atoms.layout.settingsOpened);
-  const setSearchOpened = useAtomSetter(atoms.layout.searchOpened);
 
   return (
     <div
@@ -82,6 +85,7 @@ export const MainPanel = (): JSX.Element => {
               content={<h3 className="text-2xl">{format("open_settings")}</h3>}
               placement={isMainPanelReduced ? "right" : "top"}>
               <Button
+                active={isSettingsOpened}
                 onClick={() => {
                   closeMainPanel();
                   setSettingsOpened(true);
@@ -94,6 +98,7 @@ export const MainPanel = (): JSX.Element => {
               content={<h3 className="text-2xl">{format("open_search")}</h3>}
               placement={isMainPanelReduced ? "right" : "top"}>
               <Button
+                active={isSearchOpened}
                 onClick={() => {
                   closeMainPanel();
                   setSearchOpened(true);
@@ -102,6 +107,21 @@ export const MainPanel = (): JSX.Element => {
                 icon="search"
               />
             </ToolTip>
+            {isDebugMenuAvailable && (
+              <ToolTip
+                content={<h3 className="text-2xl">Debug menu</h3>}
+                placement={isMainPanelReduced ? "right" : "top"}>
+                <Button
+                  active={isDebugMenuOpened}
+                  onClick={() => {
+                    closeMainPanel();
+                    setDebugMenuOpened(true);
+                    sendAnalytics("Debug", "Open debug menu");
+                  }}
+                  icon="bug_report"
+                />
+              </ToolTip>
+            )}
           </div>
         </div>
       </div>

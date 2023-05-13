@@ -10,6 +10,7 @@ import { sendAnalytics } from "helpers/analytics";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter } from "helpers/atoms";
 import { useFormat } from "hooks/useFormat";
+import { Button } from "components/Inputs/Button";
 
 /*
  *                                           ╭────────╮
@@ -146,10 +147,10 @@ const AboutUs = (props: PostStaticProps): JSX.Element => {
             />
           </div>
 
-          <input
+          <Button
             type="submit"
-            value={format("send")}
             className="w-min !px-6"
+            text={format("send")}
             disabled={formState !== "stale"}
           />
         </div>

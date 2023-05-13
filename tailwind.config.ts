@@ -250,21 +250,6 @@ export default {
       });
     }),
 
-    /* Webkit fixes */
-    plugin(({ addUtilities }) => {
-      addUtilities({
-        ".webkit-fixes": {
-          "*": {
-            "--tw-drop-shadow": "unset !important",
-            "--tw-shadow": "unset !important",
-          },
-          ".texture-paper-dots": {
-            backgroundImage: "unset !important",
-          },
-        },
-      });
-    }),
-
     /* Add support for break-wrods CSS attribute */
     plugin(({ addUtilities }) => {
       addUtilities({

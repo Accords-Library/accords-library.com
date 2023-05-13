@@ -186,4 +186,6 @@ export interface ICUParams {
   player_name_tooltip: never;
   download_scans: never;
   search_placeholder: never;
+  performance_mode: never;
+  performance_mode_tooltip: never;
 }

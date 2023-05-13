@@ -193,6 +193,8 @@ query localDataGetWebsiteInterfaces {
         player_name_tooltip
         download_scans
         search_placeholder
+        performance_mode
+        performance_mode_tooltip
       }
     }
   }

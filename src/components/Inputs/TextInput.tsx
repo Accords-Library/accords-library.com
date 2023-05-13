@@ -27,6 +27,7 @@ export const TextInput = forwardRef<HTMLInputElement, Props>(
         className="w-full"
         type="text"
         name={name}
+        autoCapitalize="off"
         value={value}
         disabled={disabled}
         placeholder={placeholder ?? undefined}

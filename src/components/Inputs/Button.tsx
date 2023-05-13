@@ -20,12 +20,13 @@ interface Props {
   icon?: MaterialSymbol;
   text?: string | null | undefined;
   alwaysNewTab?: boolean;
-  onClick?: MouseEventHandler<HTMLDivElement>;
-  onMouseUp?: MouseEventHandler<HTMLDivElement>;
+  onClick?: MouseEventHandler<HTMLButtonElement>;
+  onMouseUp?: MouseEventHandler<HTMLButtonElement>;
   draggable?: boolean;
   badgeNumber?: number;
   disabled?: boolean;
   size?: "normal" | "small";
+  type?: "button" | "reset" | "submit";
 }
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
@@ -43,31 +44,31 @@ export const Button = ({
   alwaysNewTab = false,
   badgeNumber,
   disabled,
+  type,
   size = "normal",
 }: Props): JSX.Element => (
   <Link href={href} alwaysNewTab={alwaysNewTab} disabled={disabled}>
     <div className="relative">
-      <div
+      <button
+        type={type}
         draggable={draggable}
         id={id}
-        onClick={(event) => !disabled && onClick?.(event)}
+        disabled={disabled}
+        onClick={(event) => onClick?.(event)}
         onMouseUp={onMouseUp}
         onFocus={(event) => event.target.blur()}
         className={cJoin(
-          `group grid cursor-pointer select-none grid-flow-col place-content-center 
+          `group grid w-full grid-flow-col place-content-center
           place-items-center gap-2 rounded-full border border-dark 
-          leading-none text-dark transition-all`,
+          leading-none text-dark transition-all disabled:cursor-not-allowed
+          disabled:opacity-50 disabled:grayscale`,
           cIf(size === "small", "px-3 py-1 text-xs", "px-4 py-3"),
-          cIf(active, "!border-black bg-black !text-light drop-shadow-lg shadow-black"),
+          cIf(active, "!border-black bg-black !text-light shadow-lg shadow-black"),
           cIf(
-            disabled,
-            "cursor-not-allowed opacity-50 grayscale",
-            cIf(
-              !active,
-              `shadow-shade hover:bg-dark hover:text-light hover:drop-shadow-lg
-               active:hover:!border-black active:hover:bg-black active:hover:!text-light
-               active:hover:drop-shadow-lg active:hover:shadow-black`
-            )
+            !disabled && !active,
+            `shadow-shade hover:bg-dark hover:text-light hover:shadow-lg hover:shadow-shade
+             active:hover:!border-black active:hover:bg-black active:hover:!text-light
+             active:hover:shadow-lg active:hover:shadow-black`
           ),
           className
         )}>
@@ -91,7 +92,7 @@ export const Button = ({
           />
         )}
         {isDefinedAndNotEmpty(text) && <p className="-translate-y-[0.05em] text-center">{text}</p>}
-      </div>
+      </button>
     </div>
   </Link>
 );

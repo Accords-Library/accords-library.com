@@ -20,22 +20,24 @@ import { LightBoxProvider } from "contexts/LightBoxProvider";
 import { SettingsPopup } from "components/Panels/SettingsPopup";
 import { useSettings } from "contexts/settings";
 import { useContainerQueries } from "contexts/containerQueries";
-import { useWebkitFixes } from "contexts/webkitFixes";
 import { SearchPopup } from "components/Panels/SearchPopup";
 import { useScrollIntoView } from "hooks/useScrollIntoView";
+import { useUserAgent } from "contexts/userAgent";
+import { DebugPopup } from "components/Panels/DebugPopup";
 
 const AccordsLibraryApp = (props: AppProps): JSX.Element => {
   useLocalData();
   useSettings();
   useContainerQueries();
-  useWebkitFixes();
   useScrollIntoView();
+  useUserAgent();
 
   return (
     <>
       <SearchPopup />
       <SettingsPopup />
       <LightBoxProvider />
+      <DebugPopup />
       <Script
         data-website-id={process.env.NEXT_PUBLIC_UMAMI_ID}
         src={`${process.env.NEXT_PUBLIC_UMAMI_URL}/script.js`}

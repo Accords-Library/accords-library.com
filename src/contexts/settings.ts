@@ -6,6 +6,7 @@ import { atomPairing, useAtomGetter, useAtomPair } from "helpers/atoms";
 import { getDefaultPreferredLanguages } from "helpers/locales";
 import { isDefined, isDefinedAndNotEmpty } from "helpers/asserts";
 import { usePrefersDarkMode } from "hooks/useMediaQuery";
+import { userAgent } from "contexts/userAgent";
 
 export enum ThemeMode {
   Dark = "dark",
@@ -13,13 +14,43 @@ export enum ThemeMode {
   Light = "light",
 }
 
+export enum PerfMode {
+  On = "on",
+  Auto = "auto",
+  Off = "off",
+}
+
 const preferredLanguagesAtom = atomPairing(atomWithStorage<string[]>("preferredLanguages", []));
-const themeModeAtom = atomPairing(atomWithStorage<ThemeMode>("themeMode", ThemeMode.Auto));
+const themeModeAtom = atomPairing(atomWithStorage("themeMode", ThemeMode.Auto));
 const darkModeAtom = atomPairing(atom(false));
 const fontSizeAtom = atomPairing(atomWithStorage("fontSize", 1));
 const dyslexicAtom = atomPairing(atomWithStorage("isDyslexic", false));
 const currencyAtom = atomPairing(atomWithStorage("currency", "USD"));
 const playerNameAtom = atomPairing(atomWithStorage("playerName", ""));
+const perfModeAtom = atomPairing(atomWithStorage("perfMode", PerfMode.Auto));
+
+const isPerfModeEnabledAtom = atom((get) => {
+  const os = get(userAgent.os);
+  const engine = get(userAgent.engine);
+  const perfMode = get(perfModeAtom[0]);
+
+  if (os === "iOS") return true;
+  if (engine === "WebKit") return true;
+  if (perfMode === "auto") {
+    if (engine === "Blink") return false;
+    if (os === "Linux") return true;
+    if (os === "Android") return true;
+  }
+  return perfMode === PerfMode.On;
+});
+
+const isPerfModeToggleableAtom = atom((get) => {
+  const engine = get(userAgent.engine);
+  const os = get(userAgent.os);
+  if (os === "iOS") return false;
+  if (engine === "WebKit") return false;
+  return true;
+});
 
 export const settings = {
   preferredLanguages: preferredLanguagesAtom,
@@ -29,6 +60,9 @@ export const settings = {
   dyslexic: dyslexicAtom,
   currency: currencyAtom,
   playerName: playerNameAtom,
+  perfMode: perfModeAtom,
+  isPerfModeEnabled: isPerfModeEnabledAtom,
+  isPerfModeToggleable: isPerfModeToggleableAtom,
 };
 
 export const useSettings = (): void => {

@@ -1,6 +1,7 @@
 import Head from "next/head";
 import { useSwipeable } from "react-swipeable";
 import { MaterialSymbol } from "material-symbols";
+import { atom } from "jotai";
 import { layout } from "../../design.config";
 import { Ico } from "./Ico";
 import { MainPanel } from "./Panels/MainPanel";
@@ -18,6 +19,7 @@ import { useFormat } from "hooks/useFormat";
  */
 
 const SENSIBILITY_SWIPE = 1.1;
+const isIOSAtom = atom((get) => get(atoms.userAgent.os) === "iOS");
 
 /*
  *                                        ╭─────────────╮
@@ -48,11 +50,12 @@ export const AppLayout = ({
   const [isSubPanelOpened, setSubPanelOpened] = useAtomPair(atoms.layout.subPanelOpened);
   const [isMainPanelOpened, setMainPanelOpened] = useAtomPair(atoms.layout.mainPanelOpened);
   const isMenuGesturesEnabled = useAtomGetter(atoms.layout.menuGesturesEnabled);
-
-  const { format } = useFormat();
-
+  const isPerfModeEnabled = useAtomGetter(atoms.settings.isPerfModeEnabled);
   const is1ColumnLayout = useAtomGetter(atoms.containerQueries.is1ColumnLayout);
   const isScreenAtLeastXs = useAtomGetter(atoms.containerQueries.isScreenAtLeastXs);
+  const isIOS = useAtomGetter(isIOSAtom);
+
+  const { format } = useFormat();
 
   const handlers = useSwipeable({
     onSwipedLeft: (SwipeEventData) => {
@@ -121,7 +124,8 @@ export const AppLayout = ({
       <div
         id={Ids.ContentPanel}
         className={cJoin(
-          "bg-light texture-paper-dots [grid-area:content]",
+          "bg-light [grid-area:content]",
+          cIf(!isIOS, "texture-paper-dots"),
           cIf(contentPanelScroolbar, "overflow-y-scroll")
         )}>
         {isDefined(contentPanel) ? (
@@ -140,7 +144,7 @@ export const AppLayout = ({
             [grid-area:content]`,
           cIf(
             (isMainPanelOpened || isSubPanelOpened) && is1ColumnLayout,
-            "backdrop-blur",
+            cIf(!isPerfModeEnabled, "backdrop-blur"),
             "pointer-events-none touch-none"
           )
         )}>
@@ -164,7 +168,8 @@ export const AppLayout = ({
       <div
         className={cJoin(
           `z-40 grid grid-cols-[5rem_1fr_5rem] place-items-center border-t
-          border-dotted border-black bg-light texture-paper-dots [grid-area:navbar]`,
+          border-dotted border-black bg-light [grid-area:navbar]`,
+          cIf(!isIOS, "texture-paper-dots"),
           cIf(!is1ColumnLayout, "hidden")
         )}>
         <Ico
@@ -202,7 +207,8 @@ export const AppLayout = ({
           id={Ids.SubPanel}
           className={cJoin(
             `z-40 overflow-y-scroll border-r border-dark/50 bg-light
-              transition-transform duration-300 scrollbar-none texture-paper-dots`,
+              transition-transform duration-300 scrollbar-none`,
+            cIf(!isIOS, "texture-paper-dots"),
             cIf(
               is1ColumnLayout,
               "justify-self-end border-r-0 [grid-area:content]",
@@ -219,7 +225,8 @@ export const AppLayout = ({
       <div
         className={cJoin(
           `z-40 overflow-y-scroll border-r border-dark/50 bg-light
-            transition-transform duration-300 scrollbar-none texture-paper-dots`,
+            transition-transform duration-300 scrollbar-none`,
+          cIf(!isIOS, "texture-paper-dots"),
           cIf(is1ColumnLayout, "justify-self-start [grid-area:content]", "[grid-area:main]"),
           cIf(is1ColumnLayout && isScreenAtLeastXs, "w-[min(30rem,90%)]"),
           cIf(!isMainPanelOpened && is1ColumnLayout, "-translate-x-full")

@@ -4,6 +4,7 @@ import { useHotkeys } from "react-hotkeys-hook";
 import Slider from "rc-slider";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { z } from "zod";
+import { atom } from "jotai";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import {
   Enum_Componentmetadatabooks_Page_Order as PageOrder,
@@ -37,7 +38,6 @@ import { useFullscreen } from "hooks/useFullscreen";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter } from "helpers/atoms";
 import { FilterSettings, useReaderSettings } from "hooks/useReaderSettings";
-import { useIsWebkit } from "hooks/useIsWebkit";
 import { useTypedRouter } from "hooks/useTypedRouter";
 import { useFormat } from "hooks/useFormat";
 import { getFormat } from "helpers/i18n";
@@ -70,6 +70,8 @@ const queryParamSchema = z.object({
   query: z.coerce.string().optional(),
   page: z.coerce.number().optional(),
 });
+
+const isWebKitAtom = atom((get) => get(atoms.userAgent.engine) === "WebKit");
 
 /*
  *                                           ╭────────╮
@@ -120,7 +122,7 @@ const LibrarySlug = ({
     is1ColumnLayout ? "single" : "double"
   );
   const router = useTypedRouter(queryParamSchema);
-  const isWebkit = useIsWebkit();
+  const isWebKit = useAtomGetter(isWebKitAtom);
 
   const { isFullscreen, toggleFullscreen, requestFullscreen } = useFullscreen(Ids.ContentPanel);
 
@@ -299,7 +301,7 @@ const LibrarySlug = ({
           <Switch value={isSidePagesEnabled} onClick={toggleIsSidePagesEnabled} />
         </WithLabel>
 
-        {!isWebkit && (
+        {!isWebKit && (
           <WithLabel label={format("shadow")}>
             <Switch value={filterSettings.dropShadow} onClick={toggleDropShadow} />
           </WithLabel>
@@ -394,7 +396,7 @@ const LibrarySlug = ({
               display: "grid",
               placeContent: "center",
               filter:
-                !filterSettings.dropShadow || isWebkit
+                !filterSettings.dropShadow || isWebKit
                   ? undefined
                   : isDarkMode
                   ? CUSTOM_DARK_DROPSHADOW

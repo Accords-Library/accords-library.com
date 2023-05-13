@@ -54,13 +54,6 @@ textarea {
   @apply rounded-2xl p-6 text-left;
 }
 
-input[type="submit"] {
-  @apply grid cursor-pointer place-content-center place-items-center rounded-full border
-  border-dark px-4 pb-[0.5rem] pt-[0.4rem] text-dark outline-none transition-all shadow-shade
-  hover:bg-dark hover:text-light hover:drop-shadow-lg active:border-black active:bg-black
-  active:text-light active:drop-shadow-lg active:shadow-black;
-}
-
 input:enabled,
 textarea:enabled {
   @apply hover:bg-mid hover:outline-transparent;

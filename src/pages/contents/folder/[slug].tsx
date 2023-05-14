@@ -95,10 +95,10 @@ const ContentsFolder = ({ openGraph, folder, path, ...otherProps }: Props): JSX.
 
       {folder.subfolders?.data && folder.subfolders.data.length > 0 && (
         <div className="mb-8">
-          <h2 className="flex flex-row place-items-center gap-2 pb-2 text-2xl">
-            {format("folders")}
+          <div className="mb-2 flex place-items-center gap-2">
+            <h2 className="text-2xl">{format("folders")}</h2>
             <Chip text={format("x_results", { x: folder.subfolders.data.length })} />
-          </h2>
+          </div>
           <div
             className={cJoin(
               "grid items-start gap-8 pb-12",
@@ -127,10 +127,10 @@ const ContentsFolder = ({ openGraph, folder, path, ...otherProps }: Props): JSX.
 
       {folder.contents?.data && folder.contents.data.length > 0 && (
         <div className="mb-8">
-          <h2 className="flex flex-row place-items-center gap-2 pb-2 text-2xl">
-            {format("contents")}
+          <div className="mb-2 flex place-items-center gap-2">
+            <h2 className="text-2xl">{format("contents")}</h2>
             <Chip text={format("x_results", { x: folder.contents.data.length })} />
-          </h2>
+          </div>
           <div
             className={cJoin(
               "grid items-start gap-8 pb-12",

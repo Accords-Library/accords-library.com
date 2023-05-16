@@ -13,6 +13,15 @@ type WordingKey = keyof ICUParams;
 type LibraryItemType = Exclude<LibraryItemMetadataDynamicZone["__typename"], undefined>;
 export type ContentStatus = "Done" | "Draft" | "Incomplete" | "Review";
 
+/*
+ * Whitelisting wording keys from being detected as unused
+ *  - format("audio")
+ *  - format("textual")
+ *  - format("game")
+ *  - format("group")
+ *  - format("video")
+ *  - format("other")
+ */
 const componentMetadataToWording: Record<LibraryItemType, WordingKey> = {
   ComponentMetadataAudio: "audio",
   ComponentMetadataBooks: "textual",
@@ -23,6 +32,17 @@ const componentMetadataToWording: Record<LibraryItemType, WordingKey> = {
   Error: "item",
 };
 
+/*
+ * Whitelisting wording keys from being detected as unused
+ *  - format("draft")
+ *  - format("incomplete")
+ *  - format("review")
+ *  - format("done")
+ *  - format("status_draft")
+ *  - format("status_incomplete")
+ *  - format("status_review")
+ *  - format("status_done")
+ */
 const componentSetsTextsetStatusToWording: Record<
   ContentStatus,
   { label: WordingKey; description: WordingKey }

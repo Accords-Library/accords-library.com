@@ -1,4 +1,4 @@
-import { Fragment, useCallback } from "react";
+import { Fragment, useCallback, useMemo } from "react";
 import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 import { useBoolean } from "usehooks-ts";
@@ -145,7 +145,11 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
 
             {item.subitems && item.subitems.data.length > 0 && (
               <NavOption
-                title={format(isVariantSet ? "variant" : "subitem", { count: Infinity })}
+                title={
+                  isVariantSet
+                    ? format("variant", { count: Infinity })
+                    : format("subitem", { count: Infinity })
+                }
                 url={`#${intersectionIds[3]}`}
                 border
                 active={currentIntersection === 3}
@@ -705,21 +709,31 @@ const ContentItem = ({
     ),
   });
 
+  const title = useMemo(() => {
+    if (selectedTranslation) {
+      return prettyInlineTitle(
+        selectedTranslation.pre_title,
+        selectedTranslation.title,
+        selectedTranslation.subtitle
+      );
+    }
+    if (isDefined(content)) {
+      return prettySlug(content.slug, parentSlug);
+    }
+    if (slug.endsWith("front-matter")) {
+      return format("front_matter");
+    }
+    if (slug.endsWith("back-matter")) {
+      return format("back_matter");
+    }
+    return prettySlug(slug, parentSlug);
+  }, [content, format, parentSlug, selectedTranslation, slug]);
+
   if (displayType === "card") {
     return (
-      <div className="grid w-full gap-3 rounded-xl bg-light p-8 shadow-sm shadow-shade">
+      <div className="grid w-full gap-3 rounded-xl bg-highlight p-4 shadow-sm shadow-shade">
         <div className="grid grid-cols-[auto_1fr_auto] items-center gap-3">
-          <h3 className="text-lg">
-            {selectedTranslation
-              ? prettyInlineTitle(
-                  selectedTranslation.pre_title,
-                  selectedTranslation.title,
-                  selectedTranslation.subtitle
-                )
-              : content
-              ? prettySlug(content.slug, parentSlug)
-              : prettySlug(slug, parentSlug)}
-          </h3>
+          <h3 className="text-lg">{title}</h3>
           <p className="h-4 w-full border-b-2 border-dotted border-mid" />
           <p className="text-right">{rangeStart}</p>
         </div>
@@ -771,17 +785,7 @@ const ContentItem = ({
   return (
     <>
       <div className="grid grid-cols-[auto_auto_1fr_auto] items-center gap-3">
-        <h3>
-          {selectedTranslation
-            ? prettyInlineTitle(
-                selectedTranslation.pre_title,
-                selectedTranslation.title,
-                selectedTranslation.subtitle
-              )
-            : content
-            ? prettySlug(content.slug, parentSlug)
-            : prettySlug(slug, parentSlug)}
-        </h3>
+        <h3>{title}</h3>
         <div className="flex flex-wrap place-content-center gap-1">
           {content?.categories?.map((category, index) => (
             <Chip key={index} text={category} />

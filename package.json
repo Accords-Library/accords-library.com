@@ -4,7 +4,8 @@
   "scripts": {
     "postinstall": "patch-package",
     "dev": "next dev -p 12499",
-    "precommit": "npm run fetch-local-data && npm run icu-to-ts && npm run unused-exports && npm run prettier && npm run eslint && npm run tsc && echo ALL PRECOMMIT CHECKS PASSED SUCCESSFULLY, LET\\'S FUCKING GO!",
+    "precommit": "npm run fetch-local-data && npm run icu-to-ts && npm run unused-wording-keys && npm run unused-exports && npm run prettier && npm run eslint && npm run tsc && echo ALL PRECOMMIT CHECKS PASSED SUCCESSFULLY, LET\\'S FUCKING GO!",
+    "unused-wording-keys": "esrun --send-code-mode=temporaryFile src/graphql/unusedWordingKeys.ts --uwk",
     "unused-exports": "ts-unused-exports ./tsconfig.json --excludePathsFromReport='src/pages;tailwind.config.ts;src/graphql/generated.ts;src/shared/meilisearch-graphql-typings/generated.ts'",
     "fetch-local-data": "npm run generate && esrun --send-code-mode=temporaryFile src/graphql/fetchLocalData.ts --esrun",
     "icu-to-ts": "esrun --send-code-mode=temporaryFile src/graphql/icuToTypescript.ts --icu",
@@ -16,7 +17,7 @@
     "eslint": "npx eslint .",
     "generate": "graphql-codegen --config graphql-codegen.config.js",
     "tsc": "tsc",
-    "prettier": "prettier --end-of-line auto --write .",
+    "prettier": "prettier --list-different --end-of-line auto --write .",
     "upgrade": "ncu"
   },
   "dependencies": {
@@ -71,6 +72,7 @@
     "@types/ua-parser-js": "^0.7.36",
     "@typescript-eslint/eslint-plugin": "^5.59.5",
     "@typescript-eslint/parser": "^5.59.5",
+    "chalk": "^5.2.0",
     "dotenv": "^16.0.3",
     "eslint": "^8.40.0",
     "eslint-config-next": "13.4.2",
@@ -83,11 +85,5 @@
     "tailwindcss": "^3.3.2",
     "ts-unused-exports": "^9.0.4",
     "typescript": "^5.0.4"
-  },
-  "overrides": {
-    "react-zoom-pan-pinch": {
-      "react": "$react",
-      "react-dom": "$react-dom"
-    }
   }
 }

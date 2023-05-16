@@ -28,7 +28,6 @@ query localDataGetWebsiteInterfaces {
         category
         size
         release_date
-        release_year
         details
         price
         width
@@ -51,13 +50,9 @@ query localDataGetWebsiteInterfaces {
         front_matter
         back_matter
         open_content
-        read_content
-        watch_content
-        listen_content
         view_scans
         paperback
         hardcover
-        select_language
         language
         library_description
         wiki_description
@@ -72,7 +67,6 @@ query localDataGetWebsiteInterfaces {
         show_primary_items
         show_secondary_items
         order_by
-        group_by
         select_option_sidebar
         group
         settings
@@ -94,17 +88,12 @@ query localDataGetWebsiteInterfaces {
         review
         done
         status
-        transcribers
-        translators
-        proofreaders
         transcript_notice
         translation_notice
         source_language
         pronouns
         item
-        content
         open_settings
-        change_language
         open_search
         chronology
         accords_handbook
@@ -122,7 +111,6 @@ query localDataGetWebsiteInterfaces {
         item_not_available
         primary_language
         secondary_language
-        combine_related_contents
         previous_content
         followup_content
         videos
@@ -131,7 +119,6 @@ query localDataGetWebsiteInterfaces {
         subscribers
         description
         available_at
-        search_title
         want_it
         have_it
         source
@@ -139,7 +126,6 @@ query localDataGetWebsiteInterfaces {
         only_display_items_i_have
         only_display_items_i_want
         only_display_unmarked_items
-        display_all_items
         table_of_contents
         no_results_message
         all
@@ -150,7 +136,6 @@ query localDataGetWebsiteInterfaces {
         cleaners
         typesetters
         notes
-        cover
         tags
         no_source_warning
         copy_anchor_link
@@ -159,7 +144,6 @@ query localDataGetWebsiteInterfaces {
         empty_folder_message
         switch_to_grid_view
         switch_to_folder_view
-        content_is_not_available
         paper_texture
         book_fold
         lighting
@@ -184,7 +168,6 @@ query localDataGetWebsiteInterfaces {
         x_results
         definition_x
         subitem_of_x
-        variant_of_x
         dark_mode_extension_warning
         weapon
         weapons_description
@@ -195,6 +178,12 @@ query localDataGetWebsiteInterfaces {
         search_placeholder
         performance_mode
         performance_mode_tooltip
+        transcriber
+        translator
+        proofreader
+        dubber
+        subber
+        author
       }
     }
   }

@@ -18,7 +18,6 @@ export interface ICUParams {
   category: { count: number };
   size: never;
   release_date: never;
-  release_year: never;
   details: never;
   price: never;
   width: never;
@@ -41,13 +40,9 @@ export interface ICUParams {
   front_matter: never;
   back_matter: never;
   open_content: never;
-  read_content: never;
-  watch_content: never;
-  listen_content: never;
   view_scans: never;
   paperback: never;
   hardcover: never;
-  select_language: never;
   language: { count: number };
   library_description: never;
   wiki_description: never;
@@ -62,7 +57,6 @@ export interface ICUParams {
   show_primary_items: never;
   show_secondary_items: never;
   order_by: never;
-  group_by: never;
   select_option_sidebar: never;
   group: never;
   settings: never;
@@ -84,17 +78,12 @@ export interface ICUParams {
   review: never;
   done: never;
   status: never;
-  transcribers: never;
-  translators: never;
-  proofreaders: never;
   transcript_notice: never;
   translation_notice: never;
   source_language: never;
   pronouns: never;
   item: { count: number };
-  content: never;
   open_settings: never;
-  change_language: never;
   open_search: never;
   chronology: never;
   accords_handbook: never;
@@ -112,7 +101,6 @@ export interface ICUParams {
   item_not_available: never;
   primary_language: never;
   secondary_language: never;
-  combine_related_contents: never;
   previous_content: { count: number };
   followup_content: { count: number };
   videos: never;
@@ -121,7 +109,6 @@ export interface ICUParams {
   subscribers: never;
   description: never;
   available_at: never;
-  search_title: never;
   want_it: never;
   have_it: never;
   source: never;
@@ -129,7 +116,6 @@ export interface ICUParams {
   only_display_items_i_have: never;
   only_display_items_i_want: never;
   only_display_unmarked_items: never;
-  display_all_items: never;
   table_of_contents: never;
   no_results_message: never;
   all: never;
@@ -140,7 +126,6 @@ export interface ICUParams {
   cleaners: never;
   typesetters: never;
   notes: never;
-  cover: never;
   tags: never;
   no_source_warning: never;
   copy_anchor_link: never;
@@ -149,7 +134,6 @@ export interface ICUParams {
   empty_folder_message: never;
   switch_to_grid_view: never;
   switch_to_folder_view: never;
-  content_is_not_available: never;
   paper_texture: never;
   book_fold: never;
   lighting: never;
@@ -177,7 +161,6 @@ export interface ICUParams {
   x_results: { x: number };
   definition_x: { x: Date | boolean | number | string };
   subitem_of_x: { x: Date | boolean | number | string };
-  variant_of_x: { x: Date | boolean | number | string };
   dark_mode_extension_warning: never;
   weapon: { count: number };
   weapons_description: never;
@@ -188,4 +171,10 @@ export interface ICUParams {
   search_placeholder: never;
   performance_mode: never;
   performance_mode_tooltip: never;
+  transcriber: { count: number };
+  translator: { count: number };
+  proofreader: { count: number };
+  dubber: { count: number };
+  subber: { count: number };
+  author: { count: number };
 }

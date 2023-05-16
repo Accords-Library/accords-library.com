@@ -4,7 +4,7 @@ import { getAssetURL, getImgSizesByQuality, ImageQuality } from "helpers/img";
 
 /*
  *                                         ╭─────────────╮
- * ────────────────────────────────────────╯  CONSTANTS  ╰──────────────────────────────────────────
+ * ────────────────────────────────────────╯  COMPONENT  ╰──────────────────────────────────────────
  */
 
 interface Props

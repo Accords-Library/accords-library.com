@@ -10,9 +10,10 @@ import { isDefined } from "helpers/asserts";
  * ───────────────────────────────────────╯  COMPONENT  ╰───────────────────────────────────────────
  */
 
-interface Props {
+export interface ButtonGroupProps {
   className?: string;
   buttonsProps: (Parameters<typeof Button>[0] & {
+    visible?: boolean;
     tooltip?: React.ReactNode | null | undefined;
     tooltipPlacement?: Placement;
   })[];
@@ -20,7 +21,14 @@ interface Props {
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
-export const ButtonGroup = ({ buttonsProps, className }: Props): JSX.Element => (
+export const ButtonGroup = ({ buttonsProps, className }: ButtonGroupProps): JSX.Element => (
+  <FilteredButtonGroup
+    buttonsProps={buttonsProps.filter((button) => button.visible !== false)}
+    className={className}
+  />
+);
+
+const FilteredButtonGroup = ({ buttonsProps, className }: ButtonGroupProps) => (
   <div className={cJoin("grid grid-flow-col", className)}>
     {buttonsProps.map((buttonProps, index) => (
       <ConditionalWrapper

@@ -409,6 +409,7 @@ const RelatedContentsSection = ({
       open={isOpened}
       onClosing={() => setOpened(false)}
       onOpening={() => setOpened(true)}
+      overflowWhenOpen="visible"
       trigger={
         <div className="flex place-content-center place-items-center gap-4">
           <h2 className="text-center text-2xl">{title}</h2>
@@ -416,7 +417,7 @@ const RelatedContentsSection = ({
         </div>
       }
       contentInnerClassName={cJoin(
-        cIf(contents.length > 1, "px-4 py-10", "px-4 py-6"),
+        cIf(contents.length > 1, "py-10", "py-6"),
         "flex w-full flex-wrap place-content-center items-start gap-x-6 gap-y-8"
       )}
       easing="ease-in-out"

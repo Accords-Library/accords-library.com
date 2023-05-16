@@ -4,7 +4,7 @@ import { Ids } from "types/ids";
 
 export const useOnScroll = (id: Ids, onScroll: (scroll: number) => void): void => {
   const isClient = useIsClient();
-  const elem = isClient ? document.querySelector(`#${id}`) : null;
+  const elem = isClient ? document.querySelector(`#${CSS.escape(id)}`) : null;
   const listener = useCallback(() => {
     if (elem?.scrollTop) {
       onScroll(elem.scrollTop);

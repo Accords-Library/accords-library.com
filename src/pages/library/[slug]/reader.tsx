@@ -520,11 +520,13 @@ const LibrarySlug = ({
           <div className="flex gap-2">
             <Button
               icon={isGalleryMode ? "expand_more" : "expand_less"}
+              active={isGalleryMode}
               onClick={() => setIsGalleryMode((current) => !current)}
               size="small"
             />
             <Button
               icon={isFullscreen ? "fullscreen_exit" : "fullscreen"}
+              active={isFullscreen}
               onClick={toggleFullscreen}
               size="small"
             />

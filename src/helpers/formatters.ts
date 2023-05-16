@@ -215,7 +215,7 @@ export const prettyDuration = (seconds: number): string => {
   let result = "";
   if (hours) result += `${hours.toString().padStart(2, "0")}:`;
   result += `${minutes.toString().padStart(2, "0")}:`;
-  result += remainingSeconds.toString().padStart(2, "0");
+  result += Math.floor(remainingSeconds).toString().padStart(2, "0");
   return result;
 };
 

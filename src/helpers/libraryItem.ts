@@ -15,4 +15,4 @@ export const isUntangibleGroupItem = (
     metadata.subtype?.data?.attributes?.slug === "relation-set");
 
 export const getScanArchiveURL = (slug: string): string =>
-  `${process.env.NEXT_PUBLIC_URL_SCANS}/${slug}.zip`;
+  `${process.env.NEXT_PUBLIC_URL_ASSETS}/library/scans/${slug}.zip`;

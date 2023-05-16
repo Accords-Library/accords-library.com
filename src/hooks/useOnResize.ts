@@ -13,7 +13,7 @@ export const useOnResize = (
 
   useEffect(() => {
     logger.log(`Creating observer for ${id}`);
-    const elem = isClient ? document.querySelector(`#${id}`) : null;
+    const elem = isClient ? document.querySelector(`#${CSS.escape(id)}`) : null;
     const ro = new ResizeObserver((resizeObserverEntry) => {
       const entry = resizeObserverEntry[0];
       if (isDefined(entry)) {

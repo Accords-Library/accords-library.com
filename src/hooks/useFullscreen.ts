@@ -13,7 +13,7 @@ export const useFullscreen = (
   const [isFullscreen, setIsFullscreen] = useState(false);
   const isClient = useIsClient();
 
-  const elem = isClient ? document.querySelector(`#${id}`) : null;
+  const elem = isClient ? document.querySelector(`#${CSS.escape(id)}`) : null;
 
   const requestFullscreen = useCallback(async () => elem?.requestFullscreen(), [elem]);
   const exitFullscreen = useCallback(

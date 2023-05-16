@@ -9,7 +9,7 @@ export const useScrollTopOnChange = (id: Ids, deps: DependencyList, enabled = tr
   useEffect(() => {
     if (enabled) {
       logger.log("Change detected. Scrolling to top");
-      document.querySelector(`#${id}`)?.scrollTo({ top: 0, behavior: "smooth" });
+      document.querySelector(`#${CSS.escape(id)}`)?.scrollTo({ top: 0, behavior: "smooth" });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, ...deps, enabled]);

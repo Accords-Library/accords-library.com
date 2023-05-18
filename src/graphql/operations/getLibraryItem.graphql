@@ -133,6 +133,11 @@ query getLibraryItem($slug: String, $language_code: String) {
                 }
               }
             }
+            tracks(pagination: { limit: -1 }) {
+              id
+              slug
+              title
+            }
           }
           ... on ComponentMetadataGroup {
             subtype {

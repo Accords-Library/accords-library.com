@@ -14,12 +14,15 @@ import { GetVideoQuery } from "graphql/generated";
 import { getReadySdk } from "graphql/sdk";
 import { prettyDate, prettyShortenNumber } from "helpers/formatters";
 import { filterHasAttributes, isDefined } from "helpers/asserts";
-import { getVideoFile } from "helpers/videos";
+import { getVideoFile, getVideoThumbnailURL } from "helpers/videos";
 import { getOpenGraph } from "helpers/openGraph";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter, useAtomSetter } from "helpers/atoms";
 import { useFormat } from "hooks/useFormat";
 import { getFormat } from "helpers/i18n";
+import { VideoPlayer } from "components/Player";
+import { getDescription } from "helpers/description";
+import { Markdown } from "components/Markdown/Markdown";
 
 /*
  *                                           ╭────────╮
@@ -65,7 +68,7 @@ const Video = ({ video, ...otherProps }: Props): JSX.Element => {
       <div className="grid place-items-center gap-12">
         <div id="video" className="w-full overflow-hidden rounded-xl shadow-xl shadow-shade/80">
           {video.gone ? (
-            <video className="w-full" src={getVideoFile(video.uid)} controls />
+            <VideoPlayer className="w-full" src={getVideoFile(video.uid)} rounded={false} />
           ) : (
             <iframe
               src={`https://www.youtube-nocookie.com/embed/${video.uid}`}
@@ -132,7 +135,7 @@ const Video = ({ video, ...otherProps }: Props): JSX.Element => {
         <InsetBox id="description" className="grid place-items-center">
           <div className="grid w-[clamp(0px,100%,42rem)] place-items-center gap-8">
             <h2 className="text-2xl">{format("description")}</h2>
-            <p className="whitespace-pre-line">{video.description}</p>
+            <Markdown className="whitespace-pre-line" text={video.description} />
           </div>
         </InsetBox>
       </div>
@@ -158,7 +161,14 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   const props: Props = {
     video: videos.videos.data[0].attributes,
-    openGraph: getOpenGraph(format, videos.videos.data[0].attributes.title),
+    openGraph: getOpenGraph(
+      format,
+      videos.videos.data[0].attributes.title,
+      getDescription(videos.videos.data[0].attributes.description, {
+        [format("channel")]: [videos.videos.data[0].attributes.channel?.data?.attributes?.title],
+      }),
+      getVideoThumbnailURL(videos.videos.data[0].attributes.uid)
+    ),
   };
   return {
     props: props,

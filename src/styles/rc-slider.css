@@ -11,7 +11,7 @@
   box-sizing: border-box;
 }
 .rc-slider-rail {
-  @apply h-2 rounded-full bg-mid/80;
+  @apply h-2 rounded-full bg-mid;
   position: absolute;
   width: 100%;
 }

@@ -67,3 +67,9 @@ textarea:disabled {
 textarea {
   @apply scrollbar-none;
 }
+
+/* VIDEO CC */
+
+video::cue {
+  @apply bg-[black]/70 font-body;
+}

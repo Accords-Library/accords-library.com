@@ -58,11 +58,11 @@ export const Button = ({
         onMouseUp={onMouseUp}
         onFocus={(event) => event.target.blur()}
         className={cJoin(
-          `group grid w-full grid-flow-col place-content-center
-          place-items-center gap-2 rounded-full border border-dark 
-          leading-none text-dark transition-all disabled:cursor-not-allowed
-          disabled:opacity-50 disabled:grayscale`,
-          cIf(size === "small", "px-3 py-1 text-xs", "px-4 py-3"),
+          `group grid w-full grid-flow-col
+          place-content-center place-items-center gap-2 rounded-full border 
+          border-dark leading-none text-dark transition-all
+          disabled:cursor-not-allowed disabled:opacity-50 disabled:grayscale`,
+          cIf(size === "small", "h-6 px-3 py-1 text-xs", "h-10 px-4 py-3"),
           cIf(active, "!border-black bg-black !text-light shadow-lg shadow-black"),
           cIf(
             !disabled && !active,
@@ -91,7 +91,9 @@ export const Button = ({
             weight={size === "normal" ? 500 : 800}
           />
         )}
-        {isDefinedAndNotEmpty(text) && <p className="-translate-y-[0.05em] text-center">{text}</p>}
+        {isDefinedAndNotEmpty(text) && (
+          <p className="line-clamp-1 -translate-y-[0.05em] text-center leading-5">{text}</p>
+        )}
       </button>
     </div>
   </Link>

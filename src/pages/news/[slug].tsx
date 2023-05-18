@@ -8,7 +8,6 @@ import { Terminal } from "components/Cli/Terminal";
 import { PostWithTranslations } from "types/types";
 import { getDefaultPreferredLanguages, staticSmartLanguage } from "helpers/locales";
 import { prettyTerminalBoxedTitle } from "helpers/terminal";
-import { prettyMarkdown } from "helpers/description";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter } from "helpers/atoms";
 import { useFormat } from "hooks/useFormat";
@@ -89,11 +88,11 @@ const terminalPostPage = (post: PostWithTranslations, router: NextRouter): strin
       result += prettyTerminalBoxedTitle(selectedTranslation.title);
       if (isDefinedAndNotEmpty(selectedTranslation.excerpt)) {
         result += "\n\n";
-        result += prettyMarkdown(selectedTranslation.excerpt);
+        result += selectedTranslation.excerpt;
       }
       if (isDefinedAndNotEmpty(selectedTranslation.body)) {
         result += "\n\n";
-        result += prettyMarkdown(selectedTranslation.body);
+        result += selectedTranslation.body;
       }
     }
   }

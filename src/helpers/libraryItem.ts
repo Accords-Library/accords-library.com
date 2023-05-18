@@ -16,3 +16,6 @@ export const isUntangibleGroupItem = (
 
 export const getScanArchiveURL = (slug: string): string =>
   `${process.env.NEXT_PUBLIC_URL_ASSETS}/library/scans/${slug}.zip`;
+
+export const getTrackURL = (itemSlug: string, trackSlug: string): string =>
+  `${process.env.NEXT_PUBLIC_URL_ASSETS}/library/tracks/${itemSlug}/${trackSlug}.mp3`;

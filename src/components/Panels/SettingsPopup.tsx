@@ -1,6 +1,5 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { Button } from "components/Inputs/Button";
 import { ButtonGroup } from "components/Inputs/ButtonGroup";
 import { OrderableList } from "components/Inputs/OrderableList";
 import { Select } from "components/Inputs/Select";
@@ -203,23 +202,28 @@ export const SettingsPopup = (): JSX.Element => {
           <div>
             <h3 className="text-xl">{format("font")}</h3>
             <div className="grid gap-2">
-              <Button
-                active={!isDyslexic}
-                onClick={() => {
-                  setDyslexic(false);
-                  sendAnalytics("Settings", "Change font (Zen Maru Gothic)");
-                }}
-                className="font-zenMaruGothic"
-                text="Zen Maru Gothic"
-              />
-              <Button
-                active={isDyslexic}
-                onClick={() => {
-                  setDyslexic(true);
-                  sendAnalytics("Settings", "Change font (OpenDyslexic)");
-                }}
-                className="font-openDyslexic"
-                text="OpenDyslexic"
+              <ButtonGroup
+                vertical
+                buttonsProps={[
+                  {
+                    active: !isDyslexic,
+                    onClick: () => {
+                      setDyslexic(false);
+                      sendAnalytics("Settings", "Change font (Zen Maru Gothic)");
+                    },
+                    className: "font-zenMaruGothic",
+                    text: "Zen Maru Gothic",
+                  },
+                  {
+                    active: isDyslexic,
+                    onClick: () => {
+                      setDyslexic(true);
+                      sendAnalytics("Settings", "Change font (OpenDyslexic)");
+                    },
+                    className: "font-openDyslexic",
+                    text: "OpenDyslexic",
+                  },
+                ]}
               />
             </div>
           </div>

@@ -185,6 +185,43 @@ query getContentText($slug: String, $language_code: String) {
             }
             notes
           }
+          video_set {
+            status
+            source_language {
+              data {
+                attributes {
+                  code
+                }
+              }
+            }
+            has_subfile
+            subbers(pagination: { limit: -1 }) {
+              data {
+                attributes {
+                  ...recorderChip
+                }
+              }
+            }
+            notes
+          }
+          audio_set {
+            status
+            source_language {
+              data {
+                attributes {
+                  code
+                }
+              }
+            }
+            dubbers(pagination: { limit: -1 }) {
+              data {
+                attributes {
+                  ...recorderChip
+                }
+              }
+            }
+            notes
+          }
         }
 
         thumbnail {

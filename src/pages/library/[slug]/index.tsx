@@ -38,7 +38,7 @@ import {
   isDefinedAndNotEmpty,
 } from "helpers/asserts";
 import { useScrollTopOnChange } from "hooks/useScrollTopOnChange";
-import { getScanArchiveURL, isUntangibleGroupItem } from "helpers/libraryItem";
+import { getScanArchiveURL, getTrackURL, isUntangibleGroupItem } from "helpers/libraryItem";
 import { useDeviceSupportsHover } from "hooks/useMediaQuery";
 import { WithLabel } from "components/Inputs/WithLabel";
 import { cJoin, cIf } from "helpers/className";
@@ -53,6 +53,7 @@ import { useFormat } from "hooks/useFormat";
 import { getFormat } from "helpers/i18n";
 import { ElementsSeparator } from "helpers/component";
 import { ToolTip } from "components/ToolTip";
+import { AudioPlayer } from "components/Player";
 
 /*
  *                                         ╭─────────────╮
@@ -69,9 +70,21 @@ const intersectionIds = ["summary", "gallery", "details", "subitems", "contents"
 interface Props extends AppLayoutRequired {
   item: NonNullable<NonNullable<GetLibraryItemQuery["libraryItems"]>["data"][number]["attributes"]>;
   itemId: NonNullable<GetLibraryItemQuery["libraryItems"]>["data"][number]["id"];
+  tracks: { id: string; title: string; src: string }[];
+  hasContentScans: boolean;
+  isVariantSet: boolean;
+  hasContentSection: boolean;
 }
 
-const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
+const LibrarySlug = ({
+  item,
+  itemId,
+  tracks,
+  hasContentScans,
+  isVariantSet,
+  hasContentSection,
+  ...otherProps
+}: Props): JSX.Element => {
   const currency = useAtomGetter(atoms.settings.currency);
   const isPerfModeEnabled = useAtomGetter(atoms.settings.isPerfModeEnabled);
   const { format, formatLibraryItemType } = useFormat();
@@ -79,6 +92,7 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
 
   const isContentPanelAtLeast3xl = useAtomGetter(atoms.containerQueries.isContentPanelAtLeast3xl);
   const isContentPanelAtLeastSm = useAtomGetter(atoms.containerQueries.isContentPanelAtLeastSm);
+  const is3ColumnsLayout = useAtomGetter(atoms.containerQueries.is3ColumnsLayout);
 
   const hoverable = useDeviceSupportsHover();
   const router = useRouter();
@@ -90,19 +104,6 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
 
   useScrollTopOnChange(Ids.ContentPanel, [itemId]);
   const currentIntersection = useIntersectionList(intersectionIds);
-
-  const isVariantSet =
-    item.metadata?.[0]?.__typename === "ComponentMetadataGroup" &&
-    item.metadata[0].subtype?.data?.attributes?.slug === "variant-set";
-
-  const hasContentScans = item.contents?.data.some(
-    (content) => content.attributes?.scan_set && content.attributes.scan_set.length > 0
-  );
-
-  const hasContentSection =
-    (item.contents && item.contents.data.length > 0) || item.download_available;
-
-  const is3ColumnsLayout = useAtomGetter(atoms.containerQueries.is3ColumnsLayout);
 
   const subPanel = (
     <SubPanel>
@@ -157,7 +158,7 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
               />
             )}
 
-            {item.contents && item.contents.data.length > 0 && (
+            {hasContentSection && (
               <NavOption
                 title={format("contents")}
                 url={`#${intersectionIds[4]}`}
@@ -546,6 +547,9 @@ const LibrarySlug = ({ item, itemId, ...otherProps }: Props): JSX.Element => {
               )}
             </div>
             <div className="grid w-full gap-4">
+              {tracks.map(({ id, title, src }) => (
+                <AudioPlayer key={id} src={src} title={title} />
+              ))}
               <div
                 className={cJoin(
                   "grid items-center",
@@ -641,10 +645,36 @@ export const getStaticProps: GetStaticProps = async (context) => {
     }
   );
 
+  const tracks: Props["tracks"] = ((attributes) => {
+    const metadata = attributes.metadata?.[0];
+    if (metadata?.__typename !== "ComponentMetadataAudio" || !metadata.tracks) {
+      return [];
+    }
+    return filterDefined(metadata.tracks).map((track, index) => ({
+      id: track.slug,
+      src: getTrackURL(attributes.slug, track.slug),
+      title: `${index + 1}. ${track.title}`,
+    }));
+  })(item.libraryItems.data[0].attributes);
+
   const props: Props = {
     item: item.libraryItems.data[0].attributes,
     itemId: item.libraryItems.data[0].id,
+    tracks,
     openGraph: getOpenGraph(format, title, description, thumbnail?.data?.attributes),
+    isVariantSet:
+      item.libraryItems.data[0].attributes.metadata?.[0]?.__typename === "ComponentMetadataGroup" &&
+      item.libraryItems.data[0].attributes.metadata[0].subtype?.data?.attributes?.slug ===
+        "variant-set",
+    hasContentScans:
+      item.libraryItems.data[0].attributes.contents?.data.some(
+        (content) => content.attributes?.scan_set && content.attributes.scan_set.length > 0
+      ) ?? false,
+    hasContentSection:
+      (item.libraryItems.data[0].attributes.contents &&
+        item.libraryItems.data[0].attributes.contents.data.length > 0) ||
+      item.libraryItems.data[0].attributes.download_available ||
+      tracks.length > 0,
   };
   return {
     props: props,

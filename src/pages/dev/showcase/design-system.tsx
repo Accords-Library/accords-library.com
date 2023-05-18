@@ -5,7 +5,7 @@ import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { getOpenGraph } from "helpers/openGraph";
 import { ContentPanel, ContentPanelWidthSizes } from "components/Containers/ContentPanel";
 import { Button } from "components/Inputs/Button";
-import { cJoin } from "helpers/className";
+import { cIf, cJoin } from "helpers/className";
 import { HorizontalLine } from "components/HorizontalLine";
 import { Switch } from "components/Inputs/Switch";
 import { TextInput } from "components/Inputs/TextInput";
@@ -17,6 +17,7 @@ import { PreviewCard } from "components/PreviewCard";
 import { ChroniclePreview } from "components/Chronicles/ChroniclePreview";
 import { PreviewFolder } from "components/Contents/PreviewFolder";
 import { getFormat } from "helpers/i18n";
+import { AudioPlayer, VideoPlayer } from "components/Player";
 
 /*
  *                                           ╭────────╮
@@ -32,6 +33,7 @@ const DesignSystem = (props: Props): JSX.Element => {
   const [textInputState, setTextInputState] = useState("");
   const [textAreaState, setTextAreaState] = useState("");
   const [buttonGroupState, setButtonGroupState] = useState(0);
+  const [verticalButtonGroupState, setVerticalButtonGroupState] = useState(0);
 
   const contentPanel = (
     <ContentPanel
@@ -190,7 +192,7 @@ const DesignSystem = (props: Props): JSX.Element => {
         </div>
 
         <HorizontalLine />
-        <h3 className="text-xl">Small sized</h3>
+        <h3 className="-mt-6 text-xl">Small sized</h3>
 
         <div className="grid grid-cols-[repeat(4,auto)] place-content-center gap-4">
           <p className="self-center justify-self-start">Normal</p>
@@ -215,11 +217,21 @@ const DesignSystem = (props: Props): JSX.Element => {
         </div>
 
         <HorizontalLine />
-        <h3 className="text-xl">Groups</h3>
-        <div className="grid place-items-center gap-4">
+        <h3 className="-mt-6 text-xl">Groups</h3>
+        <div className="grid grid-cols-2 place-items-center gap-4">
+          <p>Normal sized</p>
+          <p>Small sized</p>
           <ButtonGroup buttonsProps={[{ icon: "call_end" }, { icon: "zoom_in_map" }]} />
           <ButtonGroup
+            buttonsProps={[{ icon: "call_end" }, { icon: "zoom_in_map" }]}
+            size="small"
+          />
+          <ButtonGroup
             buttonsProps={[{ icon: "car_crash" }, { icon: "timelapse" }, { icon: "leak_add" }]}
+          />
+          <ButtonGroup
+            buttonsProps={[{ icon: "car_crash" }, { icon: "timelapse" }, { icon: "leak_add" }]}
+            size="small"
           />
           <ButtonGroup
             buttonsProps={[
@@ -227,6 +239,40 @@ const DesignSystem = (props: Props): JSX.Element => {
               { icon: "timelapse", text: "Label", active: true },
               { text: "Another Label" },
               { icon: "cable" },
+            ]}
+          />
+          <ButtonGroup
+            buttonsProps={[
+              { icon: "car_crash" },
+              { icon: "timelapse", text: "Label", active: true },
+              { text: "Another Label" },
+              { icon: "cable" },
+            ]}
+            size="small"
+          />
+          <ButtonGroup
+            buttonsProps={[
+              {
+                text: "Try me!",
+                active: buttonGroupState === 0,
+                onClick: () => setButtonGroupState(0),
+              },
+              {
+                icon: "ad_units",
+                text: "Label",
+                active: buttonGroupState === 1,
+                onClick: () => setButtonGroupState(1),
+              },
+              {
+                text: "Yet another label",
+                active: buttonGroupState === 2,
+                onClick: () => setButtonGroupState(2),
+              },
+              {
+                icon: "security",
+                active: buttonGroupState === 3,
+                onClick: () => setButtonGroupState(3),
+              },
             ]}
           />
           <ButtonGroup
@@ -253,6 +299,102 @@ const DesignSystem = (props: Props): JSX.Element => {
                 onClick: () => setButtonGroupState(3),
               },
             ]}
+            size="small"
+          />
+        </div>
+
+        <HorizontalLine />
+
+        <h3 className="-mt-6 text-xl">Vertical groups</h3>
+        <div className="grid grid-cols-2 place-items-center gap-4">
+          <p>Normal sized</p>
+          <p>Small sized</p>
+          <ButtonGroup buttonsProps={[{ icon: "call_end" }, { icon: "zoom_in_map" }]} vertical />
+          <ButtonGroup
+            buttonsProps={[{ icon: "call_end" }, { icon: "zoom_in_map" }]}
+            vertical
+            size="small"
+          />
+          <ButtonGroup
+            buttonsProps={[{ icon: "car_crash" }, { icon: "timelapse" }, { icon: "leak_add" }]}
+            vertical
+          />
+          <ButtonGroup
+            buttonsProps={[{ icon: "car_crash" }, { icon: "timelapse" }, { icon: "leak_add" }]}
+            vertical
+            size="small"
+          />
+          <ButtonGroup
+            buttonsProps={[
+              { icon: "car_crash" },
+              { icon: "timelapse", text: "Label", active: true },
+              { text: "Another Label" },
+              { icon: "cable" },
+            ]}
+            vertical
+          />
+          <ButtonGroup
+            buttonsProps={[
+              { icon: "car_crash" },
+              { icon: "timelapse", text: "Label", active: true },
+              { text: "Another Label" },
+              { icon: "cable" },
+            ]}
+            vertical
+            size="small"
+          />
+          <ButtonGroup
+            buttonsProps={[
+              {
+                text: "Try me!",
+                active: verticalButtonGroupState === 0,
+                onClick: () => setVerticalButtonGroupState(0),
+              },
+              {
+                icon: "ad_units",
+                text: "Label",
+                active: verticalButtonGroupState === 1,
+                onClick: () => setVerticalButtonGroupState(1),
+              },
+              {
+                text: "Yet another label",
+                active: verticalButtonGroupState === 2,
+                onClick: () => setVerticalButtonGroupState(2),
+              },
+              {
+                icon: "security",
+                active: verticalButtonGroupState === 3,
+                onClick: () => setVerticalButtonGroupState(3),
+              },
+            ]}
+            vertical
+          />
+          <ButtonGroup
+            buttonsProps={[
+              {
+                text: "Try me!",
+                active: verticalButtonGroupState === 0,
+                onClick: () => setVerticalButtonGroupState(0),
+              },
+              {
+                icon: "ad_units",
+                text: "Label",
+                active: verticalButtonGroupState === 1,
+                onClick: () => setVerticalButtonGroupState(1),
+              },
+              {
+                text: "Yet another label",
+                active: verticalButtonGroupState === 2,
+                onClick: () => setVerticalButtonGroupState(2),
+              },
+              {
+                icon: "security",
+                active: verticalButtonGroupState === 3,
+                onClick: () => setVerticalButtonGroupState(3),
+              },
+            ]}
+            vertical
+            size="small"
           />
         </div>
       </TwoThemedSection>
@@ -814,6 +956,28 @@ const DesignSystem = (props: Props): JSX.Element => {
           <PreviewFolder href="#" title="Disabled, with a longer title" disabled />
         </div>
       </TwoThemedSection>
+
+      <TwoThemedSection className="grid gap-4" fullWidth>
+        <h3 className="mb-2 text-xl">Audio players</h3>
+
+        <AudioPlayer src="https://resha.re/public-domain/Prelude-No.15-in-G-major-BWV-860.mp3" />
+        <AudioPlayer
+          title="A longer audio track, with a title"
+          src="https://resha.re/public-domain/Muriel-Nguyen-Xuan-Brahms-rhapsody-opus79-1.ogg"
+        />
+        <AudioPlayer
+          title={`The same audio tack, but this time, an obnoxiously long title that frankly at\
+this point should stop because who in their right mind would read that much text for a title.`}
+          src="https://resha.re/public-domain/Muriel-Nguyen-Xuan-Brahms-rhapsody-opus79-1.ogg"
+        />
+        <HorizontalLine />
+        <h3 className="mb-2 text-xl">Video players</h3>
+        <VideoPlayer src={`https://resha.re/public-domain/the_whistler_1944.mp4`} />
+        <VideoPlayer
+          src={`https://resha.re/public-domain/big_buck_bunny_720p_surround.mp4`}
+          title="Big Buck Bunny - Blender Foundation"
+        />
+      </TwoThemedSection>
     </ContentPanel>
   );
   return <AppLayout {...props} contentPanel={contentPanel} />;
@@ -844,10 +1008,15 @@ export const getStaticProps: GetStaticProps = (context) => {
 interface ThemedSectionProps {
   className?: string;
   children?: ReactNode;
+  fullWidth?: boolean;
 }
 
-const TwoThemedSection = ({ children, className }: ThemedSectionProps) => (
-  <div className="mb-12 grid grid-flow-col drop-shadow-lg shadow-shade">
+const TwoThemedSection = ({ children, className, fullWidth }: ThemedSectionProps) => (
+  <div
+    className={cJoin(
+      "mb-12 grid grid-flow-col drop-shadow-lg shadow-shade",
+      cIf(fullWidth, "w-full")
+    )}>
     <LightThemeSection className={cJoin("rounded-l-xl text-black", className)}>
       {children}
     </LightThemeSection>

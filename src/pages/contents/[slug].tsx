@@ -1,26 +1,18 @@
 import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next";
-import { Fragment, useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Collapsible from "react-collapsible";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
-import { Chip } from "components/Chip";
 import { PreviewCardCTAs } from "components/Library/PreviewCardCTAs";
 import { getTocFromMarkdawn, Markdawn, TableOfContents } from "components/Markdown/Markdawn";
 import { TranslatedReturnButton } from "components/PanelComponents/ReturnButton";
 import { ContentPanel, ContentPanelWidthSizes } from "components/Containers/ContentPanel";
 import { SubPanel } from "components/Containers/SubPanel";
 import { PreviewCard, TranslatedPreviewCard } from "components/PreviewCard";
-import { RecorderChip } from "components/RecorderChip";
 import { ThumbnailHeader } from "components/ThumbnailHeader";
-import { ToolTip } from "components/ToolTip";
 import { getReadySdk } from "graphql/sdk";
-import {
-  prettyInlineTitle,
-  prettyLanguage,
-  prettyItemSubType,
-  prettySlug,
-} from "helpers/formatters";
+import { prettyInlineTitle, prettyItemSubType, prettySlug } from "helpers/formatters";
 import { isUntangibleGroupItem } from "helpers/libraryItem";
-import { filterHasAttributes, isDefinedAndNotEmpty } from "helpers/asserts";
+import { filterHasAttributes, isDefined, isDefinedAndNotEmpty } from "helpers/asserts";
 import { ContentWithTranslations } from "types/types";
 import { useScrollTopOnChange } from "hooks/useScrollTopOnChange";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
@@ -36,11 +28,17 @@ import { getFormat } from "helpers/i18n";
 import { ElementsSeparator } from "helpers/component";
 import { RelatedContentPreviewFragment } from "graphql/generated";
 import { Button } from "components/Inputs/Button";
+import { ButtonGroup, ButtonGroupProps } from "components/Inputs/ButtonGroup";
+import { AudioPlayer, VideoPlayer } from "components/Player";
+import { HorizontalLine } from "components/HorizontalLine";
+import { Credits } from "components/Credits";
 
 /*
  *                                           ╭────────╮
  * ──────────────────────────────────────────╯  PAGE  ╰─────────────────────────────────────────────
  */
+
+type SetType = "audio_set" | "text_set" | "video_set";
 
 interface Props extends AppLayoutRequired {
   content: ContentWithTranslations;
@@ -49,9 +47,7 @@ interface Props extends AppLayoutRequired {
 const Content = ({ content, ...otherProps }: Props): JSX.Element => {
   const setSubPanelOpened = useAtomSetter(atoms.layout.subPanelOpened);
   const is1ColumnLayout = useAtomGetter(atoms.containerQueries.is1ColumnLayout);
-
-  const { format, formatStatusDescription } = useFormat();
-  const languages = useAtomGetter(atoms.localData.languages);
+  const { format } = useFormat();
 
   const [selectedTranslation, LanguageSwitcher, languageSwitcherProps] = useSmartLanguage({
     items: content.translations,
@@ -63,6 +59,20 @@ const Content = ({ content, ...otherProps }: Props): JSX.Element => {
   });
 
   useScrollTopOnChange(Ids.ContentPanel, [selectedTranslation]);
+  const [selectedSetType, setSelectedSetType] = useState<SetType>();
+
+  useEffect(() => {
+    if (isDefined(selectedSetType) && selectedTranslation?.[selectedSetType]) return;
+    if (selectedTranslation?.text_set) {
+      setSelectedSetType("text_set");
+    } else if (selectedTranslation?.audio_set) {
+      setSelectedSetType("audio_set");
+    } else if (selectedTranslation?.video_set) {
+      setSelectedSetType("video_set");
+    } else {
+      setSelectedSetType(undefined);
+    }
+  }, [selectedSetType, selectedTranslation]);
 
   const returnButtonProps = {
     href: content.folder?.data?.attributes
@@ -91,104 +101,73 @@ const Content = ({ content, ...otherProps }: Props): JSX.Element => {
     )
   );
 
+  const setTypeSelectorProps: ButtonGroupProps["buttonsProps"] = [
+    {
+      text: "Text",
+      icon: "subject",
+      visible: isDefined(selectedTranslation?.text_set),
+      onClick: () => setSelectedSetType("text_set"),
+      active: selectedSetType === "text_set",
+    },
+    {
+      text: "Audio",
+      icon: "headphones",
+      visible: isDefined(selectedTranslation?.audio_set),
+      onClick: () => setSelectedSetType("audio_set"),
+      active: selectedSetType === "audio_set",
+    },
+    {
+      text: "Video",
+      icon: "movie",
+      visible: isDefined(selectedTranslation?.video_set),
+      onClick: () => setSelectedSetType("video_set"),
+      active: selectedSetType === "video_set",
+    },
+  ];
+
   const subPanel = (
     <SubPanel>
       <ElementsSeparator>
         {[
           !is1ColumnLayout && <TranslatedReturnButton {...returnButtonProps} />,
 
-          selectedTranslation?.text_set?.source_language?.data?.attributes?.code !== undefined && (
-            <div className="grid gap-5">
-              <h2 className="text-xl">
-                {selectedTranslation.text_set.source_language.data.attributes.code ===
-                selectedTranslation.language?.data?.attributes?.code
-                  ? format("transcript_notice")
-                  : format("translation_notice")}
-              </h2>
-
-              {selectedTranslation.text_set.source_language.data.attributes.code !==
-                selectedTranslation.language?.data?.attributes?.code && (
-                <div className="grid place-items-center gap-2">
-                  <p className="font-headers font-bold">{format("source_language")}:</p>
-                  <Chip
-                    text={prettyLanguage(
-                      selectedTranslation.text_set.source_language.data.attributes.code,
-                      languages
-                    )}
-                  />
-                </div>
-              )}
-
-              <div className="grid grid-flow-col place-content-center place-items-center gap-2">
-                <p className="font-headers font-bold">{format("status")}:</p>
-
-                <ToolTip
-                  content={formatStatusDescription(selectedTranslation.text_set.status)}
-                  maxWidth={"20rem"}>
-                  <Chip text={selectedTranslation.text_set.status} />
-                </ToolTip>
-              </div>
-
-              {selectedTranslation.text_set.transcribers &&
-                selectedTranslation.text_set.transcribers.data.length > 0 && (
-                  <div>
-                    <p className="font-headers font-bold">{format("transcribers")}:</p>
-                    <div className="grid place-content-center place-items-center gap-2">
-                      {filterHasAttributes(selectedTranslation.text_set.transcribers.data, [
-                        "attributes",
-                        "id",
-                      ]).map((recorder) => (
-                        <Fragment key={recorder.id}>
-                          <RecorderChip recorder={recorder.attributes} />
-                        </Fragment>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-              {selectedTranslation.text_set.translators &&
-                selectedTranslation.text_set.translators.data.length > 0 && (
-                  <div>
-                    <p className="font-headers font-bold">{format("translators")}:</p>
-                    <div className="grid place-content-center place-items-center gap-2">
-                      {filterHasAttributes(selectedTranslation.text_set.translators.data, [
-                        "attributes",
-                        "id",
-                      ]).map((recorder) => (
-                        <Fragment key={recorder.id}>
-                          <RecorderChip recorder={recorder.attributes} />
-                        </Fragment>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-              {selectedTranslation.text_set.proofreaders &&
-                selectedTranslation.text_set.proofreaders.data.length > 0 && (
-                  <div>
-                    <p className="font-headers font-bold">{format("proofreaders")}:</p>
-                    <div className="grid place-content-center place-items-center gap-2">
-                      {filterHasAttributes(selectedTranslation.text_set.proofreaders.data, [
-                        "attributes",
-                        "id",
-                      ]).map((recorder) => (
-                        <Fragment key={recorder.id}>
-                          <RecorderChip recorder={recorder.attributes} />
-                        </Fragment>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-              {isDefinedAndNotEmpty(selectedTranslation.text_set.notes) && (
-                <div>
-                  <p className="font-headers font-bold">{format("notes")}:</p>
-                  <div className="grid place-content-center place-items-center gap-2">
-                    <Markdawn text={selectedTranslation.text_set.notes} />
-                  </div>
-                </div>
-              )}
-            </div>
+          selectedSetType === "text_set" ? (
+            <Credits
+              key="credits"
+              languageCode={selectedTranslation?.language?.data?.attributes?.code}
+              sourceLanguageCode={
+                selectedTranslation?.text_set?.source_language?.data?.attributes?.code
+              }
+              status={selectedTranslation?.text_set?.status}
+              transcribers={selectedTranslation?.text_set?.transcribers?.data}
+              translators={selectedTranslation?.text_set?.translators?.data}
+              proofreaders={selectedTranslation?.text_set?.proofreaders?.data}
+              notes={selectedTranslation?.text_set?.notes}
+            />
+          ) : selectedSetType === "audio_set" ? (
+            <Credits
+              key="credits"
+              languageCode={selectedTranslation?.language?.data?.attributes?.code}
+              sourceLanguageCode={
+                selectedTranslation?.audio_set?.source_language?.data?.attributes?.code
+              }
+              status={selectedTranslation?.audio_set?.status}
+              dubbers={selectedTranslation?.audio_set?.dubbers?.data}
+              notes={selectedTranslation?.audio_set?.notes}
+            />
+          ) : (
+            selectedSetType === "video_set" && (
+              <Credits
+                key="credits"
+                languageCode={selectedTranslation?.language?.data?.attributes?.code}
+                sourceLanguageCode={
+                  selectedTranslation?.video_set?.source_language?.data?.attributes?.code
+                }
+                status={selectedTranslation?.video_set?.status}
+                subbers={selectedTranslation?.video_set?.subbers?.data}
+                notes={selectedTranslation?.video_set?.notes}
+              />
+            )
           ),
 
           toc && <TableOfContents toc={toc} onContentClicked={() => setSubPanelOpened(false)} />,
@@ -254,24 +233,35 @@ const Content = ({ content, ...otherProps }: Props): JSX.Element => {
       />
 
       <div className="grid place-items-center">
-        <ElementsSeparator className="max-w-2xl">
+        <ElementsSeparator
+          separator={
+            selectedSetType === "text_set" ? (
+              <HorizontalLine className="max-w-2xl" />
+            ) : (
+              <div className="py-8" />
+            )
+          }>
           {[
-            <ThumbnailHeader
-              key="thumbnailHeader"
-              className="max-w-2xl"
-              thumbnail={content.thumbnail?.data?.attributes}
-              pre_title={selectedTranslation?.pre_title}
-              title={selectedTranslation?.title}
-              subtitle={selectedTranslation?.subtitle}
-              description={selectedTranslation?.description}
-              type={content.type}
-              categories={content.categories}
-              languageSwitcher={
-                languageSwitcherProps.locales.size > 1 ? (
-                  <LanguageSwitcher {...languageSwitcherProps} />
-                ) : undefined
-              }
-            />,
+            <div key="thumbnailHeader" className="grid place-items-center gap-6">
+              <ThumbnailHeader
+                className="max-w-2xl"
+                thumbnail={content.thumbnail?.data?.attributes}
+                pre_title={selectedTranslation?.pre_title}
+                title={selectedTranslation?.title}
+                subtitle={selectedTranslation?.subtitle}
+                description={selectedTranslation?.description}
+                type={content.type}
+                categories={content.categories}
+                languageSwitcher={
+                  languageSwitcherProps.locales.size > 1 ? (
+                    <LanguageSwitcher {...languageSwitcherProps} />
+                  ) : undefined
+                }
+              />
+              {setTypeSelectorProps.filter((button) => button.visible).length > 1 && (
+                <ButtonGroup buttonsProps={setTypeSelectorProps} />
+              )}
+            </div>,
 
             content.previous_contents?.data && content.previous_contents.data.length > 0 && (
               <RelatedContentsSection
@@ -283,8 +273,35 @@ const Content = ({ content, ...otherProps }: Props): JSX.Element => {
               />
             ),
 
-            selectedTranslation?.text_set?.text && (
+            selectedSetType === "text_set" && selectedTranslation?.text_set?.text ? (
               <Markdawn className="max-w-2xl" text={selectedTranslation.text_set.text} />
+            ) : selectedSetType === "audio_set" && selectedTranslation?.audio_set ? (
+              <AudioPlayer
+                title={prettyInlineTitle(
+                  selectedTranslation.pre_title,
+                  selectedTranslation.title,
+                  selectedTranslation.subtitle
+                )}
+                src={`${process.env.NEXT_PUBLIC_URL_ASSETS}/contents/audios/\
+${content.slug}_${selectedTranslation.language?.data?.attributes?.code}.mp3`}
+                className="max-w-2xl"
+              />
+            ) : (
+              selectedSetType === "video_set" &&
+              selectedTranslation?.video_set && (
+                <VideoPlayer
+                  title={prettyInlineTitle(
+                    selectedTranslation.pre_title,
+                    selectedTranslation.title,
+                    selectedTranslation.subtitle
+                  )}
+                  src={`${process.env.NEXT_PUBLIC_URL_ASSETS}/contents/videos/\
+${content.slug}_${selectedTranslation.language?.data?.attributes?.code}.mp4`}
+                  subSrc={`${process.env.NEXT_PUBLIC_URL_ASSETS}/contents/videos/\
+${content.slug}_${selectedTranslation.language?.data?.attributes?.code}.vtt`}
+                  className="max-w-[90vh]"
+                />
+              )
             ),
 
             content.next_contents?.data && content.next_contents.data.length > 0 && (
@@ -331,13 +348,16 @@ export const getStaticProps: GetStaticProps = async (context) => {
         preferredLanguages: getDefaultPreferredLanguages(context.locale, context.locales),
       });
       if (selectedTranslation) {
+        const rawDescription = isDefinedAndNotEmpty(selectedTranslation.description)
+          ? selectedTranslation.description
+          : selectedTranslation.text_set?.text;
         return {
           title: prettyInlineTitle(
             selectedTranslation.pre_title,
             selectedTranslation.title,
             selectedTranslation.subtitle
           ),
-          description: getDescription(selectedTranslation.description, {
+          description: getDescription(rawDescription, {
             [format("type", { count: Infinity })]: [
               content.contents.data[0].attributes.type?.data?.attributes?.titles?.[0]?.title,
             ],

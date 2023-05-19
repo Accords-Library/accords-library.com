@@ -107,12 +107,8 @@ export const SearchPopup = (): JSX.Element => {
             q,
             limit: SEARCH_LIMIT,
             attributesToRetrieve: ["translations", "thumbnail", "slug", "date", "categories"],
-            attributesToHighlight: [
-              "translations.title",
-              "translations.excerpt",
-              "translations.body",
-            ],
-            attributesToCrop: ["translations.body"],
+            attributesToHighlight: ["translations.title", "translations.displayable_description"],
+            attributesToCrop: ["translations.displayable_description"],
             filter: ["hidden = false"],
           },
           {
@@ -376,12 +372,10 @@ export const SearchPopup = (): JSX.Element => {
                   onClick={() => setSearchOpened(false)}
                   translations={filterHasAttributes(item._formatted.translations, [
                     "language.data.attributes.code",
-                  ]).map(({ excerpt, body, language, ...otherAttributes }) => ({
+                  ]).map(({ excerpt, displayable_description, language, ...otherAttributes }) => ({
                     ...otherAttributes,
-                    description: containsHighlight(excerpt)
-                      ? excerpt
-                      : containsHighlight(body)
-                      ? body
+                    description: containsHighlight(displayable_description)
+                      ? displayable_description
                       : excerpt,
                     language: language.data.attributes.code,
                   }))}

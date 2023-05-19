@@ -18,6 +18,8 @@ export interface MeiliLibraryItem extends LibraryItemAttributesFragment {
   sortable_name: string;
   sortable_price: number | undefined;
   sortable_date: number | undefined;
+  groupable_year: number | undefined;
+  filterable_categories: string[];
   untangible_group_item: boolean;
 }
 
@@ -39,9 +41,15 @@ export interface MeiliVideo extends VideoAttributesFragment {
   channel_uid?: string;
 }
 
-export interface MeiliPost extends PostAttributesFragment {
+export interface MeiliPost extends Omit<PostAttributesFragment, "translations"> {
   id: string;
   sortable_date: number;
+  translations: (Omit<
+    NonNullable<NonNullable<PostAttributesFragment["translations"]>[number]>,
+    "body"
+  > & {
+    displayable_description?: string | null;
+  })[];
 }
 
 export interface MeiliWikiPage extends Omit<WikiPageAttributesFragment, "translations"> {

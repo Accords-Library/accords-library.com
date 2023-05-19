@@ -79,8 +79,8 @@ const News = ({ ...otherProps }: Props): JSX.Element => {
         hitsPerPage: 25,
         page,
         attributesToRetrieve: ["translations", "thumbnail", "slug", "date", "categories"],
-        attributesToHighlight: ["translations.title", "translations.excerpt", "translations.body"],
-        attributesToCrop: ["translations.body"],
+        attributesToHighlight: ["translations.title", "translations.displayable_description"],
+        attributesToCrop: ["translations.displayable_description"],
         sort: ["sortable_date:desc"],
         filter: ["hidden = false"],
       });
@@ -168,12 +168,10 @@ const News = ({ ...otherProps }: Props): JSX.Element => {
               href={`/news/${item.slug}`}
               translations={filterHasAttributes(item._formatted.translations, [
                 "language.data.attributes.code",
-              ]).map(({ excerpt, body, language, ...otherAttributes }) => ({
+              ]).map(({ excerpt, displayable_description, language, ...otherAttributes }) => ({
                 ...otherAttributes,
-                description: containsHighlight(excerpt)
-                  ? excerpt
-                  : containsHighlight(body)
-                  ? body
+                description: containsHighlight(displayable_description)
+                  ? displayable_description
                   : excerpt,
                 language: language.data.attributes.code,
               }))}

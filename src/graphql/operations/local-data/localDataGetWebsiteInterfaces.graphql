@@ -174,7 +174,7 @@ query localDataGetWebsiteInterfaces {
         level_x
         story_x
         player_name_tooltip
-        download_scans
+        download_archive
         search_placeholder
         performance_mode
         performance_mode_tooltip

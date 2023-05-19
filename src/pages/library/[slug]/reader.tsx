@@ -374,7 +374,7 @@ const LibrarySlug = ({
         <Button
           href={getScanArchiveURL(item.slug)}
           icon="download"
-          text={format("download_scans")}
+          text={format("download_archive")}
         />
       )}
     </SubPanel>

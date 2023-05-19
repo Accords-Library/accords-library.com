@@ -167,7 +167,7 @@ export interface ICUParams {
   level_x: { x: Date | boolean | number | string };
   story_x: { x: Date | boolean | number | string };
   player_name_tooltip: never;
-  download_scans: never;
+  download_archive: never;
   search_placeholder: never;
   performance_mode: never;
   performance_mode_tooltip: never;

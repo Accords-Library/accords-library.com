@@ -413,65 +413,60 @@ const LibrarySlug = ({
               </div>
             )}
 
-            {item.metadata?.[0]?.__typename !== "ComponentMetadataGroup" &&
-              item.metadata?.[0]?.__typename !== "ComponentMetadataOther" && (
-                <div
-                  className={cJoin(
-                    "grid gap-4",
-                    cIf(!isContentPanelAtLeast3xl, "place-items-center")
-                  )}>
-                  <h3 className="text-xl">{format("type_information")}</h3>
-                  <div className="flex flex-wrap place-content-between gap-x-8">
-                    {item.metadata?.[0]?.__typename === "ComponentMetadataBooks" && (
-                      <>
-                        {isDefined(item.metadata[0].page_count) && (
-                          <div className="flex flex-row place-content-start gap-4">
-                            <p className="font-bold">{format("page", { count: Infinity })}:</p>
-                            <p>{item.metadata[0].page_count}</p>
-                          </div>
-                        )}
+            {item.metadata?.[0]?.__typename === "ComponentMetadataBooks" && (
+              <div
+                className={cJoin(
+                  "grid gap-4",
+                  cIf(!isContentPanelAtLeast3xl, "place-items-center")
+                )}>
+                <h3 className="text-xl">{format("type_information")}</h3>
+                <div className="flex flex-wrap place-content-between gap-x-8">
+                  {isDefined(item.metadata[0].page_count) && (
+                    <div className="flex flex-row place-content-start gap-4">
+                      <p className="font-bold">{format("page", { count: Infinity })}:</p>
+                      <p>{item.metadata[0].page_count}</p>
+                    </div>
+                  )}
 
-                        <div className="flex flex-row place-content-start gap-4">
-                          <p className="font-bold">{format("binding")}:</p>
-                          <p>
-                            {item.metadata[0].binding_type ===
-                            Enum_Componentmetadatabooks_Binding_Type.Paperback
-                              ? format("paperback")
-                              : item.metadata[0].binding_type ===
-                                Enum_Componentmetadatabooks_Binding_Type.Hardcover
-                              ? format("hardcover")
-                              : ""}
-                          </p>
-                        </div>
-
-                        <div className="flex flex-row place-content-start gap-4">
-                          <p className="font-bold">{format("page_order")}:</p>
-                          <p>
-                            {item.metadata[0].page_order ===
-                            Enum_Componentmetadatabooks_Page_Order.LeftToRight
-                              ? format("left_to_right")
-                              : format("right_to_left")}
-                          </p>
-                        </div>
-
-                        {isDefined(item.metadata[0].languages) && (
-                          <div className="flex flex-row place-content-start gap-4">
-                            <p className="font-bold">
-                              {format("language", {
-                                count: item.metadata[0].languages.data.length,
-                              })}
-                              :
-                            </p>
-                            {item.metadata[0].languages.data.map((lang) => (
-                              <p key={lang.attributes?.code}>{lang.attributes?.name}</p>
-                            ))}
-                          </div>
-                        )}
-                      </>
-                    )}
+                  <div className="flex flex-row place-content-start gap-4">
+                    <p className="font-bold">{format("binding")}:</p>
+                    <p>
+                      {item.metadata[0].binding_type ===
+                      Enum_Componentmetadatabooks_Binding_Type.Paperback
+                        ? format("paperback")
+                        : item.metadata[0].binding_type ===
+                          Enum_Componentmetadatabooks_Binding_Type.Hardcover
+                        ? format("hardcover")
+                        : ""}
+                    </p>
                   </div>
+
+                  <div className="flex flex-row place-content-start gap-4">
+                    <p className="font-bold">{format("page_order")}:</p>
+                    <p>
+                      {item.metadata[0].page_order ===
+                      Enum_Componentmetadatabooks_Page_Order.LeftToRight
+                        ? format("left_to_right")
+                        : format("right_to_left")}
+                    </p>
+                  </div>
+
+                  {isDefined(item.metadata[0].languages) && (
+                    <div className="flex flex-row place-content-start gap-4">
+                      <p className="font-bold">
+                        {format("language", {
+                          count: item.metadata[0].languages.data.length,
+                        })}
+                        :
+                      </p>
+                      {item.metadata[0].languages.data.map((lang) => (
+                        <p key={lang.attributes?.code}>{lang.attributes?.name}</p>
+                      ))}
+                    </div>
+                  )}
                 </div>
-              )}
+              </div>
+            )}
           </div>
         </InsetBox>
 
@@ -542,7 +537,7 @@ const LibrarySlug = ({
                 <Button
                   href={getScanArchiveURL(item.slug)}
                   icon="download"
-                  text={format("download_scans")}
+                  text={format("download_archive")}
                 />
               )}
             </div>

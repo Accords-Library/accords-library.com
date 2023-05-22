@@ -2,6 +2,7 @@ import Head from "next/head";
 import { useSwipeable } from "react-swipeable";
 import { MaterialSymbol } from "material-symbols";
 import { atom } from "jotai";
+import { useRouter } from "next/router";
 import { layout } from "../../design.config";
 import { Ico } from "./Ico";
 import { MainPanel } from "./Panels/MainPanel";
@@ -54,6 +55,7 @@ export const AppLayout = ({
   const is1ColumnLayout = useAtomGetter(atoms.containerQueries.is1ColumnLayout);
   const isScreenAtLeastXs = useAtomGetter(atoms.containerQueries.isScreenAtLeastXs);
   const isIOS = useAtomGetter(isIOSAtom);
+  const router = useRouter();
 
   const { format } = useFormat();
 
@@ -105,19 +107,41 @@ export const AppLayout = ({
         <title>{openGraph.title}</title>
         <meta name="description" content={openGraph.description} />
 
+        <meta name="twitter:site" content="@AccordsLibrary" />
         <meta name="twitter:title" content={openGraph.title} />
         <meta name="twitter:description" content={openGraph.description} />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:image" content={openGraph.thumbnail.image} />
 
+        <meta
+          property="og:type"
+          content={openGraph.video ? "video.movie" : openGraph.audio ? "music.song" : "website"}
+        />
+        <meta property="og:locale" content={router.locale} />
+        <meta property="og:site_name" content="Accord’s Library" />
+
         <meta property="og:title" content={openGraph.title} />
         <meta property="og:description" content={openGraph.description} />
+
         <meta property="og:image" content={openGraph.thumbnail.image} />
         <meta property="og:image:secure_url" content={openGraph.thumbnail.image} />
         <meta property="og:image:width" content={openGraph.thumbnail.width.toString()} />
         <meta property="og:image:height" content={openGraph.thumbnail.height.toString()} />
         <meta property="og:image:alt" content={openGraph.thumbnail.alt} />
         <meta property="og:image:type" content="image/jpeg" />
+
+        {openGraph.audio && (
+          <>
+            <meta property="og:audio" content={openGraph.audio} />
+            <meta property="og:audio:type" content="audio/mpeg" />
+          </>
+        )}
+        {openGraph.video && (
+          <>
+            <meta property="og:video" content={openGraph.video} />{" "}
+            <meta property="og:video:type" content="video/mp4" />
+          </>
+        )}
       </Head>
 
       {/* Content panel */}

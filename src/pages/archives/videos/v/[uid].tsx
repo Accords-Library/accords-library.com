@@ -167,7 +167,11 @@ export const getStaticProps: GetStaticProps = async (context) => {
       getDescription(videos.videos.data[0].attributes.description, {
         [format("channel")]: [videos.videos.data[0].attributes.channel?.data?.attributes?.title],
       }),
-      getVideoThumbnailURL(videos.videos.data[0].attributes.uid)
+      getVideoThumbnailURL(videos.videos.data[0].attributes.uid),
+      undefined,
+      videos.videos.data[0].attributes.gone
+        ? getVideoFile(videos.videos.data[0].attributes.uid)
+        : undefined
     ),
   };
   return {

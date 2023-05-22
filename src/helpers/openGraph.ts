@@ -8,7 +8,7 @@ const DEFAULT_OG_THUMBNAIL: OgImage = {
   image: `${process.env.NEXT_PUBLIC_URL_SELF}/default_og.jpg`,
   width: 1200,
   height: 630,
-  alt: "Accord's Library Logo",
+  alt: "Accord’s Library Logo",
 };
 
 export const TITLE_PREFIX = "Accord’s Library";
@@ -18,13 +18,17 @@ export interface OpenGraph {
   title: string;
   description: string;
   thumbnail: OgImage;
+  audio?: string;
+  video?: string;
 }
 
 export const getOpenGraph = (
   format: ReturnType<typeof getFormat>["format"] | ReturnType<typeof useFormat>["format"],
   title?: string | null | undefined,
   description?: string | null | undefined,
-  thumbnail?: UploadImageFragment | string | null | undefined
+  thumbnail?: UploadImageFragment | string | null | undefined,
+  audio?: string,
+  video?: string
 ): OpenGraph => ({
   title: `${TITLE_PREFIX}${isDefinedAndNotEmpty(title) ? `${TITLE_SEPARATOR}${title}` : ""}`,
   description: isDefinedAndNotEmpty(description)
@@ -33,6 +37,8 @@ export const getOpenGraph = (
       : description
     : format("default_description"),
   thumbnail: thumbnail ? getOgImage(thumbnail) : DEFAULT_OG_THUMBNAIL,
+  ...(audio ? { audio } : {}),
+  ...(video ? { video } : {}),
 });
 
 const getOgImage = (image: UploadImageFragment | string): OgImage => {

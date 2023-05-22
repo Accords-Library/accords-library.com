@@ -275,30 +275,31 @@ const Content = ({ content, ...otherProps }: Props): JSX.Element => {
 
             selectedSetType === "text_set" && selectedTranslation?.text_set?.text ? (
               <Markdawn className="max-w-2xl" text={selectedTranslation.text_set.text} />
-            ) : selectedSetType === "audio_set" && selectedTranslation?.audio_set ? (
+            ) : selectedSetType === "audio_set" &&
+              selectedTranslation?.audio_set &&
+              selectedTranslation.language?.data?.attributes?.code ? (
               <AudioPlayer
                 title={prettyInlineTitle(
                   selectedTranslation.pre_title,
                   selectedTranslation.title,
                   selectedTranslation.subtitle
                 )}
-                src={`${process.env.NEXT_PUBLIC_URL_ASSETS}/contents/audios/\
-${content.slug}_${selectedTranslation.language?.data?.attributes?.code}.mp3`}
+                src={getAudioURL(content.slug, selectedTranslation.language.data.attributes.code)}
                 className="max-w-2xl"
               />
             ) : (
               selectedSetType === "video_set" &&
-              selectedTranslation?.video_set && (
+              selectedTranslation?.video_set &&
+              selectedTranslation.language?.data?.attributes?.code && (
                 <VideoPlayer
                   title={prettyInlineTitle(
                     selectedTranslation.pre_title,
                     selectedTranslation.title,
                     selectedTranslation.subtitle
                   )}
-                  src={`${process.env.NEXT_PUBLIC_URL_ASSETS}/contents/videos/\
-${content.slug}_${selectedTranslation.language?.data?.attributes?.code}.mp4`}
+                  src={getVideoURL(content.slug, selectedTranslation.language.data.attributes.code)}
                   subSrc={`${process.env.NEXT_PUBLIC_URL_ASSETS}/contents/videos/\
-${content.slug}_${selectedTranslation.language?.data?.attributes?.code}.vtt`}
+${content.slug}_${selectedTranslation.language.data.attributes.code}.vtt`}
                   className="max-w-[90vh]"
                 />
               )
@@ -340,7 +341,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     return { notFound: true };
   }
 
-  const { title, description } = (() => {
+  const { title, description, audio, video } = (() => {
     if (context.locale && context.locales) {
       const selectedTranslation = staticSmartLanguage({
         items: content.contents.data[0].attributes.translations,
@@ -351,6 +352,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
         const rawDescription = isDefinedAndNotEmpty(selectedTranslation.description)
           ? selectedTranslation.description
           : selectedTranslation.text_set?.text;
+
         return {
           title: prettyInlineTitle(
             selectedTranslation.pre_title,
@@ -366,12 +368,22 @@ export const getStaticProps: GetStaticProps = async (context) => {
               ["attributes"]
             ).map((category) => category.attributes.short),
           }),
+          audio:
+            selectedTranslation.language?.data?.attributes?.code && selectedTranslation.audio_set
+              ? getAudioURL(slug, selectedTranslation.language.data.attributes.code)
+              : undefined,
+          video:
+            selectedTranslation.language?.data?.attributes?.code && selectedTranslation.video_set
+              ? getVideoURL(slug, selectedTranslation.language.data.attributes.code)
+              : undefined,
         };
       }
     }
     return {
       title: prettySlug(content.contents.data[0].attributes.slug),
       description: undefined,
+      audio: undefined,
+      video: undefined,
     };
   })();
 
@@ -379,7 +391,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   const props: Props = {
     content: content.contents.data[0].attributes as ContentWithTranslations,
-    openGraph: getOpenGraph(format, title, description, thumbnail),
+    openGraph: getOpenGraph(format, title, description, thumbnail, audio, video),
   };
   return {
     props: props,
@@ -488,3 +500,16 @@ const RelatedContentPreview = ({
     />
   );
 };
+
+/*
+ *                                      ╭───────────────────╮
+ * ─────────────────────────────────────╯  PRIVATE METHODS  ╰───────────────────────────────────────
+ */
+
+const getAudioURL = (slug: string, langCode: string): string =>
+  `${process.env.NEXT_PUBLIC_URL_ASSETS}/contents/audios/\
+${slug}_${langCode}.mp3`;
+
+const getVideoURL = (slug: string, langCode: string): string =>
+  `${process.env.NEXT_PUBLIC_URL_ASSETS}/contents/videos/\
+${slug}_${langCode}.mp4`;

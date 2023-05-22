@@ -25,7 +25,7 @@
     "@fontsource/opendyslexic": "^4.5.4",
     "@fontsource/share-tech-mono": "^4.5.9",
     "@fontsource/vollkorn": "^4.5.14",
-    "@fontsource/zen-maru-gothic": "^4.5.16",
+    "@fontsource/zen-maru-gothic": "^5.0.0",
     "@formatjs/icu-messageformat-parser": "^2.4.0",
     "@tippyjs/react": "^4.2.6",
     "autoprefixer": "^10.4.14",

@@ -17,6 +17,8 @@ import { atoms } from "contexts/atoms";
 import { useAtomGetter } from "helpers/atoms";
 import { Link } from "components/Inputs/Link";
 import { useFormat } from "hooks/useFormat";
+import { VideoPlayer } from "components/Player";
+import { getVideoFile } from "helpers/videos";
 
 /*
  *                                        ╭─────────────╮
@@ -142,6 +144,16 @@ export const Markdawn = ({ className, text: rawText }: MarkdawnProps): JSX.Eleme
                 </>
               );
             },
+          },
+
+          Video: {
+            component: (comProps) => (
+              <VideoPlayer
+                src={getVideoFile(comProps.id)}
+                title={comProps.title}
+                className="my-8"
+              />
+            ),
           },
 
           InsetBox: {

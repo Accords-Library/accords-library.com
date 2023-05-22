@@ -444,6 +444,27 @@ const Editor = (props: Props): JSX.Element => {
           <Button icon="dashboard" />
         </ToolTip>
 
+        <ToolTip
+          placement="bottom"
+          content={
+            <>
+              <h3 className="text-lg">Videos</h3>
+              <div className="grid gap-2">
+                <Button
+                  onClick={() => insert(`<Video id="XXXXXXXXX" />`)}
+                  icon="movie"
+                  text="Video"
+                />
+                <Button
+                  onClick={() => insert(`<Video id="XXXXXXXXX" title="My Title" />`)}
+                  icon="movie"
+                  text="Video + title"
+                />
+              </div>
+            </>
+          }>
+          <Button icon="movie" />
+        </ToolTip>
         <ToolTip placement="bottom" content={<h3 className="text-lg">Scene break</h3>}>
           <Button onClick={() => insert("\n* * *\n")} icon="more_horiz" />
         </ToolTip>

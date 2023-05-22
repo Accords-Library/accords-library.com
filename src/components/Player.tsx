@@ -251,14 +251,18 @@ const PlayerControls = ({
       />
       <div className="grid w-full place-items-start">
         {isDefinedAndNotEmpty(title) && (
-          <p className="line-clamp-1 text-left text-xs text-dark">{title}</p>
+          <p className="!my-0 line-clamp-1 text-left text-xs text-dark">{title}</p>
         )}
         <div
           className={cJoin(
             "flex w-full place-content-between place-items-center",
             cIf(isContentPanelAtLeastMd, "gap-5", "gap-3")
           )}>
-          <p className={cJoin("font-mono", cIf(isContentPanelAtLeastMd, "h-5", "h-3 text-xs"))}>
+          <p
+            className={cJoin(
+              "!my-0 font-mono",
+              cIf(isContentPanelAtLeastMd, "h-5", "h-3 text-xs")
+            )}>
             {prettyDuration(currentTime)}
           </p>
           <Slider
@@ -276,7 +280,11 @@ const PlayerControls = ({
             max={duration * STEP_MULTIPLIER}
           />
           {!isContentPanelAtLeastXl && type === "video" && <p>/</p>}
-          <p className={cJoin("font-mono", cIf(isContentPanelAtLeastMd, "h-5", "h-3 text-xs"))}>
+          <p
+            className={cJoin(
+              "!my-0 font-mono",
+              cIf(isContentPanelAtLeastMd, "h-5", "h-3 text-xs")
+            )}>
             {prettyDuration(duration)}
           </p>
         </div>

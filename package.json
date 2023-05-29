@@ -38,7 +38,7 @@
     "marked": "^4.3.0",
     "material-symbols": "^0.5.5",
     "meilisearch": "^0.32.3",
-    "next": "^13.4.3",
+    "next": "^13.4.4",
     "nodemailer": "^6.9.2",
     "patch-package": "^7.0.0",
     "rc-slider": "^10.1.1",

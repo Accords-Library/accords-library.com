@@ -14,6 +14,7 @@ import "styles/formatted.css";
 import "styles/others.css";
 import "styles/rc-slider.css";
 import "styles/tippy.css";
+import "styles/fonts.css";
 
 import { useLocalData } from "contexts/localData";
 import { LightBoxProvider } from "contexts/LightBoxProvider";

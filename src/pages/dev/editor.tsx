@@ -329,6 +329,14 @@ const Editor = (props: Props): JSX.Element => {
           <Button onClick={() => toggleWrap("`")} icon="code" />
         </ToolTip>
 
+        <ToolTip placement="bottom" content={<h3 className="text-lg">Toggle Angelic/Celestial</h3>}>
+          <Button
+            onClick={() => toggleWrap("Angelic", {})}
+            text="m"
+            className="w-14 font-angelic font-bold"
+          />
+        </ToolTip>
+
         <ButtonGroup
           buttonsProps={[
             {

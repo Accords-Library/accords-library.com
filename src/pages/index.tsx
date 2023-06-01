@@ -45,7 +45,7 @@ const Home = (props: PostStaticProps): JSX.Element => {
             [mask:url('/icons/accords.svg')]"
           />
           <h1 className="mb-0 text-5xl">Accord&rsquo;s Library</h1>
-          <h2 className="-mt-5 text-xl">Discover • Analyze • Translate • Archive</h2>
+          <h2 className="-mt-5 font-angelic text-lg">Discover • Analyze • Translate • Archive</h2>
         </div>
       }
       displayTitle={false}

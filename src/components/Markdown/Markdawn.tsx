@@ -146,6 +146,10 @@ export const Markdawn = ({ className, text: rawText }: MarkdawnProps): JSX.Eleme
             },
           },
 
+          Angelic: {
+            component: (comProps) => <span className="font-angelic">{comProps.children}</span>,
+          },
+
           Video: {
             component: (comProps) => (
               <VideoPlayer

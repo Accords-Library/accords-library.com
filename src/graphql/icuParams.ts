@@ -104,11 +104,11 @@ export interface ICUParams {
   previous_content: { count: number };
   followup_content: { count: number };
   videos: never;
-  view_on: never;
+  view_on_x: { x: Date | boolean | number | string };
   channel: never;
   subscribers: never;
   description: never;
-  available_at: never;
+  available_at_x: { x: Date | boolean | number | string };
   want_it: never;
   have_it: never;
   source: never;

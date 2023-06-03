@@ -51,7 +51,11 @@ import { atoms } from "contexts/atoms";
 import { useAtomGetter, useAtomSetter } from "helpers/atoms";
 import { useFormat } from "hooks/useFormat";
 import { getFormat } from "helpers/i18n";
-import { ElementsSeparator } from "helpers/component";
+import {
+  ElementsSeparator,
+  FormatWithComponent,
+  formatWithComponentSplitter,
+} from "helpers/component";
 import { ToolTip } from "components/ToolTip";
 import { AudioPlayer } from "components/Player";
 
@@ -239,12 +243,14 @@ const LibrarySlug = ({
               <>
                 {item.urls?.length ? (
                   <div className="flex flex-row place-items-center gap-3">
-                    <p>{format("available_at")}</p>
-                    {filterHasAttributes(item.urls, ["url"]).map((url, index) => (
-                      <Fragment key={index}>
-                        <Button href={url.url} text={prettyURL(url.url)} alwaysNewTab />
-                      </Fragment>
-                    ))}
+                    <FormatWithComponent
+                      text={format("available_at_x", { x: formatWithComponentSplitter })}
+                      component={filterHasAttributes(item.urls, ["url"]).map((url, index) => (
+                        <Fragment key={index}>
+                          <Button href={url.url} text={prettyURL(url.url)} alwaysNewTab />
+                        </Fragment>
+                      ))}
+                    />
                   </div>
                 ) : (
                   <p>{format("item_not_available")}</p>

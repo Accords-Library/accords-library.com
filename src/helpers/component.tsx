@@ -1,3 +1,4 @@
+import { ReactNode, useMemo } from "react";
 import { HorizontalLine } from "components/HorizontalLine";
 import { insertInBetweenArray } from "helpers/others";
 import { isDefined } from "helpers/asserts";
@@ -44,3 +45,19 @@ export const ElementsSeparator = ({
 }: ElementsSeparatorProps): JSX.Element => (
   <>{insertInBetweenArray(children.filter(Boolean), separator)}</>
 );
+
+interface FormatWithComponentProps {
+  text: string;
+  component: React.ReactNode;
+}
+
+export const formatWithComponentSplitter = " [SPLITTER] ";
+export const FormatWithComponent = ({ text, component }: FormatWithComponentProps): JSX.Element => {
+  const splittedText = useMemo<ReactNode[]>(() => {
+    const result = text.split("[SPLITTER]");
+    return result;
+  }, [text]);
+
+  console.log(splittedText);
+  return <ElementsSeparator separator={component}>{splittedText}</ElementsSeparator>;
+};

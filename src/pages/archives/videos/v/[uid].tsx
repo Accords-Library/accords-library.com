@@ -104,7 +104,7 @@ const Video = ({ video, ...otherProps }: Props): JSX.Element => {
               {video.source === "YouTube" && (
                 <Button
                   size="small"
-                  text={`${format("view_on")} ${video.source}`}
+                  text={format("view_on_x", { x: video.source })}
                   href={`https://youtu.be/${video.uid}`}
                   alwaysNewTab
                 />

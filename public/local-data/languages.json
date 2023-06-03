@@ -23,14 +23,7 @@
         "attributes": { "name": "Russian", "code": "ru", "localized_name": "русский" }
       },
       { "id": "11", "attributes": { "name": "Korean", "code": "ko", "localized_name": "한국어" } },
-      {
-        "id": "12",
-        "attributes": {
-          "name": "Chinese (Traditional)",
-          "code": "zh-cht",
-          "localized_name": "中文(繁體)"
-        }
-      }
+      { "id": "12", "attributes": { "name": "Chinese", "code": "zh", "localized_name": "中文" } }
     ]
   }
 }

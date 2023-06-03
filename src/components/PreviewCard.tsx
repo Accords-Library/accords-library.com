@@ -96,7 +96,7 @@ export const PreviewCard = ({
           {metadata.price && (
             <p className="justify-self-end text-sm">
               <Ico icon="shopping_cart" className="mr-1 translate-y-[.15em] !text-base" />
-              {prettyPrice(metadata.price, currencies, currency)}
+              {prettyPrice(metadata.price, currencies, currency, router.locale)}
             </p>
           )}
           {metadata.views && (

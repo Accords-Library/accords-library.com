@@ -16,7 +16,8 @@ export const prettyDate = (
 export const prettyPrice = (
   pricePicker: PricePickerFragment,
   currencies: Currencies,
-  targetCurrencyCode?: string
+  targetCurrencyCode?: string,
+  locale = "en"
 ): string => {
   if (!targetCurrencyCode) return "";
   if (isUndefined(pricePicker.amount)) return "";
@@ -27,12 +28,12 @@ export const prettyPrice = (
 
   if (targetCurrency?.attributes) {
     const amountInTargetCurrency = convertPrice(pricePicker, targetCurrency);
-    return amountInTargetCurrency.toLocaleString("en", {
+    return amountInTargetCurrency.toLocaleString(locale, {
       style: "currency",
       currency: targetCurrency.attributes.code,
     });
   }
-  return pricePicker.amount.toLocaleString("en", {
+  return pricePicker.amount.toLocaleString(locale, {
     style: "currency",
     currency: pricePicker.currency?.data?.attributes?.code,
   });

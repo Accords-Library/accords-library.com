@@ -282,7 +282,7 @@ const LibrarySlug = ({
 
   const subPanel = (
     <SubPanel>
-      <ReturnButton title={format("item", { count: Infinity })} href={`/library/${itemSlug}`} />
+      <ReturnButton title={format("item", { count: 1 })} href={`/library/${itemSlug}`} />
 
       <div className="mt-4 grid gap-2">
         <WithLabel label={format("paper_texture")}>

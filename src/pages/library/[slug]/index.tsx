@@ -320,13 +320,14 @@ const LibrarySlug = ({
                     {prettyPrice(
                       item.price,
                       currencies,
-                      item.price.currency?.data?.attributes?.code
+                      item.price.currency?.data?.attributes?.code,
+                      router.locale
                     )}
                   </p>
                   {item.price.currency?.data?.attributes?.code !== currency && (
                     <p>
-                      {prettyPrice(item.price, currencies, currency)} <br />(
-                      {format("calculated").toLowerCase()})
+                      {prettyPrice(item.price, currencies, currency, router.locale)}
+                      <br />({format("calculated").toLowerCase()})
                     </p>
                   )}
                 </div>

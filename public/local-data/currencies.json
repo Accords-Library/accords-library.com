@@ -85,6 +85,15 @@
           "rate_to_usd": 1.0728706,
           "display_decimals": true
         }
+      },
+      {
+        "id": "11",
+        "attributes": {
+          "code": "CNY",
+          "symbol": "¥",
+          "rate_to_usd": 0.141546,
+          "display_decimals": true
+        }
       }
     ]
   }

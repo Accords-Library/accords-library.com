@@ -52,7 +52,7 @@ export const Select = ({
       ref={ref}
       className={cJoin(
         "relative text-center transition-filter",
-        cIf(isOpened, "z-10 drop-shadow-lg shadow-shade"),
+        cIf(isOpened, "z-20 drop-shadow-lg shadow-shade"),
         className
       )}>
       <div

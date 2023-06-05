@@ -24,7 +24,7 @@
     "@fontsource/noto-serif-jp": "^5.0.0",
     "@fontsource/opendyslexic": "^5.0.0",
     "@fontsource/share-tech-mono": "^5.0.0",
-    "@fontsource/vollkorn": "^5.0.0",
+    "@fontsource/vollkorn": "^5.0.2",
     "@fontsource/zen-maru-gothic": "^5.0.0",
     "@formatjs/icu-messageformat-parser": "^2.4.0",
     "@tippyjs/react": "^4.2.6",

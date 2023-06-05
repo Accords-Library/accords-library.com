@@ -1,0 +1,36 @@
+query localDataGetRecorders {
+  recorders(pagination: { limit: -1 }) {
+    data {
+      attributes {
+        username
+        anonymize
+        anonymous_code
+        pronouns
+        bio(pagination: { limit: -1 }) {
+          bio
+          language {
+            data {
+              attributes {
+                code
+              }
+            }
+          }
+        }
+        languages(pagination: { limit: -1 }) {
+          data {
+            attributes {
+              code
+            }
+          }
+        }
+        avatar {
+          data {
+            attributes {
+              ...uploadImage
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -593,7 +593,6 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const { format } = getFormat(context.locale);
   const item = await sdk.getLibraryItemScans({
     slug: context.params && isDefined(context.params.slug) ? context.params.slug.toString() : "",
-    language_code: context.locale ?? "en",
   });
   if (!item.libraryItems?.data[0]?.attributes || !item.libraryItems.data[0]?.id)
     return { notFound: true };
@@ -891,7 +890,7 @@ const ScanSet = ({ onClickOnImage, scanSet, id, title, content }: ScanSetProps):
                   {filterHasAttributes(selectedScan.scanners.data, ["id", "attributes"]).map(
                     (scanner) => (
                       <Fragment key={scanner.id}>
-                        <RecorderChip recorder={scanner.attributes} />
+                        <RecorderChip username={scanner.attributes.username} />
                       </Fragment>
                     )
                   )}
@@ -906,7 +905,7 @@ const ScanSet = ({ onClickOnImage, scanSet, id, title, content }: ScanSetProps):
                   {filterHasAttributes(selectedScan.cleaners.data, ["id", "attributes"]).map(
                     (cleaner) => (
                       <Fragment key={cleaner.id}>
-                        <RecorderChip recorder={cleaner.attributes} />
+                        <RecorderChip username={cleaner.attributes.username} />
                       </Fragment>
                     )
                   )}
@@ -921,7 +920,7 @@ const ScanSet = ({ onClickOnImage, scanSet, id, title, content }: ScanSetProps):
                   {filterHasAttributes(selectedScan.typesetters.data, ["id", "attributes"]).map(
                     (typesetter) => (
                       <Fragment key={typesetter.id}>
-                        <RecorderChip recorder={typesetter.attributes} />
+                        <RecorderChip username={typesetter.attributes.username} />
                       </Fragment>
                     )
                   )}

@@ -24,7 +24,7 @@ import {
 } from "shared/meilisearch-graphql-typings/meiliTypes";
 import { getVideoThumbnailURL } from "helpers/videos";
 import { UpPressable } from "components/Containers/UpPressable";
-import { prettyItemSubType, prettySlug } from "helpers/formatters";
+import { prettySlug } from "helpers/formatters";
 import { Ico } from "components/Ico";
 import { useFormat } from "hooks/useFormat";
 
@@ -52,7 +52,14 @@ interface MultiResult {
 export const SearchPopup = (): JSX.Element => {
   const [isSearchOpened, setSearchOpened] = useAtomPair(atoms.layout.searchOpened);
   const [query, setQuery] = useState("");
-  const { format } = useFormat();
+  const {
+    format,
+    formatCategory,
+    formatContentType,
+    formatWikiTag,
+    formatLibraryItemSubType,
+    formatWeaponType,
+  } = useFormat();
   const [multiResult, setMultiResult] = useState<MultiResult>({});
 
   const fetchSearchResults = useCallback((q: string) => {
@@ -243,11 +250,11 @@ export const SearchPopup = (): JSX.Element => {
                   keepInfoVisible
                   topChips={
                     item.metadata && item.metadata.length > 0 && item.metadata[0]
-                      ? [prettyItemSubType(item.metadata[0])]
+                      ? [formatLibraryItemSubType(item.metadata[0])]
                       : []
                   }
-                  bottomChips={item.categories?.data.map(
-                    (category) => category.attributes?.short ?? ""
+                  bottomChips={filterHasAttributes(item.categories?.data, ["attributes"]).map(
+                    (category) => formatCategory(category.attributes.slug)
                   )}
                   metadata={{
                     releaseDate: item.release_date,
@@ -288,15 +295,11 @@ export const SearchPopup = (): JSX.Element => {
                   thumbnailForceAspectRatio
                   topChips={
                     item.type?.data?.attributes
-                      ? [
-                          item.type.data.attributes.titles?.[0]
-                            ? item.type.data.attributes.titles[0]?.title
-                            : prettySlug(item.type.data.attributes.slug),
-                        ]
+                      ? [formatContentType(item.type.data.attributes.slug)]
                       : undefined
                   }
-                  bottomChips={item.categories?.data.map(
-                    (category) => category.attributes?.short ?? ""
+                  bottomChips={filterHasAttributes(item.categories?.data, ["attributes"]).map(
+                    (category) => formatCategory(category.attributes.slug)
                   )}
                   keepInfoVisible
                 />
@@ -345,11 +348,11 @@ export const SearchPopup = (): JSX.Element => {
                   thumbnailRounded
                   thumbnailForceAspectRatio
                   keepInfoVisible
-                  topChips={filterHasAttributes(item.tags?.data, ["attributes"]).map(
-                    (tag) => tag.attributes.titles?.[0]?.title ?? prettySlug(tag.attributes.slug)
+                  topChips={filterHasAttributes(item.tags?.data, ["attributes"]).map((tag) =>
+                    formatWikiTag(tag.attributes.slug)
                   )}
                   bottomChips={filterHasAttributes(item.categories?.data, ["attributes"]).map(
-                    (category) => category.attributes.short
+                    (category) => formatCategory(category.attributes.slug)
                   )}
                 />
               ))}
@@ -384,8 +387,8 @@ export const SearchPopup = (): JSX.Element => {
                   thumbnailAspectRatio="3/2"
                   thumbnailForceAspectRatio
                   keepInfoVisible
-                  bottomChips={item.categories?.data.map(
-                    (category) => category.attributes?.short ?? ""
+                  bottomChips={filterHasAttributes(item.categories?.data, ["attributes"]).map(
+                    (category) => formatCategory(category.attributes.slug)
                   )}
                   metadata={{
                     releaseDate: item.date,
@@ -466,11 +469,11 @@ export const SearchPopup = (): JSX.Element => {
                   keepInfoVisible
                   topChips={
                     item.type?.data?.attributes?.slug
-                      ? [prettySlug(item.type.data.attributes.slug)]
+                      ? [formatWeaponType(item.type.data.attributes.slug)]
                       : undefined
                   }
-                  bottomChips={filterHasAttributes(item.categories, ["attributes.short"]).map(
-                    (category) => category.attributes.short
+                  bottomChips={filterHasAttributes(item.categories, ["attributes"]).map(
+                    (category) => formatCategory(category.attributes.slug)
                   )}
                 />
               ))}

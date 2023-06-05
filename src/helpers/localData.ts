@@ -1,6 +1,8 @@
 import {
   LocalDataGetCurrenciesQuery,
   LocalDataGetLanguagesQuery,
+  LocalDataGetRecordersQuery,
+  LocalDataGetTypesTranslationsQuery,
   LocalDataGetWebsiteInterfacesQuery,
 } from "graphql/generated";
 
@@ -45,3 +47,58 @@ export const processLanguages = (languages: LocalDataGetLanguagesQuery | undefin
   }
   return languages?.languages?.data ?? [];
 };
+
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
+
+export type Recorders = NonNullable<LocalDataGetRecordersQuery["recorders"]>["data"];
+
+export const processRecorders = (recorders: LocalDataGetRecordersQuery | undefined): Recorders =>
+  recorders?.recorders?.data ?? [];
+
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
+
+export type TypesTranslations = {
+  audioSubtypes: NonNullable<
+    NonNullable<LocalDataGetTypesTranslationsQuery>["audioSubtypes"]
+  >["data"];
+  gamePlatforms: NonNullable<
+    NonNullable<LocalDataGetTypesTranslationsQuery>["gamePlatforms"]
+  >["data"];
+  groupSubtypes: NonNullable<
+    NonNullable<LocalDataGetTypesTranslationsQuery>["groupSubtypes"]
+  >["data"];
+  metadataTypes: NonNullable<
+    NonNullable<LocalDataGetTypesTranslationsQuery>["metadataTypes"]
+  >["data"];
+  textualSubtypes: NonNullable<
+    NonNullable<LocalDataGetTypesTranslationsQuery>["textualSubtypes"]
+  >["data"];
+  videoSubtypes: NonNullable<
+    NonNullable<LocalDataGetTypesTranslationsQuery>["videoSubtypes"]
+  >["data"];
+  contentTypes: NonNullable<
+    NonNullable<LocalDataGetTypesTranslationsQuery>["contentTypes"]
+  >["data"];
+  wikiPagesTags: NonNullable<
+    NonNullable<LocalDataGetTypesTranslationsQuery>["wikiPagesTags"]
+  >["data"];
+  weaponTypes: NonNullable<
+    NonNullable<LocalDataGetTypesTranslationsQuery>["weaponStoryTypes"]
+  >["data"];
+  categories: NonNullable<NonNullable<LocalDataGetTypesTranslationsQuery>["categories"]>["data"];
+};
+
+export const processTypesTranslations = (
+  data: LocalDataGetTypesTranslationsQuery | undefined
+): TypesTranslations => ({
+  audioSubtypes: data?.audioSubtypes?.data ?? [],
+  categories: data?.categories?.data ?? [],
+  contentTypes: data?.contentTypes?.data ?? [],
+  gamePlatforms: data?.gamePlatforms?.data ?? [],
+  groupSubtypes: data?.groupSubtypes?.data ?? [],
+  metadataTypes: data?.metadataTypes?.data ?? [],
+  textualSubtypes: data?.textualSubtypes?.data ?? [],
+  videoSubtypes: data?.videoSubtypes?.data ?? [],
+  weaponTypes: data?.weaponStoryTypes?.data ?? [],
+  wikiPagesTags: data?.wikiPagesTags?.data ?? [],
+});

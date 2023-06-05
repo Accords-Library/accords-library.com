@@ -56,7 +56,7 @@ const queryParamSchema = z.object({
 interface Props extends AppLayoutRequired {}
 
 const News = ({ ...otherProps }: Props): JSX.Element => {
-  const { format } = useFormat();
+  const { format, formatCategory } = useFormat();
   const hoverable = useDeviceSupportsHover();
   const router = useTypedRouter(queryParamSchema);
 
@@ -180,8 +180,8 @@ const News = ({ ...otherProps }: Props): JSX.Element => {
               thumbnailAspectRatio="3/2"
               thumbnailForceAspectRatio
               keepInfoVisible={keepInfoVisible}
-              bottomChips={item.categories?.data.map(
-                (category) => category.attributes?.short ?? ""
+              bottomChips={filterHasAttributes(item.categories?.data, ["attributes"]).map(
+                (category) => formatCategory(category.attributes.slug)
               )}
               metadata={{
                 releaseDate: item.date,

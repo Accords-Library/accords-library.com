@@ -1,4 +1,4 @@
-query getWikiPage($slug: String, $language_code: String) {
+query getWikiPage($slug: String) {
   wikiPages(filters: { slug: { eq: $slug } }) {
     data {
       id
@@ -13,21 +13,15 @@ query getWikiPage($slug: String, $language_code: String) {
         }
         categories(pagination: { limit: -1 }) {
           data {
-            id
             attributes {
-              name
-              short
+              slug
             }
           }
         }
         tags {
           data {
-            id
             attributes {
               slug
-              titles(filters: { language: { code: { eq: $language_code } } }) {
-                title
-              }
             }
           }
         }
@@ -58,7 +52,7 @@ query getWikiPage($slug: String, $language_code: String) {
               data {
                 id
                 attributes {
-                  ...recorderChip
+                  username
                 }
               }
             }
@@ -66,7 +60,7 @@ query getWikiPage($slug: String, $language_code: String) {
               data {
                 id
                 attributes {
-                  ...recorderChip
+                  username
                 }
               }
             }
@@ -74,7 +68,7 @@ query getWikiPage($slug: String, $language_code: String) {
               data {
                 id
                 attributes {
-                  ...recorderChip
+                  username
                 }
               }
             }
@@ -90,10 +84,8 @@ query getWikiPage($slug: String, $language_code: String) {
           }
           categories(pagination: { limit: -1 }) {
             data {
-              id
               attributes {
-                name
-                short
+                slug
               }
             }
           }

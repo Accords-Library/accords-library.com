@@ -3,10 +3,12 @@ import { Img } from "./Img";
 import { Markdawn } from "./Markdown/Markdawn";
 import { ToolTip } from "./ToolTip";
 import { Chip } from "components/Chip";
-import { RecorderChipFragment } from "graphql/generated";
 import { ImageQuality } from "helpers/img";
-import { filterHasAttributes } from "helpers/asserts";
+import { filterHasAttributes, isUndefined } from "helpers/asserts";
 import { useFormat } from "hooks/useFormat";
+import { useAtomGetter } from "helpers/atoms";
+import { atoms } from "contexts/atoms";
+import { useSmartLanguage } from "hooks/useSmartLanguage";
 
 /*
  *                                        ╭─────────────╮
@@ -14,14 +16,22 @@ import { useFormat } from "hooks/useFormat";
  */
 
 interface Props {
-  className?: string;
-  recorder: RecorderChipFragment;
+  username: string;
 }
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
-export const RecorderChip = ({ recorder }: Props): JSX.Element => {
+export const RecorderChip = ({ username }: Props): JSX.Element => {
   const { format } = useFormat();
+  const recorders = useAtomGetter(atoms.localData.recorders);
+  const recorder = recorders.find((elem) => elem.attributes?.username === username)?.attributes;
+
+  const [selectedBioTranslation] = useSmartLanguage({
+    items: recorder?.bio ?? [],
+    languageExtractor: (bio) => bio.language?.data?.attributes?.code,
+  });
+
+  if (isUndefined(recorder)) return <></>;
 
   return (
     <ToolTip
@@ -55,7 +65,7 @@ export const RecorderChip = ({ recorder }: Props): JSX.Element => {
               )}
             </div>
           </div>
-          {recorder.bio?.[0] && <Markdawn text={recorder.bio[0].bio ?? ""} />}
+          {selectedBioTranslation?.bio && <Markdawn text={selectedBioTranslation.bio} />}
         </div>
       }
       placement="top">

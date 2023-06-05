@@ -3,7 +3,6 @@ import { Markdawn } from "components/Markdown/Markdawn";
 import { RecorderChip } from "components/RecorderChip";
 import { ToolTip } from "components/ToolTip";
 import { atoms } from "contexts/atoms";
-import { RecorderChipFragment } from "graphql/generated";
 import { filterHasAttributes, isDefined, isDefinedAndNotEmpty } from "helpers/asserts";
 import { useAtomGetter } from "helpers/atoms";
 import { prettyLanguage } from "helpers/formatters";
@@ -18,12 +17,12 @@ interface Props {
   languageCode?: string;
   sourceLanguageCode?: string;
   status?: ContentStatus | null;
-  transcribers?: { attributes?: RecorderChipFragment | null }[];
-  translators?: { attributes?: RecorderChipFragment | null }[];
-  proofreaders?: { attributes?: RecorderChipFragment | null }[];
-  dubbers?: { attributes?: RecorderChipFragment | null }[];
-  subbers?: { attributes?: RecorderChipFragment | null }[];
-  authors?: { attributes?: RecorderChipFragment | null }[];
+  transcribers?: RecorderChipsProps["recorders"];
+  translators?: RecorderChipsProps["recorders"];
+  proofreaders?: RecorderChipsProps["recorders"];
+  dubbers?: RecorderChipsProps["recorders"];
+  subbers?: RecorderChipsProps["recorders"];
+  authors?: RecorderChipsProps["recorders"];
   notes?: string | null;
 }
 
@@ -118,14 +117,14 @@ export const Credits = ({
 
 interface RecorderChipsProps {
   title: string;
-  recorders: { attributes?: RecorderChipFragment | null }[];
+  recorders: { attributes?: { username: string } | null }[];
 }
 
 const RecorderChips = ({ title, recorders }: RecorderChipsProps) => (
   <div className="flex flex-wrap place-content-center place-items-center gap-1">
     <p className="pr-1 font-headers font-bold">{title}:</p>
     {filterHasAttributes(recorders, ["attributes"]).map((recorder) => (
-      <RecorderChip key={recorder.attributes.anonymous_code} recorder={recorder.attributes} />
+      <RecorderChip key={recorder.attributes.username} username={recorder.attributes.username} />
     ))}
   </div>
 );

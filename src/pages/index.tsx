@@ -64,10 +64,7 @@ export default Home;
 export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
   const { format } = getFormat(context.locale);
-  const post = await sdk.getPost({
-    slug: "home",
-    language_code: context.locale ?? "en",
-  });
+  const post = await sdk.getPost({ slug: "home" });
   if (post.posts?.data && post.posts.data.length > 0) {
     const props: PostStaticProps = {
       post: post.posts.data[0]?.attributes as PostWithTranslations,

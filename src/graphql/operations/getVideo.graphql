@@ -23,9 +23,8 @@ query getVideo($uid: String) {
         }
         categories(pagination: { limit: -1 }) {
           data {
-            id
             attributes {
-              short
+              slug
             }
           }
         }

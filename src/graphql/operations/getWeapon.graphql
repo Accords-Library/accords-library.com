@@ -1,4 +1,4 @@
-query getWeapon($slug: String, $language_code: String) {
+query getWeapon($slug: String) {
   weaponStories(filters: { slug: { eq: $slug } }) {
     data {
       attributes {
@@ -7,10 +7,8 @@ query getWeapon($slug: String, $language_code: String) {
           id
           categories(pagination: { limit: -1 }) {
             data {
-              id
               attributes {
-                name
-                short
+                slug
               }
             }
           }
@@ -57,16 +55,6 @@ fragment sharedWeaponFragment on WeaponStory {
       id
       attributes {
         slug
-        translations(filters: { language: { code: { eq: $language_code } } }) {
-          name
-          language {
-            data {
-              attributes {
-                code
-              }
-            }
-          }
-        }
       }
     }
   }

@@ -23,7 +23,6 @@ import { getReadySdk } from "graphql/sdk";
 import {
   prettyDate,
   prettyInlineTitle,
-  prettyItemSubType,
   prettyPrice,
   prettySlug,
   prettyURL,
@@ -91,7 +90,13 @@ const LibrarySlug = ({
 }: Props): JSX.Element => {
   const currency = useAtomGetter(atoms.settings.currency);
   const isPerfModeEnabled = useAtomGetter(atoms.settings.isPerfModeEnabled);
-  const { format, formatLibraryItemType } = useFormat();
+  const {
+    format,
+    formatLibraryItemType,
+    formatCategory,
+    formatContentType,
+    formatLibraryItemSubType,
+  } = useFormat();
   const currencies = useAtomGetter(atoms.localData.currencies);
 
   const isContentPanelAtLeast3xl = useAtomGetter(atoms.containerQueries.isContentPanelAtLeast3xl);
@@ -307,7 +312,7 @@ const LibrarySlug = ({
                   <div className="grid grid-flow-col gap-1">
                     <Chip text={formatLibraryItemType(item.metadata[0])} />
                     {"›"}
-                    <Chip text={prettyItemSubType(item.metadata[0])} />
+                    <Chip text={formatLibraryItemSubType(item.metadata[0])} />
                   </div>
                 </div>
               )}
@@ -347,7 +352,10 @@ const LibrarySlug = ({
                 </h3>
                 <div className="flex flex-row flex-wrap place-content-center gap-2">
                   {filterHasAttributes(item.categories.data, ["attributes"]).map((category) => (
-                    <Chip key={category.id} text={category.attributes.name} />
+                    <Chip
+                      key={category.attributes.slug}
+                      text={formatCategory(category.attributes.slug, "full")}
+                    />
                   ))}
                 </div>
               </div>
@@ -506,12 +514,12 @@ const LibrarySlug = ({
                       subitem.attributes.metadata &&
                       subitem.attributes.metadata.length > 0 &&
                       subitem.attributes.metadata[0]
-                        ? [prettyItemSubType(subitem.attributes.metadata[0])]
+                        ? [formatLibraryItemSubType(subitem.attributes.metadata[0])]
                         : []
                     }
-                    bottomChips={subitem.attributes.categories?.data.map(
-                      (category) => category.attributes?.short ?? ""
-                    )}
+                    bottomChips={filterHasAttributes(subitem.attributes.categories?.data, [
+                      "attributes",
+                    ]).map((category) => formatCategory(category.attributes.slug))}
                     metadata={{
                       releaseDate: subitem.attributes.release_date,
                       price: subitem.attributes.price,
@@ -573,14 +581,14 @@ const LibrarySlug = ({
                             categories: filterHasAttributes(
                               rangedContent.attributes.content.data.attributes.categories?.data,
                               ["attributes"]
-                            ).map((category) => category.attributes.short),
-                            type:
-                              rangedContent.attributes.content.data.attributes.type?.data
-                                ?.attributes?.titles?.[0]?.title ??
-                              prettySlug(
-                                rangedContent.attributes.content.data.attributes.type?.data
-                                  ?.attributes?.slug
-                              ),
+                            ).map((category) => formatCategory(category.attributes.slug)),
+                            type: rangedContent.attributes.content.data.attributes.type?.data
+                              ?.attributes
+                              ? formatContentType(
+                                  rangedContent.attributes.content.data.attributes.type.data
+                                    .attributes.slug
+                                )
+                              : undefined,
                             slug: rangedContent.attributes.content.data.attributes.slug,
                           }
                         : undefined
@@ -619,10 +627,9 @@ export default LibrarySlug;
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
-  const { format } = getFormat(context.locale);
+  const { format, formatCategory, formatLibraryItemSubType } = getFormat(context.locale);
   const item = await sdk.getLibraryItem({
     slug: context.params && isDefined(context.params.slug) ? context.params.slug.toString() : "",
-    language_code: context.locale ?? "en",
   });
   if (!item.libraryItems?.data[0]?.attributes) return { notFound: true };
   sortRangedContent(item.libraryItems.data[0].attributes.contents);
@@ -634,10 +641,10 @@ export const getStaticProps: GetStaticProps = async (context) => {
     {
       [format("category", { count: Infinity })]: filterHasAttributes(
         item.libraryItems.data[0].attributes.categories?.data,
-        ["attributes.short"]
-      ).map((category) => category.attributes.short),
+        ["attributes"]
+      ).map((category) => formatCategory(category.attributes.slug)),
       [format("type", { count: Infinity })]: item.libraryItems.data[0].attributes.metadata?.[0]
-        ? [prettyItemSubType(item.libraryItems.data[0].attributes.metadata[0])]
+        ? [formatLibraryItemSubType(item.libraryItems.data[0].attributes.metadata[0])]
         : [],
       [format("release_date")]: [
         item.libraryItems.data[0].attributes.release_date

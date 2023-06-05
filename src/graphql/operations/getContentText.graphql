@@ -1,4 +1,4 @@
-query getContentText($slug: String, $language_code: String) {
+query getContentText($slug: String) {
   contents(filters: { slug: { eq: $slug } }) {
     data {
       id
@@ -6,10 +6,8 @@ query getContentText($slug: String, $language_code: String) {
         slug
         categories(pagination: { limit: -1 }) {
           data {
-            id
             attributes {
-              name
-              short
+              slug
             }
           }
         }
@@ -17,9 +15,6 @@ query getContentText($slug: String, $language_code: String) {
           data {
             attributes {
               slug
-              titles(filters: { language: { code: { eq: $language_code } } }) {
-                title
-              }
             }
           }
         }
@@ -53,10 +48,8 @@ query getContentText($slug: String, $language_code: String) {
                     }
                     categories(pagination: { limit: -1 }) {
                       data {
-                        id
                         attributes {
-                          name
-                          short
+                          slug
                         }
                       }
                     }
@@ -67,19 +60,15 @@ query getContentText($slug: String, $language_code: String) {
                           data {
                             attributes {
                               slug
-                              titles(filters: { language: { code: { eq: $language_code } } }) {
-                                title
-                              }
                             }
                           }
                         }
                       }
                       ... on ComponentMetadataGame {
-                        platforms(pagination: { limit: -1 }) {
+                        platform {
                           data {
-                            id
                             attributes {
-                              short
+                              slug
                             }
                           }
                         }
@@ -89,9 +78,6 @@ query getContentText($slug: String, $language_code: String) {
                           data {
                             attributes {
                               slug
-                              titles(filters: { language: { code: { eq: $language_code } } }) {
-                                title
-                              }
                             }
                           }
                         }
@@ -101,9 +87,6 @@ query getContentText($slug: String, $language_code: String) {
                           data {
                             attributes {
                               slug
-                              titles(filters: { language: { code: { eq: $language_code } } }) {
-                                title
-                              }
                             }
                           }
                         }
@@ -113,9 +96,6 @@ query getContentText($slug: String, $language_code: String) {
                           data {
                             attributes {
                               slug
-                              titles(filters: { language: { code: { eq: $language_code } } }) {
-                                title
-                              }
                             }
                           }
                         }
@@ -123,9 +103,6 @@ query getContentText($slug: String, $language_code: String) {
                           data {
                             attributes {
                               slug
-                              titles(filters: { language: { code: { eq: $language_code } } }) {
-                                title
-                              }
                             }
                           }
                         }
@@ -163,7 +140,7 @@ query getContentText($slug: String, $language_code: String) {
               data {
                 id
                 attributes {
-                  ...recorderChip
+                  username
                 }
               }
             }
@@ -171,7 +148,7 @@ query getContentText($slug: String, $language_code: String) {
               data {
                 id
                 attributes {
-                  ...recorderChip
+                  username
                 }
               }
             }
@@ -179,7 +156,7 @@ query getContentText($slug: String, $language_code: String) {
               data {
                 id
                 attributes {
-                  ...recorderChip
+                  username
                 }
               }
             }
@@ -198,7 +175,7 @@ query getContentText($slug: String, $language_code: String) {
             subbers(pagination: { limit: -1 }) {
               data {
                 attributes {
-                  ...recorderChip
+                  username
                 }
               }
             }
@@ -216,7 +193,7 @@ query getContentText($slug: String, $language_code: String) {
             dubbers(pagination: { limit: -1 }) {
               data {
                 attributes {
-                  ...recorderChip
+                  username
                 }
               }
             }

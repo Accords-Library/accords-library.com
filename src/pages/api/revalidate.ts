@@ -2,7 +2,13 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { i18n } from "../../../next.config";
 import { cartesianProduct } from "helpers/others";
 import { filterHasAttributes } from "helpers/asserts";
-import { fetchLocalData } from "graphql/fetchLocalData";
+import {
+  fetchCurrencies,
+  fetchLanguages,
+  fetchRecorders,
+  fetchTypesTranslations,
+  fetchWebsiteInterfaces,
+} from "graphql/fetchLocalData";
 import { getReadySdk } from "graphql/sdk";
 
 type CRUDEvents = "entry.create" | "entry.delete" | "entry.update";
@@ -20,21 +26,32 @@ type StrapiRelationalFieldEntry = {
 
 type RequestProps =
   | CustomRequest
+  | StrapiAudioSubType
+  | StrapiCategory
   | StrapiChronicle
   | StrapiChronicleChapter
   | StrapiChronology
   | StrapiContent
   | StrapiContentFolder
+  | StrapiContentType
   | StrapiCurrency
+  | StrapiGamePlatform
+  | StrapiGroupSubtypes
   | StrapiLanguage
   | StrapiLibraryItem
+  | StrapiMetadataType
   | StrapiPostContent
   | StrapiRangedContent
+  | StrapiRecorder
+  | StrapiTextualSubtypes
   | StrapiVideo
+  | StrapiVideoSubType
   | StrapiWeaponGroup
   | StrapiWeaponStory
+  | StrapiWeaponStoryType
   | StrapiWebsiteInterface
-  | StrapiWiki;
+  | StrapiWiki
+  | StrapiWikiPagesTag;
 
 interface CustomRequest {
   model: "custom";
@@ -57,7 +74,6 @@ interface StrapiWeaponGroup extends StrapiEvent {
 }
 
 interface StrapiRangedContent extends StrapiEvent {
-  event: CRUDEvents;
   model: "ranged-content";
   entry: {
     id: string;
@@ -78,7 +94,6 @@ interface StrapiContent extends StrapiEvent {
 }
 
 interface StrapiPostContent extends StrapiEvent {
-  event: CRUDEvents;
   model: "post";
   entry: {
     slug: string;
@@ -86,31 +101,62 @@ interface StrapiPostContent extends StrapiEvent {
 }
 
 interface StrapiWebsiteInterface extends StrapiEvent {
-  event: CRUDEvents;
   model: "website-interface";
-  entry: {
-    slug: string;
-  };
+}
+
+interface StrapiRecorder extends StrapiEvent {
+  model: "recorder";
+}
+
+interface StrapiMetadataType extends StrapiEvent {
+  model: "metadata-type";
+}
+
+interface StrapiAudioSubType extends StrapiEvent {
+  model: "audio-subtype";
+}
+
+interface StrapiVideoSubType extends StrapiEvent {
+  model: "video-subtype";
+}
+
+interface StrapiTextualSubtypes extends StrapiEvent {
+  model: "textual-subtype";
+}
+
+interface StrapiGroupSubtypes extends StrapiEvent {
+  model: "group-subtype";
+}
+
+interface StrapiGamePlatform extends StrapiEvent {
+  model: "game-platform";
+}
+
+interface StrapiContentType extends StrapiEvent {
+  model: "content-type";
+}
+
+interface StrapiWikiPagesTag extends StrapiEvent {
+  model: "wiki-pages-tag";
+}
+
+interface StrapiWeaponStoryType extends StrapiEvent {
+  model: "weapon-story-type";
+}
+
+interface StrapiCategory extends StrapiEvent {
+  model: "category";
 }
 
 interface StrapiLanguage extends StrapiEvent {
-  event: CRUDEvents;
   model: "language";
-  entry: {
-    slug: string;
-  };
 }
 
 interface StrapiCurrency extends StrapiEvent {
-  event: CRUDEvents;
   model: "currency";
-  entry: {
-    slug: string;
-  };
 }
 
 interface StrapiLibraryItem extends StrapiEvent {
-  event: CRUDEvents;
   model: "library-item";
   entry: {
     slug: string;
@@ -121,7 +167,6 @@ interface StrapiLibraryItem extends StrapiEvent {
 }
 
 interface StrapiContentFolder extends StrapiEvent {
-  event: CRUDEvents;
   model: "contents-folder";
   entry: {
     slug: string;
@@ -132,12 +177,10 @@ interface StrapiContentFolder extends StrapiEvent {
 }
 
 interface StrapiChronology extends StrapiEvent {
-  event: CRUDEvents;
   model: "chronology-era" | "chronology-item";
 }
 
 interface StrapiWiki extends StrapiEvent {
-  event: CRUDEvents;
   model: "wiki-page";
   entry: {
     slug: string;
@@ -145,7 +188,6 @@ interface StrapiWiki extends StrapiEvent {
 }
 
 interface StrapiChronicle extends StrapiEvent {
-  event: CRUDEvents;
   model: "chronicle";
   entry: {
     slug: string;
@@ -153,7 +195,6 @@ interface StrapiChronicle extends StrapiEvent {
 }
 
 interface StrapiChronicleChapter extends StrapiEvent {
-  event: CRUDEvents;
   model: "chronicles-chapter";
   entry: {
     chronicles: StrapiRelationalFieldEntry[];
@@ -161,7 +202,6 @@ interface StrapiChronicleChapter extends StrapiEvent {
 }
 
 interface StrapiVideo extends StrapiEvent {
-  event: CRUDEvents;
   model: "video";
   entry: {
     uid: string;
@@ -322,13 +362,6 @@ const Revalidate = async (
       break;
     }
 
-    case "website-interface":
-    case "language":
-    case "currency": {
-      await fetchLocalData();
-      break;
-    }
-
     case "video": {
       if (body.entry.uid) {
         paths.push(`/archives/videos/v/${body.entry.uid}`);
@@ -348,6 +381,38 @@ const Revalidate = async (
       filterHasAttributes(group.weaponStoryGroup?.data?.attributes?.weapons?.data, [
         "attributes.slug",
       ]).forEach((weapon) => paths.push(`/wiki/weapons/${weapon.attributes.slug}`));
+      break;
+    }
+
+    case "recorder": {
+      await fetchRecorders();
+      break;
+    }
+
+    case "audio-subtype":
+    case "textual-subtype":
+    case "video-subtype":
+    case "group-subtype":
+    case "game-platform":
+    case "metadata-type":
+    case "content-type":
+    case "weapon-story-type":
+    case "category":
+    case "wiki-pages-tag": {
+      await fetchTypesTranslations();
+      break;
+    }
+
+    case "website-interface": {
+      await fetchWebsiteInterfaces();
+      break;
+    }
+    case "language": {
+      await fetchLanguages();
+      break;
+    }
+    case "currency": {
+      await fetchCurrencies();
       break;
     }
 

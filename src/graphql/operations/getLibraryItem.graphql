@@ -1,4 +1,4 @@
-query getLibraryItem($slug: String, $language_code: String) {
+query getLibraryItem($slug: String) {
   libraryItems(filters: { slug: { eq: $slug } }) {
     data {
       id
@@ -33,10 +33,8 @@ query getLibraryItem($slug: String, $language_code: String) {
         }
         categories(pagination: { limit: -1 }) {
           data {
-            id
             attributes {
-              name
-              short
+              slug
             }
           }
         }
@@ -58,9 +56,6 @@ query getLibraryItem($slug: String, $language_code: String) {
               data {
                 attributes {
                   slug
-                  titles(filters: { language: { code: { eq: $language_code } } }) {
-                    title
-                  }
                 }
               }
             }
@@ -81,19 +76,15 @@ query getLibraryItem($slug: String, $language_code: String) {
               data {
                 attributes {
                   slug
-                  titles(filters: { language: { code: { eq: $language_code } } }) {
-                    title
-                  }
                 }
               }
             }
           }
           ... on ComponentMetadataGame {
-            platforms(pagination: { limit: -1 }) {
+            platform {
               data {
-                id
                 attributes {
-                  short
+                  slug
                 }
               }
             }
@@ -127,9 +118,6 @@ query getLibraryItem($slug: String, $language_code: String) {
               data {
                 attributes {
                   slug
-                  titles(filters: { language: { code: { eq: $language_code } } }) {
-                    title
-                  }
                 }
               }
             }
@@ -144,9 +132,6 @@ query getLibraryItem($slug: String, $language_code: String) {
               data {
                 attributes {
                   slug
-                  titles(filters: { language: { code: { eq: $language_code } } }) {
-                    title
-                  }
                 }
               }
             }
@@ -154,9 +139,6 @@ query getLibraryItem($slug: String, $language_code: String) {
               data {
                 attributes {
                   slug
-                  titles(filters: { language: { code: { eq: $language_code } } }) {
-                    title
-                  }
                 }
               }
             }
@@ -194,10 +176,8 @@ query getLibraryItem($slug: String, $language_code: String) {
               }
               categories(pagination: { limit: -1 }) {
                 data {
-                  id
                   attributes {
-                    name
-                    short
+                    slug
                   }
                 }
               }
@@ -208,19 +188,16 @@ query getLibraryItem($slug: String, $language_code: String) {
                     data {
                       attributes {
                         slug
-                        titles(filters: { language: { code: { eq: $language_code } } }) {
-                          title
-                        }
                       }
                     }
                   }
                 }
                 ... on ComponentMetadataGame {
-                  platforms {
+                  platform {
                     data {
                       id
                       attributes {
-                        short
+                        slug
                       }
                     }
                   }
@@ -230,9 +207,6 @@ query getLibraryItem($slug: String, $language_code: String) {
                     data {
                       attributes {
                         slug
-                        titles(filters: { language: { code: { eq: $language_code } } }) {
-                          title
-                        }
                       }
                     }
                   }
@@ -242,9 +216,6 @@ query getLibraryItem($slug: String, $language_code: String) {
                     data {
                       attributes {
                         slug
-                        titles(filters: { language: { code: { eq: $language_code } } }) {
-                          title
-                        }
                       }
                     }
                   }
@@ -254,9 +225,6 @@ query getLibraryItem($slug: String, $language_code: String) {
                     data {
                       attributes {
                         slug
-                        titles(filters: { language: { code: { eq: $language_code } } }) {
-                          title
-                        }
                       }
                     }
                   }
@@ -264,9 +232,6 @@ query getLibraryItem($slug: String, $language_code: String) {
                     data {
                       attributes {
                         slug
-                        titles(filters: { language: { code: { eq: $language_code } } }) {
-                          title
-                        }
                       }
                     }
                   }
@@ -317,10 +282,8 @@ query getLibraryItem($slug: String, $language_code: String) {
                     slug
                     categories(pagination: { limit: -1 }) {
                       data {
-                        id
                         attributes {
-                          name
-                          short
+                          slug
                         }
                       }
                     }
@@ -328,9 +291,6 @@ query getLibraryItem($slug: String, $language_code: String) {
                       data {
                         attributes {
                           slug
-                          titles(filters: { language: { code: { eq: $language_code } } }) {
-                            title
-                          }
                         }
                       }
                     }

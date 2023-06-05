@@ -27,7 +27,6 @@ import {
 import { MeiliIndices, MeiliLibraryItem } from "shared/meilisearch-graphql-typings/meiliTypes";
 import { useTypedRouter } from "hooks/useTypedRouter";
 import { TranslatedPreviewCard } from "components/PreviewCard";
-import { prettyItemSubType } from "helpers/formatters";
 import { isUntangibleGroupItem } from "helpers/libraryItem";
 import { PreviewCardCTAs } from "components/Library/PreviewCardCTAs";
 import { useLibraryItemUserStatus } from "hooks/useLibraryItemUserStatus";
@@ -70,7 +69,7 @@ interface Props extends AppLayoutRequired {}
 
 const Library = (props: Props): JSX.Element => {
   const hoverable = useDeviceSupportsHover();
-  const { format } = useFormat();
+  const { format, formatCategory, formatLibraryItemSubType } = useFormat();
   const { libraryItemUserStatus } = useLibraryItemUserStatus();
 
   const sortingMethods = useMemo(
@@ -414,11 +413,11 @@ const Library = (props: Props): JSX.Element => {
               keepInfoVisible={keepInfoVisible}
               topChips={
                 item.metadata && item.metadata.length > 0 && item.metadata[0]
-                  ? [prettyItemSubType(item.metadata[0])]
-                  : []
+                  ? [formatLibraryItemSubType(item.metadata[0])]
+                  : undefined
               }
-              bottomChips={item.categories?.data.map(
-                (category) => category.attributes?.short ?? ""
+              bottomChips={filterHasAttributes(item.categories?.data, ["attributes"]).map(
+                (category) => formatCategory(category.attributes.slug)
               )}
               metadata={{
                 releaseDate: item.release_date,

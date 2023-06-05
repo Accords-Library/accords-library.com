@@ -35,7 +35,7 @@ interface Props extends AppLayoutRequired {
 }
 
 const ContentsFolder = ({ openGraph, folder, path, ...otherProps }: Props): JSX.Element => {
-  const { format } = useFormat();
+  const { format, formatCategory, formatContentType } = useFormat();
   const setSubPanelOpened = useAtomSetter(atoms.layout.subPanelOpened);
   const isContentPanelAtLeast4xl = useAtomGetter(atoms.containerQueries.isContentPanelAtLeast4xl);
 
@@ -158,16 +158,12 @@ const ContentsFolder = ({ openGraph, folder, path, ...otherProps }: Props): JSX.
                 thumbnailForceAspectRatio
                 topChips={
                   item.attributes.type?.data?.attributes
-                    ? [
-                        item.attributes.type.data.attributes.titles?.[0]
-                          ? item.attributes.type.data.attributes.titles[0]?.title
-                          : prettySlug(item.attributes.type.data.attributes.slug),
-                      ]
+                    ? [formatContentType(item.attributes.type.data.attributes.slug)]
                     : undefined
                 }
-                bottomChips={item.attributes.categories?.data.map(
-                  (category) => category.attributes?.short ?? ""
-                )}
+                bottomChips={filterHasAttributes(item.attributes.categories?.data, [
+                  "attributes",
+                ]).map((category) => formatCategory(category.attributes.slug))}
                 keepInfoVisible
               />
             ))}
@@ -201,10 +197,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
   const { format } = getFormat(context.locale);
   const slug = context.params?.slug ? context.params.slug.toString() : "";
-  const contentsFolder = await sdk.getContentsFolder({
-    slug: slug,
-    language_code: context.locale ?? "en",
-  });
+  const contentsFolder = await sdk.getContentsFolder({ slug: slug });
   if (!contentsFolder.contentsFolders?.data[0]?.attributes) {
     return { notFound: true };
   }

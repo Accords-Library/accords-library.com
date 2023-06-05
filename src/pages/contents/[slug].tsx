@@ -10,7 +10,7 @@ import { SubPanel } from "components/Containers/SubPanel";
 import { PreviewCard, TranslatedPreviewCard } from "components/PreviewCard";
 import { ThumbnailHeader } from "components/ThumbnailHeader";
 import { getReadySdk } from "graphql/sdk";
-import { prettyInlineTitle, prettyItemSubType, prettySlug } from "helpers/formatters";
+import { prettyInlineTitle, prettySlug } from "helpers/formatters";
 import { isUntangibleGroupItem } from "helpers/libraryItem";
 import { filterHasAttributes, isDefined, isDefinedAndNotEmpty } from "helpers/asserts";
 import { ContentWithTranslations } from "types/types";
@@ -47,7 +47,7 @@ interface Props extends AppLayoutRequired {
 const Content = ({ content, ...otherProps }: Props): JSX.Element => {
   const setSubPanelOpened = useAtomSetter(atoms.layout.subPanelOpened);
   const is1ColumnLayout = useAtomGetter(atoms.containerQueries.is1ColumnLayout);
-  const { format } = useFormat();
+  const { format, formatCategory, formatLibraryItemSubType, formatContentType } = useFormat();
 
   const [selectedTranslation, LanguageSwitcher, languageSwitcherProps] = useSmartLanguage({
     items: content.translations,
@@ -196,12 +196,12 @@ const Content = ({ content, ...otherProps }: Props): JSX.Element => {
                           libraryItem.attributes.metadata &&
                           libraryItem.attributes.metadata.length > 0 &&
                           libraryItem.attributes.metadata[0]
-                            ? [prettyItemSubType(libraryItem.attributes.metadata[0])]
+                            ? [formatLibraryItemSubType(libraryItem.attributes.metadata[0])]
                             : []
                         }
                         bottomChips={filterHasAttributes(libraryItem.attributes.categories?.data, [
                           "attributes",
-                        ]).map((category) => category.attributes.short)}
+                        ]).map((category) => formatCategory(category.attributes.slug))}
                         metadata={{
                           releaseDate: libraryItem.attributes.release_date,
                           price: libraryItem.attributes.price,
@@ -250,8 +250,14 @@ const Content = ({ content, ...otherProps }: Props): JSX.Element => {
                 title={selectedTranslation?.title}
                 subtitle={selectedTranslation?.subtitle}
                 description={selectedTranslation?.description}
-                type={content.type}
-                categories={content.categories}
+                categories={filterHasAttributes(content.categories?.data, ["attributes"]).map(
+                  (category) => formatCategory(category.attributes.slug)
+                )}
+                type={
+                  content.type?.data?.attributes
+                    ? formatContentType(content.type.data.attributes.slug)
+                    : undefined
+                }
                 languageSwitcher={
                   languageSwitcherProps.locales.size > 1 ? (
                     <LanguageSwitcher {...languageSwitcherProps} />
@@ -330,12 +336,9 @@ export default Content;
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
-  const { format } = getFormat(context.locale);
+  const { format, formatCategory, formatContentType } = getFormat(context.locale);
   const slug = context.params?.slug ? context.params.slug.toString() : "";
-  const content = await sdk.getContentText({
-    slug: slug,
-    language_code: context.locale ?? "en",
-  });
+  const content = await sdk.getContentText({ slug: slug });
 
   if (!content.contents?.data[0]?.attributes?.translations) {
     return { notFound: true };
@@ -361,12 +364,14 @@ export const getStaticProps: GetStaticProps = async (context) => {
           ),
           description: getDescription(rawDescription, {
             [format("type", { count: Infinity })]: [
-              content.contents.data[0].attributes.type?.data?.attributes?.titles?.[0]?.title,
+              content.contents.data[0].attributes.type?.data?.attributes
+                ? formatContentType(content.contents.data[0].attributes.type.data.attributes.slug)
+                : undefined,
             ],
             [format("category", { count: Infinity })]: filterHasAttributes(
               content.contents.data[0].attributes.categories?.data,
               ["attributes"]
-            ).map((category) => category.attributes.short),
+            ).map((category) => formatCategory(category.attributes.slug)),
           }),
           audio:
             selectedTranslation.language?.data?.attributes?.code && selectedTranslation.audio_set
@@ -470,6 +475,7 @@ const RelatedContentPreview = ({
   categories,
   type,
 }: RelatedContentPreviewFragment) => {
+  const { formatCategory, formatContentType } = useFormat();
   const isContentPanelAtLeastXl = useAtomGetter(atoms.containerQueries.isContentPanelAtLeastXl);
 
   return (
@@ -486,16 +492,10 @@ const RelatedContentPreview = ({
       )}
       fallback={{ title: slug }}
       thumbnail={thumbnail?.data?.attributes}
-      topChips={
-        type?.data?.attributes
-          ? [
-              type.data.attributes.titles?.[0]
-                ? type.data.attributes.titles[0]?.title
-                : prettySlug(type.data.attributes.slug),
-            ]
-          : undefined
-      }
-      bottomChips={categories?.data.map((category) => category.attributes?.short ?? "")}
+      topChips={type?.data?.attributes ? [formatContentType(type.data.attributes.slug)] : undefined}
+      bottomChips={filterHasAttributes(categories?.data, ["attributes"]).map((category) =>
+        formatCategory(category.attributes.slug)
+      )}
       keepInfoVisible
     />
   );

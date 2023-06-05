@@ -1,4 +1,4 @@
-query getPost($slug: String, $language_code: String) {
+query getPost($slug: String) {
   posts(filters: { slug: { eq: $slug } }) {
     data {
       id
@@ -12,16 +12,14 @@ query getPost($slug: String, $language_code: String) {
           data {
             id
             attributes {
-              ...recorderChip
+              username
             }
           }
         }
         categories(pagination: { limit: -1 }) {
           data {
-            id
             attributes {
-              name
-              short
+              slug
             }
           }
         }

@@ -38,7 +38,7 @@ interface Props extends AppLayoutRequired {
 }
 
 const WikiPage = ({ page, ...otherProps }: Props): JSX.Element => {
-  const { format } = useFormat();
+  const { format, formatCategory, formatWikiTag } = useFormat();
   const router = useRouter();
   const isTerminalMode = useAtomGetter(atoms.layout.terminalMode);
   const setSubPanelOpened = useAtomSetter(atoms.layout.subPanelOpened);
@@ -126,7 +126,10 @@ const WikiPage = ({ page, ...otherProps }: Props): JSX.Element => {
 
                     <div className="flex flex-row flex-wrap place-content-center gap-2">
                       {filterHasAttributes(page.categories.data, ["attributes"]).map((category) => (
-                        <Chip key={category.id} text={category.attributes.name} />
+                        <Chip
+                          key={category.attributes.slug}
+                          text={formatCategory(category.attributes.slug, "full")}
+                        />
                       ))}
                     </div>
                   </>
@@ -137,12 +140,7 @@ const WikiPage = ({ page, ...otherProps }: Props): JSX.Element => {
                     <p className="font-headers text-xl font-bold">{format("tags")}</p>
                     <div className="flex flex-row flex-wrap place-content-center gap-2">
                       {filterHasAttributes(page.tags.data, ["attributes"]).map((tag) => (
-                        <Chip
-                          key={tag.id}
-                          text={
-                            tag.attributes.titles?.[0]?.title ?? prettySlug(tag.attributes.slug)
-                          }
-                        />
+                        <Chip key={tag.attributes.slug} text={formatWikiTag(tag.attributes.slug)} />
                       ))}
                     </div>
                   </>
@@ -180,7 +178,7 @@ const WikiPage = ({ page, ...otherProps }: Props): JSX.Element => {
                   }))}
                   index={index + 1}
                   categories={filterHasAttributes(definition.categories?.data, ["attributes"]).map(
-                    (category) => category.attributes.short
+                    (category) => formatCategory(category.attributes.slug)
                   )}
                 />
               </div>
@@ -250,24 +248,21 @@ export default WikiPage;
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
-  const { format } = getFormat(context.locale);
+  const { format, formatCategory, formatWikiTag } = getFormat(context.locale);
   const slug =
     context.params && isDefined(context.params.slug) ? context.params.slug.toString() : "";
-  const page = await sdk.getWikiPage({
-    language_code: context.locale ?? "en",
-    slug: slug,
-  });
+  const page = await sdk.getWikiPage({ slug: slug });
   if (!page.wikiPages?.data[0]?.attributes?.translations) return { notFound: true };
 
   const { title, description } = (() => {
     const chipsGroups = {
       [format("tags")]: filterHasAttributes(page.wikiPages.data[0].attributes.tags?.data, [
         "attributes",
-      ]).map((tag) => tag.attributes.titles?.[0]?.title ?? prettySlug(tag.attributes.slug)),
+      ]).map((tag) => formatWikiTag(tag.attributes.slug)),
       [format("category", { count: Infinity })]: filterHasAttributes(
         page.wikiPages.data[0].attributes.categories?.data,
         ["attributes"]
-      ).map((category) => category.attributes.short),
+      ).map((category) => formatCategory(category.attributes.slug)),
     };
 
     if (context.locale && context.locales) {

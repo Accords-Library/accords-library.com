@@ -1,4 +1,4 @@
-query getLibraryItemScans($slug: String, $language_code: String) {
+query getLibraryItemScans($slug: String) {
   libraryItems(filters: { slug: { eq: $slug } }) {
     data {
       id
@@ -27,7 +27,7 @@ query getLibraryItemScans($slug: String, $language_code: String) {
             data {
               id
               attributes {
-                ...recorderChip
+                username
               }
             }
           }
@@ -35,7 +35,7 @@ query getLibraryItemScans($slug: String, $language_code: String) {
             data {
               id
               attributes {
-                ...recorderChip
+                username
               }
             }
           }
@@ -43,7 +43,7 @@ query getLibraryItemScans($slug: String, $language_code: String) {
             data {
               id
               attributes {
-                ...recorderChip
+                username
               }
             }
           }
@@ -156,10 +156,8 @@ query getLibraryItemScans($slug: String, $language_code: String) {
         }
         categories(pagination: { limit: -1 }) {
           data {
-            id
             attributes {
-              name
-              short
+              slug
             }
           }
         }
@@ -171,19 +169,16 @@ query getLibraryItemScans($slug: String, $language_code: String) {
               data {
                 attributes {
                   slug
-                  titles(filters: { language: { code: { eq: $language_code } } }) {
-                    title
-                  }
                 }
               }
             }
           }
           ... on ComponentMetadataGame {
-            platforms {
+            platform {
               data {
                 id
                 attributes {
-                  short
+                  slug
                 }
               }
             }
@@ -193,9 +188,6 @@ query getLibraryItemScans($slug: String, $language_code: String) {
               data {
                 attributes {
                   slug
-                  titles(filters: { language: { code: { eq: $language_code } } }) {
-                    title
-                  }
                 }
               }
             }
@@ -205,9 +197,6 @@ query getLibraryItemScans($slug: String, $language_code: String) {
               data {
                 attributes {
                   slug
-                  titles(filters: { language: { code: { eq: $language_code } } }) {
-                    title
-                  }
                 }
               }
             }
@@ -217,9 +206,6 @@ query getLibraryItemScans($slug: String, $language_code: String) {
               data {
                 attributes {
                   slug
-                  titles(filters: { language: { code: { eq: $language_code } } }) {
-                    title
-                  }
                 }
               }
             }
@@ -227,9 +213,6 @@ query getLibraryItemScans($slug: String, $language_code: String) {
               data {
                 attributes {
                   slug
-                  titles(filters: { language: { code: { eq: $language_code } } }) {
-                    title
-                  }
                 }
               }
             }
@@ -290,7 +273,7 @@ query getLibraryItemScans($slug: String, $language_code: String) {
                   data {
                     id
                     attributes {
-                      ...recorderChip
+                      username
                     }
                   }
                 }
@@ -298,7 +281,7 @@ query getLibraryItemScans($slug: String, $language_code: String) {
                   data {
                     id
                     attributes {
-                      ...recorderChip
+                      username
                     }
                   }
                 }
@@ -306,7 +289,7 @@ query getLibraryItemScans($slug: String, $language_code: String) {
                   data {
                     id
                     attributes {
-                      ...recorderChip
+                      username
                     }
                   }
                 }

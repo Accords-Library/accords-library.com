@@ -73,3 +73,39 @@ export enum LibraryItemUserStatus {
   Want = 1,
   Have = 2,
 }
+
+// ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
+
+type LibraryItemMetadataSubType = {
+  data?: {
+    attributes?: {
+      slug: string;
+    } | null;
+  } | null;
+} | null;
+
+export type LibraryItemMetadata =
+  | {
+      __typename: "ComponentMetadataAudio";
+      subtype?: LibraryItemMetadataSubType;
+    }
+  | {
+      __typename: "ComponentMetadataBooks";
+      subtype?: LibraryItemMetadataSubType;
+    }
+  | {
+      __typename: "ComponentMetadataGame";
+      platform?: LibraryItemMetadataSubType;
+    }
+  | {
+      __typename: "ComponentMetadataGroup";
+      subtype?: LibraryItemMetadataSubType;
+      subitems_type?: LibraryItemMetadataSubType;
+    }
+  | {
+      __typename: "ComponentMetadataVideo";
+      subtype?: LibraryItemMetadataSubType;
+    }
+  | { __typename: "ComponentMetadataOther" }
+  | { __typename: "Error" }
+  | null;

@@ -7,13 +7,14 @@ import { SubPanel } from "./Containers/SubPanel";
 import { ThumbnailHeader } from "./ThumbnailHeader";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { PostWithTranslations } from "types/types";
-import { isDefined } from "helpers/asserts";
+import { filterHasAttributes, isDefined } from "helpers/asserts";
 import { prettySlug } from "helpers/formatters";
 import { useAtomGetter, useAtomSetter } from "helpers/atoms";
 import { atoms } from "contexts/atoms";
 import { ElementsSeparator } from "helpers/component";
 import { HorizontalLine } from "components/HorizontalLine";
 import { Credits } from "components/Credits";
+import { useFormat } from "hooks/useFormat";
 
 /*
  *                                        ╭─────────────╮
@@ -48,6 +49,7 @@ export const PostPage = ({
   displayTitle = true,
   ...otherProps
 }: Props): JSX.Element => {
+  const { formatCategory } = useFormat();
   const setSubPanelOpened = useAtomSetter(atoms.layout.subPanelOpened);
   const is1ColumnLayout = useAtomGetter(atoms.containerQueries.is1ColumnLayout);
 
@@ -104,7 +106,9 @@ export const PostPage = ({
             thumbnail={thumbnail}
             title={title}
             description={excerpt}
-            categories={post.categories}
+            categories={filterHasAttributes(post.categories?.data, ["attributes"]).map((category) =>
+              formatCategory(category.attributes.slug)
+            )}
             languageSwitcher={
               languageSwitcherProps.locales.size > 1 ? (
                 <LanguageSwitcher {...languageSwitcherProps} />

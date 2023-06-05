@@ -114,11 +114,11 @@ query localDataGetWebsiteInterfaces {
         previous_content
         followup_content
         videos
-        view_on
+        view_on_x
         channel
         subscribers
         description
-        available_at
+        available_at_x
         want_it
         have_it
         source

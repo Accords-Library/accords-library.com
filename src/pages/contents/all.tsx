@@ -59,7 +59,7 @@ interface Props extends AppLayoutRequired {}
 
 const Contents = (props: Props): JSX.Element => {
   const hoverable = useDeviceSupportsHover();
-  const { format } = useFormat();
+  const { format, formatCategory, formatContentType } = useFormat();
   const router = useTypedRouter(queryParamSchema);
   const setSubPanelOpened = useAtomSetter(atoms.layout.subPanelOpened);
 
@@ -225,15 +225,11 @@ const Contents = (props: Props): JSX.Element => {
               thumbnailForceAspectRatio
               topChips={
                 item.type?.data?.attributes
-                  ? [
-                      item.type.data.attributes.titles?.[0]
-                        ? item.type.data.attributes.titles[0]?.title
-                        : prettySlug(item.type.data.attributes.slug),
-                    ]
+                  ? [formatContentType(item.type.data.attributes.slug)]
                   : undefined
               }
-              bottomChips={item.categories?.data.map(
-                (category) => category.attributes?.short ?? ""
+              bottomChips={filterHasAttributes(item.categories?.data, ["attributes"]).map(
+                (category) => formatCategory(category.attributes.slug)
               )}
               keepInfoVisible={keepInfoVisible}
             />

@@ -1,4 +1,4 @@
-query getChronicle($slug: String, $language_code: String) {
+query getChronicle($slug: String) {
   chronicles(filters: { slug: { eq: $slug } }) {
     data {
       attributes {
@@ -53,21 +53,21 @@ query getChronicle($slug: String, $language_code: String) {
             authors {
               data {
                 attributes {
-                  ...recorderChip
+                  username
                 }
               }
             }
             translators {
               data {
                 attributes {
-                  ...recorderChip
+                  username
                 }
               }
             }
             proofreaders {
               data {
                 attributes {
-                  ...recorderChip
+                  username
                 }
               }
             }
@@ -80,10 +80,8 @@ query getChronicle($slug: String, $language_code: String) {
               slug
               categories(pagination: { limit: -1 }) {
                 data {
-                  id
                   attributes {
-                    name
-                    short
+                    slug
                   }
                 }
               }
@@ -91,9 +89,6 @@ query getChronicle($slug: String, $language_code: String) {
                 data {
                   attributes {
                     slug
-                    titles(filters: { language: { code: { eq: $language_code } } }) {
-                      title
-                    }
                   }
                 }
               }
@@ -123,7 +118,7 @@ query getChronicle($slug: String, $language_code: String) {
                     data {
                       id
                       attributes {
-                        ...recorderChip
+                        username
                       }
                     }
                   }
@@ -131,7 +126,7 @@ query getChronicle($slug: String, $language_code: String) {
                     data {
                       id
                       attributes {
-                        ...recorderChip
+                        username
                       }
                     }
                   }
@@ -139,7 +134,7 @@ query getChronicle($slug: String, $language_code: String) {
                     data {
                       id
                       attributes {
-                        ...recorderChip
+                        username
                       }
                     }
                   }

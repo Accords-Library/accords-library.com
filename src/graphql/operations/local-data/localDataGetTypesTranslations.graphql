@@ -1,0 +1,183 @@
+query localDataGetTypesTranslations {
+  metadataTypes(pagination: { limit: -1 }) {
+    data {
+      attributes {
+        slug
+        titles {
+          language {
+            data {
+              attributes {
+                code
+              }
+            }
+          }
+          title
+        }
+      }
+    }
+  }
+
+  audioSubtypes(pagination: { limit: -1 }) {
+    data {
+      attributes {
+        slug
+        titles {
+          language {
+            data {
+              attributes {
+                code
+              }
+            }
+          }
+          title
+        }
+      }
+    }
+  }
+
+  videoSubtypes(pagination: { limit: -1 }) {
+    data {
+      attributes {
+        slug
+        titles {
+          language {
+            data {
+              attributes {
+                code
+              }
+            }
+          }
+          title
+        }
+      }
+    }
+  }
+
+  textualSubtypes(pagination: { limit: -1 }) {
+    data {
+      attributes {
+        slug
+        titles {
+          language {
+            data {
+              attributes {
+                code
+              }
+            }
+          }
+          title
+        }
+      }
+    }
+  }
+
+  groupSubtypes(pagination: { limit: -1 }) {
+    data {
+      attributes {
+        slug
+        titles {
+          language {
+            data {
+              attributes {
+                code
+              }
+            }
+          }
+          title
+        }
+      }
+    }
+  }
+
+  gamePlatforms(pagination: { limit: -1 }) {
+    data {
+      attributes {
+        slug
+        titles {
+          language {
+            data {
+              attributes {
+                code
+              }
+            }
+          }
+          title
+          short
+        }
+      }
+    }
+  }
+
+  contentTypes(pagination: { limit: -1 }) {
+    data {
+      attributes {
+        slug
+        titles {
+          language {
+            data {
+              attributes {
+                code
+              }
+            }
+          }
+          title
+        }
+      }
+    }
+  }
+
+  wikiPagesTags(pagination: { limit: -1 }) {
+    data {
+      attributes {
+        slug
+        titles {
+          language {
+            data {
+              attributes {
+                code
+              }
+            }
+          }
+          title
+        }
+      }
+    }
+  }
+
+  weaponStoryTypes(pagination: { limit: -1 }) {
+    data {
+      attributes {
+        slug
+        translations {
+          language {
+            data {
+              attributes {
+                code
+              }
+            }
+          }
+          name
+        }
+      }
+    }
+  }
+
+  categories(pagination: { limit: -1 }) {
+    data {
+      attributes {
+        slug
+        titles {
+          language {
+            data {
+              attributes {
+                code
+              }
+            }
+          }
+          title
+          short
+        }
+      }
+    }
+  }
+}

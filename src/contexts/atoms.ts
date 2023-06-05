@@ -5,7 +5,7 @@ import { userAgent } from "contexts/userAgent";
 import { atomPairing } from "helpers/atoms";
 import { settings } from "contexts/settings";
 import { UploadImageFragment } from "graphql/generated";
-import { Languages, Currencies, Langui } from "helpers/localData";
+import { Languages, Currencies, Langui, Recorders, TypesTranslations } from "helpers/localData";
 
 /* [ LOCAL DATA ATOMS ] */
 
@@ -13,12 +13,29 @@ const languages = atomPairing(atom<Languages>([]));
 const currencies = atomPairing(atom<Currencies>([]));
 const langui = atomPairing(atom<Langui>({}));
 const fallbackLangui = atomPairing(atom<Langui>({}));
+const recorders = atomPairing(atom<Recorders>([]));
+const typesTranslations = atomPairing(
+  atom<TypesTranslations>({
+    audioSubtypes: [],
+    categories: [],
+    contentTypes: [],
+    gamePlatforms: [],
+    groupSubtypes: [],
+    metadataTypes: [],
+    textualSubtypes: [],
+    videoSubtypes: [],
+    wikiPagesTags: [],
+    weaponTypes: [],
+  })
+);
 
 const localData = {
   languages: languages[0],
   currencies: currencies[0],
   langui: langui[0],
   fallbackLangui: fallbackLangui[0],
+  recorders: recorders[0],
+  typesTranslations: typesTranslations[0],
 };
 
 /* [ LIGHTBOX ATOMS ] */
@@ -70,5 +87,5 @@ export const atoms = {
 // Do not import outside of the "contexts" folder
 export const internalAtoms = {
   lightBox: lightBoxAtom,
-  localData: { languages, currencies, langui, fallbackLangui },
+  localData: { languages, currencies, langui, fallbackLangui, recorders, typesTranslations },
 };

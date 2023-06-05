@@ -54,7 +54,7 @@ const queryParamSchema = z.object({
 interface Props extends AppLayoutRequired {}
 
 const Weapons = (props: Props): JSX.Element => {
-  const { format } = useFormat();
+  const { format, formatCategory, formatWeaponType } = useFormat();
   const hoverable = useDeviceSupportsHover();
   const router = useTypedRouter(queryParamSchema);
 
@@ -190,11 +190,11 @@ const Weapons = (props: Props): JSX.Element => {
               keepInfoVisible={keepInfoVisible}
               topChips={
                 item.type?.data?.attributes?.slug
-                  ? [prettySlug(item.type.data.attributes.slug)]
+                  ? [formatWeaponType(item.type.data.attributes.slug)]
                   : undefined
               }
-              bottomChips={filterHasAttributes(item.categories, ["attributes.short"]).map(
-                (category) => category.attributes.short
+              bottomChips={filterHasAttributes(item.categories, ["attributes"]).map((category) =>
+                formatCategory(category.attributes.slug)
               )}
             />
           ))}
@@ -203,11 +203,7 @@ const Weapons = (props: Props): JSX.Element => {
     </ContentPanel>
   );
 
-  return (
-    <>
-      <AppLayout contentPanel={contentPanel} subPanel={subPanel} {...props} />
-    </>
-  );
+  return <AppLayout contentPanel={contentPanel} subPanel={subPanel} {...props} />;
 };
 export default Weapons;
 

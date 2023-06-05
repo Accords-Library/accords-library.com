@@ -2,10 +2,9 @@ import { Chip } from "components/Chip";
 import { Img } from "components/Img";
 import { InsetBox } from "components/Containers/InsetBox";
 import { Markdawn } from "components/Markdown/Markdawn";
-import { GetContentTextQuery, UploadImageFragment } from "graphql/generated";
-import { prettyInlineTitle, prettySlug, slugify } from "helpers/formatters";
+import { UploadImageFragment } from "graphql/generated";
+import { prettyInlineTitle, slugify } from "helpers/formatters";
 import { ImageQuality } from "helpers/img";
-import { filterHasAttributes } from "helpers/asserts";
 import { useAtomGetter } from "helpers/atoms";
 import { atoms } from "contexts/atoms";
 import { useFormat } from "hooks/useFormat";
@@ -20,12 +19,8 @@ interface Props {
   title: string | null | undefined;
   subtitle?: string | null | undefined;
   description?: string | null | undefined;
-  type?: NonNullable<
-    NonNullable<GetContentTextQuery["contents"]>["data"][number]["attributes"]
-  >["type"];
-  categories?: NonNullable<
-    NonNullable<GetContentTextQuery["contents"]>["data"][number]["attributes"]
-  >["categories"];
+  type?: string;
+  categories?: string[];
   thumbnail?: UploadImageFragment | null | undefined;
   className?: string;
   languageSwitcher?: JSX.Element;
@@ -72,25 +67,21 @@ export const ThumbnailHeader = ({
       </div>
 
       <div className="flew-wrap flex flex-row place-content-center gap-8">
-        {type?.data?.attributes && (
+        {type && (
           <div className="flex flex-col place-items-center gap-2">
             <h3 className="text-xl">{format("type", { count: 1 })}</h3>
             <div className="flex flex-row flex-wrap">
-              <Chip
-                text={
-                  type.data.attributes.titles?.[0]?.title ?? prettySlug(type.data.attributes.slug)
-                }
-              />
+              <Chip text={type} />
             </div>
           </div>
         )}
 
-        {categories && categories.data.length > 0 && (
+        {categories && categories.length > 0 && (
           <div className="flex flex-col place-items-center gap-2">
-            <h3 className="text-xl">{format("category", { count: categories.data.length })}</h3>
+            <h3 className="text-xl">{format("category", { count: categories.length })}</h3>
             <div className="flex flex-row flex-wrap place-content-center gap-2">
-              {filterHasAttributes(categories.data, ["attributes", "id"]).map((category) => (
-                <Chip key={category.id} text={category.attributes.name} />
+              {categories.map((category) => (
+                <Chip key={category} text={category} />
               ))}
             </div>
           </div>

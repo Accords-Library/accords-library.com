@@ -34,7 +34,7 @@ interface Props extends AppLayoutRequired {
 }
 
 const Chronicle = ({ chronicle, chapters, ...otherProps }: Props): JSX.Element => {
-  const { format } = useFormat();
+  const { format, formatContentType, formatCategory } = useFormat();
   useScrollTopOnChange(Ids.ContentPanel, [chronicle.slug]);
 
   const [selectedTranslation, LanguageSwitcher, languageSwitcherProps] = useSmartLanguage({
@@ -111,8 +111,14 @@ const Chronicle = ({ chronicle, chapters, ...otherProps }: Props): JSX.Element =
                       <ContentLanguageSwitcher {...ContentLanguageSwitcherProps} />
                     ) : undefined
                   }
-                  categories={primaryContent?.categories}
-                  type={primaryContent?.type}
+                  categories={filterHasAttributes(primaryContent?.categories?.data, [
+                    "attributes",
+                  ]).map((category) => formatCategory(category.attributes.slug))}
+                  type={
+                    primaryContent?.type?.data?.attributes
+                      ? formatContentType(primaryContent.type.data.attributes.slug)
+                      : undefined
+                  }
                   description={selectedContentTranslation.description}
                   thumbnail={primaryContent?.thumbnail?.data?.attributes}
                 />,
@@ -146,13 +152,10 @@ export default Chronicle;
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
-  const { format } = getFormat(context.locale);
+  const { format, formatCategory, formatContentType } = getFormat(context.locale);
   const slug =
     context.params && isDefined(context.params.slug) ? context.params.slug.toString() : "";
-  const chronicle = await sdk.getChronicle({
-    language_code: context.locale ?? "en",
-    slug: slug,
-  });
+  const chronicle = await sdk.getChronicle({ slug: slug });
   const chronicles = await sdk.getChroniclesChapters();
   if (
     !chronicle.chronicles?.data[0]?.attributes?.translations ||
@@ -178,13 +181,18 @@ export const getStaticProps: GetStaticProps = async (context) => {
             description: getDescription(selectedContentTranslation.description, {
               [format("type", { count: Infinity })]: [
                 chronicle.chronicles.data[0].attributes.contents.data[0].attributes.type?.data
-                  ?.attributes?.titles?.[0]?.title,
+                  ?.attributes
+                  ? formatContentType(
+                      chronicle.chronicles.data[0].attributes.contents.data[0].attributes.type.data
+                        .attributes.slug
+                    )
+                  : undefined,
               ],
               [format("category", { count: Infinity })]: filterHasAttributes(
                 chronicle.chronicles.data[0].attributes.contents.data[0].attributes.categories
                   ?.data,
                 ["attributes"]
-              ).map((category) => category.attributes.short),
+              ).map((category) => formatCategory(category.attributes.slug)),
             }),
           };
         }

@@ -17,10 +17,9 @@ export const getPostStaticProps =
   (slug: string): GetStaticProps =>
   async (context) => {
     const sdk = getReadySdk();
-    const { format } = getFormat(context.locale);
+    const { format, formatCategory } = getFormat(context.locale);
     const post = await sdk.getPost({
       slug: slug,
-      language_code: context.locale ?? "en",
     });
 
     if (!post.posts?.data[0]?.attributes?.translations || !context.locale || !context.locales) {
@@ -40,7 +39,7 @@ export const getPostStaticProps =
       [format("category", { count: Infinity })]: filterHasAttributes(
         post.posts.data[0].attributes.categories?.data,
         ["attributes"]
-      ).map((category) => category.attributes.short),
+      ).map((category) => formatCategory(category.attributes.slug)),
     });
 
     const thumbnail =

@@ -1,4 +1,4 @@
-query getContentsFolder($slug: String, $language_code: String) {
+query getContentsFolder($slug: String) {
   contentsFolders(filters: { slug: { eq: $slug } }) {
     data {
       attributes {
@@ -22,10 +22,8 @@ query getContentsFolder($slug: String, $language_code: String) {
               }
               categories(pagination: { limit: -1 }) {
                 data {
-                  id
                   attributes {
-                    name
-                    short
+                    slug
                   }
                 }
               }
@@ -33,9 +31,6 @@ query getContentsFolder($slug: String, $language_code: String) {
                 data {
                   attributes {
                     slug
-                    titles(filters: { language: { code: { eq: $language_code } } }) {
-                      title
-                    }
                   }
                 }
               }

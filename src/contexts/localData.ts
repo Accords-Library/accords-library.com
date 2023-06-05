@@ -7,10 +7,17 @@ import {
   LocalDataGetWebsiteInterfacesQuery,
   LocalDataGetCurrenciesQuery,
   LocalDataGetLanguagesQuery,
+  LocalDataGetRecordersQuery,
 } from "graphql/generated";
 import { LocalDataFile } from "graphql/fetchLocalData";
 import { internalAtoms } from "contexts/atoms";
-import { processLanguages, processCurrencies, processLangui } from "helpers/localData";
+import {
+  processLanguages,
+  processCurrencies,
+  processLangui,
+  processRecorders,
+  processTypesTranslations,
+} from "helpers/localData";
 import { getLogger } from "helpers/logger";
 
 const getFileName = (name: LocalDataFile): string => `/local-data/${name}.json`;
@@ -21,12 +28,18 @@ export const useLocalData = (): void => {
   const setCurrencies = useAtomSetter(internalAtoms.localData.currencies);
   const setLangui = useAtomSetter(internalAtoms.localData.langui);
   const setFallbackLangui = useAtomSetter(internalAtoms.localData.fallbackLangui);
+  const setRecorders = useAtomSetter(internalAtoms.localData.recorders);
+  const setTypesTranslations = useAtomSetter(internalAtoms.localData.typesTranslations);
 
   const { locale } = useRouter();
   const { data: rawLanguages } = useFetch<LocalDataGetLanguagesQuery>(getFileName("languages"));
   const { data: rawCurrencies } = useFetch<LocalDataGetCurrenciesQuery>(getFileName("currencies"));
   const { data: rawLangui } = useFetch<LocalDataGetWebsiteInterfacesQuery>(
     getFileName("websiteInterfaces")
+  );
+  const { data: rawRecorders } = useFetch<LocalDataGetRecordersQuery>(getFileName("recorders"));
+  const { data: rawTypesTranslations } = useFetch<LocalDataGetRecordersQuery>(
+    getFileName("typesTranslations")
   );
 
   useEffect(() => {
@@ -48,4 +61,14 @@ export const useLocalData = (): void => {
     logger.log("Refresh fallback langui");
     setFallbackLangui(processLangui(rawLangui, "en"));
   }, [rawLangui, setFallbackLangui]);
+
+  useEffect(() => {
+    logger.log("Refresh recorders");
+    setRecorders(processRecorders(rawRecorders));
+  }, [rawRecorders, setRecorders]);
+
+  useEffect(() => {
+    logger.log("Refresh types translations");
+    setTypesTranslations(processTypesTranslations(rawTypesTranslations));
+  }, [rawTypesTranslations, setTypesTranslations]);
 };

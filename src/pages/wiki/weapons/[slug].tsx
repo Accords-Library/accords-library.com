@@ -64,7 +64,7 @@ const WeaponPreview = ({ weapon }: WeaponPreviewProps): JSX.Element => (
 );
 
 const WeaponPage = ({ weapon, primaryName, aliases, ...otherProps }: Props): JSX.Element => {
-  const { format } = useFormat();
+  const { format, formatCategory, formatWeaponType } = useFormat();
 
   const intersectionIds = useMemo(
     () => filterDefined(weapon.stories).map(({ id }) => `story-${id}`),
@@ -91,8 +91,10 @@ const WeaponPage = ({ weapon, primaryName, aliases, ...otherProps }: Props): JSX
                 key={index}
                 url={`#${id}`}
                 title={`Story ${index + 1}`}
-                subtitle={weapon.stories?.[index]?.categories?.data
-                  .map((category) => category.attributes?.name)
+                subtitle={filterHasAttributes(weapon.stories?.[index]?.categories?.data, [
+                  "attributes",
+                ])
+                  .map((category) => formatCategory(category.attributes.slug))
                   .join("・")}
                 active={currentIntersection === index}
                 border
@@ -133,6 +135,11 @@ const WeaponPage = ({ weapon, primaryName, aliases, ...otherProps }: Props): JSX
       <ThumbnailHeader
         title={primaryName}
         subtitle={aliases.join("・")}
+        type={
+          weapon.type?.data?.attributes
+            ? formatWeaponType(weapon.type.data.attributes.slug)
+            : undefined
+        }
         thumbnail={weapon.thumbnail?.data?.attributes}
       />
 
@@ -166,10 +173,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
   const { format } = getFormat(context.locale);
   const slug = context.params?.slug ? context.params.slug.toString() : "";
-  const weaponResp = await sdk.getWeapon({
-    slug: slug,
-    language_code: context.locale ?? "en",
-  });
+  const weaponResp = await sdk.getWeapon({ slug: slug });
 
   const weapon = weaponResp.weaponStories?.data[0]?.attributes;
 
@@ -227,7 +231,7 @@ interface WeaponStoryProps {
 }
 
 const WeaponStory = ({ story, storyNumber, id }: WeaponStoryProps): JSX.Element => {
-  const { format } = useFormat();
+  const { format, formatCategory } = useFormat();
   const [selectedTranslation, LanguageSwitcher, languageSwitcherProps] = useSmartLanguage({
     items: story.translations,
     languageExtractor: useCallback(
@@ -241,14 +245,18 @@ const WeaponStory = ({ story, storyNumber, id }: WeaponStoryProps): JSX.Element 
 
   return (
     <InsetBox id={id} className="formatted">
-      <h2 className="!mb-4 !mt-4">{format("story_x", { x: storyNumber })}</h2>
-
-      {languageSwitcherProps.locales.size > 1 && <LanguageSwitcher {...languageSwitcherProps} />}
+      <div className="flex place-content-center place-items-center gap-4">
+        <h2 className="!mb-4 !mt-4">{format("story_x", { x: storyNumber })}</h2>
+        {languageSwitcherProps.locales.size > 1 && <LanguageSwitcher {...languageSwitcherProps} />}
+      </div>
 
       {story.categories && story.categories.data.length > 0 && (
         <div className="mb-12 flex flex-row flex-wrap place-content-center gap-2">
-          {filterHasAttributes(story.categories.data, ["attributes.name"]).map((category) => (
-            <Chip key={category.id} text={category.attributes.name} />
+          {filterHasAttributes(story.categories.data, ["attributes"]).map((category) => (
+            <Chip
+              key={category.attributes.slug}
+              text={formatCategory(category.attributes.slug, "full")}
+            />
           ))}
         </div>
       )}

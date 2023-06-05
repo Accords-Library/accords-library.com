@@ -51,10 +51,10 @@ const queryParamSchema = z.object({
 interface Props extends AppLayoutRequired {}
 
 const Wiki = (props: Props): JSX.Element => {
+  const { format, formatCategory, formatWikiTag } = useFormat();
   const hoverable = useDeviceSupportsHover();
   const setSubPanelOpened = useAtomSetter(atoms.layout.subPanelOpened);
   const closeSubPanel = useCallback(() => setSubPanelOpened(false), [setSubPanelOpened]);
-  const { format } = useFormat();
   const router = useTypedRouter(queryParamSchema);
   const [query, setQuery] = useState(router.query.query ?? DEFAULT_FILTERS_STATE.query);
 
@@ -201,11 +201,11 @@ const Wiki = (props: Props): JSX.Element => {
               thumbnailRounded
               thumbnailForceAspectRatio
               keepInfoVisible
-              topChips={filterHasAttributes(item.tags?.data, ["attributes"]).map(
-                (tag) => tag.attributes.titles?.[0]?.title ?? prettySlug(tag.attributes.slug)
+              topChips={filterHasAttributes(item.tags?.data, ["attributes"]).map((tag) =>
+                formatWikiTag(tag.attributes.slug)
               )}
               bottomChips={filterHasAttributes(item.categories?.data, ["attributes"]).map(
-                (category) => category.attributes.short
+                (category) => formatCategory(category.attributes.slug)
               )}
             />
           ))}

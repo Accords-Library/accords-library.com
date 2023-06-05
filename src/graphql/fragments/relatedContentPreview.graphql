@@ -14,9 +14,8 @@ fragment relatedContentPreview on Content {
   }
   categories(pagination: { limit: -1 }) {
     data {
-      id
       attributes {
-        short
+        slug
       }
     }
   }
@@ -24,9 +23,6 @@ fragment relatedContentPreview on Content {
     data {
       attributes {
         slug
-        titles(filters: { language: { code: { eq: $language_code } } }) {
-          title
-        }
       }
     }
   }

@@ -438,7 +438,6 @@ const Revalidate = async (
       })
     );
     res.json({ message: "Success!", revalidated: true });
-    return;
   } catch (error) {
     res.status(500).send({ message: `Error revalidating: ${error}`, revalidated: false });
   }

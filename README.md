@@ -67,7 +67,7 @@ A detailled look at the technologies used in this repository:
   - The website is built before running in production
   - Performances are great, and it's possible to deploy the app on a CDN
   - On-Demand ISR to continuously update the website when new content is added or existing content is modified/deleted
-  - UI localizations are downloaded separetely into the `public/local-data` to avoid fetching the same static props for every pages.
+  - Some widely used data (e.g: UI localizations) are downloaded separetely into `public/local-data` as some form of request deduping + it make this data hot-swappable without the need to rebuild the entire website.
 
 - Queries: [GraphQL Code Generator](https://www.graphql-code-generator.com/)
 
@@ -102,17 +102,15 @@ A detailled look at the technologies used in this repository:
 
 - Multilingual
 
-  - By default, use the browser's language as the main language
-  - Fallback languages are used for content which are not available in the main language
-  - Main and fallback languages can be ordered manually by the user
-  - At the content level, the user can know which language is available
-  - Furthermore, the user can temporary select another language then the one that was automatically selected
+  - Users are given a list of supported languages. The first language in this list is the primary language (the language of the UI), the others are fallback languages. The others are fallback languages.
+  - By default, the list is ordered following the browser's languages (and most spoken languages woldwide for the remaining languages). The list can also be reordered manually.
+  - Contents can be available in any number of languages. By default, the best matching language will be presented to the user. However, the user can also decide to temporary select another language for a specific content, without affecting their list of preferred languages.
 
 - UI Localizations
 
   - The translated wordings use [ICU Message Format](https://unicode-org.github.io/icu/userguide/format_parse/messages/) to include variables, plural, dates...
   - Use a custom ICU Typescript transformation script to provide type safety when formatting ICU wordings
-  - Fallback to English if a specific working isn't available in the user's language
+  - Fallback to English if the translation is missing.
 
 - SEO
 

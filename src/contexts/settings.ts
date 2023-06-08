@@ -2,11 +2,11 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { atom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
-import { atomPairing, useAtomGetter, useAtomPair } from "helpers/atoms";
-import { getDefaultPreferredLanguages } from "helpers/locales";
-import { isDefined, isDefinedAndNotEmpty } from "helpers/asserts";
+import { atomPairing, useAtomGetter, useAtomPair, useAtomSetter } from "helpers/atoms";
+import { isDefined } from "helpers/asserts";
 import { usePrefersDarkMode } from "hooks/useMediaQuery";
 import { userAgent } from "contexts/userAgent";
+import { getLogger } from "helpers/logger";
 
 export enum ThemeMode {
   Dark = "dark",
@@ -19,6 +19,8 @@ export enum PerfMode {
   Auto = "auto",
   Off = "off",
 }
+
+const logger = getLogger("⚙️ [Settings Context]");
 
 const preferredLanguagesAtom = atomPairing(atomWithStorage<string[]>("preferredLanguages", []));
 const themeModeAtom = atomPairing(atomWithStorage("themeMode", ThemeMode.Auto));
@@ -67,7 +69,7 @@ export const settings = {
 
 export const useSettings = (): void => {
   const router = useRouter();
-  const [preferredLanguages, setPreferredLanguages] = useAtomPair(preferredLanguagesAtom);
+  const setPreferredLanguages = useAtomSetter(preferredLanguagesAtom);
   const fontSize = useAtomGetter(fontSizeAtom);
   const isDyslexic = useAtomGetter(dyslexicAtom);
   const [isDarkMode, setDarkMode] = useAtomPair(darkModeAtom);
@@ -114,24 +116,33 @@ export const useSettings = (): void => {
   }, [isDarkMode]);
 
   /* PREFERRED LANGUAGES */
-
   useEffect(() => {
-    if (preferredLanguages.length === 0) {
-      if (isDefinedAndNotEmpty(router.locale) && router.locales) {
-        setPreferredLanguages(getDefaultPreferredLanguages(router.locale, router.locales));
-      }
-    } else if (router.locale !== preferredLanguages[0]) {
-      /*
-       * Using a timeout to the code getting stuck into a loop when reaching the website with a
-       * different preferredLanguages[0] from router.locale
-       */
-      setTimeout(
-        async () =>
-          router.replace(router.asPath, router.asPath, {
-            locale: preferredLanguages[0],
-          }),
-        250
+    if (!router.locale || !router.locales) return;
+    const localStorageValue: string[] = JSON.parse(
+      localStorage.getItem("preferredLanguages") ?? "[]"
+    );
+
+    if (localStorageValue.length === 0) {
+      const defaultLanguages = router.locales;
+      defaultLanguages.sort((a, b) => {
+        const evaluate = (value: string) =>
+          navigator.languages.includes(value)
+            ? navigator.languages.findIndex((v) => value === v)
+            : navigator.languages.length;
+        return evaluate(a) - evaluate(b);
+      });
+      logger.log("First time visitor, initializing preferred languages to", defaultLanguages);
+      setPreferredLanguages(defaultLanguages);
+    } else if (router.locale !== localStorageValue[0]) {
+      logger.log(
+        "Router locale",
+        router.locale,
+        "doesn't correspond to preferred locale. Switching to",
+        localStorageValue[0]
       );
+      router.replace(router.asPath, router.asPath, {
+        locale: localStorageValue[0],
+      });
     }
-  }, [preferredLanguages, router, setPreferredLanguages]);
+  }, [router, setPreferredLanguages]);
 };

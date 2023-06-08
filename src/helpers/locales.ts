@@ -1,19 +1,11 @@
 import { isDefined } from "./asserts";
 
 export const getDefaultPreferredLanguages = (routerLocal: string, locales: string[]): string[] => {
-  let defaultPreferredLanguages: string[] = [];
-  if (routerLocal === "en") {
-    defaultPreferredLanguages = [routerLocal];
-    locales.map((locale) => {
-      if (locale !== routerLocal) defaultPreferredLanguages.push(locale);
-    });
-  } else {
-    defaultPreferredLanguages = [routerLocal, "en"];
-    locales.map((locale) => {
-      if (locale !== routerLocal && locale !== "en") defaultPreferredLanguages.push(locale);
-    });
-  }
-  return defaultPreferredLanguages;
+  const defaultPreferredLanguages: Set<string> = new Set();
+  defaultPreferredLanguages.add(routerLocal);
+  defaultPreferredLanguages.add("en");
+  locales.forEach((locale) => defaultPreferredLanguages.add(locale));
+  return [...defaultPreferredLanguages.values()];
 };
 
 export const getPreferredLanguage = (

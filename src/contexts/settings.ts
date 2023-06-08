@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { atom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
-import { atomPairing, useAtomGetter, useAtomPair, useAtomSetter } from "helpers/atoms";
+import { atomPairing, useAtomGetter, useAtomPair } from "helpers/atoms";
 import { isDefined } from "helpers/asserts";
 import { usePrefersDarkMode } from "hooks/useMediaQuery";
 import { userAgent } from "contexts/userAgent";
@@ -69,7 +69,7 @@ export const settings = {
 
 export const useSettings = (): void => {
   const router = useRouter();
-  const setPreferredLanguages = useAtomSetter(preferredLanguagesAtom);
+  const [preferredLanguages, setPreferredLanguages] = useAtomPair(preferredLanguagesAtom);
   const fontSize = useAtomGetter(fontSizeAtom);
   const isDyslexic = useAtomGetter(dyslexicAtom);
   const [isDarkMode, setDarkMode] = useAtomPair(darkModeAtom);
@@ -144,5 +144,5 @@ export const useSettings = (): void => {
         locale: localStorageValue[0],
       });
     }
-  }, [router, setPreferredLanguages]);
+  }, [router, setPreferredLanguages, preferredLanguages]);
 };

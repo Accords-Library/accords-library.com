@@ -1,6 +1,5 @@
 import { Fragment, useCallback, useMemo } from "react";
 import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next";
-import { useRouter } from "next/router";
 import { useBoolean } from "usehooks-ts";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { Chip } from "components/Chip";
@@ -20,13 +19,7 @@ import {
   GetLibraryItemQuery,
 } from "graphql/generated";
 import { getReadySdk } from "graphql/sdk";
-import {
-  prettyDate,
-  prettyInlineTitle,
-  prettyPrice,
-  prettySlug,
-  prettyURL,
-} from "helpers/formatters";
+import { prettyInlineTitle, prettySlug, prettyURL } from "helpers/formatters";
 import { ImageQuality } from "helpers/img";
 import { convertMmToInch } from "helpers/numbers";
 import { sortRangedContent } from "helpers/others";
@@ -96,15 +89,15 @@ const LibrarySlug = ({
     formatCategory,
     formatContentType,
     formatLibraryItemSubType,
+    formatPrice,
+    formatDate,
   } = useFormat();
-  const currencies = useAtomGetter(atoms.localData.currencies);
 
   const isContentPanelAtLeast3xl = useAtomGetter(atoms.containerQueries.isContentPanelAtLeast3xl);
   const isContentPanelAtLeastSm = useAtomGetter(atoms.containerQueries.isContentPanelAtLeastSm);
   const is3ColumnsLayout = useAtomGetter(atoms.containerQueries.is3ColumnsLayout);
 
   const hoverable = useDeviceSupportsHover();
-  const router = useRouter();
   const { value: keepInfoVisible, toggle: toggleKeepInfoVisible } = useBoolean(false);
 
   const { showLightBox } = useAtomGetter(atoms.lightBox);
@@ -320,24 +313,17 @@ const LibrarySlug = ({
               {item.release_date && (
                 <div className="grid place-content-start place-items-center">
                   <h3 className="text-xl">{format("release_date")}</h3>
-                  <p>{prettyDate(item.release_date, router.locale)}</p>
+                  <p>{formatDate(item.release_date)}</p>
                 </div>
               )}
 
               {item.price && (
                 <div className="grid place-content-start place-items-center text-center">
                   <h3 className="text-xl">{format("price")}</h3>
-                  <p>
-                    {prettyPrice(
-                      item.price,
-                      currencies,
-                      item.price.currency?.data?.attributes?.code,
-                      router.locale
-                    )}
-                  </p>
+                  <p>{formatPrice(item.price)}</p>
                   {item.price.currency?.data?.attributes?.code !== currency && (
                     <p>
-                      {prettyPrice(item.price, currencies, currency, router.locale)}
+                      {formatPrice(item.price, currency)}
                       <br />({format("calculated").toLowerCase()})
                     </p>
                   )}
@@ -627,7 +613,9 @@ export default LibrarySlug;
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
-  const { format, formatCategory, formatLibraryItemSubType } = getFormat(context.locale);
+  const { format, formatCategory, formatLibraryItemSubType, formatDate } = getFormat(
+    context.locale
+  );
   const item = await sdk.getLibraryItem({
     slug: context.params && isDefined(context.params.slug) ? context.params.slug.toString() : "",
   });
@@ -648,7 +636,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
         : [],
       [format("release_date")]: [
         item.libraryItems.data[0].attributes.release_date
-          ? prettyDate(item.libraryItems.data[0].attributes.release_date, context.locale)
+          ? formatDate(item.libraryItems.data[0].attributes.release_date)
           : undefined,
       ],
     }

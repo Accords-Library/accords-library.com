@@ -1,43 +1,7 @@
 import { convert } from "html-to-text";
 import { sanitize } from "isomorphic-dompurify";
 import { marked } from "marked";
-import { convertPrice } from "./numbers";
-import { isDefinedAndNotEmpty, isUndefined } from "./asserts";
-import { datePickerToDate } from "./date";
-import { Currencies, Languages } from "./localData";
-import { DatePickerFragment, PricePickerFragment } from "graphql/generated";
-
-export const prettyDate = (
-  datePicker: DatePickerFragment,
-  locale = "en",
-  dateStyle: Intl.DateTimeFormatOptions["dateStyle"] = "medium"
-): string => datePickerToDate(datePicker).toLocaleString(locale, { dateStyle });
-
-export const prettyPrice = (
-  pricePicker: PricePickerFragment,
-  currencies: Currencies,
-  targetCurrencyCode?: string,
-  locale = "en"
-): string => {
-  if (!targetCurrencyCode) return "";
-  if (isUndefined(pricePicker.amount)) return "";
-
-  const targetCurrency = currencies.find(
-    (currency) => currency.attributes?.code === targetCurrencyCode
-  );
-
-  if (targetCurrency?.attributes) {
-    const amountInTargetCurrency = convertPrice(pricePicker, targetCurrency);
-    return amountInTargetCurrency.toLocaleString(locale, {
-      style: "currency",
-      currency: targetCurrency.attributes.code,
-    });
-  }
-  return pricePicker.amount.toLocaleString(locale, {
-    style: "currency",
-    currency: pricePicker.currency?.data?.attributes?.code,
-  });
-};
+import { isDefinedAndNotEmpty } from "./asserts";
 
 export const prettySlug = (slug?: string, parentSlug?: string): string => {
   let newSlug = slug;
@@ -91,14 +55,6 @@ export const prettyDuration = (seconds: number): string => {
   if (hours) result += `${hours.toString().padStart(2, "0")}:`;
   result += `${minutes.toString().padStart(2, "0")}:`;
   result += Math.floor(remainingSeconds).toString().padStart(2, "0");
-  return result;
-};
-
-export const prettyLanguage = (code: string, languages: Languages): string => {
-  let result = code;
-  languages.forEach((language) => {
-    if (language.attributes?.code === code) result = language.attributes.localized_name;
-  });
   return result;
 };
 

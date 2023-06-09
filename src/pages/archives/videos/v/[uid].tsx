@@ -1,5 +1,4 @@
 import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next";
-import { useRouter } from "next/router";
 import { useCallback } from "react";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { HorizontalLine } from "components/HorizontalLine";
@@ -12,7 +11,7 @@ import { ContentPanel, ContentPanelWidthSizes } from "components/Containers/Cont
 import { SubPanel } from "components/Containers/SubPanel";
 import { GetVideoQuery } from "graphql/generated";
 import { getReadySdk } from "graphql/sdk";
-import { prettyDate, prettyShortenNumber } from "helpers/formatters";
+import { prettyShortenNumber } from "helpers/formatters";
 import { filterHasAttributes, isDefined } from "helpers/asserts";
 import { getVideoFile, getVideoThumbnailURL } from "helpers/videos";
 import { getOpenGraph } from "helpers/openGraph";
@@ -37,8 +36,7 @@ const Video = ({ video, ...otherProps }: Props): JSX.Element => {
   const isContentPanelAtLeast4xl = useAtomGetter(atoms.containerQueries.isContentPanelAtLeast4xl);
   const setSubPanelOpened = useAtomSetter(atoms.layout.subPanelOpened);
   const closeSubPanel = useCallback(() => setSubPanelOpened(false), [setSubPanelOpened]);
-  const { format } = useFormat();
-  const router = useRouter();
+  const { format, formatDate } = useFormat();
 
   const subPanel = (
     <SubPanel>
@@ -85,7 +83,7 @@ const Video = ({ video, ...otherProps }: Props): JSX.Element => {
             <div className="flex w-full flex-row flex-wrap place-items-center gap-x-6">
               <p>
                 <Ico icon="event" className="mr-1 translate-y-[.15em] !text-base" />
-                {prettyDate(video.published_date, router.locale)}
+                {formatDate(video.published_date)}
               </p>
               <p>
                 <Ico icon="visibility" className="mr-1 translate-y-[.15em] !text-base" />

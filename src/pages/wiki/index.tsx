@@ -1,5 +1,5 @@
 import { GetStaticProps } from "next";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useBoolean } from "usehooks-ts";
 import { z } from "zod";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
@@ -20,12 +20,18 @@ import { TranslatedPreviewCard } from "components/PreviewCard";
 import { sendAnalytics } from "helpers/analytics";
 import { useTypedRouter } from "hooks/useTypedRouter";
 import { MeiliIndices, MeiliWikiPage } from "shared/meilisearch-graphql-typings/meiliTypes";
-import { containsHighlight, CustomSearchResponse, meiliSearch } from "helpers/search";
+import {
+  containsHighlight,
+  CustomSearchResponse,
+  filterHitsWithHighlight,
+  meiliSearch,
+} from "helpers/search";
 import { Paginator } from "components/Containers/Paginator";
 import { useFormat } from "hooks/useFormat";
 import { getFormat } from "helpers/i18n";
 import { useAtomSetter } from "helpers/atoms";
 import { atoms } from "contexts/atoms";
+import { Select } from "components/Inputs/Select";
 
 /*
  *                                         ╭─────────────╮
@@ -36,11 +42,13 @@ const DEFAULT_FILTERS_STATE = {
   query: "",
   keepInfoVisible: true,
   page: 1,
+  lang: 0,
 };
 
 const queryParamSchema = z.object({
   query: z.coerce.string().optional(),
   page: z.coerce.number().positive().optional(),
+  lang: z.coerce.number().min(0).optional(),
 });
 
 /*
@@ -51,24 +59,44 @@ const queryParamSchema = z.object({
 interface Props extends AppLayoutRequired {}
 
 const Wiki = (props: Props): JSX.Element => {
-  const { format, formatCategory, formatWikiTag } = useFormat();
+  const { format, formatCategory, formatWikiTag, formatLanguage } = useFormat();
   const hoverable = useDeviceSupportsHover();
   const setSubPanelOpened = useAtomSetter(atoms.layout.subPanelOpened);
   const closeSubPanel = useCallback(() => setSubPanelOpened(false), [setSubPanelOpened]);
   const router = useTypedRouter(queryParamSchema);
-  const [query, setQuery] = useState(router.query.query ?? DEFAULT_FILTERS_STATE.query);
 
+  const languageOptions = useMemo(() => {
+    const memo =
+      router.locales?.map((language) => ({
+        meiliAttribute: language,
+        displayedName: formatLanguage(language),
+      })) ?? [];
+
+    memo.unshift({ meiliAttribute: "", displayedName: format("all") });
+    return memo;
+  }, [router.locales, formatLanguage, format]);
+
+  const [wikiPages, setWikiPages] = useState<CustomSearchResponse<MeiliWikiPage>>();
+  const [query, setQuery] = useState(router.query.query ?? DEFAULT_FILTERS_STATE.query);
+  const [page, setPage] = useState<number>(router.query.page ?? DEFAULT_FILTERS_STATE.page);
   const {
     value: keepInfoVisible,
     toggle: toggleKeepInfoVisible,
     setValue: setKeepInfoVisible,
   } = useBoolean(DEFAULT_FILTERS_STATE.keepInfoVisible);
-
-  const [page, setPage] = useState<number>(router.query.page ?? DEFAULT_FILTERS_STATE.page);
-  const [wikiPages, setWikiPages] = useState<CustomSearchResponse<MeiliWikiPage>>();
+  const [languageOption, setLanguageOption] = useState(
+    router.query.lang ?? DEFAULT_FILTERS_STATE.lang
+  );
 
   useEffect(() => {
     const fetchWikiPages = async () => {
+      const currentLanguageOption = languageOptions[languageOption]?.meiliAttribute;
+
+      const filter: string[] = [];
+      if (languageOption !== 0) {
+        filter.push(`filterable_languages = ${currentLanguageOption}`);
+      }
+
       const searchResult = await meiliSearch(MeiliIndices.WIKI_PAGE, query, {
         hitsPerPage: 25,
         page,
@@ -79,25 +107,32 @@ const Wiki = (props: Props): JSX.Element => {
           "translations.displayable_description",
         ],
         attributesToCrop: ["translations.displayable_description"],
+        filter,
       });
-      setWikiPages(searchResult);
+      setWikiPages(
+        languageOption === 0
+          ? filterHitsWithHighlight<MeiliWikiPage>(searchResult, "translations")
+          : searchResult
+      );
     };
     fetchWikiPages();
-  }, [query, page]);
+  }, [query, page, languageOptions, languageOption]);
 
   useEffect(() => {
     if (router.isReady)
       router.updateQuery({
         page,
         query,
+        lang: languageOption,
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, query, router.isReady]);
+  }, [page, query, router.isReady, languageOption]);
 
   useEffect(() => {
     if (router.isReady) {
       if (isDefined(router.query.page)) setPage(router.query.page);
       if (isDefined(router.query.query)) setQuery(router.query.query);
+      if (isDefined(router.query.lang)) setLanguageOption(router.query.lang);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.isReady]);
@@ -127,6 +162,24 @@ const Wiki = (props: Props): JSX.Element => {
         }}
       />
 
+      <WithLabel label={format("language", { count: Infinity })}>
+        <Select
+          className="w-full"
+          options={languageOptions.map((item) => item.displayedName)}
+          value={languageOption}
+          onChange={(newLanguageOption) => {
+            setPage(1);
+            setLanguageOption(newLanguageOption);
+            sendAnalytics(
+              "Wiki",
+              `Change language filter (${
+                languageOptions.map((item) => item.meiliAttribute)[newLanguageOption]
+              })`
+            );
+          }}
+        />
+      </WithLabel>
+
       {hoverable && (
         <WithLabel label={format("always_show_info")}>
           <Switch
@@ -144,9 +197,10 @@ const Wiki = (props: Props): JSX.Element => {
         text={format("reset_all_filters")}
         icon="settings_backup_restore"
         onClick={() => {
-          setPage(1);
+          setPage(DEFAULT_FILTERS_STATE.page);
           setQuery(DEFAULT_FILTERS_STATE.query);
           setKeepInfoVisible(DEFAULT_FILTERS_STATE.keepInfoVisible);
+          setLanguageOption(DEFAULT_FILTERS_STATE.lang);
           sendAnalytics("Wiki", "Reset all filters");
         }}
       />
@@ -182,19 +236,31 @@ const Wiki = (props: Props): JSX.Element => {
               href={`/wiki/${item.slug}`}
               translations={filterHasAttributes(item._formatted.translations, [
                 "language.data.attributes.code",
-              ]).map(
-                ({ aliases, summary, displayable_description, language, ...otherAttributes }) => ({
-                  ...otherAttributes,
-                  subtitle:
-                    aliases && aliases.length > 0
-                      ? aliases.map((alias) => alias?.alias).join("・")
-                      : undefined,
-                  description: containsHighlight(displayable_description)
-                    ? displayable_description
-                    : summary,
-                  language: language.data.attributes.code,
-                })
-              )}
+              ])
+                .map(
+                  ({
+                    aliases,
+                    summary,
+                    displayable_description,
+                    language,
+                    ...otherAttributes
+                  }) => ({
+                    ...otherAttributes,
+                    subtitle:
+                      aliases && aliases.length > 0
+                        ? aliases.map((alias) => alias?.alias).join("・")
+                        : undefined,
+                    description: containsHighlight(displayable_description)
+                      ? displayable_description
+                      : summary,
+                    language: language.data.attributes.code,
+                  })
+                )
+                .filter(
+                  ({ language }) =>
+                    languageOption === 0 ||
+                    language === languageOptions[languageOption]?.meiliAttribute
+                )}
               fallback={{ title: prettySlug(item.slug) }}
               thumbnail={item.thumbnail?.data?.attributes}
               thumbnailAspectRatio={"4/3"}

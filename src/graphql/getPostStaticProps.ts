@@ -2,7 +2,7 @@ import { GetStaticProps } from "next";
 import { getReadySdk } from "./sdk";
 import { PostWithTranslations } from "types/types";
 import { getOpenGraph } from "helpers/openGraph";
-import { prettyDate, prettySlug } from "helpers/formatters";
+import { prettySlug } from "helpers/formatters";
 import { getDefaultPreferredLanguages, staticSmartLanguage } from "helpers/locales";
 import { filterHasAttributes } from "helpers/asserts";
 import { getDescription } from "helpers/description";
@@ -17,7 +17,7 @@ export const getPostStaticProps =
   (slug: string): GetStaticProps =>
   async (context) => {
     const sdk = getReadySdk();
-    const { format, formatCategory } = getFormat(context.locale);
+    const { format, formatCategory, formatDate } = getFormat(context.locale);
     const post = await sdk.getPost({
       slug: slug,
     });
@@ -35,7 +35,7 @@ export const getPostStaticProps =
     const title = selectedTranslation?.title ?? prettySlug(slug);
 
     const description = getDescription(selectedTranslation?.excerpt ?? selectedTranslation?.body, {
-      [format("release_date")]: [prettyDate(post.posts.data[0].attributes.date, context.locale)],
+      [format("release_date")]: [formatDate(post.posts.data[0].attributes.date)],
       [format("category", { count: Infinity })]: filterHasAttributes(
         post.posts.data[0].attributes.categories?.data,
         ["attributes"]

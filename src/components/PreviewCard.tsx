@@ -1,5 +1,4 @@
 import { MouseEventHandler, useCallback } from "react";
-import { useRouter } from "next/router";
 import { Markdown } from "./Markdown/Markdown";
 import { Chip } from "components/Chip";
 import { Ico } from "components/Ico";
@@ -7,13 +6,14 @@ import { Img } from "components/Img";
 import { UpPressable } from "components/Containers/UpPressable";
 import { DatePickerFragment, PricePickerFragment, UploadImageFragment } from "graphql/generated";
 import { cIf, cJoin } from "helpers/className";
-import { prettyDate, prettyDuration, prettyPrice, prettyShortenNumber } from "helpers/formatters";
+import { prettyDuration, prettyShortenNumber } from "helpers/formatters";
 import { ImageQuality } from "helpers/img";
 import { useDeviceSupportsHover } from "hooks/useMediaQuery";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { TranslatedProps } from "types/TranslatedProps";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter } from "helpers/atoms";
+import { useFormat } from "hooks/useFormat";
 
 /*
  *                                        ╭─────────────╮
@@ -77,11 +77,10 @@ export const PreviewCard = ({
   disabled = false,
   onClick,
 }: Props): JSX.Element => {
+  const { formatPrice, formatDate } = useFormat();
   const isPerfModeEnabled = useAtomGetter(atoms.settings.isPerfModeEnabled);
-  const currency = useAtomGetter(atoms.settings.currency);
-  const currencies = useAtomGetter(atoms.localData.currencies);
+  const preferredCurrency = useAtomGetter(atoms.settings.currency);
   const isHoverable = useDeviceSupportsHover();
-  const router = useRouter();
 
   const metadataJSX = (
     <>
@@ -90,13 +89,13 @@ export const PreviewCard = ({
           {metadata.releaseDate && (
             <p className="text-sm">
               <Ico icon="event" className="mr-1 translate-y-[.15em] !text-base" />
-              {prettyDate(metadata.releaseDate, router.locale)}
+              {formatDate(metadata.releaseDate)}
             </p>
           )}
           {metadata.price && (
             <p className="justify-self-end text-sm">
               <Ico icon="shopping_cart" className="mr-1 translate-y-[.15em] !text-base" />
-              {prettyPrice(metadata.price, currencies, currency, router.locale)}
+              {formatPrice(metadata.price, preferredCurrency)}
             </p>
           )}
           {metadata.views && (

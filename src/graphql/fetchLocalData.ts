@@ -4,6 +4,8 @@ import { readFileSync, writeFileSync } from "fs";
 import { config } from "dotenv";
 import { getReadySdk } from "./sdk";
 import {
+  LocalDataGetCurrenciesQuery,
+  LocalDataGetLanguagesQuery,
   LocalDataGetTypesTranslationsQuery,
   LocalDataGetWebsiteInterfacesQuery,
 } from "./generated";
@@ -12,6 +14,10 @@ import {
   Langui,
   TypesTranslations,
   processTypesTranslations,
+  Currencies,
+  processCurrencies,
+  Languages,
+  processLanguages,
 } from "helpers/localData";
 import { getLogger } from "helpers/logger";
 
@@ -85,4 +91,14 @@ export const getLangui = (locale: string): Langui => {
 export const getTypesTranslations = (): TypesTranslations => {
   const typesTranslations = readLocalData<LocalDataGetTypesTranslationsQuery>("typesTranslations");
   return processTypesTranslations(typesTranslations);
+};
+
+export const getCurrencies = (): Currencies => {
+  const currencies = readLocalData<LocalDataGetCurrenciesQuery>("currencies");
+  return processCurrencies(currencies);
+};
+
+export const getLanguages = (): Languages => {
+  const languages = readLocalData<LocalDataGetLanguagesQuery>("languages");
+  return processLanguages(languages);
 };

@@ -2,10 +2,7 @@ import { Chip } from "components/Chip";
 import { Markdawn } from "components/Markdown/Markdawn";
 import { RecorderChip } from "components/RecorderChip";
 import { ToolTip } from "components/ToolTip";
-import { atoms } from "contexts/atoms";
 import { filterHasAttributes, isDefined, isDefinedAndNotEmpty } from "helpers/asserts";
-import { useAtomGetter } from "helpers/atoms";
-import { prettyLanguage } from "helpers/formatters";
 import { ContentStatus, useFormat } from "hooks/useFormat";
 
 /*
@@ -40,8 +37,7 @@ export const Credits = ({
   authors = [],
   notes,
 }: Props): JSX.Element => {
-  const { format, formatStatusDescription, formatStatusLabel } = useFormat();
-  const languages = useAtomGetter(atoms.localData.languages);
+  const { format, formatStatusDescription, formatStatusLabel, formatLanguage } = useFormat();
 
   return (
     <div className="grid place-items-center gap-5">
@@ -54,7 +50,7 @@ export const Credits = ({
               <h2 className="text-xl">{format("translation_notice")}</h2>
               <div className="flex flex-wrap place-content-center place-items-center gap-2">
                 <p className="font-headers font-bold">{format("source_language")}:</p>
-                <Chip text={prettyLanguage(sourceLanguageCode, languages)} />
+                <Chip text={formatLanguage(sourceLanguageCode)} />
               </div>
             </>
           )}

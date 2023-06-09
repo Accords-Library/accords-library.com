@@ -2,11 +2,9 @@ import { Fragment } from "react";
 import { ToolTip } from "../ToolTip";
 import { Button } from "./Button";
 import { cJoin } from "helpers/className";
-import { prettyLanguage } from "helpers/formatters";
 import { iterateMap } from "helpers/others";
 import { sendAnalytics } from "helpers/analytics";
-import { atoms } from "contexts/atoms";
-import { useAtomGetter } from "helpers/atoms";
+import { useFormat } from "hooks/useFormat";
 
 /*
  *                                        ╭─────────────╮
@@ -32,7 +30,7 @@ export const LanguageSwitcher = ({
   onLanguageChanged,
   showBadge = true,
 }: Props): JSX.Element => {
-  const languages = useAtomGetter(atoms.localData.languages);
+  const { formatLanguage } = useFormat();
   return (
     <ToolTip
       content={
@@ -45,7 +43,7 @@ export const LanguageSwitcher = ({
                   onLanguageChanged(value);
                   sendAnalytics("Language Switcher", `Switch language (${locale})`);
                 }}
-                text={prettyLanguage(locale, languages)}
+                text={formatLanguage(locale)}
               />
             </Fragment>
           ))}

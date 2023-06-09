@@ -1,5 +1,5 @@
 import { GetStaticProps } from "next";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useBoolean } from "usehooks-ts";
 import { z } from "zod";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
@@ -31,6 +31,7 @@ import { prettySlug } from "helpers/formatters";
 import { Paginator } from "components/Containers/Paginator";
 import { useFormat } from "hooks/useFormat";
 import { getFormat } from "helpers/i18n";
+import { Select } from "components/Inputs/Select";
 
 /*
  *                                         ╭─────────────╮
@@ -41,11 +42,13 @@ const DEFAULT_FILTERS_STATE = {
   query: "",
   keepInfoVisible: true,
   page: 1,
+  lang: 0,
 };
 
 const queryParamSchema = z.object({
   query: z.coerce.string().optional(),
   page: z.coerce.number().positive().optional(),
+  lang: z.coerce.number().min(0).optional(),
 });
 
 /*
@@ -56,9 +59,10 @@ const queryParamSchema = z.object({
 interface Props extends AppLayoutRequired {}
 
 const News = ({ ...otherProps }: Props): JSX.Element => {
-  const { format, formatCategory } = useFormat();
+  const { format, formatCategory, formatLanguage } = useFormat();
   const hoverable = useDeviceSupportsHover();
   const router = useTypedRouter(queryParamSchema);
+  const isTerminalMode = useAtomGetter(atoms.layout.terminalMode);
 
   const [query, setQuery] = useState(router.query.query ?? DEFAULT_FILTERS_STATE.query);
 
@@ -68,13 +72,32 @@ const News = ({ ...otherProps }: Props): JSX.Element => {
     setValue: setKeepInfoVisible,
   } = useBoolean(DEFAULT_FILTERS_STATE.keepInfoVisible);
 
-  const isTerminalMode = useAtomGetter(atoms.layout.terminalMode);
+  const languageOptions = useMemo(() => {
+    const memo =
+      router.locales?.map((language) => ({
+        meiliAttribute: language,
+        displayedName: formatLanguage(language),
+      })) ?? [];
+
+    memo.unshift({ meiliAttribute: "", displayedName: format("all") });
+    return memo;
+  }, [router.locales, formatLanguage, format]);
 
   const [page, setPage] = useState<number>(router.query.page ?? DEFAULT_FILTERS_STATE.page);
   const [posts, setPosts] = useState<CustomSearchResponse<MeiliPost>>();
+  const [languageOption, setLanguageOption] = useState(
+    router.query.lang ?? DEFAULT_FILTERS_STATE.lang
+  );
 
   useEffect(() => {
     const fetchPosts = async () => {
+      const currentLanguageOption = languageOptions[languageOption]?.meiliAttribute;
+      const filter = ["hidden = false"];
+
+      if (languageOption !== 0) {
+        filter.push(`filterable_languages = ${currentLanguageOption}`);
+      }
+
       const searchResult = await meiliSearch(MeiliIndices.POST, query, {
         hitsPerPage: 25,
         page,
@@ -82,26 +105,33 @@ const News = ({ ...otherProps }: Props): JSX.Element => {
         attributesToHighlight: ["translations.title", "translations.displayable_description"],
         attributesToCrop: ["translations.displayable_description"],
         sort: ["sortable_date:desc"],
-        filter: ["hidden = false"],
+        filter,
       });
-      setPosts(filterHitsWithHighlight<MeiliPost>(searchResult, "translations"));
+
+      setPosts(
+        languageOption === 0
+          ? filterHitsWithHighlight<MeiliPost>(searchResult, "translations")
+          : searchResult
+      );
     };
     fetchPosts();
-  }, [query, page]);
+  }, [query, page, languageOption, languageOptions]);
 
   useEffect(() => {
     if (router.isReady)
       router.updateQuery({
         page,
         query,
+        lang: languageOption,
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, query, router.isReady]);
+  }, [page, query, languageOption, router.isReady]);
 
   useEffect(() => {
     if (router.isReady) {
       if (isDefined(router.query.page)) setPage(router.query.page);
       if (isDefined(router.query.query)) setQuery(router.query.query);
+      if (isDefined(router.query.lang)) setLanguageOption(router.query.lang);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.isReady]);
@@ -131,6 +161,24 @@ const News = ({ ...otherProps }: Props): JSX.Element => {
         }}
       />
 
+      <WithLabel label={format("language", { count: Infinity })}>
+        <Select
+          className="w-full"
+          options={languageOptions.map((item) => item.displayedName)}
+          value={languageOption}
+          onChange={(newLanguageOption) => {
+            setPage(1);
+            setLanguageOption(newLanguageOption);
+            sendAnalytics(
+              "News",
+              `Change language filter (${
+                languageOptions.map((item) => item.meiliAttribute)[newLanguageOption]
+              })`
+            );
+          }}
+        />
+      </WithLabel>
+
       {hoverable && (
         <WithLabel label={format("always_show_info")}>
           <Switch
@@ -148,8 +196,10 @@ const News = ({ ...otherProps }: Props): JSX.Element => {
         text={format("reset_all_filters")}
         icon="settings_backup_restore"
         onClick={() => {
+          setPage(DEFAULT_FILTERS_STATE.page);
           setQuery(DEFAULT_FILTERS_STATE.query);
           setKeepInfoVisible(DEFAULT_FILTERS_STATE.keepInfoVisible);
+          setLanguageOption(DEFAULT_FILTERS_STATE.lang);
           sendAnalytics("News", "Reset all filters");
         }}
       />
@@ -168,13 +218,19 @@ const News = ({ ...otherProps }: Props): JSX.Element => {
               href={`/news/${item.slug}`}
               translations={filterHasAttributes(item._formatted.translations, [
                 "language.data.attributes.code",
-              ]).map(({ excerpt, displayable_description, language, ...otherAttributes }) => ({
-                ...otherAttributes,
-                description: containsHighlight(displayable_description)
-                  ? displayable_description
-                  : excerpt,
-                language: language.data.attributes.code,
-              }))}
+              ])
+                .map(({ excerpt, displayable_description, language, ...otherAttributes }) => ({
+                  ...otherAttributes,
+                  description: containsHighlight(displayable_description)
+                    ? displayable_description
+                    : excerpt,
+                  language: language.data.attributes.code,
+                }))
+                .filter(
+                  ({ language }) =>
+                    languageOption === 0 ||
+                    language === languageOptions[languageOption]?.meiliAttribute
+                )}
               fallback={{ title: prettySlug(item.slug) }}
               thumbnail={item.thumbnail?.data?.attributes}
               thumbnailAspectRatio="3/2"

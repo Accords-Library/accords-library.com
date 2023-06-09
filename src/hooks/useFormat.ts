@@ -3,12 +3,18 @@ import { useCallback } from "react";
 import { useRouter } from "next/router";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter } from "helpers/atoms";
-import { LibraryItemMetadataDynamicZone } from "graphql/generated";
+import {
+  DatePickerFragment,
+  LibraryItemMetadataDynamicZone,
+  PricePickerFragment,
+} from "graphql/generated";
 import { ICUParams } from "graphql/icuParams";
-import { isDefined, isDefinedAndNotEmpty } from "helpers/asserts";
+import { isDefined, isDefinedAndNotEmpty, isUndefined } from "helpers/asserts";
 import { getLogger } from "helpers/logger";
 import { prettySlug } from "helpers/formatters";
 import { LibraryItemMetadata } from "types/types";
+import { convertPrice } from "helpers/numbers";
+import { datePickerToDate } from "helpers/date";
 
 const logger = getLogger("🗺️ [I18n]");
 
@@ -69,10 +75,18 @@ export const useFormat = (): {
   formatContentType: (slug: string) => string;
   formatWikiTag: (slug: string) => string;
   formatWeaponType: (slug: string) => string;
+  formatLanguage: (code: string) => string;
+  formatPrice: (price: PricePickerFragment, targetCurrencyCode?: string) => string;
+  formatDate: (
+    datePicker: DatePickerFragment,
+    dateStyle?: Intl.DateTimeFormatOptions["dateStyle"]
+  ) => string;
 } => {
   const langui = useAtomGetter(atoms.localData.langui);
   const fallbackLangui = useAtomGetter(atoms.localData.fallbackLangui);
   const typesTranslations = useAtomGetter(atoms.localData.typesTranslations);
+  const languages = useAtomGetter(atoms.localData.languages);
+  const currencies = useAtomGetter(atoms.localData.currencies);
   const { locale = "en" } = useRouter();
 
   const format = useCallback(
@@ -280,6 +294,44 @@ Falling back to en translation.`
     [locale, typesTranslations.weaponTypes]
   );
 
+  const formatLanguage = useCallback(
+    (code: string) =>
+      languages.find((language) => language.attributes?.code === code)?.attributes
+        ?.localized_name ?? code.toUpperCase(),
+    [languages]
+  );
+
+  const formatPrice = useCallback(
+    (price: PricePickerFragment, targetCurrencyCode?: string) => {
+      if (isUndefined(price.amount)) return "";
+
+      const targetCurrency = currencies.find(
+        (currency) => currency.attributes?.code === targetCurrencyCode
+      );
+
+      if (targetCurrency?.attributes) {
+        const amountInTargetCurrency = convertPrice(price, targetCurrency);
+        return amountInTargetCurrency.toLocaleString(locale, {
+          style: "currency",
+          currency: targetCurrency.attributes.code,
+        });
+      }
+      return price.amount.toLocaleString(locale, {
+        style: "currency",
+        currency: price.currency?.data?.attributes?.code,
+      });
+    },
+    [currencies, locale]
+  );
+
+  const formatDate = useCallback(
+    (
+      datePicker: DatePickerFragment,
+      dateStyle: Intl.DateTimeFormatOptions["dateStyle"] = "medium"
+    ) => datePickerToDate(datePicker).toLocaleString(locale, { dateStyle }),
+    [locale]
+  );
+
   return {
     format,
     formatLibraryItemType,
@@ -290,5 +342,8 @@ Falling back to en translation.`
     formatContentType,
     formatWikiTag,
     formatWeaponType,
+    formatLanguage,
+    formatPrice,
+    formatDate,
   };
 };

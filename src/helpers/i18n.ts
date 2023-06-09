@@ -1,10 +1,21 @@
 import { IntlMessageFormat } from "intl-messageformat";
-import { LibraryItemMetadataDynamicZone } from "graphql/generated";
+import {
+  DatePickerFragment,
+  LibraryItemMetadataDynamicZone,
+  PricePickerFragment,
+} from "graphql/generated";
 import { ICUParams } from "graphql/icuParams";
-import { isDefined, isDefinedAndNotEmpty } from "helpers/asserts";
-import { getLangui, getTypesTranslations } from "graphql/fetchLocalData";
+import { isDefined, isDefinedAndNotEmpty, isUndefined } from "helpers/asserts";
+import {
+  getCurrencies,
+  getLanguages,
+  getLangui,
+  getTypesTranslations,
+} from "graphql/fetchLocalData";
 import { prettySlug } from "helpers/formatters";
 import { LibraryItemMetadata } from "types/types";
+import { datePickerToDate } from "helpers/date";
+import { convertPrice } from "helpers/numbers";
 
 type WordingKey = keyof ICUParams;
 type LibraryItemType = Exclude<LibraryItemMetadataDynamicZone["__typename"], undefined>;
@@ -45,10 +56,18 @@ export const getFormat = (
   formatContentType: (slug: string) => string;
   formatWikiTag: (slug: string) => string;
   formatWeaponType: (slug: string) => string;
+  formatLanguage: (code: string) => string;
+  formatPrice: (price: PricePickerFragment, targetCurrencyCode?: string) => string;
+  formatDate: (
+    datePicker: DatePickerFragment,
+    dateStyle?: Intl.DateTimeFormatOptions["dateStyle"]
+  ) => string;
 } => {
   const langui = getLangui(locale);
   const fallbackLangui = getLangui("en");
   const typesTranslations = getTypesTranslations();
+  const currencies = getCurrencies();
+  const languages = getLanguages();
 
   const format = (
     key: WordingKey,
@@ -214,6 +233,35 @@ export const getFormat = (
     return findTranslation(locale) ?? findTranslation("en") ?? prettySlug(slug);
   };
 
+  const formatLanguage = (code: string) =>
+    languages.find((language) => language.attributes?.code === code)?.attributes?.localized_name ??
+    code.toUpperCase();
+
+  const formatPrice = (price: PricePickerFragment, targetCurrencyCode?: string) => {
+    if (isUndefined(price.amount)) return "";
+
+    const targetCurrency = currencies.find(
+      (currency) => currency.attributes?.code === targetCurrencyCode
+    );
+
+    if (targetCurrency?.attributes) {
+      const amountInTargetCurrency = convertPrice(price, targetCurrency);
+      return amountInTargetCurrency.toLocaleString(locale, {
+        style: "currency",
+        currency: targetCurrency.attributes.code,
+      });
+    }
+    return price.amount.toLocaleString(locale, {
+      style: "currency",
+      currency: price.currency?.data?.attributes?.code,
+    });
+  };
+
+  const formatDate = (
+    datePicker: DatePickerFragment,
+    dateStyle: Intl.DateTimeFormatOptions["dateStyle"] = "medium"
+  ): string => datePickerToDate(datePicker).toLocaleString(locale, { dateStyle });
+
   return {
     format,
     formatLibraryItemType,
@@ -224,5 +272,8 @@ export const getFormat = (
     formatContentType,
     formatWikiTag,
     formatWeaponType,
+    formatLanguage,
+    formatPrice,
+    formatDate,
   };
 };

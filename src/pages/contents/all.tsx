@@ -42,12 +42,14 @@ const DEFAULT_FILTERS_STATE = {
   keepInfoVisible: true,
   query: "",
   page: 1,
+  lang: 0,
 };
 
 const queryParamSchema = z.object({
   query: z.coerce.string().optional(),
   page: z.coerce.number().positive().optional(),
   sort: z.coerce.number().min(0).max(5).optional(),
+  lang: z.coerce.number().min(0).optional(),
 });
 
 /*
@@ -59,7 +61,7 @@ interface Props extends AppLayoutRequired {}
 
 const Contents = (props: Props): JSX.Element => {
   const hoverable = useDeviceSupportsHover();
-  const { format, formatCategory, formatContentType } = useFormat();
+  const { format, formatCategory, formatContentType, formatLanguage } = useFormat();
   const router = useTypedRouter(queryParamSchema);
   const setSubPanelOpened = useAtomSetter(atoms.layout.subPanelOpened);
 
@@ -72,6 +74,17 @@ const Contents = (props: Props): JSX.Element => {
     [format]
   );
 
+  const languageOptions = useMemo(() => {
+    const memo =
+      router.locales?.map((language) => ({
+        meiliAttribute: language,
+        displayedName: formatLanguage(language),
+      })) ?? [];
+
+    memo.unshift({ meiliAttribute: "", displayedName: format("all") });
+    return memo;
+  }, [router.locales, formatLanguage, format]);
+
   const [sortingMethod, setSortingMethod] = useState<number>(
     router.query.sort ?? DEFAULT_FILTERS_STATE.sortingMethod
   );
@@ -82,25 +95,41 @@ const Contents = (props: Props): JSX.Element => {
     setValue: setKeepInfoVisible,
   } = useBoolean(DEFAULT_FILTERS_STATE.keepInfoVisible);
 
-  const [page, setPage] = useState<number>(router.query.page ?? DEFAULT_FILTERS_STATE.page);
   const [contents, setContents] = useState<CustomSearchResponse<MeiliContent>>();
+  const [page, setPage] = useState<number>(router.query.page ?? DEFAULT_FILTERS_STATE.page);
   const [query, setQuery] = useState(router.query.query ?? DEFAULT_FILTERS_STATE.query);
+  const [languageOption, setLanguageOption] = useState(
+    router.query.lang ?? DEFAULT_FILTERS_STATE.lang
+  );
 
   useEffect(() => {
     const fetchPosts = async () => {
-      const currentSortingMethod = sortingMethods[sortingMethod];
+      const currentSortingMethod = sortingMethods[sortingMethod]?.meiliAttribute;
+      const currentLanguageOption = languageOptions[languageOption]?.meiliAttribute;
+
+      const filter: string[] = [];
+      if (languageOption !== 0) {
+        filter.push(`filterable_languages = ${currentLanguageOption}`);
+      }
+
       const searchResult = await meiliSearch(MeiliIndices.CONTENT, query, {
         attributesToRetrieve: ["translations", "id", "slug", "categories", "type", "thumbnail"],
         attributesToHighlight: ["translations"],
         attributesToCrop: ["translations.displayable_description"],
+        filter,
         hitsPerPage: 25,
         page,
-        sort: isDefined(currentSortingMethod) ? [currentSortingMethod.meiliAttribute] : undefined,
+        sort: isDefined(currentSortingMethod) ? [currentSortingMethod] : undefined,
       });
-      setContents(filterHitsWithHighlight<MeiliContent>(searchResult, "translations"));
+
+      setContents(
+        languageOption === 0
+          ? filterHitsWithHighlight<MeiliContent>(searchResult, "translations")
+          : searchResult
+      );
     };
     fetchPosts();
-  }, [query, page, sortingMethod, sortingMethods]);
+  }, [query, page, sortingMethod, sortingMethods, languageOption, languageOptions]);
 
   useEffect(() => {
     if (router.isReady)
@@ -108,15 +137,17 @@ const Contents = (props: Props): JSX.Element => {
         page,
         query,
         sort: sortingMethod,
+        lang: languageOption,
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, query, sortingMethod, router.isReady]);
+  }, [page, query, languageOption, sortingMethod, router.isReady]);
 
   useEffect(() => {
     if (router.isReady) {
       if (isDefined(router.query.page)) setPage(router.query.page);
       if (isDefined(router.query.query)) setQuery(router.query.query);
       if (isDefined(router.query.sort)) setSortingMethod(router.query.sort);
+      if (isDefined(router.query.lang)) setLanguageOption(router.query.lang);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.isReady]);
@@ -173,6 +204,24 @@ const Contents = (props: Props): JSX.Element => {
         />
       </WithLabel>
 
+      <WithLabel label={format("language", { count: Infinity })}>
+        <Select
+          className="w-full"
+          options={languageOptions.map((item) => item.displayedName)}
+          value={languageOption}
+          onChange={(newLanguageOption) => {
+            setPage(1);
+            setLanguageOption(newLanguageOption);
+            sendAnalytics(
+              "Contents/All",
+              `Change language filter (${
+                languageOptions.map((item) => item.meiliAttribute)[newLanguageOption]
+              })`
+            );
+          }}
+        />
+      </WithLabel>
+
       {hoverable && (
         <WithLabel label={format("always_show_info")}>
           <Switch
@@ -190,10 +239,11 @@ const Contents = (props: Props): JSX.Element => {
         text={format("reset_all_filters")}
         icon="settings_backup_restore"
         onClick={() => {
-          setPage(1);
+          setPage(DEFAULT_FILTERS_STATE.page);
           setQuery(DEFAULT_FILTERS_STATE.query);
           setSortingMethod(DEFAULT_FILTERS_STATE.sortingMethod);
           setKeepInfoVisible(DEFAULT_FILTERS_STATE.keepInfoVisible);
+          setLanguageOption(DEFAULT_FILTERS_STATE.lang);
           sendAnalytics("Contents/All", "Reset all filters");
         }}
       />
@@ -212,13 +262,19 @@ const Contents = (props: Props): JSX.Element => {
               href={`/contents/${item.slug}`}
               translations={filterHasAttributes(item._formatted.translations, [
                 "language.data.attributes.code",
-              ]).map(({ displayable_description, language, ...otherAttributes }) => ({
-                ...otherAttributes,
-                description: containsHighlight(displayable_description)
-                  ? displayable_description
-                  : undefined,
-                language: language.data.attributes.code,
-              }))}
+              ])
+                .map(({ displayable_description, language, ...otherAttributes }) => ({
+                  ...otherAttributes,
+                  description: containsHighlight(displayable_description)
+                    ? displayable_description
+                    : undefined,
+                  language: language.data.attributes.code,
+                }))
+                .filter(
+                  ({ language }) =>
+                    languageOption === 0 ||
+                    language === languageOptions[languageOption]?.meiliAttribute
+                )}
               fallback={{ title: prettySlug(item.slug) }}
               thumbnail={item.thumbnail?.data?.attributes}
               thumbnailAspectRatio="3/2"

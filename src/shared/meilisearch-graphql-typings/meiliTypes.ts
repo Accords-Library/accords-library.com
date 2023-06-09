@@ -33,6 +33,7 @@ export interface MeiliContent
     displayable_description?: string | null;
   })[];
   sortable_updated_date: number;
+  filterable_languages: string[];
 }
 
 export interface MeiliVideo extends VideoAttributesFragment {
@@ -50,6 +51,7 @@ export interface MeiliPost extends Omit<PostAttributesFragment, "translations"> 
   > & {
     displayable_description?: string | null;
   })[];
+  filterable_languages: string[];
 }
 
 export interface MeiliWikiPage extends Omit<WikiPageAttributesFragment, "translations"> {
@@ -60,6 +62,7 @@ export interface MeiliWikiPage extends Omit<WikiPageAttributesFragment, "transla
   > & {
     displayable_description?: string | null;
   })[];
+  filterable_languages: string[];
 }
 
 type WeaponAttributesTranslation = NonNullable<
@@ -79,6 +82,7 @@ export interface MeiliWeapon extends Omit<WeaponAttributesFragment, "name" | "st
     description: string;
     language: WeaponAttributesTranslation["language"];
   }[];
+  filterable_languages: string[];
 }
 
 export enum MeiliIndices {

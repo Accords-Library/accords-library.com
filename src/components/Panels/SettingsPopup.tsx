@@ -7,7 +7,6 @@ import { TextInput } from "components/Inputs/TextInput";
 import { Popup } from "components/Containers/Popup";
 import { sendAnalytics } from "helpers/analytics";
 import { cJoin, cIf } from "helpers/className";
-import { prettyLanguage } from "helpers/formatters";
 import { filterHasAttributes, isDefined } from "helpers/asserts";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter, useAtomPair, useAtomSetter } from "helpers/atoms";
@@ -36,8 +35,7 @@ export const SettingsPopup = (): JSX.Element => {
   const perfModeEnabled = useAtomGetter(atoms.settings.isPerfModeEnabled);
   const isPerfModeToggleable = useAtomGetter(atoms.settings.isPerfModeToggleable);
 
-  const languages = useAtomGetter(atoms.localData.languages);
-  const { format } = useFormat();
+  const { format, formatLanguage } = useFormat();
   const currencies = useAtomGetter(atoms.localData.currencies);
 
   const is1ColumnLayout = useAtomGetter(atoms.containerQueries.is1ColumnLayout);
@@ -77,7 +75,7 @@ export const SettingsPopup = (): JSX.Element => {
               <OrderableList
                 items={preferredLanguages.map((locale) => ({
                   code: locale,
-                  name: prettyLanguage(locale, languages),
+                  name: formatLanguage(locale),
                 }))}
                 insertLabels={[
                   {

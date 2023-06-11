@@ -162,9 +162,10 @@ export const AppLayout = ({
       </div>
 
       {/* Background when navbar is opened */}
+
       <div
         className={cJoin(
-          `absolute inset-0 transition-filter duration-500
+          `absolute inset-0 z-40 transition-filter duration-500
             [grid-area:content]`,
           cIf(
             (isMainPanelOpened || isSubPanelOpened) && is1ColumnLayout,

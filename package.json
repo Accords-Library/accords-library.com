@@ -36,7 +36,7 @@
     "jotai": "^2.1.1",
     "markdown-to-jsx": "^7.2.1",
     "marked": "^4.3.0",
-    "material-symbols": "^0.5.5",
+    "material-symbols": "^0.7.0",
     "meilisearch": "^0.33.0",
     "next": "^13.4.4",
     "nodemailer": "^6.9.3",

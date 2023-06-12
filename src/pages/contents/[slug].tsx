@@ -14,7 +14,7 @@ import { prettyInlineTitle, prettySlug } from "helpers/formatters";
 import { isUntangibleGroupItem } from "helpers/libraryItem";
 import { filterHasAttributes, isDefined, isDefinedAndNotEmpty } from "helpers/asserts";
 import { ContentWithTranslations } from "types/types";
-import { useScrollTopOnChange } from "hooks/useScrollTopOnChange";
+import { useScrollTopOnChange } from "hooks/useScrollOnChange";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
 import { getOpenGraph } from "helpers/openGraph";
 import { getDefaultPreferredLanguages, staticSmartLanguage } from "helpers/locales";
@@ -226,11 +226,7 @@ const Content = ({ content, ...otherProps }: Props): JSX.Element => {
 
   const contentPanel = (
     <ContentPanel width={ContentPanelWidthSizes.Full}>
-      <TranslatedReturnButton
-        {...returnButtonProps}
-        displayOnlyOn="1ColumnLayout"
-        className="mb-10"
-      />
+      {is1ColumnLayout && <TranslatedReturnButton {...returnButtonProps} className="mb-10" />}
 
       <div className="grid place-items-center">
         <ElementsSeparator

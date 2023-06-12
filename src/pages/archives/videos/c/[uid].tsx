@@ -27,6 +27,8 @@ import { getReadySdk } from "graphql/sdk";
 import { Paginator } from "components/Containers/Paginator";
 import { useFormat } from "hooks/useFormat";
 import { getFormat } from "helpers/i18n";
+import { useAtomGetter } from "helpers/atoms";
+import { atoms } from "contexts/atoms";
 
 /*
  *                                         ╭─────────────╮
@@ -63,6 +65,7 @@ const Channel = ({ channel, ...otherProps }: Props): JSX.Element => {
   const { format } = useFormat();
   const hoverable = useDeviceSupportsHover();
   const router = useTypedRouter(queryParamSchema);
+  const is1ColumnLayout = useAtomGetter(atoms.containerQueries.is1ColumnLayout);
 
   const sortingMethods = useMemo(
     () => [
@@ -147,14 +150,27 @@ const Channel = ({ channel, ...otherProps }: Props): JSX.Element => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.isReady]);
 
+  const searchInput = (
+    <TextInput
+      placeholder={format("search_placeholder")}
+      value={query}
+      onChange={(newQuery) => {
+        setPage(1);
+        setQuery(newQuery);
+        if (isDefinedAndNotEmpty(newQuery)) {
+          sendAnalytics("Videos/Channel", "Change search term");
+        } else {
+          sendAnalytics("Videos/Channel", "Clear search term");
+        }
+      }}
+    />
+  );
+
   const subPanel = (
     <SubPanel>
-      <ReturnButton
-        href="/archives/videos"
-        title={format("videos")}
-        displayOnlyOn={"3ColumnsLayout"}
-        className="mb-10"
-      />
+      {!is1ColumnLayout && (
+        <ReturnButton href="/archives/videos" title={format("videos")} className="mb-10" />
+      )}
 
       <PanelHeader
         icon="movie"
@@ -166,20 +182,7 @@ const Channel = ({ channel, ...otherProps }: Props): JSX.Element => {
 
       <HorizontalLine />
 
-      <TextInput
-        className="mb-6 w-full"
-        placeholder={format("search_placeholder")}
-        value={query}
-        onChange={(newQuery) => {
-          setPage(1);
-          setQuery(newQuery);
-          if (isDefinedAndNotEmpty(newQuery)) {
-            sendAnalytics("Videos", "Change search term");
-          } else {
-            sendAnalytics("Videos", "Clear search term");
-          }
-        }}
-      />
+      {!is1ColumnLayout && <div className="mb-6">{searchInput}</div>}
 
       <WithLabel label={format("order_by")}>
         <Select
@@ -190,7 +193,7 @@ const Channel = ({ channel, ...otherProps }: Props): JSX.Element => {
             setPage(1);
             setSortingMethod(newSort);
             sendAnalytics(
-              "Videos",
+              "Videos/Channel",
               `Change sorting method (${
                 sortingMethods.map((item) => item.meiliAttribute)[newSort]
               })`
@@ -224,7 +227,7 @@ const Channel = ({ channel, ...otherProps }: Props): JSX.Element => {
           setQuery(DEFAULT_FILTERS_STATE.searchName);
           setSortingMethod(DEFAULT_FILTERS_STATE.sortingMethod);
           setKeepInfoVisible(DEFAULT_FILTERS_STATE.keepInfoVisible);
-          sendAnalytics("Videos", "Reset all filters");
+          sendAnalytics("Videos/Channel", "Reset all filters");
         }}
       />
     </SubPanel>
@@ -232,6 +235,7 @@ const Channel = ({ channel, ...otherProps }: Props): JSX.Element => {
 
   const contentPanel = (
     <ContentPanel width={ContentPanelWidthSizes.Full}>
+      {is1ColumnLayout && <div className="mx-auto mb-12 max-w-lg">{searchInput}</div>}
       <Paginator page={page} onPageChange={setPage} totalNumberOfPages={videos?.totalPages}>
         <div
           className="grid grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] items-start

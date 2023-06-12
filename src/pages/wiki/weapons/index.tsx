@@ -30,6 +30,8 @@ import { WithLabel } from "components/Inputs/WithLabel";
 import { Switch } from "components/Inputs/Switch";
 import { ReturnButton } from "components/PanelComponents/ReturnButton";
 import { Select } from "components/Inputs/Select";
+import { useAtomGetter } from "helpers/atoms";
+import { atoms } from "contexts/atoms";
 
 /*
  *                                         ╭─────────────╮
@@ -60,6 +62,7 @@ const Weapons = (props: Props): JSX.Element => {
   const { format, formatCategory, formatWeaponType, formatLanguage } = useFormat();
   const hoverable = useDeviceSupportsHover();
   const router = useTypedRouter(queryParamSchema);
+  const is1ColumnLayout = useAtomGetter(atoms.containerQueries.is1ColumnLayout);
 
   const languageOptions = useMemo(() => {
     const memo =
@@ -132,36 +135,35 @@ const Weapons = (props: Props): JSX.Element => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.isReady]);
 
+  const searchInput = (
+    <TextInput
+      placeholder={format("search_placeholder")}
+      value={query}
+      onChange={(name) => {
+        setPage(1);
+        setQuery(name);
+        if (isDefinedAndNotEmpty(name)) {
+          sendAnalytics("Weapons", "Change search term");
+        } else {
+          sendAnalytics("Weapons", "Clear search term");
+        }
+      }}
+    />
+  );
+
   const subPanel = (
     <SubPanel>
-      <ReturnButton
-        href="/wiki"
-        title={format("wiki")}
-        displayOnlyOn="3ColumnsLayout"
-        className="mb-10"
-      />
+      {!is1ColumnLayout && <ReturnButton href="/wiki" title={format("wiki")} className="mb-10" />}
 
       <PanelHeader
         icon="shield"
         title={format("weapon", { count: Infinity })}
         description={format("weapons_description")}
       />
+
       <HorizontalLine />
 
-      <TextInput
-        className="mb-6 w-full"
-        placeholder={format("search_placeholder")}
-        value={query}
-        onChange={(name) => {
-          setPage(1);
-          setQuery(name);
-          if (isDefinedAndNotEmpty(name)) {
-            sendAnalytics("Weapons", "Change search term");
-          } else {
-            sendAnalytics("Weapons", "Clear search term");
-          }
-        }}
-      />
+      {!is1ColumnLayout && <div className="mb-6">{searchInput}</div>}
 
       <WithLabel label={format("language", { count: Infinity })}>
         <Select
@@ -210,12 +212,12 @@ const Weapons = (props: Props): JSX.Element => {
 
   const contentPanel = (
     <ContentPanel width={ContentPanelWidthSizes.Full}>
-      <ReturnButton
-        href="/wiki"
-        title={format("wiki")}
-        displayOnlyOn="1ColumnLayout"
-        className="mb-10"
-      />
+      {is1ColumnLayout && (
+        <>
+          <ReturnButton href="/wiki" title={format("wiki")} className="mb-6" />
+          <div className="mx-auto mb-12 max-w-lg">{searchInput}</div>
+        </>
+      )}
 
       <Paginator page={page} onPageChange={setPage} totalNumberOfPages={weapons?.totalPages}>
         <div

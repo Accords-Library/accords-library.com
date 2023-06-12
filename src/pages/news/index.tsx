@@ -63,6 +63,7 @@ const News = ({ ...otherProps }: Props): JSX.Element => {
   const hoverable = useDeviceSupportsHover();
   const router = useTypedRouter(queryParamSchema);
   const isTerminalMode = useAtomGetter(atoms.layout.terminalMode);
+  const is1ColumnLayout = useAtomGetter(atoms.containerQueries.is1ColumnLayout);
 
   const [query, setQuery] = useState(router.query.query ?? DEFAULT_FILTERS_STATE.query);
 
@@ -136,6 +137,22 @@ const News = ({ ...otherProps }: Props): JSX.Element => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.isReady]);
 
+  const searchInput = (
+    <TextInput
+      placeholder={format("search_placeholder")}
+      value={query}
+      onChange={(name) => {
+        setPage(1);
+        setQuery(name);
+        if (isDefinedAndNotEmpty(name)) {
+          sendAnalytics("News", "Change search term");
+        } else {
+          sendAnalytics("News", "Clear search term");
+        }
+      }}
+    />
+  );
+
   const subPanel = (
     <SubPanel>
       <PanelHeader
@@ -146,20 +163,7 @@ const News = ({ ...otherProps }: Props): JSX.Element => {
 
       <HorizontalLine />
 
-      <TextInput
-        className="mb-6 w-full"
-        placeholder={format("search_placeholder")}
-        value={query}
-        onChange={(name) => {
-          setPage(1);
-          setQuery(name);
-          if (isDefinedAndNotEmpty(name)) {
-            sendAnalytics("News", "Change search term");
-          } else {
-            sendAnalytics("News", "Clear search term");
-          }
-        }}
-      />
+      {!is1ColumnLayout && <div className="mb-6">{searchInput}</div>}
 
       <WithLabel label={format("language", { count: Infinity })}>
         <Select
@@ -208,6 +212,7 @@ const News = ({ ...otherProps }: Props): JSX.Element => {
 
   const contentPanel = (
     <ContentPanel width={ContentPanelWidthSizes.Full}>
+      {is1ColumnLayout && <div className="mx-auto mb-12 max-w-lg">{searchInput}</div>}
       <Paginator page={page} onPageChange={setPage} totalNumberOfPages={posts?.totalPages}>
         <div
           className="grid grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] items-start

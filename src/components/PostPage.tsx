@@ -1,4 +1,4 @@
-import { Fragment, useCallback } from "react";
+import { useCallback } from "react";
 import { AppLayout, AppLayoutRequired } from "./AppLayout";
 import { getTocFromMarkdawn, Markdawn, TableOfContents } from "./Markdown/Markdawn";
 import { ReturnButton } from "./PanelComponents/ReturnButton";
@@ -91,13 +91,8 @@ export const PostPage = ({
 
   const contentPanel = (
     <ContentPanel>
-      {returnHref && returnTitle && (
-        <ReturnButton
-          href={returnHref}
-          title={returnTitle}
-          displayOnlyOn={"1ColumnLayout"}
-          className="mb-10"
-        />
+      {is1ColumnLayout && returnHref && returnTitle && (
+        <ReturnButton href={returnHref} title={returnTitle} className="mb-10" />
       )}
 
       {displayThumbnailHeader ? (
@@ -109,6 +104,7 @@ export const PostPage = ({
             categories={filterHasAttributes(post.categories?.data, ["attributes"]).map((category) =>
               formatCategory(category.attributes.slug)
             )}
+            releaseDate={post.date}
             languageSwitcher={
               languageSwitcherProps.locales.size > 1 ? (
                 <LanguageSwitcher {...languageSwitcherProps} />

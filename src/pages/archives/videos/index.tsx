@@ -25,6 +25,8 @@ import { Button } from "components/Inputs/Button";
 import { Paginator } from "components/Containers/Paginator";
 import { useFormat } from "hooks/useFormat";
 import { getFormat } from "helpers/i18n";
+import { useAtomGetter } from "helpers/atoms";
+import { atoms } from "contexts/atoms";
 
 /*
  *                                         ╭─────────────╮
@@ -57,6 +59,7 @@ const Videos = ({ ...otherProps }: Props): JSX.Element => {
   const { format } = useFormat();
   const hoverable = useDeviceSupportsHover();
   const router = useTypedRouter(queryParamSchema);
+  const is1ColumnLayout = useAtomGetter(atoms.containerQueries.is1ColumnLayout);
 
   const sortingMethods = useMemo(
     () => [
@@ -141,14 +144,25 @@ const Videos = ({ ...otherProps }: Props): JSX.Element => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.isReady]);
 
+  const searchInput = (
+    <TextInput
+      placeholder={format("search_placeholder")}
+      value={query}
+      onChange={(newQuery) => {
+        setPage(1);
+        setQuery(newQuery);
+        if (isDefinedAndNotEmpty(newQuery)) {
+          sendAnalytics("Videos", "Change search term");
+        } else {
+          sendAnalytics("Videos", "Clear search term");
+        }
+      }}
+    />
+  );
+
   const subPanel = (
     <SubPanel>
-      <ReturnButton
-        href="/archives/"
-        title={"Archives"}
-        displayOnlyOn={"3ColumnsLayout"}
-        className="mb-10"
-      />
+      {!is1ColumnLayout && <ReturnButton href="/archives/" title={"Archives"} className="mb-10" />}
 
       <PanelHeader
         icon="movie"
@@ -158,20 +172,7 @@ const Videos = ({ ...otherProps }: Props): JSX.Element => {
 
       <HorizontalLine />
 
-      <TextInput
-        className="mb-6 w-full"
-        placeholder={format("search_placeholder")}
-        value={query}
-        onChange={(newQuery) => {
-          setPage(1);
-          setQuery(newQuery);
-          if (isDefinedAndNotEmpty(newQuery)) {
-            sendAnalytics("Videos", "Change search term");
-          } else {
-            sendAnalytics("Videos", "Clear search term");
-          }
-        }}
-      />
+      {!is1ColumnLayout && <div className="mb-6">{searchInput}</div>}
 
       <WithLabel label={format("order_by")}>
         <Select
@@ -226,6 +227,7 @@ const Videos = ({ ...otherProps }: Props): JSX.Element => {
 
   const contentPanel = (
     <ContentPanel width={ContentPanelWidthSizes.Full}>
+      {is1ColumnLayout && <div className="mx-auto mb-12 max-w-lg">{searchInput}</div>}
       <Paginator page={page} onPageChange={setPage} totalNumberOfPages={videos?.totalPages}>
         <div
           className="grid grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] items-start

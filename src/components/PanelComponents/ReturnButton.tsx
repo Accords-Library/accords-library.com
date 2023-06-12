@@ -2,10 +2,8 @@ import { useCallback } from "react";
 import { Button } from "components/Inputs/Button";
 import { TranslatedProps } from "types/TranslatedProps";
 import { useSmartLanguage } from "hooks/useSmartLanguage";
-import { isUndefined } from "helpers/asserts";
-import { atoms } from "contexts/atoms";
-import { useAtomGetter } from "helpers/atoms";
 import { useFormat } from "hooks/useFormat";
+import { cJoin } from "helpers/className";
 
 /*
  *                                        ╭─────────────╮
@@ -15,27 +13,18 @@ import { useFormat } from "hooks/useFormat";
 interface Props {
   href: string;
   title: string | null | undefined;
-
-  displayOnlyOn?: "1ColumnLayout" | "3ColumnsLayout";
   className?: string;
 }
 
 // ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
-export const ReturnButton = ({ href, title, displayOnlyOn, className }: Props): JSX.Element => {
+export const ReturnButton = ({ href, title, className }: Props): JSX.Element => {
   const { format } = useFormat();
-  const is3ColumnsLayout = useAtomGetter(atoms.containerQueries.is3ColumnsLayout);
 
   return (
-    <>
-      {((is3ColumnsLayout && displayOnlyOn === "3ColumnsLayout") ||
-        (!is3ColumnsLayout && displayOnlyOn === "1ColumnLayout") ||
-        isUndefined(displayOnlyOn)) && (
-        <div className={className}>
-          <Button href={href} text={format("return_to_x", { x: title })} icon="navigate_before" />
-        </div>
-      )}
-    </>
+    <div className={cJoin("mx-auto w-full max-w-lg place-self-center", className)}>
+      <Button href={href} text={format("return_to_x", { x: title })} icon="navigate_before" />
+    </div>
   );
 };
 

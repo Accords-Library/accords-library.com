@@ -16,12 +16,14 @@ import { ReturnButton } from "components/PanelComponents/ReturnButton";
 import { getOpenGraph } from "helpers/openGraph";
 import { getDefaultPreferredLanguages, staticSmartLanguage } from "helpers/locales";
 import { getDescription } from "helpers/description";
-import { useScrollTopOnChange } from "hooks/useScrollTopOnChange";
+import { useScrollTopOnChange } from "hooks/useScrollOnChange";
 import { Ids } from "types/ids";
 import { useFormat } from "hooks/useFormat";
 import { getFormat } from "helpers/i18n";
 import { ElementsSeparator } from "helpers/component";
 import { ChroniclesLists } from "components/Chronicles/ChroniclesLists";
+import { useAtomGetter } from "helpers/atoms";
+import { atoms } from "contexts/atoms";
 
 /*
  *                                           ╭────────╮
@@ -35,6 +37,7 @@ interface Props extends AppLayoutRequired {
 
 const Chronicle = ({ chronicle, chapters, ...otherProps }: Props): JSX.Element => {
   const { format, formatContentType, formatCategory } = useFormat();
+  const is1ColumnLayout = useAtomGetter(atoms.containerQueries.is1ColumnLayout);
   useScrollTopOnChange(Ids.ContentPanel, [chronicle.slug]);
 
   const [selectedTranslation, LanguageSwitcher, languageSwitcherProps] = useSmartLanguage({
@@ -67,24 +70,22 @@ const Chronicle = ({ chronicle, chapters, ...otherProps }: Props): JSX.Element =
 
   const subPanel = (
     <SubPanel>
-      <ReturnButton
-        displayOnlyOn={"3ColumnsLayout"}
-        href="/chronicles"
-        title={format("chronicles")}
-      />
-      <HorizontalLine />
+      {!is1ColumnLayout && (
+        <>
+          <ReturnButton href="/chronicles" title={format("chronicles")} />
+          <HorizontalLine />
+        </>
+      )}
+
       <ChroniclesLists chapters={chapters} currentChronicleSlug={chronicle.slug} />
     </SubPanel>
   );
 
   const contentPanel = (
     <ContentPanel>
-      <ReturnButton
-        displayOnlyOn={"1ColumnLayout"}
-        href="/chronicles"
-        title={format("chronicles")}
-        className="mb-10"
-      />
+      {is1ColumnLayout && (
+        <ReturnButton href="/chronicles" title={format("chronicles")} className="mb-10" />
+      )}
 
       {isDefined(selectedTranslation) ? (
         <>

@@ -1,5 +1,4 @@
 import { GetStaticPaths, GetStaticPathsResult, GetStaticProps } from "next";
-import { useMemo } from "react";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { ContentPanel, ContentPanelWidthSizes } from "components/Containers/ContentPanel";
 import { getOpenGraph } from "helpers/openGraph";
@@ -8,8 +7,7 @@ import { filterHasAttributes } from "helpers/asserts";
 import { GetContentsFolderQuery, ParentFolderPreviewFragment } from "graphql/generated";
 import { getDefaultPreferredLanguages, staticSmartLanguage } from "helpers/locales";
 import { prettySlug } from "helpers/formatters";
-import { Ico } from "components/Ico";
-import { Button, TranslatedButton } from "components/Inputs/Button";
+import { Button } from "components/Inputs/Button";
 import { PanelHeader } from "components/PanelComponents/PanelHeader";
 import { SubPanel } from "components/Containers/SubPanel";
 import { TranslatedPreviewCard } from "components/PreviewCard";
@@ -21,6 +19,7 @@ import { TranslatedPreviewFolder } from "components/Contents/PreviewFolder";
 import { useFormat } from "hooks/useFormat";
 import { getFormat } from "helpers/i18n";
 import { Chip } from "components/Chip";
+import { FolderPath } from "components/Contents/FolderPath";
 
 /*
  *                                           ╭────────╮
@@ -38,14 +37,6 @@ const ContentsFolder = ({ openGraph, folder, path, ...otherProps }: Props): JSX.
   const { format, formatCategory, formatContentType } = useFormat();
   const setSubPanelOpened = useAtomSetter(atoms.layout.subPanelOpened);
   const isContentPanelAtLeast4xl = useAtomGetter(atoms.containerQueries.isContentPanelAtLeast4xl);
-
-  const filteredPath = useMemo(
-    () =>
-      path.filter(
-        (_, index) => isContentPanelAtLeast4xl || index === 0 || index === path.length - 1
-      ),
-    [path, isContentPanelAtLeast4xl]
-  );
 
   const subPanel = (
     <SubPanel>
@@ -68,30 +59,7 @@ const ContentsFolder = ({ openGraph, folder, path, ...otherProps }: Props): JSX.
 
   const contentPanel = (
     <ContentPanel width={ContentPanelWidthSizes.Full}>
-      <div className="mb-10 flex flex-wrap place-items-center justify-start gap-x-1 gap-y-4">
-        {filteredPath.map((pathFolder, index) => (
-          <>
-            {pathFolder.slug === "root" ? (
-              <Button href="/contents" icon="home" active={index === filteredPath.length - 1} />
-            ) : (
-              <TranslatedButton
-                href={`/contents/folder/${pathFolder.slug}`}
-                translations={filterHasAttributes(pathFolder.titles, [
-                  "language.data.attributes.code",
-                ]).map((title) => ({
-                  language: title.language.data.attributes.code,
-                  text: title.title,
-                }))}
-                fallback={{
-                  text: prettySlug(pathFolder.slug),
-                }}
-                active={index === filteredPath.length - 1}
-              />
-            )}
-            {index < filteredPath.length - 1 && <Ico icon="chevron_right" />}
-          </>
-        ))}
-      </div>
+      <FolderPath path={path} />
 
       {folder.subfolders?.data && folder.subfolders.data.length > 0 && (
         <div className="mb-8">
@@ -101,7 +69,7 @@ const ContentsFolder = ({ openGraph, folder, path, ...otherProps }: Props): JSX.
           </div>
           <div
             className={cJoin(
-              "grid items-start gap-8 pb-12",
+              "grid items-start pb-12",
               cIf(
                 isContentPanelAtLeast4xl,
                 "grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] gap-x-6 gap-y-8",
@@ -133,7 +101,7 @@ const ContentsFolder = ({ openGraph, folder, path, ...otherProps }: Props): JSX.
           </div>
           <div
             className={cJoin(
-              "grid items-start gap-8 pb-12",
+              "grid items-start pb-12",
               cIf(
                 isContentPanelAtLeast4xl,
                 "grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] gap-x-6 gap-y-8",

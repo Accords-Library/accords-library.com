@@ -29,7 +29,7 @@ import {
   isDefined,
   isDefinedAndNotEmpty,
 } from "helpers/asserts";
-import { useScrollTopOnChange } from "hooks/useScrollTopOnChange";
+import { useScrollTopOnChange } from "hooks/useScrollOnChange";
 import { getScanArchiveURL, getTrackURL, isUntangibleGroupItem } from "helpers/libraryItem";
 import { useDeviceSupportsHover } from "hooks/useMediaQuery";
 import { WithLabel } from "components/Inputs/WithLabel";
@@ -95,7 +95,7 @@ const LibrarySlug = ({
 
   const isContentPanelAtLeast3xl = useAtomGetter(atoms.containerQueries.isContentPanelAtLeast3xl);
   const isContentPanelAtLeastSm = useAtomGetter(atoms.containerQueries.isContentPanelAtLeastSm);
-  const is3ColumnsLayout = useAtomGetter(atoms.containerQueries.is3ColumnsLayout);
+  const is1ColumnLayout = useAtomGetter(atoms.containerQueries.is1ColumnLayout);
 
   const hoverable = useDeviceSupportsHover();
   const { value: keepInfoVisible, toggle: toggleKeepInfoVisible } = useBoolean(false);
@@ -111,13 +111,8 @@ const LibrarySlug = ({
     <SubPanel>
       <ElementsSeparator>
         {[
-          is3ColumnsLayout && (
-            <ReturnButton
-              key="ReturnButton"
-              href="/library/"
-              title={format("library")}
-              displayOnlyOn="3ColumnsLayout"
-            />
+          !is1ColumnLayout && (
+            <ReturnButton key="ReturnButton" href="/library/" title={format("library")} />
           ),
           <div className="grid gap-4" key="NavOption">
             <NavOption
@@ -177,12 +172,10 @@ const LibrarySlug = ({
 
   const contentPanel = (
     <ContentPanel width={ContentPanelWidthSizes.Full}>
-      <ReturnButton
-        href="/library/"
-        title={format("library")}
-        displayOnlyOn="1ColumnLayout"
-        className="mb-10"
-      />
+      {is1ColumnLayout && (
+        <ReturnButton href="/library/" title={format("library")} className="mb-10" />
+      )}
+
       <div className="grid place-items-center gap-12">
         <div
           className={cJoin(

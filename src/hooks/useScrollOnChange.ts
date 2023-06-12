@@ -14,3 +14,15 @@ export const useScrollTopOnChange = (id: Ids, deps: DependencyList, enabled = tr
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, ...deps, enabled]);
 };
+
+// Scroll to top of element "id" when "deps" update.
+export const useScrollRightOnChange = (id: Ids, deps: DependencyList, enabled = true): void => {
+  useEffect(() => {
+    if (enabled) {
+      logger.log("Change detected. Scrolling to right");
+      const elem = document.querySelector(`#${CSS.escape(id)}`);
+      elem?.scrollTo({ left: elem.scrollWidth, behavior: "smooth" });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id, ...deps, enabled]);
+};

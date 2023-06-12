@@ -2,7 +2,7 @@ import { Chip } from "components/Chip";
 import { Img } from "components/Img";
 import { InsetBox } from "components/Containers/InsetBox";
 import { Markdawn } from "components/Markdown/Markdawn";
-import { UploadImageFragment } from "graphql/generated";
+import { DatePickerFragment, UploadImageFragment } from "graphql/generated";
 import { prettyInlineTitle, slugify } from "helpers/formatters";
 import { ImageQuality } from "helpers/img";
 import { useAtomGetter } from "helpers/atoms";
@@ -21,6 +21,7 @@ interface Props {
   description?: string | null | undefined;
   type?: string;
   categories?: string[];
+  releaseDate?: DatePickerFragment;
   thumbnail?: UploadImageFragment | null | undefined;
   className?: string;
   languageSwitcher?: JSX.Element;
@@ -37,9 +38,10 @@ export const ThumbnailHeader = ({
   categories,
   description,
   languageSwitcher,
+  releaseDate,
   className,
 }: Props): JSX.Element => {
-  const { format } = useFormat();
+  const { format, formatDate } = useFormat();
   const { showLightBox } = useAtomGetter(atoms.lightBox);
 
   return (
@@ -72,6 +74,15 @@ export const ThumbnailHeader = ({
             <h3 className="text-xl">{format("type", { count: 1 })}</h3>
             <div className="flex flex-row flex-wrap">
               <Chip text={type} />
+            </div>
+          </div>
+        )}
+
+        {releaseDate && (
+          <div className="flex flex-col place-items-center gap-2">
+            <h3 className="text-xl">{format("release_date")}</h3>
+            <div className="flex flex-row flex-wrap">
+              <Chip text={formatDate(releaseDate)} />
             </div>
           </div>
         )}

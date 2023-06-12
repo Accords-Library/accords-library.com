@@ -73,17 +73,19 @@ const WeaponPage = ({ weapon, primaryName, aliases, ...otherProps }: Props): JSX
   const currentIntersection = useIntersectionList(intersectionIds);
   const is3ColumnsLayout = useAtomGetter(atoms.containerQueries.is3ColumnsLayout);
 
+  const searchInput = (
+    <ReturnButton
+      key="return-button"
+      href="/wiki/weapons"
+      title={format("weapon", { count: Infinity })}
+    />
+  );
+
   const subPanel = (
     <SubPanel>
       <ElementsSeparator>
         {[
-          is3ColumnsLayout && (
-            <ReturnButton
-              key="return-button"
-              href="/wiki/weapons"
-              title={format("weapon", { count: Infinity })}
-            />
-          ),
+          is3ColumnsLayout && searchInput,
 
           <Fragment key="nav-options">
             {intersectionIds.map((id, index) => (
@@ -126,12 +128,8 @@ const WeaponPage = ({ weapon, primaryName, aliases, ...otherProps }: Props): JSX
 
   const contentPanel = (
     <ContentPanel>
-      <ReturnButton
-        href="/wiki/weapons"
-        title={format("weapon", { count: Infinity })}
-        displayOnlyOn="1ColumnLayout"
-        className="mb-10"
-      />
+      {!is3ColumnsLayout && <div className="mb-10">{searchInput}</div>}
+
       <ThumbnailHeader
         title={primaryName}
         subtitle={aliases.join("・")}

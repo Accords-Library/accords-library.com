@@ -34,19 +34,19 @@ interface Props extends AppLayoutRequired {
 
 const Video = ({ video, ...otherProps }: Props): JSX.Element => {
   const isContentPanelAtLeast4xl = useAtomGetter(atoms.containerQueries.isContentPanelAtLeast4xl);
+  const is1ColumnLayout = useAtomGetter(atoms.containerQueries.is1ColumnLayout);
   const setSubPanelOpened = useAtomSetter(atoms.layout.subPanelOpened);
   const closeSubPanel = useCallback(() => setSubPanelOpened(false), [setSubPanelOpened]);
   const { format, formatDate } = useFormat();
 
   const subPanel = (
     <SubPanel>
-      <ReturnButton
-        href="/archives/videos/"
-        title={format("videos")}
-        displayOnlyOn={"3ColumnsLayout"}
-      />
-
-      <HorizontalLine />
+      {!is1ColumnLayout && (
+        <>
+          <ReturnButton href="/archives/videos/" title={format("videos")} />
+          <HorizontalLine />
+        </>
+      )}
 
       <NavOption title={format("video")} url="#video" border onClick={closeSubPanel} />
       <NavOption title={format("channel")} url="#channel" border onClick={closeSubPanel} />
@@ -56,12 +56,9 @@ const Video = ({ video, ...otherProps }: Props): JSX.Element => {
 
   const contentPanel = (
     <ContentPanel width={ContentPanelWidthSizes.Full}>
-      <ReturnButton
-        href="/library/"
-        title={format("library")}
-        displayOnlyOn={"1ColumnLayout"}
-        className="mb-10"
-      />
+      {is1ColumnLayout && (
+        <ReturnButton href="/library/" title={format("library")} className="mb-10" />
+      )}
 
       <div className="grid place-items-center gap-12">
         <div id="video" className="w-full overflow-hidden rounded-xl shadow-xl shadow-shade/80">

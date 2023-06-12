@@ -5,7 +5,7 @@ import { atoms } from "contexts/atoms";
 import { isUndefined } from "helpers/asserts";
 import { useAtomGetter } from "helpers/atoms";
 import { useFormat } from "hooks/useFormat";
-import { useScrollTopOnChange } from "hooks/useScrollTopOnChange";
+import { useScrollTopOnChange } from "hooks/useScrollOnChange";
 import { Ids } from "types/ids";
 
 /*

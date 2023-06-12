@@ -27,7 +27,7 @@ import { useIntersectionList } from "hooks/useIntersectionList";
 import { HorizontalLine } from "components/HorizontalLine";
 import { useFormat } from "hooks/useFormat";
 import { getFormat } from "helpers/i18n";
-import { useAtomSetter } from "helpers/atoms";
+import { useAtomGetter, useAtomSetter } from "helpers/atoms";
 import { atoms } from "contexts/atoms";
 
 /*
@@ -43,6 +43,7 @@ interface Props extends AppLayoutRequired {
 const Chronology = ({ chronologyItems, chronologyEras, ...otherProps }: Props): JSX.Element => {
   const { format } = useFormat();
   const setSubPanelOpened = useAtomSetter(atoms.layout.subPanelOpened);
+  const is1ColumnLayout = useAtomGetter(atoms.containerQueries.is1ColumnLayout);
   const closeSubPanel = useCallback(() => setSubPanelOpened(false), [setSubPanelOpened]);
   const ids = useMemo(
     () => filterHasAttributes(chronologyEras, ["attributes"]).map((era) => era.attributes.slug),
@@ -53,7 +54,7 @@ const Chronology = ({ chronologyItems, chronologyEras, ...otherProps }: Props): 
 
   const subPanel = (
     <SubPanel>
-      <ReturnButton href="/wiki" title={format("wiki")} displayOnlyOn="3ColumnsLayout" />
+      {!is1ColumnLayout && <ReturnButton href="/wiki" title={format("wiki")} />}
 
       <HorizontalLine />
 
@@ -83,12 +84,7 @@ const Chronology = ({ chronologyItems, chronologyEras, ...otherProps }: Props): 
 
   const contentPanel = (
     <ContentPanel>
-      <ReturnButton
-        href="/wiki"
-        title={format("wiki")}
-        displayOnlyOn="1ColumnLayout"
-        className="mb-10"
-      />
+      {is1ColumnLayout && <ReturnButton href="/wiki" title={format("wiki")} className="mb-10" />}
 
       {filterHasAttributes(chronologyEras, ["attributes"]).map((era) => (
         <TranslatedChronologyEra

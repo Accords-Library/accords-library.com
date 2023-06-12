@@ -33,6 +33,8 @@ import { useLibraryItemUserStatus } from "hooks/useLibraryItemUserStatus";
 import { Paginator } from "components/Containers/Paginator";
 import { useFormat } from "hooks/useFormat";
 import { getFormat } from "helpers/i18n";
+import { useAtomGetter } from "helpers/atoms";
+import { atoms } from "contexts/atoms";
 
 /*
  *                                         ╭─────────────╮
@@ -71,6 +73,7 @@ const Library = (props: Props): JSX.Element => {
   const hoverable = useDeviceSupportsHover();
   const { format, formatCategory, formatLibraryItemSubType } = useFormat();
   const { libraryItemUserStatus } = useLibraryItemUserStatus();
+  const is1ColumnLayout = useAtomGetter(atoms.containerQueries.is1ColumnLayout);
 
   const sortingMethods = useMemo(
     () => [
@@ -234,6 +237,22 @@ const Library = (props: Props): JSX.Element => {
     if (isDefined(totalPages) && totalPages < page && totalPages >= 1) setPage(totalPages);
   }, [libraryItems?.totalPages, page]);
 
+  const searchInput = (
+    <TextInput
+      placeholder={format("search_placeholder")}
+      value={query}
+      onChange={(name) => {
+        setPage(1);
+        setQuery(name);
+        if (isDefinedAndNotEmpty(name)) {
+          sendAnalytics("Library", "Change search term");
+        } else {
+          sendAnalytics("Library", "Clear search term");
+        }
+      }}
+    />
+  );
+
   const subPanel = (
     <SubPanel>
       <PanelHeader
@@ -244,20 +263,7 @@ const Library = (props: Props): JSX.Element => {
 
       <HorizontalLine />
 
-      <TextInput
-        className="mb-6 w-full"
-        placeholder={format("search_placeholder")}
-        value={query}
-        onChange={(name) => {
-          setPage(1);
-          setQuery(name);
-          if (isDefinedAndNotEmpty(name)) {
-            sendAnalytics("Library", "Change search term");
-          } else {
-            sendAnalytics("Library", "Clear search term");
-          }
-        }}
-      />
+      {!is1ColumnLayout && <div className="mb-6">{searchInput}</div>}
 
       <WithLabel label={format("order_by")}>
         <Select
@@ -388,6 +394,7 @@ const Library = (props: Props): JSX.Element => {
 
   const contentPanel = (
     <ContentPanel width={ContentPanelWidthSizes.Full}>
+      {is1ColumnLayout && <div className="mx-auto mb-12 max-w-lg">{searchInput}</div>}
       <Paginator page={page} onPageChange={setPage} totalNumberOfPages={libraryItems?.totalPages}>
         <div
           className="grid grid-cols-[repeat(auto-fill,_minmax(12rem,1fr))] items-end

@@ -39,6 +39,7 @@ interface Props extends AppLayoutRequired {
 
 const WikiPage = ({ page, ...otherProps }: Props): JSX.Element => {
   const { format, formatCategory, formatWikiTag } = useFormat();
+  const is1ColumnLayout = useAtomGetter(atoms.containerQueries.is1ColumnLayout);
   const router = useRouter();
   const isTerminalMode = useAtomGetter(atoms.layout.terminalMode);
   const setSubPanelOpened = useAtomSetter(atoms.layout.subPanelOpened);
@@ -51,41 +52,30 @@ const WikiPage = ({ page, ...otherProps }: Props): JSX.Element => {
       []
     ),
   });
-  const is3ColumnsLayout = useAtomGetter(atoms.containerQueries.is3ColumnsLayout);
 
   const toc = getTocFromMarkdawn(selectedTranslation?.body?.body, selectedTranslation?.title);
 
-  const subPanel = is3ColumnsLayout ? (
-    <SubPanel>
-      <ElementsSeparator>
-        {[
-          <ReturnButton
-            key="return"
-            href={`/wiki`}
-            title={format("wiki")}
-            displayOnlyOn={"3ColumnsLayout"}
-          />,
-          toc && (
-            <TableOfContents
-              key="toc"
-              toc={toc}
-              onContentClicked={() => setSubPanelOpened(false)}
-            />
-          ),
-        ]}
-      </ElementsSeparator>
-    </SubPanel>
-  ) : undefined;
+  const subPanel =
+    toc || !is1ColumnLayout ? (
+      <SubPanel>
+        <ElementsSeparator>
+          {[
+            !is1ColumnLayout && <ReturnButton key="return" href={`/wiki`} title={format("wiki")} />,
+            toc && (
+              <TableOfContents
+                key="toc"
+                toc={toc}
+                onContentClicked={() => setSubPanelOpened(false)}
+              />
+            ),
+          ]}
+        </ElementsSeparator>
+      </SubPanel>
+    ) : undefined;
 
   const contentPanel = (
     <ContentPanel width={ContentPanelWidthSizes.Large}>
-      <ReturnButton
-        href={`/wiki`}
-        title={format("wiki")}
-        displayOnlyOn={"1ColumnLayout"}
-        className="mb-10"
-      />
-
+      {is1ColumnLayout && <ReturnButton href={`/wiki`} title={format("wiki")} className="mb-10" />}
       <div className="flex flex-wrap place-content-center gap-3">
         <h1 className="text-center text-3xl">{selectedTranslation?.title}</h1>
         {selectedTranslation?.aliases && selectedTranslation.aliases.length > 0 && (
@@ -103,7 +93,7 @@ const WikiPage = ({ page, ...otherProps }: Props): JSX.Element => {
             <div
               className={cJoin(
                 "mb-8 overflow-hidden rounded-lg bg-mid text-center",
-                cIf(is3ColumnsLayout, "float-right ml-8 w-96")
+                cIf(!is1ColumnLayout, "float-right ml-8 w-96")
               )}>
               {page.thumbnail?.data?.attributes && (
                 <Img

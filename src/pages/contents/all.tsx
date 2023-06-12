@@ -29,7 +29,7 @@ import { prettySlug } from "helpers/formatters";
 import { Paginator } from "components/Containers/Paginator";
 import { useFormat } from "hooks/useFormat";
 import { getFormat } from "helpers/i18n";
-import { useAtomSetter } from "helpers/atoms";
+import { useAtomGetter, useAtomSetter } from "helpers/atoms";
 import { atoms } from "contexts/atoms";
 
 /*

@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@fontsource/noto-serif-jp": "^5.0.2",
-    "@fontsource/opendyslexic": "^5.0.2",
+    "@fontsource/opendyslexic": "^5.0.3",
     "@fontsource/share-tech-mono": "^5.0.2",
     "@fontsource/vollkorn": "^5.0.2",
     "@fontsource/zen-maru-gothic": "^5.0.2",

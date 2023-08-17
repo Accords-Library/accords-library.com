@@ -56,7 +56,7 @@ const WikiPage = ({ page, ...otherProps }: Props): JSX.Element => {
   const toc = getTocFromMarkdawn(selectedTranslation?.body?.body, selectedTranslation?.title);
 
   const subPanel =
-    toc || !is1ColumnLayout ? (
+    isDefined(toc) || !is1ColumnLayout ? (
       <SubPanel>
         <ElementsSeparator>
           {[
@@ -204,18 +204,18 @@ const WikiPage = ({ page, ...otherProps }: Props): JSX.Element => {
           page.definitions && page.definitions.length > 0
             ? `${filterHasAttributes(page.definitions, ["translations"]).map(
                 (definition, index) =>
-                  `${prettyTerminalUnderlinedTitle(format("definition_x", { x: index + 1 }))}${
-                    staticSmartLanguage({
-                      items: filterHasAttributes(definition.translations, [
-                        "language.data.attributes.code",
-                      ]),
-                      languageExtractor: (item) => item.language.data.attributes.code,
-                      preferredLanguages: getDefaultPreferredLanguages(
-                        router.locale ?? "en",
-                        router.locales ?? ["en"]
-                      ),
-                    })?.definition
-                  }`
+                  `${prettyTerminalUnderlinedTitle(
+                    format("definition_x", { x: index + 1 })
+                  )}${staticSmartLanguage({
+                    items: filterHasAttributes(definition.translations, [
+                      "language.data.attributes.code",
+                    ]),
+                    languageExtractor: (item) => item.language.data.attributes.code,
+                    preferredLanguages: getDefaultPreferredLanguages(
+                      router.locale ?? "en",
+                      router.locales ?? ["en"]
+                    ),
+                  })?.definition}`
               )}`
             : ""
         }${

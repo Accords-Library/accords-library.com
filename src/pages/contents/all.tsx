@@ -189,7 +189,6 @@ const Contents = (props: Props): JSX.Element => {
       <HorizontalLine />
 
       {!is1ColumnLayout && <div className="mb-6">{searchInput}</div>}
-      
 
       <WithLabel label={format("order_by")}>
         <Select

@@ -19,10 +19,11 @@ interface Props {
 export const ChroniclesLists = ({ chapters, currentChronicleSlug }: Props): JSX.Element => {
   const [openedIndex, setOpenedIndex] = useState(
     currentChronicleSlug
-      ? chapters.findIndex((chapter) =>
-          chapter.attributes?.chronicles?.data.some(
-            (chronicle) => chronicle.attributes?.slug === currentChronicleSlug
-          )
+      ? chapters.findIndex(
+          (chapter) =>
+            chapter.attributes?.chronicles?.data.some(
+              (chronicle) => chronicle.attributes?.slug === currentChronicleSlug
+            )
         )
       : -1
   );

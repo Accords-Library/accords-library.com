@@ -807,9 +807,7 @@ const ContentItem = ({
       <div className="grid grid-cols-[auto_auto_1fr_auto] items-center gap-3">
         <h3>{title}</h3>
         <div className="flex flex-wrap place-content-center gap-1">
-          {content?.categories?.map((category, index) => (
-            <Chip key={index} text={category} />
-          ))}
+          {content?.categories?.map((category, index) => <Chip key={index} text={category} />)}
         </div>
         <p className="h-4 w-full border-b-2 border-dotted border-mid" />
         {content?.type && <Chip className="justify-self-end" text={content.type} />}

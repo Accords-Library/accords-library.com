@@ -14,6 +14,7 @@ import { TranslatedProps } from "types/TranslatedProps";
 import { atoms } from "contexts/atoms";
 import { useAtomGetter } from "helpers/atoms";
 import { useFormat } from "hooks/useFormat";
+import { isDefined } from "helpers/asserts";
 
 /*
  *                                        ╭─────────────╮
@@ -84,7 +85,7 @@ export const PreviewCard = ({
 
   const metadataJSX = (
     <>
-      {metadata && (metadata.releaseDate || metadata.price) && (
+      {metadata && (isDefined(metadata.releaseDate) || isDefined(metadata.price)) && (
         <div className="flex w-full flex-row flex-wrap gap-x-3">
           {metadata.releaseDate && (
             <p className="text-sm">

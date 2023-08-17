@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+
 import { MeiliSearch } from "meilisearch";
 import type {
   SearchParams,
@@ -73,7 +75,6 @@ export const filterHitsWithHighlight = <T extends MeiliDocumentsType["documents"
   return result;
 };
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const meiliSearch = async <I extends MeiliDocumentsType["index"]>(
   indexName: I,
   query: string,

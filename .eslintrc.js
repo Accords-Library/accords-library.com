@@ -161,7 +161,6 @@ module.exports = {
     "@typescript-eslint/no-invalid-void-type": "error",
     "@typescript-eslint/no-meaningless-void-operator": "error",
     "@typescript-eslint/no-non-null-asserted-nullish-coalescing": "error",
-    "@typescript-eslint/no-parameter-properties": "error",
     "@typescript-eslint/no-require-imports": "error",
     // "@typescript-eslint/no-type-alias": "warn",
     "@typescript-eslint/no-unnecessary-boolean-literal-compare": "warn",
@@ -182,7 +181,6 @@ module.exports = {
     "@typescript-eslint/prefer-string-starts-ends-with": "error",
     "@typescript-eslint/promise-function-async": "error",
     "@typescript-eslint/require-array-sort-compare": "error",
-    "@typescript-eslint/sort-type-union-intersection-members": "warn",
     // "@typescript-eslint/strict-boolean-expressions": [
     //   "error",
     //   { allowAny: true },
@@ -192,7 +190,6 @@ module.exports = {
     "@typescript-eslint/unified-signatures": "error",
 
     /* EXTENSION OF ESLINT */
-    "@typescript-eslint/no-duplicate-imports": "error",
     "@typescript-eslint/default-param-last": "warn",
     "@typescript-eslint/dot-notation": "warn",
     "@typescript-eslint/init-declarations": "warn",

@@ -1,6 +1,6 @@
 import { convert } from "html-to-text";
 import { sanitize } from "isomorphic-dompurify";
-import { marked } from "marked";
+import { Renderer, marked } from "marked";
 import { isDefinedAndNotEmpty } from "./asserts";
 
 export const prettySlug = (slug?: string, parentSlug?: string): string => {
@@ -101,7 +101,7 @@ export const prettyMarkdown = (markdown: string): string => {
   const newline = () => "\n";
   const empty = () => "";
 
-  const TxtRenderer: marked.Renderer = {
+  const TxtRenderer: Renderer = {
     // Block elements
     code: escapeBlock,
     blockquote: block,

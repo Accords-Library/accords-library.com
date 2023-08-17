@@ -4,7 +4,7 @@ import { ContentPanel, ContentPanelWidthSizes } from "components/Containers/Cont
 import { getOpenGraph } from "helpers/openGraph";
 import { getReadySdk } from "graphql/sdk";
 import { filterHasAttributes } from "helpers/asserts";
-import { GetContentsFolderQuery, ParentFolderPreviewFragment } from "graphql/generated";
+import { ParentFolderPreviewFragment, UploadImageFragment } from "graphql/generated";
 import { getDefaultPreferredLanguages, staticSmartLanguage } from "helpers/locales";
 import { prettySlug } from "helpers/formatters";
 import { Button } from "components/Inputs/Button";
@@ -27,14 +27,32 @@ import { FolderPath } from "components/Contents/FolderPath";
  */
 
 interface Props extends AppLayoutRequired {
-  folder: NonNullable<
-    NonNullable<GetContentsFolderQuery["contentsFolders"]>["data"][number]["attributes"]
-  >;
+  subfolders: {
+    slug: string;
+    href: string;
+    translations: { language: string; title: string }[];
+    fallback: { title: string };
+  }[];
+  contents: {
+    slug: string;
+    href: string;
+    translations: { language: string; pre_title?: string; title: string; subtitle?: string }[];
+    fallback: { title: string };
+    thumbnail?: UploadImageFragment;
+    topChips?: string[];
+    bottomChips?: string[];
+  }[];
   path: ParentFolderPreviewFragment[];
 }
 
-const ContentsFolder = ({ openGraph, folder, path, ...otherProps }: Props): JSX.Element => {
-  const { format, formatCategory, formatContentType } = useFormat();
+const ContentsFolder = ({
+  openGraph,
+  path,
+  contents,
+  subfolders,
+  ...otherProps
+}: Props): JSX.Element => {
+  const { format } = useFormat();
   const setSubPanelOpened = useAtomSetter(atoms.layout.subPanelOpened);
   const isContentPanelAtLeast4xl = useAtomGetter(atoms.containerQueries.isContentPanelAtLeast4xl);
 
@@ -61,11 +79,11 @@ const ContentsFolder = ({ openGraph, folder, path, ...otherProps }: Props): JSX.
     <ContentPanel width={ContentPanelWidthSizes.Full}>
       <FolderPath path={path} />
 
-      {folder.subfolders?.data && folder.subfolders.data.length > 0 && (
+      {subfolders.length > 0 && (
         <div className="mb-8">
           <div className="mb-2 flex place-items-center gap-2">
             <h2 className="text-2xl">{format("folders")}</h2>
-            <Chip text={format("x_results", { x: folder.subfolders.data.length })} />
+            <Chip text={format("x_results", { x: subfolders.length })} />
           </div>
           <div
             className={cJoin(
@@ -76,28 +94,18 @@ const ContentsFolder = ({ openGraph, folder, path, ...otherProps }: Props): JSX.
                 "grid-cols-2 gap-4"
               )
             )}>
-            {filterHasAttributes(folder.subfolders.data, ["id", "attributes"]).map((subfolder) => (
-              <TranslatedPreviewFolder
-                key={subfolder.id}
-                href={`/contents/folder/${subfolder.attributes.slug}`}
-                translations={filterHasAttributes(subfolder.attributes.titles, [
-                  "language.data.attributes.code",
-                ]).map((title) => ({
-                  title: title.title,
-                  language: title.language.data.attributes.code,
-                }))}
-                fallback={{ title: prettySlug(subfolder.attributes.slug) }}
-              />
+            {subfolders.map((subfolder) => (
+              <TranslatedPreviewFolder key={subfolder.slug} {...subfolder} />
             ))}
           </div>
         </div>
       )}
 
-      {folder.contents?.data && folder.contents.data.length > 0 && (
+      {contents.length > 0 && (
         <div className="mb-8">
           <div className="mb-2 flex place-items-center gap-2">
             <h2 className="text-2xl">{format("contents")}</h2>
-            <Chip text={format("x_results", { x: folder.contents.data.length })} />
+            <Chip text={format("x_results", { x: contents.length })} />
           </div>
           <div
             className={cJoin(
@@ -108,30 +116,12 @@ const ContentsFolder = ({ openGraph, folder, path, ...otherProps }: Props): JSX.
                 "grid-cols-2 gap-4"
               )
             )}>
-            {filterHasAttributes(folder.contents.data, ["id", "attributes"]).map((item) => (
+            {contents.map((item) => (
               <TranslatedPreviewCard
-                key={item.id}
-                href={`/contents/${item.attributes.slug}`}
-                translations={filterHasAttributes(item.attributes.translations, [
-                  "language.data.attributes.code",
-                ]).map((translation) => ({
-                  pre_title: translation.pre_title,
-                  title: translation.title,
-                  subtitle: translation.subtitle,
-                  language: translation.language.data.attributes.code,
-                }))}
-                fallback={{ title: prettySlug(item.attributes.slug) }}
-                thumbnail={item.attributes.thumbnail?.data?.attributes}
+                key={item.slug}
+                {...item}
                 thumbnailAspectRatio="3/2"
                 thumbnailForceAspectRatio
-                topChips={
-                  item.attributes.type?.data?.attributes
-                    ? [formatContentType(item.attributes.type.data.attributes.slug)]
-                    : undefined
-                }
-                bottomChips={filterHasAttributes(item.attributes.categories?.data, [
-                  "attributes",
-                ]).map((category) => formatCategory(category.attributes.slug))}
                 keepInfoVisible
               />
             ))}
@@ -139,9 +129,7 @@ const ContentsFolder = ({ openGraph, folder, path, ...otherProps }: Props): JSX.
         </div>
       )}
 
-      {folder.contents?.data.length === 0 && folder.subfolders?.data.length === 0 && (
-        <NoContentNorFolderMessage />
-      )}
+      {contents.length === 0 && subfolders.length === 0 && <NoContentNorFolderMessage />}
     </ContentPanel>
   );
 
@@ -163,7 +151,7 @@ export default ContentsFolder;
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
-  const { format } = getFormat(context.locale);
+  const { format, formatContentType, formatCategory } = getFormat(context.locale);
   const slug = context.params?.slug ? context.params.slug.toString() : "";
   const contentsFolder = await sdk.getContentsFolder({ slug: slug });
   if (!contentsFolder.contentsFolders?.data[0]?.attributes) {
@@ -189,13 +177,51 @@ export const getStaticProps: GetStaticProps = async (context) => {
     return prettySlug(folder.slug);
   })();
 
+  const subfolders: Props["subfolders"] = filterHasAttributes(folder.subfolders?.data, [
+    "attributes",
+  ]).map(({ attributes }) => ({
+    slug: attributes.slug,
+    href: `/contents/folder/${attributes.slug}`,
+    translations: filterHasAttributes(attributes.titles, ["language.data.attributes.code"]).map(
+      (translation) => ({
+        title: translation.title,
+        language: translation.language.data.attributes.code,
+      })
+    ),
+    fallback: { title: prettySlug(attributes.slug) },
+  }));
+
+  const contents: Props["contents"] = filterHasAttributes(folder.contents?.data, [
+    "attributes",
+  ]).map(({ attributes }) => ({
+    slug: attributes.slug,
+    href: `/contents/${attributes.slug}`,
+    translations: filterHasAttributes(attributes.translations, [
+      "language.data.attributes.code",
+    ]).map((translation) => ({
+      pre_title: translation.pre_title ?? undefined,
+      title: translation.title,
+      subtitle: translation.subtitle ?? undefined,
+      language: translation.language.data.attributes.code,
+    })),
+    fallback: { title: prettySlug(attributes.slug) },
+    thumbnail: attributes.thumbnail?.data?.attributes ?? undefined,
+    topChips: attributes.type?.data?.attributes
+      ? [formatContentType(attributes.type.data.attributes.slug)]
+      : undefined,
+    bottomChips: filterHasAttributes(attributes.categories?.data, ["attributes"]).map((category) =>
+      formatCategory(category.attributes.slug)
+    ),
+  }));
+
   const props: Props = {
     openGraph: getOpenGraph(format, title),
-    folder,
+    subfolders,
+    contents,
     path: getRecursiveParentFolderPreview(folder),
   };
   return {
-    props: props,
+    props: JSON.parse(JSON.stringify(props)),
   };
 };
 

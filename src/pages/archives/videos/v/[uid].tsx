@@ -9,10 +9,10 @@ import { NavOption } from "components/PanelComponents/NavOption";
 import { ReturnButton } from "components/PanelComponents/ReturnButton";
 import { ContentPanel, ContentPanelWidthSizes } from "components/Containers/ContentPanel";
 import { SubPanel } from "components/Containers/SubPanel";
-import { GetVideoQuery } from "graphql/generated";
+import { Enum_Video_Source } from "graphql/generated";
 import { getReadySdk } from "graphql/sdk";
 import { prettyShortenNumber } from "helpers/formatters";
-import { filterHasAttributes, isDefined } from "helpers/asserts";
+import { filterHasAttributes, isDefined, isUndefined } from "helpers/asserts";
 import { getVideoFile, getVideoThumbnailURL } from "helpers/videos";
 import { getOpenGraph } from "helpers/openGraph";
 import { atoms } from "contexts/atoms";
@@ -29,15 +29,29 @@ import { Markdown } from "components/Markdown/Markdown";
  */
 
 interface Props extends AppLayoutRequired {
-  video: NonNullable<NonNullable<GetVideoQuery["videos"]>["data"][number]["attributes"]>;
+  video: {
+    isGone: boolean;
+    uid: string;
+    title: string;
+    description: string;
+    publishedDate: string;
+    views: number;
+    likes: number;
+    source?: Enum_Video_Source;
+  };
+  channel?: {
+    title: string;
+    href: string;
+    subscribers: number;
+  };
 }
 
-const Video = ({ video, ...otherProps }: Props): JSX.Element => {
+const Video = ({ video, channel, ...otherProps }: Props): JSX.Element => {
   const isContentPanelAtLeast4xl = useAtomGetter(atoms.containerQueries.isContentPanelAtLeast4xl);
   const is1ColumnLayout = useAtomGetter(atoms.containerQueries.is1ColumnLayout);
   const setSubPanelOpened = useAtomSetter(atoms.layout.subPanelOpened);
   const closeSubPanel = useCallback(() => setSubPanelOpened(false), [setSubPanelOpened]);
-  const { format, formatDate } = useFormat();
+  const { format } = useFormat();
 
   const subPanel = (
     <SubPanel>
@@ -62,7 +76,7 @@ const Video = ({ video, ...otherProps }: Props): JSX.Element => {
 
       <div className="grid place-items-center gap-12">
         <div id="video" className="w-full overflow-hidden rounded-xl shadow-xl shadow-shade/80">
-          {video.gone ? (
+          {video.isGone ? (
             <VideoPlayer className="w-full" src={getVideoFile(video.uid)} rounded={false} />
           ) : (
             <iframe
@@ -80,7 +94,7 @@ const Video = ({ video, ...otherProps }: Props): JSX.Element => {
             <div className="flex w-full flex-row flex-wrap place-items-center gap-x-6">
               <p>
                 <Ico icon="event" className="mr-1 translate-y-[.15em] !text-base" />
-                {formatDate(video.published_date)}
+                {video.publishedDate}
               </p>
               <p>
                 <Ico icon="visibility" className="mr-1 translate-y-[.15em] !text-base" />
@@ -88,7 +102,7 @@ const Video = ({ video, ...otherProps }: Props): JSX.Element => {
                   ? video.views.toLocaleString()
                   : prettyShortenNumber(video.views)}
               </p>
-              {video.channel?.data?.attributes && (
+              {video.likes > 0 && (
                 <p>
                   <Ico icon="thumb_up" className="mr-1 translate-y-[.15em] !text-base" />
                   {isContentPanelAtLeast4xl
@@ -108,18 +122,14 @@ const Video = ({ video, ...otherProps }: Props): JSX.Element => {
           </div>
         </div>
 
-        {video.channel?.data?.attributes && (
+        {channel && (
           <InsetBox id="channel" className="grid place-items-center">
             <div className="grid w-[clamp(0px,100%,42rem)] place-items-center gap-4 text-center">
               <h2 className="text-2xl">{format("channel")}</h2>
               <div>
-                <Button
-                  href={`/archives/videos/c/${video.channel.data.attributes.uid}\
-?page=1&query=&sort=1&gone=`}
-                  text={video.channel.data.attributes.title}
-                />
+                <Button href={channel.href} text={channel.title} />
                 <p>
-                  {`${video.channel.data.attributes.subscribers.toLocaleString()}
+                  {`${channel.subscribers.toLocaleString()}
                    ${format("subscribers").toLowerCase()}`}
                 </p>
               </div>
@@ -148,29 +158,48 @@ export default Video;
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
-  const { format } = getFormat(context.locale);
+  const { format, formatDate } = getFormat(context.locale);
   const videos = await sdk.getVideo({
     uid: context.params && isDefined(context.params.uid) ? context.params.uid.toString() : "",
   });
-  if (!videos.videos?.data[0]?.attributes) return { notFound: true };
+  const rawVideo = videos.videos?.data[0]?.attributes;
+  if (isUndefined(rawVideo)) return { notFound: true };
+
+  const channel: Props["channel"] = rawVideo.channel?.data?.attributes
+    ? {
+        href: `/archives/videos/c/${rawVideo.channel.data.attributes.uid}`,
+        subscribers: rawVideo.channel.data.attributes.subscribers,
+        title: rawVideo.channel.data.attributes.title,
+      }
+    : undefined;
+
+  const video: Props["video"] = {
+    uid: rawVideo.uid,
+    isGone: rawVideo.gone,
+    description: rawVideo.description,
+    likes: rawVideo.likes,
+    source: rawVideo.source ?? undefined,
+    publishedDate: formatDate(rawVideo.published_date),
+    title: rawVideo.title,
+    views: rawVideo.views,
+  };
 
   const props: Props = {
-    video: videos.videos.data[0].attributes,
+    video,
+    channel,
     openGraph: getOpenGraph(
       format,
-      videos.videos.data[0].attributes.title,
-      getDescription(videos.videos.data[0].attributes.description, {
-        [format("channel")]: [videos.videos.data[0].attributes.channel?.data?.attributes?.title],
+      rawVideo.title,
+      getDescription(rawVideo.description, {
+        [format("channel")]: [rawVideo.channel?.data?.attributes?.title],
       }),
-      getVideoThumbnailURL(videos.videos.data[0].attributes.uid),
+      getVideoThumbnailURL(rawVideo.uid),
       undefined,
-      videos.videos.data[0].attributes.gone
-        ? getVideoFile(videos.videos.data[0].attributes.uid)
-        : undefined
+      rawVideo.gone ? getVideoFile(rawVideo.uid) : undefined
     ),
   };
   return {
-    props: props,
+    props: JSON.parse(JSON.stringify(props)),
   };
 };
 

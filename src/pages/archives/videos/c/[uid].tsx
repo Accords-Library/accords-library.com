@@ -22,7 +22,6 @@ import { useTypedRouter } from "hooks/useTypedRouter";
 import { Select } from "components/Inputs/Select";
 import { sendAnalytics } from "helpers/analytics";
 import { Button } from "components/Inputs/Button";
-import { GetVideoChannelQuery } from "graphql/generated";
 import { getReadySdk } from "graphql/sdk";
 import { Paginator } from "components/Containers/Paginator";
 import { useFormat } from "hooks/useFormat";
@@ -56,9 +55,11 @@ const queryParamSchema = z.object({
  */
 
 interface Props extends AppLayoutRequired {
-  channel: NonNullable<
-    NonNullable<GetVideoChannelQuery["videoChannels"]>["data"][number]["attributes"]
-  >;
+  channel: {
+    uid: string;
+    title: string;
+    subscribers: number;
+  };
 }
 
 const Channel = ({ channel, ...otherProps }: Props): JSX.Element => {
@@ -282,14 +283,23 @@ export default Channel;
 export const getStaticProps: GetStaticProps = async (context) => {
   const sdk = getReadySdk();
   const { format } = getFormat(context.locale);
-  const channel = await sdk.getVideoChannel({
-    channel: context.params && isDefined(context.params.uid) ? context.params.uid.toString() : "",
-  });
-  if (!channel.videoChannels?.data[0]?.attributes) return { notFound: true };
+  const videoChannel = (
+    await sdk.getVideoChannel({
+      channel: context.params && isDefined(context.params.uid) ? context.params.uid.toString() : "",
+    })
+  ).videoChannels?.data[0]?.attributes;
+
+  if (!videoChannel) return { notFound: true };
+
+  const channel: Props["channel"] = {
+    uid: videoChannel.uid,
+    subscribers: videoChannel.subscribers,
+    title: videoChannel.title,
+  };
 
   const props: Props = {
-    channel: channel.videoChannels.data[0].attributes,
-    openGraph: getOpenGraph(format, channel.videoChannels.data[0].attributes.title),
+    channel,
+    openGraph: getOpenGraph(format, channel.title),
   };
   return {
     props: props,

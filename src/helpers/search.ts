@@ -91,5 +91,24 @@ export const meiliSearch = async <I extends MeiliDocumentsType["index"]>(
   })) as unknown as CustomSearchResponse<Extract<MeiliDocumentsType, { index: I }>["documents"]>;
 };
 
+export type MeiliFacetResult = { name: string; count: number }[];
+
+export const meiliFacet = async <I extends MeiliDocumentsType["index"]>(
+  indexName: I,
+  facet: string
+): Promise<MeiliFacetResult> => {
+  const index = meili.index(indexName);
+  const searchResult = await index.search<Extract<MeiliDocumentsType, { index: I }>["documents"]>(
+    "",
+    {
+      hitsPerPage: 0,
+      facets: [facet],
+    }
+  );
+  return [...Object.entries(searchResult.facetDistribution?.[facet] ?? {})].map(
+    ([name, count]) => ({ name, count })
+  );
+};
+
 export const containsHighlight = (text: string | null | undefined): boolean =>
   isDefined(text) && text.includes("</mark>");

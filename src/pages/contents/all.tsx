@@ -2,6 +2,7 @@ import { GetStaticProps } from "next";
 import { useEffect, useMemo, useState } from "react";
 import { useBoolean } from "usehooks-ts";
 import { z } from "zod";
+import Collapsible from "react-collapsible";
 import { AppLayout, AppLayoutRequired } from "components/AppLayout";
 import { Select } from "components/Inputs/Select";
 import { Switch } from "components/Inputs/Switch";
@@ -20,6 +21,8 @@ import {
   containsHighlight,
   CustomSearchResponse,
   filterHitsWithHighlight,
+  meiliFacet,
+  MeiliFacetResult,
   meiliSearch,
 } from "helpers/search";
 import { MeiliContent, MeiliIndices } from "shared/meilisearch-graphql-typings/meiliTypes";
@@ -31,6 +34,7 @@ import { useFormat } from "hooks/useFormat";
 import { getFormat } from "helpers/i18n";
 import { useAtomGetter, useAtomSetter } from "helpers/atoms";
 import { atoms } from "contexts/atoms";
+import { Ico } from "components/Ico";
 
 /*
  *                                         ╭─────────────╮
@@ -75,17 +79,6 @@ const Contents = (props: Props): JSX.Element => {
     [format]
   );
 
-  const languageOptions = useMemo(() => {
-    const memo =
-      router.locales?.map((language) => ({
-        meiliAttribute: language,
-        displayedName: formatLanguage(language),
-      })) ?? [];
-
-    memo.unshift({ meiliAttribute: "", displayedName: format("all") });
-    return memo;
-  }, [router.locales, formatLanguage, format]);
-
   const [sortingMethod, setSortingMethod] = useState<number>(
     router.query.sort ?? DEFAULT_FILTERS_STATE.sortingMethod
   );
@@ -103,14 +96,15 @@ const Contents = (props: Props): JSX.Element => {
     router.query.lang ?? DEFAULT_FILTERS_STATE.lang
   );
 
+  const [selectedLocales, setSelectedLocales] = useState<string[]>([]);
+
   useEffect(() => {
     const fetchPosts = async () => {
       const currentSortingMethod = sortingMethods[sortingMethod]?.meiliAttribute;
-      const currentLanguageOption = languageOptions[languageOption]?.meiliAttribute;
 
       const filter: string[] = [];
-      if (languageOption !== 0) {
-        filter.push(`filterable_languages = ${currentLanguageOption}`);
+      if (selectedLocales.length !== 0) {
+        filter.push(`filterable_languages IN [${selectedLocales.join()}]`);
       }
 
       const searchResult = await meiliSearch(MeiliIndices.CONTENT, query, {
@@ -123,14 +117,10 @@ const Contents = (props: Props): JSX.Element => {
         sort: isDefined(currentSortingMethod) ? [currentSortingMethod] : undefined,
       });
 
-      setContents(
-        languageOption === 0
-          ? filterHitsWithHighlight<MeiliContent>(searchResult, "translations")
-          : searchResult
-      );
+      setContents(filterHitsWithHighlight<MeiliContent>(searchResult, "translations"));
     };
     fetchPosts();
-  }, [query, page, sortingMethod, sortingMethods, languageOption, languageOptions]);
+  }, [query, page, sortingMethod, sortingMethods, selectedLocales]);
 
   useEffect(() => {
     if (router.isReady)
@@ -152,6 +142,14 @@ const Contents = (props: Props): JSX.Element => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.isReady]);
+
+  const [countForLanguages, setCountForLanguages] = useState<MeiliFacetResult>([]);
+  const [countForCategories, setCountForCategories] = useState<MeiliFacetResult>([]);
+
+  useEffect(() => {
+    meiliFacet(MeiliIndices.CONTENT, "filterable_languages").then(setCountForLanguages);
+    meiliFacet(MeiliIndices.CONTENT, "filterable_categories").then(setCountForCategories);
+  }, []);
 
   const searchInput = (
     <TextInput
@@ -189,7 +187,22 @@ const Contents = (props: Props): JSX.Element => {
       <HorizontalLine />
 
       {!is1ColumnLayout && <div className="mb-6">{searchInput}</div>}
-      
+
+      <CollapsibleFilters
+        title={format("language", { count: countForLanguages.length })}
+        facetResult={countForLanguages}
+        format={formatLanguage}
+        onValueChanged={setSelectedLocales}
+        selectedValues={selectedLocales}
+      />
+
+      <CollapsibleFilters
+        title={format("category", { count: countForCategories.length })}
+        facetResult={countForCategories}
+        format={formatCategory}
+        onValueChanged={setSelectedLocales}
+        selectedValues={selectedLocales}
+      />
 
       <WithLabel label={format("order_by")}>
         <Select
@@ -203,24 +216,6 @@ const Contents = (props: Props): JSX.Element => {
               "Contents/All",
               `Change sorting method (${
                 sortingMethods.map((item) => item.meiliAttribute)[newSort]
-              })`
-            );
-          }}
-        />
-      </WithLabel>
-
-      <WithLabel label={format("language", { count: Infinity })}>
-        <Select
-          className="w-full"
-          options={languageOptions.map((item) => item.displayedName)}
-          value={languageOption}
-          onChange={(newLanguageOption) => {
-            setPage(1);
-            setLanguageOption(newLanguageOption);
-            sendAnalytics(
-              "Contents/All",
-              `Change language filter (${
-                languageOptions.map((item) => item.meiliAttribute)[newLanguageOption]
               })`
             );
           }}
@@ -278,8 +273,9 @@ const Contents = (props: Props): JSX.Element => {
                 }))
                 .filter(
                   ({ language }) =>
-                    languageOption === 0 ||
-                    language === languageOptions[languageOption]?.meiliAttribute
+                    selectedLocales.length === 0 ||
+                    query !== "" ||
+                    selectedLocales.includes(language)
                 )}
               fallback={{ title: prettySlug(item.slug) }}
               thumbnail={item.thumbnail?.data?.attributes}
@@ -321,4 +317,64 @@ export const getStaticProps: GetStaticProps = (context) => {
   return {
     props: props,
   };
+};
+
+/*
+ *                                    ╭──────────────────────╮
+ * ───────────────────────────────────╯  PRIVATE COMPONENTS  ╰──────────────────────────────────────
+ */
+
+interface CollapsibleFiltersProps {
+  title: string;
+  facetResult: MeiliFacetResult;
+  selectedValues: string[];
+  onValueChanged: (setStateFn: (current: string[]) => string[]) => void;
+  format: (name: string) => string;
+}
+
+const CollapsibleFilters = ({
+  title,
+  facetResult,
+  selectedValues,
+  onValueChanged,
+  format,
+}: CollapsibleFiltersProps): JSX.Element => {
+  const [isOpened, setOpened] = useState(false);
+
+  if (facetResult.length === 0) return <></>;
+  return (
+    <Collapsible
+      open={isOpened}
+      onTriggerClosing={() => setOpened(false)}
+      onOpening={() => setOpened(true)}
+      trigger={
+        <div className="flex gap-2">
+          <p className="leading-5">{title}</p>
+          <Ico icon={isOpened ? "expand_less" : "expand_more"} />
+        </div>
+      }
+      easing="ease-in-out"
+      transitionTime={400}
+      contentInnerClassName="flex flex-wrap gap-1 py-3"
+      overflowWhenOpen="visible">
+      {facetResult
+        .filter(({ count }) => count > 0)
+        .map(({ name, count }) => (
+          <Button
+            key={name}
+            text={`${format(name)} (${count})`}
+            size="small"
+            onClick={() =>
+              onValueChanged((current) => {
+                if (current.includes(name)) {
+                  return current.filter((currentLocale) => currentLocale !== name);
+                }
+                return [...current, name];
+              })
+            }
+            active={selectedValues.includes(name)}
+          />
+        ))}
+    </Collapsible>
+  );
 };

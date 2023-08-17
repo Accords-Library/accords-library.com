@@ -34,6 +34,7 @@ export interface MeiliContent
   })[];
   sortable_updated_date: number;
   filterable_languages: string[];
+  filterable_categories: string[];
 }
 
 export interface MeiliVideo extends VideoAttributesFragment {

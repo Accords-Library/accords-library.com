@@ -1,44 +1,50 @@
 import { GraphQLClient } from "graphql-request";
-import * as Dom from "graphql-request/dist/types.dom";
+import { GraphQLClientRequestHeaders } from "graphql-request/build/cjs/types";
 import gql from "graphql-tag";
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = {
+  [_ in K]?: never;
+};
+export type Incremental<T> =
+  | T
+  | { [P in keyof T]?: P extends " $fragmentName" | "__typename" ? T[P] : never };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: string;
-  String: string;
-  Boolean: boolean;
-  Int: number;
-  Float: number;
-  DateTime: any;
-  JSON: any;
-  LibraryItemMetadataDynamicZoneInput: any;
-  RangedContentRangeDynamicZoneInput: any;
-  Time: any;
-  Upload: any;
+  ID: { input: string; output: string };
+  String: { input: string; output: string };
+  Boolean: { input: boolean; output: boolean };
+  Int: { input: number; output: number };
+  Float: { input: number; output: number };
+  DateTime: { input: any; output: any };
+  JSON: { input: any; output: any };
+  LibraryItemMetadataDynamicZoneInput: { input: any; output: any };
+  RangedContentRangeDynamicZoneInput: { input: any; output: any };
+  Time: { input: any; output: any };
+  Upload: { input: any; output: any };
 };
 
 export type AudioSubtype = {
   __typename?: "AudioSubtype";
-  createdAt?: Maybe<Scalars["DateTime"]>;
-  slug: Scalars["String"];
+  createdAt?: Maybe<Scalars["DateTime"]["output"]>;
+  slug: Scalars["String"]["output"];
   titles?: Maybe<Array<Maybe<ComponentTranslationsSimpleTitle>>>;
-  updatedAt?: Maybe<Scalars["DateTime"]>;
+  updatedAt?: Maybe<Scalars["DateTime"]["output"]>;
 };
 
 export type AudioSubtypeTitlesArgs = {
   filters?: InputMaybe<ComponentTranslationsSimpleTitleFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type AudioSubtypeEntity = {
   __typename?: "AudioSubtypeEntity";
   attributes?: Maybe<AudioSubtype>;
-  id?: Maybe<Scalars["ID"]>;
+  id?: Maybe<Scalars["ID"]["output"]>;
 };
 
 export type AudioSubtypeEntityResponse = {
@@ -64,55 +70,53 @@ export type AudioSubtypeFiltersInput = {
 };
 
 export type AudioSubtypeInput = {
-  slug?: InputMaybe<Scalars["String"]>;
+  slug?: InputMaybe<Scalars["String"]["input"]>;
   titles?: InputMaybe<Array<InputMaybe<ComponentTranslationsSimpleTitleInput>>>;
 };
 
 export type BooleanFilterInput = {
-  and?: InputMaybe<Array<InputMaybe<Scalars["Boolean"]>>>;
-  between?: InputMaybe<Array<InputMaybe<Scalars["Boolean"]>>>;
-  contains?: InputMaybe<Scalars["Boolean"]>;
-  containsi?: InputMaybe<Scalars["Boolean"]>;
-  endsWith?: InputMaybe<Scalars["Boolean"]>;
-  eq?: InputMaybe<Scalars["Boolean"]>;
-  eqi?: InputMaybe<Scalars["Boolean"]>;
-  gt?: InputMaybe<Scalars["Boolean"]>;
-  gte?: InputMaybe<Scalars["Boolean"]>;
-  in?: InputMaybe<Array<InputMaybe<Scalars["Boolean"]>>>;
-  lt?: InputMaybe<Scalars["Boolean"]>;
-  lte?: InputMaybe<Scalars["Boolean"]>;
-  ne?: InputMaybe<Scalars["Boolean"]>;
+  and?: InputMaybe<Array<InputMaybe<Scalars["Boolean"]["input"]>>>;
+  between?: InputMaybe<Array<InputMaybe<Scalars["Boolean"]["input"]>>>;
+  contains?: InputMaybe<Scalars["Boolean"]["input"]>;
+  containsi?: InputMaybe<Scalars["Boolean"]["input"]>;
+  endsWith?: InputMaybe<Scalars["Boolean"]["input"]>;
+  eq?: InputMaybe<Scalars["Boolean"]["input"]>;
+  eqi?: InputMaybe<Scalars["Boolean"]["input"]>;
+  gt?: InputMaybe<Scalars["Boolean"]["input"]>;
+  gte?: InputMaybe<Scalars["Boolean"]["input"]>;
+  in?: InputMaybe<Array<InputMaybe<Scalars["Boolean"]["input"]>>>;
+  lt?: InputMaybe<Scalars["Boolean"]["input"]>;
+  lte?: InputMaybe<Scalars["Boolean"]["input"]>;
+  ne?: InputMaybe<Scalars["Boolean"]["input"]>;
   not?: InputMaybe<BooleanFilterInput>;
-  notContains?: InputMaybe<Scalars["Boolean"]>;
-  notContainsi?: InputMaybe<Scalars["Boolean"]>;
-  notIn?: InputMaybe<Array<InputMaybe<Scalars["Boolean"]>>>;
-  notNull?: InputMaybe<Scalars["Boolean"]>;
-  null?: InputMaybe<Scalars["Boolean"]>;
-  or?: InputMaybe<Array<InputMaybe<Scalars["Boolean"]>>>;
-  startsWith?: InputMaybe<Scalars["Boolean"]>;
+  notContains?: InputMaybe<Scalars["Boolean"]["input"]>;
+  notContainsi?: InputMaybe<Scalars["Boolean"]["input"]>;
+  notIn?: InputMaybe<Array<InputMaybe<Scalars["Boolean"]["input"]>>>;
+  notNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  null?: InputMaybe<Scalars["Boolean"]["input"]>;
+  or?: InputMaybe<Array<InputMaybe<Scalars["Boolean"]["input"]>>>;
+  startsWith?: InputMaybe<Scalars["Boolean"]["input"]>;
 };
 
 export type Category = {
   __typename?: "Category";
-  createdAt?: Maybe<Scalars["DateTime"]>;
-  name: Scalars["String"];
+  createdAt?: Maybe<Scalars["DateTime"]["output"]>;
   series?: Maybe<Enum_Category_Series>;
-  short: Scalars["String"];
-  slug: Scalars["String"];
+  slug: Scalars["String"]["output"];
   titles?: Maybe<Array<Maybe<ComponentTranslationsCategoriesTitle>>>;
-  updatedAt?: Maybe<Scalars["DateTime"]>;
+  updatedAt?: Maybe<Scalars["DateTime"]["output"]>;
 };
 
 export type CategoryTitlesArgs = {
   filters?: InputMaybe<ComponentTranslationsCategoriesTitleFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type CategoryEntity = {
   __typename?: "CategoryEntity";
   attributes?: Maybe<Category>;
-  id?: Maybe<Scalars["ID"]>;
+  id?: Maybe<Scalars["ID"]["output"]>;
 };
 
 export type CategoryEntityResponse = {
@@ -130,21 +134,17 @@ export type CategoryFiltersInput = {
   and?: InputMaybe<Array<InputMaybe<CategoryFiltersInput>>>;
   createdAt?: InputMaybe<DateTimeFilterInput>;
   id?: InputMaybe<IdFilterInput>;
-  name?: InputMaybe<StringFilterInput>;
   not?: InputMaybe<CategoryFiltersInput>;
   or?: InputMaybe<Array<InputMaybe<CategoryFiltersInput>>>;
   series?: InputMaybe<StringFilterInput>;
-  short?: InputMaybe<StringFilterInput>;
   slug?: InputMaybe<StringFilterInput>;
   titles?: InputMaybe<ComponentTranslationsCategoriesTitleFiltersInput>;
   updatedAt?: InputMaybe<DateTimeFilterInput>;
 };
 
 export type CategoryInput = {
-  name?: InputMaybe<Scalars["String"]>;
   series?: InputMaybe<Enum_Category_Series>;
-  short?: InputMaybe<Scalars["String"]>;
-  slug?: InputMaybe<Scalars["String"]>;
+  slug?: InputMaybe<Scalars["String"]["input"]>;
   titles?: InputMaybe<Array<InputMaybe<ComponentTranslationsCategoriesTitleInput>>>;
 };
 
@@ -157,30 +157,30 @@ export type Chronicle = {
   __typename?: "Chronicle";
   chapter?: Maybe<ChroniclesChapterEntityResponse>;
   contents?: Maybe<ContentRelationResponseCollection>;
-  createdAt?: Maybe<Scalars["DateTime"]>;
+  createdAt?: Maybe<Scalars["DateTime"]["output"]>;
   date_end: ComponentBasicsDatepicker;
   date_start: ComponentBasicsDatepicker;
-  slug: Scalars["String"];
+  slug: Scalars["String"]["output"];
   translations?: Maybe<Array<Maybe<ComponentTranslationsChronicles>>>;
-  updatedAt?: Maybe<Scalars["DateTime"]>;
+  updatedAt?: Maybe<Scalars["DateTime"]["output"]>;
 };
 
 export type ChronicleContentsArgs = {
   filters?: InputMaybe<ContentFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ChronicleTranslationsArgs = {
   filters?: InputMaybe<ComponentTranslationsChroniclesFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ChronicleEntity = {
   __typename?: "ChronicleEntity";
   attributes?: Maybe<Chronicle>;
-  id?: Maybe<Scalars["ID"]>;
+  id?: Maybe<Scalars["ID"]["output"]>;
 };
 
 export type ChronicleEntityResponse = {
@@ -210,11 +210,11 @@ export type ChronicleFiltersInput = {
 };
 
 export type ChronicleInput = {
-  chapter?: InputMaybe<Scalars["ID"]>;
-  contents?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
+  chapter?: InputMaybe<Scalars["ID"]["input"]>;
+  contents?: InputMaybe<Array<InputMaybe<Scalars["ID"]["input"]>>>;
   date_end?: InputMaybe<ComponentBasicsDatepickerInput>;
   date_start?: InputMaybe<ComponentBasicsDatepickerInput>;
-  slug?: InputMaybe<Scalars["String"]>;
+  slug?: InputMaybe<Scalars["String"]["input"]>;
   translations?: InputMaybe<Array<InputMaybe<ComponentTranslationsChroniclesInput>>>;
 };
 
@@ -226,28 +226,28 @@ export type ChronicleRelationResponseCollection = {
 export type ChroniclesChapter = {
   __typename?: "ChroniclesChapter";
   chronicles?: Maybe<ChronicleRelationResponseCollection>;
-  createdAt?: Maybe<Scalars["DateTime"]>;
-  slug: Scalars["String"];
+  createdAt?: Maybe<Scalars["DateTime"]["output"]>;
+  slug: Scalars["String"]["output"];
   titles?: Maybe<Array<Maybe<ComponentTranslationsSimpleTitle>>>;
-  updatedAt?: Maybe<Scalars["DateTime"]>;
+  updatedAt?: Maybe<Scalars["DateTime"]["output"]>;
 };
 
 export type ChroniclesChapterChroniclesArgs = {
   filters?: InputMaybe<ChronicleFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ChroniclesChapterTitlesArgs = {
   filters?: InputMaybe<ComponentTranslationsSimpleTitleFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ChroniclesChapterEntity = {
   __typename?: "ChroniclesChapterEntity";
   attributes?: Maybe<ChroniclesChapter>;
-  id?: Maybe<Scalars["ID"]>;
+  id?: Maybe<Scalars["ID"]["output"]>;
 };
 
 export type ChroniclesChapterEntityResponse = {
@@ -274,31 +274,31 @@ export type ChroniclesChapterFiltersInput = {
 };
 
 export type ChroniclesChapterInput = {
-  chronicles?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
-  slug?: InputMaybe<Scalars["String"]>;
+  chronicles?: InputMaybe<Array<InputMaybe<Scalars["ID"]["input"]>>>;
+  slug?: InputMaybe<Scalars["String"]["input"]>;
   titles?: InputMaybe<Array<InputMaybe<ComponentTranslationsSimpleTitleInput>>>;
 };
 
 export type ChronologyEra = {
   __typename?: "ChronologyEra";
-  createdAt?: Maybe<Scalars["DateTime"]>;
-  ending_year: Scalars["Int"];
-  slug: Scalars["String"];
-  starting_year: Scalars["Int"];
+  createdAt?: Maybe<Scalars["DateTime"]["output"]>;
+  ending_year: Scalars["Int"]["output"];
+  slug: Scalars["String"]["output"];
+  starting_year: Scalars["Int"]["output"];
   title?: Maybe<Array<Maybe<ComponentTranslationsChronologyEra>>>;
-  updatedAt?: Maybe<Scalars["DateTime"]>;
+  updatedAt?: Maybe<Scalars["DateTime"]["output"]>;
 };
 
 export type ChronologyEraTitleArgs = {
   filters?: InputMaybe<ComponentTranslationsChronologyEraFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ChronologyEraEntity = {
   __typename?: "ChronologyEraEntity";
   attributes?: Maybe<ChronologyEra>;
-  id?: Maybe<Scalars["ID"]>;
+  id?: Maybe<Scalars["ID"]["output"]>;
 };
 
 export type ChronologyEraEntityResponse = {
@@ -326,40 +326,40 @@ export type ChronologyEraFiltersInput = {
 };
 
 export type ChronologyEraInput = {
-  ending_year?: InputMaybe<Scalars["Int"]>;
-  slug?: InputMaybe<Scalars["String"]>;
-  starting_year?: InputMaybe<Scalars["Int"]>;
+  ending_year?: InputMaybe<Scalars["Int"]["input"]>;
+  slug?: InputMaybe<Scalars["String"]["input"]>;
+  starting_year?: InputMaybe<Scalars["Int"]["input"]>;
   title?: InputMaybe<Array<InputMaybe<ComponentTranslationsChronologyEraInput>>>;
 };
 
 export type ChronologyItem = {
   __typename?: "ChronologyItem";
-  createdAt?: Maybe<Scalars["DateTime"]>;
-  day?: Maybe<Scalars["Int"]>;
-  displayed_date?: Maybe<Scalars["String"]>;
+  createdAt?: Maybe<Scalars["DateTime"]["output"]>;
+  day?: Maybe<Scalars["Int"]["output"]>;
+  displayed_date?: Maybe<Scalars["String"]["output"]>;
   events?: Maybe<Array<Maybe<ComponentCollectionsComponentEvent>>>;
-  month?: Maybe<Scalars["Int"]>;
-  updatedAt?: Maybe<Scalars["DateTime"]>;
+  month?: Maybe<Scalars["Int"]["output"]>;
+  updatedAt?: Maybe<Scalars["DateTime"]["output"]>;
   wiki_pages?: Maybe<WikiPageRelationResponseCollection>;
-  year: Scalars["Int"];
+  year: Scalars["Int"]["output"];
 };
 
 export type ChronologyItemEventsArgs = {
   filters?: InputMaybe<ComponentCollectionsComponentEventFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ChronologyItemWiki_PagesArgs = {
   filters?: InputMaybe<WikiPageFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ChronologyItemEntity = {
   __typename?: "ChronologyItemEntity";
   attributes?: Maybe<ChronologyItem>;
-  id?: Maybe<Scalars["ID"]>;
+  id?: Maybe<Scalars["ID"]["output"]>;
 };
 
 export type ChronologyItemEntityResponse = {
@@ -389,12 +389,12 @@ export type ChronologyItemFiltersInput = {
 };
 
 export type ChronologyItemInput = {
-  day?: InputMaybe<Scalars["Int"]>;
-  displayed_date?: InputMaybe<Scalars["String"]>;
+  day?: InputMaybe<Scalars["Int"]["input"]>;
+  displayed_date?: InputMaybe<Scalars["String"]["input"]>;
   events?: InputMaybe<Array<InputMaybe<ComponentCollectionsComponentEventInput>>>;
-  month?: InputMaybe<Scalars["Int"]>;
-  wiki_pages?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
-  year?: InputMaybe<Scalars["Int"]>;
+  month?: InputMaybe<Scalars["Int"]["input"]>;
+  wiki_pages?: InputMaybe<Array<InputMaybe<Scalars["ID"]["input"]>>>;
+  year?: InputMaybe<Scalars["Int"]["input"]>;
 };
 
 export type ChronologyItemRelationResponseCollection = {
@@ -405,8 +405,8 @@ export type ChronologyItemRelationResponseCollection = {
 export type ComponentBasicsCredits = {
   __typename?: "ComponentBasicsCredits";
   cleaners?: Maybe<RecorderRelationResponseCollection>;
-  footnotes?: Maybe<Scalars["String"]>;
-  id: Scalars["ID"];
+  footnotes?: Maybe<Scalars["String"]["output"]>;
+  id: Scalars["ID"]["output"];
   proofreaders?: Maybe<RecorderRelationResponseCollection>;
   scanners?: Maybe<RecorderRelationResponseCollection>;
   source_language?: Maybe<LanguageEntityResponse>;
@@ -419,51 +419,51 @@ export type ComponentBasicsCredits = {
 export type ComponentBasicsCreditsCleanersArgs = {
   filters?: InputMaybe<RecorderFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ComponentBasicsCreditsProofreadersArgs = {
   filters?: InputMaybe<RecorderFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ComponentBasicsCreditsScannersArgs = {
   filters?: InputMaybe<RecorderFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ComponentBasicsCreditsSubbersArgs = {
   filters?: InputMaybe<RecorderFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ComponentBasicsCreditsTranscribersArgs = {
   filters?: InputMaybe<RecorderFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ComponentBasicsCreditsTranslatorsArgs = {
   filters?: InputMaybe<RecorderFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ComponentBasicsCreditsTypesettersArgs = {
   filters?: InputMaybe<RecorderFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ComponentBasicsDatepicker = {
   __typename?: "ComponentBasicsDatepicker";
-  day?: Maybe<Scalars["Int"]>;
-  id: Scalars["ID"];
-  month?: Maybe<Scalars["Int"]>;
-  year?: Maybe<Scalars["Int"]>;
+  day?: Maybe<Scalars["Int"]["output"]>;
+  id: Scalars["ID"]["output"];
+  month?: Maybe<Scalars["Int"]["output"]>;
+  year?: Maybe<Scalars["Int"]["output"]>;
 };
 
 export type ComponentBasicsDatepickerFiltersInput = {
@@ -476,16 +476,16 @@ export type ComponentBasicsDatepickerFiltersInput = {
 };
 
 export type ComponentBasicsDatepickerInput = {
-  day?: InputMaybe<Scalars["Int"]>;
-  id?: InputMaybe<Scalars["ID"]>;
-  month?: InputMaybe<Scalars["Int"]>;
-  year?: InputMaybe<Scalars["Int"]>;
+  day?: InputMaybe<Scalars["Int"]["input"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
+  month?: InputMaybe<Scalars["Int"]["input"]>;
+  year?: InputMaybe<Scalars["Int"]["input"]>;
 };
 
 export type ComponentBasicsFileSize = {
   __typename?: "ComponentBasicsFileSize";
-  id: Scalars["ID"];
-  size: Scalars["Float"];
+  id: Scalars["ID"]["output"];
+  size: Scalars["Float"]["output"];
   unit: Enum_Componentbasicsfilesize_Unit;
 };
 
@@ -498,16 +498,16 @@ export type ComponentBasicsFileSizeFiltersInput = {
 };
 
 export type ComponentBasicsFileSizeInput = {
-  id?: InputMaybe<Scalars["ID"]>;
-  size?: InputMaybe<Scalars["Float"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
+  size?: InputMaybe<Scalars["Float"]["input"]>;
   unit?: InputMaybe<Enum_Componentbasicsfilesize_Unit>;
 };
 
 export type ComponentBasicsPrice = {
   __typename?: "ComponentBasicsPrice";
-  amount?: Maybe<Scalars["Float"]>;
+  amount?: Maybe<Scalars["Float"]["output"]>;
   currency?: Maybe<CurrencyEntityResponse>;
-  id: Scalars["ID"];
+  id: Scalars["ID"]["output"];
 };
 
 export type ComponentBasicsPriceFiltersInput = {
@@ -519,17 +519,17 @@ export type ComponentBasicsPriceFiltersInput = {
 };
 
 export type ComponentBasicsPriceInput = {
-  amount?: InputMaybe<Scalars["Float"]>;
-  currency?: InputMaybe<Scalars["ID"]>;
-  id?: InputMaybe<Scalars["ID"]>;
+  amount?: InputMaybe<Scalars["Float"]["input"]>;
+  currency?: InputMaybe<Scalars["ID"]["input"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type ComponentBasicsSize = {
   __typename?: "ComponentBasicsSize";
-  height?: Maybe<Scalars["Int"]>;
-  id: Scalars["ID"];
-  thickness?: Maybe<Scalars["Int"]>;
-  width?: Maybe<Scalars["Int"]>;
+  height?: Maybe<Scalars["Int"]["output"]>;
+  id: Scalars["ID"]["output"];
+  thickness?: Maybe<Scalars["Int"]["output"]>;
+  width?: Maybe<Scalars["Int"]["output"]>;
 };
 
 export type ComponentBasicsSizeFiltersInput = {
@@ -542,16 +542,16 @@ export type ComponentBasicsSizeFiltersInput = {
 };
 
 export type ComponentBasicsSizeInput = {
-  height?: InputMaybe<Scalars["Int"]>;
-  id?: InputMaybe<Scalars["ID"]>;
-  thickness?: InputMaybe<Scalars["Int"]>;
-  width?: InputMaybe<Scalars["Int"]>;
+  height?: InputMaybe<Scalars["Int"]["input"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
+  thickness?: InputMaybe<Scalars["Int"]["input"]>;
+  width?: InputMaybe<Scalars["Int"]["input"]>;
 };
 
 export type ComponentBasicsUrl = {
   __typename?: "ComponentBasicsUrl";
-  id: Scalars["ID"];
-  url?: Maybe<Scalars["String"]>;
+  id: Scalars["ID"]["output"];
+  url?: Maybe<Scalars["String"]["output"]>;
 };
 
 export type ComponentBasicsUrlFiltersInput = {
@@ -562,14 +562,14 @@ export type ComponentBasicsUrlFiltersInput = {
 };
 
 export type ComponentBasicsUrlInput = {
-  id?: InputMaybe<Scalars["ID"]>;
-  url?: InputMaybe<Scalars["String"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
+  url?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 export type ComponentCollectionsComponentAliases = {
   __typename?: "ComponentCollectionsComponentAliases";
-  alias: Scalars["String"];
-  id: Scalars["ID"];
+  alias: Scalars["String"]["output"];
+  id: Scalars["ID"]["output"];
 };
 
 export type ComponentCollectionsComponentAliasesFiltersInput = {
@@ -580,15 +580,15 @@ export type ComponentCollectionsComponentAliasesFiltersInput = {
 };
 
 export type ComponentCollectionsComponentAliasesInput = {
-  alias?: InputMaybe<Scalars["String"]>;
-  id?: InputMaybe<Scalars["ID"]>;
+  alias?: InputMaybe<Scalars["String"]["input"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type ComponentCollectionsComponentBody = {
   __typename?: "ComponentCollectionsComponentBody";
   authors?: Maybe<RecorderRelationResponseCollection>;
-  body: Scalars["String"];
-  id: Scalars["ID"];
+  body: Scalars["String"]["output"];
+  id: Scalars["ID"]["output"];
   proofreaders?: Maybe<RecorderRelationResponseCollection>;
   source_language?: Maybe<LanguageEntityResponse>;
   status: Enum_Componentcollectionscomponentbody_Status;
@@ -598,19 +598,19 @@ export type ComponentCollectionsComponentBody = {
 export type ComponentCollectionsComponentBodyAuthorsArgs = {
   filters?: InputMaybe<RecorderFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ComponentCollectionsComponentBodyProofreadersArgs = {
   filters?: InputMaybe<RecorderFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ComponentCollectionsComponentBodyTranslatorsArgs = {
   filters?: InputMaybe<RecorderFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ComponentCollectionsComponentBodyFiltersInput = {
@@ -626,19 +626,19 @@ export type ComponentCollectionsComponentBodyFiltersInput = {
 };
 
 export type ComponentCollectionsComponentBodyInput = {
-  authors?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
-  body?: InputMaybe<Scalars["String"]>;
-  id?: InputMaybe<Scalars["ID"]>;
-  proofreaders?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
-  source_language?: InputMaybe<Scalars["ID"]>;
+  authors?: InputMaybe<Array<InputMaybe<Scalars["ID"]["input"]>>>;
+  body?: InputMaybe<Scalars["String"]["input"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
+  proofreaders?: InputMaybe<Array<InputMaybe<Scalars["ID"]["input"]>>>;
+  source_language?: InputMaybe<Scalars["ID"]["input"]>;
   status?: InputMaybe<Enum_Componentcollectionscomponentbody_Status>;
-  translators?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
+  translators?: InputMaybe<Array<InputMaybe<Scalars["ID"]["input"]>>>;
 };
 
 export type ComponentCollectionsComponentDefinition = {
   __typename?: "ComponentCollectionsComponentDefinition";
-  definition: Scalars["String"];
-  id: Scalars["ID"];
+  definition: Scalars["String"]["output"];
+  id: Scalars["ID"]["output"];
   source?: Maybe<SourceEntityResponse>;
   source_language?: Maybe<LanguageEntityResponse>;
   status: Enum_Componentcollectionscomponentdefinition_Status;
@@ -646,7 +646,7 @@ export type ComponentCollectionsComponentDefinition = {
 
 export type ComponentCollectionsComponentEvent = {
   __typename?: "ComponentCollectionsComponentEvent";
-  id: Scalars["ID"];
+  id: Scalars["ID"]["output"];
   source?: Maybe<SourceEntityResponse>;
   translations?: Maybe<Array<Maybe<ComponentTranslationsChronologyItem>>>;
 };
@@ -654,7 +654,7 @@ export type ComponentCollectionsComponentEvent = {
 export type ComponentCollectionsComponentEventTranslationsArgs = {
   filters?: InputMaybe<ComponentTranslationsChronologyItemFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ComponentCollectionsComponentEventFiltersInput = {
@@ -666,15 +666,15 @@ export type ComponentCollectionsComponentEventFiltersInput = {
 };
 
 export type ComponentCollectionsComponentEventInput = {
-  id?: InputMaybe<Scalars["ID"]>;
-  source?: InputMaybe<Scalars["ID"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
+  source?: InputMaybe<Scalars["ID"]["input"]>;
   translations?: InputMaybe<Array<InputMaybe<ComponentTranslationsChronologyItemInput>>>;
 };
 
 export type ComponentCollectionsComponentGlossaryDefinition = {
   __typename?: "ComponentCollectionsComponentGlossaryDefinition";
   categories?: Maybe<CategoryRelationResponseCollection>;
-  id: Scalars["ID"];
+  id: Scalars["ID"]["output"];
   source?: Maybe<SourceEntityResponse>;
   translations?: Maybe<Array<Maybe<ComponentTranslationsGlossaryDefinition>>>;
 };
@@ -682,13 +682,13 @@ export type ComponentCollectionsComponentGlossaryDefinition = {
 export type ComponentCollectionsComponentGlossaryDefinitionCategoriesArgs = {
   filters?: InputMaybe<CategoryFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ComponentCollectionsComponentGlossaryDefinitionTranslationsArgs = {
   filters?: InputMaybe<ComponentTranslationsGlossaryDefinitionFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ComponentCollectionsComponentGlossaryDefinitionFiltersInput = {
@@ -701,9 +701,9 @@ export type ComponentCollectionsComponentGlossaryDefinitionFiltersInput = {
 };
 
 export type ComponentCollectionsComponentGlossaryDefinitionInput = {
-  categories?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
-  id?: InputMaybe<Scalars["ID"]>;
-  source?: InputMaybe<Scalars["ID"]>;
+  categories?: InputMaybe<Array<InputMaybe<Scalars["ID"]["input"]>>>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
+  source?: InputMaybe<Scalars["ID"]["input"]>;
   translations?: InputMaybe<Array<InputMaybe<ComponentTranslationsGlossaryDefinitionInput>>>;
 };
 
@@ -712,7 +712,7 @@ export type ComponentCollectionsComponentLibraryCover = {
   back?: Maybe<UploadFileEntityResponse>;
   front?: Maybe<UploadFileEntityResponse>;
   full?: Maybe<UploadFileEntityResponse>;
-  id: Scalars["ID"];
+  id: Scalars["ID"]["output"];
   inside_back?: Maybe<UploadFileEntityResponse>;
   inside_front?: Maybe<UploadFileEntityResponse>;
   inside_full?: Maybe<UploadFileEntityResponse>;
@@ -726,14 +726,14 @@ export type ComponentCollectionsComponentLibraryCoverFiltersInput = {
 };
 
 export type ComponentCollectionsComponentLibraryCoverInput = {
-  back?: InputMaybe<Scalars["ID"]>;
-  front?: InputMaybe<Scalars["ID"]>;
-  full?: InputMaybe<Scalars["ID"]>;
-  id?: InputMaybe<Scalars["ID"]>;
-  inside_back?: InputMaybe<Scalars["ID"]>;
-  inside_front?: InputMaybe<Scalars["ID"]>;
-  inside_full?: InputMaybe<Scalars["ID"]>;
-  spine?: InputMaybe<Scalars["ID"]>;
+  back?: InputMaybe<Scalars["ID"]["input"]>;
+  front?: InputMaybe<Scalars["ID"]["input"]>;
+  full?: InputMaybe<Scalars["ID"]["input"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
+  inside_back?: InputMaybe<Scalars["ID"]["input"]>;
+  inside_front?: InputMaybe<Scalars["ID"]["input"]>;
+  inside_full?: InputMaybe<Scalars["ID"]["input"]>;
+  spine?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type ComponentCollectionsComponentLibraryDustJacket = {
@@ -743,7 +743,7 @@ export type ComponentCollectionsComponentLibraryDustJacket = {
   flap_front?: Maybe<UploadFileEntityResponse>;
   front?: Maybe<UploadFileEntityResponse>;
   full?: Maybe<UploadFileEntityResponse>;
-  id: Scalars["ID"];
+  id: Scalars["ID"]["output"];
   inside_full?: Maybe<UploadFileEntityResponse>;
   spine?: Maybe<UploadFileEntityResponse>;
 };
@@ -755,14 +755,14 @@ export type ComponentCollectionsComponentLibraryDustJacketFiltersInput = {
 };
 
 export type ComponentCollectionsComponentLibraryDustJacketInput = {
-  back?: InputMaybe<Scalars["ID"]>;
-  flap_back?: InputMaybe<Scalars["ID"]>;
-  flap_front?: InputMaybe<Scalars["ID"]>;
-  front?: InputMaybe<Scalars["ID"]>;
-  full?: InputMaybe<Scalars["ID"]>;
-  id?: InputMaybe<Scalars["ID"]>;
-  inside_full?: InputMaybe<Scalars["ID"]>;
-  spine?: InputMaybe<Scalars["ID"]>;
+  back?: InputMaybe<Scalars["ID"]["input"]>;
+  flap_back?: InputMaybe<Scalars["ID"]["input"]>;
+  flap_front?: InputMaybe<Scalars["ID"]["input"]>;
+  front?: InputMaybe<Scalars["ID"]["input"]>;
+  full?: InputMaybe<Scalars["ID"]["input"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
+  inside_full?: InputMaybe<Scalars["ID"]["input"]>;
+  spine?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type ComponentCollectionsComponentLibraryImages = {
@@ -770,7 +770,7 @@ export type ComponentCollectionsComponentLibraryImages = {
   cleaners?: Maybe<RecorderRelationResponseCollection>;
   cover?: Maybe<ComponentCollectionsComponentLibraryCover>;
   dust_jacket?: Maybe<ComponentCollectionsComponentLibraryDustJacket>;
-  id: Scalars["ID"];
+  id: Scalars["ID"]["output"];
   language?: Maybe<LanguageEntityResponse>;
   obi_belt?: Maybe<ComponentCollectionsComponentLibraryObiBelt>;
   scanners?: Maybe<RecorderRelationResponseCollection>;
@@ -782,19 +782,19 @@ export type ComponentCollectionsComponentLibraryImages = {
 export type ComponentCollectionsComponentLibraryImagesCleanersArgs = {
   filters?: InputMaybe<RecorderFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ComponentCollectionsComponentLibraryImagesScannersArgs = {
   filters?: InputMaybe<RecorderFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ComponentCollectionsComponentLibraryImagesTypesettersArgs = {
   filters?: InputMaybe<RecorderFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ComponentCollectionsComponentLibraryImagesFiltersInput = {
@@ -813,16 +813,16 @@ export type ComponentCollectionsComponentLibraryImagesFiltersInput = {
 };
 
 export type ComponentCollectionsComponentLibraryImagesInput = {
-  cleaners?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
+  cleaners?: InputMaybe<Array<InputMaybe<Scalars["ID"]["input"]>>>;
   cover?: InputMaybe<ComponentCollectionsComponentLibraryCoverInput>;
   dust_jacket?: InputMaybe<ComponentCollectionsComponentLibraryDustJacketInput>;
-  id?: InputMaybe<Scalars["ID"]>;
-  language?: InputMaybe<Scalars["ID"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
+  language?: InputMaybe<Scalars["ID"]["input"]>;
   obi_belt?: InputMaybe<ComponentCollectionsComponentLibraryObiBeltInput>;
-  scanners?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
-  source_language?: InputMaybe<Scalars["ID"]>;
+  scanners?: InputMaybe<Array<InputMaybe<Scalars["ID"]["input"]>>>;
+  source_language?: InputMaybe<Scalars["ID"]["input"]>;
   status?: InputMaybe<Enum_Componentcollectionscomponentlibraryimages_Status>;
-  typesetters?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
+  typesetters?: InputMaybe<Array<InputMaybe<Scalars["ID"]["input"]>>>;
 };
 
 export type ComponentCollectionsComponentLibraryObiBelt = {
@@ -832,7 +832,7 @@ export type ComponentCollectionsComponentLibraryObiBelt = {
   flap_front?: Maybe<UploadFileEntityResponse>;
   front?: Maybe<UploadFileEntityResponse>;
   full?: Maybe<UploadFileEntityResponse>;
-  id: Scalars["ID"];
+  id: Scalars["ID"]["output"];
   inside_full?: Maybe<UploadFileEntityResponse>;
   spine?: Maybe<UploadFileEntityResponse>;
 };
@@ -844,20 +844,20 @@ export type ComponentCollectionsComponentLibraryObiBeltFiltersInput = {
 };
 
 export type ComponentCollectionsComponentLibraryObiBeltInput = {
-  back?: InputMaybe<Scalars["ID"]>;
-  flap_back?: InputMaybe<Scalars["ID"]>;
-  flap_front?: InputMaybe<Scalars["ID"]>;
-  front?: InputMaybe<Scalars["ID"]>;
-  full?: InputMaybe<Scalars["ID"]>;
-  id?: InputMaybe<Scalars["ID"]>;
-  inside_full?: InputMaybe<Scalars["ID"]>;
-  spine?: InputMaybe<Scalars["ID"]>;
+  back?: InputMaybe<Scalars["ID"]["input"]>;
+  flap_back?: InputMaybe<Scalars["ID"]["input"]>;
+  flap_front?: InputMaybe<Scalars["ID"]["input"]>;
+  front?: InputMaybe<Scalars["ID"]["input"]>;
+  full?: InputMaybe<Scalars["ID"]["input"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
+  inside_full?: InputMaybe<Scalars["ID"]["input"]>;
+  spine?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type ComponentCollectionsComponentTitles = {
   __typename?: "ComponentCollectionsComponentTitles";
-  id: Scalars["ID"];
-  title: Scalars["String"];
+  id: Scalars["ID"]["output"];
+  title: Scalars["String"]["output"];
 };
 
 export type ComponentCollectionsComponentTitlesFiltersInput = {
@@ -870,7 +870,7 @@ export type ComponentCollectionsComponentTitlesFiltersInput = {
 export type ComponentCollectionsComponentWeaponStory = {
   __typename?: "ComponentCollectionsComponentWeaponStory";
   categories?: Maybe<CategoryRelationResponseCollection>;
-  id: Scalars["ID"];
+  id: Scalars["ID"]["output"];
   source?: Maybe<SourceEntityResponse>;
   translations?: Maybe<Array<Maybe<ComponentTranslationsWeaponStoryStory>>>;
 };
@@ -878,13 +878,13 @@ export type ComponentCollectionsComponentWeaponStory = {
 export type ComponentCollectionsComponentWeaponStoryCategoriesArgs = {
   filters?: InputMaybe<CategoryFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ComponentCollectionsComponentWeaponStoryTranslationsArgs = {
   filters?: InputMaybe<ComponentTranslationsWeaponStoryStoryFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ComponentCollectionsComponentWeaponStoryFiltersInput = {
@@ -897,29 +897,29 @@ export type ComponentCollectionsComponentWeaponStoryFiltersInput = {
 };
 
 export type ComponentCollectionsComponentWeaponStoryInput = {
-  categories?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
-  id?: InputMaybe<Scalars["ID"]>;
-  source?: InputMaybe<Scalars["ID"]>;
+  categories?: InputMaybe<Array<InputMaybe<Scalars["ID"]["input"]>>>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
+  source?: InputMaybe<Scalars["ID"]["input"]>;
   translations?: InputMaybe<Array<InputMaybe<ComponentTranslationsWeaponStoryStoryInput>>>;
 };
 
 export type ComponentCollectionsComponentWikiDefinition = {
   __typename?: "ComponentCollectionsComponentWikiDefinition";
   categories?: Maybe<CategoryRelationResponseCollection>;
-  definition?: Maybe<Scalars["String"]>;
-  id: Scalars["ID"];
+  definition?: Maybe<Scalars["String"]["output"]>;
+  id: Scalars["ID"]["output"];
   source?: Maybe<SourceEntityResponse>;
 };
 
 export type ComponentCollectionsComponentWikiDefinitionCategoriesArgs = {
   filters?: InputMaybe<CategoryFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ComponentMetadataAudio = {
   __typename?: "ComponentMetadataAudio";
-  id: Scalars["ID"];
+  id: Scalars["ID"]["output"];
   subtype?: Maybe<AudioSubtypeEntityResponse>;
   tracks?: Maybe<Array<Maybe<ComponentSetsTrackSet>>>;
 };
@@ -927,15 +927,15 @@ export type ComponentMetadataAudio = {
 export type ComponentMetadataAudioTracksArgs = {
   filters?: InputMaybe<ComponentSetsTrackSetFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ComponentMetadataBooks = {
   __typename?: "ComponentMetadataBooks";
   binding_type?: Maybe<Enum_Componentmetadatabooks_Binding_Type>;
-  id: Scalars["ID"];
+  id: Scalars["ID"]["output"];
   languages?: Maybe<LanguageRelationResponseCollection>;
-  page_count?: Maybe<Scalars["Int"]>;
+  page_count?: Maybe<Scalars["Int"]["output"]>;
   page_order: Enum_Componentmetadatabooks_Page_Order;
   subtype?: Maybe<TextualSubtypeEntityResponse>;
 };
@@ -943,14 +943,14 @@ export type ComponentMetadataBooks = {
 export type ComponentMetadataBooksLanguagesArgs = {
   filters?: InputMaybe<LanguageFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ComponentMetadataGame = {
   __typename?: "ComponentMetadataGame";
   audio_languages?: Maybe<LanguageRelationResponseCollection>;
-  demo: Scalars["Boolean"];
-  id: Scalars["ID"];
+  demo: Scalars["Boolean"]["output"];
+  id: Scalars["ID"]["output"];
   interface_languages?: Maybe<LanguageRelationResponseCollection>;
   platform?: Maybe<GamePlatformEntityResponse>;
   platforms?: Maybe<GamePlatformRelationResponseCollection>;
@@ -960,105 +960,105 @@ export type ComponentMetadataGame = {
 export type ComponentMetadataGameAudio_LanguagesArgs = {
   filters?: InputMaybe<LanguageFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ComponentMetadataGameInterface_LanguagesArgs = {
   filters?: InputMaybe<LanguageFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ComponentMetadataGamePlatformsArgs = {
   filters?: InputMaybe<GamePlatformFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ComponentMetadataGameSub_LanguagesArgs = {
   filters?: InputMaybe<LanguageFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ComponentMetadataGroup = {
   __typename?: "ComponentMetadataGroup";
-  id: Scalars["ID"];
+  id: Scalars["ID"]["output"];
   subitems_type?: Maybe<MetadataTypeEntityResponse>;
   subtype?: Maybe<GroupSubtypeEntityResponse>;
 };
 
 export type ComponentMetadataMerch = {
   __typename?: "ComponentMetadataMerch";
-  id: Scalars["ID"];
+  id: Scalars["ID"]["output"];
   merch_item?: Maybe<MerchItemEntityResponse>;
 };
 
 export type ComponentMetadataOther = {
   __typename?: "ComponentMetadataOther";
-  id: Scalars["ID"];
+  id: Scalars["ID"]["output"];
 };
 
 export type ComponentMetadataVideo = {
   __typename?: "ComponentMetadataVideo";
-  id: Scalars["ID"];
+  id: Scalars["ID"]["output"];
   subtype?: Maybe<VideoSubtypeEntityResponse>;
 };
 
 export type ComponentPageBuilderGallery = {
   __typename?: "ComponentPageBuilderGallery";
   gallery?: Maybe<UploadFileRelationResponseCollection>;
-  id: Scalars["ID"];
+  id: Scalars["ID"]["output"];
 };
 
 export type ComponentPageBuilderGalleryGalleryArgs = {
   filters?: InputMaybe<UploadFileFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ComponentPageBuilderGrid = {
   __typename?: "ComponentPageBuilderGrid";
-  column_count: Scalars["Int"];
-  id: Scalars["ID"];
+  column_count: Scalars["Int"]["output"];
+  id: Scalars["ID"]["output"];
 };
 
 export type ComponentPageBuilderTabs = {
   __typename?: "ComponentPageBuilderTabs";
-  id: Scalars["ID"];
+  id: Scalars["ID"]["output"];
 };
 
 export type ComponentRangeGameAspect = {
   __typename?: "ComponentRangeGameAspect";
-  id: Scalars["ID"];
-  note?: Maybe<Scalars["String"]>;
+  id: Scalars["ID"]["output"];
+  note?: Maybe<Scalars["String"]["output"]>;
 };
 
 export type ComponentRangeOther = {
   __typename?: "ComponentRangeOther";
-  id: Scalars["ID"];
-  note?: Maybe<Scalars["String"]>;
+  id: Scalars["ID"]["output"];
+  note?: Maybe<Scalars["String"]["output"]>;
 };
 
 export type ComponentRangePageRange = {
   __typename?: "ComponentRangePageRange";
-  ending_page: Scalars["Int"];
-  id: Scalars["ID"];
-  starting_page: Scalars["Int"];
+  ending_page: Scalars["Int"]["output"];
+  id: Scalars["ID"]["output"];
+  starting_page: Scalars["Int"]["output"];
 };
 
 export type ComponentRangeTimeRange = {
   __typename?: "ComponentRangeTimeRange";
-  ending_time?: Maybe<Scalars["Time"]>;
-  id: Scalars["ID"];
-  starting_time?: Maybe<Scalars["Time"]>;
+  ending_time?: Maybe<Scalars["Time"]["output"]>;
+  id: Scalars["ID"]["output"];
+  starting_time?: Maybe<Scalars["Time"]["output"]>;
 };
 
 export type ComponentSetsAudioSet = {
   __typename?: "ComponentSetsAudioSet";
   dubbers?: Maybe<RecorderRelationResponseCollection>;
-  id: Scalars["ID"];
-  notes?: Maybe<Scalars["String"]>;
+  id: Scalars["ID"]["output"];
+  notes?: Maybe<Scalars["String"]["output"]>;
   source_language?: Maybe<LanguageEntityResponse>;
   status?: Maybe<Enum_Componentsetsaudioset_Status>;
 };
@@ -1066,7 +1066,7 @@ export type ComponentSetsAudioSet = {
 export type ComponentSetsAudioSetDubbersArgs = {
   filters?: InputMaybe<RecorderFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ComponentSetsAudioSetFiltersInput = {
@@ -1080,19 +1080,19 @@ export type ComponentSetsAudioSetFiltersInput = {
 };
 
 export type ComponentSetsAudioSetInput = {
-  dubbers?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
-  id?: InputMaybe<Scalars["ID"]>;
-  notes?: InputMaybe<Scalars["String"]>;
-  source_language?: InputMaybe<Scalars["ID"]>;
+  dubbers?: InputMaybe<Array<InputMaybe<Scalars["ID"]["input"]>>>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
+  notes?: InputMaybe<Scalars["String"]["input"]>;
+  source_language?: InputMaybe<Scalars["ID"]["input"]>;
   status?: InputMaybe<Enum_Componentsetsaudioset_Status>;
 };
 
 export type ComponentSetsScanSet = {
   __typename?: "ComponentSetsScanSet";
   cleaners?: Maybe<RecorderRelationResponseCollection>;
-  id: Scalars["ID"];
+  id: Scalars["ID"]["output"];
   language?: Maybe<LanguageEntityResponse>;
-  notes?: Maybe<Scalars["String"]>;
+  notes?: Maybe<Scalars["String"]["output"]>;
   pages?: Maybe<UploadFileRelationResponseCollection>;
   scanners?: Maybe<RecorderRelationResponseCollection>;
   source_language?: Maybe<LanguageEntityResponse>;
@@ -1103,25 +1103,25 @@ export type ComponentSetsScanSet = {
 export type ComponentSetsScanSetCleanersArgs = {
   filters?: InputMaybe<RecorderFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ComponentSetsScanSetPagesArgs = {
   filters?: InputMaybe<UploadFileFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ComponentSetsScanSetScannersArgs = {
   filters?: InputMaybe<RecorderFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ComponentSetsScanSetTypesettersArgs = {
   filters?: InputMaybe<RecorderFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ComponentSetsScanSetFiltersInput = {
@@ -1138,25 +1138,25 @@ export type ComponentSetsScanSetFiltersInput = {
 };
 
 export type ComponentSetsScanSetInput = {
-  cleaners?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
-  id?: InputMaybe<Scalars["ID"]>;
-  language?: InputMaybe<Scalars["ID"]>;
-  notes?: InputMaybe<Scalars["String"]>;
-  pages?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
-  scanners?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
-  source_language?: InputMaybe<Scalars["ID"]>;
+  cleaners?: InputMaybe<Array<InputMaybe<Scalars["ID"]["input"]>>>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
+  language?: InputMaybe<Scalars["ID"]["input"]>;
+  notes?: InputMaybe<Scalars["String"]["input"]>;
+  pages?: InputMaybe<Array<InputMaybe<Scalars["ID"]["input"]>>>;
+  scanners?: InputMaybe<Array<InputMaybe<Scalars["ID"]["input"]>>>;
+  source_language?: InputMaybe<Scalars["ID"]["input"]>;
   status?: InputMaybe<Enum_Componentsetsscanset_Status>;
-  typesetters?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
+  typesetters?: InputMaybe<Array<InputMaybe<Scalars["ID"]["input"]>>>;
 };
 
 export type ComponentSetsTextSet = {
   __typename?: "ComponentSetsTextSet";
-  id: Scalars["ID"];
-  notes?: Maybe<Scalars["String"]>;
+  id: Scalars["ID"]["output"];
+  notes?: Maybe<Scalars["String"]["output"]>;
   proofreaders?: Maybe<RecorderRelationResponseCollection>;
   source_language?: Maybe<LanguageEntityResponse>;
   status: Enum_Componentsetstextset_Status;
-  text?: Maybe<Scalars["String"]>;
+  text?: Maybe<Scalars["String"]["output"]>;
   transcribers?: Maybe<RecorderRelationResponseCollection>;
   translators?: Maybe<RecorderRelationResponseCollection>;
 };
@@ -1164,19 +1164,19 @@ export type ComponentSetsTextSet = {
 export type ComponentSetsTextSetProofreadersArgs = {
   filters?: InputMaybe<RecorderFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ComponentSetsTextSetTranscribersArgs = {
   filters?: InputMaybe<RecorderFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ComponentSetsTextSetTranslatorsArgs = {
   filters?: InputMaybe<RecorderFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ComponentSetsTextSetFiltersInput = {
@@ -1193,21 +1193,21 @@ export type ComponentSetsTextSetFiltersInput = {
 };
 
 export type ComponentSetsTextSetInput = {
-  id?: InputMaybe<Scalars["ID"]>;
-  notes?: InputMaybe<Scalars["String"]>;
-  proofreaders?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
-  source_language?: InputMaybe<Scalars["ID"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
+  notes?: InputMaybe<Scalars["String"]["input"]>;
+  proofreaders?: InputMaybe<Array<InputMaybe<Scalars["ID"]["input"]>>>;
+  source_language?: InputMaybe<Scalars["ID"]["input"]>;
   status?: InputMaybe<Enum_Componentsetstextset_Status>;
-  text?: InputMaybe<Scalars["String"]>;
-  transcribers?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
-  translators?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
+  text?: InputMaybe<Scalars["String"]["input"]>;
+  transcribers?: InputMaybe<Array<InputMaybe<Scalars["ID"]["input"]>>>;
+  translators?: InputMaybe<Array<InputMaybe<Scalars["ID"]["input"]>>>;
 };
 
 export type ComponentSetsTrackSet = {
   __typename?: "ComponentSetsTrackSet";
-  id: Scalars["ID"];
-  slug: Scalars["String"];
-  title: Scalars["String"];
+  id: Scalars["ID"]["output"];
+  slug: Scalars["String"]["output"];
+  title: Scalars["String"]["output"];
 };
 
 export type ComponentSetsTrackSetFiltersInput = {
@@ -1220,9 +1220,9 @@ export type ComponentSetsTrackSetFiltersInput = {
 
 export type ComponentSetsVideoSet = {
   __typename?: "ComponentSetsVideoSet";
-  has_subfile: Scalars["Boolean"];
-  id: Scalars["ID"];
-  notes?: Maybe<Scalars["String"]>;
+  has_subfile: Scalars["Boolean"]["output"];
+  id: Scalars["ID"]["output"];
+  notes?: Maybe<Scalars["String"]["output"]>;
   source_language?: Maybe<LanguageEntityResponse>;
   status: Enum_Componentsetsvideoset_Status;
   subbers?: Maybe<RecorderRelationResponseCollection>;
@@ -1231,7 +1231,7 @@ export type ComponentSetsVideoSet = {
 export type ComponentSetsVideoSetSubbersArgs = {
   filters?: InputMaybe<RecorderFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ComponentSetsVideoSetFiltersInput = {
@@ -1246,23 +1246,23 @@ export type ComponentSetsVideoSetFiltersInput = {
 };
 
 export type ComponentSetsVideoSetInput = {
-  has_subfile?: InputMaybe<Scalars["Boolean"]>;
-  id?: InputMaybe<Scalars["ID"]>;
-  notes?: InputMaybe<Scalars["String"]>;
-  source_language?: InputMaybe<Scalars["ID"]>;
+  has_subfile?: InputMaybe<Scalars["Boolean"]["input"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
+  notes?: InputMaybe<Scalars["String"]["input"]>;
+  source_language?: InputMaybe<Scalars["ID"]["input"]>;
   status?: InputMaybe<Enum_Componentsetsvideoset_Status>;
-  subbers?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
+  subbers?: InputMaybe<Array<InputMaybe<Scalars["ID"]["input"]>>>;
 };
 
 export type ComponentSetsWikiSet = {
   __typename?: "ComponentSetsWikiSet";
-  body?: Maybe<Scalars["String"]>;
-  id: Scalars["ID"];
+  body?: Maybe<Scalars["String"]["output"]>;
+  id: Scalars["ID"]["output"];
   language?: Maybe<LanguageEntityResponse>;
   proofreaders?: Maybe<RecorderRelationResponseCollection>;
   source_language?: Maybe<LanguageEntityResponse>;
   status: Enum_Componentsetswikiset_Status;
-  summary?: Maybe<Scalars["String"]>;
+  summary?: Maybe<Scalars["String"]["output"]>;
   titles?: Maybe<Array<Maybe<ComponentCollectionsComponentTitles>>>;
   translators?: Maybe<RecorderRelationResponseCollection>;
 };
@@ -1270,43 +1270,43 @@ export type ComponentSetsWikiSet = {
 export type ComponentSetsWikiSetProofreadersArgs = {
   filters?: InputMaybe<RecorderFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ComponentSetsWikiSetTitlesArgs = {
   filters?: InputMaybe<ComponentCollectionsComponentTitlesFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ComponentSetsWikiSetTranslatorsArgs = {
   filters?: InputMaybe<RecorderFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ComponentSourceUrlSource = {
   __typename?: "ComponentSourceUrlSource";
   credits: ComponentBasicsCredits;
-  id: Scalars["ID"];
-  note?: Maybe<Scalars["String"]>;
-  title?: Maybe<Scalars["String"]>;
-  url?: Maybe<Scalars["String"]>;
+  id: Scalars["ID"]["output"];
+  note?: Maybe<Scalars["String"]["output"]>;
+  title?: Maybe<Scalars["String"]["output"]>;
+  url?: Maybe<Scalars["String"]["output"]>;
 };
 
 export type ComponentTranslationsAudioSets = {
   __typename?: "ComponentTranslationsAudioSets";
   audiofile: UploadFileEntityResponse;
   credits: ComponentBasicsCredits;
-  id: Scalars["ID"];
+  id: Scalars["ID"]["output"];
   language?: Maybe<LanguageEntityResponse>;
   status: Enum_Componenttranslationsaudiosets_Status;
 };
 
 export type ComponentTranslationsBio = {
   __typename?: "ComponentTranslationsBio";
-  bio?: Maybe<Scalars["String"]>;
-  id: Scalars["ID"];
+  bio?: Maybe<Scalars["String"]["output"]>;
+  id: Scalars["ID"]["output"];
   language?: Maybe<LanguageEntityResponse>;
 };
 
@@ -1319,17 +1319,17 @@ export type ComponentTranslationsBioFiltersInput = {
 };
 
 export type ComponentTranslationsBioInput = {
-  bio?: InputMaybe<Scalars["String"]>;
-  id?: InputMaybe<Scalars["ID"]>;
-  language?: InputMaybe<Scalars["ID"]>;
+  bio?: InputMaybe<Scalars["String"]["input"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
+  language?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type ComponentTranslationsCategoriesTitle = {
   __typename?: "ComponentTranslationsCategoriesTitle";
-  id: Scalars["ID"];
+  id: Scalars["ID"]["output"];
   language?: Maybe<LanguageEntityResponse>;
-  short?: Maybe<Scalars["String"]>;
-  title?: Maybe<Scalars["String"]>;
+  short?: Maybe<Scalars["String"]["output"]>;
+  title?: Maybe<Scalars["String"]["output"]>;
 };
 
 export type ComponentTranslationsCategoriesTitleFiltersInput = {
@@ -1342,19 +1342,19 @@ export type ComponentTranslationsCategoriesTitleFiltersInput = {
 };
 
 export type ComponentTranslationsCategoriesTitleInput = {
-  id?: InputMaybe<Scalars["ID"]>;
-  language?: InputMaybe<Scalars["ID"]>;
-  short?: InputMaybe<Scalars["String"]>;
-  title?: InputMaybe<Scalars["String"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
+  language?: InputMaybe<Scalars["ID"]["input"]>;
+  short?: InputMaybe<Scalars["String"]["input"]>;
+  title?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 export type ComponentTranslationsChronicles = {
   __typename?: "ComponentTranslationsChronicles";
   body?: Maybe<ComponentCollectionsComponentBody>;
-  id: Scalars["ID"];
+  id: Scalars["ID"]["output"];
   language?: Maybe<LanguageEntityResponse>;
-  summary?: Maybe<Scalars["String"]>;
-  title: Scalars["String"];
+  summary?: Maybe<Scalars["String"]["output"]>;
+  title: Scalars["String"]["output"];
 };
 
 export type ComponentTranslationsChroniclesFiltersInput = {
@@ -1369,18 +1369,18 @@ export type ComponentTranslationsChroniclesFiltersInput = {
 
 export type ComponentTranslationsChroniclesInput = {
   body?: InputMaybe<ComponentCollectionsComponentBodyInput>;
-  id?: InputMaybe<Scalars["ID"]>;
-  language?: InputMaybe<Scalars["ID"]>;
-  summary?: InputMaybe<Scalars["String"]>;
-  title?: InputMaybe<Scalars["String"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
+  language?: InputMaybe<Scalars["ID"]["input"]>;
+  summary?: InputMaybe<Scalars["String"]["input"]>;
+  title?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 export type ComponentTranslationsChronologyEra = {
   __typename?: "ComponentTranslationsChronologyEra";
-  description?: Maybe<Scalars["String"]>;
-  id: Scalars["ID"];
+  description?: Maybe<Scalars["String"]["output"]>;
+  id: Scalars["ID"]["output"];
   language?: Maybe<LanguageEntityResponse>;
-  title: Scalars["String"];
+  title: Scalars["String"]["output"];
 };
 
 export type ComponentTranslationsChronologyEraFiltersInput = {
@@ -1393,20 +1393,20 @@ export type ComponentTranslationsChronologyEraFiltersInput = {
 };
 
 export type ComponentTranslationsChronologyEraInput = {
-  description?: InputMaybe<Scalars["String"]>;
-  id?: InputMaybe<Scalars["ID"]>;
-  language?: InputMaybe<Scalars["ID"]>;
-  title?: InputMaybe<Scalars["String"]>;
+  description?: InputMaybe<Scalars["String"]["input"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
+  language?: InputMaybe<Scalars["ID"]["input"]>;
+  title?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 export type ComponentTranslationsChronologyItem = {
   __typename?: "ComponentTranslationsChronologyItem";
-  description?: Maybe<Scalars["String"]>;
-  id: Scalars["ID"];
+  description?: Maybe<Scalars["String"]["output"]>;
+  id: Scalars["ID"]["output"];
   language?: Maybe<LanguageEntityResponse>;
-  note?: Maybe<Scalars["String"]>;
+  note?: Maybe<Scalars["String"]["output"]>;
   status: Enum_Componenttranslationschronologyitem_Status;
-  title?: Maybe<Scalars["String"]>;
+  title?: Maybe<Scalars["String"]["output"]>;
 };
 
 export type ComponentTranslationsChronologyItemFiltersInput = {
@@ -1421,20 +1421,20 @@ export type ComponentTranslationsChronologyItemFiltersInput = {
 };
 
 export type ComponentTranslationsChronologyItemInput = {
-  description?: InputMaybe<Scalars["String"]>;
-  id?: InputMaybe<Scalars["ID"]>;
-  language?: InputMaybe<Scalars["ID"]>;
-  note?: InputMaybe<Scalars["String"]>;
+  description?: InputMaybe<Scalars["String"]["input"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
+  language?: InputMaybe<Scalars["ID"]["input"]>;
+  note?: InputMaybe<Scalars["String"]["input"]>;
   status?: InputMaybe<Enum_Componenttranslationschronologyitem_Status>;
-  title?: InputMaybe<Scalars["String"]>;
+  title?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 export type ComponentTranslationsGamePlatformsTranslations = {
   __typename?: "ComponentTranslationsGamePlatformsTranslations";
-  id: Scalars["ID"];
+  id: Scalars["ID"]["output"];
   language?: Maybe<LanguageEntityResponse>;
-  short?: Maybe<Scalars["String"]>;
-  title?: Maybe<Scalars["String"]>;
+  short?: Maybe<Scalars["String"]["output"]>;
+  title?: Maybe<Scalars["String"]["output"]>;
 };
 
 export type ComponentTranslationsGamePlatformsTranslationsFiltersInput = {
@@ -1447,16 +1447,16 @@ export type ComponentTranslationsGamePlatformsTranslationsFiltersInput = {
 };
 
 export type ComponentTranslationsGamePlatformsTranslationsInput = {
-  id?: InputMaybe<Scalars["ID"]>;
-  language?: InputMaybe<Scalars["ID"]>;
-  short?: InputMaybe<Scalars["String"]>;
-  title?: InputMaybe<Scalars["String"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
+  language?: InputMaybe<Scalars["ID"]["input"]>;
+  short?: InputMaybe<Scalars["String"]["input"]>;
+  title?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 export type ComponentTranslationsGlossaryDefinition = {
   __typename?: "ComponentTranslationsGlossaryDefinition";
-  definition?: Maybe<Scalars["String"]>;
-  id: Scalars["ID"];
+  definition?: Maybe<Scalars["String"]["output"]>;
+  id: Scalars["ID"]["output"];
   language?: Maybe<LanguageEntityResponse>;
   proofreaders?: Maybe<RecorderRelationResponseCollection>;
   source_language?: Maybe<LanguageEntityResponse>;
@@ -1468,19 +1468,19 @@ export type ComponentTranslationsGlossaryDefinition = {
 export type ComponentTranslationsGlossaryDefinitionProofreadersArgs = {
   filters?: InputMaybe<RecorderFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ComponentTranslationsGlossaryDefinitionTranscribersArgs = {
   filters?: InputMaybe<RecorderFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ComponentTranslationsGlossaryDefinitionTranslatorsArgs = {
   filters?: InputMaybe<RecorderFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ComponentTranslationsGlossaryDefinitionFiltersInput = {
@@ -1497,21 +1497,21 @@ export type ComponentTranslationsGlossaryDefinitionFiltersInput = {
 };
 
 export type ComponentTranslationsGlossaryDefinitionInput = {
-  definition?: InputMaybe<Scalars["String"]>;
-  id?: InputMaybe<Scalars["ID"]>;
-  language?: InputMaybe<Scalars["ID"]>;
-  proofreaders?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
-  source_language?: InputMaybe<Scalars["ID"]>;
+  definition?: InputMaybe<Scalars["String"]["input"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
+  language?: InputMaybe<Scalars["ID"]["input"]>;
+  proofreaders?: InputMaybe<Array<InputMaybe<Scalars["ID"]["input"]>>>;
+  source_language?: InputMaybe<Scalars["ID"]["input"]>;
   status?: InputMaybe<Enum_Componenttranslationsglossarydefinition_Status>;
-  transcribers?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
-  translators?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
+  transcribers?: InputMaybe<Array<InputMaybe<Scalars["ID"]["input"]>>>;
+  translators?: InputMaybe<Array<InputMaybe<Scalars["ID"]["input"]>>>;
 };
 
 export type ComponentTranslationsGlossaryItem = {
   __typename?: "ComponentTranslationsGlossaryItem";
-  id: Scalars["ID"];
+  id: Scalars["ID"]["output"];
   language?: Maybe<LanguageEntityResponse>;
-  title?: Maybe<Scalars["String"]>;
+  title?: Maybe<Scalars["String"]["output"]>;
 };
 
 export type ComponentTranslationsGlossaryItemFiltersInput = {
@@ -1523,22 +1523,22 @@ export type ComponentTranslationsGlossaryItemFiltersInput = {
 };
 
 export type ComponentTranslationsGlossaryItemInput = {
-  id?: InputMaybe<Scalars["ID"]>;
-  language?: InputMaybe<Scalars["ID"]>;
-  title?: InputMaybe<Scalars["String"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
+  language?: InputMaybe<Scalars["ID"]["input"]>;
+  title?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 export type ComponentTranslationsLibraryContent = {
   __typename?: "ComponentTranslationsLibraryContent";
-  id: Scalars["ID"];
+  id: Scalars["ID"]["output"];
   language?: Maybe<LanguageEntityResponse>;
-  title?: Maybe<Scalars["String"]>;
+  title?: Maybe<Scalars["String"]["output"]>;
 };
 
 export type ComponentTranslationsLibraryItems = {
   __typename?: "ComponentTranslationsLibraryItems";
-  description: Scalars["String"];
-  id: Scalars["ID"];
+  description: Scalars["String"]["output"];
+  id: Scalars["ID"]["output"];
   language?: Maybe<LanguageEntityResponse>;
 };
 
@@ -1551,35 +1551,35 @@ export type ComponentTranslationsLibraryItemsFiltersInput = {
 };
 
 export type ComponentTranslationsLibraryItemsInput = {
-  description?: InputMaybe<Scalars["String"]>;
-  id?: InputMaybe<Scalars["ID"]>;
-  language?: InputMaybe<Scalars["ID"]>;
+  description?: InputMaybe<Scalars["String"]["input"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
+  language?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type ComponentTranslationsPosts = {
   __typename?: "ComponentTranslationsPosts";
-  body?: Maybe<Scalars["String"]>;
-  excerpt?: Maybe<Scalars["String"]>;
-  id: Scalars["ID"];
+  body?: Maybe<Scalars["String"]["output"]>;
+  excerpt?: Maybe<Scalars["String"]["output"]>;
+  id: Scalars["ID"]["output"];
   language?: Maybe<LanguageEntityResponse>;
   proofreaders?: Maybe<RecorderRelationResponseCollection>;
   source_language?: Maybe<LanguageEntityResponse>;
   status: Enum_Componenttranslationsposts_Status;
   thumbnail?: Maybe<UploadFileEntityResponse>;
-  title: Scalars["String"];
+  title: Scalars["String"]["output"];
   translators?: Maybe<RecorderRelationResponseCollection>;
 };
 
 export type ComponentTranslationsPostsProofreadersArgs = {
   filters?: InputMaybe<RecorderFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ComponentTranslationsPostsTranslatorsArgs = {
   filters?: InputMaybe<RecorderFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ComponentTranslationsPostsFiltersInput = {
@@ -1597,24 +1597,24 @@ export type ComponentTranslationsPostsFiltersInput = {
 };
 
 export type ComponentTranslationsPostsInput = {
-  body?: InputMaybe<Scalars["String"]>;
-  excerpt?: InputMaybe<Scalars["String"]>;
-  id?: InputMaybe<Scalars["ID"]>;
-  language?: InputMaybe<Scalars["ID"]>;
-  proofreaders?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
-  source_language?: InputMaybe<Scalars["ID"]>;
+  body?: InputMaybe<Scalars["String"]["input"]>;
+  excerpt?: InputMaybe<Scalars["String"]["input"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
+  language?: InputMaybe<Scalars["ID"]["input"]>;
+  proofreaders?: InputMaybe<Array<InputMaybe<Scalars["ID"]["input"]>>>;
+  source_language?: InputMaybe<Scalars["ID"]["input"]>;
   status?: InputMaybe<Enum_Componenttranslationsposts_Status>;
-  thumbnail?: InputMaybe<Scalars["ID"]>;
-  title?: InputMaybe<Scalars["String"]>;
-  translators?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
+  thumbnail?: InputMaybe<Scalars["ID"]["input"]>;
+  title?: InputMaybe<Scalars["String"]["input"]>;
+  translators?: InputMaybe<Array<InputMaybe<Scalars["ID"]["input"]>>>;
 };
 
 export type ComponentTranslationsReinCostumes = {
   __typename?: "ComponentTranslationsReinCostumes";
-  description: Scalars["String"];
-  id: Scalars["ID"];
+  description: Scalars["String"]["output"];
+  id: Scalars["ID"]["output"];
   language?: Maybe<LanguageEntityResponse>;
-  name: Scalars["String"];
+  name: Scalars["String"]["output"];
 };
 
 export type ComponentTranslationsReinCostumesFiltersInput = {
@@ -1627,18 +1627,18 @@ export type ComponentTranslationsReinCostumesFiltersInput = {
 };
 
 export type ComponentTranslationsReinCostumesInput = {
-  description?: InputMaybe<Scalars["String"]>;
-  id?: InputMaybe<Scalars["ID"]>;
-  language?: InputMaybe<Scalars["ID"]>;
-  name?: InputMaybe<Scalars["String"]>;
+  description?: InputMaybe<Scalars["String"]["input"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
+  language?: InputMaybe<Scalars["ID"]["input"]>;
+  name?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 export type ComponentTranslationsReinEmblems = {
   __typename?: "ComponentTranslationsReinEmblems";
-  description: Scalars["String"];
-  id: Scalars["ID"];
+  description: Scalars["String"]["output"];
+  id: Scalars["ID"]["output"];
   language?: Maybe<LanguageEntityResponse>;
-  name: Scalars["String"];
+  name: Scalars["String"]["output"];
 };
 
 export type ComponentTranslationsReinEmblemsFiltersInput = {
@@ -1651,16 +1651,16 @@ export type ComponentTranslationsReinEmblemsFiltersInput = {
 };
 
 export type ComponentTranslationsReinEmblemsInput = {
-  description?: InputMaybe<Scalars["String"]>;
-  id?: InputMaybe<Scalars["ID"]>;
-  language?: InputMaybe<Scalars["ID"]>;
-  name?: InputMaybe<Scalars["String"]>;
+  description?: InputMaybe<Scalars["String"]["input"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
+  language?: InputMaybe<Scalars["ID"]["input"]>;
+  name?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 export type ComponentTranslationsScanSet = {
   __typename?: "ComponentTranslationsScanSet";
   credits: ComponentBasicsCredits;
-  id: Scalars["ID"];
+  id: Scalars["ID"]["output"];
   language?: Maybe<LanguageEntityResponse>;
   pages: UploadFileRelationResponseCollection;
   status: Enum_Componenttranslationsscanset_Status;
@@ -1669,14 +1669,14 @@ export type ComponentTranslationsScanSet = {
 export type ComponentTranslationsScanSetPagesArgs = {
   filters?: InputMaybe<UploadFileFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ComponentTranslationsSimpleTitle = {
   __typename?: "ComponentTranslationsSimpleTitle";
-  id: Scalars["ID"];
+  id: Scalars["ID"]["output"];
   language?: Maybe<LanguageEntityResponse>;
-  title: Scalars["String"];
+  title: Scalars["String"]["output"];
 };
 
 export type ComponentTranslationsSimpleTitleFiltersInput = {
@@ -1688,30 +1688,30 @@ export type ComponentTranslationsSimpleTitleFiltersInput = {
 };
 
 export type ComponentTranslationsSimpleTitleInput = {
-  id?: InputMaybe<Scalars["ID"]>;
-  language?: InputMaybe<Scalars["ID"]>;
-  title?: InputMaybe<Scalars["String"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
+  language?: InputMaybe<Scalars["ID"]["input"]>;
+  title?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 export type ComponentTranslationsTextSet = {
   __typename?: "ComponentTranslationsTextSet";
   credits: ComponentBasicsCredits;
-  id: Scalars["ID"];
+  id: Scalars["ID"]["output"];
   language?: Maybe<LanguageEntityResponse>;
   status: Enum_Componenttranslationstextset_Status;
-  text?: Maybe<Scalars["String"]>;
+  text?: Maybe<Scalars["String"]["output"]>;
 };
 
 export type ComponentTranslationsTitle = {
   __typename?: "ComponentTranslationsTitle";
   audio_set?: Maybe<ComponentSetsAudioSet>;
-  description?: Maybe<Scalars["String"]>;
-  id: Scalars["ID"];
+  description?: Maybe<Scalars["String"]["output"]>;
+  id: Scalars["ID"]["output"];
   language?: Maybe<LanguageEntityResponse>;
-  pre_title?: Maybe<Scalars["String"]>;
-  subtitle?: Maybe<Scalars["String"]>;
+  pre_title?: Maybe<Scalars["String"]["output"]>;
+  subtitle?: Maybe<Scalars["String"]["output"]>;
   text_set?: Maybe<ComponentSetsTextSet>;
-  title: Scalars["String"];
+  title: Scalars["String"]["output"];
   video_set?: Maybe<ComponentSetsVideoSet>;
 };
 
@@ -1731,32 +1731,32 @@ export type ComponentTranslationsTitleFiltersInput = {
 
 export type ComponentTranslationsTitleInput = {
   audio_set?: InputMaybe<ComponentSetsAudioSetInput>;
-  description?: InputMaybe<Scalars["String"]>;
-  id?: InputMaybe<Scalars["ID"]>;
-  language?: InputMaybe<Scalars["ID"]>;
-  pre_title?: InputMaybe<Scalars["String"]>;
-  subtitle?: InputMaybe<Scalars["String"]>;
+  description?: InputMaybe<Scalars["String"]["input"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
+  language?: InputMaybe<Scalars["ID"]["input"]>;
+  pre_title?: InputMaybe<Scalars["String"]["input"]>;
+  subtitle?: InputMaybe<Scalars["String"]["input"]>;
   text_set?: InputMaybe<ComponentSetsTextSetInput>;
-  title?: InputMaybe<Scalars["String"]>;
+  title?: InputMaybe<Scalars["String"]["input"]>;
   video_set?: InputMaybe<ComponentSetsVideoSetInput>;
 };
 
 export type ComponentTranslationsVideoSets = {
   __typename?: "ComponentTranslationsVideoSets";
   credits: ComponentBasicsCredits;
-  id: Scalars["ID"];
+  id: Scalars["ID"]["output"];
   language?: Maybe<LanguageEntityResponse>;
   status: Enum_Componenttranslationsvideosets_Status;
   subfile?: Maybe<UploadFileEntityResponse>;
-  video_embed?: Maybe<Scalars["String"]>;
-  video_url: Scalars["String"];
+  video_embed?: Maybe<Scalars["String"]["output"]>;
+  video_url: Scalars["String"]["output"];
 };
 
 export type ComponentTranslationsWeaponStory = {
   __typename?: "ComponentTranslationsWeaponStory";
-  id: Scalars["ID"];
+  id: Scalars["ID"]["output"];
   language?: Maybe<LanguageEntityResponse>;
-  name?: Maybe<Scalars["String"]>;
+  name?: Maybe<Scalars["String"]["output"]>;
 };
 
 export type ComponentTranslationsWeaponStoryFiltersInput = {
@@ -1768,20 +1768,20 @@ export type ComponentTranslationsWeaponStoryFiltersInput = {
 };
 
 export type ComponentTranslationsWeaponStoryInput = {
-  id?: InputMaybe<Scalars["ID"]>;
-  language?: InputMaybe<Scalars["ID"]>;
-  name?: InputMaybe<Scalars["String"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
+  language?: InputMaybe<Scalars["ID"]["input"]>;
+  name?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 export type ComponentTranslationsWeaponStoryStory = {
   __typename?: "ComponentTranslationsWeaponStoryStory";
-  description?: Maybe<Scalars["String"]>;
-  id: Scalars["ID"];
+  description?: Maybe<Scalars["String"]["output"]>;
+  id: Scalars["ID"]["output"];
   language?: Maybe<LanguageEntityResponse>;
-  level_1?: Maybe<Scalars["String"]>;
-  level_2?: Maybe<Scalars["String"]>;
-  level_3?: Maybe<Scalars["String"]>;
-  level_4?: Maybe<Scalars["String"]>;
+  level_1?: Maybe<Scalars["String"]["output"]>;
+  level_2?: Maybe<Scalars["String"]["output"]>;
+  level_3?: Maybe<Scalars["String"]["output"]>;
+  level_4?: Maybe<Scalars["String"]["output"]>;
   status: Enum_Componenttranslationsweaponstorystory_Status;
 };
 
@@ -1799,21 +1799,21 @@ export type ComponentTranslationsWeaponStoryStoryFiltersInput = {
 };
 
 export type ComponentTranslationsWeaponStoryStoryInput = {
-  description?: InputMaybe<Scalars["String"]>;
-  id?: InputMaybe<Scalars["ID"]>;
-  language?: InputMaybe<Scalars["ID"]>;
-  level_1?: InputMaybe<Scalars["String"]>;
-  level_2?: InputMaybe<Scalars["String"]>;
-  level_3?: InputMaybe<Scalars["String"]>;
-  level_4?: InputMaybe<Scalars["String"]>;
+  description?: InputMaybe<Scalars["String"]["input"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
+  language?: InputMaybe<Scalars["ID"]["input"]>;
+  level_1?: InputMaybe<Scalars["String"]["input"]>;
+  level_2?: InputMaybe<Scalars["String"]["input"]>;
+  level_3?: InputMaybe<Scalars["String"]["input"]>;
+  level_4?: InputMaybe<Scalars["String"]["input"]>;
   status?: InputMaybe<Enum_Componenttranslationsweaponstorystory_Status>;
 };
 
 export type ComponentTranslationsWeaponStoryType = {
   __typename?: "ComponentTranslationsWeaponStoryType";
-  id: Scalars["ID"];
+  id: Scalars["ID"]["output"];
   language?: Maybe<LanguageEntityResponse>;
-  name?: Maybe<Scalars["String"]>;
+  name?: Maybe<Scalars["String"]["output"]>;
 };
 
 export type ComponentTranslationsWeaponStoryTypeFiltersInput = {
@@ -1825,17 +1825,17 @@ export type ComponentTranslationsWeaponStoryTypeFiltersInput = {
 };
 
 export type ComponentTranslationsWeaponStoryTypeInput = {
-  id?: InputMaybe<Scalars["ID"]>;
-  language?: InputMaybe<Scalars["ID"]>;
-  name?: InputMaybe<Scalars["String"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
+  language?: InputMaybe<Scalars["ID"]["input"]>;
+  name?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 export type ComponentTranslationsWebArchives = {
   __typename?: "ComponentTranslationsWebArchives";
-  description?: Maybe<Scalars["String"]>;
-  id: Scalars["ID"];
+  description?: Maybe<Scalars["String"]["output"]>;
+  id: Scalars["ID"]["output"];
   language?: Maybe<LanguageEntityResponse>;
-  notes?: Maybe<Scalars["String"]>;
+  notes?: Maybe<Scalars["String"]["output"]>;
 };
 
 export type ComponentTranslationsWebArchivesFiltersInput = {
@@ -1848,26 +1848,26 @@ export type ComponentTranslationsWebArchivesFiltersInput = {
 };
 
 export type ComponentTranslationsWebArchivesInput = {
-  description?: InputMaybe<Scalars["String"]>;
-  id?: InputMaybe<Scalars["ID"]>;
-  language?: InputMaybe<Scalars["ID"]>;
-  notes?: InputMaybe<Scalars["String"]>;
+  description?: InputMaybe<Scalars["String"]["input"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
+  language?: InputMaybe<Scalars["ID"]["input"]>;
+  notes?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 export type ComponentTranslationsWiki = {
   __typename?: "ComponentTranslationsWiki";
   aliases?: Maybe<Array<Maybe<ComponentCollectionsComponentAliases>>>;
   body?: Maybe<ComponentCollectionsComponentBody>;
-  id: Scalars["ID"];
+  id: Scalars["ID"]["output"];
   language?: Maybe<LanguageEntityResponse>;
-  summary?: Maybe<Scalars["String"]>;
-  title: Scalars["String"];
+  summary?: Maybe<Scalars["String"]["output"]>;
+  title: Scalars["String"]["output"];
 };
 
 export type ComponentTranslationsWikiAliasesArgs = {
   filters?: InputMaybe<ComponentCollectionsComponentAliasesFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ComponentTranslationsWikiFiltersInput = {
@@ -1884,20 +1884,20 @@ export type ComponentTranslationsWikiFiltersInput = {
 export type ComponentTranslationsWikiInput = {
   aliases?: InputMaybe<Array<InputMaybe<ComponentCollectionsComponentAliasesInput>>>;
   body?: InputMaybe<ComponentCollectionsComponentBodyInput>;
-  id?: InputMaybe<Scalars["ID"]>;
-  language?: InputMaybe<Scalars["ID"]>;
-  summary?: InputMaybe<Scalars["String"]>;
-  title?: InputMaybe<Scalars["String"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
+  language?: InputMaybe<Scalars["ID"]["input"]>;
+  summary?: InputMaybe<Scalars["String"]["input"]>;
+  title?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 export type ComponentTranslationsWikiPost = {
   __typename?: "ComponentTranslationsWikiPost";
-  body?: Maybe<Scalars["String"]>;
-  id: Scalars["ID"];
+  body?: Maybe<Scalars["String"]["output"]>;
+  id: Scalars["ID"]["output"];
   language?: Maybe<LanguageEntityResponse>;
   source_language?: Maybe<LanguageEntityResponse>;
   status: Enum_Componenttranslationswikipost_Status;
-  summary?: Maybe<Scalars["String"]>;
+  summary?: Maybe<Scalars["String"]["output"]>;
 };
 
 export type ComponentTranslationsWikiPostFiltersInput = {
@@ -1914,8 +1914,8 @@ export type ComponentTranslationsWikiPostFiltersInput = {
 export type ComponentWikiSpecializationChronology = {
   __typename?: "ComponentWikiSpecializationChronology";
   date: ComponentBasicsDatepicker;
-  displayed_date?: Maybe<Scalars["String"]>;
-  id: Scalars["ID"];
+  displayed_date?: Maybe<Scalars["String"]["output"]>;
+  id: Scalars["ID"]["output"];
   source?: Maybe<SourceEntityResponse>;
   translations?: Maybe<Array<Maybe<ComponentTranslationsChronologyItem>>>;
 };
@@ -1923,13 +1923,13 @@ export type ComponentWikiSpecializationChronology = {
 export type ComponentWikiSpecializationChronologyTranslationsArgs = {
   filters?: InputMaybe<ComponentTranslationsChronologyItemFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ComponentWikiSpecializationGlossaryItem = {
   __typename?: "ComponentWikiSpecializationGlossaryItem";
   categories?: Maybe<CategoryRelationResponseCollection>;
-  id: Scalars["ID"];
+  id: Scalars["ID"]["output"];
   source?: Maybe<SourceEntityResponse>;
   translations?: Maybe<Array<Maybe<ComponentTranslationsGlossaryDefinition>>>;
 };
@@ -1937,13 +1937,13 @@ export type ComponentWikiSpecializationGlossaryItem = {
 export type ComponentWikiSpecializationGlossaryItemCategoriesArgs = {
   filters?: InputMaybe<CategoryFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ComponentWikiSpecializationGlossaryItemTranslationsArgs = {
   filters?: InputMaybe<ComponentTranslationsGlossaryDefinitionFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ComponentWikiSpecializationGlossaryItemFiltersInput = {
@@ -1956,34 +1956,34 @@ export type ComponentWikiSpecializationGlossaryItemFiltersInput = {
 };
 
 export type ComponentWikiSpecializationGlossaryItemInput = {
-  categories?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
-  id?: InputMaybe<Scalars["ID"]>;
-  source?: InputMaybe<Scalars["ID"]>;
+  categories?: InputMaybe<Array<InputMaybe<Scalars["ID"]["input"]>>>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
+  source?: InputMaybe<Scalars["ID"]["input"]>;
   translations?: InputMaybe<Array<InputMaybe<ComponentTranslationsGlossaryDefinitionInput>>>;
 };
 
 export type ComponentWikiSpecializationPost = {
   __typename?: "ComponentWikiSpecializationPost";
   authors?: Maybe<RecorderRelationResponseCollection>;
-  id: Scalars["ID"];
+  id: Scalars["ID"]["output"];
   translations?: Maybe<Array<Maybe<ComponentTranslationsWikiPost>>>;
 };
 
 export type ComponentWikiSpecializationPostAuthorsArgs = {
   filters?: InputMaybe<RecorderFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ComponentWikiSpecializationPostTranslationsArgs = {
   filters?: InputMaybe<ComponentTranslationsWikiPostFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ComponentWikiSpecializationWeapon = {
   __typename?: "ComponentWikiSpecializationWeapon";
-  id: Scalars["ID"];
+  id: Scalars["ID"]["output"];
   source?: Maybe<SourceEntityResponse>;
   translations?: Maybe<Array<Maybe<ComponentTranslationsWeaponStoryStory>>>;
 };
@@ -1991,65 +1991,65 @@ export type ComponentWikiSpecializationWeapon = {
 export type ComponentWikiSpecializationWeaponTranslationsArgs = {
   filters?: InputMaybe<ComponentTranslationsWeaponStoryStoryFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type Content = {
   __typename?: "Content";
   categories?: Maybe<CategoryRelationResponseCollection>;
   chronicles?: Maybe<ChronicleRelationResponseCollection>;
-  createdAt?: Maybe<Scalars["DateTime"]>;
+  createdAt?: Maybe<Scalars["DateTime"]["output"]>;
   folder?: Maybe<ContentsFolderEntityResponse>;
   next_contents?: Maybe<ContentRelationResponseCollection>;
   previous_contents?: Maybe<ContentRelationResponseCollection>;
   ranged_contents?: Maybe<RangedContentRelationResponseCollection>;
-  slug: Scalars["String"];
+  slug: Scalars["String"]["output"];
   thumbnail?: Maybe<UploadFileEntityResponse>;
   translations?: Maybe<Array<Maybe<ComponentTranslationsTitle>>>;
   type?: Maybe<ContentTypeEntityResponse>;
-  updatedAt?: Maybe<Scalars["DateTime"]>;
+  updatedAt?: Maybe<Scalars["DateTime"]["output"]>;
 };
 
 export type ContentCategoriesArgs = {
   filters?: InputMaybe<CategoryFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ContentChroniclesArgs = {
   filters?: InputMaybe<ChronicleFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ContentNext_ContentsArgs = {
   filters?: InputMaybe<ContentFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ContentPrevious_ContentsArgs = {
   filters?: InputMaybe<ContentFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ContentRanged_ContentsArgs = {
   filters?: InputMaybe<RangedContentFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ContentTranslationsArgs = {
   filters?: InputMaybe<ComponentTranslationsTitleFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ContentEntity = {
   __typename?: "ContentEntity";
   attributes?: Maybe<Content>;
-  id?: Maybe<Scalars["ID"]>;
+  id?: Maybe<Scalars["ID"]["output"]>;
 };
 
 export type ContentEntityResponse = {
@@ -2082,16 +2082,16 @@ export type ContentFiltersInput = {
 };
 
 export type ContentInput = {
-  categories?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
-  chronicles?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
-  folder?: InputMaybe<Scalars["ID"]>;
-  next_contents?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
-  previous_contents?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
-  ranged_contents?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
-  slug?: InputMaybe<Scalars["String"]>;
-  thumbnail?: InputMaybe<Scalars["ID"]>;
+  categories?: InputMaybe<Array<InputMaybe<Scalars["ID"]["input"]>>>;
+  chronicles?: InputMaybe<Array<InputMaybe<Scalars["ID"]["input"]>>>;
+  folder?: InputMaybe<Scalars["ID"]["input"]>;
+  next_contents?: InputMaybe<Array<InputMaybe<Scalars["ID"]["input"]>>>;
+  previous_contents?: InputMaybe<Array<InputMaybe<Scalars["ID"]["input"]>>>;
+  ranged_contents?: InputMaybe<Array<InputMaybe<Scalars["ID"]["input"]>>>;
+  slug?: InputMaybe<Scalars["String"]["input"]>;
+  thumbnail?: InputMaybe<Scalars["ID"]["input"]>;
   translations?: InputMaybe<Array<InputMaybe<ComponentTranslationsTitleInput>>>;
-  type?: InputMaybe<Scalars["ID"]>;
+  type?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type ContentRelationResponseCollection = {
@@ -2101,22 +2101,22 @@ export type ContentRelationResponseCollection = {
 
 export type ContentType = {
   __typename?: "ContentType";
-  createdAt?: Maybe<Scalars["DateTime"]>;
-  slug: Scalars["String"];
+  createdAt?: Maybe<Scalars["DateTime"]["output"]>;
+  slug: Scalars["String"]["output"];
   titles?: Maybe<Array<Maybe<ComponentTranslationsSimpleTitle>>>;
-  updatedAt?: Maybe<Scalars["DateTime"]>;
+  updatedAt?: Maybe<Scalars["DateTime"]["output"]>;
 };
 
 export type ContentTypeTitlesArgs = {
   filters?: InputMaybe<ComponentTranslationsSimpleTitleFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ContentTypeEntity = {
   __typename?: "ContentTypeEntity";
   attributes?: Maybe<ContentType>;
-  id?: Maybe<Scalars["ID"]>;
+  id?: Maybe<Scalars["ID"]["output"]>;
 };
 
 export type ContentTypeEntityResponse = {
@@ -2142,43 +2142,43 @@ export type ContentTypeFiltersInput = {
 };
 
 export type ContentTypeInput = {
-  slug?: InputMaybe<Scalars["String"]>;
+  slug?: InputMaybe<Scalars["String"]["input"]>;
   titles?: InputMaybe<Array<InputMaybe<ComponentTranslationsSimpleTitleInput>>>;
 };
 
 export type ContentsFolder = {
   __typename?: "ContentsFolder";
   contents?: Maybe<ContentRelationResponseCollection>;
-  createdAt?: Maybe<Scalars["DateTime"]>;
+  createdAt?: Maybe<Scalars["DateTime"]["output"]>;
   parent_folder?: Maybe<ContentsFolderEntityResponse>;
-  slug: Scalars["String"];
+  slug: Scalars["String"]["output"];
   subfolders?: Maybe<ContentsFolderRelationResponseCollection>;
   titles: Array<Maybe<ComponentTranslationsSimpleTitle>>;
-  updatedAt?: Maybe<Scalars["DateTime"]>;
+  updatedAt?: Maybe<Scalars["DateTime"]["output"]>;
 };
 
 export type ContentsFolderContentsArgs = {
   filters?: InputMaybe<ContentFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ContentsFolderSubfoldersArgs = {
   filters?: InputMaybe<ContentsFolderFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ContentsFolderTitlesArgs = {
   filters?: InputMaybe<ComponentTranslationsSimpleTitleFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ContentsFolderEntity = {
   __typename?: "ContentsFolderEntity";
   attributes?: Maybe<ContentsFolder>;
-  id?: Maybe<Scalars["ID"]>;
+  id?: Maybe<Scalars["ID"]["output"]>;
 };
 
 export type ContentsFolderEntityResponse = {
@@ -2207,10 +2207,10 @@ export type ContentsFolderFiltersInput = {
 };
 
 export type ContentsFolderInput = {
-  contents?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
-  parent_folder?: InputMaybe<Scalars["ID"]>;
-  slug?: InputMaybe<Scalars["String"]>;
-  subfolders?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
+  contents?: InputMaybe<Array<InputMaybe<Scalars["ID"]["input"]>>>;
+  parent_folder?: InputMaybe<Scalars["ID"]["input"]>;
+  slug?: InputMaybe<Scalars["String"]["input"]>;
+  subfolders?: InputMaybe<Array<InputMaybe<Scalars["ID"]["input"]>>>;
   titles?: InputMaybe<Array<InputMaybe<ComponentTranslationsSimpleTitleInput>>>;
 };
 
@@ -2221,18 +2221,18 @@ export type ContentsFolderRelationResponseCollection = {
 
 export type Currency = {
   __typename?: "Currency";
-  code: Scalars["String"];
-  createdAt?: Maybe<Scalars["DateTime"]>;
-  display_decimals: Scalars["Boolean"];
-  rate_to_usd: Scalars["Float"];
-  symbol: Scalars["String"];
-  updatedAt?: Maybe<Scalars["DateTime"]>;
+  code: Scalars["String"]["output"];
+  createdAt?: Maybe<Scalars["DateTime"]["output"]>;
+  display_decimals: Scalars["Boolean"]["output"];
+  rate_to_usd: Scalars["Float"]["output"];
+  symbol: Scalars["String"]["output"];
+  updatedAt?: Maybe<Scalars["DateTime"]["output"]>;
 };
 
 export type CurrencyEntity = {
   __typename?: "CurrencyEntity";
   attributes?: Maybe<Currency>;
-  id?: Maybe<Scalars["ID"]>;
+  id?: Maybe<Scalars["ID"]["output"]>;
 };
 
 export type CurrencyEntityResponse = {
@@ -2260,34 +2260,34 @@ export type CurrencyFiltersInput = {
 };
 
 export type CurrencyInput = {
-  code?: InputMaybe<Scalars["String"]>;
-  display_decimals?: InputMaybe<Scalars["Boolean"]>;
-  rate_to_usd?: InputMaybe<Scalars["Float"]>;
-  symbol?: InputMaybe<Scalars["String"]>;
+  code?: InputMaybe<Scalars["String"]["input"]>;
+  display_decimals?: InputMaybe<Scalars["Boolean"]["input"]>;
+  rate_to_usd?: InputMaybe<Scalars["Float"]["input"]>;
+  symbol?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 export type DateTimeFilterInput = {
-  and?: InputMaybe<Array<InputMaybe<Scalars["DateTime"]>>>;
-  between?: InputMaybe<Array<InputMaybe<Scalars["DateTime"]>>>;
-  contains?: InputMaybe<Scalars["DateTime"]>;
-  containsi?: InputMaybe<Scalars["DateTime"]>;
-  endsWith?: InputMaybe<Scalars["DateTime"]>;
-  eq?: InputMaybe<Scalars["DateTime"]>;
-  eqi?: InputMaybe<Scalars["DateTime"]>;
-  gt?: InputMaybe<Scalars["DateTime"]>;
-  gte?: InputMaybe<Scalars["DateTime"]>;
-  in?: InputMaybe<Array<InputMaybe<Scalars["DateTime"]>>>;
-  lt?: InputMaybe<Scalars["DateTime"]>;
-  lte?: InputMaybe<Scalars["DateTime"]>;
-  ne?: InputMaybe<Scalars["DateTime"]>;
+  and?: InputMaybe<Array<InputMaybe<Scalars["DateTime"]["input"]>>>;
+  between?: InputMaybe<Array<InputMaybe<Scalars["DateTime"]["input"]>>>;
+  contains?: InputMaybe<Scalars["DateTime"]["input"]>;
+  containsi?: InputMaybe<Scalars["DateTime"]["input"]>;
+  endsWith?: InputMaybe<Scalars["DateTime"]["input"]>;
+  eq?: InputMaybe<Scalars["DateTime"]["input"]>;
+  eqi?: InputMaybe<Scalars["DateTime"]["input"]>;
+  gt?: InputMaybe<Scalars["DateTime"]["input"]>;
+  gte?: InputMaybe<Scalars["DateTime"]["input"]>;
+  in?: InputMaybe<Array<InputMaybe<Scalars["DateTime"]["input"]>>>;
+  lt?: InputMaybe<Scalars["DateTime"]["input"]>;
+  lte?: InputMaybe<Scalars["DateTime"]["input"]>;
+  ne?: InputMaybe<Scalars["DateTime"]["input"]>;
   not?: InputMaybe<DateTimeFilterInput>;
-  notContains?: InputMaybe<Scalars["DateTime"]>;
-  notContainsi?: InputMaybe<Scalars["DateTime"]>;
-  notIn?: InputMaybe<Array<InputMaybe<Scalars["DateTime"]>>>;
-  notNull?: InputMaybe<Scalars["Boolean"]>;
-  null?: InputMaybe<Scalars["Boolean"]>;
-  or?: InputMaybe<Array<InputMaybe<Scalars["DateTime"]>>>;
-  startsWith?: InputMaybe<Scalars["DateTime"]>;
+  notContains?: InputMaybe<Scalars["DateTime"]["input"]>;
+  notContainsi?: InputMaybe<Scalars["DateTime"]["input"]>;
+  notIn?: InputMaybe<Array<InputMaybe<Scalars["DateTime"]["input"]>>>;
+  notNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  null?: InputMaybe<Scalars["Boolean"]["input"]>;
+  or?: InputMaybe<Array<InputMaybe<Scalars["DateTime"]["input"]>>>;
+  startsWith?: InputMaybe<Scalars["DateTime"]["input"]>;
 };
 
 export enum Enum_Category_Series {
@@ -2433,6 +2433,7 @@ export enum Enum_Componenttranslationswikipost_Status {
 
 export enum Enum_Video_Source {
   NicoNico = "NicoNico",
+  Tumblr = "Tumblr",
   YouTube = "YouTube",
 }
 
@@ -2449,60 +2450,58 @@ export enum Enum_Webarchive_Type {
 
 export type Error = {
   __typename?: "Error";
-  code: Scalars["String"];
-  message?: Maybe<Scalars["String"]>;
+  code: Scalars["String"]["output"];
+  message?: Maybe<Scalars["String"]["output"]>;
 };
 
 export type FileInfoInput = {
-  alternativeText?: InputMaybe<Scalars["String"]>;
-  caption?: InputMaybe<Scalars["String"]>;
-  name?: InputMaybe<Scalars["String"]>;
+  alternativeText?: InputMaybe<Scalars["String"]["input"]>;
+  caption?: InputMaybe<Scalars["String"]["input"]>;
+  name?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 export type FloatFilterInput = {
-  and?: InputMaybe<Array<InputMaybe<Scalars["Float"]>>>;
-  between?: InputMaybe<Array<InputMaybe<Scalars["Float"]>>>;
-  contains?: InputMaybe<Scalars["Float"]>;
-  containsi?: InputMaybe<Scalars["Float"]>;
-  endsWith?: InputMaybe<Scalars["Float"]>;
-  eq?: InputMaybe<Scalars["Float"]>;
-  eqi?: InputMaybe<Scalars["Float"]>;
-  gt?: InputMaybe<Scalars["Float"]>;
-  gte?: InputMaybe<Scalars["Float"]>;
-  in?: InputMaybe<Array<InputMaybe<Scalars["Float"]>>>;
-  lt?: InputMaybe<Scalars["Float"]>;
-  lte?: InputMaybe<Scalars["Float"]>;
-  ne?: InputMaybe<Scalars["Float"]>;
+  and?: InputMaybe<Array<InputMaybe<Scalars["Float"]["input"]>>>;
+  between?: InputMaybe<Array<InputMaybe<Scalars["Float"]["input"]>>>;
+  contains?: InputMaybe<Scalars["Float"]["input"]>;
+  containsi?: InputMaybe<Scalars["Float"]["input"]>;
+  endsWith?: InputMaybe<Scalars["Float"]["input"]>;
+  eq?: InputMaybe<Scalars["Float"]["input"]>;
+  eqi?: InputMaybe<Scalars["Float"]["input"]>;
+  gt?: InputMaybe<Scalars["Float"]["input"]>;
+  gte?: InputMaybe<Scalars["Float"]["input"]>;
+  in?: InputMaybe<Array<InputMaybe<Scalars["Float"]["input"]>>>;
+  lt?: InputMaybe<Scalars["Float"]["input"]>;
+  lte?: InputMaybe<Scalars["Float"]["input"]>;
+  ne?: InputMaybe<Scalars["Float"]["input"]>;
   not?: InputMaybe<FloatFilterInput>;
-  notContains?: InputMaybe<Scalars["Float"]>;
-  notContainsi?: InputMaybe<Scalars["Float"]>;
-  notIn?: InputMaybe<Array<InputMaybe<Scalars["Float"]>>>;
-  notNull?: InputMaybe<Scalars["Boolean"]>;
-  null?: InputMaybe<Scalars["Boolean"]>;
-  or?: InputMaybe<Array<InputMaybe<Scalars["Float"]>>>;
-  startsWith?: InputMaybe<Scalars["Float"]>;
+  notContains?: InputMaybe<Scalars["Float"]["input"]>;
+  notContainsi?: InputMaybe<Scalars["Float"]["input"]>;
+  notIn?: InputMaybe<Array<InputMaybe<Scalars["Float"]["input"]>>>;
+  notNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  null?: InputMaybe<Scalars["Boolean"]["input"]>;
+  or?: InputMaybe<Array<InputMaybe<Scalars["Float"]["input"]>>>;
+  startsWith?: InputMaybe<Scalars["Float"]["input"]>;
 };
 
 export type GamePlatform = {
   __typename?: "GamePlatform";
-  createdAt?: Maybe<Scalars["DateTime"]>;
-  name: Scalars["String"];
-  short: Scalars["String"];
-  slug: Scalars["String"];
+  createdAt?: Maybe<Scalars["DateTime"]["output"]>;
+  slug: Scalars["String"]["output"];
   titles?: Maybe<Array<Maybe<ComponentTranslationsGamePlatformsTranslations>>>;
-  updatedAt?: Maybe<Scalars["DateTime"]>;
+  updatedAt?: Maybe<Scalars["DateTime"]["output"]>;
 };
 
 export type GamePlatformTitlesArgs = {
   filters?: InputMaybe<ComponentTranslationsGamePlatformsTranslationsFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type GamePlatformEntity = {
   __typename?: "GamePlatformEntity";
   attributes?: Maybe<GamePlatform>;
-  id?: Maybe<Scalars["ID"]>;
+  id?: Maybe<Scalars["ID"]["output"]>;
 };
 
 export type GamePlatformEntityResponse = {
@@ -2520,19 +2519,15 @@ export type GamePlatformFiltersInput = {
   and?: InputMaybe<Array<InputMaybe<GamePlatformFiltersInput>>>;
   createdAt?: InputMaybe<DateTimeFilterInput>;
   id?: InputMaybe<IdFilterInput>;
-  name?: InputMaybe<StringFilterInput>;
   not?: InputMaybe<GamePlatformFiltersInput>;
   or?: InputMaybe<Array<InputMaybe<GamePlatformFiltersInput>>>;
-  short?: InputMaybe<StringFilterInput>;
   slug?: InputMaybe<StringFilterInput>;
   titles?: InputMaybe<ComponentTranslationsGamePlatformsTranslationsFiltersInput>;
   updatedAt?: InputMaybe<DateTimeFilterInput>;
 };
 
 export type GamePlatformInput = {
-  name?: InputMaybe<Scalars["String"]>;
-  short?: InputMaybe<Scalars["String"]>;
-  slug?: InputMaybe<Scalars["String"]>;
+  slug?: InputMaybe<Scalars["String"]["input"]>;
   titles?: InputMaybe<Array<InputMaybe<ComponentTranslationsGamePlatformsTranslationsInput>>>;
 };
 
@@ -2650,30 +2645,30 @@ export type GenericMorph =
 
 export type GlossaryItem = {
   __typename?: "GlossaryItem";
-  createdAt?: Maybe<Scalars["DateTime"]>;
+  createdAt?: Maybe<Scalars["DateTime"]["output"]>;
   definitions?: Maybe<Array<Maybe<ComponentCollectionsComponentGlossaryDefinition>>>;
-  slug: Scalars["String"];
+  slug: Scalars["String"]["output"];
   title?: Maybe<Array<Maybe<ComponentTranslationsGlossaryItem>>>;
   type?: Maybe<GlossaryItemTypeEntityResponse>;
-  updatedAt?: Maybe<Scalars["DateTime"]>;
+  updatedAt?: Maybe<Scalars["DateTime"]["output"]>;
 };
 
 export type GlossaryItemDefinitionsArgs = {
   filters?: InputMaybe<ComponentCollectionsComponentGlossaryDefinitionFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type GlossaryItemTitleArgs = {
   filters?: InputMaybe<ComponentTranslationsGlossaryItemFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type GlossaryItemEntity = {
   __typename?: "GlossaryItemEntity";
   attributes?: Maybe<GlossaryItem>;
-  id?: Maybe<Scalars["ID"]>;
+  id?: Maybe<Scalars["ID"]["output"]>;
 };
 
 export type GlossaryItemEntityResponse = {
@@ -2702,22 +2697,22 @@ export type GlossaryItemFiltersInput = {
 
 export type GlossaryItemInput = {
   definitions?: InputMaybe<Array<InputMaybe<ComponentCollectionsComponentGlossaryDefinitionInput>>>;
-  slug?: InputMaybe<Scalars["String"]>;
+  slug?: InputMaybe<Scalars["String"]["input"]>;
   title?: InputMaybe<Array<InputMaybe<ComponentTranslationsGlossaryItemInput>>>;
-  type?: InputMaybe<Scalars["ID"]>;
+  type?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type GlossaryItemType = {
   __typename?: "GlossaryItemType";
-  createdAt?: Maybe<Scalars["DateTime"]>;
-  type: Scalars["String"];
-  updatedAt?: Maybe<Scalars["DateTime"]>;
+  createdAt?: Maybe<Scalars["DateTime"]["output"]>;
+  type: Scalars["String"]["output"];
+  updatedAt?: Maybe<Scalars["DateTime"]["output"]>;
 };
 
 export type GlossaryItemTypeEntity = {
   __typename?: "GlossaryItemTypeEntity";
   attributes?: Maybe<GlossaryItemType>;
-  id?: Maybe<Scalars["ID"]>;
+  id?: Maybe<Scalars["ID"]["output"]>;
 };
 
 export type GlossaryItemTypeEntityResponse = {
@@ -2742,27 +2737,27 @@ export type GlossaryItemTypeFiltersInput = {
 };
 
 export type GlossaryItemTypeInput = {
-  type?: InputMaybe<Scalars["String"]>;
+  type?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 export type GroupSubtype = {
   __typename?: "GroupSubtype";
-  createdAt?: Maybe<Scalars["DateTime"]>;
-  slug: Scalars["String"];
+  createdAt?: Maybe<Scalars["DateTime"]["output"]>;
+  slug: Scalars["String"]["output"];
   titles?: Maybe<Array<Maybe<ComponentTranslationsSimpleTitle>>>;
-  updatedAt?: Maybe<Scalars["DateTime"]>;
+  updatedAt?: Maybe<Scalars["DateTime"]["output"]>;
 };
 
 export type GroupSubtypeTitlesArgs = {
   filters?: InputMaybe<ComponentTranslationsSimpleTitleFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type GroupSubtypeEntity = {
   __typename?: "GroupSubtypeEntity";
   attributes?: Maybe<GroupSubtype>;
-  id?: Maybe<Scalars["ID"]>;
+  id?: Maybe<Scalars["ID"]["output"]>;
 };
 
 export type GroupSubtypeEntityResponse = {
@@ -2788,95 +2783,95 @@ export type GroupSubtypeFiltersInput = {
 };
 
 export type GroupSubtypeInput = {
-  slug?: InputMaybe<Scalars["String"]>;
+  slug?: InputMaybe<Scalars["String"]["input"]>;
   titles?: InputMaybe<Array<InputMaybe<ComponentTranslationsSimpleTitleInput>>>;
 };
 
 export type IdFilterInput = {
-  and?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
-  between?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
-  contains?: InputMaybe<Scalars["ID"]>;
-  containsi?: InputMaybe<Scalars["ID"]>;
-  endsWith?: InputMaybe<Scalars["ID"]>;
-  eq?: InputMaybe<Scalars["ID"]>;
-  eqi?: InputMaybe<Scalars["ID"]>;
-  gt?: InputMaybe<Scalars["ID"]>;
-  gte?: InputMaybe<Scalars["ID"]>;
-  in?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
-  lt?: InputMaybe<Scalars["ID"]>;
-  lte?: InputMaybe<Scalars["ID"]>;
-  ne?: InputMaybe<Scalars["ID"]>;
+  and?: InputMaybe<Array<InputMaybe<Scalars["ID"]["input"]>>>;
+  between?: InputMaybe<Array<InputMaybe<Scalars["ID"]["input"]>>>;
+  contains?: InputMaybe<Scalars["ID"]["input"]>;
+  containsi?: InputMaybe<Scalars["ID"]["input"]>;
+  endsWith?: InputMaybe<Scalars["ID"]["input"]>;
+  eq?: InputMaybe<Scalars["ID"]["input"]>;
+  eqi?: InputMaybe<Scalars["ID"]["input"]>;
+  gt?: InputMaybe<Scalars["ID"]["input"]>;
+  gte?: InputMaybe<Scalars["ID"]["input"]>;
+  in?: InputMaybe<Array<InputMaybe<Scalars["ID"]["input"]>>>;
+  lt?: InputMaybe<Scalars["ID"]["input"]>;
+  lte?: InputMaybe<Scalars["ID"]["input"]>;
+  ne?: InputMaybe<Scalars["ID"]["input"]>;
   not?: InputMaybe<IdFilterInput>;
-  notContains?: InputMaybe<Scalars["ID"]>;
-  notContainsi?: InputMaybe<Scalars["ID"]>;
-  notIn?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
-  notNull?: InputMaybe<Scalars["Boolean"]>;
-  null?: InputMaybe<Scalars["Boolean"]>;
-  or?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
-  startsWith?: InputMaybe<Scalars["ID"]>;
+  notContains?: InputMaybe<Scalars["ID"]["input"]>;
+  notContainsi?: InputMaybe<Scalars["ID"]["input"]>;
+  notIn?: InputMaybe<Array<InputMaybe<Scalars["ID"]["input"]>>>;
+  notNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  null?: InputMaybe<Scalars["Boolean"]["input"]>;
+  or?: InputMaybe<Array<InputMaybe<Scalars["ID"]["input"]>>>;
+  startsWith?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type IntFilterInput = {
-  and?: InputMaybe<Array<InputMaybe<Scalars["Int"]>>>;
-  between?: InputMaybe<Array<InputMaybe<Scalars["Int"]>>>;
-  contains?: InputMaybe<Scalars["Int"]>;
-  containsi?: InputMaybe<Scalars["Int"]>;
-  endsWith?: InputMaybe<Scalars["Int"]>;
-  eq?: InputMaybe<Scalars["Int"]>;
-  eqi?: InputMaybe<Scalars["Int"]>;
-  gt?: InputMaybe<Scalars["Int"]>;
-  gte?: InputMaybe<Scalars["Int"]>;
-  in?: InputMaybe<Array<InputMaybe<Scalars["Int"]>>>;
-  lt?: InputMaybe<Scalars["Int"]>;
-  lte?: InputMaybe<Scalars["Int"]>;
-  ne?: InputMaybe<Scalars["Int"]>;
+  and?: InputMaybe<Array<InputMaybe<Scalars["Int"]["input"]>>>;
+  between?: InputMaybe<Array<InputMaybe<Scalars["Int"]["input"]>>>;
+  contains?: InputMaybe<Scalars["Int"]["input"]>;
+  containsi?: InputMaybe<Scalars["Int"]["input"]>;
+  endsWith?: InputMaybe<Scalars["Int"]["input"]>;
+  eq?: InputMaybe<Scalars["Int"]["input"]>;
+  eqi?: InputMaybe<Scalars["Int"]["input"]>;
+  gt?: InputMaybe<Scalars["Int"]["input"]>;
+  gte?: InputMaybe<Scalars["Int"]["input"]>;
+  in?: InputMaybe<Array<InputMaybe<Scalars["Int"]["input"]>>>;
+  lt?: InputMaybe<Scalars["Int"]["input"]>;
+  lte?: InputMaybe<Scalars["Int"]["input"]>;
+  ne?: InputMaybe<Scalars["Int"]["input"]>;
   not?: InputMaybe<IntFilterInput>;
-  notContains?: InputMaybe<Scalars["Int"]>;
-  notContainsi?: InputMaybe<Scalars["Int"]>;
-  notIn?: InputMaybe<Array<InputMaybe<Scalars["Int"]>>>;
-  notNull?: InputMaybe<Scalars["Boolean"]>;
-  null?: InputMaybe<Scalars["Boolean"]>;
-  or?: InputMaybe<Array<InputMaybe<Scalars["Int"]>>>;
-  startsWith?: InputMaybe<Scalars["Int"]>;
+  notContains?: InputMaybe<Scalars["Int"]["input"]>;
+  notContainsi?: InputMaybe<Scalars["Int"]["input"]>;
+  notIn?: InputMaybe<Array<InputMaybe<Scalars["Int"]["input"]>>>;
+  notNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  null?: InputMaybe<Scalars["Boolean"]["input"]>;
+  or?: InputMaybe<Array<InputMaybe<Scalars["Int"]["input"]>>>;
+  startsWith?: InputMaybe<Scalars["Int"]["input"]>;
 };
 
 export type JsonFilterInput = {
-  and?: InputMaybe<Array<InputMaybe<Scalars["JSON"]>>>;
-  between?: InputMaybe<Array<InputMaybe<Scalars["JSON"]>>>;
-  contains?: InputMaybe<Scalars["JSON"]>;
-  containsi?: InputMaybe<Scalars["JSON"]>;
-  endsWith?: InputMaybe<Scalars["JSON"]>;
-  eq?: InputMaybe<Scalars["JSON"]>;
-  eqi?: InputMaybe<Scalars["JSON"]>;
-  gt?: InputMaybe<Scalars["JSON"]>;
-  gte?: InputMaybe<Scalars["JSON"]>;
-  in?: InputMaybe<Array<InputMaybe<Scalars["JSON"]>>>;
-  lt?: InputMaybe<Scalars["JSON"]>;
-  lte?: InputMaybe<Scalars["JSON"]>;
-  ne?: InputMaybe<Scalars["JSON"]>;
+  and?: InputMaybe<Array<InputMaybe<Scalars["JSON"]["input"]>>>;
+  between?: InputMaybe<Array<InputMaybe<Scalars["JSON"]["input"]>>>;
+  contains?: InputMaybe<Scalars["JSON"]["input"]>;
+  containsi?: InputMaybe<Scalars["JSON"]["input"]>;
+  endsWith?: InputMaybe<Scalars["JSON"]["input"]>;
+  eq?: InputMaybe<Scalars["JSON"]["input"]>;
+  eqi?: InputMaybe<Scalars["JSON"]["input"]>;
+  gt?: InputMaybe<Scalars["JSON"]["input"]>;
+  gte?: InputMaybe<Scalars["JSON"]["input"]>;
+  in?: InputMaybe<Array<InputMaybe<Scalars["JSON"]["input"]>>>;
+  lt?: InputMaybe<Scalars["JSON"]["input"]>;
+  lte?: InputMaybe<Scalars["JSON"]["input"]>;
+  ne?: InputMaybe<Scalars["JSON"]["input"]>;
   not?: InputMaybe<JsonFilterInput>;
-  notContains?: InputMaybe<Scalars["JSON"]>;
-  notContainsi?: InputMaybe<Scalars["JSON"]>;
-  notIn?: InputMaybe<Array<InputMaybe<Scalars["JSON"]>>>;
-  notNull?: InputMaybe<Scalars["Boolean"]>;
-  null?: InputMaybe<Scalars["Boolean"]>;
-  or?: InputMaybe<Array<InputMaybe<Scalars["JSON"]>>>;
-  startsWith?: InputMaybe<Scalars["JSON"]>;
+  notContains?: InputMaybe<Scalars["JSON"]["input"]>;
+  notContainsi?: InputMaybe<Scalars["JSON"]["input"]>;
+  notIn?: InputMaybe<Array<InputMaybe<Scalars["JSON"]["input"]>>>;
+  notNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  null?: InputMaybe<Scalars["Boolean"]["input"]>;
+  or?: InputMaybe<Array<InputMaybe<Scalars["JSON"]["input"]>>>;
+  startsWith?: InputMaybe<Scalars["JSON"]["input"]>;
 };
 
 export type Language = {
   __typename?: "Language";
-  code: Scalars["String"];
-  createdAt?: Maybe<Scalars["DateTime"]>;
-  localized_name: Scalars["String"];
-  name: Scalars["String"];
-  updatedAt?: Maybe<Scalars["DateTime"]>;
+  code: Scalars["String"]["output"];
+  createdAt?: Maybe<Scalars["DateTime"]["output"]>;
+  localized_name: Scalars["String"]["output"];
+  name: Scalars["String"]["output"];
+  updatedAt?: Maybe<Scalars["DateTime"]["output"]>;
 };
 
 export type LanguageEntity = {
   __typename?: "LanguageEntity";
   attributes?: Maybe<Language>;
-  id?: Maybe<Scalars["ID"]>;
+  id?: Maybe<Scalars["ID"]["output"]>;
 };
 
 export type LanguageEntityResponse = {
@@ -2903,9 +2898,9 @@ export type LanguageFiltersInput = {
 };
 
 export type LanguageInput = {
-  code?: InputMaybe<Scalars["String"]>;
-  localized_name?: InputMaybe<Scalars["String"]>;
-  name?: InputMaybe<Scalars["String"]>;
+  code?: InputMaybe<Scalars["String"]["input"]>;
+  localized_name?: InputMaybe<Scalars["String"]["input"]>;
+  name?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 export type LanguageRelationResponseCollection = {
@@ -2917,87 +2912,87 @@ export type LibraryItem = {
   __typename?: "LibraryItem";
   categories?: Maybe<CategoryRelationResponseCollection>;
   contents?: Maybe<RangedContentRelationResponseCollection>;
-  createdAt?: Maybe<Scalars["DateTime"]>;
+  createdAt?: Maybe<Scalars["DateTime"]["output"]>;
   descriptions?: Maybe<Array<Maybe<ComponentTranslationsLibraryItems>>>;
-  digital: Scalars["Boolean"];
-  download_available: Scalars["Boolean"];
+  digital: Scalars["Boolean"]["output"];
+  download_available: Scalars["Boolean"]["output"];
   gallery?: Maybe<UploadFileRelationResponseCollection>;
   images?: Maybe<Array<Maybe<ComponentCollectionsComponentLibraryImages>>>;
   metadata?: Maybe<Array<Maybe<LibraryItemMetadataDynamicZone>>>;
   price?: Maybe<ComponentBasicsPrice>;
-  primary: Scalars["Boolean"];
+  primary: Scalars["Boolean"]["output"];
   release_date?: Maybe<ComponentBasicsDatepicker>;
-  root_item: Scalars["Boolean"];
+  root_item: Scalars["Boolean"]["output"];
   size?: Maybe<ComponentBasicsSize>;
-  slug: Scalars["String"];
+  slug: Scalars["String"]["output"];
   subitem_of?: Maybe<LibraryItemRelationResponseCollection>;
   subitems?: Maybe<LibraryItemRelationResponseCollection>;
   submerchs?: Maybe<MerchItemRelationResponseCollection>;
-  subtitle?: Maybe<Scalars["String"]>;
+  subtitle?: Maybe<Scalars["String"]["output"]>;
   thumbnail?: Maybe<UploadFileEntityResponse>;
-  title: Scalars["String"];
-  updatedAt?: Maybe<Scalars["DateTime"]>;
+  title: Scalars["String"]["output"];
+  updatedAt?: Maybe<Scalars["DateTime"]["output"]>;
   urls?: Maybe<Array<Maybe<ComponentBasicsUrl>>>;
 };
 
 export type LibraryItemCategoriesArgs = {
   filters?: InputMaybe<CategoryFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type LibraryItemContentsArgs = {
   filters?: InputMaybe<RangedContentFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type LibraryItemDescriptionsArgs = {
   filters?: InputMaybe<ComponentTranslationsLibraryItemsFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type LibraryItemGalleryArgs = {
   filters?: InputMaybe<UploadFileFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type LibraryItemImagesArgs = {
   filters?: InputMaybe<ComponentCollectionsComponentLibraryImagesFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type LibraryItemSubitem_OfArgs = {
   filters?: InputMaybe<LibraryItemFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type LibraryItemSubitemsArgs = {
   filters?: InputMaybe<LibraryItemFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type LibraryItemSubmerchsArgs = {
   filters?: InputMaybe<MerchItemFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type LibraryItemUrlsArgs = {
   filters?: InputMaybe<ComponentBasicsUrlFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type LibraryItemEntity = {
   __typename?: "LibraryItemEntity";
   attributes?: Maybe<LibraryItem>;
-  id?: Maybe<Scalars["ID"]>;
+  id?: Maybe<Scalars["ID"]["output"]>;
 };
 
 export type LibraryItemEntityResponse = {
@@ -3039,26 +3034,26 @@ export type LibraryItemFiltersInput = {
 };
 
 export type LibraryItemInput = {
-  categories?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
-  contents?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
+  categories?: InputMaybe<Array<InputMaybe<Scalars["ID"]["input"]>>>;
+  contents?: InputMaybe<Array<InputMaybe<Scalars["ID"]["input"]>>>;
   descriptions?: InputMaybe<Array<InputMaybe<ComponentTranslationsLibraryItemsInput>>>;
-  digital?: InputMaybe<Scalars["Boolean"]>;
-  download_available?: InputMaybe<Scalars["Boolean"]>;
-  gallery?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
+  digital?: InputMaybe<Scalars["Boolean"]["input"]>;
+  download_available?: InputMaybe<Scalars["Boolean"]["input"]>;
+  gallery?: InputMaybe<Array<InputMaybe<Scalars["ID"]["input"]>>>;
   images?: InputMaybe<Array<InputMaybe<ComponentCollectionsComponentLibraryImagesInput>>>;
-  metadata?: InputMaybe<Array<Scalars["LibraryItemMetadataDynamicZoneInput"]>>;
+  metadata?: InputMaybe<Array<Scalars["LibraryItemMetadataDynamicZoneInput"]["input"]>>;
   price?: InputMaybe<ComponentBasicsPriceInput>;
-  primary?: InputMaybe<Scalars["Boolean"]>;
+  primary?: InputMaybe<Scalars["Boolean"]["input"]>;
   release_date?: InputMaybe<ComponentBasicsDatepickerInput>;
-  root_item?: InputMaybe<Scalars["Boolean"]>;
+  root_item?: InputMaybe<Scalars["Boolean"]["input"]>;
   size?: InputMaybe<ComponentBasicsSizeInput>;
-  slug?: InputMaybe<Scalars["String"]>;
-  subitem_of?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
-  subitems?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
-  submerchs?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
-  subtitle?: InputMaybe<Scalars["String"]>;
-  thumbnail?: InputMaybe<Scalars["ID"]>;
-  title?: InputMaybe<Scalars["String"]>;
+  slug?: InputMaybe<Scalars["String"]["input"]>;
+  subitem_of?: InputMaybe<Array<InputMaybe<Scalars["ID"]["input"]>>>;
+  subitems?: InputMaybe<Array<InputMaybe<Scalars["ID"]["input"]>>>;
+  submerchs?: InputMaybe<Array<InputMaybe<Scalars["ID"]["input"]>>>;
+  subtitle?: InputMaybe<Scalars["String"]["input"]>;
+  thumbnail?: InputMaybe<Scalars["ID"]["input"]>;
+  title?: InputMaybe<Scalars["String"]["input"]>;
   urls?: InputMaybe<Array<InputMaybe<ComponentBasicsUrlInput>>>;
 };
 
@@ -3078,25 +3073,25 @@ export type LibraryItemRelationResponseCollection = {
 
 export type MerchItem = {
   __typename?: "MerchItem";
-  createdAt?: Maybe<Scalars["DateTime"]>;
+  createdAt?: Maybe<Scalars["DateTime"]["output"]>;
   library_items?: Maybe<LibraryItemRelationResponseCollection>;
-  slug: Scalars["String"];
-  subtitle?: Maybe<Scalars["String"]>;
+  slug: Scalars["String"]["output"];
+  subtitle?: Maybe<Scalars["String"]["output"]>;
   thumbnail?: Maybe<UploadFileEntityResponse>;
-  title: Scalars["String"];
-  updatedAt?: Maybe<Scalars["DateTime"]>;
+  title: Scalars["String"]["output"];
+  updatedAt?: Maybe<Scalars["DateTime"]["output"]>;
 };
 
 export type MerchItemLibrary_ItemsArgs = {
   filters?: InputMaybe<LibraryItemFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type MerchItemEntity = {
   __typename?: "MerchItemEntity";
   attributes?: Maybe<MerchItem>;
-  id?: Maybe<Scalars["ID"]>;
+  id?: Maybe<Scalars["ID"]["output"]>;
 };
 
 export type MerchItemEntityResponse = {
@@ -3124,11 +3119,11 @@ export type MerchItemFiltersInput = {
 };
 
 export type MerchItemInput = {
-  library_items?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
-  slug?: InputMaybe<Scalars["String"]>;
-  subtitle?: InputMaybe<Scalars["String"]>;
-  thumbnail?: InputMaybe<Scalars["ID"]>;
-  title?: InputMaybe<Scalars["String"]>;
+  library_items?: InputMaybe<Array<InputMaybe<Scalars["ID"]["input"]>>>;
+  slug?: InputMaybe<Scalars["String"]["input"]>;
+  subtitle?: InputMaybe<Scalars["String"]["input"]>;
+  thumbnail?: InputMaybe<Scalars["ID"]["input"]>;
+  title?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 export type MerchItemRelationResponseCollection = {
@@ -3138,22 +3133,22 @@ export type MerchItemRelationResponseCollection = {
 
 export type MetadataType = {
   __typename?: "MetadataType";
-  createdAt?: Maybe<Scalars["DateTime"]>;
-  slug: Scalars["String"];
+  createdAt?: Maybe<Scalars["DateTime"]["output"]>;
+  slug: Scalars["String"]["output"];
   titles?: Maybe<Array<Maybe<ComponentTranslationsSimpleTitle>>>;
-  updatedAt?: Maybe<Scalars["DateTime"]>;
+  updatedAt?: Maybe<Scalars["DateTime"]["output"]>;
 };
 
 export type MetadataTypeTitlesArgs = {
   filters?: InputMaybe<ComponentTranslationsSimpleTitleFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type MetadataTypeEntity = {
   __typename?: "MetadataTypeEntity";
   attributes?: Maybe<MetadataType>;
-  id?: Maybe<Scalars["ID"]>;
+  id?: Maybe<Scalars["ID"]["output"]>;
 };
 
 export type MetadataTypeEntityResponse = {
@@ -3179,7 +3174,7 @@ export type MetadataTypeFiltersInput = {
 };
 
 export type MetadataTypeInput = {
-  slug?: InputMaybe<Scalars["String"]>;
+  slug?: InputMaybe<Scalars["String"]["input"]>;
   titles?: InputMaybe<Array<InputMaybe<ComponentTranslationsSimpleTitleInput>>>;
 };
 
@@ -3451,412 +3446,412 @@ export type MutationCreateWikiPagesTagArgs = {
 };
 
 export type MutationDeleteAudioSubtypeArgs = {
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationDeleteCategoryArgs = {
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationDeleteChronicleArgs = {
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationDeleteChroniclesChapterArgs = {
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationDeleteChronologyEraArgs = {
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationDeleteChronologyItemArgs = {
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationDeleteContentArgs = {
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationDeleteContentTypeArgs = {
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationDeleteContentsFolderArgs = {
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationDeleteCurrencyArgs = {
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationDeleteGamePlatformArgs = {
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationDeleteGlossaryItemArgs = {
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationDeleteGlossaryItemTypeArgs = {
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationDeleteGroupSubtypeArgs = {
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationDeleteLanguageArgs = {
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationDeleteLibraryItemArgs = {
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationDeleteMerchItemArgs = {
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationDeleteMetadataTypeArgs = {
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationDeletePostArgs = {
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationDeleteRangedContentArgs = {
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationDeleteRecorderArgs = {
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationDeleteReinCostumeArgs = {
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationDeleteReinEmblemArgs = {
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationDeleteSourceArgs = {
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationDeleteTextualSubtypeArgs = {
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationDeleteUploadFileArgs = {
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationDeleteUploadFolderArgs = {
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationDeleteVideoArgs = {
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationDeleteVideoChannelArgs = {
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationDeleteVideoSubtypeArgs = {
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationDeleteWeaponStoryArgs = {
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationDeleteWeaponStoryGroupArgs = {
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationDeleteWeaponStoryTypeArgs = {
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationDeleteWebArchiveArgs = {
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationDeleteWebsiteInterfaceArgs = {
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationDeleteWikiPageArgs = {
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationDeleteWikiPagesTagArgs = {
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationMultipleUploadArgs = {
-  field?: InputMaybe<Scalars["String"]>;
-  files: Array<InputMaybe<Scalars["Upload"]>>;
-  ref?: InputMaybe<Scalars["String"]>;
-  refId?: InputMaybe<Scalars["ID"]>;
+  field?: InputMaybe<Scalars["String"]["input"]>;
+  files: Array<InputMaybe<Scalars["Upload"]["input"]>>;
+  ref?: InputMaybe<Scalars["String"]["input"]>;
+  refId?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type MutationRemoveFileArgs = {
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationUpdateAudioSubtypeArgs = {
   data: AudioSubtypeInput;
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationUpdateCategoryArgs = {
   data: CategoryInput;
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationUpdateChronicleArgs = {
   data: ChronicleInput;
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationUpdateChroniclesChapterArgs = {
   data: ChroniclesChapterInput;
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationUpdateChronologyEraArgs = {
   data: ChronologyEraInput;
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationUpdateChronologyItemArgs = {
   data: ChronologyItemInput;
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationUpdateContentArgs = {
   data: ContentInput;
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationUpdateContentTypeArgs = {
   data: ContentTypeInput;
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationUpdateContentsFolderArgs = {
   data: ContentsFolderInput;
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationUpdateCurrencyArgs = {
   data: CurrencyInput;
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationUpdateFileInfoArgs = {
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
   info?: InputMaybe<FileInfoInput>;
 };
 
 export type MutationUpdateGamePlatformArgs = {
   data: GamePlatformInput;
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationUpdateGlossaryItemArgs = {
   data: GlossaryItemInput;
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationUpdateGlossaryItemTypeArgs = {
   data: GlossaryItemTypeInput;
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationUpdateGroupSubtypeArgs = {
   data: GroupSubtypeInput;
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationUpdateLanguageArgs = {
   data: LanguageInput;
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationUpdateLibraryItemArgs = {
   data: LibraryItemInput;
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationUpdateMerchItemArgs = {
   data: MerchItemInput;
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationUpdateMetadataTypeArgs = {
   data: MetadataTypeInput;
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationUpdatePostArgs = {
   data: PostInput;
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationUpdateRangedContentArgs = {
   data: RangedContentInput;
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationUpdateRecorderArgs = {
   data: RecorderInput;
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationUpdateReinCostumeArgs = {
   data: ReinCostumeInput;
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationUpdateReinEmblemArgs = {
   data: ReinEmblemInput;
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationUpdateSourceArgs = {
   data: SourceInput;
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationUpdateTextualSubtypeArgs = {
   data: TextualSubtypeInput;
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationUpdateUploadFileArgs = {
   data: UploadFileInput;
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationUpdateUploadFolderArgs = {
   data: UploadFolderInput;
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationUpdateVideoArgs = {
   data: VideoInput;
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationUpdateVideoChannelArgs = {
   data: VideoChannelInput;
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationUpdateVideoSubtypeArgs = {
   data: VideoSubtypeInput;
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationUpdateWeaponStoryArgs = {
   data: WeaponStoryInput;
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationUpdateWeaponStoryGroupArgs = {
   data: WeaponStoryGroupInput;
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationUpdateWeaponStoryTypeArgs = {
   data: WeaponStoryTypeInput;
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationUpdateWebArchiveArgs = {
   data: WebArchiveInput;
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationUpdateWebsiteInterfaceArgs = {
   data: WebsiteInterfaceInput;
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationUpdateWikiPageArgs = {
   data: WikiPageInput;
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationUpdateWikiPagesTagArgs = {
   data: WikiPagesTagInput;
-  id: Scalars["ID"];
+  id: Scalars["ID"]["input"];
 };
 
 export type MutationUploadArgs = {
-  field?: InputMaybe<Scalars["String"]>;
-  file: Scalars["Upload"];
+  field?: InputMaybe<Scalars["String"]["input"]>;
+  file: Scalars["Upload"]["input"];
   info?: InputMaybe<FileInfoInput>;
-  ref?: InputMaybe<Scalars["String"]>;
-  refId?: InputMaybe<Scalars["ID"]>;
+  ref?: InputMaybe<Scalars["String"]["input"]>;
+  refId?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type Pagination = {
   __typename?: "Pagination";
-  page: Scalars["Int"];
-  pageCount: Scalars["Int"];
-  pageSize: Scalars["Int"];
-  total: Scalars["Int"];
+  page: Scalars["Int"]["output"];
+  pageCount: Scalars["Int"]["output"];
+  pageSize: Scalars["Int"]["output"];
+  total: Scalars["Int"]["output"];
 };
 
 export type PaginationArg = {
-  limit?: InputMaybe<Scalars["Int"]>;
-  page?: InputMaybe<Scalars["Int"]>;
-  pageSize?: InputMaybe<Scalars["Int"]>;
-  start?: InputMaybe<Scalars["Int"]>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  page?: InputMaybe<Scalars["Int"]["input"]>;
+  pageSize?: InputMaybe<Scalars["Int"]["input"]>;
+  start?: InputMaybe<Scalars["Int"]["input"]>;
 };
 
 export type Post = {
   __typename?: "Post";
   authors?: Maybe<RecorderRelationResponseCollection>;
   categories?: Maybe<CategoryRelationResponseCollection>;
-  createdAt?: Maybe<Scalars["DateTime"]>;
+  createdAt?: Maybe<Scalars["DateTime"]["output"]>;
   date: ComponentBasicsDatepicker;
-  hidden: Scalars["Boolean"];
-  slug: Scalars["String"];
+  hidden: Scalars["Boolean"]["output"];
+  slug: Scalars["String"]["output"];
   thumbnail?: Maybe<UploadFileEntityResponse>;
   translations?: Maybe<Array<Maybe<ComponentTranslationsPosts>>>;
-  updatedAt?: Maybe<Scalars["DateTime"]>;
+  updatedAt?: Maybe<Scalars["DateTime"]["output"]>;
 };
 
 export type PostAuthorsArgs = {
   filters?: InputMaybe<RecorderFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type PostCategoriesArgs = {
   filters?: InputMaybe<CategoryFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type PostTranslationsArgs = {
   filters?: InputMaybe<ComponentTranslationsPostsFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type PostEntity = {
   __typename?: "PostEntity";
   attributes?: Maybe<Post>;
-  id?: Maybe<Scalars["ID"]>;
+  id?: Maybe<Scalars["ID"]["output"]>;
 };
 
 export type PostEntityResponse = {
@@ -3886,12 +3881,12 @@ export type PostFiltersInput = {
 };
 
 export type PostInput = {
-  authors?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
-  categories?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
+  authors?: InputMaybe<Array<InputMaybe<Scalars["ID"]["input"]>>>;
+  categories?: InputMaybe<Array<InputMaybe<Scalars["ID"]["input"]>>>;
   date?: InputMaybe<ComponentBasicsDatepickerInput>;
-  hidden?: InputMaybe<Scalars["Boolean"]>;
-  slug?: InputMaybe<Scalars["String"]>;
-  thumbnail?: InputMaybe<Scalars["ID"]>;
+  hidden?: InputMaybe<Scalars["Boolean"]["input"]>;
+  slug?: InputMaybe<Scalars["String"]["input"]>;
+  thumbnail?: InputMaybe<Scalars["ID"]["input"]>;
   translations?: InputMaybe<Array<InputMaybe<ComponentTranslationsPostsInput>>>;
 };
 
@@ -3974,396 +3969,396 @@ export type Query = {
 };
 
 export type QueryAudioSubtypeArgs = {
-  id?: InputMaybe<Scalars["ID"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type QueryAudioSubtypesArgs = {
   filters?: InputMaybe<AudioSubtypeFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type QueryCategoriesArgs = {
   filters?: InputMaybe<CategoryFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type QueryCategoryArgs = {
-  id?: InputMaybe<Scalars["ID"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type QueryChronicleArgs = {
-  id?: InputMaybe<Scalars["ID"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type QueryChroniclesArgs = {
   filters?: InputMaybe<ChronicleFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type QueryChroniclesChapterArgs = {
-  id?: InputMaybe<Scalars["ID"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type QueryChroniclesChaptersArgs = {
   filters?: InputMaybe<ChroniclesChapterFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type QueryChronologyEraArgs = {
-  id?: InputMaybe<Scalars["ID"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type QueryChronologyErasArgs = {
   filters?: InputMaybe<ChronologyEraFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type QueryChronologyItemArgs = {
-  id?: InputMaybe<Scalars["ID"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type QueryChronologyItemsArgs = {
   filters?: InputMaybe<ChronologyItemFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type QueryContentArgs = {
-  id?: InputMaybe<Scalars["ID"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type QueryContentTypeArgs = {
-  id?: InputMaybe<Scalars["ID"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type QueryContentTypesArgs = {
   filters?: InputMaybe<ContentTypeFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type QueryContentsArgs = {
   filters?: InputMaybe<ContentFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type QueryContentsFolderArgs = {
-  id?: InputMaybe<Scalars["ID"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type QueryContentsFoldersArgs = {
   filters?: InputMaybe<ContentsFolderFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type QueryCurrenciesArgs = {
   filters?: InputMaybe<CurrencyFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type QueryCurrencyArgs = {
-  id?: InputMaybe<Scalars["ID"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type QueryGamePlatformArgs = {
-  id?: InputMaybe<Scalars["ID"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type QueryGamePlatformsArgs = {
   filters?: InputMaybe<GamePlatformFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type QueryGlossaryItemArgs = {
-  id?: InputMaybe<Scalars["ID"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type QueryGlossaryItemTypeArgs = {
-  id?: InputMaybe<Scalars["ID"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type QueryGlossaryItemTypesArgs = {
   filters?: InputMaybe<GlossaryItemTypeFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type QueryGlossaryItemsArgs = {
   filters?: InputMaybe<GlossaryItemFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type QueryGroupSubtypeArgs = {
-  id?: InputMaybe<Scalars["ID"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type QueryGroupSubtypesArgs = {
   filters?: InputMaybe<GroupSubtypeFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type QueryLanguageArgs = {
-  id?: InputMaybe<Scalars["ID"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type QueryLanguagesArgs = {
   filters?: InputMaybe<LanguageFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type QueryLibraryItemArgs = {
-  id?: InputMaybe<Scalars["ID"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type QueryLibraryItemsArgs = {
   filters?: InputMaybe<LibraryItemFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type QueryMerchItemArgs = {
-  id?: InputMaybe<Scalars["ID"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type QueryMerchItemsArgs = {
   filters?: InputMaybe<MerchItemFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type QueryMetadataTypeArgs = {
-  id?: InputMaybe<Scalars["ID"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type QueryMetadataTypesArgs = {
   filters?: InputMaybe<MetadataTypeFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type QueryPostArgs = {
-  id?: InputMaybe<Scalars["ID"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type QueryPostsArgs = {
   filters?: InputMaybe<PostFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type QueryRangedContentArgs = {
-  id?: InputMaybe<Scalars["ID"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type QueryRangedContentsArgs = {
   filters?: InputMaybe<RangedContentFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type QueryRecorderArgs = {
-  id?: InputMaybe<Scalars["ID"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type QueryRecordersArgs = {
   filters?: InputMaybe<RecorderFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type QueryReinCostumeArgs = {
-  id?: InputMaybe<Scalars["ID"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type QueryReinCostumesArgs = {
   filters?: InputMaybe<ReinCostumeFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type QueryReinEmblemArgs = {
-  id?: InputMaybe<Scalars["ID"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type QueryReinEmblemsArgs = {
   filters?: InputMaybe<ReinEmblemFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type QuerySourceArgs = {
-  id?: InputMaybe<Scalars["ID"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type QuerySourcesArgs = {
   filters?: InputMaybe<SourceFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type QueryTextualSubtypeArgs = {
-  id?: InputMaybe<Scalars["ID"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type QueryTextualSubtypesArgs = {
   filters?: InputMaybe<TextualSubtypeFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type QueryUploadFileArgs = {
-  id?: InputMaybe<Scalars["ID"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type QueryUploadFilesArgs = {
   filters?: InputMaybe<UploadFileFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type QueryUploadFolderArgs = {
-  id?: InputMaybe<Scalars["ID"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type QueryUploadFoldersArgs = {
   filters?: InputMaybe<UploadFolderFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type QueryVideoArgs = {
-  id?: InputMaybe<Scalars["ID"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type QueryVideoChannelArgs = {
-  id?: InputMaybe<Scalars["ID"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type QueryVideoChannelsArgs = {
   filters?: InputMaybe<VideoChannelFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type QueryVideoSubtypeArgs = {
-  id?: InputMaybe<Scalars["ID"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type QueryVideoSubtypesArgs = {
   filters?: InputMaybe<VideoSubtypeFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type QueryVideosArgs = {
   filters?: InputMaybe<VideoFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type QueryWeaponStoriesArgs = {
   filters?: InputMaybe<WeaponStoryFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type QueryWeaponStoryArgs = {
-  id?: InputMaybe<Scalars["ID"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type QueryWeaponStoryGroupArgs = {
-  id?: InputMaybe<Scalars["ID"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type QueryWeaponStoryGroupsArgs = {
   filters?: InputMaybe<WeaponStoryGroupFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type QueryWeaponStoryTypeArgs = {
-  id?: InputMaybe<Scalars["ID"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type QueryWeaponStoryTypesArgs = {
   filters?: InputMaybe<WeaponStoryTypeFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type QueryWebArchiveArgs = {
-  id?: InputMaybe<Scalars["ID"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type QueryWebArchivesArgs = {
   filters?: InputMaybe<WebArchiveFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type QueryWebsiteInterfaceArgs = {
-  id?: InputMaybe<Scalars["ID"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type QueryWebsiteInterfacesArgs = {
   filters?: InputMaybe<WebsiteInterfaceFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type QueryWikiPageArgs = {
-  id?: InputMaybe<Scalars["ID"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type QueryWikiPagesArgs = {
   filters?: InputMaybe<WikiPageFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type QueryWikiPagesTagArgs = {
-  id?: InputMaybe<Scalars["ID"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type QueryWikiPagesTagsArgs = {
   filters?: InputMaybe<WikiPagesTagFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type RangedContent = {
   __typename?: "RangedContent";
   content?: Maybe<ContentEntityResponse>;
-  createdAt?: Maybe<Scalars["DateTime"]>;
+  createdAt?: Maybe<Scalars["DateTime"]["output"]>;
   library_item?: Maybe<LibraryItemEntityResponse>;
   range: Array<Maybe<RangedContentRangeDynamicZone>>;
   scan_set?: Maybe<Array<Maybe<ComponentSetsScanSet>>>;
-  slug: Scalars["String"];
-  updatedAt?: Maybe<Scalars["DateTime"]>;
+  slug: Scalars["String"]["output"];
+  updatedAt?: Maybe<Scalars["DateTime"]["output"]>;
 };
 
 export type RangedContentScan_SetArgs = {
   filters?: InputMaybe<ComponentSetsScanSetFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type RangedContentEntity = {
   __typename?: "RangedContentEntity";
   attributes?: Maybe<RangedContent>;
-  id?: Maybe<Scalars["ID"]>;
+  id?: Maybe<Scalars["ID"]["output"]>;
 };
 
 export type RangedContentEntityResponse = {
@@ -4391,11 +4386,11 @@ export type RangedContentFiltersInput = {
 };
 
 export type RangedContentInput = {
-  content?: InputMaybe<Scalars["ID"]>;
-  library_item?: InputMaybe<Scalars["ID"]>;
-  range?: InputMaybe<Array<Scalars["RangedContentRangeDynamicZoneInput"]>>;
+  content?: InputMaybe<Scalars["ID"]["input"]>;
+  library_item?: InputMaybe<Scalars["ID"]["input"]>;
+  range?: InputMaybe<Array<Scalars["RangedContentRangeDynamicZoneInput"]["input"]>>;
   scan_set?: InputMaybe<Array<InputMaybe<ComponentSetsScanSetInput>>>;
-  slug?: InputMaybe<Scalars["String"]>;
+  slug?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 export type RangedContentRangeDynamicZone =
@@ -4411,33 +4406,33 @@ export type RangedContentRelationResponseCollection = {
 
 export type Recorder = {
   __typename?: "Recorder";
-  anonymize: Scalars["Boolean"];
-  anonymous_code: Scalars["String"];
+  anonymize: Scalars["Boolean"]["output"];
+  anonymous_code: Scalars["String"]["output"];
   avatar?: Maybe<UploadFileEntityResponse>;
   bio?: Maybe<Array<Maybe<ComponentTranslationsBio>>>;
-  createdAt?: Maybe<Scalars["DateTime"]>;
+  createdAt?: Maybe<Scalars["DateTime"]["output"]>;
   languages?: Maybe<LanguageRelationResponseCollection>;
-  pronouns?: Maybe<Scalars["String"]>;
-  updatedAt?: Maybe<Scalars["DateTime"]>;
-  username: Scalars["String"];
+  pronouns?: Maybe<Scalars["String"]["output"]>;
+  updatedAt?: Maybe<Scalars["DateTime"]["output"]>;
+  username: Scalars["String"]["output"];
 };
 
 export type RecorderBioArgs = {
   filters?: InputMaybe<ComponentTranslationsBioFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type RecorderLanguagesArgs = {
   filters?: InputMaybe<LanguageFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type RecorderEntity = {
   __typename?: "RecorderEntity";
   attributes?: Maybe<Recorder>;
-  id?: Maybe<Scalars["ID"]>;
+  id?: Maybe<Scalars["ID"]["output"]>;
 };
 
 export type RecorderEntityResponse = {
@@ -4467,13 +4462,13 @@ export type RecorderFiltersInput = {
 };
 
 export type RecorderInput = {
-  anonymize?: InputMaybe<Scalars["Boolean"]>;
-  anonymous_code?: InputMaybe<Scalars["String"]>;
-  avatar?: InputMaybe<Scalars["ID"]>;
+  anonymize?: InputMaybe<Scalars["Boolean"]["input"]>;
+  anonymous_code?: InputMaybe<Scalars["String"]["input"]>;
+  avatar?: InputMaybe<Scalars["ID"]["input"]>;
   bio?: InputMaybe<Array<InputMaybe<ComponentTranslationsBioInput>>>;
-  languages?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
-  pronouns?: InputMaybe<Scalars["String"]>;
-  username?: InputMaybe<Scalars["String"]>;
+  languages?: InputMaybe<Array<InputMaybe<Scalars["ID"]["input"]>>>;
+  pronouns?: InputMaybe<Scalars["String"]["input"]>;
+  username?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 export type RecorderRelationResponseCollection = {
@@ -4483,25 +4478,25 @@ export type RecorderRelationResponseCollection = {
 
 export type ReinCostume = {
   __typename?: "ReinCostume";
-  createdAt?: Maybe<Scalars["DateTime"]>;
+  createdAt?: Maybe<Scalars["DateTime"]["output"]>;
   emblem?: Maybe<ReinEmblemEntityResponse>;
-  slug: Scalars["String"];
+  slug: Scalars["String"]["output"];
   sprite?: Maybe<UploadFileEntityResponse>;
   thumbnail?: Maybe<UploadFileEntityResponse>;
   translations?: Maybe<Array<Maybe<ComponentTranslationsReinCostumes>>>;
-  updatedAt?: Maybe<Scalars["DateTime"]>;
+  updatedAt?: Maybe<Scalars["DateTime"]["output"]>;
 };
 
 export type ReinCostumeTranslationsArgs = {
   filters?: InputMaybe<ComponentTranslationsReinCostumesFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ReinCostumeEntity = {
   __typename?: "ReinCostumeEntity";
   attributes?: Maybe<ReinCostume>;
-  id?: Maybe<Scalars["ID"]>;
+  id?: Maybe<Scalars["ID"]["output"]>;
 };
 
 export type ReinCostumeEntityResponse = {
@@ -4528,10 +4523,10 @@ export type ReinCostumeFiltersInput = {
 };
 
 export type ReinCostumeInput = {
-  emblem?: InputMaybe<Scalars["ID"]>;
-  slug?: InputMaybe<Scalars["String"]>;
-  sprite?: InputMaybe<Scalars["ID"]>;
-  thumbnail?: InputMaybe<Scalars["ID"]>;
+  emblem?: InputMaybe<Scalars["ID"]["input"]>;
+  slug?: InputMaybe<Scalars["String"]["input"]>;
+  sprite?: InputMaybe<Scalars["ID"]["input"]>;
+  thumbnail?: InputMaybe<Scalars["ID"]["input"]>;
   translations?: InputMaybe<Array<InputMaybe<ComponentTranslationsReinCostumesInput>>>;
 };
 
@@ -4543,28 +4538,28 @@ export type ReinCostumeRelationResponseCollection = {
 export type ReinEmblem = {
   __typename?: "ReinEmblem";
   costumes?: Maybe<ReinCostumeRelationResponseCollection>;
-  createdAt?: Maybe<Scalars["DateTime"]>;
-  slug: Scalars["String"];
+  createdAt?: Maybe<Scalars["DateTime"]["output"]>;
+  slug: Scalars["String"]["output"];
   translations?: Maybe<Array<Maybe<ComponentTranslationsReinEmblems>>>;
-  updatedAt?: Maybe<Scalars["DateTime"]>;
+  updatedAt?: Maybe<Scalars["DateTime"]["output"]>;
 };
 
 export type ReinEmblemCostumesArgs = {
   filters?: InputMaybe<ReinCostumeFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ReinEmblemTranslationsArgs = {
   filters?: InputMaybe<ComponentTranslationsReinEmblemsFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type ReinEmblemEntity = {
   __typename?: "ReinEmblemEntity";
   attributes?: Maybe<ReinEmblem>;
-  id?: Maybe<Scalars["ID"]>;
+  id?: Maybe<Scalars["ID"]["output"]>;
 };
 
 export type ReinEmblemEntityResponse = {
@@ -4591,8 +4586,8 @@ export type ReinEmblemFiltersInput = {
 };
 
 export type ReinEmblemInput = {
-  costumes?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
-  slug?: InputMaybe<Scalars["String"]>;
+  costumes?: InputMaybe<Array<InputMaybe<Scalars["ID"]["input"]>>>;
+  slug?: InputMaybe<Scalars["String"]["input"]>;
   translations?: InputMaybe<Array<InputMaybe<ComponentTranslationsReinEmblemsInput>>>;
 };
 
@@ -4604,16 +4599,16 @@ export type ResponseCollectionMeta = {
 export type Source = {
   __typename?: "Source";
   content?: Maybe<ContentEntityResponse>;
-  createdAt?: Maybe<Scalars["DateTime"]>;
-  name: Scalars["String"];
+  createdAt?: Maybe<Scalars["DateTime"]["output"]>;
+  name: Scalars["String"]["output"];
   ranged_content?: Maybe<RangedContentEntityResponse>;
-  updatedAt?: Maybe<Scalars["DateTime"]>;
+  updatedAt?: Maybe<Scalars["DateTime"]["output"]>;
 };
 
 export type SourceEntity = {
   __typename?: "SourceEntity";
   attributes?: Maybe<Source>;
-  id?: Maybe<Scalars["ID"]>;
+  id?: Maybe<Scalars["ID"]["output"]>;
 };
 
 export type SourceEntityResponse = {
@@ -4640,53 +4635,53 @@ export type SourceFiltersInput = {
 };
 
 export type SourceInput = {
-  content?: InputMaybe<Scalars["ID"]>;
-  name?: InputMaybe<Scalars["String"]>;
-  ranged_content?: InputMaybe<Scalars["ID"]>;
+  content?: InputMaybe<Scalars["ID"]["input"]>;
+  name?: InputMaybe<Scalars["String"]["input"]>;
+  ranged_content?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type StringFilterInput = {
-  and?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
-  between?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
-  contains?: InputMaybe<Scalars["String"]>;
-  containsi?: InputMaybe<Scalars["String"]>;
-  endsWith?: InputMaybe<Scalars["String"]>;
-  eq?: InputMaybe<Scalars["String"]>;
-  eqi?: InputMaybe<Scalars["String"]>;
-  gt?: InputMaybe<Scalars["String"]>;
-  gte?: InputMaybe<Scalars["String"]>;
-  in?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
-  lt?: InputMaybe<Scalars["String"]>;
-  lte?: InputMaybe<Scalars["String"]>;
-  ne?: InputMaybe<Scalars["String"]>;
+  and?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
+  between?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
+  contains?: InputMaybe<Scalars["String"]["input"]>;
+  containsi?: InputMaybe<Scalars["String"]["input"]>;
+  endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  eq?: InputMaybe<Scalars["String"]["input"]>;
+  eqi?: InputMaybe<Scalars["String"]["input"]>;
+  gt?: InputMaybe<Scalars["String"]["input"]>;
+  gte?: InputMaybe<Scalars["String"]["input"]>;
+  in?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
+  lt?: InputMaybe<Scalars["String"]["input"]>;
+  lte?: InputMaybe<Scalars["String"]["input"]>;
+  ne?: InputMaybe<Scalars["String"]["input"]>;
   not?: InputMaybe<StringFilterInput>;
-  notContains?: InputMaybe<Scalars["String"]>;
-  notContainsi?: InputMaybe<Scalars["String"]>;
-  notIn?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
-  notNull?: InputMaybe<Scalars["Boolean"]>;
-  null?: InputMaybe<Scalars["Boolean"]>;
-  or?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
-  startsWith?: InputMaybe<Scalars["String"]>;
+  notContains?: InputMaybe<Scalars["String"]["input"]>;
+  notContainsi?: InputMaybe<Scalars["String"]["input"]>;
+  notIn?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
+  notNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  null?: InputMaybe<Scalars["Boolean"]["input"]>;
+  or?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
+  startsWith?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 export type TextualSubtype = {
   __typename?: "TextualSubtype";
-  createdAt?: Maybe<Scalars["DateTime"]>;
-  slug: Scalars["String"];
+  createdAt?: Maybe<Scalars["DateTime"]["output"]>;
+  slug: Scalars["String"]["output"];
   titles?: Maybe<Array<Maybe<ComponentTranslationsSimpleTitle>>>;
-  updatedAt?: Maybe<Scalars["DateTime"]>;
+  updatedAt?: Maybe<Scalars["DateTime"]["output"]>;
 };
 
 export type TextualSubtypeTitlesArgs = {
   filters?: InputMaybe<ComponentTranslationsSimpleTitleFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type TextualSubtypeEntity = {
   __typename?: "TextualSubtypeEntity";
   attributes?: Maybe<TextualSubtype>;
-  id?: Maybe<Scalars["ID"]>;
+  id?: Maybe<Scalars["ID"]["output"]>;
 };
 
 export type TextualSubtypeEntityResponse = {
@@ -4712,35 +4707,35 @@ export type TextualSubtypeFiltersInput = {
 };
 
 export type TextualSubtypeInput = {
-  slug?: InputMaybe<Scalars["String"]>;
+  slug?: InputMaybe<Scalars["String"]["input"]>;
   titles?: InputMaybe<Array<InputMaybe<ComponentTranslationsSimpleTitleInput>>>;
 };
 
 export type UploadFile = {
   __typename?: "UploadFile";
-  alternativeText?: Maybe<Scalars["String"]>;
-  caption?: Maybe<Scalars["String"]>;
-  createdAt?: Maybe<Scalars["DateTime"]>;
-  ext?: Maybe<Scalars["String"]>;
-  formats?: Maybe<Scalars["JSON"]>;
-  hash: Scalars["String"];
-  height?: Maybe<Scalars["Int"]>;
-  mime: Scalars["String"];
-  name: Scalars["String"];
-  previewUrl?: Maybe<Scalars["String"]>;
-  provider: Scalars["String"];
-  provider_metadata?: Maybe<Scalars["JSON"]>;
+  alternativeText?: Maybe<Scalars["String"]["output"]>;
+  caption?: Maybe<Scalars["String"]["output"]>;
+  createdAt?: Maybe<Scalars["DateTime"]["output"]>;
+  ext?: Maybe<Scalars["String"]["output"]>;
+  formats?: Maybe<Scalars["JSON"]["output"]>;
+  hash: Scalars["String"]["output"];
+  height?: Maybe<Scalars["Int"]["output"]>;
+  mime: Scalars["String"]["output"];
+  name: Scalars["String"]["output"];
+  previewUrl?: Maybe<Scalars["String"]["output"]>;
+  provider: Scalars["String"]["output"];
+  provider_metadata?: Maybe<Scalars["JSON"]["output"]>;
   related?: Maybe<Array<Maybe<GenericMorph>>>;
-  size: Scalars["Float"];
-  updatedAt?: Maybe<Scalars["DateTime"]>;
-  url: Scalars["String"];
-  width?: Maybe<Scalars["Int"]>;
+  size: Scalars["Float"]["output"];
+  updatedAt?: Maybe<Scalars["DateTime"]["output"]>;
+  url: Scalars["String"]["output"];
+  width?: Maybe<Scalars["Int"]["output"]>;
 };
 
 export type UploadFileEntity = {
   __typename?: "UploadFileEntity";
   attributes?: Maybe<UploadFile>;
-  id?: Maybe<Scalars["ID"]>;
+  id?: Maybe<Scalars["ID"]["output"]>;
 };
 
 export type UploadFileEntityResponse = {
@@ -4780,22 +4775,22 @@ export type UploadFileFiltersInput = {
 };
 
 export type UploadFileInput = {
-  alternativeText?: InputMaybe<Scalars["String"]>;
-  caption?: InputMaybe<Scalars["String"]>;
-  ext?: InputMaybe<Scalars["String"]>;
-  folder?: InputMaybe<Scalars["ID"]>;
-  folderPath?: InputMaybe<Scalars["String"]>;
-  formats?: InputMaybe<Scalars["JSON"]>;
-  hash?: InputMaybe<Scalars["String"]>;
-  height?: InputMaybe<Scalars["Int"]>;
-  mime?: InputMaybe<Scalars["String"]>;
-  name?: InputMaybe<Scalars["String"]>;
-  previewUrl?: InputMaybe<Scalars["String"]>;
-  provider?: InputMaybe<Scalars["String"]>;
-  provider_metadata?: InputMaybe<Scalars["JSON"]>;
-  size?: InputMaybe<Scalars["Float"]>;
-  url?: InputMaybe<Scalars["String"]>;
-  width?: InputMaybe<Scalars["Int"]>;
+  alternativeText?: InputMaybe<Scalars["String"]["input"]>;
+  caption?: InputMaybe<Scalars["String"]["input"]>;
+  ext?: InputMaybe<Scalars["String"]["input"]>;
+  folder?: InputMaybe<Scalars["ID"]["input"]>;
+  folderPath?: InputMaybe<Scalars["String"]["input"]>;
+  formats?: InputMaybe<Scalars["JSON"]["input"]>;
+  hash?: InputMaybe<Scalars["String"]["input"]>;
+  height?: InputMaybe<Scalars["Int"]["input"]>;
+  mime?: InputMaybe<Scalars["String"]["input"]>;
+  name?: InputMaybe<Scalars["String"]["input"]>;
+  previewUrl?: InputMaybe<Scalars["String"]["input"]>;
+  provider?: InputMaybe<Scalars["String"]["input"]>;
+  provider_metadata?: InputMaybe<Scalars["JSON"]["input"]>;
+  size?: InputMaybe<Scalars["Float"]["input"]>;
+  url?: InputMaybe<Scalars["String"]["input"]>;
+  width?: InputMaybe<Scalars["Int"]["input"]>;
 };
 
 export type UploadFileRelationResponseCollection = {
@@ -4806,31 +4801,31 @@ export type UploadFileRelationResponseCollection = {
 export type UploadFolder = {
   __typename?: "UploadFolder";
   children?: Maybe<UploadFolderRelationResponseCollection>;
-  createdAt?: Maybe<Scalars["DateTime"]>;
+  createdAt?: Maybe<Scalars["DateTime"]["output"]>;
   files?: Maybe<UploadFileRelationResponseCollection>;
-  name: Scalars["String"];
+  name: Scalars["String"]["output"];
   parent?: Maybe<UploadFolderEntityResponse>;
-  path: Scalars["String"];
-  pathId: Scalars["Int"];
-  updatedAt?: Maybe<Scalars["DateTime"]>;
+  path: Scalars["String"]["output"];
+  pathId: Scalars["Int"]["output"];
+  updatedAt?: Maybe<Scalars["DateTime"]["output"]>;
 };
 
 export type UploadFolderChildrenArgs = {
   filters?: InputMaybe<UploadFolderFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type UploadFolderFilesArgs = {
   filters?: InputMaybe<UploadFileFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type UploadFolderEntity = {
   __typename?: "UploadFolderEntity";
   attributes?: Maybe<UploadFolder>;
-  id?: Maybe<Scalars["ID"]>;
+  id?: Maybe<Scalars["ID"]["output"]>;
 };
 
 export type UploadFolderEntityResponse = {
@@ -4860,12 +4855,12 @@ export type UploadFolderFiltersInput = {
 };
 
 export type UploadFolderInput = {
-  children?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
-  files?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
-  name?: InputMaybe<Scalars["String"]>;
-  parent?: InputMaybe<Scalars["ID"]>;
-  path?: InputMaybe<Scalars["String"]>;
-  pathId?: InputMaybe<Scalars["Int"]>;
+  children?: InputMaybe<Array<InputMaybe<Scalars["ID"]["input"]>>>;
+  files?: InputMaybe<Array<InputMaybe<Scalars["ID"]["input"]>>>;
+  name?: InputMaybe<Scalars["String"]["input"]>;
+  parent?: InputMaybe<Scalars["ID"]["input"]>;
+  path?: InputMaybe<Scalars["String"]["input"]>;
+  pathId?: InputMaybe<Scalars["Int"]["input"]>;
 };
 
 export type UploadFolderRelationResponseCollection = {
@@ -4878,61 +4873,61 @@ export type Video = {
   audio_languages?: Maybe<LanguageRelationResponseCollection>;
   categories?: Maybe<CategoryRelationResponseCollection>;
   channel?: Maybe<VideoChannelEntityResponse>;
-  createdAt?: Maybe<Scalars["DateTime"]>;
-  description: Scalars["String"];
-  duration: Scalars["Int"];
-  gone: Scalars["Boolean"];
-  height: Scalars["Int"];
-  likes: Scalars["Int"];
-  live_chat: Scalars["Boolean"];
+  createdAt?: Maybe<Scalars["DateTime"]["output"]>;
+  description: Scalars["String"]["output"];
+  duration: Scalars["Int"]["output"];
+  gone: Scalars["Boolean"]["output"];
+  height: Scalars["Int"]["output"];
+  likes: Scalars["Int"]["output"];
+  live_chat: Scalars["Boolean"]["output"];
   published_date: ComponentBasicsDatepicker;
   source?: Maybe<Enum_Video_Source>;
   sub_languages?: Maybe<LanguageRelationResponseCollection>;
-  title: Scalars["String"];
-  uid: Scalars["String"];
-  updatedAt?: Maybe<Scalars["DateTime"]>;
-  views: Scalars["Int"];
-  width: Scalars["Int"];
+  title: Scalars["String"]["output"];
+  uid: Scalars["String"]["output"];
+  updatedAt?: Maybe<Scalars["DateTime"]["output"]>;
+  views: Scalars["Int"]["output"];
+  width: Scalars["Int"]["output"];
 };
 
 export type VideoAudio_LanguagesArgs = {
   filters?: InputMaybe<LanguageFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type VideoCategoriesArgs = {
   filters?: InputMaybe<CategoryFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type VideoSub_LanguagesArgs = {
   filters?: InputMaybe<LanguageFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type VideoChannel = {
   __typename?: "VideoChannel";
-  createdAt?: Maybe<Scalars["DateTime"]>;
-  subscribers: Scalars["Int"];
-  title: Scalars["String"];
-  uid: Scalars["String"];
-  updatedAt?: Maybe<Scalars["DateTime"]>;
+  createdAt?: Maybe<Scalars["DateTime"]["output"]>;
+  subscribers: Scalars["Int"]["output"];
+  title: Scalars["String"]["output"];
+  uid: Scalars["String"]["output"];
+  updatedAt?: Maybe<Scalars["DateTime"]["output"]>;
   videos?: Maybe<VideoRelationResponseCollection>;
 };
 
 export type VideoChannelVideosArgs = {
   filters?: InputMaybe<VideoFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type VideoChannelEntity = {
   __typename?: "VideoChannelEntity";
   attributes?: Maybe<VideoChannel>;
-  id?: Maybe<Scalars["ID"]>;
+  id?: Maybe<Scalars["ID"]["output"]>;
 };
 
 export type VideoChannelEntityResponse = {
@@ -4960,16 +4955,16 @@ export type VideoChannelFiltersInput = {
 };
 
 export type VideoChannelInput = {
-  subscribers?: InputMaybe<Scalars["Int"]>;
-  title?: InputMaybe<Scalars["String"]>;
-  uid?: InputMaybe<Scalars["String"]>;
-  videos?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
+  subscribers?: InputMaybe<Scalars["Int"]["input"]>;
+  title?: InputMaybe<Scalars["String"]["input"]>;
+  uid?: InputMaybe<Scalars["String"]["input"]>;
+  videos?: InputMaybe<Array<InputMaybe<Scalars["ID"]["input"]>>>;
 };
 
 export type VideoEntity = {
   __typename?: "VideoEntity";
   attributes?: Maybe<Video>;
-  id?: Maybe<Scalars["ID"]>;
+  id?: Maybe<Scalars["ID"]["output"]>;
 };
 
 export type VideoEntityResponse = {
@@ -5009,22 +5004,22 @@ export type VideoFiltersInput = {
 };
 
 export type VideoInput = {
-  audio_languages?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
-  categories?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
-  channel?: InputMaybe<Scalars["ID"]>;
-  description?: InputMaybe<Scalars["String"]>;
-  duration?: InputMaybe<Scalars["Int"]>;
-  gone?: InputMaybe<Scalars["Boolean"]>;
-  height?: InputMaybe<Scalars["Int"]>;
-  likes?: InputMaybe<Scalars["Int"]>;
-  live_chat?: InputMaybe<Scalars["Boolean"]>;
+  audio_languages?: InputMaybe<Array<InputMaybe<Scalars["ID"]["input"]>>>;
+  categories?: InputMaybe<Array<InputMaybe<Scalars["ID"]["input"]>>>;
+  channel?: InputMaybe<Scalars["ID"]["input"]>;
+  description?: InputMaybe<Scalars["String"]["input"]>;
+  duration?: InputMaybe<Scalars["Int"]["input"]>;
+  gone?: InputMaybe<Scalars["Boolean"]["input"]>;
+  height?: InputMaybe<Scalars["Int"]["input"]>;
+  likes?: InputMaybe<Scalars["Int"]["input"]>;
+  live_chat?: InputMaybe<Scalars["Boolean"]["input"]>;
   published_date?: InputMaybe<ComponentBasicsDatepickerInput>;
   source?: InputMaybe<Enum_Video_Source>;
-  sub_languages?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
-  title?: InputMaybe<Scalars["String"]>;
-  uid?: InputMaybe<Scalars["String"]>;
-  views?: InputMaybe<Scalars["Int"]>;
-  width?: InputMaybe<Scalars["Int"]>;
+  sub_languages?: InputMaybe<Array<InputMaybe<Scalars["ID"]["input"]>>>;
+  title?: InputMaybe<Scalars["String"]["input"]>;
+  uid?: InputMaybe<Scalars["String"]["input"]>;
+  views?: InputMaybe<Scalars["Int"]["input"]>;
+  width?: InputMaybe<Scalars["Int"]["input"]>;
 };
 
 export type VideoRelationResponseCollection = {
@@ -5034,22 +5029,22 @@ export type VideoRelationResponseCollection = {
 
 export type VideoSubtype = {
   __typename?: "VideoSubtype";
-  createdAt?: Maybe<Scalars["DateTime"]>;
-  slug: Scalars["String"];
+  createdAt?: Maybe<Scalars["DateTime"]["output"]>;
+  slug: Scalars["String"]["output"];
   titles?: Maybe<Array<Maybe<ComponentTranslationsSimpleTitle>>>;
-  updatedAt?: Maybe<Scalars["DateTime"]>;
+  updatedAt?: Maybe<Scalars["DateTime"]["output"]>;
 };
 
 export type VideoSubtypeTitlesArgs = {
   filters?: InputMaybe<ComponentTranslationsSimpleTitleFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type VideoSubtypeEntity = {
   __typename?: "VideoSubtypeEntity";
   attributes?: Maybe<VideoSubtype>;
-  id?: Maybe<Scalars["ID"]>;
+  id?: Maybe<Scalars["ID"]["output"]>;
 };
 
 export type VideoSubtypeEntityResponse = {
@@ -5075,19 +5070,19 @@ export type VideoSubtypeFiltersInput = {
 };
 
 export type VideoSubtypeInput = {
-  slug?: InputMaybe<Scalars["String"]>;
+  slug?: InputMaybe<Scalars["String"]["input"]>;
   titles?: InputMaybe<Array<InputMaybe<ComponentTranslationsSimpleTitleInput>>>;
 };
 
 export type WeaponStory = {
   __typename?: "WeaponStory";
-  createdAt?: Maybe<Scalars["DateTime"]>;
+  createdAt?: Maybe<Scalars["DateTime"]["output"]>;
   name?: Maybe<Array<Maybe<ComponentTranslationsWeaponStory>>>;
-  slug: Scalars["String"];
+  slug: Scalars["String"]["output"];
   stories?: Maybe<Array<Maybe<ComponentCollectionsComponentWeaponStory>>>;
   thumbnail?: Maybe<UploadFileEntityResponse>;
   type?: Maybe<WeaponStoryTypeEntityResponse>;
-  updatedAt?: Maybe<Scalars["DateTime"]>;
+  updatedAt?: Maybe<Scalars["DateTime"]["output"]>;
   weapon_group?: Maybe<WeaponStoryGroupEntityResponse>;
   wiki_page?: Maybe<WikiPageEntityResponse>;
 };
@@ -5095,19 +5090,19 @@ export type WeaponStory = {
 export type WeaponStoryNameArgs = {
   filters?: InputMaybe<ComponentTranslationsWeaponStoryFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type WeaponStoryStoriesArgs = {
   filters?: InputMaybe<ComponentCollectionsComponentWeaponStoryFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type WeaponStoryEntity = {
   __typename?: "WeaponStoryEntity";
   attributes?: Maybe<WeaponStory>;
-  id?: Maybe<Scalars["ID"]>;
+  id?: Maybe<Scalars["ID"]["output"]>;
 };
 
 export type WeaponStoryEntityResponse = {
@@ -5138,30 +5133,30 @@ export type WeaponStoryFiltersInput = {
 
 export type WeaponStoryGroup = {
   __typename?: "WeaponStoryGroup";
-  createdAt?: Maybe<Scalars["DateTime"]>;
-  slug: Scalars["String"];
+  createdAt?: Maybe<Scalars["DateTime"]["output"]>;
+  slug: Scalars["String"]["output"];
   subgroup_of?: Maybe<WeaponStoryGroupEntityResponse>;
   subgroups?: Maybe<WeaponStoryGroupRelationResponseCollection>;
-  updatedAt?: Maybe<Scalars["DateTime"]>;
+  updatedAt?: Maybe<Scalars["DateTime"]["output"]>;
   weapons?: Maybe<WeaponStoryRelationResponseCollection>;
 };
 
 export type WeaponStoryGroupSubgroupsArgs = {
   filters?: InputMaybe<WeaponStoryGroupFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type WeaponStoryGroupWeaponsArgs = {
   filters?: InputMaybe<WeaponStoryFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type WeaponStoryGroupEntity = {
   __typename?: "WeaponStoryGroupEntity";
   attributes?: Maybe<WeaponStoryGroup>;
-  id?: Maybe<Scalars["ID"]>;
+  id?: Maybe<Scalars["ID"]["output"]>;
 };
 
 export type WeaponStoryGroupEntityResponse = {
@@ -5189,10 +5184,10 @@ export type WeaponStoryGroupFiltersInput = {
 };
 
 export type WeaponStoryGroupInput = {
-  slug?: InputMaybe<Scalars["String"]>;
-  subgroup_of?: InputMaybe<Scalars["ID"]>;
-  subgroups?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
-  weapons?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
+  slug?: InputMaybe<Scalars["String"]["input"]>;
+  subgroup_of?: InputMaybe<Scalars["ID"]["input"]>;
+  subgroups?: InputMaybe<Array<InputMaybe<Scalars["ID"]["input"]>>>;
+  weapons?: InputMaybe<Array<InputMaybe<Scalars["ID"]["input"]>>>;
 };
 
 export type WeaponStoryGroupRelationResponseCollection = {
@@ -5202,12 +5197,12 @@ export type WeaponStoryGroupRelationResponseCollection = {
 
 export type WeaponStoryInput = {
   name?: InputMaybe<Array<InputMaybe<ComponentTranslationsWeaponStoryInput>>>;
-  slug?: InputMaybe<Scalars["String"]>;
+  slug?: InputMaybe<Scalars["String"]["input"]>;
   stories?: InputMaybe<Array<InputMaybe<ComponentCollectionsComponentWeaponStoryInput>>>;
-  thumbnail?: InputMaybe<Scalars["ID"]>;
-  type?: InputMaybe<Scalars["ID"]>;
-  weapon_group?: InputMaybe<Scalars["ID"]>;
-  wiki_page?: InputMaybe<Scalars["ID"]>;
+  thumbnail?: InputMaybe<Scalars["ID"]["input"]>;
+  type?: InputMaybe<Scalars["ID"]["input"]>;
+  weapon_group?: InputMaybe<Scalars["ID"]["input"]>;
+  wiki_page?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type WeaponStoryRelationResponseCollection = {
@@ -5217,22 +5212,22 @@ export type WeaponStoryRelationResponseCollection = {
 
 export type WeaponStoryType = {
   __typename?: "WeaponStoryType";
-  createdAt?: Maybe<Scalars["DateTime"]>;
-  slug: Scalars["String"];
+  createdAt?: Maybe<Scalars["DateTime"]["output"]>;
+  slug: Scalars["String"]["output"];
   translations?: Maybe<Array<Maybe<ComponentTranslationsWeaponStoryType>>>;
-  updatedAt?: Maybe<Scalars["DateTime"]>;
+  updatedAt?: Maybe<Scalars["DateTime"]["output"]>;
 };
 
 export type WeaponStoryTypeTranslationsArgs = {
   filters?: InputMaybe<ComponentTranslationsWeaponStoryTypeFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type WeaponStoryTypeEntity = {
   __typename?: "WeaponStoryTypeEntity";
   attributes?: Maybe<WeaponStoryType>;
-  id?: Maybe<Scalars["ID"]>;
+  id?: Maybe<Scalars["ID"]["output"]>;
 };
 
 export type WeaponStoryTypeEntityResponse = {
@@ -5258,35 +5253,35 @@ export type WeaponStoryTypeFiltersInput = {
 };
 
 export type WeaponStoryTypeInput = {
-  slug?: InputMaybe<Scalars["String"]>;
+  slug?: InputMaybe<Scalars["String"]["input"]>;
   translations?: InputMaybe<Array<InputMaybe<ComponentTranslationsWeaponStoryTypeInput>>>;
 };
 
 export type WebArchive = {
   __typename?: "WebArchive";
-  author?: Maybe<Scalars["String"]>;
-  createdAt?: Maybe<Scalars["DateTime"]>;
+  author?: Maybe<Scalars["String"]["output"]>;
+  createdAt?: Maybe<Scalars["DateTime"]["output"]>;
   date: ComponentBasicsDatepicker;
   descriptions?: Maybe<Array<Maybe<ComponentTranslationsWebArchives>>>;
   format: Enum_Webarchive_Format;
-  num_pages?: Maybe<Scalars["Int"]>;
+  num_pages?: Maybe<Scalars["Int"]["output"]>;
   size: ComponentBasicsFileSize;
-  source_url: Scalars["String"];
-  still_online: Scalars["Boolean"];
+  source_url: Scalars["String"]["output"];
+  still_online: Scalars["Boolean"]["output"];
   type: Enum_Webarchive_Type;
-  updatedAt?: Maybe<Scalars["DateTime"]>;
+  updatedAt?: Maybe<Scalars["DateTime"]["output"]>;
 };
 
 export type WebArchiveDescriptionsArgs = {
   filters?: InputMaybe<ComponentTranslationsWebArchivesFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type WebArchiveEntity = {
   __typename?: "WebArchiveEntity";
   attributes?: Maybe<WebArchive>;
-  id?: Maybe<Scalars["ID"]>;
+  id?: Maybe<Scalars["ID"]["output"]>;
 };
 
 export type WebArchiveEntityResponse = {
@@ -5319,214 +5314,214 @@ export type WebArchiveFiltersInput = {
 };
 
 export type WebArchiveInput = {
-  author?: InputMaybe<Scalars["String"]>;
+  author?: InputMaybe<Scalars["String"]["input"]>;
   date?: InputMaybe<ComponentBasicsDatepickerInput>;
   descriptions?: InputMaybe<Array<InputMaybe<ComponentTranslationsWebArchivesInput>>>;
   format?: InputMaybe<Enum_Webarchive_Format>;
-  num_pages?: InputMaybe<Scalars["Int"]>;
+  num_pages?: InputMaybe<Scalars["Int"]["input"]>;
   size?: InputMaybe<ComponentBasicsFileSizeInput>;
-  source_url?: InputMaybe<Scalars["String"]>;
-  still_online?: InputMaybe<Scalars["Boolean"]>;
+  source_url?: InputMaybe<Scalars["String"]["input"]>;
+  still_online?: InputMaybe<Scalars["Boolean"]["input"]>;
   type?: InputMaybe<Enum_Webarchive_Type>;
 };
 
 export type WebsiteInterface = {
   __typename?: "WebsiteInterface";
-  about_us?: Maybe<Scalars["String"]>;
-  about_us_description?: Maybe<Scalars["String"]>;
-  accords_handbook?: Maybe<Scalars["String"]>;
-  all?: Maybe<Scalars["String"]>;
-  always_show_info?: Maybe<Scalars["String"]>;
-  anchor_link_copied?: Maybe<Scalars["String"]>;
-  archives?: Maybe<Scalars["String"]>;
-  archives_description?: Maybe<Scalars["String"]>;
-  audio?: Maybe<Scalars["String"]>;
-  author?: Maybe<Scalars["String"]>;
-  auto?: Maybe<Scalars["String"]>;
-  available_at?: Maybe<Scalars["String"]>;
-  available_at_x?: Maybe<Scalars["String"]>;
-  back_matter?: Maybe<Scalars["String"]>;
-  binding?: Maybe<Scalars["String"]>;
-  book_fold?: Maybe<Scalars["String"]>;
-  calculated?: Maybe<Scalars["String"]>;
-  category?: Maybe<Scalars["String"]>;
-  channel?: Maybe<Scalars["String"]>;
-  chronicles?: Maybe<Scalars["String"]>;
-  chronicles_description?: Maybe<Scalars["String"]>;
-  chronicles_short_description?: Maybe<Scalars["String"]>;
-  chronology?: Maybe<Scalars["String"]>;
-  cleaners?: Maybe<Scalars["String"]>;
-  contact_us?: Maybe<Scalars["String"]>;
-  content?: Maybe<Scalars["String"]>;
-  content_is_not_available?: Maybe<Scalars["String"]>;
-  contents?: Maybe<Scalars["String"]>;
-  contents_description?: Maybe<Scalars["String"]>;
-  contents_short_description?: Maybe<Scalars["String"]>;
-  copy_anchor_link?: Maybe<Scalars["String"]>;
-  copyright_notice?: Maybe<Scalars["String"]>;
-  cover?: Maybe<Scalars["String"]>;
-  createdAt?: Maybe<Scalars["DateTime"]>;
-  currency?: Maybe<Scalars["String"]>;
-  dark?: Maybe<Scalars["String"]>;
-  dark_mode_extension_warning?: Maybe<Scalars["String"]>;
-  default_description?: Maybe<Scalars["String"]>;
-  definition_x?: Maybe<Scalars["String"]>;
-  description?: Maybe<Scalars["String"]>;
-  details?: Maybe<Scalars["String"]>;
-  done?: Maybe<Scalars["String"]>;
-  double_page_view?: Maybe<Scalars["String"]>;
-  download_archive?: Maybe<Scalars["String"]>;
-  draft?: Maybe<Scalars["String"]>;
-  dubber?: Maybe<Scalars["String"]>;
-  email?: Maybe<Scalars["String"]>;
-  email_gdpr_notice?: Maybe<Scalars["String"]>;
-  empty_folder_message?: Maybe<Scalars["String"]>;
-  folders?: Maybe<Scalars["String"]>;
-  followup_content?: Maybe<Scalars["String"]>;
-  font?: Maybe<Scalars["String"]>;
-  font_size?: Maybe<Scalars["String"]>;
-  front_matter?: Maybe<Scalars["String"]>;
-  gallery?: Maybe<Scalars["String"]>;
-  game?: Maybe<Scalars["String"]>;
-  group?: Maybe<Scalars["String"]>;
-  group_by?: Maybe<Scalars["String"]>;
-  hardcover?: Maybe<Scalars["String"]>;
-  have_it?: Maybe<Scalars["String"]>;
-  height?: Maybe<Scalars["String"]>;
-  incomplete?: Maybe<Scalars["String"]>;
-  item?: Maybe<Scalars["String"]>;
-  item_not_available?: Maybe<Scalars["String"]>;
-  language?: Maybe<Scalars["String"]>;
-  least_popular?: Maybe<Scalars["String"]>;
-  left_to_right?: Maybe<Scalars["String"]>;
-  legality?: Maybe<Scalars["String"]>;
-  level_x?: Maybe<Scalars["String"]>;
-  library?: Maybe<Scalars["String"]>;
-  library_description?: Maybe<Scalars["String"]>;
-  library_short_description?: Maybe<Scalars["String"]>;
-  licensing_notice?: Maybe<Scalars["String"]>;
-  light?: Maybe<Scalars["String"]>;
-  lighting?: Maybe<Scalars["String"]>;
-  listen_content?: Maybe<Scalars["String"]>;
-  longest?: Maybe<Scalars["String"]>;
-  message?: Maybe<Scalars["String"]>;
-  most_popular?: Maybe<Scalars["String"]>;
-  name?: Maybe<Scalars["String"]>;
-  newest?: Maybe<Scalars["String"]>;
-  news?: Maybe<Scalars["String"]>;
-  news_description?: Maybe<Scalars["String"]>;
-  night_reader?: Maybe<Scalars["String"]>;
-  no_results_message?: Maybe<Scalars["String"]>;
-  no_source_warning?: Maybe<Scalars["String"]>;
-  notes?: Maybe<Scalars["String"]>;
-  oldest?: Maybe<Scalars["String"]>;
-  only_display_items_i_have?: Maybe<Scalars["String"]>;
-  only_display_items_i_want?: Maybe<Scalars["String"]>;
-  only_display_unmarked_items?: Maybe<Scalars["String"]>;
-  only_unavailable_videos?: Maybe<Scalars["String"]>;
-  open_content?: Maybe<Scalars["String"]>;
-  open_search?: Maybe<Scalars["String"]>;
-  open_settings?: Maybe<Scalars["String"]>;
-  order_by?: Maybe<Scalars["String"]>;
-  other?: Maybe<Scalars["String"]>;
-  page?: Maybe<Scalars["String"]>;
-  page_not_found?: Maybe<Scalars["String"]>;
-  page_order?: Maybe<Scalars["String"]>;
-  paper_texture?: Maybe<Scalars["String"]>;
-  paperback?: Maybe<Scalars["String"]>;
-  performance_mode?: Maybe<Scalars["String"]>;
-  performance_mode_tooltip?: Maybe<Scalars["String"]>;
-  player_name?: Maybe<Scalars["String"]>;
-  player_name_tooltip?: Maybe<Scalars["String"]>;
-  previous_content?: Maybe<Scalars["String"]>;
-  price?: Maybe<Scalars["String"]>;
-  primary_language?: Maybe<Scalars["String"]>;
-  pronouns?: Maybe<Scalars["String"]>;
-  proofreader?: Maybe<Scalars["String"]>;
-  quality?: Maybe<Scalars["String"]>;
-  read_content?: Maybe<Scalars["String"]>;
-  reading_layout?: Maybe<Scalars["String"]>;
-  release_date?: Maybe<Scalars["String"]>;
-  release_year?: Maybe<Scalars["String"]>;
-  reset_all_filters?: Maybe<Scalars["String"]>;
-  reset_all_options?: Maybe<Scalars["String"]>;
-  response_email_success?: Maybe<Scalars["String"]>;
-  response_invalid_code?: Maybe<Scalars["String"]>;
-  response_invalid_email?: Maybe<Scalars["String"]>;
-  return_to_x?: Maybe<Scalars["String"]>;
-  review?: Maybe<Scalars["String"]>;
-  right_to_left?: Maybe<Scalars["String"]>;
-  scan?: Maybe<Scalars["String"]>;
-  scanlation?: Maybe<Scalars["String"]>;
-  scanners?: Maybe<Scalars["String"]>;
-  search?: Maybe<Scalars["String"]>;
-  search_placeholder?: Maybe<Scalars["String"]>;
-  secondary_language?: Maybe<Scalars["String"]>;
-  select_option_sidebar?: Maybe<Scalars["String"]>;
-  send?: Maybe<Scalars["String"]>;
-  settings?: Maybe<Scalars["String"]>;
-  shadow?: Maybe<Scalars["String"]>;
-  sharing_policy?: Maybe<Scalars["String"]>;
-  shortest?: Maybe<Scalars["String"]>;
-  show_primary_items?: Maybe<Scalars["String"]>;
-  show_secondary_items?: Maybe<Scalars["String"]>;
-  show_subitems?: Maybe<Scalars["String"]>;
-  showing_x_out_of_y_results?: Maybe<Scalars["String"]>;
-  side_pages?: Maybe<Scalars["String"]>;
-  single_page_view?: Maybe<Scalars["String"]>;
-  size?: Maybe<Scalars["String"]>;
-  source?: Maybe<Scalars["String"]>;
-  source_language?: Maybe<Scalars["String"]>;
-  special_pages?: Maybe<Scalars["String"]>;
-  status?: Maybe<Scalars["String"]>;
-  status_done?: Maybe<Scalars["String"]>;
-  status_draft?: Maybe<Scalars["String"]>;
-  status_incomplete?: Maybe<Scalars["String"]>;
-  status_review?: Maybe<Scalars["String"]>;
-  story_x?: Maybe<Scalars["String"]>;
-  subber?: Maybe<Scalars["String"]>;
-  subitem?: Maybe<Scalars["String"]>;
-  subitem_of_x?: Maybe<Scalars["String"]>;
-  subscribers?: Maybe<Scalars["String"]>;
-  summary?: Maybe<Scalars["String"]>;
-  switch_to_folder_view?: Maybe<Scalars["String"]>;
-  switch_to_grid_view?: Maybe<Scalars["String"]>;
-  table_of_contents?: Maybe<Scalars["String"]>;
-  tags?: Maybe<Scalars["String"]>;
-  textual?: Maybe<Scalars["String"]>;
-  theme?: Maybe<Scalars["String"]>;
-  thickness?: Maybe<Scalars["String"]>;
-  transcriber?: Maybe<Scalars["String"]>;
-  transcript_notice?: Maybe<Scalars["String"]>;
-  translation_notice?: Maybe<Scalars["String"]>;
-  translator?: Maybe<Scalars["String"]>;
-  type?: Maybe<Scalars["String"]>;
-  type_information?: Maybe<Scalars["String"]>;
-  typesetters?: Maybe<Scalars["String"]>;
+  about_us?: Maybe<Scalars["String"]["output"]>;
+  about_us_description?: Maybe<Scalars["String"]["output"]>;
+  accords_handbook?: Maybe<Scalars["String"]["output"]>;
+  all?: Maybe<Scalars["String"]["output"]>;
+  always_show_info?: Maybe<Scalars["String"]["output"]>;
+  anchor_link_copied?: Maybe<Scalars["String"]["output"]>;
+  archives?: Maybe<Scalars["String"]["output"]>;
+  archives_description?: Maybe<Scalars["String"]["output"]>;
+  audio?: Maybe<Scalars["String"]["output"]>;
+  author?: Maybe<Scalars["String"]["output"]>;
+  auto?: Maybe<Scalars["String"]["output"]>;
+  available_at?: Maybe<Scalars["String"]["output"]>;
+  available_at_x?: Maybe<Scalars["String"]["output"]>;
+  back_matter?: Maybe<Scalars["String"]["output"]>;
+  binding?: Maybe<Scalars["String"]["output"]>;
+  book_fold?: Maybe<Scalars["String"]["output"]>;
+  calculated?: Maybe<Scalars["String"]["output"]>;
+  category?: Maybe<Scalars["String"]["output"]>;
+  channel?: Maybe<Scalars["String"]["output"]>;
+  chronicles?: Maybe<Scalars["String"]["output"]>;
+  chronicles_description?: Maybe<Scalars["String"]["output"]>;
+  chronicles_short_description?: Maybe<Scalars["String"]["output"]>;
+  chronology?: Maybe<Scalars["String"]["output"]>;
+  cleaners?: Maybe<Scalars["String"]["output"]>;
+  contact_us?: Maybe<Scalars["String"]["output"]>;
+  content?: Maybe<Scalars["String"]["output"]>;
+  content_is_not_available?: Maybe<Scalars["String"]["output"]>;
+  contents?: Maybe<Scalars["String"]["output"]>;
+  contents_description?: Maybe<Scalars["String"]["output"]>;
+  contents_short_description?: Maybe<Scalars["String"]["output"]>;
+  copy_anchor_link?: Maybe<Scalars["String"]["output"]>;
+  copyright_notice?: Maybe<Scalars["String"]["output"]>;
+  cover?: Maybe<Scalars["String"]["output"]>;
+  createdAt?: Maybe<Scalars["DateTime"]["output"]>;
+  currency?: Maybe<Scalars["String"]["output"]>;
+  dark?: Maybe<Scalars["String"]["output"]>;
+  dark_mode_extension_warning?: Maybe<Scalars["String"]["output"]>;
+  default_description?: Maybe<Scalars["String"]["output"]>;
+  definition_x?: Maybe<Scalars["String"]["output"]>;
+  description?: Maybe<Scalars["String"]["output"]>;
+  details?: Maybe<Scalars["String"]["output"]>;
+  done?: Maybe<Scalars["String"]["output"]>;
+  double_page_view?: Maybe<Scalars["String"]["output"]>;
+  download_archive?: Maybe<Scalars["String"]["output"]>;
+  draft?: Maybe<Scalars["String"]["output"]>;
+  dubber?: Maybe<Scalars["String"]["output"]>;
+  email?: Maybe<Scalars["String"]["output"]>;
+  email_gdpr_notice?: Maybe<Scalars["String"]["output"]>;
+  empty_folder_message?: Maybe<Scalars["String"]["output"]>;
+  folders?: Maybe<Scalars["String"]["output"]>;
+  followup_content?: Maybe<Scalars["String"]["output"]>;
+  font?: Maybe<Scalars["String"]["output"]>;
+  font_size?: Maybe<Scalars["String"]["output"]>;
+  front_matter?: Maybe<Scalars["String"]["output"]>;
+  gallery?: Maybe<Scalars["String"]["output"]>;
+  game?: Maybe<Scalars["String"]["output"]>;
+  group?: Maybe<Scalars["String"]["output"]>;
+  group_by?: Maybe<Scalars["String"]["output"]>;
+  hardcover?: Maybe<Scalars["String"]["output"]>;
+  have_it?: Maybe<Scalars["String"]["output"]>;
+  height?: Maybe<Scalars["String"]["output"]>;
+  incomplete?: Maybe<Scalars["String"]["output"]>;
+  item?: Maybe<Scalars["String"]["output"]>;
+  item_not_available?: Maybe<Scalars["String"]["output"]>;
+  language?: Maybe<Scalars["String"]["output"]>;
+  least_popular?: Maybe<Scalars["String"]["output"]>;
+  left_to_right?: Maybe<Scalars["String"]["output"]>;
+  legality?: Maybe<Scalars["String"]["output"]>;
+  level_x?: Maybe<Scalars["String"]["output"]>;
+  library?: Maybe<Scalars["String"]["output"]>;
+  library_description?: Maybe<Scalars["String"]["output"]>;
+  library_short_description?: Maybe<Scalars["String"]["output"]>;
+  licensing_notice?: Maybe<Scalars["String"]["output"]>;
+  light?: Maybe<Scalars["String"]["output"]>;
+  lighting?: Maybe<Scalars["String"]["output"]>;
+  listen_content?: Maybe<Scalars["String"]["output"]>;
+  longest?: Maybe<Scalars["String"]["output"]>;
+  message?: Maybe<Scalars["String"]["output"]>;
+  most_popular?: Maybe<Scalars["String"]["output"]>;
+  name?: Maybe<Scalars["String"]["output"]>;
+  newest?: Maybe<Scalars["String"]["output"]>;
+  news?: Maybe<Scalars["String"]["output"]>;
+  news_description?: Maybe<Scalars["String"]["output"]>;
+  night_reader?: Maybe<Scalars["String"]["output"]>;
+  no_results_message?: Maybe<Scalars["String"]["output"]>;
+  no_source_warning?: Maybe<Scalars["String"]["output"]>;
+  notes?: Maybe<Scalars["String"]["output"]>;
+  oldest?: Maybe<Scalars["String"]["output"]>;
+  only_display_items_i_have?: Maybe<Scalars["String"]["output"]>;
+  only_display_items_i_want?: Maybe<Scalars["String"]["output"]>;
+  only_display_unmarked_items?: Maybe<Scalars["String"]["output"]>;
+  only_unavailable_videos?: Maybe<Scalars["String"]["output"]>;
+  open_content?: Maybe<Scalars["String"]["output"]>;
+  open_search?: Maybe<Scalars["String"]["output"]>;
+  open_settings?: Maybe<Scalars["String"]["output"]>;
+  order_by?: Maybe<Scalars["String"]["output"]>;
+  other?: Maybe<Scalars["String"]["output"]>;
+  page?: Maybe<Scalars["String"]["output"]>;
+  page_not_found?: Maybe<Scalars["String"]["output"]>;
+  page_order?: Maybe<Scalars["String"]["output"]>;
+  paper_texture?: Maybe<Scalars["String"]["output"]>;
+  paperback?: Maybe<Scalars["String"]["output"]>;
+  performance_mode?: Maybe<Scalars["String"]["output"]>;
+  performance_mode_tooltip?: Maybe<Scalars["String"]["output"]>;
+  player_name?: Maybe<Scalars["String"]["output"]>;
+  player_name_tooltip?: Maybe<Scalars["String"]["output"]>;
+  previous_content?: Maybe<Scalars["String"]["output"]>;
+  price?: Maybe<Scalars["String"]["output"]>;
+  primary_language?: Maybe<Scalars["String"]["output"]>;
+  pronouns?: Maybe<Scalars["String"]["output"]>;
+  proofreader?: Maybe<Scalars["String"]["output"]>;
+  quality?: Maybe<Scalars["String"]["output"]>;
+  read_content?: Maybe<Scalars["String"]["output"]>;
+  reading_layout?: Maybe<Scalars["String"]["output"]>;
+  release_date?: Maybe<Scalars["String"]["output"]>;
+  release_year?: Maybe<Scalars["String"]["output"]>;
+  reset_all_filters?: Maybe<Scalars["String"]["output"]>;
+  reset_all_options?: Maybe<Scalars["String"]["output"]>;
+  response_email_success?: Maybe<Scalars["String"]["output"]>;
+  response_invalid_code?: Maybe<Scalars["String"]["output"]>;
+  response_invalid_email?: Maybe<Scalars["String"]["output"]>;
+  return_to_x?: Maybe<Scalars["String"]["output"]>;
+  review?: Maybe<Scalars["String"]["output"]>;
+  right_to_left?: Maybe<Scalars["String"]["output"]>;
+  scan?: Maybe<Scalars["String"]["output"]>;
+  scanlation?: Maybe<Scalars["String"]["output"]>;
+  scanners?: Maybe<Scalars["String"]["output"]>;
+  search?: Maybe<Scalars["String"]["output"]>;
+  search_placeholder?: Maybe<Scalars["String"]["output"]>;
+  secondary_language?: Maybe<Scalars["String"]["output"]>;
+  select_option_sidebar?: Maybe<Scalars["String"]["output"]>;
+  send?: Maybe<Scalars["String"]["output"]>;
+  settings?: Maybe<Scalars["String"]["output"]>;
+  shadow?: Maybe<Scalars["String"]["output"]>;
+  sharing_policy?: Maybe<Scalars["String"]["output"]>;
+  shortest?: Maybe<Scalars["String"]["output"]>;
+  show_primary_items?: Maybe<Scalars["String"]["output"]>;
+  show_secondary_items?: Maybe<Scalars["String"]["output"]>;
+  show_subitems?: Maybe<Scalars["String"]["output"]>;
+  showing_x_out_of_y_results?: Maybe<Scalars["String"]["output"]>;
+  side_pages?: Maybe<Scalars["String"]["output"]>;
+  single_page_view?: Maybe<Scalars["String"]["output"]>;
+  size?: Maybe<Scalars["String"]["output"]>;
+  source?: Maybe<Scalars["String"]["output"]>;
+  source_language?: Maybe<Scalars["String"]["output"]>;
+  special_pages?: Maybe<Scalars["String"]["output"]>;
+  status?: Maybe<Scalars["String"]["output"]>;
+  status_done?: Maybe<Scalars["String"]["output"]>;
+  status_draft?: Maybe<Scalars["String"]["output"]>;
+  status_incomplete?: Maybe<Scalars["String"]["output"]>;
+  status_review?: Maybe<Scalars["String"]["output"]>;
+  story_x?: Maybe<Scalars["String"]["output"]>;
+  subber?: Maybe<Scalars["String"]["output"]>;
+  subitem?: Maybe<Scalars["String"]["output"]>;
+  subitem_of_x?: Maybe<Scalars["String"]["output"]>;
+  subscribers?: Maybe<Scalars["String"]["output"]>;
+  summary?: Maybe<Scalars["String"]["output"]>;
+  switch_to_folder_view?: Maybe<Scalars["String"]["output"]>;
+  switch_to_grid_view?: Maybe<Scalars["String"]["output"]>;
+  table_of_contents?: Maybe<Scalars["String"]["output"]>;
+  tags?: Maybe<Scalars["String"]["output"]>;
+  textual?: Maybe<Scalars["String"]["output"]>;
+  theme?: Maybe<Scalars["String"]["output"]>;
+  thickness?: Maybe<Scalars["String"]["output"]>;
+  transcriber?: Maybe<Scalars["String"]["output"]>;
+  transcript_notice?: Maybe<Scalars["String"]["output"]>;
+  translation_notice?: Maybe<Scalars["String"]["output"]>;
+  translator?: Maybe<Scalars["String"]["output"]>;
+  type?: Maybe<Scalars["String"]["output"]>;
+  type_information?: Maybe<Scalars["String"]["output"]>;
+  typesetters?: Maybe<Scalars["String"]["output"]>;
   ui_language?: Maybe<LanguageEntityResponse>;
-  updatedAt?: Maybe<Scalars["DateTime"]>;
-  variant?: Maybe<Scalars["String"]>;
-  variant_of_x?: Maybe<Scalars["String"]>;
-  video?: Maybe<Scalars["String"]>;
-  videos?: Maybe<Scalars["String"]>;
-  view_on?: Maybe<Scalars["String"]>;
-  view_on_x?: Maybe<Scalars["String"]>;
-  view_scans?: Maybe<Scalars["String"]>;
-  want_it?: Maybe<Scalars["String"]>;
-  watch_content?: Maybe<Scalars["String"]>;
-  weapon?: Maybe<Scalars["String"]>;
-  weapons_description?: Maybe<Scalars["String"]>;
-  width?: Maybe<Scalars["String"]>;
-  wiki?: Maybe<Scalars["String"]>;
-  wiki_description?: Maybe<Scalars["String"]>;
-  wiki_short_description?: Maybe<Scalars["String"]>;
-  x_results?: Maybe<Scalars["String"]>;
+  updatedAt?: Maybe<Scalars["DateTime"]["output"]>;
+  variant?: Maybe<Scalars["String"]["output"]>;
+  variant_of_x?: Maybe<Scalars["String"]["output"]>;
+  video?: Maybe<Scalars["String"]["output"]>;
+  videos?: Maybe<Scalars["String"]["output"]>;
+  view_on?: Maybe<Scalars["String"]["output"]>;
+  view_on_x?: Maybe<Scalars["String"]["output"]>;
+  view_scans?: Maybe<Scalars["String"]["output"]>;
+  want_it?: Maybe<Scalars["String"]["output"]>;
+  watch_content?: Maybe<Scalars["String"]["output"]>;
+  weapon?: Maybe<Scalars["String"]["output"]>;
+  weapons_description?: Maybe<Scalars["String"]["output"]>;
+  width?: Maybe<Scalars["String"]["output"]>;
+  wiki?: Maybe<Scalars["String"]["output"]>;
+  wiki_description?: Maybe<Scalars["String"]["output"]>;
+  wiki_short_description?: Maybe<Scalars["String"]["output"]>;
+  x_results?: Maybe<Scalars["String"]["output"]>;
 };
 
 export type WebsiteInterfaceEntity = {
   __typename?: "WebsiteInterfaceEntity";
   attributes?: Maybe<WebsiteInterface>;
-  id?: Maybe<Scalars["ID"]>;
+  id?: Maybe<Scalars["ID"]["output"]>;
 };
 
 export type WebsiteInterfaceEntityResponse = {
@@ -5737,243 +5732,243 @@ export type WebsiteInterfaceFiltersInput = {
 };
 
 export type WebsiteInterfaceInput = {
-  about_us?: InputMaybe<Scalars["String"]>;
-  about_us_description?: InputMaybe<Scalars["String"]>;
-  accords_handbook?: InputMaybe<Scalars["String"]>;
-  all?: InputMaybe<Scalars["String"]>;
-  always_show_info?: InputMaybe<Scalars["String"]>;
-  anchor_link_copied?: InputMaybe<Scalars["String"]>;
-  archives?: InputMaybe<Scalars["String"]>;
-  archives_description?: InputMaybe<Scalars["String"]>;
-  audio?: InputMaybe<Scalars["String"]>;
-  author?: InputMaybe<Scalars["String"]>;
-  auto?: InputMaybe<Scalars["String"]>;
-  available_at?: InputMaybe<Scalars["String"]>;
-  available_at_x?: InputMaybe<Scalars["String"]>;
-  back_matter?: InputMaybe<Scalars["String"]>;
-  binding?: InputMaybe<Scalars["String"]>;
-  book_fold?: InputMaybe<Scalars["String"]>;
-  calculated?: InputMaybe<Scalars["String"]>;
-  category?: InputMaybe<Scalars["String"]>;
-  channel?: InputMaybe<Scalars["String"]>;
-  chronicles?: InputMaybe<Scalars["String"]>;
-  chronicles_description?: InputMaybe<Scalars["String"]>;
-  chronicles_short_description?: InputMaybe<Scalars["String"]>;
-  chronology?: InputMaybe<Scalars["String"]>;
-  cleaners?: InputMaybe<Scalars["String"]>;
-  contact_us?: InputMaybe<Scalars["String"]>;
-  content?: InputMaybe<Scalars["String"]>;
-  content_is_not_available?: InputMaybe<Scalars["String"]>;
-  contents?: InputMaybe<Scalars["String"]>;
-  contents_description?: InputMaybe<Scalars["String"]>;
-  contents_short_description?: InputMaybe<Scalars["String"]>;
-  copy_anchor_link?: InputMaybe<Scalars["String"]>;
-  copyright_notice?: InputMaybe<Scalars["String"]>;
-  cover?: InputMaybe<Scalars["String"]>;
-  currency?: InputMaybe<Scalars["String"]>;
-  dark?: InputMaybe<Scalars["String"]>;
-  dark_mode_extension_warning?: InputMaybe<Scalars["String"]>;
-  default_description?: InputMaybe<Scalars["String"]>;
-  definition_x?: InputMaybe<Scalars["String"]>;
-  description?: InputMaybe<Scalars["String"]>;
-  details?: InputMaybe<Scalars["String"]>;
-  done?: InputMaybe<Scalars["String"]>;
-  double_page_view?: InputMaybe<Scalars["String"]>;
-  download_archive?: InputMaybe<Scalars["String"]>;
-  draft?: InputMaybe<Scalars["String"]>;
-  dubber?: InputMaybe<Scalars["String"]>;
-  email?: InputMaybe<Scalars["String"]>;
-  email_gdpr_notice?: InputMaybe<Scalars["String"]>;
-  empty_folder_message?: InputMaybe<Scalars["String"]>;
-  folders?: InputMaybe<Scalars["String"]>;
-  followup_content?: InputMaybe<Scalars["String"]>;
-  font?: InputMaybe<Scalars["String"]>;
-  font_size?: InputMaybe<Scalars["String"]>;
-  front_matter?: InputMaybe<Scalars["String"]>;
-  gallery?: InputMaybe<Scalars["String"]>;
-  game?: InputMaybe<Scalars["String"]>;
-  group?: InputMaybe<Scalars["String"]>;
-  group_by?: InputMaybe<Scalars["String"]>;
-  hardcover?: InputMaybe<Scalars["String"]>;
-  have_it?: InputMaybe<Scalars["String"]>;
-  height?: InputMaybe<Scalars["String"]>;
-  incomplete?: InputMaybe<Scalars["String"]>;
-  item?: InputMaybe<Scalars["String"]>;
-  item_not_available?: InputMaybe<Scalars["String"]>;
-  language?: InputMaybe<Scalars["String"]>;
-  least_popular?: InputMaybe<Scalars["String"]>;
-  left_to_right?: InputMaybe<Scalars["String"]>;
-  legality?: InputMaybe<Scalars["String"]>;
-  level_x?: InputMaybe<Scalars["String"]>;
-  library?: InputMaybe<Scalars["String"]>;
-  library_description?: InputMaybe<Scalars["String"]>;
-  library_short_description?: InputMaybe<Scalars["String"]>;
-  licensing_notice?: InputMaybe<Scalars["String"]>;
-  light?: InputMaybe<Scalars["String"]>;
-  lighting?: InputMaybe<Scalars["String"]>;
-  listen_content?: InputMaybe<Scalars["String"]>;
-  longest?: InputMaybe<Scalars["String"]>;
-  message?: InputMaybe<Scalars["String"]>;
-  most_popular?: InputMaybe<Scalars["String"]>;
-  name?: InputMaybe<Scalars["String"]>;
-  newest?: InputMaybe<Scalars["String"]>;
-  news?: InputMaybe<Scalars["String"]>;
-  news_description?: InputMaybe<Scalars["String"]>;
-  night_reader?: InputMaybe<Scalars["String"]>;
-  no_results_message?: InputMaybe<Scalars["String"]>;
-  no_source_warning?: InputMaybe<Scalars["String"]>;
-  notes?: InputMaybe<Scalars["String"]>;
-  oldest?: InputMaybe<Scalars["String"]>;
-  only_display_items_i_have?: InputMaybe<Scalars["String"]>;
-  only_display_items_i_want?: InputMaybe<Scalars["String"]>;
-  only_display_unmarked_items?: InputMaybe<Scalars["String"]>;
-  only_unavailable_videos?: InputMaybe<Scalars["String"]>;
-  open_content?: InputMaybe<Scalars["String"]>;
-  open_search?: InputMaybe<Scalars["String"]>;
-  open_settings?: InputMaybe<Scalars["String"]>;
-  order_by?: InputMaybe<Scalars["String"]>;
-  other?: InputMaybe<Scalars["String"]>;
-  page?: InputMaybe<Scalars["String"]>;
-  page_not_found?: InputMaybe<Scalars["String"]>;
-  page_order?: InputMaybe<Scalars["String"]>;
-  paper_texture?: InputMaybe<Scalars["String"]>;
-  paperback?: InputMaybe<Scalars["String"]>;
-  performance_mode?: InputMaybe<Scalars["String"]>;
-  performance_mode_tooltip?: InputMaybe<Scalars["String"]>;
-  player_name?: InputMaybe<Scalars["String"]>;
-  player_name_tooltip?: InputMaybe<Scalars["String"]>;
-  previous_content?: InputMaybe<Scalars["String"]>;
-  price?: InputMaybe<Scalars["String"]>;
-  primary_language?: InputMaybe<Scalars["String"]>;
-  pronouns?: InputMaybe<Scalars["String"]>;
-  proofreader?: InputMaybe<Scalars["String"]>;
-  quality?: InputMaybe<Scalars["String"]>;
-  read_content?: InputMaybe<Scalars["String"]>;
-  reading_layout?: InputMaybe<Scalars["String"]>;
-  release_date?: InputMaybe<Scalars["String"]>;
-  release_year?: InputMaybe<Scalars["String"]>;
-  reset_all_filters?: InputMaybe<Scalars["String"]>;
-  reset_all_options?: InputMaybe<Scalars["String"]>;
-  response_email_success?: InputMaybe<Scalars["String"]>;
-  response_invalid_code?: InputMaybe<Scalars["String"]>;
-  response_invalid_email?: InputMaybe<Scalars["String"]>;
-  return_to_x?: InputMaybe<Scalars["String"]>;
-  review?: InputMaybe<Scalars["String"]>;
-  right_to_left?: InputMaybe<Scalars["String"]>;
-  scan?: InputMaybe<Scalars["String"]>;
-  scanlation?: InputMaybe<Scalars["String"]>;
-  scanners?: InputMaybe<Scalars["String"]>;
-  search?: InputMaybe<Scalars["String"]>;
-  search_placeholder?: InputMaybe<Scalars["String"]>;
-  secondary_language?: InputMaybe<Scalars["String"]>;
-  select_option_sidebar?: InputMaybe<Scalars["String"]>;
-  send?: InputMaybe<Scalars["String"]>;
-  settings?: InputMaybe<Scalars["String"]>;
-  shadow?: InputMaybe<Scalars["String"]>;
-  sharing_policy?: InputMaybe<Scalars["String"]>;
-  shortest?: InputMaybe<Scalars["String"]>;
-  show_primary_items?: InputMaybe<Scalars["String"]>;
-  show_secondary_items?: InputMaybe<Scalars["String"]>;
-  show_subitems?: InputMaybe<Scalars["String"]>;
-  showing_x_out_of_y_results?: InputMaybe<Scalars["String"]>;
-  side_pages?: InputMaybe<Scalars["String"]>;
-  single_page_view?: InputMaybe<Scalars["String"]>;
-  size?: InputMaybe<Scalars["String"]>;
-  source?: InputMaybe<Scalars["String"]>;
-  source_language?: InputMaybe<Scalars["String"]>;
-  special_pages?: InputMaybe<Scalars["String"]>;
-  status?: InputMaybe<Scalars["String"]>;
-  status_done?: InputMaybe<Scalars["String"]>;
-  status_draft?: InputMaybe<Scalars["String"]>;
-  status_incomplete?: InputMaybe<Scalars["String"]>;
-  status_review?: InputMaybe<Scalars["String"]>;
-  story_x?: InputMaybe<Scalars["String"]>;
-  subber?: InputMaybe<Scalars["String"]>;
-  subitem?: InputMaybe<Scalars["String"]>;
-  subitem_of_x?: InputMaybe<Scalars["String"]>;
-  subscribers?: InputMaybe<Scalars["String"]>;
-  summary?: InputMaybe<Scalars["String"]>;
-  switch_to_folder_view?: InputMaybe<Scalars["String"]>;
-  switch_to_grid_view?: InputMaybe<Scalars["String"]>;
-  table_of_contents?: InputMaybe<Scalars["String"]>;
-  tags?: InputMaybe<Scalars["String"]>;
-  textual?: InputMaybe<Scalars["String"]>;
-  theme?: InputMaybe<Scalars["String"]>;
-  thickness?: InputMaybe<Scalars["String"]>;
-  transcriber?: InputMaybe<Scalars["String"]>;
-  transcript_notice?: InputMaybe<Scalars["String"]>;
-  translation_notice?: InputMaybe<Scalars["String"]>;
-  translator?: InputMaybe<Scalars["String"]>;
-  type?: InputMaybe<Scalars["String"]>;
-  type_information?: InputMaybe<Scalars["String"]>;
-  typesetters?: InputMaybe<Scalars["String"]>;
-  ui_language?: InputMaybe<Scalars["ID"]>;
-  variant?: InputMaybe<Scalars["String"]>;
-  variant_of_x?: InputMaybe<Scalars["String"]>;
-  video?: InputMaybe<Scalars["String"]>;
-  videos?: InputMaybe<Scalars["String"]>;
-  view_on?: InputMaybe<Scalars["String"]>;
-  view_on_x?: InputMaybe<Scalars["String"]>;
-  view_scans?: InputMaybe<Scalars["String"]>;
-  want_it?: InputMaybe<Scalars["String"]>;
-  watch_content?: InputMaybe<Scalars["String"]>;
-  weapon?: InputMaybe<Scalars["String"]>;
-  weapons_description?: InputMaybe<Scalars["String"]>;
-  width?: InputMaybe<Scalars["String"]>;
-  wiki?: InputMaybe<Scalars["String"]>;
-  wiki_description?: InputMaybe<Scalars["String"]>;
-  wiki_short_description?: InputMaybe<Scalars["String"]>;
-  x_results?: InputMaybe<Scalars["String"]>;
+  about_us?: InputMaybe<Scalars["String"]["input"]>;
+  about_us_description?: InputMaybe<Scalars["String"]["input"]>;
+  accords_handbook?: InputMaybe<Scalars["String"]["input"]>;
+  all?: InputMaybe<Scalars["String"]["input"]>;
+  always_show_info?: InputMaybe<Scalars["String"]["input"]>;
+  anchor_link_copied?: InputMaybe<Scalars["String"]["input"]>;
+  archives?: InputMaybe<Scalars["String"]["input"]>;
+  archives_description?: InputMaybe<Scalars["String"]["input"]>;
+  audio?: InputMaybe<Scalars["String"]["input"]>;
+  author?: InputMaybe<Scalars["String"]["input"]>;
+  auto?: InputMaybe<Scalars["String"]["input"]>;
+  available_at?: InputMaybe<Scalars["String"]["input"]>;
+  available_at_x?: InputMaybe<Scalars["String"]["input"]>;
+  back_matter?: InputMaybe<Scalars["String"]["input"]>;
+  binding?: InputMaybe<Scalars["String"]["input"]>;
+  book_fold?: InputMaybe<Scalars["String"]["input"]>;
+  calculated?: InputMaybe<Scalars["String"]["input"]>;
+  category?: InputMaybe<Scalars["String"]["input"]>;
+  channel?: InputMaybe<Scalars["String"]["input"]>;
+  chronicles?: InputMaybe<Scalars["String"]["input"]>;
+  chronicles_description?: InputMaybe<Scalars["String"]["input"]>;
+  chronicles_short_description?: InputMaybe<Scalars["String"]["input"]>;
+  chronology?: InputMaybe<Scalars["String"]["input"]>;
+  cleaners?: InputMaybe<Scalars["String"]["input"]>;
+  contact_us?: InputMaybe<Scalars["String"]["input"]>;
+  content?: InputMaybe<Scalars["String"]["input"]>;
+  content_is_not_available?: InputMaybe<Scalars["String"]["input"]>;
+  contents?: InputMaybe<Scalars["String"]["input"]>;
+  contents_description?: InputMaybe<Scalars["String"]["input"]>;
+  contents_short_description?: InputMaybe<Scalars["String"]["input"]>;
+  copy_anchor_link?: InputMaybe<Scalars["String"]["input"]>;
+  copyright_notice?: InputMaybe<Scalars["String"]["input"]>;
+  cover?: InputMaybe<Scalars["String"]["input"]>;
+  currency?: InputMaybe<Scalars["String"]["input"]>;
+  dark?: InputMaybe<Scalars["String"]["input"]>;
+  dark_mode_extension_warning?: InputMaybe<Scalars["String"]["input"]>;
+  default_description?: InputMaybe<Scalars["String"]["input"]>;
+  definition_x?: InputMaybe<Scalars["String"]["input"]>;
+  description?: InputMaybe<Scalars["String"]["input"]>;
+  details?: InputMaybe<Scalars["String"]["input"]>;
+  done?: InputMaybe<Scalars["String"]["input"]>;
+  double_page_view?: InputMaybe<Scalars["String"]["input"]>;
+  download_archive?: InputMaybe<Scalars["String"]["input"]>;
+  draft?: InputMaybe<Scalars["String"]["input"]>;
+  dubber?: InputMaybe<Scalars["String"]["input"]>;
+  email?: InputMaybe<Scalars["String"]["input"]>;
+  email_gdpr_notice?: InputMaybe<Scalars["String"]["input"]>;
+  empty_folder_message?: InputMaybe<Scalars["String"]["input"]>;
+  folders?: InputMaybe<Scalars["String"]["input"]>;
+  followup_content?: InputMaybe<Scalars["String"]["input"]>;
+  font?: InputMaybe<Scalars["String"]["input"]>;
+  font_size?: InputMaybe<Scalars["String"]["input"]>;
+  front_matter?: InputMaybe<Scalars["String"]["input"]>;
+  gallery?: InputMaybe<Scalars["String"]["input"]>;
+  game?: InputMaybe<Scalars["String"]["input"]>;
+  group?: InputMaybe<Scalars["String"]["input"]>;
+  group_by?: InputMaybe<Scalars["String"]["input"]>;
+  hardcover?: InputMaybe<Scalars["String"]["input"]>;
+  have_it?: InputMaybe<Scalars["String"]["input"]>;
+  height?: InputMaybe<Scalars["String"]["input"]>;
+  incomplete?: InputMaybe<Scalars["String"]["input"]>;
+  item?: InputMaybe<Scalars["String"]["input"]>;
+  item_not_available?: InputMaybe<Scalars["String"]["input"]>;
+  language?: InputMaybe<Scalars["String"]["input"]>;
+  least_popular?: InputMaybe<Scalars["String"]["input"]>;
+  left_to_right?: InputMaybe<Scalars["String"]["input"]>;
+  legality?: InputMaybe<Scalars["String"]["input"]>;
+  level_x?: InputMaybe<Scalars["String"]["input"]>;
+  library?: InputMaybe<Scalars["String"]["input"]>;
+  library_description?: InputMaybe<Scalars["String"]["input"]>;
+  library_short_description?: InputMaybe<Scalars["String"]["input"]>;
+  licensing_notice?: InputMaybe<Scalars["String"]["input"]>;
+  light?: InputMaybe<Scalars["String"]["input"]>;
+  lighting?: InputMaybe<Scalars["String"]["input"]>;
+  listen_content?: InputMaybe<Scalars["String"]["input"]>;
+  longest?: InputMaybe<Scalars["String"]["input"]>;
+  message?: InputMaybe<Scalars["String"]["input"]>;
+  most_popular?: InputMaybe<Scalars["String"]["input"]>;
+  name?: InputMaybe<Scalars["String"]["input"]>;
+  newest?: InputMaybe<Scalars["String"]["input"]>;
+  news?: InputMaybe<Scalars["String"]["input"]>;
+  news_description?: InputMaybe<Scalars["String"]["input"]>;
+  night_reader?: InputMaybe<Scalars["String"]["input"]>;
+  no_results_message?: InputMaybe<Scalars["String"]["input"]>;
+  no_source_warning?: InputMaybe<Scalars["String"]["input"]>;
+  notes?: InputMaybe<Scalars["String"]["input"]>;
+  oldest?: InputMaybe<Scalars["String"]["input"]>;
+  only_display_items_i_have?: InputMaybe<Scalars["String"]["input"]>;
+  only_display_items_i_want?: InputMaybe<Scalars["String"]["input"]>;
+  only_display_unmarked_items?: InputMaybe<Scalars["String"]["input"]>;
+  only_unavailable_videos?: InputMaybe<Scalars["String"]["input"]>;
+  open_content?: InputMaybe<Scalars["String"]["input"]>;
+  open_search?: InputMaybe<Scalars["String"]["input"]>;
+  open_settings?: InputMaybe<Scalars["String"]["input"]>;
+  order_by?: InputMaybe<Scalars["String"]["input"]>;
+  other?: InputMaybe<Scalars["String"]["input"]>;
+  page?: InputMaybe<Scalars["String"]["input"]>;
+  page_not_found?: InputMaybe<Scalars["String"]["input"]>;
+  page_order?: InputMaybe<Scalars["String"]["input"]>;
+  paper_texture?: InputMaybe<Scalars["String"]["input"]>;
+  paperback?: InputMaybe<Scalars["String"]["input"]>;
+  performance_mode?: InputMaybe<Scalars["String"]["input"]>;
+  performance_mode_tooltip?: InputMaybe<Scalars["String"]["input"]>;
+  player_name?: InputMaybe<Scalars["String"]["input"]>;
+  player_name_tooltip?: InputMaybe<Scalars["String"]["input"]>;
+  previous_content?: InputMaybe<Scalars["String"]["input"]>;
+  price?: InputMaybe<Scalars["String"]["input"]>;
+  primary_language?: InputMaybe<Scalars["String"]["input"]>;
+  pronouns?: InputMaybe<Scalars["String"]["input"]>;
+  proofreader?: InputMaybe<Scalars["String"]["input"]>;
+  quality?: InputMaybe<Scalars["String"]["input"]>;
+  read_content?: InputMaybe<Scalars["String"]["input"]>;
+  reading_layout?: InputMaybe<Scalars["String"]["input"]>;
+  release_date?: InputMaybe<Scalars["String"]["input"]>;
+  release_year?: InputMaybe<Scalars["String"]["input"]>;
+  reset_all_filters?: InputMaybe<Scalars["String"]["input"]>;
+  reset_all_options?: InputMaybe<Scalars["String"]["input"]>;
+  response_email_success?: InputMaybe<Scalars["String"]["input"]>;
+  response_invalid_code?: InputMaybe<Scalars["String"]["input"]>;
+  response_invalid_email?: InputMaybe<Scalars["String"]["input"]>;
+  return_to_x?: InputMaybe<Scalars["String"]["input"]>;
+  review?: InputMaybe<Scalars["String"]["input"]>;
+  right_to_left?: InputMaybe<Scalars["String"]["input"]>;
+  scan?: InputMaybe<Scalars["String"]["input"]>;
+  scanlation?: InputMaybe<Scalars["String"]["input"]>;
+  scanners?: InputMaybe<Scalars["String"]["input"]>;
+  search?: InputMaybe<Scalars["String"]["input"]>;
+  search_placeholder?: InputMaybe<Scalars["String"]["input"]>;
+  secondary_language?: InputMaybe<Scalars["String"]["input"]>;
+  select_option_sidebar?: InputMaybe<Scalars["String"]["input"]>;
+  send?: InputMaybe<Scalars["String"]["input"]>;
+  settings?: InputMaybe<Scalars["String"]["input"]>;
+  shadow?: InputMaybe<Scalars["String"]["input"]>;
+  sharing_policy?: InputMaybe<Scalars["String"]["input"]>;
+  shortest?: InputMaybe<Scalars["String"]["input"]>;
+  show_primary_items?: InputMaybe<Scalars["String"]["input"]>;
+  show_secondary_items?: InputMaybe<Scalars["String"]["input"]>;
+  show_subitems?: InputMaybe<Scalars["String"]["input"]>;
+  showing_x_out_of_y_results?: InputMaybe<Scalars["String"]["input"]>;
+  side_pages?: InputMaybe<Scalars["String"]["input"]>;
+  single_page_view?: InputMaybe<Scalars["String"]["input"]>;
+  size?: InputMaybe<Scalars["String"]["input"]>;
+  source?: InputMaybe<Scalars["String"]["input"]>;
+  source_language?: InputMaybe<Scalars["String"]["input"]>;
+  special_pages?: InputMaybe<Scalars["String"]["input"]>;
+  status?: InputMaybe<Scalars["String"]["input"]>;
+  status_done?: InputMaybe<Scalars["String"]["input"]>;
+  status_draft?: InputMaybe<Scalars["String"]["input"]>;
+  status_incomplete?: InputMaybe<Scalars["String"]["input"]>;
+  status_review?: InputMaybe<Scalars["String"]["input"]>;
+  story_x?: InputMaybe<Scalars["String"]["input"]>;
+  subber?: InputMaybe<Scalars["String"]["input"]>;
+  subitem?: InputMaybe<Scalars["String"]["input"]>;
+  subitem_of_x?: InputMaybe<Scalars["String"]["input"]>;
+  subscribers?: InputMaybe<Scalars["String"]["input"]>;
+  summary?: InputMaybe<Scalars["String"]["input"]>;
+  switch_to_folder_view?: InputMaybe<Scalars["String"]["input"]>;
+  switch_to_grid_view?: InputMaybe<Scalars["String"]["input"]>;
+  table_of_contents?: InputMaybe<Scalars["String"]["input"]>;
+  tags?: InputMaybe<Scalars["String"]["input"]>;
+  textual?: InputMaybe<Scalars["String"]["input"]>;
+  theme?: InputMaybe<Scalars["String"]["input"]>;
+  thickness?: InputMaybe<Scalars["String"]["input"]>;
+  transcriber?: InputMaybe<Scalars["String"]["input"]>;
+  transcript_notice?: InputMaybe<Scalars["String"]["input"]>;
+  translation_notice?: InputMaybe<Scalars["String"]["input"]>;
+  translator?: InputMaybe<Scalars["String"]["input"]>;
+  type?: InputMaybe<Scalars["String"]["input"]>;
+  type_information?: InputMaybe<Scalars["String"]["input"]>;
+  typesetters?: InputMaybe<Scalars["String"]["input"]>;
+  ui_language?: InputMaybe<Scalars["ID"]["input"]>;
+  variant?: InputMaybe<Scalars["String"]["input"]>;
+  variant_of_x?: InputMaybe<Scalars["String"]["input"]>;
+  video?: InputMaybe<Scalars["String"]["input"]>;
+  videos?: InputMaybe<Scalars["String"]["input"]>;
+  view_on?: InputMaybe<Scalars["String"]["input"]>;
+  view_on_x?: InputMaybe<Scalars["String"]["input"]>;
+  view_scans?: InputMaybe<Scalars["String"]["input"]>;
+  want_it?: InputMaybe<Scalars["String"]["input"]>;
+  watch_content?: InputMaybe<Scalars["String"]["input"]>;
+  weapon?: InputMaybe<Scalars["String"]["input"]>;
+  weapons_description?: InputMaybe<Scalars["String"]["input"]>;
+  width?: InputMaybe<Scalars["String"]["input"]>;
+  wiki?: InputMaybe<Scalars["String"]["input"]>;
+  wiki_description?: InputMaybe<Scalars["String"]["input"]>;
+  wiki_short_description?: InputMaybe<Scalars["String"]["input"]>;
+  x_results?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 export type WikiPage = {
   __typename?: "WikiPage";
   categories?: Maybe<CategoryRelationResponseCollection>;
   chronology_items?: Maybe<ChronologyItemRelationResponseCollection>;
-  createdAt?: Maybe<Scalars["DateTime"]>;
+  createdAt?: Maybe<Scalars["DateTime"]["output"]>;
   definitions?: Maybe<Array<Maybe<ComponentWikiSpecializationGlossaryItem>>>;
-  slug: Scalars["String"];
+  slug: Scalars["String"]["output"];
   tags?: Maybe<WikiPagesTagRelationResponseCollection>;
   thumbnail?: Maybe<UploadFileEntityResponse>;
   translations?: Maybe<Array<Maybe<ComponentTranslationsWiki>>>;
-  updatedAt?: Maybe<Scalars["DateTime"]>;
+  updatedAt?: Maybe<Scalars["DateTime"]["output"]>;
   weapon?: Maybe<WeaponStoryEntityResponse>;
 };
 
 export type WikiPageCategoriesArgs = {
   filters?: InputMaybe<CategoryFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type WikiPageChronology_ItemsArgs = {
   filters?: InputMaybe<ChronologyItemFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type WikiPageDefinitionsArgs = {
   filters?: InputMaybe<ComponentWikiSpecializationGlossaryItemFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type WikiPageTagsArgs = {
   filters?: InputMaybe<WikiPagesTagFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type WikiPageTranslationsArgs = {
   filters?: InputMaybe<ComponentTranslationsWikiFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type WikiPageEntity = {
   __typename?: "WikiPageEntity";
   attributes?: Maybe<WikiPage>;
-  id?: Maybe<Scalars["ID"]>;
+  id?: Maybe<Scalars["ID"]["output"]>;
 };
 
 export type WikiPageEntityResponse = {
@@ -6004,14 +5999,14 @@ export type WikiPageFiltersInput = {
 };
 
 export type WikiPageInput = {
-  categories?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
-  chronology_items?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
+  categories?: InputMaybe<Array<InputMaybe<Scalars["ID"]["input"]>>>;
+  chronology_items?: InputMaybe<Array<InputMaybe<Scalars["ID"]["input"]>>>;
   definitions?: InputMaybe<Array<InputMaybe<ComponentWikiSpecializationGlossaryItemInput>>>;
-  slug?: InputMaybe<Scalars["String"]>;
-  tags?: InputMaybe<Array<InputMaybe<Scalars["ID"]>>>;
-  thumbnail?: InputMaybe<Scalars["ID"]>;
+  slug?: InputMaybe<Scalars["String"]["input"]>;
+  tags?: InputMaybe<Array<InputMaybe<Scalars["ID"]["input"]>>>;
+  thumbnail?: InputMaybe<Scalars["ID"]["input"]>;
   translations?: InputMaybe<Array<InputMaybe<ComponentTranslationsWikiInput>>>;
-  weapon?: InputMaybe<Scalars["ID"]>;
+  weapon?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type WikiPageRelationResponseCollection = {
@@ -6021,22 +6016,22 @@ export type WikiPageRelationResponseCollection = {
 
 export type WikiPagesTag = {
   __typename?: "WikiPagesTag";
-  createdAt?: Maybe<Scalars["DateTime"]>;
-  slug: Scalars["String"];
+  createdAt?: Maybe<Scalars["DateTime"]["output"]>;
+  slug: Scalars["String"]["output"];
   titles?: Maybe<Array<Maybe<ComponentTranslationsSimpleTitle>>>;
-  updatedAt?: Maybe<Scalars["DateTime"]>;
+  updatedAt?: Maybe<Scalars["DateTime"]["output"]>;
 };
 
 export type WikiPagesTagTitlesArgs = {
   filters?: InputMaybe<ComponentTranslationsSimpleTitleFiltersInput>;
   pagination?: InputMaybe<PaginationArg>;
-  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  sort?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
 };
 
 export type WikiPagesTagEntity = {
   __typename?: "WikiPagesTagEntity";
   attributes?: Maybe<WikiPagesTag>;
-  id?: Maybe<Scalars["ID"]>;
+  id?: Maybe<Scalars["ID"]["output"]>;
 };
 
 export type WikiPagesTagEntityResponse = {
@@ -6062,7 +6057,7 @@ export type WikiPagesTagFiltersInput = {
 };
 
 export type WikiPagesTagInput = {
-  slug?: InputMaybe<Scalars["String"]>;
+  slug?: InputMaybe<Scalars["String"]["input"]>;
   titles?: InputMaybe<Array<InputMaybe<ComponentTranslationsSimpleTitleInput>>>;
 };
 
@@ -6354,7 +6349,6 @@ export type WeaponAttributesFragment = {
     __typename?: "WeaponStoryTypeEntityResponse";
     data?: {
       __typename?: "WeaponStoryTypeEntity";
-      id?: string | null;
       attributes?: { __typename?: "WeaponStoryType"; slug: string } | null;
     } | null;
   } | null;
@@ -6465,7 +6459,7 @@ export type WikiPageAttributesFragment = {
 };
 
 export type GetContentQueryVariables = Exact<{
-  id?: InputMaybe<Scalars["ID"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
 }>;
 
 export type GetContentQuery = {
@@ -6591,7 +6585,7 @@ export type GetContentsQuery = {
 };
 
 export type GetLibraryItemQueryVariables = Exact<{
-  id?: InputMaybe<Scalars["ID"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
 }>;
 
 export type GetLibraryItemQuery = {
@@ -6869,7 +6863,7 @@ export type GetLibraryItemsQuery = {
 };
 
 export type GetPostQueryVariables = Exact<{
-  id?: InputMaybe<Scalars["ID"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
 }>;
 
 export type GetPostQuery = {
@@ -7019,7 +7013,7 @@ export type GetPostsQuery = {
 };
 
 export type GetVideoQueryVariables = Exact<{
-  id?: InputMaybe<Scalars["ID"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
 }>;
 
 export type GetVideoQuery = {
@@ -7091,7 +7085,7 @@ export type GetVideosQuery = {
 };
 
 export type GetWeaponQueryVariables = Exact<{
-  id?: InputMaybe<Scalars["ID"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
 }>;
 
 export type GetWeaponQuery = {
@@ -7123,7 +7117,6 @@ export type GetWeaponQuery = {
           __typename?: "WeaponStoryTypeEntityResponse";
           data?: {
             __typename?: "WeaponStoryTypeEntity";
-            id?: string | null;
             attributes?: { __typename?: "WeaponStoryType"; slug: string } | null;
           } | null;
         } | null;
@@ -7202,7 +7195,6 @@ export type GetWeaponsQuery = {
           __typename?: "WeaponStoryTypeEntityResponse";
           data?: {
             __typename?: "WeaponStoryTypeEntity";
-            id?: string | null;
             attributes?: { __typename?: "WeaponStoryType"; slug: string } | null;
           } | null;
         } | null;
@@ -7251,7 +7243,7 @@ export type GetWeaponsQuery = {
 };
 
 export type GetWikiPageQueryVariables = Exact<{
-  id?: InputMaybe<Scalars["ID"]>;
+  id?: InputMaybe<Scalars["ID"]["input"]>;
 }>;
 
 export type GetWikiPageQuery = {
@@ -7690,7 +7682,6 @@ export const WeaponAttributesFragmentDoc = gql`
     }
     type {
       data {
-        id
         attributes {
           slug
         }
@@ -7961,7 +7952,7 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
   return {
     getContent(
       variables?: GetContentQueryVariables,
-      requestHeaders?: Dom.RequestInit["headers"]
+      requestHeaders?: GraphQLClientRequestHeaders
     ): Promise<GetContentQuery> {
       return withWrapper(
         (wrappedRequestHeaders) =>
@@ -7975,7 +7966,7 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     getContents(
       variables?: GetContentsQueryVariables,
-      requestHeaders?: Dom.RequestInit["headers"]
+      requestHeaders?: GraphQLClientRequestHeaders
     ): Promise<GetContentsQuery> {
       return withWrapper(
         (wrappedRequestHeaders) =>
@@ -7989,7 +7980,7 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     getLibraryItem(
       variables?: GetLibraryItemQueryVariables,
-      requestHeaders?: Dom.RequestInit["headers"]
+      requestHeaders?: GraphQLClientRequestHeaders
     ): Promise<GetLibraryItemQuery> {
       return withWrapper(
         (wrappedRequestHeaders) =>
@@ -8003,7 +7994,7 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     getLibraryItems(
       variables?: GetLibraryItemsQueryVariables,
-      requestHeaders?: Dom.RequestInit["headers"]
+      requestHeaders?: GraphQLClientRequestHeaders
     ): Promise<GetLibraryItemsQuery> {
       return withWrapper(
         (wrappedRequestHeaders) =>
@@ -8017,7 +8008,7 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     getPost(
       variables?: GetPostQueryVariables,
-      requestHeaders?: Dom.RequestInit["headers"]
+      requestHeaders?: GraphQLClientRequestHeaders
     ): Promise<GetPostQuery> {
       return withWrapper(
         (wrappedRequestHeaders) =>
@@ -8031,7 +8022,7 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     getPosts(
       variables?: GetPostsQueryVariables,
-      requestHeaders?: Dom.RequestInit["headers"]
+      requestHeaders?: GraphQLClientRequestHeaders
     ): Promise<GetPostsQuery> {
       return withWrapper(
         (wrappedRequestHeaders) =>
@@ -8045,7 +8036,7 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     getVideo(
       variables?: GetVideoQueryVariables,
-      requestHeaders?: Dom.RequestInit["headers"]
+      requestHeaders?: GraphQLClientRequestHeaders
     ): Promise<GetVideoQuery> {
       return withWrapper(
         (wrappedRequestHeaders) =>
@@ -8059,7 +8050,7 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     getVideos(
       variables?: GetVideosQueryVariables,
-      requestHeaders?: Dom.RequestInit["headers"]
+      requestHeaders?: GraphQLClientRequestHeaders
     ): Promise<GetVideosQuery> {
       return withWrapper(
         (wrappedRequestHeaders) =>
@@ -8073,7 +8064,7 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     getWeapon(
       variables?: GetWeaponQueryVariables,
-      requestHeaders?: Dom.RequestInit["headers"]
+      requestHeaders?: GraphQLClientRequestHeaders
     ): Promise<GetWeaponQuery> {
       return withWrapper(
         (wrappedRequestHeaders) =>
@@ -8087,7 +8078,7 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     getWeapons(
       variables?: GetWeaponsQueryVariables,
-      requestHeaders?: Dom.RequestInit["headers"]
+      requestHeaders?: GraphQLClientRequestHeaders
     ): Promise<GetWeaponsQuery> {
       return withWrapper(
         (wrappedRequestHeaders) =>
@@ -8101,7 +8092,7 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     getWikiPage(
       variables?: GetWikiPageQueryVariables,
-      requestHeaders?: Dom.RequestInit["headers"]
+      requestHeaders?: GraphQLClientRequestHeaders
     ): Promise<GetWikiPageQuery> {
       return withWrapper(
         (wrappedRequestHeaders) =>
@@ -8115,7 +8106,7 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     getWikiPages(
       variables?: GetWikiPagesQueryVariables,
-      requestHeaders?: Dom.RequestInit["headers"]
+      requestHeaders?: GraphQLClientRequestHeaders
     ): Promise<GetWikiPagesQuery> {
       return withWrapper(
         (wrappedRequestHeaders) =>
